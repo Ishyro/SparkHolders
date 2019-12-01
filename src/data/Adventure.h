@@ -18,5 +18,6 @@ class Adventure {
     World world;
     std::set<Character> active_party;
     std::set<Character> known_players;
-    std::list<Quests> quests;
+    std::list<Quest> quests;
+    std::list<Event> events;
 };
