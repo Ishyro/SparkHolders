@@ -1,18 +1,24 @@
-#include <set>
+#ifndef _WORLD_H_
+#define _WORLD_H_
 
-#include "src/loader/WorldLoader.h"
+#include <list>
+#include <string>
+
 #include "src/data/Map.h"
 
 class World {
   public:
-    const string name;
-    World(String name);
-    boolean addMap(Map map);
-    boolean changeMap(string name);
+    const std::string name;
+    World(std::string name);
+    bool addMap(Map map);
+    bool changeMap(std::string name);
     long getTick();
     void incrTick();
   private:
-    Map current;
+    Map * current;
     long tick;
-    std::set<Map> maps;
+    std::list<Map *> maps;
+    std::list<MapLink *> links;
 };
+
+#endif // _WORLD_H_

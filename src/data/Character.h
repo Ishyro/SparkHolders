@@ -1,39 +1,31 @@
-#include <list>
-#include <set>
+#ifndef _CHARACTER_H_
+#define _CHARACTER_H_
 
-#include "src/loader/CharacterLoader.h"
-#include "src/data/Class.h"
+#include <list>
+#include <string>
+
+#include "src/Values.h"
+#include "src/data/Attributes.h"
 #include "src/data/Gear.h"
+#include "src/data/Item.h"
+#include "src/data/Weapon.h"
 #include "src/data/Effect.h"
 #include "src/data/Skill.h"
 
-
-// orientations
-
-#define NORTH 1
-#define NORTH_EAST 2
-#define EAST 3
-#define SOUTH_EAST 4
-#define SOUTH 5
-#define SOUTH_WEST 6
-#define WEST 7
-#define NORTH_WEST 8
-
-// how
-
-#define POSITIVE 1
-#define NEGATIVE 2
+namespace character {
+  static long id_cpt = 0;
+}
 
 class Character {
   public:
-    const long id;
-    const string name;
-    const Class class;
-    const string race;
-    const string sex;
-    Character(string name, string race, string class, string sex);
-    boolean isAlive();
-    boolean isSoulBurning();
+    const long id = ++character::id_cpt;
+    const std::string name;
+    const Attributes * attributes;
+    const std::string race;
+    const std::string sex;
+    Character(std::string name, std::string race, std::string attributes, std::string sex);
+    bool isAlive();
+    bool isSoulBurning();
     int getX();
     int getY();
     int getOrientation();
@@ -49,16 +41,20 @@ class Character {
 
     void move(int orientation);
     void move(int x, int y, int orientation);
-    void changeHp(int hp, int how);
+    void hpHeal(int hp);
     void incrMaxHp();
-    void changeMana(int mana, int how);
+    void manaHeal(int mana);
     void incrMaxMana();
+    void incrDefense();
     void incrSoulBurnTreshold();
     void incrFlow();
+    void setVision(int vision);
 
-    void replaceGear(Item current, Item new);
+    void equip(Item * to_equip);
+    void addEffect(Effect * e);
+    void addSkill(Skill * s);
   private:
-    static long id_cpt = 0;
+    static long id_cpt;
     int x;
     int y;
     int orientation;
@@ -72,10 +68,15 @@ class Character {
     int flow;
     int vision;
 
-    string team;
+    long gold;
 
-    Gear gear;
-    std::list<Item> stuff;
-    std::list<Effect> effects;
-    std::set<Skills> skills;
+    std::string team;
+
+    Gear * gear;
+    std::list<Item *> stuff;
+    std::list<Weapon *> weapons;
+    std::list<Effect *> effects;
+    std::list<Skill *> skills;
 };
+
+#endif // _CHARACTER_H_

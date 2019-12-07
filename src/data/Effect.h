@@ -1,27 +1,22 @@
-#include <list>
+#ifndef _EFFECT_H_
+#define _EFFECT_H_
 
-#include "src/loader/EffectLoader.h"
-#include "src/data/World.h"
+#include <string>
 
-// stats
-
-#define HP 1
-#define MANA 2
-#define DEFENSE 3
-#define SOULBURNTRESHOLD 4
-#define FLOW 5
-#define VISION 6
-#define DAMAGE 7
-#define SPEED 8
-
+#include "src/Values.h"
+#include "src/data/Character.h"
 
 class Effect {
   public:
-    const string name;
+    const std::string name;
     const int type;
-    const int mana_cost;
-    const int cost_type;
-    const std::list<int> stats;
-    const std::list<int> specials;
-    Effect(string name);
+    const int power;
+    const int duration;
+    Effect(std::string name);
+    bool decrTick(); // true if tick_left == 0
+    void activate(Character * target);
+  private:
+    int tick_left;
 };
+
+#endif // _EFFECT_H_

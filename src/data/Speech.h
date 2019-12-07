@@ -1,8 +1,13 @@
-#include "src/loader/SpeechLoader.h"
+#ifndef _SPEECH_H_
+#define _SPEECH_H_
+
+#include <string>
 
 class Speech {
   public:
-    const string name;
-    const string content;
-    Speech(String name);
+    const std::string name;
+    const std::string content;
+    Speech(std::string name);
 };
+
+#endif // _SPEECH_H_

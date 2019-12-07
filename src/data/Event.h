@@ -1,25 +1,26 @@
-#include <list>
+#ifndef _EVENT_H_
+#define _EVENT_H_
 
-#include "src/loader/EventLoader.h"
+#include <list>
+#include <string>
+
+#include "src/Values.h"
 #include "src/data/Character.h"
 #include "src/data/Map.h"
 #include "src/data/Speech.h"
 
-// type
-
-#define CALAMITY 1
-#define BLESSING 2
-
 class Event {
   public:
-    const string name;
+    const std::string name;
     const int type;
     const int tick;
-    Event(string name);
+    Event(std::string name);
     void activate(World world);
   private:
-    std::list<Character> characters;
-    std::list<Map> maps;
-    std::list<Speech> speechs;
-    std::list<Effect> effects;
+    std::list<Character *> characters;
+    std::list<Map *> maps;
+    std::list<Speech *> speechs;
+    std::list<Effect *> effects;
 };
+
+#endif // _EVENT_H_

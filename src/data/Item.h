@@ -1,29 +1,29 @@
-#include <list>
+#ifndef _LOOT_H_
+#define _LOOT_H_
 
-#include "src/loader/ItemLoader.h"
+#include <list>
+#include <string>
+
+#include "src/Values.h"
 #include "src/data/Effect.h"
 
-// type
-
-#define NONE 0
-#define HEAD 1
-#define LEFT_ARM 2
-#define RIGHT_ARM 3
-#define BOTH_ARMS 4
-#define BODY 5
-#define LEGS 6
-#define FULL_BODY 7
-#define RING 8
-#define AMULET 9
+namespace item {
+  static long id_cpt = 0;
+}
 
 class Item {
   public:
-    const string name;
-    const long id;
-    const boolean equipable;
+    const std::string name;
+    const long id = ++item::id_cpt;
+    const bool equipable;
+    const int damage_reductions[DAMAGE_TYPE_NUMBER];
+    const bool consumable;
     const int type;
-    Item(string name);
+    const int gold_value;
+    const std::list<Effect *> effects;
+    Item(std::string name);
   private:
-    static long id_cpt = 0;
-    std::list<Effect> effects;
+    static long id_cpt;
 };
+
+#endif // _LOOT_H_
