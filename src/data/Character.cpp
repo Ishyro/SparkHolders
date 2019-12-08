@@ -15,7 +15,9 @@ int Character::getMaxHp() {
       bonus += e->power;
   return maxHp + bonus;
 }
+
 int Character::getMana() {return mana;}
+
 int Character::getMaxMana() {
   int bonus = 0;
   for (auto e : effects)
@@ -23,6 +25,7 @@ int Character::getMaxMana() {
       bonus += e->power;
   return maxMana + bonus;
 }
+
 int Character::getArmor() {
   int bonus = 0;
   for (auto e : effects)
@@ -30,6 +33,7 @@ int Character::getArmor() {
       bonus += e->power;
   return armor + bonus;
 }
+
 int Character::getSoulBurnTreshold() {
   int bonus = 0;
   for (auto e : effects)
@@ -37,7 +41,9 @@ int Character::getSoulBurnTreshold() {
       bonus += e->power;
   return soulBurnTreshold + bonus;
 }
+
 int Character::getCurrentSoulBurn() {return currentSoulBurn;}
+
 int Character::getFlow() {
   int bonus = 0;
   for (auto e : effects)
@@ -45,6 +51,7 @@ int Character::getFlow() {
       bonus += e->power;
   return flow + bonus;
 }
+
 int Character::getVision() {
   int bonus = 0;
   for (auto e : effects)
@@ -53,12 +60,26 @@ int Character::getVision() {
   return vision + bonus;
 }
 
+int Character::getDarkVision() {
+  int bonus = 0;
+  for (auto e : effects)
+    if (e->type == DARK_VISION)
+      bonus += e->power;
+  return dark_vision + bonus;
+}
+
+long Character::getCurrentMapId() {return current_map_id;}
+
 std::list<Item *> Character::getStuff() {return stuff;}
 std::list<Weapon *> Character::getWeapons() {return weapons;}
 std::list<Effect *> Character::getEffects() {return effects;}
 std::list<Skill *> Character::getSkills() {return skills;}
 
 void Character::move(int orientation) {this->orientation = orientation;}
+void Character::move(int x, int y) {
+  this->x = x;
+  this->y = y;
+}
 void Character::move(int x, int y, int orientation) {
   this->x = x;
   this->y = y;
@@ -73,6 +94,8 @@ void Character::incrArmor() {armor += attributes->armorIncr;}
 void Character::incrSoulBurnTreshold() {soulBurnTreshold += attributes->soulBurnIncr;}
 void Character::incrFlow() {flow += attributes->flowIncr;}
 void Character::setVision(int vision) {this->vision = vision;}
+void Character::setDarkVision(int dark_vision) {this->dark_vision = dark_vision;}
+void Character::setCurrentMapId(long map_id) {this->current_map_id = map_id;}
 
 void Character::equip(Item * to_equip) {
   if (to_equip != nullptr) {
@@ -121,7 +144,88 @@ void Character::addSkill(Skill * s) {skills.push_front(s);}
 void Character::removeEffect(Effect * e) {effects.remove(e);}
 void Character::removeSkill(Skill * s) {skills.remove(s);}
 
+void Character::addItem(Item * i) {stuff.push_front(i);}
+void Character::addWeapon(Weapon * w) {weapons.push_front(w);}
+void Character::removeItem(Item * i) {stuff.remove(i);}
+void Character::removeWeapon(Weapon * w) {weapons.remove(w);}
+
+int Character::isChanneling() {
+  for (auto e : effects) {
+    if (e->type == CHANNELING) {
+      return e->duration;
+    }
+  }
+  return 0;
+}
+
+int Character::isStunned() {
+  for (auto e : effects) {
+    if (e->type == STUNNED) {
+      return e->duration;
+    }
+  }
+  return 0;
+}
+
+int Character::isCloaked() {
+  for (auto e : effects) {
+    if (e->type == CLOAKED) {
+      return e->duration;
+    }
+  }
+  return 0;
+}
+
+int Character::isInvisible() {
+  for (auto e : effects) {
+    if (e->type == INVISIBLE) {
+      return e->duration;
+    }
+  }
+  return 0;
+}
+
+int Character::isSleeping() {
+  for (auto e : effects) {
+    if (e->type == SLEEPING) {
+      return e->duration;
+    }
+  }
+  return 0;
+}
+
+int Character::cloakPower() {
+  for (auto e : effects) {
+    if (e->type == CLOAKED) {
+      return e->power;
+    }
+  }
+  return 0;
+}
+
+int Character::invisibilityPower() {
+  for (auto e : effects) {
+    if (e->type == INVISIBLE) {
+      return e->power;
+    }
+  }
+  return 0;
+}
+
+Quest * Character::getQuest() {return quest;}
+
 // Warning : Dangerous
 void Character::useSkill(Skill * skill, World * world, int overcharge) {
   skill->activate(this, world, overcharge);
+}
+
+void Character::receiveAttack(int damage, int damage_type) {
+  if (damage_type == SOUL) {
+    hp -= damage;
+  }
+  else {
+    int final_damage = (int) floor(( (float) (damage) * (1. - gear->getDamageReduction(damage_type)) - getArmor()));
+    if (final_damage > 0)
+      hp -= final_damage;
+  }
 }

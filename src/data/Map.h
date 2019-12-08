@@ -7,7 +7,17 @@
 #include "src/data/Character.h"
 #include "src/data/Projectile.h"
 #include "src/data/Item.h"
-#include "src/data/Loot.h"
+#include "src/data/Weapon.h"
+#include "src/data/Tile.h"
+
+typedef struct Loot {
+  const int type;
+  const long x;
+  const long y;
+  const long gold;
+  const std::list<Weapon *> weapons;
+  const std::list<Item *> items;
+} Loot;
 
 namespace map {
   static long id_cpt = 0;
@@ -22,11 +32,26 @@ class Map {
     Map(std::string name) {
       // TODO READER
     }
+    std::list<Character *> getCharacters();
+    std::list<Projectile *> getProjectiles();
+    std::list<Loot *> getLoots();
+    Tile * getTile(long x, long y);
+    void crumble(long x, long y);
+    void addCharacter(Character * c);
+    void addProjectile(Projectile * p);
+    void addLoot(Loot * l);
+    void removeCharacter(Character * c);
+    void killCharacter(Character * c);
+    void removeProjectile(Projectile * p);
+    void destroyProjectile(Projectile * p);
+    void removeLoot(Loot * l);
+    void destroyLoot(Loot * l);
+    void takeLoot(Character * c, Loot * l);
   private:
-    std::list<Character *> mobs;
+    std::list<Character *> characters;
     std::list<Projectile *> projectiles;
     std::list<Loot *> loots;
-    Tile ** tiles;
+    Tile *** tiles;
 };
 
 typedef struct MapLink {

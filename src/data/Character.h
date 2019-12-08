@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <math.h>
 
 #include "src/Values.h"
 #include "src/data/Attributes.h"
@@ -23,7 +24,9 @@ class Character {
     const Attributes * attributes;
     const std::string race;
     const std::string sex;
-    Character(std::string name, std::string race, std::string attributes, std::string sex);
+    const Speech * death_speech;
+    const Speech * encounter_speech;
+    Character(std::string name, std::string race, std::string attributes, std::string sex, std::string religion);
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -38,6 +41,7 @@ class Character {
     int getCurrentSoulBurn();
     int getFlow();
     int getVision();
+    int getDarkVision();
     long getCurrentMapId();
 
     std::list<Item *> getStuff();
@@ -46,6 +50,7 @@ class Character {
     std::list<Skill *> getSkills();
 
     void move(int orientation);
+    void move(int x, int y);
     void move(int x, int y, int orientation);
     void hpHeal(int hp);
     void incrMaxHp();
@@ -55,6 +60,8 @@ class Character {
     void incrSoulBurnTreshold();
     void incrFlow();
     void setVision(int vision);
+    void setDarkVision(int dark_vision);
+    void setCurrentMapId(long map_id);
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
@@ -66,7 +73,24 @@ class Character {
     void removeEffect(Effect * e);
     void removeSkill(Skill * s);
 
+    void addItem(Item * i);
+    void addWeapon(Weapon * w);
+    void removeItem(Item * i);
+    void removeWeapon(Weapon * w);
+
+    int isChanneling();
+    int isStunned();
+    int isCloaked();
+    int isInvisible();
+    int isSleeping();
+    int cloakPower();
+    int invisibilityPower();
+
+    Quest * getQuest();
+
     void useSkill(Skill * skill, World * world, int overcharge);
+    void receiveAttack(int damage, int damage_type);
+
   private:
     static long id_cpt;
     long current_map_id;
@@ -82,6 +106,7 @@ class Character {
     int currentSoulBurn;
     int flow;
     int vision;
+    int dark_vision;
 
     long gold;
 
@@ -92,6 +117,8 @@ class Character {
     std::list<Weapon *> weapons;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
+
+    Quest * quest;
 };
 
 #endif // _CHARACTER_H_

@@ -16,7 +16,7 @@ class Item {
     const std::string name;
     const long id = ++item::id_cpt;
     const bool equipable;
-    const int damage_reductions[DAMAGE_TYPE_NUMBER];
+    const float damage_reductions[DAMAGE_TYPE_NUMBER];
     const bool consumable;
     const int type;
     const int gold_value;
@@ -24,6 +24,7 @@ class Item {
     Item(std::string name) {
       // TODO XML_READER
     }
+    float getDamageReduction(int damage_type);
   private:
     static long id_cpt;
 };

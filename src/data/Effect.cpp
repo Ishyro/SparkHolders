@@ -12,6 +12,7 @@ void Effect::activate(Character * target) {
   }
   else {
     switch (type) {
+      // no duration means INSTANT for these effects
       case HP:
         target->hpHeal(power);
         break;
@@ -36,6 +37,15 @@ void Effect::activate(Character * target) {
       case VISION:
         target->setVision(target->getVision() + power);
         break;
+      case DARK_VISION:
+        target->setDarkVision(target->getDarkVision() + power);
+        break;
+      case DAMAGE:
+        target->receiveAttack(power, damage_type);
+        break;
+      // no duration means INFINITE for next effects (can be cancelled)
+      default:
+        target->addEffect(this);
     }
   }
 }

@@ -1,7 +1,11 @@
 #ifndef _VALUES_H_
 #define _VALUES_H_
 
+#include "src/communications/SpeechManager.h"
+
 // resolve cyclic mess
+
+// data
 
 class Adventure;
 class Attributes;
@@ -10,7 +14,6 @@ class Effect;
 class Event;
 class Gear;
 class Item;
-class Loot;
 class Map;
 class Projectile;
 class Quest;
@@ -21,6 +24,16 @@ class Tile;
 class Weapon;
 class World;
 typedef struct MapLink MapLink;
+typedef struct Step Step;
+typedef struct Loot Loot;
+
+// communication
+
+class SpeechManager;
+
+// unique instance for speech management
+
+SpeechManager * speech_manager = new SpeechManager();
 
 // effect_duration_type
 
@@ -38,7 +51,13 @@ typedef struct MapLink MapLink;
 #define SOULBURNTRESHOLD 6
 #define FLOW 7
 #define VISION 8
-#define DAMAGE 9
+#define DARK_VISION 9
+#define DAMAGE 10
+#define CHANNELING 11
+#define STUNNED 12
+#define CLOAKED 13
+#define INVISIBLE 14
+#define SLEEPING 15
 
 // melee_type
 
@@ -83,10 +102,18 @@ typedef struct MapLink MapLink;
 #define RING 6
 #define AMULET 7
 
+#define LEFT_RING 8
+#define RIGHT_RING 9
+
 // event_type
 
 #define CALAMITY 1
 #define BLESSING 2
+
+// character_apparition_type
+
+#define SOFT 1
+#define HARD 2
 
 // skill_target
 
@@ -137,19 +164,35 @@ typedef struct MapLink MapLink;
 
 #define DAMAGE_TYPE_NUMBER 9
 
-#define SLASH 1
-#define PUNCTURE 2
-#define IMPACT 3
-#define FIRE 4
-#define THUNDER 5
-#define COLD 6
-#define POISON 7
-#define NEUTRAL 8 // unaffected by damage reductions, but still by armor
-#define SOUL 9 // true_damage
+#define SLASH 0
+#define PUNCTURE 1
+#define IMPACT 2
+#define FIRE 3
+#define THUNDER 4
+#define COLD 5
+#define POISON 6
+#define NEUTRAL 7 // unaffected by damage reductions, but still by armor
+#define SOUL 8 // true_damage
 
 // loot_type
 
 #define CORPSE 1
 #define TREASURE 2
+
+// quest_step_type
+
+#define SLAY 1
+#define OBTAIN_ITEM 2
+#define OBTAIN_WEAPON 3
+#define DISCOVER 4
+#define TALK 5
+
+// unfranchissable_tile_type
+
+#define WOOD 1
+#define STONE 2
+#define METAL 3
+#define ICE 4
+#define FIRESTONE 5
 
 #endif // _VALUES_H_

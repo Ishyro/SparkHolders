@@ -5,6 +5,8 @@
 #include <string>
 
 #include "src/data/World.h"
+#include "src/data/Map.h"
+#include "src/data/Tile.h"
 #include "src/data/Character.h"
 #include "src/data/Quest.h"
 #include "src/data/Event.h"
@@ -21,11 +23,17 @@ class Adventure {
       // TODO XML_READER
     }
     Save * save();
+    void softMoveCharacterToMap(Character * character, long mapId, long x, long y);
+    void hardMoveCharacterToMap(Character * character, long mapId, long x, long y);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
+    std::list<Character *> getParty();
     int getTick();
     void event();
+    World * getWorld();
+    void addQuest(Quest * quest);
+    void removeQuest(Quest * quest);
   private:
     World * world;
     std::list<Character *> party;

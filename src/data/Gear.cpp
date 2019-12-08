@@ -80,15 +80,13 @@ Item * Gear::unequip(int type) {
       old_item = body;
       body = nullptr;
       break;
-    case RING:
-      if (right_ring == nullptr) {
-        old_item = left_ring;
-        left_ring = nullptr;
-      }
-      else {
-        old_item = right_ring;
-        right_ring = nullptr;
-      }
+    case LEFT_RING:
+      old_item = left_ring;
+      left_ring = nullptr;
+      break;
+    case RIGHT_RING:
+      old_item = right_ring;
+      right_ring = nullptr;
       break;
     case AMULET:
       old_item = amulet;
@@ -102,6 +100,18 @@ Weapon * Gear::unequipWeapon() {
   Weapon * temp = weapon;
   weapon = nullptr;
   return temp;
+}
+
+float Gear::getDamageReduction(int damage_type) {
+  float resistance = 0.;
+  resistance += head->getDamageReduction(damage_type);
+  resistance += arms->getDamageReduction(damage_type);
+  resistance += body->getDamageReduction(damage_type);
+  resistance += legs->getDamageReduction(damage_type);
+  resistance += left_ring->getDamageReduction(damage_type);
+  resistance += right_ring->getDamageReduction(damage_type);
+  resistance += amulet->getDamageReduction(damage_type);
+  return resistance;
 }
 
 Item * Gear::getHead() {return head;}

@@ -17,23 +17,25 @@ class Projectile {
   public:
     const long id = ++projectile::id_cpt;
     const int projectile_type;
-    const int damage_type;
-    Projectile(int projectile_type, int damage_type, int strength, int speed, int waste_pet_hit, int waste_per_tile, int x, int y, int orientation):
+    Projectile(int projectile_type, int damages[DAMAGE_TYPE_NUMBER], int speed, int waste_pet_hit, int waste_per_tile, int x, int y, int orientation):
       projectile_type(projectile_type),
-      damage_type(damage_type),
-      power(power),
       speed(speed),
       waste_pet_hit(waste_pet_hit),
       waste_per_tile(waste_per_tile),
       x(x),
       y(y),
-      orientation(orientation) {}
+      orientation(orientation) {
+        for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+          this->damages[i] = damages[i];
+        }
+      }
     int getX();
     int getY();
     int getOrientation();
-    int getPower();
+    int getRawDamage();
     int getSpeed();
 
+    void move();
     void move(int orientation);
     void move(int x, int y, int orientation);
   private:
@@ -44,6 +46,7 @@ class Projectile {
     int speed;
     int waste_per_tile;
     int waste_pet_hit;
+    int damages[DAMAGE_TYPE_NUMBER];
 };
 
 #endif // _PROJECTILE_H_

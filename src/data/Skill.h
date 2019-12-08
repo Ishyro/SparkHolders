@@ -13,18 +13,19 @@ class Skill {
     const std::string name;
     const int type;
     const int mana_cost;
-    const int cost_type;
+    const int overcharge_type;
     const std::list<Effect *> effects;
     const std::list<int> specials;
     Skill(std::string name) {
       // TODO XML_READER
     }
     void activate(Character * owner, World * world, int overcharge);
-    void desactivate(World * world, Character * owner);
+    void desactivate(Character * owner, World * world);
     int drain();
   private:
     int tick;
     int current_mana_cost;
+    bool active;
 };
 
 #endif // _SKILL_H_

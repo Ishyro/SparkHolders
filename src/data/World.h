@@ -13,8 +13,9 @@ class World {
     World(std::string name) {
       // TODO XML_READER
     }
-    bool addMap(Map map);
-    bool changeMap(std::string name);
+    void addMap(Map * map);
+    void addMapLink(MapLink * link);
+    Map * getMap(int map_id);
     long getTick();
     void incrTick();
   private:

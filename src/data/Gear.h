@@ -22,6 +22,9 @@ class Gear {
     Weapon * equip(Weapon * new_weapon);
     Item * unequip(int type);
     Weapon * unequipWeapon();
+
+    float getDamageReduction(int damage_type);
+
     Item * getHead();
     Item * getArms();
     Item * getLegs();

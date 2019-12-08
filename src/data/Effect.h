@@ -11,6 +11,7 @@ class Effect {
     const std::string name;
     const int type;
     const int duration_type;
+    const int damage_type;
     const int power;
     const int duration;
     Effect(std::string name) {
