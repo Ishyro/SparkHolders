@@ -5,6 +5,7 @@ std::list<Projectile *> Map::getProjectiles() {return projectiles;}
 std::list<Loot *> Map::getLoots() {return loots;}
 // TODO : return right tile
 Tile * Map::getTile(long x, long y) {return tiles[x][y];}
+bool Map::isTileLighted(long x, long y) {return lighted[x][y];}
 
 void Map::crumble(long x, long y) {
   tiles[x][y] = tiles[x][y]->crumble();
@@ -18,6 +19,17 @@ void Map::removeCharacter(Character * c) {characters.remove(c);}
 void Map::killCharacter(Character * c) {
   characters.remove(c);
   speech_manager->add(c->death_speech);
+  Loot * loot = malloc(sizeof(Loot));
+  loot->x = c->getX();
+  loot->y = c->getY();
+  loot->gold = c->getGold();
+  for (auto w : c->getWeapons()) {
+    loot->weapons.push_front(w);
+  }
+  for (auto i : c->getStuff()) {
+    loot->items.push_front(i);
+  }
+  loot->type = CORPSE;
   delete c;
 }
 

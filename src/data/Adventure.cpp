@@ -4,8 +4,8 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, long mapId, long x, long y) {
-  Map * map = world->getMap(mapId);
+void Adventure::softMoveCharacterToMap(Character * character, long map_id, long x, long y) {
+  Map * map = world->getMap(map_id);
   long i = x;
   long j = y;
   bool conflict = false;
@@ -58,11 +58,11 @@ void Adventure::softMoveCharacterToMap(Character * character, long mapId, long x
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   map->addCharacter(character);
   character->move(i, j);
-  character->setCurrentMapId(mapId);
+  character->setCurrentMapId(map_id);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, long mapId, long x, long y) {
-  Map * map = world->getMap(mapId);
+void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long x, long y) {
+  Map * map = world->getMap(map_id);
   for (auto c : map->getCharacters()) {
     if (c->getX() == x && c->getY() == y) {
       map->killCharacter(c);
@@ -81,7 +81,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, long mapId, long x
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   map->addCharacter(character);
   character->move(x, y);
-  character->setCurrentMapId(mapId);
+  character->setCurrentMapId(map_id);
 }
 
 void Adventure::addPlayer(Character * player) {
@@ -97,6 +97,14 @@ bool Adventure::isWiped() {
 }
 
 std::list<Character *> Adventure::getParty() {return party;}
+
+std::list<Character *> Adventure::getPreservedPlayers() {return preserved_players;}
+
+void Adventure::resurrect(Character * player, long map_id, long x, long y) {
+  if (std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
+    hardMoveCharacterToMap(player, map_id, x, y);
+  }
+}
 
 int Adventure::getTick() {
   return world->getTick();

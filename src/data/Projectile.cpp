@@ -12,6 +12,8 @@ int Projectile::getRawDamage() {
   return power;
 }
 
+int Projectile::getDamageType(int damage_type) {return damages[damage_type];}
+
 int Projectile::getSpeed() {return speed;}
 
 // call only when no collision

@@ -12,6 +12,8 @@
 #include "src/data/Weapon.h"
 #include "src/data/Effect.h"
 #include "src/data/Skill.h"
+#include "src/data/World.h"
+#include "src/data/Quest.h"
 
 namespace character {
   static long id_cpt = 0;
@@ -43,6 +45,7 @@ class Character {
     int getVision();
     int getDarkVision();
     long getCurrentMapId();
+    long getGold();
 
     std::list<Item *> getStuff();
     std::list<Weapon *> getWeapons();
@@ -86,10 +89,13 @@ class Character {
     int cloakPower();
     int invisibilityPower();
 
+    bool isTileLighted(World * world);
+
     Quest * getQuest();
 
     void useSkill(Skill * skill, World * world, int overcharge);
     void receiveAttack(int damage, int damage_type);
+    void receiveCriticalAttack(int damage, int damage_type);
 
   private:
     static long id_cpt;

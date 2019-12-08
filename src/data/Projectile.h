@@ -33,6 +33,7 @@ class Projectile {
     int getY();
     int getOrientation();
     int getRawDamage();
+    int getDamageType(int damage_type);
     int getSpeed();
 
     void move();

@@ -162,7 +162,7 @@ SpeechManager * speech_manager = new SpeechManager();
 
 // damage_type
 
-#define DAMAGE_TYPE_NUMBER 9
+#define DAMAGE_TYPE_NUMBER 10
 
 #define SLASH 0
 #define PUNCTURE 1
@@ -172,7 +172,8 @@ SpeechManager * speech_manager = new SpeechManager();
 #define COLD 5
 #define POISON 6
 #define NEUTRAL 7 // unaffected by damage reductions, but still by armor
-#define SOUL 8 // true_damage
+#define TRUE 8
+#define SOUL 9 // true_damage + mana_damage
 
 // loot_type
 

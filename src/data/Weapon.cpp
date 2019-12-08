@@ -8,4 +8,6 @@ int Weapon::getRawDamage() {
   return power;
 }
 
+int Weapon::getDamageType(int damage_type) {return damages[damage_type];}
+
 int Weapon::getCurrentCapacity() {return current_capacity;}

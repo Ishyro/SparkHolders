@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <algorithm>
 
 #include "src/data/World.h"
 #include "src/data/Map.h"
@@ -29,6 +30,8 @@ class Adventure {
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
+    std::list<Character *> getPreservedPlayers();
+    void resurrect(Character * player, long map_id, long x, long y);
     int getTick();
     void event();
     World * getWorld();
@@ -37,6 +40,7 @@ class Adventure {
   private:
     World * world;
     std::list<Character *> party;
+    std::list<Character *> preserved_players;
     std::list<Quest *> quests;
     std::list<Event *> events;
 };

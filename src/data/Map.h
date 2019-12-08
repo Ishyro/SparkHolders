@@ -11,12 +11,12 @@
 #include "src/data/Tile.h"
 
 typedef struct Loot {
-  const int type;
-  const long x;
-  const long y;
-  const long gold;
-  const std::list<Weapon *> weapons;
-  const std::list<Item *> items;
+  int type;
+  long x;
+  long y;
+  long gold;
+  std::list<Weapon *> weapons;
+  std::list<Item *> items;
 } Loot;
 
 namespace map {
@@ -29,6 +29,7 @@ class Map {
     const long id = ++map::id_cpt;
     const long sizeX;
     const long sizeY;
+    const bool outside;
     Map(std::string name) {
       // TODO READER
     }
@@ -36,6 +37,7 @@ class Map {
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
     Tile * getTile(long x, long y);
+    bool isTileLighted(long x, long y);
     void crumble(long x, long y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
@@ -52,6 +54,7 @@ class Map {
     std::list<Projectile *> projectiles;
     std::list<Loot *> loots;
     Tile *** tiles;
+    bool ** lighted;
 };
 
 typedef struct MapLink {

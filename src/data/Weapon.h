@@ -19,7 +19,6 @@ class Weapon {
     const int range; // 0 if not melee
     const int type;
     const int weight;
-    const int damages[DAMAGE_TYPE_NUMBER];
     const int gold_value;
     const bool use_ammo;
     const int capacity;
@@ -30,8 +29,10 @@ class Weapon {
     }
     int getCurrentCapacity();
     int getRawDamage();
+    int getDamageType(int damage_type);
   private:
     int current_capacity;
+    int damages[DAMAGE_TYPE_NUMBER];
 };
 
 #endif // _WEAPON_H_

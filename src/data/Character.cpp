@@ -2,7 +2,7 @@
 
 #include "src/data/Character.h"
 
-bool Character::isAlive() {return hp > 0;}
+bool Character::isAlive() {return hp > 0 && mana > 0;}
 bool Character::isSoulBurning() {return currentSoulBurn >= soulBurnTreshold;}
 int Character::getX() {return x;}
 int Character::getY() {return y;}
@@ -67,6 +67,8 @@ int Character::getDarkVision() {
       bonus += e->power;
   return dark_vision + bonus;
 }
+
+long Character::getGold() {return gold;}
 
 long Character::getCurrentMapId() {return current_map_id;}
 
@@ -152,7 +154,7 @@ void Character::removeWeapon(Weapon * w) {weapons.remove(w);}
 int Character::isChanneling() {
   for (auto e : effects) {
     if (e->type == CHANNELING) {
-      return e->duration;
+      return e->getTickLeft();
     }
   }
   return 0;
@@ -161,7 +163,7 @@ int Character::isChanneling() {
 int Character::isStunned() {
   for (auto e : effects) {
     if (e->type == STUNNED) {
-      return e->duration;
+      return e->getTickLeft();
     }
   }
   return 0;
@@ -170,7 +172,7 @@ int Character::isStunned() {
 int Character::isCloaked() {
   for (auto e : effects) {
     if (e->type == CLOAKED) {
-      return e->duration;
+      return e->getTickLeft();
     }
   }
   return 0;
@@ -179,7 +181,7 @@ int Character::isCloaked() {
 int Character::isInvisible() {
   for (auto e : effects) {
     if (e->type == INVISIBLE) {
-      return e->duration;
+      return e->getTickLeft();
     }
   }
   return 0;
@@ -188,7 +190,7 @@ int Character::isInvisible() {
 int Character::isSleeping() {
   for (auto e : effects) {
     if (e->type == SLEEPING) {
-      return e->duration;
+      return e->getTickLeft();
     }
   }
   return 0;
@@ -212,6 +214,10 @@ int Character::invisibilityPower() {
   return 0;
 }
 
+bool Character::isTileLighted(World * world) {
+  return world->getMap(current_map_id)->isTileLighted(x, y);
+}
+
 Quest * Character::getQuest() {return quest;}
 
 // Warning : Dangerous
@@ -222,10 +228,29 @@ void Character::useSkill(Skill * skill, World * world, int overcharge) {
 void Character::receiveAttack(int damage, int damage_type) {
   if (damage_type == SOUL) {
     hp -= damage;
+    mana -= damage;
+  }
+  if (damage_type == TRUE) {
+    hp -= damage;
   }
   else {
     int final_damage = (int) floor(( (float) (damage) * (1. - gear->getDamageReduction(damage_type)) - getArmor()));
     if (final_damage > 0)
       hp -= final_damage;
+  }
+}
+
+void Character::receiveCriticalAttack(int damage, int damage_type) {
+  if (damage_type == SOUL) {
+    hp -= damage * 2;
+    mana -= damage * 2;
+  }
+  if (damage_type == TRUE) {
+    hp -= damage * 2;
+  }
+  else {
+    int final_damage = (int) floor(( (float) (damage) * (1. - .5 * gear->getDamageReduction(damage_type)) - getArmor()));
+    if (final_damage > 0)
+      hp -= final_damage * 2;
   }
 }

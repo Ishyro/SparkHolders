@@ -11,17 +11,20 @@ class Effect {
     const std::string name;
     const int type;
     const int duration_type;
-    const int damage_type;
     const int power;
     const int duration;
     Effect(std::string name) {
       // TODO XML_READER
     }
-    bool decrTick(); // true if tick_left == 0
+    int getRawDamage();
+    int getDamageType(int damage_type);
+    int getTickLeft();
     void activate(Character * target);
     void desactivate(Character * target);
+    bool tick(Character * target); // if true, delete effect
   private:
     int tick_left;
+    int damages[DAMAGE_TYPE_NUMBER];
 };
 
 #endif // _EFFECT_H_

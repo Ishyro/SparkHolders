@@ -1,11 +1,5 @@
 #include "src/data/Effect.h"
 
-bool Effect::decrTick() {
-  if (duration_type == TEMPORARY)
-    return --tick_left == 0;
-  else return false;
-}
-
 void Effect::activate(Character * target) {
   if (duration != 0) {
     target->addEffect(this);
@@ -41,7 +35,9 @@ void Effect::activate(Character * target) {
         target->setDarkVision(target->getDarkVision() + power);
         break;
       case DAMAGE:
-        target->receiveAttack(power, damage_type);
+        for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+          target->receiveAttack(damages[i], i);
+        }
         break;
       // no duration means INFINITE for next effects (can be cancelled)
       default:
@@ -50,8 +46,39 @@ void Effect::activate(Character * target) {
   }
 }
 
+bool Effect::tick(Character * target) {
+  switch (type) {
+    case HP:
+      target->hpHeal(power);
+      break;
+    case MANA:
+      target->manaHeal(power);
+      break;
+    case DAMAGE:
+      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        target->receiveAttack(damages[i], i);
+      }
+      break;
+    default:
+      ;
+  }
+  return duration_type == TEMPORARY && --tick_left == 0;
+}
+
 void Effect::desactivate(Character * target) {
   if (duration_type == INFINITE || duration_type == TEMPORARY) {
     target->removeEffect(this);
   }
 }
+
+int Effect::getTickLeft() {return tick_left;}
+
+int Effect::getRawDamage() {
+  int power = 0;
+  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    power += damages[i];
+  }
+  return power;
+}
+
+int Effect::getDamageType(int damage_type) {return damages[damage_type];}
