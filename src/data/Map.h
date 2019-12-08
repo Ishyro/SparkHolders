@@ -9,12 +9,19 @@
 #include "src/data/Item.h"
 #include "src/data/Loot.h"
 
+namespace map {
+  static long id_cpt = 0;
+}
+
 class Map {
   public:
     const std::string name;
+    const long id = ++map::id_cpt;
     const long sizeX;
     const long sizeY;
-    Map(std::string name);
+    Map(std::string name) {
+      // TODO READER
+    }
   private:
     std::list<Character *> mobs;
     std::list<Projectile *> projectiles;

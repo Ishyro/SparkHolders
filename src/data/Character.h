@@ -33,11 +33,17 @@ class Character {
     int getMaxHp();
     int getMana();
     int getMaxMana();
-    int getDefense();
+    int getArmor();
     int getSoulBurnTreshold();
     int getCurrentSoulBurn();
     int getFlow();
     int getVision();
+    long getCurrentMapId();
+
+    std::list<Item *> getStuff();
+    std::list<Weapon *> getWeapons();
+    std::list<Effect *> getEffects();
+    std::list<Skill *> getSkills();
 
     void move(int orientation);
     void move(int x, int y, int orientation);
@@ -45,16 +51,25 @@ class Character {
     void incrMaxHp();
     void manaHeal(int mana);
     void incrMaxMana();
-    void incrDefense();
+    void incrArmor();
     void incrSoulBurnTreshold();
     void incrFlow();
     void setVision(int vision);
 
     void equip(Item * to_equip);
+    void equip(Weapon * to_equip);
+    void unequip(int type);
+    void unequipWeapon();
+
     void addEffect(Effect * e);
     void addSkill(Skill * s);
+    void removeEffect(Effect * e);
+    void removeSkill(Skill * s);
+
+    void useSkill(Skill * skill, World * world, int overcharge);
   private:
     static long id_cpt;
+    long current_map_id;
     int x;
     int y;
     int orientation;
@@ -62,7 +77,7 @@ class Character {
     int maxHp;
     int mana;
     int maxMana;
-    int defense;
+    int armor;
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;

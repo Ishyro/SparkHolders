@@ -18,7 +18,7 @@ class Projectile {
     const long id = ++projectile::id_cpt;
     const int projectile_type;
     const int damage_type;
-    Projectile::Projectile(int projectile_type, int damage_type, int strength, int speed, int waste_pet_hit, int waste_per_tile, int x, int y, int orientation):
+    Projectile(int projectile_type, int damage_type, int strength, int speed, int waste_pet_hit, int waste_per_tile, int x, int y, int orientation):
       projectile_type(projectile_type),
       damage_type(damage_type),
       power(power),

@@ -16,9 +16,11 @@ class Skill {
     const int cost_type;
     const std::list<Effect *> effects;
     const std::list<int> specials;
-    Skill(std::string name);
-    void activate(World world, Character owner, int overcharge);
-    void desactivate(World world, Character owner);
+    Skill(std::string name) {
+      // TODO XML_READER
+    }
+    void activate(Character * owner, World * world, int overcharge);
+    void desactivate(World * world, Character * owner);
     int drain();
   private:
     int tick;

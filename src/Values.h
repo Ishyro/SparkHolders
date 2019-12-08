@@ -22,13 +22,19 @@ class Weapon;
 class World;
 typedef struct MapLink MapLink;
 
+// effect_duration_type
+
+#define INSTANT 1
+#define INFINITE 2
+#define TEMPORARY 3
+
 // effect_type
 
 #define HP 1
 #define MANA 2
 #define HP_MAX 3
 #define MANA_MAX 4
-#define DEFENSE 5
+#define ARMOR 5
 #define SOULBURNTRESHOLD 6
 #define FLOW 7
 #define VISION 8
@@ -138,7 +144,7 @@ typedef struct MapLink MapLink;
 #define THUNDER 5
 #define COLD 6
 #define POISON 7
-#define NEUTRAL 8 // unaffected by damage reductions, but still by defense
+#define NEUTRAL 8 // unaffected by damage reductions, but still by armor
 #define SOUL 9 // true_damage
 
 // loot_type

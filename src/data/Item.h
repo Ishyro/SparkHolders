@@ -21,7 +21,9 @@ class Item {
     const int type;
     const int gold_value;
     const std::list<Effect *> effects;
-    Item(std::string name);
+    Item(std::string name) {
+      // TODO XML_READER
+    }
   private:
     static long id_cpt;
 };

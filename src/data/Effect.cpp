@@ -1,12 +1,9 @@
 #include "src/data/Effect.h"
 
-Effect::Effect(std::string name) {
-  // TODO
-  // XML READER
-}
-
 bool Effect::decrTick() {
-  return --tick_left == 0;
+  if (duration_type == TEMPORARY)
+    return --tick_left == 0;
+  else return false;
 }
 
 void Effect::activate(Character * target) {
@@ -27,8 +24,8 @@ void Effect::activate(Character * target) {
       case MANA_MAX:
         target->incrMaxMana();
         break;
-      case DEFENSE:
-        target->incrDefense();
+      case ARMOR:
+        target->incrArmor();
         break;
       case SOULBURNTRESHOLD:
         target->incrSoulBurnTreshold();
@@ -40,5 +37,11 @@ void Effect::activate(Character * target) {
         target->setVision(target->getVision() + power);
         break;
     }
+  }
+}
+
+void Effect::desactivate(Character * target) {
+  if (duration_type == INFINITE || duration_type == TEMPORARY) {
+    target->removeEffect(this);
   }
 }

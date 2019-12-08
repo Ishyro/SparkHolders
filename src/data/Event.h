@@ -14,8 +14,10 @@ class Event {
     const std::string name;
     const int type;
     const int tick;
-    Event(std::string name);
-    void activate(World world);
+    Event(std::string name) {
+      // TODO XML_READER
+    }
+    void activate(World *  world);
   private:
     std::list<Character *> characters;
     std::list<Map *> maps;

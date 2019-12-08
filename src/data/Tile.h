@@ -15,7 +15,9 @@ class Tile {
     const std::string name;
     const bool breakable;
     const bool untraversable;
-    Tile(std::string name);
+    Tile(std::string name) {
+      // TODO XML_READER
+    }
     void damage(int value);
   private:
     int hp;

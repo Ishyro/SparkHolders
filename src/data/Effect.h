@@ -10,11 +10,15 @@ class Effect {
   public:
     const std::string name;
     const int type;
+    const int duration_type;
     const int power;
     const int duration;
-    Effect(std::string name);
+    Effect(std::string name) {
+      // TODO XML_READER
+    }
     bool decrTick(); // true if tick_left == 0
     void activate(Character * target);
+    void desactivate(Character * target);
   private:
     int tick_left;
 };

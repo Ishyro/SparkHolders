@@ -7,7 +7,9 @@ class Speech {
   public:
     const std::string name;
     const std::string content;
-    Speech(std::string name);
+    Speech(std::string name) {
+      // TODO XML_READER
+    }
 };
 
 #endif // _SPEECH_H_

@@ -12,10 +12,12 @@ class Attributes {
     const Gear * startingGear;
     const int hpIncr;
     const int manaIncr;
-    const int defenseIncr;
+    const int armorIncr;
     const int soulBurnIncr;
     const int flowIncr;
-    Attributes(std::string name);
+    Attributes(std::string name) {
+      // TODO XML_READER
+    }
 };
 
 #endif // _ATTRIBUTES_H_

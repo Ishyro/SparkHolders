@@ -22,12 +22,14 @@ class Weapon {
     const int damage_type;
     const int power;
     const int gold_value;
+    const bool use_ammo;
     const int capacity;
     const int ammo_price;
     const std::list<Effect *> effects;
-    Weapon(std::string name);
+    Weapon(std::string name) {
+      // TODO XML_READER
+    }
     int getCurrentCapacity();
-    bool useAmmo();
   private:
     int current_capacity;
 };
