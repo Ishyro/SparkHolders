@@ -64,11 +64,12 @@ SpeechManager * speech_manager = new SpeechManager();
 #define LONG_SWORD 1
 #define SHORT_SWORD 2
 #define CURVED_SWORD 3
-#define SPEAR 4
-#define BLADED_SPEAR 5
-#define AXE 6
-#define WARHAMMER 7
-#define DAGGER 8
+#define RAPIER 4
+#define SPEAR 5
+#define BLADED_SPEAR 6
+#define AXE 7
+#define WARHAMMER 8
+#define DAGGER 9
 
 // melee_range
 

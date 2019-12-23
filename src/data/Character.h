@@ -25,10 +25,12 @@ class Character {
     const std::string name;
     const Attributes * attributes;
     const std::string race;
-    const std::string sex;
+    const int sex;
+    const std::string religion;
+    const std::string origin;
     const Speech * death_speech;
     const Speech * encounter_speech;
-    Character(std::string name, std::string race, std::string attributes, std::string sex, std::string religion);
+    Character(std::string name, std::string race, std::string attributes, int sex, std::string religion, std::string origin);
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -76,6 +78,9 @@ class Character {
     void removeEffect(Effect * e);
     void removeSkill(Skill * s);
 
+    // change religion or origin
+    void changeWay(std::string old_way, std::string new_way);
+
     void addItem(Item * i);
     void addWeapon(Weapon * w);
     void removeItem(Item * i);
@@ -88,6 +93,7 @@ class Character {
     int isSleeping();
     int cloakPower();
     int invisibilityPower();
+    bool isInWeakState();
 
     bool isTileLighted(World * world);
 

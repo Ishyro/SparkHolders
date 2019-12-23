@@ -146,6 +146,10 @@ void Character::addSkill(Skill * s) {skills.push_front(s);}
 void Character::removeEffect(Effect * e) {effects.remove(e);}
 void Character::removeSkill(Skill * s) {skills.remove(s);}
 
+void Character::changeWay(std::string old_way, std::string new_way) {
+  // TODO
+}
+
 void Character::addItem(Item * i) {stuff.push_front(i);}
 void Character::addWeapon(Weapon * w) {weapons.push_front(w);}
 void Character::removeItem(Item * i) {stuff.remove(i);}
@@ -214,6 +218,15 @@ int Character::invisibilityPower() {
   return 0;
 }
 
+bool Character::isInWeakState() {
+  for (auto e : effects) {
+    if (e->type == STUNNED || e->type == SLEEPING) {
+      return true;
+    }
+  }
+  return 0;
+}
+
 bool Character::isTileLighted(World * world) {
   return world->getMap(current_map_id)->isTileLighted(x, y);
 }
@@ -226,6 +239,9 @@ void Character::useSkill(Skill * skill, World * world, int overcharge) {
 }
 
 void Character::receiveAttack(int damage, int damage_type) {
+  if (isInWeakState()) {
+    return receiveCriticalAttack(damage, damage_type);
+  }
   if (damage_type == SOUL) {
     hp -= damage;
     mana -= damage;
