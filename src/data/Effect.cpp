@@ -36,7 +36,7 @@ void Effect::activate(Character * target) {
         break;
       case DAMAGE:
         for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-          target->receiveAttack(damages[i], i);
+          target->receiveAttack(damages[i], i, NO_ORIENTATION);
         }
         break;
       // no duration means INFINITE for next effects (can be cancelled)
@@ -56,7 +56,7 @@ bool Effect::tick(Character * target) {
       break;
     case DAMAGE:
       for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        target->receiveAttack(damages[i], i);
+        target->receiveAttack(damages[i], i, NO_ORIENTATION);
       }
       break;
     default:

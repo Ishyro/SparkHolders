@@ -238,7 +238,13 @@ void Character::useSkill(Skill * skill, World * world, int overcharge) {
   skill->activate(this, world, overcharge);
 }
 
-void Character::receiveAttack(int damage, int damage_type) {
+void Character::receiveAttack(int damage, int damage_type, int orientation) {
+  if (orientation != NO_ORIENTATION) {
+    int diff = abs(orientation - this->orientation) % 8;
+    if (diff >= 3 && diff <= 5) {
+      return receiveCriticalAttack(damage, damage_type);
+    }
+  }
   if (isInWeakState()) {
     return receiveCriticalAttack(damage, damage_type);
   }

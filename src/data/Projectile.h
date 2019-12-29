@@ -2,10 +2,13 @@
 #define _PROJECTILE_H_
 
 #include <string>
+#include <cmath>
 
 #include "src/Values.h"
 #include "src/data/Effect.h"
 #include "src/data/Skill.h"
+#include "src/data/Map.h"
+#include "src/data/World.h"
 
 #define ALL -1 // for waste
 
@@ -17,10 +20,13 @@ class Projectile {
   public:
     const long id = ++projectile::id_cpt;
     const int projectile_type;
-    Projectile(int projectile_type, int damages[DAMAGE_TYPE_NUMBER], int speed, int waste_pet_hit, int waste_per_tile, int x, int y, int orientation):
+    const int target_type;
+    const bool homing;
+    const Skill * skill;
+    Projectile(int projectile_type, int damages[DAMAGE_TYPE_NUMBER], int speed, float waste_per_hit, float waste_per_tile, int x, int y, int orientation):
       projectile_type(projectile_type),
       speed(speed),
-      waste_pet_hit(waste_pet_hit),
+      waste_per_hit(waste_per_hit),
       waste_per_tile(waste_per_tile),
       x(x),
       y(y),
@@ -31,23 +37,35 @@ class Projectile {
       }
     int getX();
     int getY();
+    int getDestX();
+    int getDestY();
     int getOrientation();
     int getRawDamage();
     int getDamageType(int damage_type);
     int getSpeed();
-
+    bool isAtDest();
+    int getRawDamage();
+    bool noDamage();
     void move();
-    void move(int orientation);
-    void move(int x, int y, int orientation);
+    void attack_single_target(Character * target, World * world);
+    void attack_multiple_targets(Map * map, World * world);
   private:
     int x;
     int y;
+    int dest_x;
+    int dest_y;
+    bool lost;
+    Character * target;
+    Character * owner;
     int orientation;
-    int power;
     int speed;
-    int waste_per_tile;
-    int waste_pet_hit;
+    int area;
+    int overcharge;
+    float waste_per_tile;
+    float waste_per_tile_area;
+    float waste_per_hit;
     int damages[DAMAGE_TYPE_NUMBER];
+    void nextOrientation();
 };
 
 #endif // _PROJECTILE_H_

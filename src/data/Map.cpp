@@ -56,3 +56,28 @@ void Map::takeLoot(Character * c, Loot * l) {
   }
   //delete l;
 }
+
+void Map::tryHit(Projectile * p, World * world) {
+  int p_x = p->getX();
+  int p_y = p->getY();
+  for (auto c : characters) {
+    if (c->getX() == p_x && c->getY() == p_y) {
+      switch(p->target_type) {
+        case TILE:
+          p->attack_single_target(c, world);
+          p->setLost(true);
+          break;
+        case CHARACTER:
+          p->attack_single_target(c, world);
+          break;
+        case MULTIPLE_TILES:
+        case MULTIPLE_CHARACTERS:
+          p->attack_multiple_targets(characters, world);
+          break;
+        default:
+
+      }
+      break;
+    }
+  }
+}

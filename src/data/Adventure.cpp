@@ -76,7 +76,8 @@ void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long 
     }
   }
   if (map->getTile(x, y)->untraversable) {
-    map->crumble(x, y);
+    world->getMap(character->getCurrentMapId())->killCharacter(character);
+    return;
   }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   map->addCharacter(character);

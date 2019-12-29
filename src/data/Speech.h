@@ -7,6 +7,12 @@ class Speech {
   public:
     const std::string name;
     const std::string content;
+    Speech(std::string content, int type) {
+      switch(type) {
+        case UNEXPECTED:
+        case ERROR:
+      }
+    }
     Speech(std::string name) {
       // TODO XML_READER
     }

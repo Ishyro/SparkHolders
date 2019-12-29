@@ -144,14 +144,15 @@ SpeechManager * speech_manager = new SpeechManager();
 
 // orientations
 
-#define NORTH 1
-#define NORTH_EAST 2
-#define EAST 3
-#define SOUTH_EAST 4
-#define SOUTH 5
-#define SOUTH_WEST 6
-#define WEST 7
-#define NORTH_WEST 8
+#define NORTH 0
+#define NORTH_EAST 1
+#define EAST 2
+#define SOUTH_EAST 3
+#define SOUTH 4
+#define SOUTH_WEST 5
+#define WEST 6
+#define NORTH_WEST 7
+#define NO_ORIENTATION 8
 
 // projectile_type
 
@@ -160,6 +161,14 @@ SpeechManager * speech_manager = new SpeechManager();
 #define AIR 3
 #define ARROW 4
 #define BULLET 5
+#define SPECIAL 6
+
+// target_type
+
+#define CHARACTER 1
+#define TILE 2
+#define MULTIPLE_CHARACTERS 3
+#define MULTIPLE_TILES 4
 
 // damage_type
 
@@ -188,13 +197,5 @@ SpeechManager * speech_manager = new SpeechManager();
 #define OBTAIN_WEAPON 3
 #define DISCOVER 4
 #define TALK 5
-
-// unfranchissable_tile_type
-
-#define WOOD 1
-#define STONE 2
-#define METAL 3
-#define ICE 4
-#define FIRESTONE 5
 
 #endif // _VALUES_H_

@@ -11,19 +11,11 @@ namespace tile {
 
 class Tile {
   public:
-    const long id = ++tile::id_cpt; // fromage
     const std::string name;
-    const int type;
-    const bool breakable;
     const bool untraversable;
     Tile(std::string name) {
       // TODO XML_READER
     }
-    Tile * damage(int value);
-    int getHp();
-    Tile * crumble();
-  private:
-    int hp;
 };
 
 #endif // _TILE_H_

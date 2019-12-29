@@ -49,6 +49,7 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, Loot * l);
+    bool testHit(Projectile * p);
   private:
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;

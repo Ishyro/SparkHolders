@@ -3,7 +3,7 @@
 
 #include <list>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 #include "src/Values.h"
 #include "src/data/Attributes.h"
@@ -25,7 +25,9 @@ class Character {
     const std::string name;
     const Attributes * attributes;
     const std::string race;
-    const int sex;
+    const bool sex;
+    const bool player_character;
+    const bool quest_character;
     const std::string religion;
     const std::string origin;
     const Speech * death_speech;
@@ -100,7 +102,7 @@ class Character {
     Quest * getQuest();
 
     void useSkill(Skill * skill, World * world, int overcharge);
-    void receiveAttack(int damage, int damage_type);
+    void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 
   private:
@@ -109,6 +111,7 @@ class Character {
     int x;
     int y;
     int orientation;
+    int ai;
     int hp;
     int maxHp;
     int mana;
