@@ -9,5 +9,3 @@ void World::addMapLink(MapLink * link) {
 }
 
 Map * World::getMap(int map_id) {return maps.at(map_id);}
-long World::getTick() {return tick;}
-void World::incrTick() {tick++;}

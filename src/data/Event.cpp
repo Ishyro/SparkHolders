@@ -27,5 +27,5 @@ void Event::activate(Adventure * adventure) {
       c->addEffect(e);
     }
   }
-  speech_manager->add(speech);
+  SpeechManager::add(speech);
 }

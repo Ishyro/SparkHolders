@@ -103,16 +103,11 @@ std::list<Character *> Adventure::getPreservedPlayers() {return preserved_player
 
 void Adventure::resurrect(Character * player, long map_id, long x, long y) {
   if (std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
-    hardMoveCharacterToMap(player, map_id, x, y);
+    softMoveCharacterToMap(player, map_id, x, y);
   }
 }
 
-int Adventure::getTick() {
-  return world->getTick();
-}
-
 void Adventure::event() {
-  int tick = world->getTick();
   for (auto e : events) {
     if (tick == e->tick) {
       e->activate(this);
@@ -120,6 +115,8 @@ void Adventure::event() {
   }
 }
 
-World * Adventure::getWorld() {return world;}
-void Adventure::addQuest(Quest * quest) {quests.push_front(quest);}
-void Adventure::removeQuest(Quest * quest) {quests.remove(quest);}
+long Adventure::getTick() { return tick; }
+void Adventure::incrTick() { tick++; }
+World * Adventure::getWorld() { return world; }
+void Adventure::addQuest(Quest * quest) { quests.push_front(quest); }
+void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }

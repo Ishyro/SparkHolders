@@ -14,6 +14,7 @@
 #include "src/data/Skill.h"
 #include "src/data/World.h"
 #include "src/data/Quest.h"
+#include "src/data/Way.h"
 
 namespace character {
   static long id_cpt = 0;
@@ -24,14 +25,15 @@ class Character {
     const long id = ++character::id_cpt;
     const std::string name;
     const Attributes * attributes;
-    const std::string race;
     const bool sex;
     const bool player_character;
     const bool quest_character;
-    const std::string religion;
-    const std::string origin;
+    const Way * religion;
+    const Way * origin;
+    const Way * race;
     const Speech * death_speech;
     const Speech * encounter_speech;
+    const int type;
     Character(std::string name, std::string race, std::string attributes, int sex, std::string religion, std::string origin);
     bool isAlive();
     bool isSoulBurning();

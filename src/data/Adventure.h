@@ -32,13 +32,15 @@ class Adventure {
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
     void resurrect(Character * player, long map_id, long x, long y);
-    int getTick();
+    long getTick();
+    void incrTick();
     void event();
     World * getWorld();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
   private:
     World * world;
+    long tick;
     std::list<Character *> party;
     std::list<Character *> preserved_players;
     std::list<Quest *> quests;

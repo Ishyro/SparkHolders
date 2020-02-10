@@ -1,6 +1,6 @@
 #include "src/data/Quest.h"
 
-void Quest::getCurrentStep() {speech_manager->add(steps.front()->todo);}
+void Quest::getCurrentStep() {SpeechManager::add(steps.front()->todo);}
 bool Quest::stepDone(Adventure * adventure) {
   Step * current_step = steps.front();
   bool result = false;
@@ -27,7 +27,7 @@ bool Quest::stepDone(Adventure * adventure) {
       break;
   }
   if (result) {
-    speech_manager->add(current_step->when_done);
+    SpeechManager::add(current_step->when_done);
     steps.pop_front();
   }
   return result;

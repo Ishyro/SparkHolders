@@ -16,10 +16,7 @@ class World {
     void addMap(Map * map);
     void addMapLink(MapLink * link);
     Map * getMap(int map_id);
-    long getTick();
-    void incrTick();
   private:
-    long tick;
     std::map<long, Map *> maps;
     std::list<MapLink *> links;
 };

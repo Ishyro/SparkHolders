@@ -44,11 +44,11 @@ class Projectile {
     int getDamageType(int damage_type);
     int getSpeed();
     bool isAtDest();
-    int getRawDamage();
     bool noDamage();
     void move();
+    void setLost(bool state);
     void attack_single_target(Character * target, World * world);
-    void attack_multiple_targets(Map * map, World * world);
+    void attack_multiple_targets(std::list<Character *> characters, World * world);
   private:
     int x;
     int y;

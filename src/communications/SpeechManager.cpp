@@ -1,7 +1,11 @@
 #include "src/communications/SpeechManager.h"
 
-void SpeechManager::add(Speech * speech) {buffer.push_back(speech);}
-Speech * SpeechManager::get() {
+static void SpeechManager::add(Speech * speech) {
+  std::lock_guard<std::mutex> lck (mtx);
+  buffer.push_back(speech);
+}
+static Speech * SpeechManager::get() {
+  std::lock_guard<std::mutex> lck (mtx);
   Speech * speech = buffer.front();
   buffer.pop_front();
   return speech;

@@ -20,14 +20,6 @@ int Projectile::getDestY() {
 }
 int Projectile::getOrientation() {return orientation;}
 
-int Projectile::getRawDamage() {
-  int power = 0;
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    power += damages[i];
-  }
-  return power;
-}
-
 int Projectile::getDamageType(int damage_type) {return damages[damage_type];}
 
 int Projectile::getSpeed() {return speed;}
@@ -150,6 +142,8 @@ int Projectile::getRawDamage() {
 bool Projectile::noDamage() {
   return getRawDamage() == 0;
 }
+
+void Projectile::setLost(bool state) { lost = state; }
 
 void Projectile::attack_single_target(Character * target, World * world) {
   for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

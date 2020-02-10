@@ -10,6 +10,8 @@
 #include "src/data/Weapon.h"
 #include "src/data/Tile.h"
 
+#include "src/communications/SpeechManager.h"
+
 typedef struct Loot {
   int type;
   long x;
@@ -49,7 +51,7 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, Loot * l);
-    bool testHit(Projectile * p);
+    void tryHit(Projectile * p, World * world);
   private:
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;

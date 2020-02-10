@@ -8,7 +8,13 @@ Tile * Map::getTile(long x, long y) {return tiles[x][y];}
 bool Map::isTileLighted(long x, long y) {return lighted[x][y];}
 
 void Map::crumble(long x, long y) {
-  tiles[x][y] = tiles[x][y]->crumble();
+  for (auto character : characters) {
+    if (character->getX() == x && character->getY() == y) {
+      if (character->type == WALL)
+        killCharacter(character);
+      else break;
+    }
+  }
 }
 
 void Map::addCharacter(Character * c) {characters.push_front(c);}
@@ -18,8 +24,8 @@ void Map::addLoot(Loot * l) {loots.push_front(l);}
 void Map::removeCharacter(Character * c) {characters.remove(c);}
 void Map::killCharacter(Character * c) {
   characters.remove(c);
-  speech_manager->add(c->death_speech);
-  Loot * loot = malloc(sizeof(Loot));
+  SpeechManager::add(c->death_speech);
+  Loot * loot = (Loot *) malloc(sizeof(Loot));
   loot->x = c->getX();
   loot->y = c->getY();
   loot->gold = c->getGold();
@@ -75,7 +81,7 @@ void Map::tryHit(Projectile * p, World * world) {
           p->attack_multiple_targets(characters, world);
           break;
         default:
-
+          break;
       }
       break;
     }

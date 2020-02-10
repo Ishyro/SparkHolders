@@ -1,8 +1,6 @@
 #ifndef _VALUES_H_
 #define _VALUES_H_
 
-#include "src/communications/SpeechManager.h"
-
 // resolve cyclic mess
 
 // data
@@ -22,6 +20,7 @@ class Skill;
 class Speech;
 class Tile;
 class Weapon;
+class Way;
 class World;
 typedef struct MapLink MapLink;
 typedef struct Step Step;
@@ -30,10 +29,6 @@ typedef struct Loot Loot;
 // communication
 
 class SpeechManager;
-
-// unique instance for speech management
-
-SpeechManager * speech_manager = new SpeechManager();
 
 // effect_duration_type
 
@@ -170,6 +165,14 @@ SpeechManager * speech_manager = new SpeechManager();
 #define MULTIPLE_CHARACTERS 3
 #define MULTIPLE_TILES 4
 
+// character_type
+
+#define HUMAN 1
+#define UNDEAD 2
+#define NATURE 3
+#define OMONCULUS 4
+#define WALL 5
+
 // damage_type
 
 #define DAMAGE_TYPE_NUMBER 10
@@ -197,5 +200,16 @@ SpeechManager * speech_manager = new SpeechManager();
 #define OBTAIN_WEAPON 3
 #define DISCOVER 4
 #define TALK 5
+
+// way_type
+
+#define RELIGION 1
+#define ORIGIN 2
+#define RACE 3
+
+// speech_type
+
+#define WARNING 1
+#define ERROR 2
 
 #endif // _VALUES_H_
