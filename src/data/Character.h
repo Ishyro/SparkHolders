@@ -16,11 +16,11 @@
 #include "src/data/Quest.h"
 #include "src/data/Way.h"
 
-namespace character {
+namespace character { 
   static long id_cpt = 0;
 }
 
-class Character {
+class Character { 
   public:
     const long id = ++character::id_cpt;
     const std::string name;
@@ -103,7 +103,7 @@ class Character {
 
     Quest * getQuest();
 
-    void useSkill(Skill * skill, World * world, int overcharge);
+    void useSkill(Skill * skill, Adventure * adventure, int overcharge);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 

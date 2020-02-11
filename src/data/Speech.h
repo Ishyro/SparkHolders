@@ -4,12 +4,12 @@
 #include <string>
 #include "src/Values.h"
 
-class Speech {
+class Speech { 
   public:
     const std::string name;
     const std::string content;
-    Speech(std::string content, int type):name("Unnexpected") {
-      switch(type) {
+    Speech(std::string content, int type):name("Unnexpected") { 
+      switch(type) { 
         case WARNING:
           this->content = "Warning: " + content;
           break;
@@ -18,7 +18,7 @@ class Speech {
           break;
        }
     }
-    Speech(std::string name) {
+    Speech(std::string name) { 
       // TODO XML_READER
     }
 };

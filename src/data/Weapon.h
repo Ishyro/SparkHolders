@@ -7,11 +7,11 @@
 #include "src/Values.h"
 #include "src/data/Effect.h"
 
-namespace weapon {
+namespace weapon { 
   static long id_cpt = 0;
 }
 
-class Weapon {
+class Weapon { 
   public:
     const std::string name;
     const long id = ++weapon::id_cpt;
@@ -24,7 +24,7 @@ class Weapon {
     const int capacity;
     const int ammo_price;
     const std::list<Effect *> effects;
-    Weapon(std::string name) {
+    Weapon(std::string name) { 
       // TODO XML_READER
     }
     int getCurrentCapacity();

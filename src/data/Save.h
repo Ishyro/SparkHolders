@@ -3,11 +3,11 @@
 
 #include "src/data/Adventure.h"
 
-class Save {
+class Save { 
   public:
     Adventure * load();
     void save(Adventure * adventure);
-    Save(Adventure * adventure) {
+    Save(Adventure * adventure) { 
       save(adventure);
     }
 };

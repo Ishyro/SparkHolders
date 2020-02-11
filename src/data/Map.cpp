@@ -1,11 +1,13 @@
 #include "src/data/Map.h"
 
-std::list<Character *> Map::getCharacters() {return characters;}
-std::list<Projectile *> Map::getProjectiles() {return projectiles;}
-std::list<Loot *> Map::getLoots() {return loots;}
+std::list<Character *> Map::getCharacters() { return characters; }
+std::list<Projectile *> Map::getProjectiles() { return projectiles; }
+std::list<Loot *> Map::getLoots() { return loots; }
 // TODO : return right tile
-Tile * Map::getTile(long x, long y) {return tiles[x][y];}
-bool Map::isTileLighted(long x, long y) {return lighted[x][y];}
+Tile * Map::getTile(long x, long y) { return tiles[x][y]; }
+bool Map::isTileLighted(long x, long y) { return lighted[x][y]; }
+
+void Map::setTile(long x, long y, Tile * tile) { tiles[x][y] = tile; }
 
 void Map::crumble(long x, long y) {
   for (auto character : characters) {
@@ -17,11 +19,11 @@ void Map::crumble(long x, long y) {
   }
 }
 
-void Map::addCharacter(Character * c) {characters.push_front(c);}
-void Map::addProjectile(Projectile * p) {projectiles.push_front(p);}
-void Map::addLoot(Loot * l) {loots.push_front(l);}
+void Map::addCharacter(Character * c) { characters.push_front(c); }
+void Map::addProjectile(Projectile * p) { projectiles.push_front(p); }
+void Map::addLoot(Loot * l) { loots.push_front(l); }
 
-void Map::removeCharacter(Character * c) {characters.remove(c);}
+void Map::removeCharacter(Character * c) { characters.remove(c); }
 void Map::killCharacter(Character * c) {
   characters.remove(c);
   SpeechManager::add(c->death_speech);
@@ -39,13 +41,13 @@ void Map::killCharacter(Character * c) {
   delete c;
 }
 
-void Map::removeProjectile(Projectile * p) {projectiles.remove(p);}
+void Map::removeProjectile(Projectile * p) { projectiles.remove(p); }
 void Map::destroyProjectile(Projectile * p) {
   projectiles.remove(p);
   delete p;
 }
 
-void Map::removeLoot(Loot * l) {loots.remove(l);}
+void Map::removeLoot(Loot * l) { loots.remove(l); }
 
 void Map::destroyLoot(Loot * l) {
   loots.remove(l);
@@ -63,22 +65,22 @@ void Map::takeLoot(Character * c, Loot * l) {
   //delete l;
 }
 
-void Map::tryHit(Projectile * p, World * world) {
+void Map::tryHit(Projectile * p, Adventure * adventure) {
   int p_x = p->getX();
   int p_y = p->getY();
   for (auto c : characters) {
     if (c->getX() == p_x && c->getY() == p_y) {
       switch(p->target_type) {
         case TILE:
-          p->attack_single_target(c, world);
+          p->attack_single_target(c, adventure);
           p->setLost(true);
           break;
         case CHARACTER:
-          p->attack_single_target(c, world);
+          p->attack_single_target(c, adventure);
           break;
         case MULTIPLE_TILES:
         case MULTIPLE_CHARACTERS:
-          p->attack_multiple_targets(characters, world);
+          p->attack_multiple_targets(characters, adventure);
           break;
         default:
           break;

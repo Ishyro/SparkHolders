@@ -1,7 +1,7 @@
 #include "src/data/Projectile.h"
 
-int Projectile::getX() {return x;}
-int Projectile::getY() {return y;}
+int Projectile::getX() { return x; }
+int Projectile::getY() { return y; }
 int Projectile::getDestX() {
   if (target_type == CHARACTER) {
     return target->getX();
@@ -18,11 +18,11 @@ int Projectile::getDestY() {
     return dest_y;
   }
 }
-int Projectile::getOrientation() {return orientation;}
+int Projectile::getOrientation() { return orientation; }
 
-int Projectile::getDamageType(int damage_type) {return damages[damage_type];}
+int Projectile::getDamageType(int damage_type) { return damages[damage_type]; }
 
-int Projectile::getSpeed() {return speed;}
+int Projectile::getSpeed() { return speed; }
 
 void Projectile::move() {
   switch(orientation) {
@@ -145,15 +145,15 @@ bool Projectile::noDamage() {
 
 void Projectile::setLost(bool state) { lost = state; }
 
-void Projectile::attack_single_target(Character * target, World * world) {
+void Projectile::attack_single_target(Character * target, Adventure * adventure) {
   for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     target->receiveAttack(damages[i], i, orientation);
     damages[i] -= (int) floor( ((float) damages[i]) * waste_per_hit);
   }
-  skill->activate(target, world, overcharge);
+  skill->activate(target, adventure, overcharge);
 }
 
-void Projectile::attack_multiple_targets(std::list<Character *> characters, World * world) {
+void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {
   for (auto target : characters) {
     // TOCHECK should be ok
     int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
@@ -161,7 +161,7 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Worl
       for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         target->receiveAttack((int) floor( ((float) damages[i]) * distance * waste_per_tile_area), i, NO_ORIENTATION);
       }
-      skill->activate(target, world, overcharge);
+      skill->activate(target, adventure, overcharge);
     }
   }
 }

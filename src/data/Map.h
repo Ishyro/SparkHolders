@@ -39,6 +39,7 @@ class Map {
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
     Tile * getTile(long x, long y);
+    void setTile(long x, long y, Tile * tile);
     bool isTileLighted(long x, long y);
     void crumble(long x, long y);
     void addCharacter(Character * c);
@@ -51,7 +52,7 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, Loot * l);
-    void tryHit(Projectile * p, World * world);
+    void tryHit(Projectile * p, Adventure * adventure);
   private:
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;

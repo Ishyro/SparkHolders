@@ -1,7 +1,8 @@
 # Compiler and flags
 
 CC=g++
-CCFLAGS=-O2 -pipe -pthread -fpermissive -I .
+CCFLAGS=-O2 -pipe -pthread -fpermissive
+INCLUDE=-I .
 
 # Utilities
 
@@ -73,16 +74,16 @@ dirs:
 	$(MKDIR_P) $(BIN) $(BIN_AI) $(BIN_COM) $(BIN_DATA) $(BIN_SERVER) $(BIN_CLIENTS) $(BIN_CLIENT_GRAPHICS) $(BIN_CLIENT_TERMINAL)
 
 $(BIN)/%.o: $(SRC)/%.cpp
-	$(CC) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) $(INCLUDE) -c $< -o $@
 
 $(TARGET_SERVER): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(SERVER_BINAIRIES)
-	$(CC) $(CCFLAGS) $^ -o $@
+	$(CC) $(CCFLAGS) $(INCLUDE) $^ -o $@
 
 $(TARGET_CLIENT_TERMINAL): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(CLIENT_TERMINAL_BINAIRIES)
-	$(CC) $(CCFLAGS) $^ -o $@
+	$(CC) $(CCFLAGS) $(INCLUDE) $^ -o $@
 
 $(TARGET_CLIENT_GRAPHICS): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(CLIENT_TERMINAL_GRAPHICS)
-	$(CC) $(CCFLAGS) $^ -o $@
+	$(CC) $(CCFLAGS) $(INCLUDE) $^ -o $@
 
 clean:
 	rm -rf $(BIN)

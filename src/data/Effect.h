@@ -16,6 +16,17 @@ class Effect {
     Effect(std::string name) {
       // TODO XML_READER
     }
+    Effect(Effect * base, int overcharge):
+      name(base->name),
+      type(base->type),
+      duration_type(base->duration_type),
+      power(base->power * overcharge),
+      duration(base->duration * overcharge)
+    {
+      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = base->damages[i] * overcharge;
+      }
+    }
     int getRawDamage();
     int getDamageType(int damage_type);
     int getTickLeft();

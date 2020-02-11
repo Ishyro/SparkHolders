@@ -6,7 +6,7 @@
 
 #include "src/data/Speech.h"
 
-class SpeechManager {
+class SpeechManager { 
   public:
     static void add(Speech * speech);
     static Speech * get();

@@ -10,7 +10,7 @@
 #include "src/data/Adventure.h"
 #include "src/data/Speech.h"
 
-class Event {
+class Event { 
   public:
     const std::string name;
     const int type;
@@ -18,7 +18,7 @@ class Event {
     const int tick;
     const bool hasQuest;
     const Quest * quest;
-    Event(std::string name) {
+    Event(std::string name) { 
       // TODO XML_READER
     }
     void activate(Adventure * adventure);

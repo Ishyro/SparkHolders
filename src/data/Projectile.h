@@ -47,8 +47,8 @@ class Projectile {
     bool noDamage();
     void move();
     void setLost(bool state);
-    void attack_single_target(Character * target, World * world);
-    void attack_multiple_targets(std::list<Character *> characters, World * world);
+    void attack_single_target(Character * target, Adventure * adventure);
+    void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
   private:
     int x;
     int y;

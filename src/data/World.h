@@ -15,7 +15,7 @@ class World {
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
-    Map * getMap(int map_id);
+    Map * getMap(long map_id);
   private:
     std::map<long, Map *> maps;
     std::list<MapLink *> links;

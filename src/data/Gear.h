@@ -7,7 +7,7 @@
 #include "src/data/Weapon.h"
 #include "src/Values.h"
 
-class Gear {
+class Gear { 
   public:
     Gear(Item * head, Item * arms, Item * legs, Item * body, Item * left_ring, Item * right_ring, Item * amulet, Weapon * weapon):
       head(head),
@@ -17,7 +17,7 @@ class Gear {
       left_ring(left_ring),
       right_ring(right_ring),
       amulet(amulet),
-      weapon(weapon) {}
+      weapon(weapon) { }
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
     Item * unequip(int type);

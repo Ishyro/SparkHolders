@@ -8,4 +8,4 @@ void World::addMapLink(MapLink * link) {
   links.push_front(link);
 }
 
-Map * World::getMap(int map_id) {return maps.at(map_id);}
+Map * World::getMap(long map_id) { return maps.at(map_id); }

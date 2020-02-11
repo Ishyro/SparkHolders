@@ -6,7 +6,7 @@
 
 #include "src/data/Gear.h"
 
-class Attributes {
+class Attributes { 
   public:
     const std::string name;
     const Gear * startingGear;
@@ -15,7 +15,7 @@ class Attributes {
     const int armorIncr;
     const int soulBurnIncr;
     const int flowIncr;
-    Attributes(std::string name) {
+    Attributes(std::string name) { 
       // TODO XML_READER
     }
 };

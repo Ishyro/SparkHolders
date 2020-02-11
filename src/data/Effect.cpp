@@ -71,7 +71,7 @@ void Effect::desactivate(Character * target) {
   }
 }
 
-int Effect::getTickLeft() {return tick_left;}
+int Effect::getTickLeft() { return tick_left; }
 
 int Effect::getRawDamage() {
   int power = 0;
@@ -81,4 +81,4 @@ int Effect::getRawDamage() {
   return power;
 }
 
-int Effect::getDamageType(int damage_type) {return damages[damage_type];}
+int Effect::getDamageType(int damage_type) { return damages[damage_type]; }

@@ -2,29 +2,35 @@
 #define _SKILL_H_
 
 #include <list>
+#include <cmath>
 
 #include "src/Values.h"
-#include "src/data/World.h"
+#include "src/data/Adventure.h"
 #include "src/data/Character.h"
 #include "src/data/Effect.h"
 
 class Skill {
   public:
     const std::string name;
-    const int type;
-    const int mana_cost;
+    const int cast_type;
+    const int target_type;
     const int overcharge_type;
+    const long mana_cost;
     const std::list<Effect *> effects;
-    const std::list<int> specials;
+    const int special;
+    const int range;
+    const Tile * tile;
+    const int teleport_type;
     Skill(std::string name) {
       // TODO XML_READER
     }
-    void activate(Character * owner, World * world, int overcharge);
-    void desactivate(Character * owner, World * world);
-    int drain();
+    void activate(Character * target, Adventure * adventure, int overcharge, long map_id = 0L, long x = 0L, long y = 0L);
+    void desactivate(Character * target, Adventure * adventure);
+    long getManaCost(int overcharge);
+    long drain();
   private:
     int tick;
-    int current_mana_cost;
+    long current_mana_cost;
     bool active;
 };
 

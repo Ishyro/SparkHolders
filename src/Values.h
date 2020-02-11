@@ -114,13 +114,14 @@ class SpeechManager;
 // skill_target
 
 #define SELF 1
-#define OTHER 2
+#define TOUCH 2
+#define TARGET 3
+#define TILE 4
 
-// skill_type
+// skill_cast_type
 
 #define ACTIVE 1
-#define PASSIVE 2
-#define TOGGLE 3
+#define TOGGLE 2
 
 // skill_special
 
@@ -130,11 +131,14 @@ class SpeechManager;
 #define MAPLINKER 4
 #define TEAMCHANGER 5
 #define MINDCONTROL 6
+#define PROJECTILE 7
+#define SUMMON 8
+#define RESURRECTION 9
 
-// skill_cost_type
+// skill_overcharge_type
 
-#define NO_COST 0
-#define INCREMENTAL 1
+#define NO_OVERCHARGE 0
+#define LINEAR 1
 #define EXPONENTIAL 2
 
 // orientations

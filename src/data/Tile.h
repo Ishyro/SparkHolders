@@ -5,15 +5,15 @@
 
 #include "src/data/Effect.h"
 
-namespace tile {
+namespace tile { 
   static long id_cpt = 0;
 }
 
-class Tile {
+class Tile { 
   public:
     const std::string name;
     const bool untraversable;
-    Tile(std::string name) {
+    Tile(std::string name) { 
       // TODO XML_READER
     }
 };
