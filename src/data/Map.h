@@ -19,6 +19,7 @@ typedef struct Loot {
   long gold;
   std::list<Weapon *> weapons;
   std::list<Item *> items;
+  std::list<Ammunition *> ammunitions;
 } Loot;
 
 namespace map {

@@ -19,12 +19,13 @@ class Save;
 class Skill;
 class Speech;
 class Tile;
-class Weapon;
 class Way;
+class Weapon;
 class World;
+typedef struct Ammunition Ammunition;
+typedef struct Loot Loot;
 typedef struct MapLink MapLink;
 typedef struct Step Step;
-typedef struct Loot Loot;
 
 // communication
 

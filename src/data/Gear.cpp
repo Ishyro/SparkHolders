@@ -1,8 +1,8 @@
 #include "src/data/Gear.h"
 
-std::list<Item *> Gear::equip(Item * new_item) { 
+std::list<Item *> Gear::equip(Item * new_item) {
   std::list<Item *> unequip;
-  switch(new_item->type) { 
+  switch(new_item->type) {
     case HEAD:
       unequip.push_front(head);
       head = new_item;
@@ -30,13 +30,13 @@ std::list<Item *> Gear::equip(Item * new_item) {
       body = new_item;
       break;
     case RING:
-      if (left_ring == nullptr) { 
+      if (left_ring == nullptr) {
         left_ring = new_item;
       }
-      else if (right_ring == nullptr) { 
+      else if (right_ring == nullptr) {
         right_ring = new_item;
       }
-      else { 
+      else {
         unequip.push_front(left_ring);
         left_ring = new_item;
       }
@@ -51,15 +51,21 @@ std::list<Item *> Gear::equip(Item * new_item) {
   return unequip;
 }
 
-Weapon * Gear::equip(Weapon * new_weapon) { 
+Weapon * Gear::equip(Weapon * new_weapon) {
   Weapon * temp = weapon;
   weapon = new_weapon;
   return temp;
 }
 
-Item * Gear::unequip(int type) { 
+Ammunition * Gear::equip(Ammunition * new_ammunition) {
+  Ammunition * temp = ammunition;
+  ammunition = new_ammunition;
+  return temp;
+}
+
+Item * Gear::unequip(int type) {
   Item * old_item;
-  switch(type) { 
+  switch(type) {
     case HEAD:
       old_item = head;
       head = nullptr;
@@ -96,13 +102,19 @@ Item * Gear::unequip(int type) {
   return old_item;
 }
 
-Weapon * Gear::unequipWeapon() { 
+Weapon * Gear::unequipWeapon() {
   Weapon * temp = weapon;
   weapon = nullptr;
   return temp;
 }
 
-float Gear::getDamageReduction(int damage_type) { 
+Ammunition * Gear::unequipAmmunition() {
+  Ammunition * temp = ammunition;
+  ammunition = nullptr;
+  return temp;
+}
+
+float Gear::getDamageReduction(int damage_type) {
   float resistance = 0.;
   resistance += head->getDamageReduction(damage_type);
   resistance += arms->getDamageReduction(damage_type);
@@ -122,3 +134,4 @@ Item * Gear::getLeft_ring() { return left_ring; }
 Item * Gear::getRight_ring() { return right_ring; }
 Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
+Ammunition * Gear::getAmmunition() { return ammunition; }

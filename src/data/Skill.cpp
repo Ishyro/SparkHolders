@@ -1,12 +1,13 @@
 #include "src/data/Skill.h"
 
-void Skill::activate(Character * target, Adventure * adventure, int overcharge, long map_id, long x, long y) {
+void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge, long map_id, long x, long y) {
   current_mana_cost = getManaCost(overcharge);
   if (cast_type == TOGGLE) {
     active = true;
   }
   switch(special) {
     case TIMESTOP:
+      // TODO
       break;
     case TILESWAP:
       adventure->getWorld()->getMap(map_id)->setTile(x, y, tile);
@@ -20,23 +21,29 @@ void Skill::activate(Character * target, Adventure * adventure, int overcharge, 
       }
       break;
     case MAPLINKER:
+      // TODO
       break;
     case TEAMCHANGER:
+      // TODO
       break;
     case MINDCONTROL:
+      // TODO
       break;
     case PROJECTILE:
+      
       break;
     case SUMMON:
+      // TODO
       break;
     case RESURRECTION:
+      // TODO
       break;
     default:
       break;
   }
 }
 
-void Skill::desactivate(Character * target, Adventure * adventure) {
+void Skill::desactivate(Character * owner, Character * target, Adventure * adventure) {
   current_mana_cost = 0L;
   active = false;
 }

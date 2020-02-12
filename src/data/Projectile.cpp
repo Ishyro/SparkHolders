@@ -150,7 +150,7 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
     target->receiveAttack(damages[i], i, orientation);
     damages[i] -= (int) floor( ((float) damages[i]) * waste_per_hit);
   }
-  skill->activate(target, adventure, overcharge);
+  skill->activate(owner, target, adventure, overcharge);
 }
 
 void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {
@@ -161,7 +161,7 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
       for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         target->receiveAttack((int) floor( ((float) damages[i]) * distance * waste_per_tile_area), i, NO_ORIENTATION);
       }
-      skill->activate(target, adventure, overcharge);
+      skill->activate(owner, target, adventure, overcharge);
     }
   }
 }

@@ -24,8 +24,8 @@ class Skill {
     Skill(std::string name) {
       // TODO XML_READER
     }
-    void activate(Character * target, Adventure * adventure, int overcharge, long map_id = 0L, long x = 0L, long y = 0L);
-    void desactivate(Character * target, Adventure * adventure);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge, long map_id = 0L, long x = 0L, long y = 0L);
+    void desactivate(Character * owner, Character * target, Adventure * adventure);
     long getManaCost(int overcharge);
     long drain();
   private:

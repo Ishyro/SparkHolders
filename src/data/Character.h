@@ -16,25 +16,25 @@
 #include "src/data/Quest.h"
 #include "src/data/Way.h"
 
-namespace character { 
+namespace character {
   static long id_cpt = 0;
 }
 
-class Character { 
+class Character {
   public:
     const long id = ++character::id_cpt;
     const std::string name;
     const Attributes * attributes;
-    const bool sex;
     const bool player_character;
     const bool quest_character;
     const Way * religion;
     const Way * origin;
     const Way * race;
+    const Way * sex;
     const Speech * death_speech;
     const Speech * encounter_speech;
     const int type;
-    Character(std::string name, std::string race, std::string attributes, int sex, std::string religion, std::string origin);
+    Character(std::string name, std::string race, std::string sex, std::string religion, std::string origin, std::string attributes);
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -74,8 +74,10 @@ class Character {
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
+    void equip(Ammunition * to_equip);
     void unequip(int type);
     void unequipWeapon();
+    void unequipAmmunition();
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
@@ -87,8 +89,10 @@ class Character {
 
     void addItem(Item * i);
     void addWeapon(Weapon * w);
+    void addAmmunition(Ammunition * a);
     void removeItem(Item * i);
     void removeWeapon(Weapon * w);
+    void removeAmmunition(Ammunition * a);
 
     int isChanneling();
     int isStunned();
@@ -103,7 +107,7 @@ class Character {
 
     Quest * getQuest();
 
-    void useSkill(Skill * skill, Adventure * adventure, int overcharge);
+    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 
@@ -132,6 +136,7 @@ class Character {
     Gear * gear;
     std::list<Item *> stuff;
     std::list<Weapon *> weapons;
+    std::list<Ammunition *> ammunitions;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
