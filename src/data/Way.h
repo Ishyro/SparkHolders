@@ -4,10 +4,10 @@
 #include <list>
 #include <string>
 
-#include "src/data/Skill.h"
+#include "src/data/skills/Skill.h"
 #include "src/data/Event.h"
 
-class Way { 
+class Way {
   public:
     const std::string name;
     const int type;
@@ -16,7 +16,7 @@ class Way {
     const int baseArmor;
     const int baseSoulBurn;
     const int baseFlow;
-    Way(std::string name) { 
+    Way(std::string name) {
       // TODO XML_READER
     }
     std::list<Effect *> getEffects();

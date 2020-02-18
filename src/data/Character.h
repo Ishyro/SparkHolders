@@ -11,7 +11,7 @@
 #include "src/data/Item.h"
 #include "src/data/Weapon.h"
 #include "src/data/Effect.h"
-#include "src/data/Skill.h"
+#include "src/data/skills/Skill.h"
 #include "src/data/World.h"
 #include "src/data/Quest.h"
 #include "src/data/Way.h"

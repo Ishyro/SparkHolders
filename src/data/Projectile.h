@@ -6,7 +6,7 @@
 
 #include "src/Values.h"
 #include "src/data/Effect.h"
-#include "src/data/Skill.h"
+#include "src/data/skills/Skill.h"
 #include "src/data/Map.h"
 #include "src/data/World.h"
 

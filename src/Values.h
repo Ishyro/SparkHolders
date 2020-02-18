@@ -14,6 +14,7 @@ class Gear;
 class Item;
 class Map;
 class Projectile;
+class PseudoSkill;
 class Quest;
 class Save;
 class Skill;
