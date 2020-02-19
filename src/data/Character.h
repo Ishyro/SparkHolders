@@ -107,7 +107,7 @@ class Character {
 
     Quest * getQuest();
 
-    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge);
+    void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 

@@ -1,7 +1,8 @@
 #include "src/data/skills/Skill.h"
 
-void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge, long map_id, long x, long y) {
+void Skill::activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id, long x, long y) {
   current_mana_cost = getManaCost(overcharge);
+  this->overcharge = overcharge;
   if (cast_type == TOGGLE) {
     active = true;
   }
@@ -16,10 +17,11 @@ void Skill::desactivate(Character * owner, Character * target, Adventure * adven
   for (auto effect : effects) {
     effect->desactivate(owner, target, adventure);
   }
+  overcharge = 0L;
 }
 
-long Skill::getManaCost(int overcharge) {
-  long mana_cost = 0;
+long Skill::getManaCost(long overcharge) {
+  long mana_cost = 0L;
   for (auto effect : effects) {
     mana_cost += effect->getManaCost(overcharge);
   }

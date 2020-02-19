@@ -16,7 +16,7 @@ class Effect {
     Effect(std::string name) {
       // TODO XML_READER
     }
-    Effect(Effect * base, int overcharge):
+    Effect(Effect * base, long overcharge):
       name(base->name),
       type(base->type),
       duration_type(base->duration_type),

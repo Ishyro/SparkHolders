@@ -1,0 +1,5 @@
+#include "src/data/skills/MindControlSkill.h"
+
+void MindControlSkill::activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id, long x, long y) {}
+
+void MindControlSkill::desactivate(Character * owner, Character * target, Adventure * adventure) {}

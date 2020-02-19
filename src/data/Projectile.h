@@ -82,7 +82,7 @@ class Projectile {
     int orientation;
     int speed;
     int area;
-    int overcharge;
+    long overcharge;
     float waste_per_tile;
     float waste_per_tile_area;
     float waste_per_hit;

@@ -13,16 +13,18 @@
 #include "src/data/Event.h"
 #include "src/data/Save.h"
 
-class Adventure { 
+class Adventure {
   public:
     const int maxPlayers;
     const std::string name;
-    Adventure(std::string name) { 
+    Adventure(std::string name) {
       // TODO XML_READER
     }
-    Adventure(Save * save) { 
+    /*
+    Adventure(Save * save) {
       // TODO XML_READER
     }
+    */
     Save * save();
     void softMoveCharacterToMap(Character * character, long mapId, long x, long y);
     void hardMoveCharacterToMap(Character * character, long mapId, long x, long y);

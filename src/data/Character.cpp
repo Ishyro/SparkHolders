@@ -23,7 +23,7 @@ int Character::getMaxMana() {
   for (auto e : effects)
     if (e->type == MANA_MAX)
       bonus += e->power;
-  return maxMana + bonus;
+  return std::max(maxMana + bonus, 0);
 }
 
 int Character::getArmor() {
@@ -31,7 +31,7 @@ int Character::getArmor() {
   for (auto e : effects)
     if (e->type == ARMOR)
       bonus += e->power;
-  return armor + bonus;
+  return std::max(armor + bonus, 0);
 }
 
 int Character::getSoulBurnTreshold() {
@@ -39,7 +39,7 @@ int Character::getSoulBurnTreshold() {
   for (auto e : effects)
     if (e->type == SOULBURNTRESHOLD)
       bonus += e->power;
-  return soulBurnTreshold + bonus;
+  return std::max(soulBurnTreshold + bonus, 0);
 }
 
 int Character::getCurrentSoulBurn() { return currentSoulBurn; }
@@ -49,7 +49,7 @@ int Character::getFlow() {
   for (auto e : effects)
     if (e->type == FLOW)
       bonus += e->power;
-  return flow + bonus;
+  return std::max(flow + bonus, 0);
 }
 
 int Character::getVision() {
@@ -57,7 +57,7 @@ int Character::getVision() {
   for (auto e : effects)
     if (e->type == VISION)
       bonus += e->power;
-  return vision + bonus;
+  return std::max(vision + bonus, 0);
 }
 
 int Character::getDarkVision() {
@@ -65,7 +65,7 @@ int Character::getDarkVision() {
   for (auto e : effects)
     if (e->type == DARK_VISION)
       bonus += e->power;
-  return dark_vision + bonus;
+  return std::max(dark_vision + bonus, 0);
 }
 
 long Character::getGold() { return gold; }
@@ -260,7 +260,7 @@ bool Character::isTileLighted(World * world) {
 Quest * Character::getQuest() { return quest; }
 
 // Warning : Dangerous
-void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge) {
+void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge) {
   skill->activate(this, target, adventure, overcharge);
 }
 

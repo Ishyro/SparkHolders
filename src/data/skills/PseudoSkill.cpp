@@ -19,3 +19,18 @@ long PseudoSkill::drain() {
     return 0L;
   }
 }
+
+void PseudoSkill::desactivate(Character * owner, Character * target, Adventure * adventure) {
+  current_mana_cost = 0L;
+  active = false;
+  switch(cast_type) {
+    case INSTANT:
+      break;
+    case TOGGLE:
+      for (auto effect : effects) {
+        target->removeEffect(effect);
+      }
+      break;
+  }
+  overcharge = 0L;
+}
