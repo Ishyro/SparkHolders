@@ -1,4 +1,4 @@
-#include "src/data/Gear.h"
+#include "data/Gear.h"
 
 std::list<Item *> Gear::equip(Item * new_item) {
   std::list<Item *> unequip;

@@ -1,4 +1,4 @@
-#include "src/data/Effect.h"
+#include "data/Effect.h"
 
 void Effect::activate(Character * target) {
   if (duration != 0) {

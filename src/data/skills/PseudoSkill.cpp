@@ -1,4 +1,4 @@
-#include "src/data/skills/PseudoSkill.h"
+#include "data/skills/PseudoSkill.h"
 
 long PseudoSkill::getManaCost(long overcharge) {
   switch(overcharge_type) {

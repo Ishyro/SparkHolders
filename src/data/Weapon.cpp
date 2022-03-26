@@ -1,4 +1,4 @@
-#include "src/data/Weapon.h"
+#include "data/Weapon.h"
 
 int Weapon::getRawDamage() { 
   int power = 0;

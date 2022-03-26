@@ -1,4 +1,4 @@
-#include "src/data/skills/Skill.h"
+#include "data/skills/Skill.h"
 
 void Skill::activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id, long x, long y) {
   current_mana_cost = getManaCost(overcharge);

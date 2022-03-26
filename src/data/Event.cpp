@@ -1,4 +1,4 @@
-#include "src/data/Event.h"
+#include "data/Event.h"
 
 void Event::activate(Adventure * adventure) { 
   for (auto map : maps) { 

@@ -1,4 +1,4 @@
-#include "src/communications/SpeechManager.h"
+#include "communications/SpeechManager.h"
 
 std::list<Speech *> buffer;
 std::mutex mtx;

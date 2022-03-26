@@ -1,4 +1,4 @@
-#include "src/data/World.h"
+#include "data/World.h"
 
 void World::addMap(Map * map) {
   maps.insert(std::pair<long, Map *>(map->id, map));

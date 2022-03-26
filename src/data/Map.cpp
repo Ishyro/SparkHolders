@@ -1,4 +1,4 @@
-#include "src/data/Map.h"
+#include "data/Map.h"
 
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
@@ -71,11 +71,11 @@ void Map::tryHit(Projectile * p, Adventure * adventure) {
   for (auto c : characters) {
     if (c->getX() == p_x && c->getY() == p_y) {
       switch(p->target_type) {
-        case TILE:
+        case SINGLE_TILE:
           p->attack_single_target(c, adventure);
           p->setLost(true);
           break;
-        case CHARACTER:
+        case SINGLE_CHARACTER:
           p->attack_single_target(c, adventure);
           break;
         case MULTIPLE_TILES:

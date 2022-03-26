@@ -1,4 +1,4 @@
-#include "src/data/Adventure.h"
+#include "data/Adventure.h"
 
 Save * Adventure::save() { 
   return new Save(this);

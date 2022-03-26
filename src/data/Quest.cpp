@@ -1,4 +1,4 @@
-#include "src/data/Quest.h"
+#include "data/Quest.h"
 
 void Quest::getCurrentStep() { SpeechManager::add(steps.front()->todo); }
 bool Quest::stepDone(Adventure * adventure) { 

@@ -1,9 +1,9 @@
-#include "src/data/Projectile.h"
+#include "data/Projectile.h"
 
 int Projectile::getX() { return x; }
 int Projectile::getY() { return y; }
 int Projectile::getDestX() {
-  if (target_type == CHARACTER) {
+  if (target_type == SINGLE_CHARACTER) {
     return target->getX();
   }
   else {
@@ -11,7 +11,7 @@ int Projectile::getDestX() {
   }
 }
 int Projectile::getDestY() {
-  if (target_type == CHARACTER) {
+  if (target_type == SINGLE_CHARACTER) {
     return target->getY();
   }
   else {

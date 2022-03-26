@@ -1,6 +1,4 @@
-#include <algorithm>
-
-#include "src/data/Character.h"
+#include "data/Character.h"
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
