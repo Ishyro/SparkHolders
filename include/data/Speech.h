@@ -2,7 +2,10 @@
 #define _SPEECH_H_
 
 #include <string>
+
 #include "Values.h"
+
+#include "utils/FileOpener.h"
 
 class Speech {
   public:
@@ -10,10 +13,10 @@ class Speech {
     const std::string content;
     Speech(std::string content, int type):name("Unnexpected") {
       switch(type) {
-        case WARNING_LINE:
+        case WARNING:
           this->content = "Warning: " + content;
           break;
-        case ERROR_LINE:
+        case ERROR:
           this->content = "Error: " + content;
           break;
         default:

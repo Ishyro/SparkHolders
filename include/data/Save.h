@@ -3,11 +3,13 @@
 
 #include "data/Adventure.h"
 
-class Save { 
+#include "utils/FileOpener.h"
+
+class Save {
   public:
     Adventure * load();
     void save(Adventure * adventure);
-    Save(Adventure * adventure) { 
+    Save(Adventure * adventure) {
       save(adventure);
     }
 };

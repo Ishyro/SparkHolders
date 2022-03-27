@@ -6,19 +6,24 @@
 #include <map>
 
 #include "data/Map.h"
+#include "data/Tile.h"
+
+#include "utils/FileOpener.h"
 
 class World {
   public:
     const std::string name;
     World(std::string name) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
     Map * getMap(long map_id);
+    Tile * getTile(std::string name);
   private:
     std::map<long, Map *> maps;
     std::list<MapLink *> links;
+    std::list<Tile *> tiles;
 };
 
 #endif // _WORLD_H_

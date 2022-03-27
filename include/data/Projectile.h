@@ -5,10 +5,13 @@
 #include <cmath>
 
 #include "Values.h"
+
 #include "data/Effect.h"
 #include "data/skills/Skill.h"
 #include "data/Map.h"
 #include "data/World.h"
+
+#include "utils/FileOpener.h"
 
 typedef struct Ammunition {
   Projectile * projectile;

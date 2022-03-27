@@ -2,20 +2,26 @@
 #define _TILE_H_
 
 #include <string>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
 
 #include "data/Effect.h"
 
-namespace tile { 
+#include "utils/FileOpener.h"
+
+namespace tile {
   static long id_cpt = 0;
 }
 
-class Tile { 
+class Tile {
   public:
     const std::string name;
-    const bool untraversable;
-    Tile(std::string name) { 
-      // TODO XML_READER
-    }
+    bool untraversable;
+    Tile(std::string fileName);
+  private:
+    const long id = ++tile::id_cpt;
 };
 
 #endif // _TILE_H_

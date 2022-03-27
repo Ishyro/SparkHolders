@@ -3,10 +3,11 @@
 
 #include <list>
 
+#include "Values.h"
+
 #include "data/Item.h"
 #include "data/Weapon.h"
 #include "data/Projectile.h"
-#include "Values.h"
 
 class Gear {
   public:

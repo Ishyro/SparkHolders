@@ -4,7 +4,10 @@
 #include <string>
 
 #include "Values.h"
+
 #include "data/Character.h"
+
+#include "utils/FileOpener.h"
 
 class Effect {
   public:
@@ -14,7 +17,7 @@ class Effect {
     const int power;
     const int duration;
     Effect(std::string name) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     Effect(Effect * base, long overcharge):
       name(base->name),

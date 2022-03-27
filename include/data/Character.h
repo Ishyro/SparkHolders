@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "Values.h"
+
 #include "data/Attributes.h"
 #include "data/Gear.h"
 #include "data/Item.h"
@@ -16,6 +17,8 @@
 #include "data/World.h"
 #include "data/Quest.h"
 #include "data/Way.h"
+
+#include "utils/FileOpener.h"
 
 namespace character {
   static long id_cpt = 0;

@@ -5,7 +5,10 @@
 #include <string>
 
 #include "Values.h"
+
 #include "data/Effect.h"
+
+#include "utils/FileOpener.h"
 
 namespace weapon {
   static long id_cpt = 0;
@@ -24,7 +27,7 @@ class Weapon {
     const int ammo_type;
     const std::list<Effect *> effects;
     Weapon(std::string name) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     int getCurrentCapacity();
     int getRawDamage();

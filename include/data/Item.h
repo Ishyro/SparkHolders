@@ -5,13 +5,16 @@
 #include <string>
 
 #include "Values.h"
+
 #include "data/Effect.h"
 
-namespace item { 
+#include "utils/FileOpener.h"
+
+namespace item {
   static long id_cpt = 0;
 }
 
-class Item { 
+class Item {
   public:
     const std::string name;
     const long id = ++item::id_cpt;
@@ -21,8 +24,8 @@ class Item {
     const int type;
     const int gold_value;
     const std::list<Effect *> effects;
-    Item(std::string name) { 
-      // TODO XML_READER
+    Item(std::string name) {
+      // TODO INI_READER
     }
     float getDamageReduction(int damage_type);
   private:

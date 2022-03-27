@@ -4,8 +4,12 @@
 #include <list>
 #include <string>
 
+#include "Values.h"
+
 #include "data/skills/Skill.h"
 #include "data/Event.h"
+
+#include "utils/FileOpener.h"
 
 class Way {
   public:
@@ -17,7 +21,7 @@ class Way {
     const int baseSoulBurn;
     const int baseFlow;
     Way(std::string name) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();

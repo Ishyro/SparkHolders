@@ -2,5 +2,5 @@
 
 Attributes::Attributes(std::string name) {
   this->name = name;
-  // TODO XML_READER
+  // TODO INI_READER
 }

@@ -13,16 +13,18 @@
 #include "data/Event.h"
 #include "data/Save.h"
 
+#include "utils/FileOpener.h"
+
 class Adventure {
   public:
     const int maxPlayers;
     const std::string name;
     Adventure(std::string name) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     /*
     Adventure(Save * save) {
-      // TODO XML_READER
+      // TODO INI_READER
     }
     */
     Save * save();

@@ -215,9 +215,9 @@ class SpeechManager;
 
 // speech_type
 
-#define TEXT_LINE 1
-#define SPEACH_LINE 2
-#define WARNING_LINE 3
-#define ERROR_LINE 4
+#define TEXT 1
+#define SPEACH 2
+#define WARNING 3
+#define ERROR 4
 
 #endif // _VALUES_H_

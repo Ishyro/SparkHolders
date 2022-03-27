@@ -10,6 +10,8 @@
 #include "data/Weapon.h"
 #include "data/Tile.h"
 
+#include "utils/FileOpener.h"
+
 #include "communications/SpeechManager.h"
 
 typedef struct Loot {
@@ -30,12 +32,10 @@ class Map {
   public:
     const std::string name;
     const long id = ++map::id_cpt;
-    const long sizeX;
-    const long sizeY;
-    const bool outside;
-    Map(std::string name) {
-      // TODO READER
-    }
+    long sizeX;
+    long sizeY;
+    bool outside;
+    Map(std::string name, long sizeX, long sizeY, bool outside);
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();

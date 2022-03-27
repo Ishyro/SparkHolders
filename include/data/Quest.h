@@ -10,7 +10,9 @@
 #include "data/Weapon.h"
 #include "data/Adventure.h"
 
-typedef struct Step { 
+#include "utils/FileOpener.h"
+
+typedef struct Step {
   const int type;
   const Character * target;
   const Item * goal_item;
@@ -20,14 +22,14 @@ typedef struct Step {
   const Speech * when_done;
 } Step;
 
-class Quest { 
+class Quest {
   public:
     const std::string name;
     const bool holdEvent;
     std::list<Item *> items_rewards;
     std::list<Weapon *> weapons_rewards;
-    Quest(std::string name) { 
-      //TODO XML_READER
+    Quest(std::string name) {
+      //TODO INI_READER
     }
     void getCurrentStep();
     bool stepDone(Adventure * adventure);
