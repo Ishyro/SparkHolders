@@ -17,11 +17,27 @@
 
 class Adventure {
   public:
-    const int maxPlayers;
     const std::string name;
-    Adventure(std::string name) {
-      // TODO INI_READER
-    }
+    const int maxPlayers;
+    Adventure(
+      std::string name,
+      int maxPlayers,
+      World * world,
+      long tick,
+      std::list<Character *> party,
+      std::list<Character *> preserved_players,
+      std::list<Quest *> quests,
+      std::list<Event *> events
+    ):
+      name(name),
+      maxPlayers(maxPlayers),
+      world(world),
+      tick(tick),
+      party(party),
+      preserved_players(preserved_players),
+      quests(quests),
+      events(events)
+    {}
     /*
     Adventure(Save * save) {
       // TODO INI_READER

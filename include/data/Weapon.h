@@ -26,8 +26,30 @@ class Weapon {
     const bool use_ammo;
     const int ammo_type;
     const std::list<Effect *> effects;
-    Weapon(std::string name) {
-      // TODO INI_READER
+    Weapon(
+      std::string name,
+      bool melee,
+      int range,
+      int type,
+      int weight,
+      int gold_value,
+      bool use_ammo,
+      int ammo_type,
+      int damages[DAMAGE_TYPE_NUMBER]
+    ):
+      name(name),
+      melee(melee),
+      range(range),
+      type(type),
+      weight(weight),
+      gold_value(gold_value),
+      use_ammo(use_ammo),
+      ammo_type(ammo_type)
+    {
+      current_capacity=0;
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = damages[i];
+      }
     }
     int getCurrentCapacity();
     int getRawDamage();

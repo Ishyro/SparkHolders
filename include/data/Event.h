@@ -20,12 +20,34 @@ class Event {
     const int character_apparition_type;
     const int tick;
     const bool hasQuest;
-    const Quest * quest;
-    Event(std::string name) {
-      // TODO INI_READER
-    }
+    Event(
+      std::string name,
+      int type,
+      int character_apparition_type,
+      int tick,
+      bool hasQuest,
+      Quest * quest,
+      std::list<Character *> characters,
+      std::list<Map *> maps,
+      std::list<MapLink *> links,
+      Speech * speech,
+      std::list<Effect *> effects
+    ):
+      name(name),
+      type(type),
+      character_apparition_type(character_apparition_type),
+      tick(tick),
+      hasQuest(hasQuest),
+      quest(quest),
+      characters(characters),
+      maps(maps),
+      links(links),
+      speech(speech),
+      effects(effects)
+    {}
     void activate(Adventure * adventure);
   private:
+    Quest * quest;
     std::list<Character *> characters;
     std::list<Map *> maps;
     std::list<MapLink *> links;

@@ -31,14 +31,36 @@ class Character {
     const Attributes * attributes;
     const bool player_character;
     const bool quest_character;
-    const Way * religion;
-    const Way * origin;
-    const Way * race;
-    const Way * sex;
     const Speech * death_speech;
     const Speech * encounter_speech;
     const int type;
-    Character(std::string name, std::string race, std::string sex, std::string religion, std::string origin, std::string attributes);
+    Character(
+      std::string name,
+      bool player_character,
+      bool quest_character,
+      Speech * death_speech,
+      Speech * encounter_speech,
+      int type,
+      long current_map_id,
+      int x,
+      int y,
+      int orientation,
+      int ai_id,
+      std::string team
+    ):
+      name(name),
+      player_character(player_character),
+      quest_character(quest_character),
+      death_speech(death_speech),
+      encounter_speech(encounter_speech),
+      type(type),
+      current_map_id(current_map_id),
+      x(x),
+      y(y),
+      orientation(orientation),
+      ai_id(ai_id),
+      team(team)
+    {}
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -145,6 +167,10 @@ class Character {
     std::list<Skill *> skills;
 
     Quest * quest;
+    Way * religion;
+    Way * origin;
+    Way * race;
+    Way * sex;
 };
 
 #endif // _CHARACTER_H_

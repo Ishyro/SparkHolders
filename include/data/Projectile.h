@@ -29,37 +29,49 @@ class Projectile {
     const int projectile_type;
     const int target_type;
     const bool homing;
-    const Skill * skill;
     Projectile(
       int projectile_type,
       int target_type,
-      int damages[DAMAGE_TYPE_NUMBER],
-      int speed,
-      float waste_per_hit,
-      float waste_per_tile,
+      bool homing,
       int x,
       int y,
-      int orientation,
-      Skill * skill,
-      Character * owner,
-      Character * target,
       int dest_x,
-      int dest_y
+      int dest_y,
+      Skill * skill,
+      Character * target,
+      Character * owner,
+      int orientation,
+      int speed,
+      int area,
+      long overcharge,
+      float waste_per_tile,
+      float waste_per_tile_area,
+      float waste_per_hit,
+      int damages[DAMAGE_TYPE_NUMBER]
     ):
       projectile_type(projectile_type),
       target_type(target_type),
-      speed(speed),
-      waste_per_hit(waste_per_hit),
-      waste_per_tile(waste_per_tile),
+      homing(homing),
       x(x),
       y(y),
+      dest_x(dest_x),
+      dest_y(dest_y),
+      skill(skill),
+      target(target),
+      owner(owner),
       orientation(orientation),
-      skill(skill)
-      {
-        for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-          this->damages[i] = damages[i];
-        }
+      speed(speed),
+      area(area),
+      overcharge(overcharge),
+      waste_per_tile(waste_per_tile),
+      waste_per_tile_area(waste_per_tile_area),
+      waste_per_hit(waste_per_hit)
+    {
+      lost = false;
+      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = damages[i];
       }
+    }
     int getX();
     int getY();
     int getDestX();
@@ -80,6 +92,7 @@ class Projectile {
     int dest_x;
     int dest_y;
     bool lost;
+    Skill * skill;
     Character * target;
     Character * owner;
     int orientation;

@@ -16,8 +16,24 @@ class Effect {
     const int duration_type;
     const int power;
     const int duration;
-    Effect(std::string name) {
-      // TODO INI_READER
+    Effect(
+      std::string name,
+      int type,
+      int duration_type,
+      int power,
+      int duration,
+      int damages[DAMAGE_TYPE_NUMBER]
+    ):
+      name(name),
+      type(type),
+      duration_type(duration_type),
+      power(power),
+      duration(duration)
+    {
+      tick_left=duration;
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = damages[i];
+      }
     }
     Effect(Effect * base, long overcharge):
       name(base->name),

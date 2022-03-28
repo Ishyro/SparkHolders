@@ -18,8 +18,8 @@ namespace tile {
 class Tile {
   public:
     const std::string name;
-    bool untraversable;
-    Tile(std::string fileName);
+    const bool untraversable;
+    Tile(std::string name, bool untraversable):name(name),untraversable(untraversable) {}
   private:
     const long id = ++tile::id_cpt;
 };

@@ -17,9 +17,30 @@ class PseudoSkill {
     const long mana_cost;
     const std::list<Effect *> effects;
     const int range;
-    PseudoSkill(std::string name) {
-      // TODO INI_READER
+    PseudoSkill(
+      int cast_type,
+      int target_type,
+      long overcharge_type,
+      long mana_cost,
+      std::list<Effect *> effects,
+      int range,
+      int tick,
+      long current_mana_cost,
+      long overcharge
+    ):
+      cast_type(cast_type),
+      target_type(target_type),
+      overcharge_type(overcharge_type),
+      mana_cost(mana_cost),
+      effects(effects),
+      range(range),
+      tick(tick),
+      current_mana_cost(current_mana_cost),
+      overcharge(overcharge)
+    {
+      active=false;
     }
+
     virtual void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L) = 0;
     virtual void desactivate(Character * owner, Character * target, Adventure * adventure);
     long getManaCost(long overcharge);

@@ -1,12 +1,5 @@
 #include "data/Map.h"
 
-Map::Map(std::string name, long sizeX, long sizeY, bool outside) {
-  this->name = name;
-  this->sizeX = sizeX;
-  this->sizeY = sizeY;
-  this->outside = outside;
-  tiles[sizeX][sizeY];
-}
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }

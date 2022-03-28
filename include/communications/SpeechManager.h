@@ -8,8 +8,8 @@
 
 class SpeechManager {
   public:
-    static void add(Speech * speech);
-    static Speech * get();
+    static void add(const Speech * speech);
+    static const Speech * get();
 };
 
 #endif // _SPEECH_MANAGER_H_

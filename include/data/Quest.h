@@ -28,9 +28,21 @@ class Quest {
     const bool holdEvent;
     std::list<Item *> items_rewards;
     std::list<Weapon *> weapons_rewards;
-    Quest(std::string name) {
-      //TODO INI_READER
-    }
+    Quest(
+      std::string name,
+      bool holdEvent,
+      std::list<Item *> items_rewards,
+      std::list<Weapon *> weapons_rewards,
+      std::list<Step *> steps,
+      Event * event
+    ):
+      name(name),
+      holdEvent(holdEvent),
+      items_rewards(items_rewards),
+      weapons_rewards(weapons_rewards),
+      steps(steps),
+      event(event)
+    {}
     void getCurrentStep();
     bool stepDone(Adventure * adventure);
     bool questDone();

@@ -11,19 +11,14 @@ class Speech {
   public:
     const std::string name;
     const std::string content;
-    Speech(std::string content, int type):name("Unnexpected") {
-      switch(type) {
-        case WARNING:
-          this->content = "Warning: " + content;
-          break;
-        case ERROR:
-          this->content = "Error: " + content;
-          break;
-        default:
-          return;
-      }
-    }
-    Speech(std::string name);
+    Speech(std::string content, int type):name("Unnexpected"),content(content) {}
+    Speech(
+      std::string name,
+      std::string content
+    ):
+      name(name),
+      content(content)
+    {}
 };
 
 #endif // _SPEECH_H_

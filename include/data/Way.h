@@ -15,14 +15,32 @@ class Way {
   public:
     const std::string name;
     const int type;
-    const int baseHp;
-    const int baseMana;
-    const int baseArmor;
-    const int baseSoulBurn;
-    const int baseFlow;
-    Way(std::string name) {
-      // TODO INI_READER
-    }
+    const int hpIncr;
+    const int manaIncr;
+    const int armorIncr;
+    const int soulBurnIncr;
+    const int flowIncr;
+    Way(
+      std::string name,
+      int type,
+      int hpIncr,
+      int manaIncr,
+      int armorIncr,
+      int soulBurnIncr,
+      int flowIncr,
+      std::list<Effect *> effects,
+      std::list<Skill *> skills
+    ):
+      name(name),
+      type(type),
+      hpIncr(hpIncr),
+      manaIncr(manaIncr),
+      armorIncr(armorIncr),
+      soulBurnIncr(soulBurnIncr),
+      flowIncr(flowIncr),
+      effects(effects),
+      skills(skills)
+    {}
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
   private:

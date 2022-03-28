@@ -11,7 +11,17 @@
 
 class Gear {
   public:
-    Gear(Item * head, Item * arms, Item * legs, Item * body, Item * left_ring, Item * right_ring, Item * amulet, Weapon * weapon):
+    Gear(
+      Item * head,
+      Item * arms,
+      Item * legs,
+      Item * body,
+      Item * left_ring,
+      Item * right_ring,
+      Item * amulet,
+      Weapon * weapon,
+      Ammunition * ammunition
+    ):
       head(head),
       arms(arms),
       legs(legs),
@@ -20,7 +30,8 @@ class Gear {
       right_ring(right_ring),
       amulet(amulet),
       weapon(weapon),
-      ammunition(ammunition) { }
+      ammunition(ammunition)
+    {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
     Ammunition * equip(Ammunition * new_ammunition);

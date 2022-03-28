@@ -32,10 +32,13 @@ class Map {
   public:
     const std::string name;
     const long id = ++map::id_cpt;
-    long sizeX;
-    long sizeY;
-    bool outside;
-    Map(std::string name, long sizeX, long sizeY, bool outside);
+    const long sizeX;
+    const long sizeY;
+    const bool outside;
+    Map(std::string name, long sizeX, long sizeY, bool outside):
+    name(name),sizeX(sizeX),sizeY(sizeY),outside(outside) {
+      tiles[sizeX][sizeY];
+    }
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();

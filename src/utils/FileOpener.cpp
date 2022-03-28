@@ -34,7 +34,16 @@ namespace fileOpener {
     return result;
   }
 
-  Map getValuesFromMapFile(std::string fileName, World world) {
+  Tile TileOpener(std::string fileName) {
+    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::string name = values.at("name");
+    std::istringstream is(values.at("untraversable"));
+    bool untraversable;
+    is >> std::boolalpha >> untraversable;
+    return Tile(name,untraversable);
+  }
+
+  Map MapOpener(std::string fileName, World world) {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if (!file) {

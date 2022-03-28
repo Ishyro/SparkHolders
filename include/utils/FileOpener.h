@@ -17,7 +17,8 @@
 
 namespace fileOpener {
   std::map<const std::string,std::string> getValuesFromIni(std::string fileName);
-  Map getValuesFromMapFile(std::string fileName, World world);
+  Tile TileOpener(std::string fileName);
+  Map MapOpener(std::string fileName, World world);
 };
 
 #endif // _FILE_OPENER_H_
