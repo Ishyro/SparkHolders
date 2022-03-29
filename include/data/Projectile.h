@@ -17,6 +17,7 @@ typedef struct Ammunition {
   Projectile * projectile;
   long number;
   long gold_value;
+  int ammo_type;
 } Ammunition;
 
 namespace projectile {
@@ -26,10 +27,12 @@ namespace projectile {
 class Projectile {
   public:
     const long id = ++projectile::id_cpt;
+    const std::string name;
     const int projectile_type;
     const int target_type;
     const bool homing;
     Projectile(
+      const std::string name,
       int projectile_type,
       int target_type,
       bool homing,
@@ -49,6 +52,7 @@ class Projectile {
       float waste_per_hit,
       int damages[DAMAGE_TYPE_NUMBER]
     ):
+      name(name),
       projectile_type(projectile_type),
       target_type(target_type),
       homing(homing),

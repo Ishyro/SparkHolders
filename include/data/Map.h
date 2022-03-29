@@ -50,7 +50,7 @@ class Map {
     void addProjectile(Projectile * p);
     void addLoot(Loot * l);
     void removeCharacter(Character * c);
-    void killCharacter(Character * c);
+    void killCharacter(Character * victim, Character * killer);
     void removeProjectile(Projectile * p);
     void destroyProjectile(Projectile * p);
     void removeLoot(Loot * l);

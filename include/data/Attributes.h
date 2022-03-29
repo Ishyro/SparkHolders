@@ -14,13 +14,9 @@ class Attributes {
     const int baseArmor;
     const int baseSoulBurn;
     const int baseFlow;
+    const int baseVision;
+    const int baseDarkVision;
     const Gear * startingGear;
-
-    const int hpIncr;
-    const int manaIncr;
-    const int armorIncr;
-    const int soulBurnIncr;
-    const int flowIncr;
     Attributes(
       std::string name,
       int baseHp,
@@ -28,24 +24,18 @@ class Attributes {
       int baseArmor,
       int baseSoulBurn,
       int baseFlow,
-      Gear * startingGear,
-      int hpIncr,
-      int manaIncr,
-      int armorIncr,
-      int soulBurnIncr,
-      int flowIncr
+      int baseVision,
+      int baseDarkVision,
+      Gear * startingGear
     ):
       baseHp(baseHp),
       baseMana(baseMana),
       baseArmor(baseArmor),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
-      startingGear(startingGear),
-      hpIncr(hpIncr),
-      manaIncr(manaIncr),
-      armorIncr(armorIncr),
-      soulBurnIncr(soulBurnIncr),
-      flowIncr(flowIncr)
+      baseVision(baseVision),
+      baseDarkVision(baseDarkVision),
+      startingGear(startingGear)
     {}
 };
 

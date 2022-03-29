@@ -12,8 +12,10 @@ void Map::setTile(long x, long y, Tile * tile) { tiles[x][y] = tile; }
 void Map::crumble(long x, long y) {
   for (auto character : characters) {
     if (character->getX() == x && character->getY() == y) {
-      if (character->type == WALL)
-        killCharacter(character);
+      if (character->type == WALL) {
+        removeCharacter(character);
+        delete character;
+      }
       else break;
     }
   }
@@ -24,21 +26,22 @@ void Map::addProjectile(Projectile * p) { projectiles.push_front(p); }
 void Map::addLoot(Loot * l) { loots.push_front(l); }
 
 void Map::removeCharacter(Character * c) { characters.remove(c); }
-void Map::killCharacter(Character * c) {
-  characters.remove(c);
-  SpeechManager::add(c->death_speech);
+void Map::killCharacter(Character * victim, Character * killer) {
+  characters.remove(victim);
+  SpeechManager::add(victim->death_speech);
   Loot * loot = (Loot *) malloc(sizeof(Loot));
-  loot->x = c->getX();
-  loot->y = c->getY();
-  loot->gold = c->getGold();
-  for (auto w : c->getWeapons()) {
+  loot->x = victim->getX();
+  loot->y = victim->getY();
+  loot->gold = victim->getGold();
+  for (auto w : victim->getWeapons()) {
     loot->weapons.push_front(w);
   }
-  for (auto i : c->getStuff()) {
+  for (auto i : victim->getStuff()) {
     loot->items.push_front(i);
   }
   loot->type = CORPSE;
-  delete c;
+  killer->gainXP(victim->getXP() / 2);
+  delete victim;
 }
 
 void Map::removeProjectile(Projectile * p) { projectiles.remove(p); }

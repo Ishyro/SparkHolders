@@ -15,7 +15,6 @@
 #include "data/Effect.h"
 #include "data/skills/Skill.h"
 #include "data/World.h"
-#include "data/Quest.h"
 #include "data/Way.h"
 
 #include "utils/FileOpener.h"
@@ -28,39 +27,55 @@ class Character {
   public:
     const long id = ++character::id_cpt;
     const std::string name;
-    const Attributes * attributes;
-    const bool player_character;
-    const bool quest_character;
     const Speech * death_speech;
-    const Speech * encounter_speech;
+    const std::list<const Speech *> talking_speech;
     const int type;
+    // not instancied character constructor
     Character(
       std::string name,
-      bool player_character,
-      bool quest_character,
-      Speech * death_speech,
-      Speech * encounter_speech,
+      const Speech * death_speech,
+      const std::list<const Speech *> talking_speech,
       int type,
-      long current_map_id,
-      int x,
-      int y,
-      int orientation,
       int ai_id,
-      std::string team
+      long gold,
+      long xp,
+      int level,
+      int vision,
+      int dark_vision,
+      std::string team,
+      std::list<Item *> stuff,
+      std::list<Weapon *> weapons,
+      std::list<Ammunition *> ammunitions,
+      std::list<Effect *> effects,
+      std::list<Skill *> skills,
+      Way * race,
+      Way * origin,
+      Way * culture,
+      Way * religion,
+      Way * profession
     ):
       name(name),
       player_character(player_character),
-      quest_character(quest_character),
       death_speech(death_speech),
-      encounter_speech(encounter_speech),
+      talking_speech(talking_speech),
       type(type),
-      current_map_id(current_map_id),
-      x(x),
-      y(y),
-      orientation(orientation),
       ai_id(ai_id),
-      team(team)
+      gold(gold),
+      xp(xp),
+      vision(vision),
+      dark_vision(dark_vision),
+      stuff(stuff),
+      weapons(weapons),
+      ammunitions(ammunitions),
+      effects(effects),
+      skills(skills),
+      race(race),
+      origin(origin),
+      culture(culture),
+      religion(religion),
+      profession(profession)
     {}
+    void applyAttributes(const Attributes * attributes);
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -78,6 +93,8 @@ class Character {
     int getDarkVision();
     long getCurrentMapId();
     long getGold();
+    long getXP();
+    long getLevel();
 
     std::list<Item *> getStuff();
     std::list<Weapon *> getWeapons();
@@ -97,6 +114,9 @@ class Character {
     void setVision(int vision);
     void setDarkVision(int dark_vision);
     void setCurrentMapId(long map_id);
+
+    void gainXP(long xp);
+    void gainLevel();
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
@@ -129,16 +149,13 @@ class Character {
     int invisibilityPower();
     bool isInWeakState();
 
-    bool isTileLighted(World * world);
-
-    Quest * getQuest();
-
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 
   private:
     static long id_cpt;
+    bool player_character;
     long current_map_id;
     int x;
     int y;
@@ -156,6 +173,8 @@ class Character {
     int dark_vision;
 
     long gold;
+    long xp;
+    int level;
 
     std::string team;
 
@@ -166,11 +185,11 @@ class Character {
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
-    Quest * quest;
-    Way * religion;
-    Way * origin;
     Way * race;
-    Way * sex;
+    Way * origin;
+    Way * culture;
+    Way * religion;
+    Way * profession;
 };
 
 #endif // _CHARACTER_H_

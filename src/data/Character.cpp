@@ -1,5 +1,18 @@
 #include "data/Character.h"
 
+void Character::applyAttributes(const Attributes * attributes) {
+  maxHp=attributes->baseHp;
+  maxMana=attributes->baseMana;
+  hp=maxHp;
+  mana=maxMana;
+  armor=attributes->baseArmor;
+  soulBurnTreshold=attributes->baseSoulBurn;
+  flow=attributes->baseFlow;
+  vision=attributes->baseVision;
+  dark_vision=attributes->baseDarkVision;
+  currentSoulBurn = 0;
+}
+
 bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 int Character::getX() { return x; }
@@ -67,6 +80,8 @@ int Character::getDarkVision() {
 }
 
 long Character::getGold() { return gold; }
+long Character::getXP() { return xp; }
+long Character::getLevel() { return level; }
 
 long Character::getCurrentMapId() { return current_map_id; }
 
@@ -87,15 +102,69 @@ void Character::move(int x, int y, int orientation) {
 }
 
 void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
-void Character::incrMaxHp() { maxHp += attributes->hpIncr; }
+void Character::incrMaxHp() {
+  int incr = 0;
+  incr += race->hpIncr;
+  incr += origin->hpIncr;
+  incr += culture->hpIncr;
+  incr += religion->hpIncr;
+  incr += profession->hpIncr;
+  maxHp += std::max(incr, 0);
+}
 void Character::manaHeal(int mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
-void Character::incrMaxMana() { maxMana += attributes->manaIncr; }
-void Character::incrArmor() { armor += attributes->armorIncr; }
-void Character::incrSoulBurnTreshold() { soulBurnTreshold += attributes->soulBurnIncr; }
-void Character::incrFlow() { flow += attributes->flowIncr; }
+void Character::incrMaxMana() {
+  int incr = 0;
+  incr += race->manaIncr;
+  incr += origin->manaIncr;
+  incr += culture->manaIncr;
+  incr += religion->manaIncr;
+  incr += profession->manaIncr;
+  maxMana += std::max(incr, 0);
+}
+void Character::incrArmor() {
+  int incr = 0;
+  incr += race->armorIncr;
+  incr += origin->armorIncr;
+  incr += culture->armorIncr;
+  incr += religion->armorIncr;
+  incr += profession->armorIncr;
+  armor += std::max(incr, 0);
+}
+void Character::incrSoulBurnTreshold() {
+  int incr = 0;
+  incr += race->soulBurnIncr;
+  incr += origin->soulBurnIncr;
+  incr += culture->soulBurnIncr;
+  incr += religion->soulBurnIncr;
+  incr += profession->soulBurnIncr;
+  soulBurnTreshold += std::max(incr, 0);
+}
+void Character::incrFlow() {
+  int incr = 0;
+  incr += race->flowIncr;
+  incr += origin->flowIncr;
+  incr += culture->flowIncr;
+  incr += religion->flowIncr;
+  incr += profession->flowIncr;
+  flow += std::max(incr, 0);
+}
 void Character::setVision(int vision) { this->vision = vision; }
 void Character::setDarkVision(int dark_vision) { this->dark_vision = dark_vision; }
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
+void Character::gainXP(long xp) { this->xp += xp; }
+void Character::gainLevel() {
+  if (level * level * 1000 >= xp) { // INSERT FORMULA HERE
+    level++;
+    incrFlow();
+    incrArmor();
+    incrMaxHp();
+    incrMaxMana();
+    incrSoulBurnTreshold();
+    incrFlow();
+    hpHeal(getMaxHp() / 2);
+    manaHeal(getMaxMana() / 2);
+  }
+}
 
 void Character::equip(Item * to_equip) {
   if (to_equip != nullptr) {
@@ -250,12 +319,6 @@ bool Character::isInWeakState() {
   }
   return 0;
 }
-
-bool Character::isTileLighted(World * world) {
-  return world->getMap(current_map_id)->isTileLighted(x, y);
-}
-
-Quest * Character::getQuest() { return quest; }
 
 // Warning : Dangerous
 void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge) {

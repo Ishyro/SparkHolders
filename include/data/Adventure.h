@@ -12,6 +12,7 @@
 #include "data/Quest.h"
 #include "data/Event.h"
 #include "data/Save.h"
+#include "data/Database.h"
 
 #include "utils/FileOpener.h"
 
@@ -60,6 +61,7 @@ class Adventure {
     void removeQuest(Quest * quest);
   private:
     World * world;
+    Database * database;
     long tick;
     std::list<Character *> party;
     std::list<Character *> preserved_players;

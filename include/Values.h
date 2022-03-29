@@ -8,6 +8,7 @@
 class Adventure;
 class Attributes;
 class Character;
+class Database;
 class Effect;
 class Event;
 class Gear;
