@@ -148,8 +148,9 @@ void Character::incrFlow() {
   incr += profession->flowIncr;
   flow += std::max(incr, 0);
 }
-void Character::setVision(int vision) { this->vision = vision; }
-void Character::setDarkVision(int dark_vision) { this->dark_vision = dark_vision; }
+void Character::incrVision() { vision++; }
+void Character::incrDarkVision() {dark_vision++; }
+
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
@@ -237,8 +238,15 @@ void Character::addSkill(Skill * s) { skills.push_front(s); }
 void Character::removeEffect(Effect * e) { effects.remove(e); }
 void Character::removeSkill(Skill * s) { skills.remove(s); }
 
-void Character::changeWay(std::string old_way, std::string new_way) {
-  // TODO
+void Character::setWay(Way * way) {
+  switch(way->type) {
+    case RACE: race = way;
+    case ORIGIN: origin = way;
+    case CULTURE: culture = way;
+    case RELIGION: religion = way;
+    case PROFESSION: profession = way;
+    default:;
+  }
 }
 
 void Character::addItem(Item * i) { stuff.push_front(i); }

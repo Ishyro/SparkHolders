@@ -29,10 +29,10 @@ void Effect::activate(Character * target) {
         target->incrFlow();
         break;
       case VISION:
-        target->setVision(target->getVision() + power);
+        target->incrVision();
         break;
       case DARK_VISION:
-        target->setDarkVision(target->getDarkVision() + power);
+        target->incrDarkVision();
         break;
       case DAMAGE:
         for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

@@ -51,11 +51,12 @@ class SpeechManager;
 #define VISION 8
 #define DARK_VISION 9
 #define DAMAGE 10
-#define CHANNELING 11
-#define STUNNED 12
-#define CLOAKED 13
-#define INVISIBLE 14
-#define SLEEPING 15
+#define DAMAGE_BUFF 11
+#define CHANNELING 12
+#define STUNNED 13
+#define SLEEPING 14
+#define CLOAKED 15
+#define INVISIBLE 16
 
 // melee_type
 
@@ -121,11 +122,6 @@ class SpeechManager;
 #define TARGET 3
 #define TILE 4
 
-// skill_cast_type
-
-#define ACTIVE 1
-#define TOGGLE 2
-
 // skill_special
 
 #define TIMESTOP 1
@@ -142,7 +138,8 @@ class SpeechManager;
 
 #define NO_OVERCHARGE 0
 #define LINEAR 1
-#define EXPONENTIAL 2
+#define SQUARE 2
+#define EXPONENTIAL 3
 
 // orientations
 
@@ -210,9 +207,11 @@ class SpeechManager;
 
 // way_type
 
-#define RELIGION 1
+#define RACE 1
 #define ORIGIN 2
-#define RACE 3
+#define CULTURE 3
+#define RELIGION 4
+#define PROFESSION 5
 
 // speech_type
 

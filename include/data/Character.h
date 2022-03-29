@@ -111,8 +111,8 @@ class Character {
     void incrArmor();
     void incrSoulBurnTreshold();
     void incrFlow();
-    void setVision(int vision);
-    void setDarkVision(int dark_vision);
+    void incrVision();
+    void incrDarkVision();
     void setCurrentMapId(long map_id);
 
     void gainXP(long xp);
@@ -130,8 +130,7 @@ class Character {
     void removeEffect(Effect * e);
     void removeSkill(Skill * s);
 
-    // change religion or origin
-    void changeWay(std::string old_way, std::string new_way);
+    void setWay(Way * way);
 
     void addItem(Item * i);
     void addWeapon(Weapon * w);
