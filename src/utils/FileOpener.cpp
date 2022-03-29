@@ -34,16 +34,19 @@ namespace fileOpener {
     return result;
   }
 
-  Tile TileOpener(std::string fileName) {
+  Tile * TileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromIni(fileName);
     std::string name = values.at("name");
     std::istringstream is(values.at("untraversable"));
+    int light = stoi(values.at("light"));
     bool untraversable;
     is >> std::boolalpha >> untraversable;
-    return Tile(name,untraversable);
+    Tile * tile = new Tile(name,untraversable,light);
+    database->addTile(tile);
+    return tile;
   }
 
-  Map MapOpener(std::string fileName, World world) {
+  Map MapOpener(std::string fileName, World world, Database * database) {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if (!file) {
@@ -72,6 +75,22 @@ namespace fileOpener {
         result.setTile(x,y,world.getTile(tile));
       }
     }
+
+    for(int x = 0; x < sizeX; x++) {
+      getline(file,line);
+      std::istringstream is(line);
+      for(int y = 0; y < sizeY; y++) {
+        std::string wall;
+        getline(is,wall,' ');
+        if(wall != "none") {
+          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, result.id);
+          c->applyAttributes(database->getAttributes(wall));
+          result.addCharacter(c);
+        }
+      }
+    }
+
+    result.calculateLights();
     file.close();
     return result;
   }

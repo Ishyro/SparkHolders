@@ -152,6 +152,12 @@ void Character::incrVision() { vision++; }
 void Character::incrDarkVision() {dark_vision++; }
 
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
+
+void Character::gainGold(long gold) { this->gold += gold; }
+void Character::payMana(int cost) {
+  mana -= cost;
+  currentSoulBurn += cost;
+}
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
   if (level * level * 1000 >= xp) { // INSERT FORMULA HERE

@@ -5,7 +5,15 @@ std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }
 // TODO : return right tile
 Tile * Map::getTile(long x, long y) { return tiles[x][y]; }
-bool Map::isTileLighted(long x, long y) { return lighted[x][y]; }
+int Map::getLight(long x, long y) { return lights[x][y]; }
+
+void Map::calculateLights() {
+  for (int x = 0; x < sizeX; x++) {
+    for (int y = 0; y < sizeY; y++) {
+      lights[x][y] = tiles[x][y]->light;
+    }
+  }
+}
 
 void Map::setTile(long x, long y, Tile * tile) { tiles[x][y] = tile; }
 

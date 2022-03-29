@@ -10,5 +10,7 @@ long PseudoSkill::getManaCost(long overcharge) {
       return mana_cost * overcharge * overcharge;
     case EXPONENTIAL:
       return mana_cost * (long) std::pow(2. , (double) overcharge);
+    default:;
   }
+  return mana_cost;
 }

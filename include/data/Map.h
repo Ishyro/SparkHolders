@@ -38,13 +38,15 @@ class Map {
     Map(std::string name, long sizeX, long sizeY, bool outside):
     name(name),sizeX(sizeX),sizeY(sizeY),outside(outside) {
       tiles[sizeX][sizeY];
+      lights[sizeX][sizeY];
     }
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
     Tile * getTile(long x, long y);
     void setTile(long x, long y, Tile * tile);
-    bool isTileLighted(long x, long y);
+    int getLight(long x, long y);
+    void calculateLights();
     void crumble(long x, long y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
@@ -62,7 +64,7 @@ class Map {
     std::list<Projectile *> projectiles;
     std::list<Loot *> loots;
     Tile *** tiles;
-    bool ** lighted;
+    int ** lights;
 };
 
 typedef struct MapLink {

@@ -19,7 +19,16 @@ class Tile {
   public:
     const std::string name;
     const bool untraversable;
-    Tile(std::string name, bool untraversable):name(name),untraversable(untraversable) {}
+    const int light;
+    Tile(
+      std::string name,
+      bool untraversable,
+      int light
+    ):
+      name(name),
+      untraversable(untraversable),
+      light(light)
+    {}
   private:
     const long id = ++tile::id_cpt;
 };

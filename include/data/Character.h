@@ -75,6 +75,33 @@ class Character {
       religion(religion),
       profession(profession)
     {}
+    Character(Character * from_database, int x, int y, int orientation, int current_map_id
+    ):
+      name(from_database->name),
+      player_character(from_database->player_character),
+      death_speech(from_database->death_speech),
+      talking_speech(from_database->talking_speech),
+      type(from_database->type),
+      ai_id(from_database->ai_id),
+      gold(from_database->gold),
+      xp(from_database->xp),
+      vision(from_database->vision),
+      dark_vision(from_database->dark_vision),
+      stuff(from_database->stuff),
+      weapons(from_database->weapons),
+      ammunitions(from_database->ammunitions),
+      effects(from_database->effects),
+      skills(from_database->skills),
+      race(from_database->race),
+      origin(from_database->origin),
+      culture(from_database->culture),
+      religion(from_database->religion),
+      profession(from_database->profession),
+      x(x),
+      y(y),
+      orientation(orientation),
+      current_map_id(current_map_id)
+    {}
     void applyAttributes(const Attributes * attributes);
     bool isAlive();
     bool isSoulBurning();
@@ -115,6 +142,8 @@ class Character {
     void incrDarkVision();
     void setCurrentMapId(long map_id);
 
+    void gainGold(long gold);
+    void payMana(int cost);
     void gainXP(long xp);
     void gainLevel();
 
