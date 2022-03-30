@@ -48,15 +48,16 @@ class SpeechManager;
 #define ARMOR 5
 #define SOULBURNTRESHOLD 6
 #define FLOW 7
-#define VISION 8
-#define DARK_VISION 9
-#define DAMAGE 10
-#define DAMAGE_BUFF 11
-#define CHANNELING 12
-#define STUNNED 13
-#define SLEEPING 14
-#define CLOAKED 15
-#define INVISIBLE 16
+#define VISION_RANGE 8
+#define VISION_POWER 9
+#define DETECTION_RANGE 10
+#define DAMAGE 11
+#define DAMAGE_BUFF 12
+#define CHANNELING 13
+#define STUNNED 14
+#define SLEEPING 15
+#define CLOAKED 16
+#define INVISIBLE 17
 
 // melee_type
 

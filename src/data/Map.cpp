@@ -8,9 +8,64 @@ Tile * Map::getTile(long x, long y) { return tiles[x][y]; }
 int Map::getLight(long x, long y) { return lights[x][y]; }
 
 void Map::calculateLights() {
-  for (int x = 0; x < sizeX; x++) {
-    for (int y = 0; y < sizeY; y++) {
+  // initialize
+  long lightX[sizeX*sizeY];
+  long lightY[sizeX*sizeY];
+  long cpt = 0;
+  for(long x = 0; x < sizeX; x++) {
+    for(long y = 0; y < sizeY; y++) {
       lights[x][y] = tiles[x][y]->light;
+      if (lights[x][y] > 0) {
+        lightX[cpt] = x;
+        lightY[cpt++] = y;
+      }
+    }
+  }
+  for(long i = 0; i < cpt; i++) {
+    propagateLight(lightX[i],lightY[i]);
+  }
+}
+
+void Map::propagateLight(long x, long y) {
+  int light = lights[x][y] - 1;
+  if(x > 1 && y > 1 && light > lights[x - 1][y - 1]) {
+    lights[x - 1][y - 1] = light;
+    propagateLight(x - 1,y - 1);
+  }
+  if(x > 1 && light > lights[x - 1][y]) {
+    lights[x - 1][y] = light;
+    propagateLight(x - 1,y);
+  }
+  if(x > 1 && y < sizeY - 2 && light > lights[x - 1][y + 1]) {
+    lights[x - 1][y + 1] = light;
+    propagateLight(x - 1,y + 1);
+  }
+  if(y > 1 && light > lights[x][y - 1]) {
+    lights[x][y-1] = light;
+    propagateLight(x,y - 1);
+  }
+  if(y < sizeY - 2 && light > lights[x][y + 1]) {
+    lights[x][y + 1] = light;
+    propagateLight(x,y + 1);
+  }
+  if(x < sizeX - 2 && y > 1 && light > lights[x + 1][y - 1]) {
+    lights[x + 1][y - 1] = light;
+    propagateLight(x + 1,y - 1);
+  }
+  if(x < sizeX - 2 && light > lights[x + 1][y]) {
+    lights[x + 1][y] = light;
+    propagateLight(x +1,y);
+  }
+  if(x < sizeX - 2 && y < sizeY - 2 && light > lights[x + 1][y + 1]) {
+    lights[x + 1][y + 1] = light;
+    propagateLight(x + 1,y + 1);
+  }
+}
+
+void Map::applyDayLight(int light) {
+  for(long x = 0; x < sizeX; x++) {
+    for(long y = 0; y < sizeY; y++) {
+      lights[x][y] += light - 5;
     }
   }
 }
@@ -18,9 +73,9 @@ void Map::calculateLights() {
 void Map::setTile(long x, long y, Tile * tile) { tiles[x][y] = tile; }
 
 void Map::crumble(long x, long y) {
-  for (auto character : characters) {
-    if (character->getX() == x && character->getY() == y) {
-      if (character->type == WALL) {
+  for(auto character : characters) {
+    if(character->getX() == x && character->getY() == y) {
+      if(character->type == WALL) {
         removeCharacter(character);
         delete character;
       }
@@ -41,10 +96,10 @@ void Map::killCharacter(Character * victim, Character * killer) {
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
-  for (auto w : victim->getWeapons()) {
+  for(auto w : victim->getWeapons()) {
     loot->weapons.push_front(w);
   }
-  for (auto i : victim->getStuff()) {
+  for(auto i : victim->getStuff()) {
     loot->items.push_front(i);
   }
   loot->type = CORPSE;
@@ -67,10 +122,10 @@ void Map::destroyLoot(Loot * l) {
 
 void Map::takeLoot(Character * c, Loot * l) {
   loots.remove(l);
-  for (auto i : l->items) {
+  for(auto i : l->items) {
     c->addItem(i);
   }
-  for (auto w : l->weapons) {
+  for(auto w : l->weapons) {
     c->addWeapon(w);
   }
   //delete l;
@@ -79,8 +134,8 @@ void Map::takeLoot(Character * c, Loot * l) {
 void Map::tryHit(Projectile * p, Adventure * adventure) {
   int p_x = p->getX();
   int p_y = p->getY();
-  for (auto c : characters) {
-    if (c->getX() == p_x && c->getY() == p_y) {
+  for(auto c : characters) {
+    if(c->getX() == p_x && c->getY() == p_y) {
       switch(p->target_type) {
         case SINGLE_TILE:
           p->attack_single_target(c, adventure);

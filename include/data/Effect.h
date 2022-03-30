@@ -42,7 +42,7 @@ class Effect {
       power(base->power * overcharge),
       duration(base->duration * overcharge)
     {
-      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge;
       }
     }

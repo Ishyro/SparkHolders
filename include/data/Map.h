@@ -47,6 +47,8 @@ class Map {
     void setTile(long x, long y, Tile * tile);
     int getLight(long x, long y);
     void calculateLights();
+    void propagateLight(long x, long y);
+    void applyDayLight(int light);
     void crumble(long x, long y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);

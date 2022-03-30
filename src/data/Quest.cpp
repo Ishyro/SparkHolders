@@ -15,8 +15,8 @@ bool Quest::stepDone(Adventure * adventure) {
       result = current_step->goal_weapon != nullptr;
       break;
     case DISCOVER:
-      for (auto c : adventure->getParty()) { 
-        if (c->getCurrentMapId() == current_step->disover_map_id) { 
+      for(auto c : adventure->getParty()) { 
+        if(c->getCurrentMapId() == current_step->disover_map_id) { 
           result = true;
           break;
         }
@@ -26,7 +26,7 @@ bool Quest::stepDone(Adventure * adventure) {
       // TODO
       break;
   }
-  if (result) { 
+  if(result) { 
     SpeechManager::add(current_step->when_done);
     steps.pop_front();
   }

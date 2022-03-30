@@ -40,8 +40,9 @@ class Character {
       long gold,
       long xp,
       int level,
-      int vision,
-      int dark_vision,
+      int visionRange,
+      int visionPower,
+      int detectionRange,
       std::string team,
       std::list<Item *> stuff,
       std::list<Weapon *> weapons,
@@ -62,8 +63,9 @@ class Character {
       ai_id(ai_id),
       gold(gold),
       xp(xp),
-      vision(vision),
-      dark_vision(dark_vision),
+      visionRange(visionRange),
+      visionPower(visionPower),
+      detectionRange(detectionRange),
       stuff(stuff),
       weapons(weapons),
       ammunitions(ammunitions),
@@ -85,8 +87,9 @@ class Character {
       ai_id(from_database->ai_id),
       gold(from_database->gold),
       xp(from_database->xp),
-      vision(from_database->vision),
-      dark_vision(from_database->dark_vision),
+      visionRange(from_database->visionRange),
+      visionPower(from_database->visionPower),
+      detectionRange(from_database->detectionRange),
       stuff(from_database->stuff),
       weapons(from_database->weapons),
       ammunitions(from_database->ammunitions),
@@ -116,8 +119,9 @@ class Character {
     int getSoulBurnTreshold();
     int getCurrentSoulBurn();
     int getFlow();
-    int getVision();
-    int getDarkVision();
+    int getVisionRange();
+    int getVisionPower();
+    int getDetectionRange();
     long getCurrentMapId();
     long getGold();
     long getXP();
@@ -138,8 +142,9 @@ class Character {
     void incrArmor();
     void incrSoulBurnTreshold();
     void incrFlow();
-    void incrVision();
-    void incrDarkVision();
+    void incrVisionRange();
+    void incrVisionPower();
+    void incrDetectionRange();
     void setCurrentMapId(long map_id);
 
     void gainGold(long gold);
@@ -197,8 +202,9 @@ class Character {
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;
-    int vision;
-    int dark_vision;
+    int visionRange;
+    int visionPower;
+    int detectionRange;
 
     long gold;
     long xp;

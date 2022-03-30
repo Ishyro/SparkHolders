@@ -8,8 +8,9 @@ void Character::applyAttributes(const Attributes * attributes) {
   armor=attributes->baseArmor;
   soulBurnTreshold=attributes->baseSoulBurn;
   flow=attributes->baseFlow;
-  vision=attributes->baseVision;
-  dark_vision=attributes->baseDarkVision;
+  visionRange=attributes->baseVisionRange;
+  visionPower=attributes->baseVisionPower;
+  detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
 }
 
@@ -21,8 +22,8 @@ int Character::getOrientation() { return orientation; }
 int Character::getHp() { return hp; }
 int Character::getMaxHp() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == HP_MAX)
+  for(auto e : effects)
+    if(e->type == HP_MAX)
       bonus += e->power;
   return maxHp + bonus;
 }
@@ -31,24 +32,24 @@ int Character::getMana() { return mana; }
 
 int Character::getMaxMana() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == MANA_MAX)
+  for(auto e : effects)
+    if(e->type == MANA_MAX)
       bonus += e->power;
   return std::max(maxMana + bonus, 0);
 }
 
 int Character::getArmor() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == ARMOR)
+  for(auto e : effects)
+    if(e->type == ARMOR)
       bonus += e->power;
   return std::max(armor + bonus, 0);
 }
 
 int Character::getSoulBurnTreshold() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == SOULBURNTRESHOLD)
+  for(auto e : effects)
+    if(e->type == SOULBURNTRESHOLD)
       bonus += e->power;
   return std::max(soulBurnTreshold + bonus, 0);
 }
@@ -57,26 +58,34 @@ int Character::getCurrentSoulBurn() { return currentSoulBurn; }
 
 int Character::getFlow() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == FLOW)
+  for(auto e : effects)
+    if(e->type == FLOW)
       bonus += e->power;
   return std::max(flow + bonus, 0);
 }
 
-int Character::getVision() {
+int Character::getVisionRange() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == VISION)
+  for(auto e : effects)
+    if(e->type == VISION_RANGE)
       bonus += e->power;
-  return std::max(vision + bonus, 0);
+  return std::max(visionRange + bonus, 0);
 }
 
-int Character::getDarkVision() {
+int Character::getVisionPower() {
   int bonus = 0;
-  for (auto e : effects)
-    if (e->type == DARK_VISION)
+  for(auto e : effects)
+    if(e->type == VISION_POWER)
       bonus += e->power;
-  return std::max(dark_vision + bonus, 0);
+  return std::max(visionPower + bonus, 0);
+}
+
+int Character::getDetectionRange() {
+  int bonus = 0;
+  for(auto e : effects)
+    if(e->type == DETECTION_RANGE)
+      bonus += e->power;
+  return std::max(detectionRange + bonus, 0);
 }
 
 long Character::getGold() { return gold; }
@@ -148,8 +157,9 @@ void Character::incrFlow() {
   incr += profession->flowIncr;
   flow += std::max(incr, 0);
 }
-void Character::incrVision() { vision++; }
-void Character::incrDarkVision() {dark_vision++; }
+void Character::incrVisionRange() { visionRange++; }
+void Character::incrVisionPower() {visionPower++; }
+void Character::incrDetectionRange() { detectionRange++; }
 
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
 
@@ -160,7 +170,7 @@ void Character::payMana(int cost) {
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
-  if (level * level * 1000 >= xp) { // INSERT FORMULA HERE
+  if(level * level * 1000 >= xp) { // INSERT FORMULA HERE
     level++;
     incrFlow();
     incrArmor();
@@ -174,39 +184,39 @@ void Character::gainLevel() {
 }
 
 void Character::equip(Item * to_equip) {
-  if (to_equip != nullptr) {
+  if(to_equip != nullptr) {
     std::list<Item *> items = gear->equip(to_equip);
-    for (auto item : items) {
-      for (auto e : item->effects) {
+    for(auto item : items) {
+      for(auto e : item->effects) {
         removeEffect(e);
       }
       stuff.push_front(item);
     }
-    for (auto e : to_equip->effects) {
+    for(auto e : to_equip->effects) {
       addEffect(e);
     }
   }
 }
 
 void Character::equip(Weapon * to_equip) {
-  if (to_equip != nullptr) {
+  if(to_equip != nullptr) {
     Weapon * old_weapon = gear->equip(to_equip);
-    if (old_weapon != nullptr) {
-      for (auto e : old_weapon->effects) {
+    if(old_weapon != nullptr) {
+      for(auto e : old_weapon->effects) {
         removeEffect(e);
       }
       weapons.push_front(old_weapon);
     }
-    for (auto e : to_equip->effects) {
+    for(auto e : to_equip->effects) {
       addEffect(e);
     }
   }
 }
 
 void Character::equip(Ammunition * to_equip) {
-  if (to_equip != nullptr) {
+  if(to_equip != nullptr) {
     Ammunition * old_ammunition = gear->equip(to_equip);
-    if (old_ammunition != nullptr) {
+    if(old_ammunition != nullptr) {
       ammunitions.push_front(old_ammunition);
     }
   }
@@ -214,8 +224,8 @@ void Character::equip(Ammunition * to_equip) {
 
 void Character::unequip(int type) {
   Item * old_item = gear->unequip(type);
-  if (old_item != nullptr) {
-    for (auto e : old_item->effects) {
+  if(old_item != nullptr) {
+    for(auto e : old_item->effects) {
       removeEffect(e);
     }
     stuff.push_front(old_item);
@@ -224,8 +234,8 @@ void Character::unequip(int type) {
 
 void Character::unequipWeapon() {
   Weapon * old_weapon = gear->unequipWeapon();
-  if (old_weapon != nullptr) {
-    for (auto e : old_weapon->effects) {
+  if(old_weapon != nullptr) {
+    for(auto e : old_weapon->effects) {
       removeEffect(e);
     }
     weapons.push_front(old_weapon);
@@ -234,7 +244,7 @@ void Character::unequipWeapon() {
 
 void Character::unequipAmmunition() {
   Ammunition * old_ammunition = gear->unequipAmmunition();
-  if (old_ammunition != nullptr) {
+  if(old_ammunition != nullptr) {
     ammunitions.push_front(old_ammunition);
   }
 }
@@ -263,8 +273,8 @@ void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
 void Character::removeAmmunition(Ammunition * a) { ammunitions.remove(a); }
 
 int Character::isChanneling() {
-  for (auto e : effects) {
-    if (e->type == CHANNELING) {
+  for(auto e : effects) {
+    if(e->type == CHANNELING) {
       return e->getTickLeft();
     }
   }
@@ -272,8 +282,8 @@ int Character::isChanneling() {
 }
 
 int Character::isStunned() {
-  for (auto e : effects) {
-    if (e->type == STUNNED) {
+  for(auto e : effects) {
+    if(e->type == STUNNED) {
       return e->getTickLeft();
     }
   }
@@ -281,8 +291,8 @@ int Character::isStunned() {
 }
 
 int Character::isCloaked() {
-  for (auto e : effects) {
-    if (e->type == CLOAKED) {
+  for(auto e : effects) {
+    if(e->type == CLOAKED) {
       return e->getTickLeft();
     }
   }
@@ -290,8 +300,8 @@ int Character::isCloaked() {
 }
 
 int Character::isInvisible() {
-  for (auto e : effects) {
-    if (e->type == INVISIBLE) {
+  for(auto e : effects) {
+    if(e->type == INVISIBLE) {
       return e->getTickLeft();
     }
   }
@@ -299,8 +309,8 @@ int Character::isInvisible() {
 }
 
 int Character::isSleeping() {
-  for (auto e : effects) {
-    if (e->type == SLEEPING) {
+  for(auto e : effects) {
+    if(e->type == SLEEPING) {
       return e->getTickLeft();
     }
   }
@@ -308,8 +318,8 @@ int Character::isSleeping() {
 }
 
 int Character::cloakPower() {
-  for (auto e : effects) {
-    if (e->type == CLOAKED) {
+  for(auto e : effects) {
+    if(e->type == CLOAKED) {
       return e->power;
     }
   }
@@ -317,8 +327,8 @@ int Character::cloakPower() {
 }
 
 int Character::invisibilityPower() {
-  for (auto e : effects) {
-    if (e->type == INVISIBLE) {
+  for(auto e : effects) {
+    if(e->type == INVISIBLE) {
       return e->power;
     }
   }
@@ -326,8 +336,8 @@ int Character::invisibilityPower() {
 }
 
 bool Character::isInWeakState() {
-  for (auto e : effects) {
-    if (e->type == STUNNED || e->type == SLEEPING) {
+  for(auto e : effects) {
+    if(e->type == STUNNED || e->type == SLEEPING) {
       return true;
     }
   }
@@ -340,40 +350,42 @@ void Character::useSkill(Skill * skill, Character * target, Adventure * adventur
 }
 
 void Character::receiveAttack(int damage, int damage_type, int orientation) {
-  if (orientation != NO_ORIENTATION) {
+  if(orientation != NO_ORIENTATION) {
     int diff = abs(orientation - this->orientation) % 8;
-    if (diff >= 3 && diff <= 5) {
+    if(diff >= 3 && diff <= 5) {
       return receiveCriticalAttack(damage, damage_type);
     }
   }
-  if (isInWeakState()) {
+  if(isInWeakState()) {
     return receiveCriticalAttack(damage, damage_type);
   }
-  if (damage_type == SOUL) {
+  if(damage_type == SOUL) {
     hp -= damage;
     mana -= damage;
   }
-  if (damage_type == TRUE) {
+  if(damage_type == TRUE) {
     hp -= damage;
   }
   else {
     int final_damage = (int) floor(( (float) (damage) * (1. - gear->getDamageReduction(damage_type)) - getArmor()));
-    if (final_damage > 0)
+    if(final_damage > 0) {
       hp -= final_damage;
+    }
   }
 }
 
 void Character::receiveCriticalAttack(int damage, int damage_type) {
-  if (damage_type == SOUL) {
+  if(damage_type == SOUL) {
     hp -= damage * 2;
     mana -= damage * 2;
   }
-  if (damage_type == TRUE) {
+  if(damage_type == TRUE) {
     hp -= damage * 2;
   }
   else {
     int final_damage = (int) floor(( (float) (damage) * (1. - .5 * gear->getDamageReduction(damage_type)) - getArmor()));
-    if (final_damage > 0)
+    if(final_damage > 0) {
       hp -= final_damage * 2;
+    }
   }
 }

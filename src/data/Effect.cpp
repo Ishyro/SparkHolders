@@ -1,7 +1,7 @@
 #include "data/Effect.h"
 
 void Effect::activate(Character * target) {
-  if (duration != 0) {
+  if(duration != 0) {
     target->addEffect(this);
   }
   else {
@@ -28,14 +28,16 @@ void Effect::activate(Character * target) {
       case FLOW:
         target->incrFlow();
         break;
-      case VISION:
-        target->incrVision();
+      case VISION_RANGE:
+        target->incrVisionRange();
         break;
-      case DARK_VISION:
-        target->incrDarkVision();
+      case VISION_POWER:
+        target->incrVisionPower();
         break;
+      case DETECTION_RANGE:
+        target->incrDetectionRange();
       case DAMAGE:
-        for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
           target->receiveAttack(damages[i], i, NO_ORIENTATION);
         }
         break;
@@ -55,7 +57,7 @@ bool Effect::tick(Character * target) {
       target->manaHeal(power);
       break;
     case DAMAGE:
-      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         target->receiveAttack(damages[i], i, NO_ORIENTATION);
       }
       break;
@@ -66,7 +68,7 @@ bool Effect::tick(Character * target) {
 }
 
 void Effect::desactivate(Character * target) {
-  if (duration_type == INFINITE || duration_type == TEMPORARY) {
+  if(duration_type == INFINITE || duration_type == TEMPORARY) {
     target->removeEffect(this);
   }
 }
@@ -75,7 +77,7 @@ int Effect::getTickLeft() { return tick_left; }
 
 int Effect::getRawDamage() {
   int power = 0;
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += damages[i];
   }
   return power;

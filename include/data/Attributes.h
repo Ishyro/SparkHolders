@@ -14,8 +14,9 @@ class Attributes {
     const int baseArmor;
     const int baseSoulBurn;
     const int baseFlow;
-    const int baseVision;
-    const int baseDarkVision;
+    const int baseVisionRange;
+    const int baseVisionPower;
+    const int baseDetectionRange;
     const Gear * startingGear;
     Attributes(
       std::string name,
@@ -24,8 +25,9 @@ class Attributes {
       int baseArmor,
       int baseSoulBurn,
       int baseFlow,
-      int baseVision,
-      int baseDarkVision,
+      int baseVisionRange,
+      int baseVisionPower,
+      int baseDetectionRange,
       Gear * startingGear
     ):
       baseHp(baseHp),
@@ -33,8 +35,9 @@ class Attributes {
       baseArmor(baseArmor),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
-      baseVision(baseVision),
-      baseDarkVision(baseDarkVision),
+      baseVisionRange(baseVisionRange),
+      baseVisionPower(baseVisionPower),
+      baseDetectionRange(baseDetectionRange),
       startingGear(startingGear)
     {}
 };

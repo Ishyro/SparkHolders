@@ -2,7 +2,7 @@
 
 int Weapon::getRawDamage() { 
   int power = 0;
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) { 
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) { 
     power += damages[i];
   }
   return power;

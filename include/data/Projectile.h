@@ -72,7 +72,7 @@ class Projectile {
       waste_per_hit(waste_per_hit)
     {
       lost = false;
-      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
       }
     }

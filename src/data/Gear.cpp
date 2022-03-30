@@ -30,10 +30,10 @@ std::list<Item *> Gear::equip(Item * new_item) {
       body = new_item;
       break;
     case RING:
-      if (left_ring == nullptr) {
+      if(left_ring == nullptr) {
         left_ring = new_item;
       }
-      else if (right_ring == nullptr) {
+      else if(right_ring == nullptr) {
         right_ring = new_item;
       }
       else {

@@ -3,7 +3,7 @@
 int Projectile::getX() { return x; }
 int Projectile::getY() { return y; }
 int Projectile::getDestX() {
-  if (target_type == SINGLE_CHARACTER) {
+  if(target_type == SINGLE_CHARACTER) {
     return target->getX();
   }
   else {
@@ -11,7 +11,7 @@ int Projectile::getDestX() {
   }
 }
 int Projectile::getDestY() {
-  if (target_type == SINGLE_CHARACTER) {
+  if(target_type == SINGLE_CHARACTER) {
     return target->getY();
   }
   else {
@@ -56,53 +56,53 @@ void Projectile::move() {
       break;
   }
   nextOrientation();
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] -= (int) floor( ((float) damages[i]) * waste_per_tile);
   }
 }
 
 void Projectile::nextOrientation() {
-  if (lost) {
+  if(lost) {
     return;
   }
   float target_x = getDestX() - x;
   float target_y = getDestY() - y;
   int way_to_the_target;
   // projectile will simply move to its target
-  if (target_y > 0.) {
-    if (target_x == 0 || target_y / target_x > 2.) {
+  if(target_y > 0.) {
+    if(target_x == 0 || target_y / target_x > 2.) {
         way_to_the_target = NORTH;
     }
-    else if (target_y / target_x > 0.5) {
+    else if(target_y / target_x > 0.5) {
         way_to_the_target = NORTH_EAST;
     }
-    else if (target_y / target_x > 0.) {
+    else if(target_y / target_x > 0.) {
         way_to_the_target = EAST;
     }
-    else if (target_y / target_x > -0.5) {
+    else if(target_y / target_x > -0.5) {
         way_to_the_target = WEST;
     }
-    else if (target_y / target_x > -2.) {
+    else if(target_y / target_x > -2.) {
         way_to_the_target = NORTH_WEST;
     }
     else {
       way_to_the_target = NORTH;
     }
   }
-  if (target_y < 0.) {
-    if (target_x == 0 || target_y / target_x > 2.) {
+  if(target_y < 0.) {
+    if(target_x == 0 || target_y / target_x > 2.) {
         way_to_the_target = SOUTH;
     }
-    else if (target_y / target_x > 0.5) {
+    else if(target_y / target_x > 0.5) {
         way_to_the_target = SOUTH_WEST;
     }
-    else if (target_y / target_x > 0.) {
+    else if(target_y / target_x > 0.) {
         way_to_the_target = WEST;
     }
-    else if (target_y / target_x > -0.5) {
+    else if(target_y / target_x > -0.5) {
         way_to_the_target = EAST;
     }
-    else if (target_y / target_x > -2.) {
+    else if(target_y / target_x > -2.) {
         way_to_the_target = SOUTH_EAST;
     }
     else {
@@ -111,18 +111,18 @@ void Projectile::nextOrientation() {
   }
   // target_y == 0
   else {
-    if (target_x > 0.) {
+    if(target_x > 0.) {
       way_to_the_target = EAST;
     }
-    else if (target_x < 0.) {
+    else if(target_x < 0.) {
       way_to_the_target = WEST;
     }
   }
   int diff = (orientation - way_to_the_target) % 8;
-  if (diff > 0) {
+  if(diff > 0) {
     orientation = (orientation + 1) % 8;
   }
-  if (diff < 0) {
+  if(diff < 0) {
     orientation = (orientation - 1) % 8;
   }
 }
@@ -133,7 +133,7 @@ bool Projectile::isAtDest() {
 
 int Projectile::getRawDamage() {
   int power = 0;
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += damages[i];
   }
   return power;
@@ -146,7 +146,7 @@ bool Projectile::noDamage() {
 void Projectile::setLost(bool state) { lost = state; }
 
 void Projectile::attack_single_target(Character * target, Adventure * adventure) {
-  for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     target->receiveAttack(damages[i], i, orientation);
     damages[i] -= (int) floor( ((float) damages[i]) * waste_per_hit);
   }
@@ -154,11 +154,11 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
 }
 
 void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {
-  for (auto target : characters) {
+  for(auto target : characters) {
     // TOCHECK should be ok
     int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
-    if (distance <= area) {
-      for (int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    if(distance <= area) {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         target->receiveAttack((int) floor( ((float) damages[i]) * distance * waste_per_tile_area), i, NO_ORIENTATION);
       }
       skill->activate(owner, target, adventure, overcharge);

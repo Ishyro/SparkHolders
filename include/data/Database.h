@@ -13,6 +13,7 @@
 #include "data/Effect.h"
 #include "data/Event.h"
 #include "data/Item.h"
+#include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/Speech.h"
@@ -23,11 +24,14 @@
 class Database {
   public:
     Database();
+    int getTargetFromMacro(const std::string macro);
+
     Attributes * getAttributes(const std::string attributes);
     Character * getCharacter(const std::string character);
     Effect * getEffect(const std::string effect);
     Event * getEvent(const std::string event);
     Item * getItem(const std::string item);
+    Map * getMap(const std::string map);
     Projectile * getProjectile(const std::string projectile);
     Quest * getQuest(const std::string quest);
     Speech * getSpeech(const std::string speech);
@@ -40,6 +44,7 @@ class Database {
     void addEffect(Effect * effect);
     void addEvent(Event * event);
     void addItem(Item * item);
+    void addMap(Map * map);
     void addProjectile(Projectile * projectile);
     void addQuest(Quest * quest);
     void addSpeech(Speech * speech);
@@ -48,11 +53,14 @@ class Database {
     void addWeapon(Weapon * weapon);
 
   private:
+    std::map<const std::string, int> macros;
+
     std::map<const std::string, Attributes * > attributes;
     std::map<const std::string, Character * > characters;
     std::map<const std::string, Effect * > effects;
     std::map<const std::string, Event * > events;
     std::map<const std::string, Item * > items;
+    std::map<const std::string, Map * > maps;
     std::map<const std::string, Projectile * > projectiles;
     std::map<const std::string, Quest * > quests;
     std::map<const std::string, Speech * > speechs;

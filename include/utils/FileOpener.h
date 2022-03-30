@@ -16,10 +16,11 @@
 
 #include "Values.h"
 
-namespace fileOpener {
+namespace FileOpener {
+  int IntegerReader(std::string integer, Database * database);
   std::map<const std::string,std::string> getValuesFromIni(std::string fileName);
   Tile * TileOpener(std::string fileName, Database * database);
-  Map MapOpener(std::string fileName, World world, Database * database);
+  Map * MapOpener(std::string fileName, Database * database);
 };
 
 #endif // _FILE_OPENER_H_

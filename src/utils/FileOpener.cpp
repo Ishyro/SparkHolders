@@ -1,18 +1,22 @@
 #include "utils/FileOpener.h"
 
-namespace fileOpener {
+namespace FileOpener {
+
+  int IntegerReader(std::string integer, Database * database) {
+    return database->getTargetFromMacro(integer);
+  }
 
   std::map<const std::string,std::string> getValuesFromIni(std::string fileName) {
     std::map<const std::string,std::string> result = std::map<const std::string,std::string>();
     std::fstream file;
     file.open(fileName, std::ios::in);
-    if (!file) {
+    if(!file) {
       std::cout << "ERROR FILE" << std::endl;
     }
     std::string line;
     std::string delimiter = "=";
     while(getline(file,line)) {
-      if (line.at(0) != '#') {
+      if(line.at(0) != '#') {
         while(std::isspace(line.at(0))) {
           line = line.substr(1, line.length());
         }
@@ -46,10 +50,10 @@ namespace fileOpener {
     return tile;
   }
 
-  Map MapOpener(std::string fileName, World world, Database * database) {
+  Map * MapOpener(std::string fileName, Database * database) {
     std::fstream file;
     file.open(fileName, std::ios::in);
-    if (!file) {
+    if(!file) {
       std::cout << "ERROR FILE" << std::endl;
     }
     std::string line;
@@ -64,7 +68,7 @@ namespace fileOpener {
     std::istringstream is(line);
     is >> std::boolalpha >> outside;
 
-    Map result = Map(name, sizeX, sizeY, outside);
+    Map * map = new Map(name, sizeX, sizeY, outside);
 
     for(int x = 0; x < sizeX; x++) {
       getline(file,line);
@@ -72,7 +76,7 @@ namespace fileOpener {
       for(int y = 0; y < sizeY; y++) {
         std::string tile;
         getline(is,tile,' ');
-        result.setTile(x,y,world.getTile(tile));
+        map->setTile(x,y,database->getTile(tile));
       }
     }
 
@@ -83,15 +87,16 @@ namespace fileOpener {
         std::string wall;
         getline(is,wall,' ');
         if(wall != "none") {
-          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, result.id);
+          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id);
           c->applyAttributes(database->getAttributes(wall));
-          result.addCharacter(c);
+          map->addCharacter(c);
         }
       }
     }
 
-    result.calculateLights();
+    map->calculateLights();
     file.close();
-    return result;
+    database->addMap(map);
+    return map;
   }
 }
