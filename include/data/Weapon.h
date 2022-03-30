@@ -35,6 +35,7 @@ class Weapon {
       int gold_value,
       bool use_ammo,
       int ammo_type,
+      std::list<Effect *> effects,
       int damages[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
@@ -44,7 +45,8 @@ class Weapon {
       weight(weight),
       gold_value(gold_value),
       use_ammo(use_ammo),
-      ammo_type(ammo_type)
+      ammo_type(ammo_type),
+      effects(effects)
     {
       current_capacity=0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

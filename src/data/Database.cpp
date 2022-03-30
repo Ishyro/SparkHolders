@@ -11,6 +11,7 @@ Database::Database() {
   items = std::map<const std::string, Item * >();
   maps = std::map<const std::string, Map * >();
   projectiles = std::map<const std::string, Projectile * >();
+  ammunitions = std::map<const std::string, Ammunition * >();
   quests = std::map<const std::string, Quest * >();
   skills = std::map<const std::string, Skill * >();
   speechs = std::map<const std::string, Speech * >();
@@ -215,6 +216,7 @@ Event * Database::getEvent(const std::string event) { return events.at(event); }
 Item * Database::getItem(const std::string item) { return items.at(item); }
 Map * Database::getMap(const std::string map) { return maps.at(map); }
 Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
+Ammunition * Database::getAmmunition(const std::string ammunition) { return ammunitions.at(ammunition); }
 Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
@@ -230,6 +232,7 @@ void Database::addEvent(Event * event) { events.insert(std::make_pair(event->nam
 void Database::addItem(Item * item) { items.insert(std::make_pair(item->name, item)); }
 void Database::addMap(Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
+void Database::addAmmunition(Ammunition * ammunition) { ammunitions.insert(std::make_pair(ammunition->projectile->name, ammunition)); }
 void Database::addQuest(Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addSpeech(Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }

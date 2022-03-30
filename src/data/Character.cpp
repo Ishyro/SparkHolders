@@ -352,7 +352,7 @@ void Character::useSkill(Skill * skill, Character * target, Adventure * adventur
 void Character::receiveAttack(int damage, int damage_type, int orientation) {
   if(orientation != NO_ORIENTATION) {
     int diff = abs(orientation - this->orientation) % 8;
-    if(diff >= 3 && diff <= 5) {
+    if(diff <= 1 && diff >= 7) {
       return receiveCriticalAttack(damage, damage_type);
     }
   }
@@ -361,7 +361,7 @@ void Character::receiveAttack(int damage, int damage_type, int orientation) {
   }
   if(damage_type == SOUL) {
     hp -= damage;
-    mana -= damage;
+    payMana(damage);
   }
   if(damage_type == TRUE) {
     hp -= damage;

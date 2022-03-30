@@ -36,7 +36,7 @@ class Character {
       const Speech * death_speech,
       const std::list<const Speech *> talking_speech,
       int type,
-      int ai_id,
+      std::string ai,
       long gold,
       long xp,
       int level,

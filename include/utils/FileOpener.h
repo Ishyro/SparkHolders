@@ -29,7 +29,6 @@
 #include "Values.h"
 
 namespace FileOpener {
-  int IntegerReader(std::string integer, Database * database);
   std::map<const std::string,std::string> getValuesFromIni(std::string fileName);
 
   void AttributesOpener(std::string fileName, Database * database);
@@ -39,6 +38,7 @@ namespace FileOpener {
   void ItemOpener(std::string fileName, Database * database);
   void MapOpener(std::string fileName, Database * database);
   void ProjectileOpener(std::string fileName, Database * database);
+  void AmmunitionOpener(std::string fileName, Database * database);
   void QuestOpener(std::string fileName, Database * database);
   void SkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);
