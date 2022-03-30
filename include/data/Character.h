@@ -60,7 +60,7 @@ class Character {
       death_speech(death_speech),
       talking_speech(talking_speech),
       type(type),
-      ai_id(ai_id),
+      ai(ai),
       gold(gold),
       xp(xp),
       visionRange(visionRange),
@@ -84,7 +84,7 @@ class Character {
       death_speech(from_database->death_speech),
       talking_speech(from_database->talking_speech),
       type(from_database->type),
-      ai_id(from_database->ai_id),
+      ai(from_database->ai),
       gold(from_database->gold),
       xp(from_database->xp),
       visionRange(from_database->visionRange),
@@ -193,7 +193,7 @@ class Character {
     int x;
     int y;
     int orientation;
-    int ai_id;
+    std::string ai;
     int hp;
     int maxHp;
     int mana;

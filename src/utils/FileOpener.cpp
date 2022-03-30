@@ -38,19 +38,17 @@ namespace FileOpener {
     return result;
   }
 
-  Tile * TileOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
-    std::string name = values.at("name");
-    std::istringstream is(values.at("untraversable"));
-    int light = stoi(values.at("light"));
-    bool untraversable;
-    is >> std::boolalpha >> untraversable;
-    Tile * tile = new Tile(name,untraversable,light);
-    database->addTile(tile);
-    return tile;
-  }
+  void AttributesOpener(std::string fileName, Database * database) {}
 
-  Map * MapOpener(std::string fileName, Database * database) {
+  void CharacterOpener(std::string fileName, Database * database) {}
+
+  void EffectOpener(std::string fileName, Database * database) {}
+
+  void EventOpener(std::string fileName, Database * database) {}
+
+  void ItemOpener(std::string fileName, Database * database) {}
+
+  void MapOpener(std::string fileName, Database * database) {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
@@ -97,6 +95,28 @@ namespace FileOpener {
     map->calculateLights();
     file.close();
     database->addMap(map);
-    return map;
   }
+
+  void ProjectileOpener(std::string fileName, Database * database) {}
+
+  void QuestOpener(std::string fileName, Database * database) {}
+
+  void SkillOpener(std::string fileName, Database * database) {}
+
+  void SpeechOpener(std::string fileName, Database * database) {}
+
+  void TileOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::string name = values.at("name");
+    std::istringstream is(values.at("untraversable"));
+    int light = stoi(values.at("light"));
+    bool untraversable;
+    is >> std::boolalpha >> untraversable;
+    Tile * tile = new Tile(name,untraversable,light);
+    database->addTile(tile);
+  }
+
+  void WayOpener(std::string fileName, Database * database) {}
+
+  void WeaponOpener(std::string fileName, Database * database) {}
 }

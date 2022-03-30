@@ -5,6 +5,7 @@
 
 // data
 
+class AI;
 class Adventure;
 class Attributes;
 class Character;

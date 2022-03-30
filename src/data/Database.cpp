@@ -3,6 +3,7 @@
 Database::Database() {
   macros = std::map<const std::string, int>();
 
+  ais = std::map<const std::string, AI * >();
   attributes = std::map<const std::string, Attributes * >();
   characters = std::map<const std::string, Character * >();
   effects = std::map<const std::string, Effect * >();
@@ -11,6 +12,7 @@ Database::Database() {
   maps = std::map<const std::string, Map * >();
   projectiles = std::map<const std::string, Projectile * >();
   quests = std::map<const std::string, Quest * >();
+  skills = std::map<const std::string, Skill * >();
   speechs = std::map<const std::string, Speech * >();
   tiles = std::map<const std::string, Tile * >();
   ways = std::map<const std::string, Way * >();
@@ -205,6 +207,7 @@ Database::Database() {
 
 int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
 
+AI * Database::getAI(const std::string ai) { return ais.at(ai); }
 Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
 Character * Database::getCharacter(const std::string character) { return characters.at(character); }
 Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
@@ -213,11 +216,13 @@ Item * Database::getItem(const std::string item) { return items.at(item); }
 Map * Database::getMap(const std::string map) { return maps.at(map); }
 Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
 Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
+Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
 Way * Database::getWay(const std::string way) { return ways.at(way); }
 Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
 
+void Database::addAI(AI * ai) { ais.insert(std::make_pair(ai->name, ai)); }
 void Database::addAttributes(Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
 void Database::addCharacter(Character * character) { characters.insert(std::make_pair(character->name, character)); }
 void Database::addEffect(Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
@@ -226,6 +231,7 @@ void Database::addItem(Item * item) { items.insert(std::make_pair(item->name, it
 void Database::addMap(Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
 void Database::addQuest(Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
+void Database::addSkill(Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addSpeech(Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addTile(Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
 void Database::addWay(Way * way) { ways.insert(std::make_pair(way->name, way)); }

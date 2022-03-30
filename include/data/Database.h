@@ -8,6 +8,7 @@
 
 #include "Values.h"
 
+#include "ai/AI.h"
 #include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
@@ -16,6 +17,7 @@
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
+#include "data/skills/Skill.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
@@ -26,6 +28,7 @@ class Database {
     Database();
     int getTargetFromMacro(const std::string macro);
 
+    AI * getAI(const std::string ai);
     Attributes * getAttributes(const std::string attributes);
     Character * getCharacter(const std::string character);
     Effect * getEffect(const std::string effect);
@@ -34,11 +37,13 @@ class Database {
     Map * getMap(const std::string map);
     Projectile * getProjectile(const std::string projectile);
     Quest * getQuest(const std::string quest);
+    Skill * getSkill(const std::string skill);
     Speech * getSpeech(const std::string speech);
     Tile * getTile(const std::string tile);
     Way * getWay(const std::string way);
     Weapon * getWeapon(const std::string weapon);
 
+    void addAI(AI * ai);
     void addAttributes(Attributes * attributes);
     void addCharacter(Character * character);
     void addEffect(Effect * effect);
@@ -47,6 +52,7 @@ class Database {
     void addMap(Map * map);
     void addProjectile(Projectile * projectile);
     void addQuest(Quest * quest);
+    void addSkill(Skill * skill);
     void addSpeech(Speech * speech);
     void addTile(Tile * tile);
     void addWay(Way * way);
@@ -55,6 +61,7 @@ class Database {
   private:
     std::map<const std::string, int> macros;
 
+    std::map<const std::string, AI * > ais;
     std::map<const std::string, Attributes * > attributes;
     std::map<const std::string, Character * > characters;
     std::map<const std::string, Effect * > effects;
@@ -63,6 +70,7 @@ class Database {
     std::map<const std::string, Map * > maps;
     std::map<const std::string, Projectile * > projectiles;
     std::map<const std::string, Quest * > quests;
+    std::map<const std::string, Skill * > skills;
     std::map<const std::string, Speech * > speechs;
     std::map<const std::string, Tile * > tiles;
     std::map<const std::string, Way * > ways;
