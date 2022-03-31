@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "data/Adventure.h"
 #include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
@@ -23,13 +24,17 @@
 #include "data/Tile.h"
 #include "data/Way.h"
 #include "data/Weapon.h"
+#include "data/World.h"
 
 #include "data/Database.h"
 
 #include "Values.h"
 
 namespace FileOpener {
-  std::map<const std::string,std::string> getValuesFromIni(std::string fileName);
+  std::map<const std::string,std::string> getValuesFromFile(std::string fileName);
+
+  Adventure * AdventureOpener(std::string fileName, Database * database);
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, Database * database);
 
   void AttributesOpener(std::string fileName, Database * database);
   void CharacterOpener(std::string fileName, Database * database);
@@ -45,6 +50,9 @@ namespace FileOpener {
   void TileOpener(std::string fileName, Database * database);
   void WayOpener(std::string fileName, Database * database);
   void WeaponOpener(std::string fileName, Database * database);
+
+  void FileOpener(std::string fileName, Database * database);
+  Database * DatabaseOpener(std::string fileName);
 };
 
 #endif // _FILE_OPENER_H_

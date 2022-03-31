@@ -23,22 +23,22 @@ class Adventure {
     Adventure(
       std::string name,
       int maxPlayers,
+      Database * database,
       World * world,
-      long tick,
-      std::list<Character *> party,
-      std::list<Character *> preserved_players,
       std::list<Quest *> quests,
       std::list<Event *> events
     ):
       name(name),
       maxPlayers(maxPlayers),
+      database(database),
       world(world),
-      tick(tick),
-      party(party),
-      preserved_players(preserved_players),
       quests(quests),
       events(events)
-    {}
+    {
+      party = std::list<Character *>();
+      preserved_players = std::list<Character *>();
+      tick = 0;
+    }
     /*
     Adventure(Save * save) {
       // TODO INI_READER

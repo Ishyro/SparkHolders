@@ -94,7 +94,7 @@ long Character::getLevel() { return level; }
 
 long Character::getCurrentMapId() { return current_map_id; }
 
-std::list<Item *> Character::getStuff() { return stuff; }
+std::list<Item *> Character::getItems() { return items; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
@@ -190,7 +190,7 @@ void Character::equip(Item * to_equip) {
       for(auto e : item->effects) {
         removeEffect(e);
       }
-      stuff.push_front(item);
+      items.push_front(item);
     }
     for(auto e : to_equip->effects) {
       addEffect(e);
@@ -228,7 +228,7 @@ void Character::unequip(int type) {
     for(auto e : old_item->effects) {
       removeEffect(e);
     }
-    stuff.push_front(old_item);
+    items.push_front(old_item);
   }
 }
 
@@ -265,10 +265,10 @@ void Character::setWay(Way * way) {
   }
 }
 
-void Character::addItem(Item * i) { stuff.push_front(i); }
+void Character::addItem(Item * i) { items.push_front(i); }
 void Character::addWeapon(Weapon * w) { weapons.push_front(w); }
 void Character::addAmmunition(Ammunition * a) { ammunitions.push_front(a); }
-void Character::removeItem(Item * i) { stuff.remove(i); }
+void Character::removeItem(Item * i) { items.remove(i); }
 void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
 void Character::removeAmmunition(Ammunition * a) { ammunitions.remove(a); }
 

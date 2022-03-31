@@ -28,61 +28,57 @@ class Character {
     const long id = ++character::id_cpt;
     const std::string name;
     const Speech * death_speech;
-    const std::list<const Speech *> talking_speech;
+    const std::list<const Speech *> talking_speechs;
     const int type;
     // not instancied character constructor
     Character(
       std::string name,
+      bool player_character,
       const Speech * death_speech,
-      const std::list<const Speech *> talking_speech,
+      const std::list<const Speech *> talking_speechs,
       int type,
       std::string ai,
       long gold,
       long xp,
       int level,
-      int visionRange,
-      int visionPower,
-      int detectionRange,
-      std::string team,
-      std::list<Item *> stuff,
+      std::list<Item *> items,
       std::list<Weapon *> weapons,
       std::list<Ammunition *> ammunitions,
       std::list<Effect *> effects,
-      std::list<Skill *> skills,
+      std::list<Skill *> skills
+    ):
+      name(name),
+      player_character(player_character),
+      death_speech(death_speech),
+      talking_speechs(talking_speechs),
+      type(type),
+      ai(ai),
+      gold(gold),
+      xp(xp),
+      level(level),
+      items(items),
+      weapons(weapons),
+      ammunitions(ammunitions),
+      effects(effects),
+      skills(skills)
+    {}
+    Character(
+      Character * from_database,
+      int x,
+      int y,
+      int orientation,
+      int current_map_id,
+      std::string team,
       Way * race,
       Way * origin,
       Way * culture,
       Way * religion,
       Way * profession
     ):
-      name(name),
-      player_character(player_character),
-      death_speech(death_speech),
-      talking_speech(talking_speech),
-      type(type),
-      ai(ai),
-      gold(gold),
-      xp(xp),
-      visionRange(visionRange),
-      visionPower(visionPower),
-      detectionRange(detectionRange),
-      stuff(stuff),
-      weapons(weapons),
-      ammunitions(ammunitions),
-      effects(effects),
-      skills(skills),
-      race(race),
-      origin(origin),
-      culture(culture),
-      religion(religion),
-      profession(profession)
-    {}
-    Character(Character * from_database, int x, int y, int orientation, int current_map_id
-    ):
       name(from_database->name),
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
-      talking_speech(from_database->talking_speech),
+      talking_speechs(from_database->talking_speechs),
       type(from_database->type),
       ai(from_database->ai),
       gold(from_database->gold),
@@ -90,20 +86,21 @@ class Character {
       visionRange(from_database->visionRange),
       visionPower(from_database->visionPower),
       detectionRange(from_database->detectionRange),
-      stuff(from_database->stuff),
+      items(from_database->items),
       weapons(from_database->weapons),
       ammunitions(from_database->ammunitions),
       effects(from_database->effects),
       skills(from_database->skills),
-      race(from_database->race),
-      origin(from_database->origin),
-      culture(from_database->culture),
-      religion(from_database->religion),
-      profession(from_database->profession),
       x(x),
       y(y),
       orientation(orientation),
-      current_map_id(current_map_id)
+      current_map_id(current_map_id),
+      team(team),
+      race(race),
+      origin(origin),
+      culture(culture),
+      religion(religion),
+      profession(profession)
     {}
     void applyAttributes(const Attributes * attributes);
     bool isAlive();
@@ -127,7 +124,7 @@ class Character {
     long getXP();
     long getLevel();
 
-    std::list<Item *> getStuff();
+    std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
@@ -213,7 +210,7 @@ class Character {
     std::string team;
 
     Gear * gear;
-    std::list<Item *> stuff;
+    std::list<Item *> items;
     std::list<Weapon *> weapons;
     std::list<Ammunition *> ammunitions;
     std::list<Effect *> effects;

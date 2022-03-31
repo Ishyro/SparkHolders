@@ -13,18 +13,16 @@
 class World {
   public:
     const std::string name;
-    World(std::string name, std::list<Tile *> tiles):name(name),tiles(tiles) {
+    World(std::string name):name(name) {
       maps = std::map<const long, Map *>();
       links = std::list<MapLink *>();
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
     Map * getMap(long map_id);
-    Tile * getTile(std::string name);
   private:
     std::map<const long, Map *> maps;
     std::list<MapLink *> links;
-    std::list<Tile *> tiles;
 };
 
 #endif // _WORLD_H_

@@ -2,7 +2,7 @@
 
 namespace FileOpener {
 
-  std::map<const std::string,std::string> getValuesFromIni(std::string fileName) {
+  std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
     std::map<const std::string,std::string> result = std::map<const std::string,std::string>();
     std::fstream file;
     file.open(fileName, std::ios::in);
@@ -12,15 +12,15 @@ namespace FileOpener {
     std::string line;
     std::string delimiter = "=";
     while(getline(file,line)) {
+      while(std::isspace(line.at(0))) {
+        line = line.substr(1, line.length());
+      }
       if(line.at(0) != '#') {
-        while(std::isspace(line.at(0))) {
-          line = line.substr(1, line.length());
-        }
         std::string key = line.substr(0, line.find(delimiter));
         while(std::isspace(key.at(key.length()))) {
           key = key.substr(0, key.length() - 1);
         }
-        std::string value = line.substr(line.find(delimiter), line.length());
+        std::string value = line.substr(line.find(delimiter) + 1, line.length());
         while(std::isspace(value.at(0))) {
           value = value.substr(1, value.length());
         }
@@ -34,8 +34,54 @@ namespace FileOpener {
     return result;
   }
 
+  Adventure * AdventureOpener(std::string fileName) {
+    std::string delimiter = ".";
+    std::string dataFile = fileName.substr(0, fileName.find(delimiter) + 1) + "data";
+    Database * database = DatabaseOpener(dataFile);
+
+    std::fstream file;
+    file.open(fileName, std::ios::in);
+    if(!file) {
+      std::cout << "ERROR FILE" << std::endl;
+    }
+    std::string line;
+    std::string name;
+    // first line is the adventure name
+    getline(file, name);
+    World * world = new World(name);
+    std::list<Quest *> quests = std::list<Quest *>();
+    std::list<Event *> events = std::list<Event *>();
+
+    while(getline(file,line)) {
+      while(std::isspace(line.at(0))) {
+        line = line.substr(1, line.length());
+      }
+      if(line != "" && line.at(0) != '#') {
+        std::string keyword = line.substr(0, line.find(delimiter));
+        while(std::isspace(keyword.at(keyword.length()))) {
+          keyword = keyword.substr(0, keyword.length() - 1);
+        }
+        std::string command = line.substr(line.find(delimiter) + 1, line.length());
+        while(std::isspace(command.at(0))) {
+          command = command.substr(1, command.length());
+        }
+        while(std::isspace(command.at(command.length()))) {
+          command = command.substr(0, command.length() - 1);
+        }
+        executeCommand(keyword, command, world, quests, events, database);
+      }
+    }
+    file.close();
+    Adventure * adventure = new Adventure(name, 10, database, world, quests, events);
+    return adventure;
+  }
+
+  void executeCommand(std::string keyword, std::string command, World * world, Database * database) {
+
+  }
+
   void AttributesOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
@@ -45,47 +91,84 @@ namespace FileOpener {
     int baseVisionRange = stoi(values.at("baseVisionRange"));
     int baseVisionPower = stoi(values.at("baseVisionPower"));
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
-    Item * head = database->getItem(values.at("head"));
-    Item * arms = database->getItem(values.at("arms"));
-    Item * legs = database->getItem(values.at("legs"));
-    Item * body = database->getItem(values.at("body"));
-    Item * left_ring = database->getItem(values.at("left_ring"));
-    Item * right_ring = database->getItem(values.at("right_ring"));
-    Item * amulet = database->getItem(values.at("amulet"));
-    Weapon * weapon = database->getWeapon(values.at("weapon"));
-    Ammunition * ammunition = database->getAmmunition(values.at("ammunition"));
-    long number = stol(values.at("number"));
-    ammunition->number=number;
+    std::string head_str = values.at("head");
+    Item * head = head_str != "none" ? database->getItem(head_str) : nullptr;
+    std::string arms_str = values.at("arms");
+    Item * arms = arms_str != "none" ? database->getItem(arms_str) : nullptr;
+    std::string legs_str = values.at("legs");
+    Item * legs = legs_str != "none" ? database->getItem(legs_str) : nullptr;
+    std::string body_str = values.at("body");
+    Item * body = body_str != "none" ? database->getItem(body_str) : nullptr;
+    std::string left_ring_str = values.at("left_ring");
+    Item * left_ring = left_ring_str != "none" ? database->getItem(left_ring_str) : nullptr;
+    std::string right_ring_str = values.at("right_ring");
+    Item * right_ring = right_ring_str != "none" ? database->getItem(right_ring_str) : nullptr;
+    std::string amulet_str = values.at("amulet");
+    Item * amulet = amulet_str != "none" ? database->getItem(amulet_str) : nullptr;
+    std::string weapon_str = values.at("weapon");
+    Weapon * weapon = weapon_str != "none" ? database->getWeapon(weapon_str) : nullptr;
+    std::string ammunition_str = values.at("ammunition");
+    Ammunition * ammunition = nullptr;
+    if(ammunition_str != "none") {
+      ammunition = database->getAmmunition(ammunition_str);
+      long number = stol(values.at("number"));
+      ammunition->number=number;
+    }
     Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, weapon, ammunition);
     Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, gear);
     database->addAttributes(attributes);
   }
 
   void CharacterOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    /*
-    player_character(player_character),
-    death_speech(death_speech),
-    talking_speech(talking_speech),
-    type(type),
-    ai(ai),
-    gold(gold),
-    xp(xp),
-    visionRange(visionRange),
-    visionPower(visionPower),
-    detectionRange(detectionRange),
-    stuff(stuff),
-    weapons(weapons),
-    ammunitions(ammunitions),
-    effects(effects),
-    skills(skills),
-    race(race),
-    origin(origin),
-    culture(culture),
-    religion(religion),
-    profession(profession)
-    */
+    std::istringstream is(values.at("player_character"));
+    bool player_character;
+    is >> std::boolalpha >> player_character;
+    Speech * death_speech = database->getSpeech(values.at("death_speech"));
+    std::list<const Speech *> talking_speechs = std::list<const Speech *>();
+    std::istringstream is_2(values.at("talking_speechs"));
+    std::string talking_speech;
+    while(getline(is_2, talking_speech, '%')) {
+      talking_speechs.push_back(database->getSpeech(talking_speech));
+    }
+    int type = database->getTargetFromMacro(values.at("type"));
+    std::string ai = values.at("ai");
+    long gold = stol(values.at("gold"));
+    long xp = stol(values.at("xp"));
+    int level = stoi(values.at("level"));
+    std::list<Item *> items = std::list<Item *>();
+    std::istringstream is_3(values.at("items"));
+    std::string item;
+    while(getline(is_3, item, '%')) {
+      items.push_back(database->getItem(item));
+    }
+    std::list<Weapon *> weapons = std::list<Weapon *>();
+    std::istringstream is_4(values.at("weapons"));
+    std::string weapon;
+    while(getline(is_4, weapon, '%')) {
+      weapons.push_back(database->getWeapon(weapon));
+    }
+    std::list<Ammunition *> ammunitions = std::list<Ammunition *>();
+    std::istringstream is_5(values.at("ammunitions"));
+    std::string ammunition;
+    while(getline(is_5, ammunition, '%')) {
+      ammunitions.push_back(database->getAmmunition(ammunition));
+    }
+    std::list<Effect *> effects = std::list<Effect *>();
+    std::istringstream is_6(values.at("effects"));
+    std::string effect;
+    while(getline(is_6, effect, '%')) {
+      effects.push_back(database->getEffect(effect));
+    }
+    std::list<Skill *> skills = std::list<Skill *>();
+    std::istringstream is_7(values.at("skills"));
+    std::string skill;
+    while(getline(is_7, skill, '%')) {
+      skills.push_back(database->getSkill(skill));
+    }
+    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, ai, gold, xp, level, items, weapons, ammunitions, effects, skills);
+    database->addCharacter(character);
   }
 
   void EffectOpener(std::string fileName, Database * database) {}
@@ -93,7 +176,7 @@ namespace FileOpener {
   void EventOpener(std::string fileName, Database * database) {}
 
   void ItemOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::istringstream is(values.at("equipable"));
     bool equipable;
@@ -106,7 +189,7 @@ namespace FileOpener {
     std::list<Effect *> effects = std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
     std::string effect;
-    while(getline(is_3,effect,'%')) {
+    while(getline(is_3, effect, '%')) {
       effects.push_front(database->getEffect(effect));
     }
     float damage_reductions[DAMAGE_TYPE_NUMBER];
@@ -144,24 +227,25 @@ namespace FileOpener {
 
     Map * map = new Map(name, sizeX, sizeY, outside);
 
-    for(int x = 0; x < sizeX; x++) {
+    for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
       std::istringstream is(line);
-      for(int y = 0; y < sizeY; y++) {
+      for(int x = sizeX - 1; x >= 0; x--) {
         std::string tile;
         getline(is,tile,' ');
         map->setTile(x,y,database->getTile(tile));
       }
     }
 
-    for(int x = 0; x < sizeX; x++) {
+    for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
       std::istringstream is(line);
-      for(int y = 0; y < sizeY; y++) {
+      for(int x = sizeX - 1; x >= 0; x--) {
         std::string wall;
-        getline(is,wall,' ');
+        getline(is, wall, ' ');
         if(wall != "none") {
-          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id);
+          // WARNING: Segfault if a wall level up
+          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id, "none", nullptr, nullptr, nullptr, nullptr, nullptr);
           c->applyAttributes(database->getAttributes(wall));
           map->addCharacter(c);
         }
@@ -184,7 +268,7 @@ namespace FileOpener {
   void SpeechOpener(std::string fileName, Database * database) {}
 
   void TileOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::istringstream is(values.at("untraversable"));
     bool untraversable;
@@ -194,10 +278,33 @@ namespace FileOpener {
     database->addTile(tile);
   }
 
-  void WayOpener(std::string fileName, Database * database) {}
+  void WayOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int type = stoi(values.at("type"));
+    int hpIncr = stoi(values.at("hpIncr"));
+    int manaIncr = stoi(values.at("manaIncr"));
+    int armorIncr = stoi(values.at("armorIncr"));
+    int soulBurnIncr = stoi(values.at("soulBurnIncr"));
+    int flowIncr = stoi(values.at("flowIncr"));
+    std::list<Effect *> effects = std::list<Effect *>();
+    std::istringstream is_1(values.at("effects"));
+    std::string effect;
+    while(getline(is_1, effect, '%')) {
+      effects.push_front(database->getEffect(effect));
+    }
+    std::list<Skill *> skills = std::list<Skill *>();
+    std::istringstream is_2(values.at("skills"));
+    std::string skill;
+    while(getline(is_2, skill, '%')) {
+      skills.push_front(database->getSkill(skill));
+    }
+    Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, effects, skills);
+    database->addWay(way);
+  }
 
   void WeaponOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromIni(fileName);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::istringstream is(values.at("melee"));
     bool melee;
@@ -213,7 +320,7 @@ namespace FileOpener {
     std::list<Effect *> effects = std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
     std::string effect;
-    while(getline(is_3,effect,'%')) {
+    while(getline(is_3, effect, '%')) {
       effects.push_front(database->getEffect(effect));
     }
     int damages[DAMAGE_TYPE_NUMBER];
@@ -229,5 +336,81 @@ namespace FileOpener {
     damages[SOUL] = stoi(values.at("SOUL"));
     Weapon * weapon = new Weapon(name, melee, range, type, weight, gold_value, use_ammo, ammo_type, effects, damages);
     database->addWeapon(weapon);
+  }
+
+  void FileOpener(std::string fileName, Database * database) {
+    std::fstream file;
+    std::string delimiter = "/";
+    std::string last_folder;
+    std::string current_path = fileName;
+    do {
+      last_folder = current_path.substr(current_path.at(0), current_path.find(delimiter));
+      current_path = current_path.substr(current_path.find(delimiter) + 1, current_path.length());
+    } while(current_path != "");
+    if(last_folder == "attributes") {
+      AttributesOpener(fileName, database);
+    }
+    else if(last_folder == "characters") {
+      CharacterOpener(fileName, database);
+    }
+    else if(last_folder == "effects") {
+      EffectOpener(fileName, database);
+    }
+    else if(last_folder == "events") {
+      EventOpener(fileName, database);
+    }
+    else if(last_folder == "items") {
+      ItemOpener(fileName, database);
+    }
+    else if(last_folder == "maps") {
+      MapOpener(fileName, database);
+    }
+    else if(last_folder == "projectiles") {
+      ProjectileOpener(fileName, database);
+    }
+    else if(last_folder == "ammunitions") {
+      AmmunitionOpener(fileName, database);
+    }
+    else if(last_folder == "quests") {
+      QuestOpener(fileName, database);
+    }
+    else if(last_folder == "skills") {
+      SkillOpener(fileName, database);
+    }
+    else if(last_folder == "speechs") {
+      SpeechOpener(fileName, database);
+    }
+    else if(last_folder == "tiles") {
+      TileOpener(fileName, database);
+    }
+    else if(last_folder == "ways") {
+      WayOpener(fileName, database);
+    }
+    else if(last_folder == "weapons") {
+      WeaponOpener(fileName, database);
+    }
+  }
+
+  Database * DatabaseOpener(std::string fileName) {
+    Database * database = new Database();
+    std::fstream file;
+    file.open(fileName, std::ios::in);
+    if(!file) {
+      std::cout << "ERROR FILE" << std::endl;
+    }
+    std::string line;
+    while(getline(file,line)) {
+      while(std::isspace(line.at(0))) {
+        line = line.substr(1, line.length());
+      }
+      if(line.at(0) != '#') {
+        while(std::isspace(line.at(line.length()))) {
+          line = line.substr(0, line.length() - 1);
+        }
+        FileOpener(line, database);
+      }
+    }
+    file.close();
+    return database;
   }
 }

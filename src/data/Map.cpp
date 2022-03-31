@@ -99,7 +99,7 @@ void Map::killCharacter(Character * victim, Character * killer) {
   for(auto w : victim->getWeapons()) {
     loot->weapons.push_front(w);
   }
-  for(auto i : victim->getStuff()) {
+  for(auto i : victim->getItems()) {
     loot->items.push_front(i);
   }
   loot->type = CORPSE;
