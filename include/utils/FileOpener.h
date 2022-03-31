@@ -33,7 +33,7 @@
 namespace FileOpener {
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName);
 
-  Adventure * AdventureOpener(std::string fileName, Database * database);
+  Adventure * AdventureOpener(std::string fileName);
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, Database * database);
 
   void AttributesOpener(std::string fileName, Database * database);

@@ -9,3 +9,12 @@ void World::addMapLink(MapLink * link) {
 }
 
 Map * World::getMap(long map_id) { return maps.at(map_id); }
+
+Map * World::getMap(std::string name) {
+    for (auto pair = maps.begin(); pair != maps.end(); pair++) {
+      if(pair->second->name == name) {
+        return pair->second;
+      }
+    }
+    return nullptr;
+}

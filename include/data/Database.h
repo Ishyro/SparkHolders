@@ -26,58 +26,58 @@
 class Database {
   public:
     Database();
-    int getTargetFromMacro(const std::string macro);
+    const int getTargetFromMacro(const std::string macro);
 
-    AI * getAI(const std::string ai);
-    Attributes * getAttributes(const std::string attributes);
-    Character * getCharacter(const std::string character);
-    Effect * getEffect(const std::string effect);
-    Event * getEvent(const std::string event);
-    Item * getItem(const std::string item);
-    Map * getMap(const std::string map);
-    Projectile * getProjectile(const std::string projectile);
-    Ammunition * getAmmunition(const std::string ammunition);
-    Quest * getQuest(const std::string quest);
-    Skill * getSkill(const std::string skill);
-    Speech * getSpeech(const std::string speech);
-    Tile * getTile(const std::string tile);
-    Way * getWay(const std::string way);
-    Weapon * getWeapon(const std::string weapon);
+    const AI * getAI(const std::string ai);
+    const Attributes * getAttributes(const std::string attributes);
+    const Character * getCharacter(const std::string character);
+    const Effect * getEffect(const std::string effect);
+    const Event * getEvent(const std::string event);
+    const Item * getItem(const std::string item);
+    const Map * getMap(const std::string map);
+    const Projectile * getProjectile(const std::string projectile);
+    const Ammunition * getAmmunition(const std::string ammunition);
+    const Quest * getQuest(const std::string quest);
+    const Skill * getSkill(const std::string skill);
+    const Speech * getSpeech(const std::string speech);
+    const Tile * getTile(const std::string tile);
+    const Way * getWay(const std::string way);
+    const Weapon * getWeapon(const std::string weapon);
 
-    void addAI(AI * ai);
-    void addAttributes(Attributes * attributes);
-    void addCharacter(Character * character);
-    void addEffect(Effect * effect);
-    void addEvent(Event * event);
-    void addItem(Item * item);
-    void addMap(Map * map);
-    void addProjectile(Projectile * projectile);
-    void addAmmunition(Ammunition * ammunition);
-    void addQuest(Quest * quest);
-    void addSkill(Skill * skill);
-    void addSpeech(Speech * speech);
-    void addTile(Tile * tile);
-    void addWay(Way * way);
-    void addWeapon(Weapon * weapon);
+    void addAI(const AI * ai);
+    void addAttributes(const Attributes * attributes);
+    void addCharacter(const Character * character);
+    void addEffect(const Effect * effect);
+    void addEvent(const Event * event);
+    void addItem(const Item * item);
+    void addMap(const Map * map);
+    void addProjectile(const Projectile * projectile);
+    void addAmmunition(const Ammunition * ammunition);
+    void addQuest(const Quest * quest);
+    void addSkill(const Skill * skill);
+    void addSpeech(const Speech * speech);
+    void addTile(const Tile * tile);
+    void addWay(const Way * way);
+    void addWeapon(const Weapon * weapon);
 
   private:
-    std::map<const std::string, int> macros;
+    std::map<const std::string,const int> macros;
 
-    std::map<const std::string, AI * > ais;
-    std::map<const std::string, Attributes * > attributes;
-    std::map<const std::string, Character * > characters;
-    std::map<const std::string, Effect * > effects;
-    std::map<const std::string, Event * > events;
-    std::map<const std::string, Item * > items;
-    std::map<const std::string, Map * > maps;
-    std::map<const std::string, Projectile * > projectiles;
-    std::map<const std::string, Ammunition * > ammunitions;
-    std::map<const std::string, Quest * > quests;
-    std::map<const std::string, Skill * > skills;
-    std::map<const std::string, Speech * > speechs;
-    std::map<const std::string, Tile * > tiles;
-    std::map<const std::string, Way * > ways;
-    std::map<const std::string, Weapon * > weapons;
+    std::map<const std::string,const AI * > ais;
+    std::map<const std::string,const Attributes * > attributes;
+    std::map<const std::string,const Character * > characters;
+    std::map<const std::string,const Effect * > effects;
+    std::map<const std::string,const Event * > events;
+    std::map<const std::string,const Item * > items;
+    std::map<const std::string,const Map * > maps;
+    std::map<const std::string,const Projectile * > projectiles;
+    std::map<const std::string,const Ammunition * > ammunitions;
+    std::map<const std::string,const Quest * > quests;
+    std::map<const std::string,const Skill * > skills;
+    std::map<const std::string,const Speech * > speechs;
+    std::map<const std::string,const Tile * > tiles;
+    std::map<const std::string,const Way * > ways;
+    std::map<const std::string,const Weapon * > weapons;
 
 };
 

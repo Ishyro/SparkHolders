@@ -53,6 +53,22 @@ class Weapon {
         this->damages[i] = damages[i];
       }
     }
+    Weapon(const Weapon * weapon):
+      name(weapon->name),
+      melee(weapon->melee),
+      range(weapon->range),
+      type(weapon->type),
+      weight(weapon->weight),
+      gold_value(weapon->gold_value),
+      use_ammo(weapon->use_ammo),
+      ammo_type(weapon->ammo_type),
+      effects(weapon->effects),
+      current_capacity(weapon->current_capacity)
+    {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        damages[i] = weapon->damages[i];
+      }
+    }
     int getCurrentCapacity();
     int getRawDamage();
     int getDamageType(int damage_type);

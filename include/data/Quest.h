@@ -43,6 +43,14 @@ class Quest {
       steps(steps),
       event(event)
     {}
+    Quest(const Quest * quest):
+      name(quest->name),
+      holdEvent(quest->holdEvent),
+      items_rewards(quest->items_rewards),
+      weapons_rewards(quest->weapons_rewards),
+      steps(quest->steps),
+      event(quest->event)
+    {}
     void getCurrentStep();
     bool stepDone(Adventure * adventure);
     bool questDone();

@@ -45,6 +45,19 @@ class Event {
       speech(speech),
       effects(effects)
     {}
+    Event(const Event * event):
+      name(event->name),
+      type(event->type),
+      character_apparition_type(event->character_apparition_type),
+      tick(event->tick),
+      hasQuest(event->hasQuest),
+      quest(event->quest),
+      characters(event->characters),
+      maps(event->maps),
+      links(event->links),
+      speech(event->speech),
+      effects(event->effects)
+    {}
     void activate(Adventure * adventure);
   private:
     Quest * quest;

@@ -43,6 +43,18 @@ class Item {
         this->damage_reductions[i] = damage_reductions[i];
       }
     }
+    Item(const Item * item):
+      name(item->name),
+      equipable(item->equipable),
+      consumable(item->consumable),
+      type(item->type),
+      gold_value(item->gold_value),
+      effects(item->effects)
+    {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        damage_reductions[i] = item->damage_reductions[i];
+      }
+    }
     float getDamageReduction(int damage_type);
   private:
     static long id_cpt;

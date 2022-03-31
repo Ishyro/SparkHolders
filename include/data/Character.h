@@ -63,7 +63,7 @@ class Character {
       skills(skills)
     {}
     Character(
-      Character * from_database,
+      const Character * from_database,
       int x,
       int y,
       int orientation,

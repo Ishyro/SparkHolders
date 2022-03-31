@@ -1,23 +1,23 @@
 #include "data/Database.h"
 
 Database::Database() {
-  macros = std::map<const std::string, int>();
+  macros = std::map<const std::string,const int>();
 
-  ais = std::map<const std::string, AI * >();
-  attributes = std::map<const std::string, Attributes * >();
-  characters = std::map<const std::string, Character * >();
-  effects = std::map<const std::string, Effect * >();
-  events = std::map<const std::string, Event * >();
-  items = std::map<const std::string, Item * >();
-  maps = std::map<const std::string, Map * >();
-  projectiles = std::map<const std::string, Projectile * >();
-  ammunitions = std::map<const std::string, Ammunition * >();
-  quests = std::map<const std::string, Quest * >();
-  skills = std::map<const std::string, Skill * >();
-  speechs = std::map<const std::string, Speech * >();
-  tiles = std::map<const std::string, Tile * >();
-  ways = std::map<const std::string, Way * >();
-  weapons = std::map<const std::string, Weapon * >();
+  ais = std::map<const std::string,const AI * >();
+  attributes = std::map<const std::string,const Attributes * >();
+  characters = std::map<const std::string,const Character * >();
+  effects = std::map<const std::string,const Effect * >();
+  events = std::map<const std::string,const Event * >();
+  items = std::map<const std::string,const Item * >();
+  maps = std::map<const std::string,const Map * >();
+  projectiles = std::map<const std::string,const Projectile * >();
+  ammunitions = std::map<const std::string,const Ammunition * >();
+  quests = std::map<const std::string,const Quest * >();
+  skills = std::map<const std::string,const Skill * >();
+  speechs = std::map<const std::string,const Speech * >();
+  tiles = std::map<const std::string,const Tile * >();
+  ways = std::map<const std::string,const Way * >();
+  weapons = std::map<const std::string,const Weapon * >();
 
   macros.insert(std::make_pair("INSTANT",INSTANT));
   macros.insert(std::make_pair("INFINITE",INFINITE));
@@ -206,36 +206,36 @@ Database::Database() {
   macros.insert(std::make_pair("ERROR",ERROR));
 }
 
-int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
+const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
 
-AI * Database::getAI(const std::string ai) { return ais.at(ai); }
-Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
-Character * Database::getCharacter(const std::string character) { return characters.at(character); }
-Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
-Event * Database::getEvent(const std::string event) { return events.at(event); }
-Item * Database::getItem(const std::string item) { return items.at(item); }
-Map * Database::getMap(const std::string map) { return maps.at(map); }
-Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
-Ammunition * Database::getAmmunition(const std::string ammunition) { return ammunitions.at(ammunition); }
-Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
-Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
-Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
-Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
-Way * Database::getWay(const std::string way) { return ways.at(way); }
-Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
+const AI * Database::getAI(const std::string ai) { return ais.at(ai); }
+const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
+const Character * Database::getCharacter(const std::string character) { return characters.at(character); }
+const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
+const Event * Database::getEvent(const std::string event) { return events.at(event); }
+const Item * Database::getItem(const std::string item) { return items.at(item); }
+const Map * Database::getMap(const std::string map) { return maps.at(map); }
+const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
+const Ammunition * Database::getAmmunition(const std::string ammunition) { return ammunitions.at(ammunition); }
+const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
+const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
+const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
+const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
+const Way * Database::getWay(const std::string way) { return ways.at(way); }
+const Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
 
-void Database::addAI(AI * ai) { ais.insert(std::make_pair(ai->name, ai)); }
-void Database::addAttributes(Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
-void Database::addCharacter(Character * character) { characters.insert(std::make_pair(character->name, character)); }
-void Database::addEffect(Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
-void Database::addEvent(Event * event) { events.insert(std::make_pair(event->name, event)); }
-void Database::addItem(Item * item) { items.insert(std::make_pair(item->name, item)); }
-void Database::addMap(Map * map) { maps.insert(std::make_pair(map->name, map)); }
-void Database::addProjectile(Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
-void Database::addAmmunition(Ammunition * ammunition) { ammunitions.insert(std::make_pair(ammunition->projectile->name, ammunition)); }
-void Database::addQuest(Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
-void Database::addSkill(Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
-void Database::addSpeech(Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
-void Database::addTile(Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
-void Database::addWay(Way * way) { ways.insert(std::make_pair(way->name, way)); }
-void Database::addWeapon(Weapon * weapon) { weapons.insert(std::make_pair(weapon->name, weapon)); }
+void Database::addAI(const AI * ai) { ais.insert(std::make_pair(ai->name, ai)); }
+void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
+void Database::addCharacter(const Character * character) { characters.insert(std::make_pair(character->name, character)); }
+void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
+void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
+void Database::addItem(const Item * item) { items.insert(std::make_pair(item->name, item)); }
+void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
+void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
+void Database::addAmmunition(const Ammunition * ammunition) { ammunitions.insert(std::make_pair(ammunition->projectile->name, ammunition)); }
+void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
+void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
+void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
+void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
+void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
+void Database::addWeapon(const Weapon * weapon) { weapons.insert(std::make_pair(weapon->name, weapon)); }

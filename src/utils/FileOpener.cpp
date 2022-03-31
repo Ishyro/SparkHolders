@@ -7,7 +7,7 @@ namespace FileOpener {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
-      std::cout << "ERROR FILE" << std::endl;
+      std::cout << "File not found: " + fileName << std::endl;
     }
     std::string line;
     std::string delimiter = "=";
@@ -42,7 +42,7 @@ namespace FileOpener {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
-      std::cout << "ERROR FILE" << std::endl;
+      std::cout << "File not found: " + fileName << std::endl;
     }
     std::string line;
     std::string name;
@@ -76,8 +76,71 @@ namespace FileOpener {
     return adventure;
   }
 
-  void executeCommand(std::string keyword, std::string command, World * world, Database * database) {
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, Database * database) {
+    if(keyword == "Character") {
+      std::string name = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%'), command.length());
+      long x = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      long y = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      int orientation = database->getTargetFromMacro(command.substr(command.find('%'), command.length()));
+      std::string map_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%'), command.length());
+      std::string team = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%'), command.length());
+      Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      Way * culture = (Way *) database->getWay(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      Way * religion = (Way *) database->getWay(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
 
+      Map * map = world->getMap(map_str);
+      Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, race, origin, culture, religion, profession);
+      map->addCharacter(c);
+    }
+    else if(keyword == "Event") {
+      Event * event = new Event(database->getEvent(command));
+      events.push_front(event);
+    }
+    else if(keyword == "Map") {
+      Map * map = new Map(database->getMap(command.substr(0, command.find('_'))), command);
+      world->addMap(map);
+    }
+    else if(keyword == "MapLink") {
+      std::string map1_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%'), command.length());
+      std::string map2_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%'), command.length());
+      long x1 = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      long y1 = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      long x2 = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%'), command.length());
+      long y2 = stol(command.substr(0, command.find('%')));
+      Map * map1 = world->getMap(map1_str);
+      Map * map2 = world->getMap(map2_str);
+      MapLink * link = (MapLink *) malloc(sizeof(MapLink));
+      link->map1 = map1;
+      link->map2 = map2;
+      link->x1 = x1;
+      link->y1 = y1;
+      link->x2 = x2;
+      link->y2 = y2;
+      world->addMapLink(link);
+    }
+    else if(keyword == "Loot") {
+
+    }
+    else if(keyword == "Quest") {
+      Quest * quest = new Quest(database->getQuest(command));
+      quests.push_front(quest);
+    }
   }
 
   void AttributesOpener(std::string fileName, Database * database) {
@@ -92,25 +155,26 @@ namespace FileOpener {
     int baseVisionPower = stoi(values.at("baseVisionPower"));
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     std::string head_str = values.at("head");
-    Item * head = head_str != "none" ? database->getItem(head_str) : nullptr;
+    Item * head = head_str != "none" ? (Item *) database->getItem(head_str) : nullptr;
     std::string arms_str = values.at("arms");
-    Item * arms = arms_str != "none" ? database->getItem(arms_str) : nullptr;
+    Item * arms = arms_str != "none" ? (Item *) database->getItem(arms_str) : nullptr;
     std::string legs_str = values.at("legs");
-    Item * legs = legs_str != "none" ? database->getItem(legs_str) : nullptr;
+    Item * legs = legs_str != "none" ? (Item *) database->getItem(legs_str) : nullptr;
     std::string body_str = values.at("body");
-    Item * body = body_str != "none" ? database->getItem(body_str) : nullptr;
+    Item * body = body_str != "none" ? (Item *) database->getItem(body_str) : nullptr;
     std::string left_ring_str = values.at("left_ring");
-    Item * left_ring = left_ring_str != "none" ? database->getItem(left_ring_str) : nullptr;
+    Item * left_ring = left_ring_str != "none" ? (Item *) database->getItem(left_ring_str) : nullptr;
     std::string right_ring_str = values.at("right_ring");
-    Item * right_ring = right_ring_str != "none" ? database->getItem(right_ring_str) : nullptr;
+    Item * right_ring = right_ring_str != "none" ? (Item *) database->getItem(right_ring_str) : nullptr;
     std::string amulet_str = values.at("amulet");
-    Item * amulet = amulet_str != "none" ? database->getItem(amulet_str) : nullptr;
+    Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
     std::string weapon_str = values.at("weapon");
-    Weapon * weapon = weapon_str != "none" ? database->getWeapon(weapon_str) : nullptr;
+    Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
     std::string ammunition_str = values.at("ammunition");
-    Ammunition * ammunition = nullptr;
+    Ammunition * ammunition = (Ammunition *) malloc(sizeof(Ammunition));
+    ammunition = nullptr;
     if(ammunition_str != "none") {
-      ammunition = database->getAmmunition(ammunition_str);
+      ammunition = (Ammunition *) database->getAmmunition(ammunition_str);
       long number = stol(values.at("number"));
       ammunition->number=number;
     }
@@ -125,7 +189,7 @@ namespace FileOpener {
     std::istringstream is(values.at("player_character"));
     bool player_character;
     is >> std::boolalpha >> player_character;
-    Speech * death_speech = database->getSpeech(values.at("death_speech"));
+    Speech * death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
     std::list<const Speech *> talking_speechs = std::list<const Speech *>();
     std::istringstream is_2(values.at("talking_speechs"));
     std::string talking_speech;
@@ -141,31 +205,31 @@ namespace FileOpener {
     std::istringstream is_3(values.at("items"));
     std::string item;
     while(getline(is_3, item, '%')) {
-      items.push_back(database->getItem(item));
+      items.push_back((Item *) database->getItem(item));
     }
     std::list<Weapon *> weapons = std::list<Weapon *>();
     std::istringstream is_4(values.at("weapons"));
     std::string weapon;
     while(getline(is_4, weapon, '%')) {
-      weapons.push_back(database->getWeapon(weapon));
+      weapons.push_back((Weapon *) database->getWeapon(weapon));
     }
     std::list<Ammunition *> ammunitions = std::list<Ammunition *>();
     std::istringstream is_5(values.at("ammunitions"));
     std::string ammunition;
     while(getline(is_5, ammunition, '%')) {
-      ammunitions.push_back(database->getAmmunition(ammunition));
+      ammunitions.push_back((Ammunition *) database->getAmmunition(ammunition));
     }
     std::list<Effect *> effects = std::list<Effect *>();
     std::istringstream is_6(values.at("effects"));
     std::string effect;
     while(getline(is_6, effect, '%')) {
-      effects.push_back(database->getEffect(effect));
+      effects.push_back((Effect *) database->getEffect(effect));
     }
     std::list<Skill *> skills = std::list<Skill *>();
     std::istringstream is_7(values.at("skills"));
     std::string skill;
     while(getline(is_7, skill, '%')) {
-      skills.push_back(database->getSkill(skill));
+      skills.push_back((Skill *) database->getSkill(skill));
     }
     Character * character = new Character(name, player_character, death_speech, talking_speechs, type, ai, gold, xp, level, items, weapons, ammunitions, effects, skills);
     database->addCharacter(character);
@@ -190,7 +254,7 @@ namespace FileOpener {
     std::istringstream is_3(values.at("effects"));
     std::string effect;
     while(getline(is_3, effect, '%')) {
-      effects.push_front(database->getEffect(effect));
+      effects.push_front((Effect*) database->getEffect(effect));
     }
     float damage_reductions[DAMAGE_TYPE_NUMBER];
     damage_reductions[SLASH] = stof(values.at("SLASH_REDUCTION"));
@@ -211,7 +275,7 @@ namespace FileOpener {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
-      std::cout << "ERROR FILE" << std::endl;
+      std::cout << "File not found: " + fileName << std::endl;
     }
     std::string line;
     std::string name;
@@ -232,8 +296,8 @@ namespace FileOpener {
       std::istringstream is(line);
       for(int x = sizeX - 1; x >= 0; x--) {
         std::string tile;
-        getline(is,tile,' ');
-        map->setTile(x,y,database->getTile(tile));
+        getline(is, tile, ' ');
+        map->setTile(x, y, (Tile *)database->getTile(tile));
       }
     }
 
@@ -291,13 +355,13 @@ namespace FileOpener {
     std::istringstream is_1(values.at("effects"));
     std::string effect;
     while(getline(is_1, effect, '%')) {
-      effects.push_front(database->getEffect(effect));
+      effects.push_front((Effect *) database->getEffect(effect));
     }
     std::list<Skill *> skills = std::list<Skill *>();
     std::istringstream is_2(values.at("skills"));
     std::string skill;
     while(getline(is_2, skill, '%')) {
-      skills.push_front(database->getSkill(skill));
+      skills.push_front((Skill *) database->getSkill(skill));
     }
     Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, effects, skills);
     database->addWay(way);
@@ -321,7 +385,7 @@ namespace FileOpener {
     std::istringstream is_3(values.at("effects"));
     std::string effect;
     while(getline(is_3, effect, '%')) {
-      effects.push_front(database->getEffect(effect));
+      effects.push_front((Effect *) database->getEffect(effect));
     }
     int damages[DAMAGE_TYPE_NUMBER];
     damages[SLASH] = stoi(values.at("SLASH"));
@@ -396,7 +460,7 @@ namespace FileOpener {
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
-      std::cout << "ERROR FILE" << std::endl;
+      std::cout << "File not found: " + fileName << std::endl;
     }
     std::string line;
     while(getline(file,line)) {

@@ -40,6 +40,14 @@ class Map {
       tiles[sizeX][sizeY];
       lights[sizeX][sizeY];
     }
+    Map(const Map * map, std::string name):
+      name(name),
+      sizeX(map->sizeX),
+      sizeY(map->sizeY),
+      outside(map->outside),
+      tiles(map->tiles),
+      lights(map->lights)
+    {}
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
