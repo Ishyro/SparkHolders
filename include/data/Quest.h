@@ -4,14 +4,6 @@
 #include <string>
 #include <list>
 
-#include "data/Character.h"
-#include "data/Map.h"
-#include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Adventure.h"
-
-#include "utils/FileOpener.h"
-
 typedef struct Step {
   const int type;
   const Character * target;

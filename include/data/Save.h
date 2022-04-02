@@ -3,8 +3,6 @@
 
 #include "data/Adventure.h"
 
-#include "utils/FileOpener.h"
-
 class Save {
   public:
     Adventure * load();

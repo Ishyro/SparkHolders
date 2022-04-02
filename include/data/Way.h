@@ -6,11 +6,6 @@
 
 #include "Values.h"
 
-#include "data/skills/Skill.h"
-#include "data/Event.h"
-
-#include "utils/FileOpener.h"
-
 class Way {
   public:
     const std::string name;

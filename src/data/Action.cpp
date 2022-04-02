@@ -1,3 +1,20 @@
+#include "data/Adventure.h"
+#include "data/Attributes.h"
+#include "data/Character.h"
+#include "data/Effect.h"
+#include "data/Event.h"
+#include "data/Item.h"
+#include "data/Map.h"
+#include "data/Projectile.h"
+#include "data/Quest.h"
+#include "data/skills/Skill.h"
+#include "data/Speech.h"
+#include "data/Tile.h"
+#include "data/Way.h"
+#include "data/Weapon.h"
+#include "data/World.h"
+#include "data/Database.h"
+
 #include "data/Action.h"
 
 void Action::execute(Adventure * adventure) {
@@ -18,6 +35,8 @@ void Action::execute(Adventure * adventure) {
       break;
     case GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user);
+      break;
+    case REST:
       break;
     default: ;
   }

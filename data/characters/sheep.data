@@ -3,7 +3,6 @@ player_character = false
 death_speech = beh
 talking_speechs = beh
 type = NATURE
-ai = passive
 gold = 0
 xp = 0
 level = 0

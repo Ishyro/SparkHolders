@@ -5,8 +5,6 @@
 
 #include "Values.h"
 
-#include "utils/FileOpener.h"
-
 class Speech {
   public:
     const std::string name;

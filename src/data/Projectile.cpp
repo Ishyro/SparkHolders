@@ -1,3 +1,8 @@
+#include "data/Effect.h"
+#include "data/skills/Skill.h"
+#include "data/Map.h"
+#include "data/World.h"
+
 #include "data/Projectile.h"
 
 int Projectile::getX() { return x; }
@@ -20,7 +25,7 @@ int Projectile::getDestY() {
 }
 int Projectile::getOrientation() { return orientation; }
 
-int Projectile::getDamageType(int damage_type) { return damages[damage_type]; }
+int Projectile::getDamageFromType(int damage_type) { return damages[damage_type]; }
 
 int Projectile::getSpeed() { return speed; }
 

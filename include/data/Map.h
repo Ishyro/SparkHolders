@@ -5,16 +5,6 @@
 #include <vector>
 #include <string>
 
-#include "data/Character.h"
-#include "data/Projectile.h"
-#include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Tile.h"
-
-#include "utils/FileOpener.h"
-
-#include "communications/SpeechManager.h"
-
 typedef struct Loot {
   int type;
   long x;

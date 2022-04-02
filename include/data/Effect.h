@@ -47,7 +47,7 @@ class Effect {
       }
     }
     int getRawDamage();
-    int getDamageType(int damage_type);
+    int getDamageFromType(int damage_type);
     int getTickLeft();
     void activate(Character * target);
     void desactivate(Character * target);

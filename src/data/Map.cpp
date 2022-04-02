@@ -1,3 +1,11 @@
+#include "data/Character.h"
+#include "data/Projectile.h"
+#include "data/Item.h"
+#include "data/Weapon.h"
+#include "data/Tile.h"
+
+#include "communications/SpeechManager.h"
+
 #include "data/Map.h"
 
 std::list<Character *> Map::getCharacters() { return characters; }
@@ -157,46 +165,76 @@ void Map::tryHit(Projectile * p, Adventure * adventure) {
 }
 
 void Map::move(Character *c, int orientation) {
+  bool is_legal = false;
+  long destX;
+  long destY;
   switch(orientation) {
     case NORTH:
       if(c->getY() < sizeY - 1 && !tiles[c->getX()][c->getY() + 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX();
+        destY = c->getY() + 1;
       }
       break;
     case NORTH_EAST:
       if(c->getY() < sizeY - 1 && c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY() + 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() + 1;
+        destY = c->getY() + 1;
       }
       break;
     case EAST:
       if(c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY()]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() + 1;
+        destY = c->getY();
       }
       break;
     case SOUTH_EAST:
       if(c->getY() > 0 && c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY() - 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() + 1;
+        destY = c->getY() - 1;
       }
       break;
     case SOUTH:
       if(c->getY() > 0 && !tiles[c->getX()][c->getY() - 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX();
+        destY = c->getY() - 1;
       }
       break;
     case SOUTH_WEST:
       if(c->getY() > 0 && c->getX() > 0 && !tiles[c->getX() - 1][c->getY() - 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() - 1;
+        destY = c->getY() - 1;
       }
       break;
     case WEST:
       if(c->getX() > 0 && !tiles[c->getX() - 1][c->getY()]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() - 1;
+        destY = c->getY();
       }
       break;
     case NORTH_WEST:
       if(c->getY() < sizeY - 1, c->getX() > 0 && !tiles[c->getX() - 1][c->getY() + 1]->untraversable) {
-        c->move(orientation);
+        is_legal = true;
+        destX = c->getX() - 1;
+        destY = c->getY() + 1;
       }
       break;
+  }
+  if(is_legal) {
+    for(Character * other : characters) {
+      if (other->getX() == destX && other->getY() == destY) {
+        if(c->getTeam() != other->getTeam()) {
+          c->attack(other);
+        }
+        return;
+      }
+    }
+    c->move(orientation);
   }
 }

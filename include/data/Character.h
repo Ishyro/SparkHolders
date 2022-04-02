@@ -8,17 +8,6 @@
 
 #include "Values.h"
 
-#include "data/Attributes.h"
-#include "data/Gear.h"
-#include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Effect.h"
-#include "data/skills/Skill.h"
-#include "data/World.h"
-#include "data/Way.h"
-
-#include "utils/FileOpener.h"
-
 namespace character {
   static long id_cpt = 0;
 }
@@ -38,7 +27,6 @@ class Character {
       const Speech * death_speech,
       const std::list<const Speech *> talking_speechs,
       int type,
-      std::string ai,
       long gold,
       long xp,
       int level,
@@ -53,7 +41,6 @@ class Character {
       death_speech(death_speech),
       talking_speechs(talking_speechs),
       type(type),
-      ai(ai),
       gold(gold),
       xp(xp),
       level(level),
@@ -70,6 +57,7 @@ class Character {
       int orientation,
       int current_map_id,
       std::string team,
+      AI * ai,
       Way * race,
       Way * origin,
       Way * culture,
@@ -125,7 +113,7 @@ class Character {
     long getXP();
     long getLevel();
 
-    std::string getAI();
+    AI * getAI();
     std::string getTeam();
 
     std::list<Item *> getItems();
@@ -153,7 +141,7 @@ class Character {
     void gainXP(long xp);
     void gainLevel();
 
-    void setAI(std::string ai);
+    void setAI(AI * ai);
     void setTeam(std::string team);
 
     void equip(Item * to_equip);
@@ -186,6 +174,8 @@ class Character {
     bool isInWeakState();
 
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
+    int getDamageFromType(int damage_type);
+    void attack(Character * target);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
 
@@ -195,7 +185,6 @@ class Character {
     int x;
     int y;
     int orientation;
-    std::string ai;
     int hp;
     int maxHp;
     int mana;
@@ -212,6 +201,7 @@ class Character {
     long xp;
     int level;
 
+    AI * ai;
     std::string team;
 
     Gear * gear;

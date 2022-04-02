@@ -6,10 +6,6 @@
 
 #include "Values.h"
 
-#include "data/Effect.h"
-
-#include "utils/FileOpener.h"
-
 namespace item {
   static long id_cpt = 0;
 }

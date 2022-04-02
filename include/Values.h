@@ -3,9 +3,14 @@
 
 // resolve cyclic mess
 
-// data
+// AI
 
 class AI;
+class PassiveAI;
+class PlayerAI;
+
+// data
+
 class Action;
 class Adventure;
 class Attributes;
@@ -29,6 +34,7 @@ class World;
 typedef struct Ammunition Ammunition;
 typedef struct Loot Loot;
 typedef struct MapLink MapLink;
+typedef struct Spawn Spawn;
 typedef struct Step Step;
 
 // communication
@@ -232,5 +238,6 @@ class SpeechManager;
 #define USE_ITEM 5
 #define SWAP_GEAR 6
 #define ECONOMICS 7
+#define REST 8
 
 #endif // _VALUES_H_

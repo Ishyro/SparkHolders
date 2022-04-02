@@ -6,13 +6,6 @@
 
 #include "Values.h"
 
-#include "data/Character.h"
-#include "data/Map.h"
-#include "data/Adventure.h"
-#include "data/Speech.h"
-
-#include "utils/FileOpener.h"
-
 class Event {
   public:
     const std::string name;

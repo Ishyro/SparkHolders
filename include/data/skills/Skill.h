@@ -4,6 +4,7 @@
 #include <list>
 
 #include "Values.h"
+
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/skills/PseudoSkill.h"

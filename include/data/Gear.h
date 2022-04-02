@@ -5,10 +5,6 @@
 
 #include "Values.h"
 
-#include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Projectile.h"
-
 class Gear {
   public:
     Gear(

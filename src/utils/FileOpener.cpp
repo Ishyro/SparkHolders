@@ -1,5 +1,33 @@
 #include "utils/FileOpener.h"
 
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
+#include <iostream>
+#include <fstream>
+
+#include "ai/AI.h"
+#include "ai/PassiveAI.h"
+#include "ai/PlayerAI.h"
+
+#include "data/Adventure.h"
+#include "data/Attributes.h"
+#include "data/Character.h"
+#include "data/Effect.h"
+#include "data/Event.h"
+#include "data/Item.h"
+#include "data/Map.h"
+#include "data/Projectile.h"
+#include "data/Quest.h"
+#include "data/skills/Skill.h"
+#include "data/Speech.h"
+#include "data/Tile.h"
+#include "data/Way.h"
+#include "data/Weapon.h"
+#include "data/World.h"
+#include "data/Database.h"
+
 namespace FileOpener {
 
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
@@ -52,10 +80,13 @@ namespace FileOpener {
     std::string line;
     std::string name;
     // first line is the adventure name
-    getline(file, name);
+    do {
+      getline(file, name);
+    } while(name == "" || name.at(0) == '#');
     World * world = new World(name);
     std::list<Quest *> quests = std::list<Quest *>();
     std::list<Event *> events = std::list<Event *>();
+    std::list<Spawn *> spawns = std::list<Spawn *>();
 
     while(getline(file,line)) {
       while(line != "" && std::isspace(line.at(0))) {
@@ -73,15 +104,15 @@ namespace FileOpener {
         while(std::isspace(command.at(command.length() - 1))) {
           command = command.substr(0, command.length() - 1);
         }
-        executeCommand(keyword, command, world, quests, events, database);
+        executeCommand(keyword, command, world, quests, events, spawns, database);
       }
     }
     file.close();
-    Adventure * adventure = new Adventure(name, 10, database, world, quests, events);
+    Adventure * adventure = new Adventure(name, spawns.size(), database, world, quests, events, spawns);
     return adventure;
   }
 
-  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, Database * database) {
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, std::list<Spawn *> spawns, Database * database) {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
@@ -95,6 +126,8 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       std::string team = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
+      std::string ai_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
       Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
@@ -105,7 +138,11 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
       Map * map = world->getMap(map_str);
-      Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, race, origin, culture, religion, profession);
+      AI * ai;
+      if (ai_str == "Passive") {
+        ai = new PassiveAI();
+      }
+      Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, ai, race, origin, culture, religion, profession);
       map->addCharacter(c);
     }
     else if(keyword == "Event") {
@@ -151,6 +188,18 @@ namespace FileOpener {
     else if(keyword == "Quest") {
       Quest * quest = new Quest(database->getQuest(command));
       quests.push_back(quest);
+    }
+    else if(keyword == "Spawn") {
+      Spawn * spawn = (Spawn *) malloc(sizeof(Spawn));
+      spawn->x = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      spawn->y = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      spawn->orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      std::string map_str = command.substr(0, command.find('%'));
+      spawn->map_id = world->getMap(map_str)->id;
+      spawns.push_back(spawn);
     }
   }
 
@@ -208,7 +257,6 @@ namespace FileOpener {
       talking_speechs.push_back(database->getSpeech(talking_speech));
     }
     int type = database->getTargetFromMacro(values.at("type"));
-    std::string ai = values.at("ai");
     long gold = stol(values.at("gold"));
     long xp = stol(values.at("xp"));
     int level = stoi(values.at("level"));
@@ -242,7 +290,7 @@ namespace FileOpener {
     while(getline(is_7, skill, '%')) {
       skills.push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, ai, gold, xp, level, items, weapons, ammunitions, effects, skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, xp, level, items, weapons, ammunitions, effects, skills);
     database->addCharacter(character);
   }
 
@@ -322,7 +370,7 @@ namespace FileOpener {
         getline(is, wall, ' ');
         if(wall != "none") {
           // WARNING: Segfault if a wall level up
-          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id, "none", nullptr, nullptr, nullptr, nullptr, nullptr);
+          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id, "none", new PlayerAI(), nullptr, nullptr, nullptr, nullptr, nullptr);
           c->applyAttributes(database->getAttributes(wall));
           map->addCharacter(c);
         }

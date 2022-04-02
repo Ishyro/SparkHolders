@@ -5,11 +5,6 @@
 #include <string>
 #include <map>
 
-#include "data/Map.h"
-#include "data/Tile.h"
-
-#include "utils/FileOpener.h"
-
 class World {
   public:
     const std::string name;

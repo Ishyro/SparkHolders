@@ -1,9 +1,22 @@
+#include "data/Attributes.h"
+#include "data/Character.h"
+#include "data/Effect.h"
+#include "data/Event.h"
+#include "data/Item.h"
+#include "data/Map.h"
+#include "data/Projectile.h"
+#include "data/Quest.h"
+#include "data/skills/Skill.h"
+#include "data/Speech.h"
+#include "data/Tile.h"
+#include "data/Way.h"
+#include "data/Weapon.h"
+
 #include "data/Database.h"
 
 Database::Database() {
   macros = std::map<const std::string,const int>();
 
-  ais = std::map<const std::string,const AI * >();
   attributes = std::map<const std::string,const Attributes * >();
   characters = std::map<const std::string,const Character * >();
   effects = std::map<const std::string,const Effect * >();
@@ -208,7 +221,6 @@ Database::Database() {
 
 const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
 
-const AI * Database::getAI(const std::string ai) { return ais.at(ai); }
 const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
 const Character * Database::getCharacter(const std::string character) { return characters.at(character); }
 const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
@@ -224,7 +236,6 @@ const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); 
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
 
-void Database::addAI(const AI * ai) { ais.insert(std::make_pair(ai->name, ai)); }
 void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
 void Database::addCharacter(const Character * character) { characters.insert(std::make_pair(character->name, character)); }
 void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }

@@ -1,3 +1,11 @@
+#include "data/Character.h"
+#include "data/Map.h"
+#include "data/World.h"
+#include "data/Adventure.h"
+#include "data/Speech.h"
+
+#include "communications/SpeechManager.h"
+
 #include "data/Event.h"
 
 void Event::activate(Adventure * adventure) {

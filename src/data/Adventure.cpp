@@ -1,3 +1,16 @@
+#include "ai/AI.h"
+#include "ai/PlayerAI.h"
+
+#include "data/Action.h"
+#include "data/Map.h"
+#include "data/World.h"
+#include "data/Tile.h"
+#include "data/Character.h"
+#include "data/Quest.h"
+#include "data/Event.h"
+#include "data/Save.h"
+#include "data/Database.h"
+
 #include "data/Adventure.h"
 
 Save * Adventure::save() {
@@ -113,6 +126,7 @@ void Adventure::event() {
 long Adventure::getTick() { return tick; }
 void Adventure::incrTick() { tick++; }
 World * Adventure::getWorld() { return world; }
+int Adventure::getLight() { return light; }
 void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getNPCs() {
@@ -156,14 +170,25 @@ void Adventure::applyDayLight() {
 std::list<Action *> Adventure::getNPCsActions() {
   std::list<Action *> actions = std::list<Action *>();
   for(Character * npc : getNPCs()) {
-    Action * action = ((AI *)database->getAI(npc->getAI()))->getAction(this, npc);
+    Action * action = npc->getAI()->getAction(this, npc);
     if(action != nullptr) {
       actions.push_back(action);
     }
   }
+  return actions;
 }
+
 void Adventure::executeActions(std::list<Action *> actions) {
   for(Action * action : actions) {
     action->execute(this);
   }
+}
+
+void Adventure::spawnPlayer(Character * c) {
+  Spawn * spawn = spawns.front();
+  c->move(spawn->x, spawn->y, spawn->orientation);
+  c->setCurrentMapId(spawn->map_id);
+  c->setAI(new PlayerAI());
+  spawns.remove(spawn);
+  delete spawn;
 }

@@ -2,14 +2,6 @@
 #define _TILE_H_
 
 #include <string>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
-#include <cctype>
-
-#include "data/Effect.h"
-
-#include "utils/FileOpener.h"
 
 namespace tile {
   static long id_cpt = 0;

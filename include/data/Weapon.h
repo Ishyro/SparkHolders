@@ -6,10 +6,6 @@
 
 #include "Values.h"
 
-#include "data/Effect.h"
-
-#include "utils/FileOpener.h"
-
 namespace weapon {
   static long id_cpt = 0;
 }
@@ -71,7 +67,7 @@ class Weapon {
     }
     int getCurrentCapacity();
     int getRawDamage();
-    int getDamageType(int damage_type);
+    int getDamageFromType(int damage_type);
   private:
     int current_capacity;
     int damages[DAMAGE_TYPE_NUMBER];

@@ -5,17 +5,14 @@
 #include <string>
 #include <algorithm>
 
-#include "data/Action.h"
-#include "data/World.h"
-#include "data/Map.h"
-#include "data/Tile.h"
-#include "data/Character.h"
-#include "data/Quest.h"
-#include "data/Event.h"
-#include "data/Save.h"
-#include "data/Database.h"
+#include "Values.h"
 
-#include "utils/FileOpener.h"
+typedef struct Spawn {
+  long x;
+  long y;
+  int orientation;
+  long map_id;
+} Spawn;
 
 class Adventure {
   public:
@@ -27,14 +24,16 @@ class Adventure {
       Database * database,
       World * world,
       std::list<Quest *> quests,
-      std::list<Event *> events
+      std::list<Event *> events,
+      std::list<Spawn *> spawns
     ):
       name(name),
       maxPlayers(maxPlayers),
       database(database),
       world(world),
       quests(quests),
-      events(events)
+      events(events),
+      spawns(spawns)
     {
       party = std::list<Character *>();
       preserved_players = std::list<Character *>();
@@ -58,6 +57,7 @@ class Adventure {
     void incrTick();
     void event();
     World * getWorld();
+    int getLight();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
     std::list<Character *> getNPCs();
@@ -65,6 +65,7 @@ class Adventure {
     std::list<Action *> getNPCsActions();
     void executeActions(std::list<Action *> actions);
     void applyDayLight();
+    void spawnPlayer(Character * c);
   private:
     World * world;
     Database * database;
@@ -75,6 +76,7 @@ class Adventure {
     std::list<Character *> preserved_players;
     std::list<Quest *> quests;
     std::list<Event *> events;
+    std::list<Spawn *> spawns;
 };
 
 #endif // _ADVENTURE_H_

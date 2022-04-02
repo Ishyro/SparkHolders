@@ -8,27 +8,11 @@
 
 #include "Values.h"
 
-#include "ai/AI.h"
-#include "data/Attributes.h"
-#include "data/Character.h"
-#include "data/Effect.h"
-#include "data/Event.h"
-#include "data/Item.h"
-#include "data/Map.h"
-#include "data/Projectile.h"
-#include "data/Quest.h"
-#include "data/skills/Skill.h"
-#include "data/Speech.h"
-#include "data/Tile.h"
-#include "data/Way.h"
-#include "data/Weapon.h"
-
 class Database {
   public:
     Database();
     const int getTargetFromMacro(const std::string macro);
 
-    const AI * getAI(const std::string ai);
     const Attributes * getAttributes(const std::string attributes);
     const Character * getCharacter(const std::string character);
     const Effect * getEffect(const std::string effect);
@@ -44,7 +28,6 @@ class Database {
     const Way * getWay(const std::string way);
     const Weapon * getWeapon(const std::string weapon);
 
-    void addAI(const AI * ai);
     void addAttributes(const Attributes * attributes);
     void addCharacter(const Character * character);
     void addEffect(const Effect * effect);
@@ -63,7 +46,6 @@ class Database {
   private:
     std::map<const std::string,const int> macros;
 
-    std::map<const std::string,const AI * > ais;
     std::map<const std::string,const Attributes * > attributes;
     std::map<const std::string,const Character * > characters;
     std::map<const std::string,const Effect * > effects;
@@ -78,7 +60,6 @@ class Database {
     std::map<const std::string,const Tile * > tiles;
     std::map<const std::string,const Way * > ways;
     std::map<const std::string,const Weapon * > weapons;
-
 };
 
 #endif // _DATABASE_H_

@@ -1,3 +1,10 @@
+#include "data/Character.h"
+#include "data/Projectile.h"
+#include "data/Item.h"
+#include "data/Weapon.h"
+#include "data/Tile.h"
+#include "data/Map.h"
+
 #include "data/World.h"
 
 void World::addMap(Map * map) {

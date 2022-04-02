@@ -6,13 +6,6 @@
 
 #include "Values.h"
 
-#include "data/Effect.h"
-#include "data/skills/Skill.h"
-#include "data/Map.h"
-#include "data/World.h"
-
-#include "utils/FileOpener.h"
-
 typedef struct Ammunition {
   Projectile * projectile;
   long number;
@@ -82,7 +75,7 @@ class Projectile {
     int getDestY();
     int getOrientation();
     int getRawDamage();
-    int getDamageType(int damage_type);
+    int getDamageFromType(int damage_type);
     int getSpeed();
     bool isAtDest();
     bool noDamage();

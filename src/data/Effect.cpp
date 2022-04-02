@@ -83,4 +83,4 @@ int Effect::getRawDamage() {
   return power;
 }
 
-int Effect::getDamageType(int damage_type) { return damages[damage_type]; }
+int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }

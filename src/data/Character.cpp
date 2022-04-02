@@ -1,3 +1,13 @@
+#include "ai/AI.h"
+#include "data/Attributes.h"
+#include "data/Gear.h"
+#include "data/Item.h"
+#include "data/Weapon.h"
+#include "data/Effect.h"
+#include "data/skills/Skill.h"
+#include "data/World.h"
+#include "data/Way.h"
+
 #include "data/Character.h"
 
 void Character::applyAttributes(const Attributes * attributes) {
@@ -92,7 +102,7 @@ long Character::getGold() { return gold; }
 long Character::getXP() { return xp; }
 long Character::getLevel() { return level; }
 
-std::string Character::getAI() { return ai; }
+AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 
 long Character::getCurrentMapId() { return current_map_id; }
@@ -218,7 +228,7 @@ void Character::gainLevel() {
   }
 }
 
-void Character::setAI(std::string ai) { this->ai = ai; }
+void Character::setAI(AI * ai) { this->ai = ai; }
 void Character::setTeam(std::string team) { this->team = team; }
 
 void Character::equip(Item * to_equip) {
@@ -376,6 +386,22 @@ bool Character::isInWeakState() {
 // Warning : Dangerous
 void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge) {
   skill->activate(this, target, adventure, overcharge);
+}
+
+int Character::getDamageFromType(int damage_type) {
+  int damage = gear->getWeapon()->getDamageFromType(damage_type);
+  for(Effect * e : effects) {
+    if(e->type == DAMAGE_BUFF) {
+      damage += e->getDamageFromType(damage_type);
+    }
+  }
+  return damage;
+}
+
+void Character::attack(Character * target) {
+  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    target->receiveAttack(getDamageFromType(damage_type), damage_type, orientation);
+  }
 }
 
 void Character::receiveAttack(int damage, int damage_type, int orientation) {
