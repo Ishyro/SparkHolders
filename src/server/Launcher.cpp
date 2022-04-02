@@ -10,4 +10,5 @@ int main(int argc, char ** argv) {
   std::string adventureFile = argv[1];
 
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
+  
 }

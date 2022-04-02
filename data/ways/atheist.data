@@ -1,0 +1,9 @@
+name = atheist
+type = RELIGION
+hpIncr = 5
+manaIncr = -5
+armorIncr = 3
+soulBurnIncr = 0
+flowIncr = 0
+effects =
+skills =

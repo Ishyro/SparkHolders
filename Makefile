@@ -85,7 +85,7 @@ CLIENT_GRAPHICS_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_GRAPHICS)/%.h,$(BIN_CLIENT
 # Compiler and flags
 
 CC=g++
-CC_FLAGS=-O2 -pipe -pthread -fpermissive
+CC_FLAGS=-O2 -pipe -pthread -fpermissive -g
 CC_INCLUDE=-I $(INCLUDE)
 
 # Rules

@@ -6,6 +6,7 @@
 // data
 
 class AI;
+class Action;
 class Adventure;
 class Attributes;
 class Character;
@@ -221,5 +222,15 @@ class SpeechManager;
 #define SPEACH 2
 #define WARNING 3
 #define ERROR 4
+
+// action_type
+
+#define MOVE 1
+#define CHANGE_MAP 2
+#define GRAB 3
+#define USE_SKILL 4
+#define USE_ITEM 5
+#define SWAP_GEAR 6
+#define ECONOMICS 7
 
 #endif // _VALUES_H_

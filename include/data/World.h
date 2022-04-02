@@ -20,7 +20,8 @@ class World {
     void addMap(Map * map);
     void addMapLink(MapLink * link);
     Map * getMap(long map_id);
-    Map * getMap(std::string name); 
+    Map * getMap(std::string name);
+    std::map<const long, Map *> getMaps();
   private:
     std::map<const long, Map *> maps;
     std::list<MapLink *> links;

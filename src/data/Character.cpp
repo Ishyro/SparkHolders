@@ -92,6 +92,9 @@ long Character::getGold() { return gold; }
 long Character::getXP() { return xp; }
 long Character::getLevel() { return level; }
 
+std::string Character::getAI() { return ai; }
+std::string Character::getTeam() { return team; }
+
 long Character::getCurrentMapId() { return current_map_id; }
 
 std::list<Item *> Character::getItems() { return items; }
@@ -99,7 +102,39 @@ std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
-void Character::move(int orientation) { this->orientation = orientation; }
+void Character::move(int orientation) {
+  switch(orientation) {
+    case NORTH:
+      y++;
+      break;
+    case NORTH_EAST:
+      y++;
+      x++;
+      break;
+    case EAST:
+      x++;
+      break;
+    case SOUTH_EAST:
+      y--;
+      x++;
+      break;
+    case SOUTH:
+      y--;
+      break;
+    case SOUTH_WEST:
+      y--;
+      x--;
+      break;
+    case WEST:
+      x--;
+      break;
+    case NORTH_WEST:
+      y++;
+      x--;
+      break;
+  }
+}
+
 void Character::move(int x, int y) {
   this->x = x;
   this->y = y;
@@ -183,6 +218,9 @@ void Character::gainLevel() {
   }
 }
 
+void Character::setAI(std::string ai) { this->ai = ai; }
+void Character::setTeam(std::string team) { this->team = team; }
+
 void Character::equip(Item * to_equip) {
   if(to_equip != nullptr) {
     std::list<Item *> items = gear->equip(to_equip);
@@ -190,7 +228,7 @@ void Character::equip(Item * to_equip) {
       for(auto e : item->effects) {
         removeEffect(e);
       }
-      items.push_front(item);
+      items.push_back(item);
     }
     for(auto e : to_equip->effects) {
       addEffect(e);
@@ -205,7 +243,7 @@ void Character::equip(Weapon * to_equip) {
       for(auto e : old_weapon->effects) {
         removeEffect(e);
       }
-      weapons.push_front(old_weapon);
+      weapons.push_back(old_weapon);
     }
     for(auto e : to_equip->effects) {
       addEffect(e);
@@ -217,7 +255,7 @@ void Character::equip(Ammunition * to_equip) {
   if(to_equip != nullptr) {
     Ammunition * old_ammunition = gear->equip(to_equip);
     if(old_ammunition != nullptr) {
-      ammunitions.push_front(old_ammunition);
+      ammunitions.push_back(old_ammunition);
     }
   }
 }
@@ -228,7 +266,7 @@ void Character::unequip(int type) {
     for(auto e : old_item->effects) {
       removeEffect(e);
     }
-    items.push_front(old_item);
+    items.push_back(old_item);
   }
 }
 
@@ -238,19 +276,19 @@ void Character::unequipWeapon() {
     for(auto e : old_weapon->effects) {
       removeEffect(e);
     }
-    weapons.push_front(old_weapon);
+    weapons.push_back(old_weapon);
   }
 }
 
 void Character::unequipAmmunition() {
   Ammunition * old_ammunition = gear->unequipAmmunition();
   if(old_ammunition != nullptr) {
-    ammunitions.push_front(old_ammunition);
+    ammunitions.push_back(old_ammunition);
   }
 }
 
-void Character::addEffect(Effect * e) { effects.push_front(e); }
-void Character::addSkill(Skill * s) { skills.push_front(s); }
+void Character::addEffect(Effect * e) { effects.push_back(e); }
+void Character::addSkill(Skill * s) { skills.push_back(s); }
 void Character::removeEffect(Effect * e) { effects.remove(e); }
 void Character::removeSkill(Skill * s) { skills.remove(s); }
 
@@ -265,9 +303,9 @@ void Character::setWay(Way * way) {
   }
 }
 
-void Character::addItem(Item * i) { items.push_front(i); }
-void Character::addWeapon(Weapon * w) { weapons.push_front(w); }
-void Character::addAmmunition(Ammunition * a) { ammunitions.push_front(a); }
+void Character::addItem(Item * i) { items.push_back(i); }
+void Character::addWeapon(Weapon * w) { weapons.push_back(w); }
+void Character::addAmmunition(Ammunition * a) { ammunitions.push_back(a); }
 void Character::removeItem(Item * i) { items.remove(i); }
 void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
 void Character::removeAmmunition(Ammunition * a) { ammunitions.remove(a); }
@@ -320,15 +358,6 @@ int Character::isSleeping() {
 int Character::cloakPower() {
   for(auto e : effects) {
     if(e->type == CLOAKED) {
-      return e->power;
-    }
-  }
-  return 0;
-}
-
-int Character::invisibilityPower() {
-  for(auto e : effects) {
-    if(e->type == INVISIBLE) {
       return e->power;
     }
   }

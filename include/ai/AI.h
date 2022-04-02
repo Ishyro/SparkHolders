@@ -8,6 +8,8 @@
 
 #include "Values.h"
 
+#include "data/Action.h"
+#include "data/Adventure.h"
 #include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
@@ -30,6 +32,7 @@ class AI {
     ):
       name(name)
     {}
+    Action * getAction(Adventure * adventure, Character * c);
 };
 
 #endif // _AI_H_

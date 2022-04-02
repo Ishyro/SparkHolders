@@ -12,22 +12,27 @@ namespace FileOpener {
     std::string line;
     std::string delimiter = "=";
     while(getline(file,line)) {
-      while(std::isspace(line.at(0))) {
+      while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }
-      if(line.at(0) != '#') {
+      if(line != "" && line.at(0) != '#') {
         std::string key = line.substr(0, line.find(delimiter));
-        while(std::isspace(key.at(key.length()))) {
+        while(std::isspace(key.at(key.length() - 1))) {
           key = key.substr(0, key.length() - 1);
         }
-        std::string value = line.substr(line.find(delimiter) + 1, line.length());
-        while(std::isspace(value.at(0))) {
-          value = value.substr(1, value.length());
+        if(line.length() - 1 > line.find(delimiter)) {
+          std::string value = line.substr(line.find(delimiter) + 1, line.length() - 1);
+          while(std::isspace(value.at(0))) {
+            value = value.substr(1, value.length() - 1);
+          }
+          while(std::isspace(value.at(value.length() - 1))) {
+            value = value.substr(0, value.length() - 1);
+          }
+          result.insert(std::make_pair(key,value));
         }
-        while(std::isspace(value.at(value.length()))) {
-          value = value.substr(0, value.length() - 1);
+        else {
+          result.insert(std::make_pair(key,""));
         }
-        result.insert(std::make_pair(key,value));
       }
     }
     file.close();
@@ -53,19 +58,19 @@ namespace FileOpener {
     std::list<Event *> events = std::list<Event *>();
 
     while(getline(file,line)) {
-      while(std::isspace(line.at(0))) {
+      while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }
       if(line != "" && line.at(0) != '#') {
         std::string keyword = line.substr(0, line.find(delimiter));
-        while(std::isspace(keyword.at(keyword.length()))) {
+        while(std::isspace(keyword.at(keyword.length() - 1))) {
           keyword = keyword.substr(0, keyword.length() - 1);
         }
-        std::string command = line.substr(line.find(delimiter) + 1, line.length());
+        std::string command = line.substr(line.find(delimiter) + 1, line.length() - 1);
         while(std::isspace(command.at(0))) {
           command = command.substr(1, command.length());
         }
-        while(std::isspace(command.at(command.length()))) {
+        while(std::isspace(command.at(command.length() - 1))) {
           command = command.substr(0, command.length() - 1);
         }
         executeCommand(keyword, command, world, quests, events, database);
@@ -79,33 +84,33 @@ namespace FileOpener {
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, Database * database) {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       long x = stol(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       long y = stol(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
-      int orientation = database->getTargetFromMacro(command.substr(command.find('%'), command.length()));
+      command = command.substr(command.find('%') + 1, command.length());
+      int orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       std::string map_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       std::string team = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       Way * culture = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       Way * religion = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
-
       Map * map = world->getMap(map_str);
       Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, race, origin, culture, religion, profession);
       map->addCharacter(c);
     }
     else if(keyword == "Event") {
       Event * event = new Event(database->getEvent(command));
-      events.push_front(event);
+      events.push_back(event);
     }
     else if(keyword == "Map") {
       Map * map = new Map(database->getMap(command.substr(0, command.find('_'))), command);
@@ -113,16 +118,20 @@ namespace FileOpener {
     }
     else if(keyword == "MapLink") {
       std::string map1_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       std::string map2_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       long x1 = stol(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       long y1 = stol(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
+      int orientation1 = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       long x2 = stol(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%'), command.length());
+      command = command.substr(command.find('%') + 1, command.length());
       long y2 = stol(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      int orientation2 = database->getTargetFromMacro(command.substr(0, command.find('%')));
       Map * map1 = world->getMap(map1_str);
       Map * map2 = world->getMap(map2_str);
       MapLink * link = (MapLink *) malloc(sizeof(MapLink));
@@ -130,8 +139,10 @@ namespace FileOpener {
       link->map2 = map2;
       link->x1 = x1;
       link->y1 = y1;
+      link->orientation1 = orientation1;
       link->x2 = x2;
       link->y2 = y2;
+      link->orientation2 = orientation2;
       world->addMapLink(link);
     }
     else if(keyword == "Loot") {
@@ -139,7 +150,7 @@ namespace FileOpener {
     }
     else if(keyword == "Quest") {
       Quest * quest = new Quest(database->getQuest(command));
-      quests.push_front(quest);
+      quests.push_back(quest);
     }
   }
 
@@ -193,7 +204,7 @@ namespace FileOpener {
     std::list<const Speech *> talking_speechs = std::list<const Speech *>();
     std::istringstream is_2(values.at("talking_speechs"));
     std::string talking_speech;
-    while(getline(is_2, talking_speech, '%')) {
+    while(getline(is_2, talking_speech, '%') && talking_speech != "") {
       talking_speechs.push_back(database->getSpeech(talking_speech));
     }
     int type = database->getTargetFromMacro(values.at("type"));
@@ -254,7 +265,7 @@ namespace FileOpener {
     std::istringstream is_3(values.at("effects"));
     std::string effect;
     while(getline(is_3, effect, '%')) {
-      effects.push_front((Effect*) database->getEffect(effect));
+      effects.push_back((Effect*) database->getEffect(effect));
     }
     float damage_reductions[DAMAGE_TYPE_NUMBER];
     damage_reductions[SLASH] = stof(values.at("SLASH_REDUCTION"));
@@ -294,13 +305,15 @@ namespace FileOpener {
     for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
       std::istringstream is(line);
-      for(int x = sizeX - 1; x >= 0; x--) {
+      for(int x = 0; x < sizeX; x++) {
         std::string tile;
         getline(is, tile, ' ');
+        std::string test = database->getTile(tile)->name;
         map->setTile(x, y, (Tile *)database->getTile(tile));
       }
     }
-
+    // separation between tiles and walls
+    getline(file,line);
     for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
       std::istringstream is(line);
@@ -329,7 +342,13 @@ namespace FileOpener {
 
   void SkillOpener(std::string fileName, Database * database) {}
 
-  void SpeechOpener(std::string fileName, Database * database) {}
+  void SpeechOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    std::string content = values.at("content");
+    Speech * speech = new Speech(name, content);
+    database->addSpeech(speech);
+  }
 
   void TileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
@@ -338,14 +357,14 @@ namespace FileOpener {
     bool untraversable;
     is >> std::boolalpha >> untraversable;
     int light = stoi(values.at("light"));
-    Tile * tile = new Tile(name,untraversable,light);
+    Tile * tile = new Tile(name, untraversable, light);
     database->addTile(tile);
   }
 
   void WayOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = stoi(values.at("type"));
+    int type = database->getTargetFromMacro(values.at("type"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
     int armorIncr = stoi(values.at("armorIncr"));
@@ -355,13 +374,13 @@ namespace FileOpener {
     std::istringstream is_1(values.at("effects"));
     std::string effect;
     while(getline(is_1, effect, '%')) {
-      effects.push_front((Effect *) database->getEffect(effect));
+      effects.push_back((Effect *) database->getEffect(effect));
     }
     std::list<Skill *> skills = std::list<Skill *>();
     std::istringstream is_2(values.at("skills"));
     std::string skill;
     while(getline(is_2, skill, '%')) {
-      skills.push_front((Skill *) database->getSkill(skill));
+      skills.push_back((Skill *) database->getSkill(skill));
     }
     Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, effects, skills);
     database->addWay(way);
@@ -385,7 +404,7 @@ namespace FileOpener {
     std::istringstream is_3(values.at("effects"));
     std::string effect;
     while(getline(is_3, effect, '%')) {
-      effects.push_front((Effect *) database->getEffect(effect));
+      effects.push_back((Effect *) database->getEffect(effect));
     }
     int damages[DAMAGE_TYPE_NUMBER];
     damages[SLASH] = stoi(values.at("SLASH"));
@@ -404,13 +423,9 @@ namespace FileOpener {
 
   void FileOpener(std::string fileName, Database * database) {
     std::fstream file;
-    std::string delimiter = "/";
-    std::string last_folder;
-    std::string current_path = fileName;
-    do {
-      last_folder = current_path.substr(current_path.at(0), current_path.find(delimiter));
-      current_path = current_path.substr(current_path.find(delimiter) + 1, current_path.length());
-    } while(current_path != "");
+    char delimiter = '/';
+    std::string dirname = fileName.substr(0, fileName.rfind(delimiter));
+    std::string last_folder = dirname.substr(dirname.rfind(delimiter) + 1, dirname.length() - 1);
     if(last_folder == "attributes") {
       AttributesOpener(fileName, database);
     }
@@ -464,11 +479,11 @@ namespace FileOpener {
     }
     std::string line;
     while(getline(file,line)) {
-      while(std::isspace(line.at(0))) {
+      while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }
-      if(line.at(0) != '#') {
-        while(std::isspace(line.at(line.length()))) {
+      if(line != "" && line.at(0) != '#') {
+        while(std::isspace(line.at(line.length() - 1))) {
           line = line.substr(0, line.length() - 1);
         }
         FileOpener(line, database);

@@ -5,7 +5,7 @@ void World::addMap(Map * map) {
 }
 
 void World::addMapLink(MapLink * link) {
-  links.push_front(link);
+  links.push_back(link);
 }
 
 Map * World::getMap(long map_id) { return maps.at(map_id); }
@@ -18,3 +18,6 @@ Map * World::getMap(std::string name) {
     }
     return nullptr;
 }
+
+
+  std::map<const long, Map *> World::getMaps() { return maps; }

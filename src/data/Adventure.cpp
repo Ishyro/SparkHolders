@@ -86,17 +86,11 @@ void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long 
   character->setCurrentMapId(map_id);
 }
 
-void Adventure::addPlayer(Character * player) {
-  party.push_front(player);
-}
+void Adventure::addPlayer(Character * player) { party.push_back(player); }
 
-void Adventure::removePlayer(Character * player) {
-  party.remove(player);
-}
+void Adventure::removePlayer(Character * player) { party.remove(player); }
 
-bool Adventure::isWiped() {
-  return party.empty();
-}
+bool Adventure::isWiped() { return party.empty(); }
 
 std::list<Character *> Adventure::getParty() { return party; }
 
@@ -119,5 +113,57 @@ void Adventure::event() {
 long Adventure::getTick() { return tick; }
 void Adventure::incrTick() { tick++; }
 World * Adventure::getWorld() { return world; }
-void Adventure::addQuest(Quest * quest) { quests.push_front(quest); }
+void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
+std::list<Character *> Adventure::getNPCs() {
+  std::list<Character *> npcs = std::list<Character *>();
+  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
+    for (Character * character : pair->second->getCharacters()) {
+      // no check on player_character, because we want mind controlled players to act as npc
+      // this imply that the player AI needs to send nullptr when asked for an Action
+      // otherwise players will have 2 Actions per round
+      npcs.push_back(character);
+    }
+  }
+  return npcs;
+}
+
+std::list<Projectile *> Adventure::getProjectiles() {
+  std::list<Projectile *> projectiles = std::list<Projectile *>();
+  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
+    for (Projectile * projectile : pair->second->getProjectiles()) {
+      projectiles.push_back(projectile);
+    }
+  }
+  return projectiles;
+}
+
+void Adventure::applyDayLight() {
+  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
+    if(pair->second->outside) {
+      pair->second->applyDayLight(light);
+    }
+  }
+  lightUp ? light++ : light--;
+  if(light == 10) {
+    lightUp = false;
+  }
+  if(light == 0) {
+    lightUp = true;
+  }
+}
+
+std::list<Action *> Adventure::getNPCsActions() {
+  std::list<Action *> actions = std::list<Action *>();
+  for(Character * npc : getNPCs()) {
+    Action * action = ((AI *)database->getAI(npc->getAI()))->getAction(this, npc);
+    if(action != nullptr) {
+      actions.push_back(action);
+    }
+  }
+}
+void Adventure::executeActions(std::list<Action *> actions) {
+  for(Action * action : actions) {
+    action->execute(this);
+  }
+}

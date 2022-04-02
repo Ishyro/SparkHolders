@@ -1,0 +1,15 @@
+# tiles
+data/tiles/grass.data
+data/tiles/void.data
+# maps
+data/maps/test.data
+# ways
+data/ways/atheist.data
+data/ways/ruminant.data
+data/ways/sheep.data
+data/ways/slow.data
+data/ways/countryside.data
+# speechs
+data/speechs/beh.data
+# characters
+data/characters/sheep.data

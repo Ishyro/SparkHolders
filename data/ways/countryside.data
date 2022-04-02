@@ -1,0 +1,9 @@
+name = countryside
+type = ORIGIN
+hpIncr = 5
+manaIncr = 0
+armorIncr = 2
+soulBurnIncr = 0
+flowIncr = -2
+effects =
+skills =

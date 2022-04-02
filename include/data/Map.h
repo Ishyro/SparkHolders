@@ -2,6 +2,7 @@
 #define _MAP_H_
 
 #include <list>
+#include <vector>
 #include <string>
 
 #include "data/Character.h"
@@ -35,10 +36,23 @@ class Map {
     const long sizeX;
     const long sizeY;
     const bool outside;
-    Map(std::string name, long sizeX, long sizeY, bool outside):
-    name(name),sizeX(sizeX),sizeY(sizeY),outside(outside) {
-      tiles[sizeX][sizeY];
-      lights[sizeX][sizeY];
+    Map(
+      const std::string name,
+      const long sizeX,
+      const long sizeY,
+      const bool outside
+    ):
+      name(name),
+      sizeX(sizeX),
+      sizeY(sizeY),
+      outside(outside),
+      tiles(sizeY),
+      lights(sizeY)
+    {
+      for(long i = 0; i < sizeY; i++) {
+        tiles[i] = std::vector<Tile *>(sizeX);
+        lights[i] = std::vector<int>(sizeX);
+      }
     }
     Map(const Map * map, std::string name):
       name(name),
@@ -67,21 +81,25 @@ class Map {
     void destroyProjectile(Projectile * p);
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
-    void takeLoot(Character * c, Loot * l);
+    void takeLoot(Character * c);
     void tryHit(Projectile * p, Adventure * adventure);
+    void move(Character *, int orientation);
   private:
+    int light;
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;
     std::list<Loot *> loots;
-    Tile *** tiles;
-    int ** lights;
+    std::vector<std::vector<Tile *>> tiles;
+    std::vector<std::vector<int>> lights;
 };
 
 typedef struct MapLink {
-    int x1;
-    int x2;
-    int y1;
-    int y2;
+    long x1;
+    long y1;
+    int orientation1;
+    long x2;
+    long y2;
+    int orientation2;
     Map * map1;
     Map * map2;
 } MapLink;

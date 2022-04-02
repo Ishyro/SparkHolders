@@ -27,6 +27,7 @@ class Character {
   public:
     const long id = ++character::id_cpt;
     const std::string name;
+    const bool player_character;
     const Speech * death_speech;
     const std::list<const Speech *> talking_speechs;
     const int type;
@@ -124,6 +125,9 @@ class Character {
     long getXP();
     long getLevel();
 
+    std::string getAI();
+    std::string getTeam();
+
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();
     std::list<Effect *> getEffects();
@@ -148,6 +152,9 @@ class Character {
     void payMana(int cost);
     void gainXP(long xp);
     void gainLevel();
+
+    void setAI(std::string ai);
+    void setTeam(std::string team);
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
@@ -176,7 +183,6 @@ class Character {
     int isInvisible();
     int isSleeping();
     int cloakPower();
-    int invisibilityPower();
     bool isInWeakState();
 
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
@@ -185,7 +191,6 @@ class Character {
 
   private:
     static long id_cpt;
-    bool player_character;
     long current_map_id;
     int x;
     int y;

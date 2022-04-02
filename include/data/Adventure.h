@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 
+#include "data/Action.h"
 #include "data/World.h"
 #include "data/Map.h"
 #include "data/Tile.h"
@@ -59,10 +60,17 @@ class Adventure {
     World * getWorld();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
+    std::list<Character *> getNPCs();
+    std::list<Projectile *> getProjectiles();
+    std::list<Action *> getNPCsActions();
+    void executeActions(std::list<Action *> actions);
+    void applyDayLight();
   private:
     World * world;
     Database * database;
     long tick;
+    int light = 5;
+    bool lightUp = true;
     std::list<Character *> party;
     std::list<Character *> preserved_players;
     std::list<Quest *> quests;

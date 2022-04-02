@@ -4,26 +4,26 @@ std::list<Item *> Gear::equip(Item * new_item) {
   std::list<Item *> unequip;
   switch(new_item->type) {
     case HEAD:
-      unequip.push_front(head);
+      unequip.push_back(head);
       head = new_item;
       break;
     case ARMS:
-      unequip.push_front(arms);
+      unequip.push_back(arms);
       arms = new_item;
       break;
     case BODY:
-      unequip.push_front(body);
+      unequip.push_back(body);
       body = new_item;
       break;
     case LEGS:
-      unequip.push_front(legs);
+      unequip.push_back(legs);
       legs = new_item;
       break;
     case FULL_BODY:
-      unequip.push_front(head);
-      unequip.push_front(body);
-      unequip.push_front(arms);
-      unequip.push_front(legs);
+      unequip.push_back(head);
+      unequip.push_back(body);
+      unequip.push_back(arms);
+      unequip.push_back(legs);
       head = nullptr;
       arms = nullptr;
       legs = nullptr;
@@ -37,12 +37,12 @@ std::list<Item *> Gear::equip(Item * new_item) {
         right_ring = new_item;
       }
       else {
-        unequip.push_front(left_ring);
+        unequip.push_back(left_ring);
         left_ring = new_item;
       }
       break;
     case AMULET:
-      unequip.push_front(amulet);
+      unequip.push_back(amulet);
       amulet = new_item;
       break;
     case UNEQUIPABLE:
