@@ -90,7 +90,7 @@ void Map::addProjectile(Projectile * p) { projectiles.push_back(p); }
 void Map::addLoot(Loot * l) { loots.push_back(l); }
 
 void Map::removeCharacter(Character * c) { characters.remove(c); }
-void Map::killCharacter(Character * victim, Character * killer) {
+void Map::killCharacter(Character * killer, Character * victim) {
   characters.remove(victim);
   SpeechManager::add(victim->death_speech);
   Loot * loot = (Loot *) malloc(sizeof(Loot));
@@ -135,31 +135,6 @@ void Map::takeLoot(Character * c) {
         c->addAmmunition(a);
       }
       delete l;
-    }
-  }
-}
-
-void Map::tryHit(Projectile * p, Adventure * adventure) {
-  int p_x = p->getX();
-  int p_y = p->getY();
-  for(auto c : characters) {
-    if(c->getX() == p_x && c->getY() == p_y) {
-      switch(p->target_type) {
-        case SINGLE_TILE:
-          p->attack_single_target(c, adventure);
-          p->setLost(true);
-          break;
-        case SINGLE_CHARACTER:
-          p->attack_single_target(c, adventure);
-          break;
-        case MULTIPLE_TILES:
-        case MULTIPLE_CHARACTERS:
-          p->attack_multiple_targets(characters, adventure);
-          break;
-        default:
-          break;
-      }
-      break;
     }
   }
 }
@@ -231,10 +206,50 @@ void Map::move(Character *c, int orientation) {
       if (other->getX() == destX && other->getY() == destY) {
         if(c->getTeam() != other->getTeam()) {
           c->attack(other);
+          if(!other->isAlive()) {
+            killCharacter(c, other);
+          }
         }
         return;
       }
     }
     c->move(orientation);
+  }
+}
+
+void Map::actProjectile(Projectile * p, Adventure * adventure) {
+  for(int i = 0; i <= p->getSpeed(); i++) {
+    p->move();
+    if(p->isAtDest()) {
+      p->setLost(true);
+    }
+    if(p->getArea() > 1) {
+      p->attack_multiple_targets(characters, adventure);
+      for(Character * c : characters) {
+        if(!c->isAlive()) {
+          killCharacter(p->getOwner(), c);
+        }
+      }
+    } else {
+      for(Character * c : characters) {
+        if(c->getX() == p->getX() && c->getY() == p->getY()) {
+          p->attack_single_target(c, adventure);
+          if(!c->isAlive()) {
+            killCharacter(p->getOwner(), c);
+          }
+        }
+      }
+    }
+    if(p->noDamage()) {
+      projectiles.remove(p);
+      delete p;
+      break;
+    }
+  }
+}
+
+void Map::actAllProjectiles(Adventure * adventure) {
+  for(Projectile * p : projectiles) {
+    actProjectile(p, adventure);
   }
 }

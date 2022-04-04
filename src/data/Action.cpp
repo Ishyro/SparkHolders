@@ -41,3 +41,5 @@ void Action::execute(Adventure * adventure) {
     default: ;
   }
 }
+
+Character * Action::getUser() { return user; }

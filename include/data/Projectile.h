@@ -29,10 +29,10 @@ class Projectile {
       int projectile_type,
       int target_type,
       bool homing,
-      int x,
-      int y,
-      int dest_x,
-      int dest_y,
+      long x,
+      long y,
+      long dest_x,
+      long dest_y,
       Skill * skill,
       Character * target,
       Character * owner,
@@ -69,25 +69,35 @@ class Projectile {
         this->damages[i] = damages[i];
       }
     }
-    int getX();
-    int getY();
-    int getDestX();
-    int getDestY();
+    long getX();
+    long getY();
+    long getDestX();
+    long getDestY();
     int getOrientation();
     int getRawDamage();
     int getDamageFromType(int damage_type);
     int getSpeed();
+    int getArea();
+    Character * getTarget();
+    Character * getOwner();
     bool isAtDest();
     bool noDamage();
+    void setX(long setX);
+    void setY(long setY);
+    void setDestX(long destX);
+    void setDestY(long destY);
+    void setTarget(Character * target);
+    void setOwner(Character * owner);
     void move();
     void setLost(bool state);
     void attack_single_target(Character * target, Adventure * adventure);
     void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
   private:
-    int x;
-    int y;
-    int dest_x;
-    int dest_y;
+    long current_map_id;
+    long x;
+    long y;
+    long dest_x;
+    long dest_y;
     bool lost;
     Skill * skill;
     Character * target;

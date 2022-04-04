@@ -5,6 +5,17 @@
 #include <string>
 #include <map>
 
+typedef struct MapLink {
+    long x1;
+    long y1;
+    int orientation1;
+    long x2;
+    long y2;
+    int orientation2;
+    Map * map1;
+    Map * map2;
+} MapLink;
+
 class World {
   public:
     const std::string name;

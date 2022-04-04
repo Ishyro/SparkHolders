@@ -5,9 +5,9 @@
 
 #include "data/Projectile.h"
 
-int Projectile::getX() { return x; }
-int Projectile::getY() { return y; }
-int Projectile::getDestX() {
+long Projectile::getX() { return x; }
+long Projectile::getY() { return y; }
+long Projectile::getDestX() {
   if(target_type == SINGLE_CHARACTER) {
     return target->getX();
   }
@@ -15,7 +15,7 @@ int Projectile::getDestX() {
     return dest_x;
   }
 }
-int Projectile::getDestY() {
+long Projectile::getDestY() {
   if(target_type == SINGLE_CHARACTER) {
     return target->getY();
   }
@@ -23,11 +23,13 @@ int Projectile::getDestY() {
     return dest_y;
   }
 }
+
 int Projectile::getOrientation() { return orientation; }
-
 int Projectile::getDamageFromType(int damage_type) { return damages[damage_type]; }
-
 int Projectile::getSpeed() { return speed; }
+int Projectile::getArea() { return area; }
+Character * Projectile::getTarget() { return target; }
+Character * Projectile::getOwner() { return owner; }
 
 void Projectile::move() {
   switch(orientation) {
@@ -144,10 +146,14 @@ int Projectile::getRawDamage() {
   return power;
 }
 
-bool Projectile::noDamage() {
-  return getRawDamage() == 0;
-}
+bool Projectile::noDamage() { return getRawDamage() == 0; }
 
+void Projectile::setX(long x) { this->x = x; }
+void Projectile::setY(long y) { this->y = y; }
+void Projectile::setDestX(long dest_x) { this->dest_x = dest_x; }
+void Projectile::setDestY(long dest_y) { this->dest_y = dest_y; }
+void Projectile::setTarget(Character * target) { this->target = target; }
+void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
 
 void Projectile::attack_single_target(Character * target, Adventure * adventure) {
@@ -159,12 +165,12 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
 }
 
 void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {
-  for(auto target : characters) {
+  for(Character * target : characters) {
     // TOCHECK should be ok
     int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
     if(distance <= area) {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        target->receiveAttack((int) floor( ((float) damages[i]) * distance * waste_per_tile_area), i, NO_ORIENTATION);
+        target->receiveAttack((int) floor( ((float) damages[i]) * pow(waste_per_tile_area, distance)), i, NO_ORIENTATION);
       }
       skill->activate(owner, target, adventure, overcharge);
     }

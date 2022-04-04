@@ -40,6 +40,7 @@ class Action {
       weapon(weapon)
     {}
     void execute(Adventure * adventure);
+    Character * getUser();
   private:
     Character * user;
 };

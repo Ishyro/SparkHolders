@@ -4,6 +4,10 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <cmath>
+
+#include "data/Character.h"
+#include "data/Projectile.h"
 
 typedef struct Loot {
   int type;
@@ -43,6 +47,9 @@ class Map {
         tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);
       }
+      characters = std::list<Character *>();
+      projectiles = std::list<Projectile *>();
+      loots = std::list<Loot *>();
     }
     Map(const Map * map, std::string name):
       name(name),
@@ -52,6 +59,54 @@ class Map {
       tiles(map->tiles),
       lights(map->lights)
     {}
+    // use this only for players, too much work for every characters
+    Map(const Map * map, Character * player):
+      name(name),
+      sizeX(map->sizeX),
+      sizeY(map->sizeY),
+      outside(map->outside),
+      tiles(map->sizeY),
+      lights(map->sizeY),
+      light(map->light)
+    {
+      tiles = std::vector<std::vector<Tile *>>();
+      lights = std::vector<std::vector<int>>();
+      for(long i = 0; i < sizeY; i++) {
+        tiles[i] = std::vector<Tile *>(sizeX);
+        lights[i] = std::vector<int>(sizeX);
+      }
+      for(long x = 0; x < sizeX; x++) {
+        for(long y = 0; y < sizeY; y++) {
+          int distance = std::max(abs(player->getX() - x), abs(player->getY() -y));
+          if ( (distance <= player->getVisionRange() && getLight(x, y) >= 10 - player->getVisionPower()) || distance <= player->getDetectionRange() ) {
+            tiles[x][y] = map->tiles[x][y];
+            lights[x][y] = map->lights[x][y];
+          }
+          else {
+            tiles[x][y] = nullptr;
+            lights[x][y] = -light;
+          }
+        }
+      }
+      characters = std::list<Character *>();
+      projectiles = std::list<Projectile *>();
+      loots = std::list<Loot *>();
+      for(Character * c : map->characters) {
+        if(tiles[c->getX()][c->getY()] != nullptr) {
+          characters.push_back(c);
+        }
+      }
+      for(Projectile * p : map->projectiles) {
+        if(tiles[p->getX()][p->getY()] != nullptr) {
+          projectiles.push_back(p);
+        }
+      }
+      for(Loot * l : map->loots) {
+        if(tiles[l->x][l->y] != nullptr) {
+          loots.push_back(l);
+        }
+      }
+    }
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
@@ -66,14 +121,15 @@ class Map {
     void addProjectile(Projectile * p);
     void addLoot(Loot * l);
     void removeCharacter(Character * c);
-    void killCharacter(Character * victim, Character * killer);
+    void killCharacter(Character * killer, Character * victim);
     void removeProjectile(Projectile * p);
     void destroyProjectile(Projectile * p);
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c);
-    void tryHit(Projectile * p, Adventure * adventure);
     void move(Character *, int orientation);
+    void actProjectile(Projectile * p, Adventure * adventure);
+    void actAllProjectiles(Adventure * adventure);
   private:
     int light;
     std::list<Character *> characters;
@@ -82,16 +138,5 @@ class Map {
     std::vector<std::vector<Tile *>> tiles;
     std::vector<std::vector<int>> lights;
 };
-
-typedef struct MapLink {
-    long x1;
-    long y1;
-    int orientation1;
-    long x2;
-    long y2;
-    int orientation2;
-    Map * map1;
-    Map * map2;
-} MapLink;
 
 #endif // _MAP_H_

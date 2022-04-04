@@ -5,6 +5,7 @@
 
 #include "server/Launcher.h"
 
+// to remove after testing
 #include <iostream>
 
 int main(int argc, char ** argv) {
@@ -23,8 +24,9 @@ int main(int argc, char ** argv) {
     // ask playerActions
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions
+    adventure->actAllProjectiles();
     adventure->executeActions(actionsNPCs);
+    actionsNPCs.clear();
     adventure->applyDayLight();
-    std::cout << adventure->getTick() << std::endl;
   }
 }

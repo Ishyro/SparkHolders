@@ -180,7 +180,17 @@ std::list<Action *> Adventure::getNPCsActions() {
 
 void Adventure::executeActions(std::list<Action *> actions) {
   for(Action * action : actions) {
-    action->execute(this);
+    // the user might have been killed and deleted
+    if(action->getUser() != nullptr) {
+      action->execute(this);
+      delete action;
+    }
+  }
+}
+
+void Adventure::actAllProjectiles() {
+  for (auto pair : world->getMaps()) {
+    pair.second->actAllProjectiles(this);
   }
 }
 

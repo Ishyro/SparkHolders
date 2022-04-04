@@ -65,6 +65,7 @@ class Adventure {
     std::list<Action *> getNPCsActions();
     void executeActions(std::list<Action *> actions);
     void applyDayLight();
+    void actAllProjectiles();
     void spawnPlayer(Character * c);
   private:
     World * world;
