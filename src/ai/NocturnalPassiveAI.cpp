@@ -6,12 +6,12 @@
 
 #include "ai/AI.h"
 
-#include "ai/PassiveAI.h"
+#include "ai/NocturnalPassiveAI.h"
 
-Action * PassiveAI::getAction(Adventure * adventure, Character * c) {
-  if(adventure->getLight() >= 4) {
+Action * NocturnalPassiveAI::getAction(Adventure * adventure, Character * c) {
+  if(adventure->getLight() <= 6) {
     Map * map = adventure->getWorld()->getMap(c->getCurrentMapId());
-    int orientation = NORTH;
+    int orientation = getFollowOrientation(c, origin_x, origin_y);
     Character * threat;
     int distance_threat = 100;
     for(Character * other : map->getCharacters()) {
@@ -20,7 +20,7 @@ Action * PassiveAI::getAction(Adventure * adventure, Character * c) {
         if(distance <= c->getVisionRange() && distance < distance_threat) {
           threat = other;
           distance_threat = distance;
-          // orientation = threat->orientation;
+          orientation = getFleeOrientation(c, other->getX(), other->getY());
         }
       }
     }

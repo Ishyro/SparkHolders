@@ -72,10 +72,10 @@ void Projectile::nextOrientation() {
   }
   float target_x = getDestX() - x;
   float target_y = getDestY() - y;
-  int way_to_the_target;
+  int way_to_the_target = NORTH; // default if already same tile
   // projectile will simply move to its target
   if(target_y > 0.) {
-    if(target_x == 0 || target_y / target_x > 2.) {
+    if(target_x == 0. || target_y / target_x > 2.) {
         way_to_the_target = NORTH;
     }
     else if(target_y / target_x > 0.5) {
@@ -95,7 +95,7 @@ void Projectile::nextOrientation() {
     }
   }
   if(target_y < 0.) {
-    if(target_x == 0 || target_y / target_x > 2.) {
+    if(target_x == 0. || target_y / target_x > 2.) {
         way_to_the_target = SOUTH;
     }
     else if(target_y / target_x > 0.5) {

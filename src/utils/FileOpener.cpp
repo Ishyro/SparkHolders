@@ -8,8 +8,11 @@
 #include <fstream>
 
 #include "ai/AI.h"
-#include "ai/PassiveAI.h"
 #include "ai/PlayerAI.h"
+#include "ai/DiurnalPassiveAI.h"
+#include "ai/NocturnalPassiveAI.h"
+#include "ai/DiurnalAgressiveAI.h"
+#include "ai/NocturnalAgressiveAI.h"
 
 #include "data/Adventure.h"
 #include "data/Attributes.h"
@@ -139,8 +142,17 @@ namespace FileOpener {
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
       Map * map = world->getMap(map_str);
       AI * ai;
-      if (ai_str == "Passive") {
-        ai = new PassiveAI();
+      if (ai_str == "DiurnalPassiveAI") {
+        ai = new DiurnalPassiveAI(x, y);
+      }
+      else if (ai_str == "NocturnalPassiveAI") {
+        ai = new NocturnalPassiveAI(x, y);
+      }
+      else if (ai_str == "DiurnalAgressiveAI") {
+        ai = new DiurnalAgressiveAI(x, y);
+      }
+      else if (ai_str == "NocturnalAgressiveAI") {
+        ai = new NocturnalAgressiveAI(x, y);
       }
       Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, ai, race, origin, culture, religion, profession);
       map->addCharacter(c);
