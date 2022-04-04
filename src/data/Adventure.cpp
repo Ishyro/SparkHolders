@@ -131,8 +131,8 @@ void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getNPCs() {
   std::list<Character *> npcs = std::list<Character *>();
-  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
-    for (Character * character : pair->second->getCharacters()) {
+  for (auto pair : world->getMaps()) {
+    for (Character * character : pair.second->getCharacters()) {
       // no check on player_character, because we want mind controlled players to act as npc
       // this imply that the player AI needs to send nullptr when asked for an Action
       // otherwise players will have 2 Actions per round
@@ -144,8 +144,8 @@ std::list<Character *> Adventure::getNPCs() {
 
 std::list<Projectile *> Adventure::getProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();
-  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
-    for (Projectile * projectile : pair->second->getProjectiles()) {
+  for (auto pair : world->getMaps()) {
+    for (Projectile * projectile : pair.second->getProjectiles()) {
       projectiles.push_back(projectile);
     }
   }
@@ -153,9 +153,9 @@ std::list<Projectile *> Adventure::getProjectiles() {
 }
 
 void Adventure::applyDayLight() {
-  for (auto pair = world->getMaps().begin(); pair != world->getMaps().end(); pair++) {
-    if(pair->second->outside) {
-      pair->second->applyDayLight(light);
+  for (auto pair : world->getMaps()) {
+    if(pair.second->outside) {
+      pair.second->applyDayLight(light);
     }
   }
   lightUp ? light++ : light--;

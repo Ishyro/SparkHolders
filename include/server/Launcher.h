@@ -2,12 +2,10 @@
 #define _LAUNCHER_H_
 
 #include <string>
+#include <list>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
-
-#include "data/Adventure.h"
-#include "utils/FileOpener.h"
 
 #include "Values.h"
 
