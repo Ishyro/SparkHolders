@@ -7,6 +7,8 @@
 
 // to remove after testing
 #include <iostream>
+#include <chrono>
+#include <ctime>
 
 int main(int argc, char ** argv) {
 
@@ -20,7 +22,9 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
 
   while(true) {
+    auto start = std::chrono::system_clock::now();
     adventure->incrTick();
+    adventure->applySoulBurn();
     // ask playerActions
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions
@@ -28,5 +32,8 @@ int main(int argc, char ** argv) {
     adventure->executeActions(actionsNPCs);
     actionsNPCs.clear();
     adventure->applyDayLight();
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
   }
 }

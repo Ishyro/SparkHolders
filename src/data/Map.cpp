@@ -97,11 +97,14 @@ void Map::killCharacter(Character * killer, Character * victim) {
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
-  for(auto w : victim->getWeapons()) {
+  for(Weapon * w : victim->getWeapons()) {
     loot->weapons.push_back(w);
   }
-  for(auto i : victim->getItems()) {
+  for(Item * i : victim->getItems()) {
     loot->items.push_back(i);
+  }
+  for(Ammunition * a : victim->getAmmunitions()) {
+    loot->ammunitions.push_back(a);
   }
   loot->type = CORPSE;
   killer->gainXP(victim->getXP() / 2);

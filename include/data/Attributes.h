@@ -30,6 +30,7 @@ class Attributes {
       int baseDetectionRange,
       Gear * startingGear
     ):
+      name(name),
       baseHp(baseHp),
       baseMana(baseMana),
       baseArmor(baseArmor),

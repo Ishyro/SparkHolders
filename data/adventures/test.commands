@@ -12,7 +12,7 @@ Spawn.4%5%NORTH%test_1%
 Spawn.5%4%NORTH%test_1%
 Spawn.4%4%NORTH%test_1%
 # add characters
-Character.sheep%2%3%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%
-Character.sheep%7%2%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%
-Character.sheep%6%3%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%
-Character.sheep%1%8%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%
+Character.sheep%2%3%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%7%2%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%6%3%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%1%8%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%

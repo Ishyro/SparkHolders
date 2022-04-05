@@ -11,5 +11,7 @@ data/ways/slow.data
 data/ways/countryside.data
 # speechs
 data/speechs/beh.data
+# attributes
+data/attributes/sheep.data
 # characters
 data/characters/sheep.data

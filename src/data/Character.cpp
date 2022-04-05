@@ -22,6 +22,7 @@ void Character::applyAttributes(const Attributes * attributes) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
+  gear = new Gear(attributes->startingGear);
 }
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
@@ -109,6 +110,7 @@ long Character::getCurrentMapId() { return current_map_id; }
 
 std::list<Item *> Character::getItems() { return items; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
+std::list<Ammunition *> Character::getAmmunitions() { return ammunitions; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
@@ -207,6 +209,14 @@ void Character::incrVisionPower() {visionPower++; }
 void Character::incrDetectionRange() { detectionRange++; }
 
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
+
+void Character::applySoulBurn() {
+  if(isSoulBurning()) {
+    int souldBurn = (int) floor( (float) currentSoulBurn - (float) soulBurnTreshold / 10.);
+    hp -= souldBurn;
+    currentSoulBurn -= souldBurn;
+  }
+}
 
 void Character::gainGold(long gold) { this->gold += gold; }
 void Character::payMana(int cost) {

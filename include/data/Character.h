@@ -118,6 +118,7 @@ class Character {
 
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();
+    std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
 
@@ -136,6 +137,7 @@ class Character {
     void incrDetectionRange();
     void setCurrentMapId(long map_id);
 
+    void applySoulBurn();
     void gainGold(long gold);
     void payMana(int cost);
     void gainXP(long xp);

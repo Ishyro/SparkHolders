@@ -140,6 +140,8 @@ namespace FileOpener {
       Way * religion = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
       Map * map = world->getMap(map_str);
       AI * ai;
       if (ai_str == "DiurnalPassiveAI") {
@@ -155,6 +157,7 @@ namespace FileOpener {
         ai = new NocturnalAgressiveAI(x, y);
       }
       Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, ai, race, origin, culture, religion, profession);
+      c->applyAttributes(attributes);
       map->addCharacter(c);
     }
     else if(keyword == "Event") {

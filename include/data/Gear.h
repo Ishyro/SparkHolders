@@ -28,6 +28,17 @@ class Gear {
       weapon(weapon),
       ammunition(ammunition)
     {}
+    Gear(const Gear * gear):
+      head(gear->head),
+      arms(gear->arms),
+      legs(gear->legs),
+      body(gear->body),
+      left_ring(gear->left_ring),
+      right_ring(gear->right_ring),
+      amulet(gear->amulet),
+      weapon(gear->weapon),
+      ammunition(gear->ammunition)
+    {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
     Ammunition * equip(Ammunition * new_ammunition);

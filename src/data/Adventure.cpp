@@ -202,3 +202,12 @@ void Adventure::spawnPlayer(Character * c) {
   spawns.remove(spawn);
   delete spawn;
 }
+
+void Adventure::applySoulBurn() {
+  for(Character * c : getNPCs()) {
+    c->applySoulBurn();
+    if(!c->isAlive()) {
+      getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
+    }
+  }
+}

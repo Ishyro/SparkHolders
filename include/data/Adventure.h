@@ -67,6 +67,7 @@ class Adventure {
     void applyDayLight();
     void actAllProjectiles();
     void spawnPlayer(Character * c);
+    void applySoulBurn();
   private:
     World * world;
     Database * database;
