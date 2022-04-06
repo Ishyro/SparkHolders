@@ -12,7 +12,7 @@ INCLUDE=include
 SCRIPTS=scripts
 
 INCLUDE_AI=$(INCLUDE)/ai
-INCLUDE_COM=$(INCLUDE)/communications
+INCLUDE_COM=$(INCLUDE)/communication
 INCLUDE_DATA=$(INCLUDE)/data
 INCLUDE_SKILLS=$(INCLUDE_DATA)/skills
 INCLUDE_UTILS=$(INCLUDE)/utils
@@ -23,7 +23,7 @@ INCLUDE_CLIENT_TERMINAL=$(INCLUDE_CLIENTS)/terminal
 INCLUDE_CLIENT_GRAPHICS=$(INCLUDE_CLIENTS)/graphics
 
 SRC_AI=$(SRC)/ai
-SRC_COM=$(SRC)/communications
+SRC_COM=$(SRC)/communication
 SRC_DATA=$(SRC)/data
 SRC_SKILLS=$(SRC_DATA)/skills
 SRC_UTILS=$(SRC)/utils
@@ -34,7 +34,7 @@ SRC_CLIENT_TERMINAL=$(SRC_CLIENTS)/terminal
 SRC_CLIENT_GRAPHICS=$(SRC_CLIENTS)/graphics
 
 BIN_AI=$(BIN)/ai
-BIN_COM=$(BIN)/communications
+BIN_COM=$(BIN)/communication
 BIN_DATA=$(BIN)/data
 BIN_SKILLS=$(BIN_DATA)/skills
 BIN_UTILS=$(BIN)/utils

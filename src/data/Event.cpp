@@ -4,7 +4,7 @@
 #include "data/Adventure.h"
 #include "data/Speech.h"
 
-#include "communications/SpeechManager.h"
+#include "communication/SpeechManager.h"
 
 #include "data/Event.h"
 

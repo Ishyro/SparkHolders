@@ -4,7 +4,7 @@
 #include "data/Weapon.h"
 #include "data/Tile.h"
 
-#include "communications/SpeechManager.h"
+#include "communication/SpeechManager.h"
 
 #include "data/Map.h"
 

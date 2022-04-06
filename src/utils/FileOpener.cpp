@@ -87,9 +87,9 @@ namespace FileOpener {
       getline(file, name);
     } while(name == "" || name.at(0) == '#');
     World * world = new World(name);
-    std::list<Quest *> quests = std::list<Quest *>();
-    std::list<Event *> events = std::list<Event *>();
-    std::list<Spawn *> spawns = std::list<Spawn *>();
+    std::list<Quest *> * quests = new std::list<Quest *>();
+    std::list<Event *> * events = new std::list<Event *>();
+    std::list<Spawn *> * spawns = new std::list<Spawn *>();
 
     while(getline(file,line)) {
       while(line != "" && std::isspace(line.at(0))) {
@@ -111,11 +111,14 @@ namespace FileOpener {
       }
     }
     file.close();
-    Adventure * adventure = new Adventure(name, spawns.size(), database, world, quests, events, spawns);
+    Adventure * adventure = new Adventure(name, spawns->size(), database, world, *quests, *events, *spawns);
+    delete quests;
+    delete events;
+    delete spawns;
     return adventure;
   }
 
-  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> quests, std::list<Event *> events, std::list<Spawn *> spawns, Database * database) {
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, Database * database) {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
@@ -162,7 +165,7 @@ namespace FileOpener {
     }
     else if(keyword == "Event") {
       Event * event = new Event(database->getEvent(command));
-      events.push_back(event);
+      events->push_back(event);
     }
     else if(keyword == "Map") {
       Map * map = new Map(database->getMap(command.substr(0, command.find('_'))), command);
@@ -202,7 +205,7 @@ namespace FileOpener {
     }
     else if(keyword == "Quest") {
       Quest * quest = new Quest(database->getQuest(command));
-      quests.push_back(quest);
+      quests->push_back(quest);
     }
     else if(keyword == "Spawn") {
       Spawn * spawn = (Spawn *) malloc(sizeof(Spawn));
@@ -214,7 +217,7 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       std::string map_str = command.substr(0, command.find('%'));
       spawn->map_id = world->getMap(map_str)->id;
-      spawns.push_back(spawn);
+      spawns->push_back(spawn);
     }
   }
 

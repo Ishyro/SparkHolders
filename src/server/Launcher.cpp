@@ -1,7 +1,13 @@
+#include <thread>
+#include <vector>
+
 #include "data/Action.h"
 #include "data/Adventure.h"
 
 #include "utils/FileOpener.h"
+
+#include "communication/Socket.h"
+#include "communication/ServerSocket.h"
 
 #include "server/Launcher.h"
 
@@ -9,6 +15,14 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+
+void communicate(Socket s) {
+  for(std::string msg; msg != "CLOSED"; msg = s.read()) {
+    if (msg != "") {
+      std::cout << msg << std::endl;
+    }
+  }
+}
 
 int main(int argc, char ** argv) {
 
@@ -20,6 +34,14 @@ int main(int argc, char ** argv) {
   std::string adventureFile = argv[1];
 
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
+
+  std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
+  std::vector<Socket > sockets = std::vector<Socket >(adventure->maxPlayers);
+  ServerSocket ss = ServerSocket(45678, adventure->maxPlayers);
+  for(int i = 0; i < adventure->maxPlayers; i++) {
+    sockets[i] = ss.accept();
+    threads[i] = std::thread(communicate, sockets[i]);
+  }
 
   while(true) {
     auto start = std::chrono::system_clock::now();
