@@ -28,6 +28,7 @@ class World {
     Map * getMap(long map_id);
     Map * getMap(std::string name);
     std::map<const long, Map *> getMaps();
+    MapLink * getMapLink(long x, long y, long mapId);
   private:
     std::map<const long, Map *> maps;
     std::list<MapLink *> links;

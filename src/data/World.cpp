@@ -26,5 +26,14 @@ Map * World::getMap(std::string name) {
     return nullptr;
 }
 
+std::map<const long, Map *> World::getMaps() { return maps; }
 
-  std::map<const long, Map *> World::getMaps() { return maps; }
+MapLink * World::getMapLink(long x, long y, long mapId) {
+  for(MapLink * link : links) {
+    if((link->map1->id == mapId && link->x1 == x && link->y1 == y) ||
+      (link->map2->id == mapId && link->x2 == x && link->y2 == y)) {
+        return link;
+      }
+  }
+  return nullptr;
+}

@@ -48,6 +48,10 @@ void Socket::write(std::string msg) {
   }
 }
 
+Character * Socket::getUser() { return user; }
+int Socket::getFD() { return fd; }
+bool Socket::isOpen() const { return fd != -1; }
+
 void Socket::close() {
   if(isOpen()) {
     shutdown(fd,2);

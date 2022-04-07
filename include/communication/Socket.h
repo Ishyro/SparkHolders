@@ -10,6 +10,8 @@
 #include <iosfwd>
 #include <iostream>
 
+#include "Values.h"
+
 class Socket {
 	public :
 		Socket();
@@ -18,11 +20,13 @@ class Socket {
 		void connect(in_addr ipv4, int port);
 		std::string read();
 		void write(std::string msg);
+		Character * getUser();
+		int getFD();
+		bool isOpen() const;
 		void close();
-		int getFD() { return fd ;}
-		bool isOpen() const {return fd != -1;}
 	private:
 		int fd;
+		Character * user;
 };
 
 std::ostream & operator<< (std::ostream & os, struct sockaddr_in * addr);
