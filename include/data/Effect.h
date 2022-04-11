@@ -35,6 +35,27 @@ class Effect {
         this->damages[i] = damages[i];
       }
     }
+    Effect(
+      std::string name,
+      int type,
+      int duration_type,
+      int power,
+      int duration,
+      int tick_left,
+      int damages[DAMAGE_TYPE_NUMBER]
+    ):
+      name(name),
+      type(type),
+      duration_type(duration_type),
+      power(power),
+      duration(duration),
+      tick_left(tick_left)
+    {
+      tick_left=duration;
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = damages[i];
+      }
+    }
     Effect(Effect * base, long overcharge):
       name(base->name),
       type(base->type),
@@ -53,6 +74,7 @@ class Effect {
     void desactivate(Character * target);
     bool tick(Character * target); // if true, delete effect
     std::string to_string();
+    static Effect * from_string(std::string msg);
   private:
     int tick_left;
     int damages[DAMAGE_TYPE_NUMBER];

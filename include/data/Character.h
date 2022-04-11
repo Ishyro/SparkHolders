@@ -91,6 +91,39 @@ class Character {
       religion(religion),
       profession(profession)
     {}
+    Character(
+      std::string name,
+      int hp,
+      int mana,
+      bool player_character,
+      int type,
+      long x,
+      long y,
+      int orientation,
+      std::list<Effect *> effects,
+      std::string team,
+      Way * race,
+      Way * origin,
+      Way * culture,
+      Way * religion,
+      Way * profession
+    ):
+      name(name),
+      hp(hp),
+      mana(mana),
+      player_character(player_character),
+      type(type),
+      x(x),
+      y(y),
+      orientation(orientation),
+      effects(effects),
+      team(team),
+      race(race),
+      origin(origin),
+      culture(culture),
+      religion(religion),
+      profession(profession)
+    {}
     void applyAttributes(const Attributes * attributes);
     bool isAlive();
     bool isSoulBurning();
@@ -181,6 +214,7 @@ class Character {
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
     std::string to_string();
+    static Character * from_string(std::string msg, Database * database);
 
   private:
     static long id_cpt;

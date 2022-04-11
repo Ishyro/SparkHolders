@@ -97,3 +97,24 @@ std::string Effect::to_string() {
   }
   return msg;
 }
+
+Effect * from_string(std::string msg) {
+  std::string name = msg.substr(0, msg.find('.'));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int type = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int duration_type = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int power = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int duration = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int tick_left = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int damages[DAMAGE_TYPE_NUMBER];
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damages[i] = stoi(msg.substr(0, msg.find('.')));
+    msg = msg.substr(msg.find('.') + 1, msg.length());
+  }
+  return new Effect(name, type, duration_type, power, duration, tick_left, damages);
+ }

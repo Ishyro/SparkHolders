@@ -1,5 +1,8 @@
+#include <sstream>
+
 #include "ai/AI.h"
 #include "data/Attributes.h"
+#include "data/Database.h"
 #include "data/Gear.h"
 #include "data/Item.h"
 #include "data/Weapon.h"
@@ -474,4 +477,48 @@ std::string Character::to_string() {
   msg += religion->name + ",";
   msg += profession->name + ",";
   return msg;
+}
+
+Character * Character::from_string(std::string msg, Database * database) {
+  std::string name = msg.substr(0, msg.find(','));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int hp = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int mana = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  std::string player_character_str = msg.substr(0, msg.find(','));
+  bool player_character = false;
+  if(player_character_str != "0") {
+    player_character = true;
+  }
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int type = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int x = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int y = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  int orientation = stoi(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  std::list<Effect *> effects = std::list<Effect *>();
+  std::istringstream effects_is(msg.substr(0, msg.find(',')));
+  std::string effect;
+  while(getline(effects_is, effect, ':') && effect != "") {
+    effects.push_back(Effect::from_string(effect));
+  }
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  std::string team = msg.substr(0, msg.find(','));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  Way * race = (Way *) database->getWay(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  Way * origin = (Way *) database->getWay(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  Way * culture = (Way *) database->getWay(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  Way * religion = (Way *) database->getWay(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+  Way * profession = (Way *) database->getWay(msg.substr(0, msg.find(',')));
+  msg = msg.substr(msg.find(',') + 1, msg.length());
+
+  return new Character(name, hp, mana, player_character, type, x, y, orientation, effects, team, race, origin, culture, religion, profession);
 }
