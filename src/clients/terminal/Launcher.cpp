@@ -2,6 +2,14 @@
 
 #include "communication/Socket.h"
 
+void communicate(Socket s) {
+  for(std::string msg; msg != "CLOSED"; msg = s.read()) {
+    if (msg != "") {
+      std::cout << msg << std::endl;
+    }
+  }
+}
+
 int main(int argc, char ** argv) {
   std::string one  = "one";
   std::string two = "two";
@@ -12,11 +20,6 @@ int main(int argc, char ** argv) {
 
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
-  s.write(one);
-  s.write(two);
-  s.write(three);
-  s.write(foor);
-  s.write(five);
-  s.write(six);
+  communicate(s);
   s.close();
 }

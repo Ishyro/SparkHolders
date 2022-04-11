@@ -84,3 +84,16 @@ int Effect::getRawDamage() {
 }
 
 int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }
+
+std::string Effect::to_string() {
+  std::string msg = name + ".";
+  msg += std::to_string(type) + ".";
+  msg += std::to_string(duration_type) + ".";
+  msg += std::to_string(power) + ".";
+  msg += std::to_string(duration) + ".";
+  msg += std::to_string(tick_left) + ".";
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(damages[i]) + ".";
+  }
+  return msg;
+}

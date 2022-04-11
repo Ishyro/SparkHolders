@@ -454,3 +454,24 @@ void Character::receiveCriticalAttack(int damage, int damage_type) {
     }
   }
 }
+
+std::string Character::to_string() {
+  std::string msg = name + ",";
+  msg += std::to_string(hp) + ",";
+  msg += std::to_string(mana) + ",";
+  msg += std::to_string(player_character) + ",";
+  msg += std::to_string(type) + ",";
+  msg += std::to_string(x) + ",";
+  msg += std::to_string(y) + ",";
+  msg += std::to_string(orientation) + ",";
+  for (Effect * effect : effects) {
+    msg += effect->to_string() + ":";
+  }
+  msg += team + ",";
+  msg += race->name + ",";
+  msg += origin->name + ",";
+  msg += culture->name + ",";
+  msg += religion->name + ",";
+  msg += profession->name + ",";
+  return msg;
+}

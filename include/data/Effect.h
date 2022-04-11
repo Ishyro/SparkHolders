@@ -52,6 +52,7 @@ class Effect {
     void activate(Character * target);
     void desactivate(Character * target);
     bool tick(Character * target); // if true, delete effect
+    std::string to_string();
   private:
     int tick_left;
     int damages[DAMAGE_TYPE_NUMBER];

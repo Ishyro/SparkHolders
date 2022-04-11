@@ -4,6 +4,7 @@
 #include "data/Character.h"
 #include "data/Action.h"
 #include "data/Map.h"
+#include "data/Tile.h"
 #include "data/World.h"
 
 #include "communication/Socket.h"
@@ -39,6 +40,6 @@ namespace Server {
   }
 
   void send(Socket s, Map * map, Adventure * adventure) {
-
+    s.write(map->to_string());
   }
 }

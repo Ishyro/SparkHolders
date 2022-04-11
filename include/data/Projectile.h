@@ -92,6 +92,7 @@ class Projectile {
     void setLost(bool state);
     void attack_single_target(Character * target, Adventure * adventure);
     void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
+    std::string to_string();
   private:
     long current_map_id;
     long x;

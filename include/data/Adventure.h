@@ -65,6 +65,7 @@ class Adventure {
     std::list<Action *> getNPCsActions();
     void executeActions(std::list<Action *> actions);
     void applyDayLight();
+    void incrDayLight();
     void actAllProjectiles();
     void spawnPlayer(Character * c);
     void applySoulBurn();
@@ -72,7 +73,7 @@ class Adventure {
     World * world;
     Database * database;
     long tick;
-    int light = 5;
+    int light = 4;
     bool lightUp = true;
     std::list<Character *> party;
     std::list<Character *> preserved_players;

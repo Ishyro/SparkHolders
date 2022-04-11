@@ -158,6 +158,9 @@ void Adventure::applyDayLight() {
       pair.second->applyDayLight(light);
     }
   }
+}
+
+void Adventure::incrDayLight() {
   lightUp ? light++ : light--;
   if(light == 10) {
     lightUp = false;

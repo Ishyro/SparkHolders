@@ -176,3 +176,20 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
     }
   }
 }
+
+std::string Projectile::to_string() {
+  std::string msg = name + ",";
+  msg += std::to_string(projectile_type) + ",";
+  msg += std::to_string(x) + ",";
+  msg += std::to_string(y) + ",";
+  msg += std::to_string(orientation) + ",";
+  msg += std::to_string(speed) + ",";
+  msg += std::to_string(area) + ",";
+  msg += std::to_string(waste_per_tile) + ",";
+  msg += std::to_string(waste_per_tile_area) + ",";
+  msg += std::to_string(waste_per_hit) + ",";
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(damages[i]) + ",";
+  }
+  return msg;
+}

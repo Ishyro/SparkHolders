@@ -256,3 +256,31 @@ void Map::actAllProjectiles(Adventure * adventure) {
     actProjectile(p, adventure);
   }
 }
+
+std::string Map::to_string() {
+  std::string msg = name + "@";
+  msg += std::to_string(sizeX) + "@";
+  msg += std::to_string(sizeY) + "@";
+  msg += std::to_string(outside) + "@";
+  for(int x = 0; x < sizeX; x++) {
+    for(int y = 0; y < sizeX; y++) {
+      if(getTile(x, y) != nullptr) {
+        msg += std::to_string(x) + "," + std::to_string(y) + "," + getTile(x, y)->name + "," + std::to_string(getLight(x, y)) + "|";
+      }
+    }
+  }
+  msg += "@";
+  for(Character * character : characters) {
+    msg += character->to_string() + "|";
+  }
+  msg += "@";
+  for(Projectile * projectile : projectiles) {
+    msg += projectile->to_string() + "|";
+  }
+  msg += "@";
+  for(Loot * loot : loots) {
+    msg += std::to_string(loot->type) + "," + std::to_string(loot->x) + "," + std::to_string(loot->y) + "|";
+  }
+  msg += "@";
+  return msg;
+}

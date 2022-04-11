@@ -32,7 +32,7 @@ void Socket::connect(in_addr ipv4, int port) {
 
 std::string Socket::read() {
   char delimiter = '%';
-  char * msg = (char *) malloc(sizeof(char) * 1024);
+  char * msg = (char *) malloc(sizeof(char) * 4096);
   if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
     std::string result = std::string(msg);
     return result.substr(0, result.find(delimiter));
@@ -42,7 +42,7 @@ std::string Socket::read() {
 
 void Socket::write(std::string msg) {
   std::string tosend = msg + "%";
-  if(::write(fd, (void *) tosend.c_str(), (ssize_t) 1024) == -1) {
+  if(::write(fd, (void *) tosend.c_str(), (ssize_t) 4096) == -1) {
     perror("connect");
     exit(EXIT_FAILURE);
   }

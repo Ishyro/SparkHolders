@@ -180,6 +180,7 @@ class Character {
     void attack(Character * target);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
+    std::string to_string();
 
   private:
     static long id_cpt;

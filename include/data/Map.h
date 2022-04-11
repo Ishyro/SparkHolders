@@ -130,6 +130,7 @@ class Map {
     void move(Character *, int orientation);
     void actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
+    std::string to_string();
   private:
     int light;
     std::list<Character *> characters;
