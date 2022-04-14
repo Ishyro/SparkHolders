@@ -189,7 +189,7 @@ namespace FileOpener {
       int orientation2 = database->getTargetFromMacro(command.substr(0, command.find('%')));
       Map * map1 = world->getMap(map1_str);
       Map * map2 = world->getMap(map2_str);
-      MapLink * link = (MapLink *) malloc(sizeof(MapLink));
+      MapLink * link = new MapLink();
       link->map1 = map1;
       link->map2 = map2;
       link->x1 = x1;
@@ -208,7 +208,7 @@ namespace FileOpener {
       quests->push_back(quest);
     }
     else if(keyword == "Spawn") {
-      Spawn * spawn = (Spawn *) malloc(sizeof(Spawn));
+      Spawn * spawn = new Spawn();
       spawn->x = stol(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       spawn->y = stol(command.substr(0, command.find('%')));
@@ -249,7 +249,7 @@ namespace FileOpener {
     std::string weapon_str = values.at("weapon");
     Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
     std::string ammunition_str = values.at("ammunition");
-    Ammunition * ammunition = (Ammunition *) malloc(sizeof(Ammunition));
+    Ammunition * ammunition = new Ammunition();
     ammunition = nullptr;
     if(ammunition_str != "none") {
       ammunition = (Ammunition *) database->getAmmunition(ammunition_str);

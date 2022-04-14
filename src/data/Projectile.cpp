@@ -64,7 +64,7 @@ void Projectile::move() {
   }
   nextOrientation();
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] -= (int) floor( ((float) damages[i]) * waste_per_tile);
+    damages[i] -= (int) floor( ((float) damages[i]) * (1 - waste_per_tile));
   }
 }
 
@@ -159,7 +159,7 @@ void Projectile::setLost(bool state) { lost = state; }
 void Projectile::attack_single_target(Character * target, Adventure * adventure) {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     target->receiveAttack(damages[i], i, orientation);
-    damages[i] -= (int) floor( ((float) damages[i]) * waste_per_hit);
+    damages[i] -= (int) floor( ((float) damages[i]) * (1 - waste_per_hit));
   }
   skill->activate(owner, target, adventure, overcharge);
 }
@@ -170,7 +170,7 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
     int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
     if(distance <= area) {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        target->receiveAttack((int) floor( ((float) damages[i]) * pow(waste_per_tile_area, distance)), i, NO_ORIENTATION);
+        target->receiveAttack((int) floor( ((float) damages[i]) * pow(1 - waste_per_tile_area, distance)), i, NO_ORIENTATION);
       }
       skill->activate(owner, target, adventure, overcharge);
     }
@@ -178,18 +178,52 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
 }
 
 std::string Projectile::to_string() {
-  std::string msg = name + ",";
-  msg += std::to_string(projectile_type) + ",";
-  msg += std::to_string(x) + ",";
-  msg += std::to_string(y) + ",";
-  msg += std::to_string(orientation) + ",";
-  msg += std::to_string(speed) + ",";
-  msg += std::to_string(area) + ",";
-  msg += std::to_string(waste_per_tile) + ",";
-  msg += std::to_string(waste_per_tile_area) + ",";
-  msg += std::to_string(waste_per_hit) + ",";
+  std::string msg = name + ";";
+  msg += std::to_string(id) + ";";
+  msg += std::to_string(projectile_type) + ";";
+  msg += std::to_string(x) + ";";
+  msg += std::to_string(y) + ";";
+  msg += std::to_string(orientation) + ";";
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damages[i]) + ",";
+    msg += std::to_string(damages[i]) + ";";
   }
+  msg += std::to_string(speed) + ";";
+  msg += std::to_string(area) + ";";
+  msg += std::to_string(waste_per_tile) + ";";
+  msg += std::to_string(waste_per_tile_area) + ";";
+  msg += std::to_string(waste_per_hit) + ";";
   return msg;
+}
+
+ProjectileDisplay * Projectile::from_string(std::string toread) {
+  std::string msg = toread;
+  ProjectileDisplay * display = new ProjectileDisplay();
+  display->name = msg.substr(0, msg.find(';'));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->id = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->projectile_type = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->x = stol(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->y = stol(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->orientation = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    display->damages[i] = stoi(msg.substr(0, msg.find(';')));
+    msg = msg.substr(msg.find(';') + 1, msg.length());
+  }
+  display->speed = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->area = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->waste_per_tile = stof(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->waste_per_tile_area = stof(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->waste_per_hit = stof(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+
+  return display;
 }

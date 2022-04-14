@@ -2,9 +2,12 @@
 
 #include "data/Item.h"
 
-float Item::getDamageReduction(int damage_type) {
-  if(this != nullptr) {
-    return damage_reductions[damage_type];
+float Item::getDamageReductionFromType(int damage_type) {
+  float reduction = damage_reductions[damage_type];
+  for(Effect * e : effects) {
+    if(e->type == DAMAGE_REDUCTION) {
+      reduction += e->getDamageReductionFromType(damage_type);
+    }
   }
-  return 0.;
+  return reduction;
 }

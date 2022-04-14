@@ -7,8 +7,13 @@
 #include "communication/Client.h"
 
 namespace Client {
-  Map * receive(Socket s, Adventure * adventure) {
-    return nullptr;
+  MapDisplay * receive(Socket s, Adventure * adventure) {
+    std::string msg = s.read();
+    if (msg != "") {
+      return Map::from_string(msg);
+    } else {
+      return nullptr;
+    }
   }
 
   void send(Socket s, Action * action, Adventure * adventure) {

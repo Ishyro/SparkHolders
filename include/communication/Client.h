@@ -3,6 +3,6 @@
 class Socket;
 
 namespace Client {
-  Map * receive(Socket s, Adventure * adventure);
+  MapDisplay * receive(Socket s, Adventure * adventure);
   void send(Socket s, Action * action, Adventure * adventure);
 }

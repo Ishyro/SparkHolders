@@ -12,6 +12,22 @@ namespace character {
   static long id_cpt = 0;
 }
 
+typedef struct CharacterDisplay {
+  std::string name;
+  int id;
+  int hp;
+  int mana;
+  bool player_character;
+  int type;
+  long x;
+  long y;
+  int orientation;
+  std::string team;
+  int armor;
+  float damage_reductions[DAMAGE_TYPE_NUMBER];
+  int damages[DAMAGE_TYPE_NUMBER];
+} CharacterDisplay;
+
 class Character {
   public:
     const long id = ++character::id_cpt;
@@ -210,11 +226,12 @@ class Character {
 
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
     int getDamageFromType(int damage_type);
+    float getDamageReductionFromType(int damage_type);
     void attack(Character * target);
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
     std::string to_string();
-    static Character * from_string(std::string msg, Database * database);
+    static CharacterDisplay * from_string(std::string toread);
 
   private:
     static long id_cpt;

@@ -22,7 +22,8 @@ class Effect {
       int duration_type,
       int power,
       int duration,
-      int damages[DAMAGE_TYPE_NUMBER]
+      int damages[DAMAGE_TYPE_NUMBER],
+      int damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
       type(type),
@@ -33,6 +34,7 @@ class Effect {
       tick_left=duration;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
+        this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(
@@ -42,7 +44,8 @@ class Effect {
       int power,
       int duration,
       int tick_left,
-      int damages[DAMAGE_TYPE_NUMBER]
+      int damages[DAMAGE_TYPE_NUMBER],
+      float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
       type(type),
@@ -54,6 +57,7 @@ class Effect {
       tick_left=duration;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
+        this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(Effect * base, long overcharge):
@@ -65,10 +69,12 @@ class Effect {
     {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge;
+        this->damage_reductions[i] = damage_reductions[i] * overcharge;
       }
     }
     int getRawDamage();
     int getDamageFromType(int damage_type);
+    float getDamageReductionFromType(int damage_type);
     int getTickLeft();
     void activate(Character * target);
     void desactivate(Character * target);
@@ -78,6 +84,7 @@ class Effect {
   private:
     int tick_left;
     int damages[DAMAGE_TYPE_NUMBER];
+    float damage_reductions[DAMAGE_TYPE_NUMBER];
 };
 
 #endif // _EFFECT_H_

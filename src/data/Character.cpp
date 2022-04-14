@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "ai/AI.h"
 #include "data/Attributes.h"
 #include "data/Database.h"
@@ -402,13 +400,26 @@ void Character::useSkill(Skill * skill, Character * target, Adventure * adventur
 }
 
 int Character::getDamageFromType(int damage_type) {
-  int damage = gear->getWeapon()->getDamageFromType(damage_type);
+  int damage = 0;
+  if(gear->getWeapon() != nullptr) {
+    damage = gear->getWeapon()->getDamageFromType(damage_type);
+  }
   for(Effect * e : effects) {
     if(e->type == DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type);
     }
   }
   return damage;
+}
+
+float Character::getDamageReductionFromType(int damage_type) {
+  float reduction = gear->getDamageReductionFromType(damage_type);
+  for(Effect * e : effects) {
+    if(e->type == DAMAGE_REDUCTION) {
+      reduction += e->getDamageReductionFromType(damage_type);
+    }
+  }
+  return reduction;
 }
 
 void Character::attack(Character * target) {
@@ -434,11 +445,11 @@ void Character::receiveAttack(int damage, int damage_type, int orientation) {
   if(damage_type == TRUE) {
     hp -= damage;
   }
+  if(damage_type == NEUTRAL) {
+    hp -= std::max(0, damage - getArmor());
+  }
   else {
-    int final_damage = (int) floor(( (float) (damage) * (1. - gear->getDamageReduction(damage_type)) - getArmor()));
-    if(final_damage > 0) {
-      hp -= final_damage;
-    }
+    hp -= std::max(0, (int) floor(( (float) (damage) * (1. - getDamageReductionFromType(damage_type)) - getArmor())));
   }
 }
 
@@ -450,75 +461,70 @@ void Character::receiveCriticalAttack(int damage, int damage_type) {
   if(damage_type == TRUE) {
     hp -= damage * 2;
   }
+  if(damage_type == NEUTRAL) {
+    hp -= std::max(0, damage * 2 - getArmor());
+  }
   else {
-    int final_damage = (int) floor(( (float) (damage) * (1. - .5 * gear->getDamageReduction(damage_type)) - getArmor()));
-    if(final_damage > 0) {
-      hp -= final_damage * 2;
-    }
+    hp -= std::max(0, (int) floor(( (float) (damage * 2) * (1. - .5 * getDamageReductionFromType(damage_type)) - getArmor())));
   }
 }
 
 std::string Character::to_string() {
-  std::string msg = name + ",";
-  msg += std::to_string(hp) + ",";
-  msg += std::to_string(mana) + ",";
-  msg += std::to_string(player_character) + ",";
-  msg += std::to_string(type) + ",";
-  msg += std::to_string(x) + ",";
-  msg += std::to_string(y) + ",";
-  msg += std::to_string(orientation) + ",";
-  for (Effect * effect : effects) {
-    msg += effect->to_string() + ":";
+  std::string msg = name + ";";
+  msg += std::to_string(id) + ";";
+  msg += std::to_string(hp) + ";";
+  msg += std::to_string(mana) + ";";
+  msg += std::to_string(player_character) + ";";
+  msg += std::to_string(type) + ";";
+  msg += std::to_string(x) + ";";
+  msg += std::to_string(y) + ";";
+  msg += std::to_string(orientation) + ";";
+  msg += team + ";";
+  msg += std::to_string(getArmor()) + ";";
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(getDamageReductionFromType(i)) + ";";
   }
-  msg += team + ",";
-  msg += race->name + ",";
-  msg += origin->name + ",";
-  msg += culture->name + ",";
-  msg += religion->name + ",";
-  msg += profession->name + ",";
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(getDamageFromType(i)) + ";";
+  }
   return msg;
 }
 
-Character * Character::from_string(std::string msg, Database * database) {
-  std::string name = msg.substr(0, msg.find(','));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int hp = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int mana = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  std::string player_character_str = msg.substr(0, msg.find(','));
-  bool player_character = false;
+CharacterDisplay * Character::from_string(std::string toread) {
+  std::string msg = toread;
+  CharacterDisplay * display = new CharacterDisplay();
+  display->name = msg.substr(0, msg.find(';'));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->id = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->hp = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->mana = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  std::string player_character_str = msg.substr(0, msg.find(';'));
+  display->player_character = false;
   if(player_character_str != "0") {
-    player_character = true;
+    display->player_character = true;
   }
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int type = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int x = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int y = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  int orientation = stoi(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  std::list<Effect *> effects = std::list<Effect *>();
-  std::istringstream effects_is(msg.substr(0, msg.find(',')));
-  std::string effect;
-  while(getline(effects_is, effect, ':') && effect != "") {
-    effects.push_back(Effect::from_string(effect));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->type = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->x = stol(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->y = stol(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->orientation = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->team = msg.substr(0, msg.find(';'));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    display->damage_reductions[i] = stof(msg.substr(0, msg.find(';')));
+    msg = msg.substr(msg.find(';') + 1, msg.length());
   }
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  std::string team = msg.substr(0, msg.find(','));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  Way * race = (Way *) database->getWay(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  Way * origin = (Way *) database->getWay(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  Way * culture = (Way *) database->getWay(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  Way * religion = (Way *) database->getWay(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
-  Way * profession = (Way *) database->getWay(msg.substr(0, msg.find(',')));
-  msg = msg.substr(msg.find(',') + 1, msg.length());
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    display->damages[i] = stoi(msg.substr(0, msg.find(';')));
+    msg = msg.substr(msg.find(';') + 1, msg.length());
+  }
 
-  return new Character(name, hp, mana, player_character, type, x, y, orientation, effects, team, race, origin, culture, religion, profession);
+  return display;
 }

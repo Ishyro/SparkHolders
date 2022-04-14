@@ -31,21 +31,41 @@ void Socket::connect(in_addr ipv4, int port) {
 }
 
 std::string Socket::read() {
-  char delimiter = '%';
-  char * msg = (char *) malloc(sizeof(char) * 4096);
-  if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
-    std::string result = std::string(msg);
-    return result.substr(0, result.find(delimiter));
+  char final_delimiter = '%';
+  char delimiter = '&';
+  std::string result = std::string("");
+  while(true) {
+    char * msg = (char *) malloc(sizeof(char) * 1024);
+    if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
+      std::string part = std::string(msg);
+      if(part.find(delimiter) != std::string::npos) {
+        result += part.substr(0, part.find(delimiter));
+      } else {
+        return result += part.substr(0, part.find(final_delimiter));
+      }
+    } else {
+      return "CLOSED";
+    }
   }
-  return "CLOSED";
 }
 
 void Socket::write(std::string msg) {
-  std::string tosend = msg + "%";
-  if(::write(fd, (void *) tosend.c_str(), (ssize_t) 4096) == -1) {
-    perror("connect");
-    exit(EXIT_FAILURE);
-  }
+  char final_delimiter = '%';
+  char delimiter = '&';
+  do {
+    std::string tosend;
+    if(msg.length() > 1023) {
+      tosend = msg.substr(0, 1023) + delimiter;
+      msg = msg.substr(1023, msg.length());
+    } else {
+      tosend = msg + final_delimiter;
+      msg = "";
+    }
+    if(::write(fd, (void *) tosend.c_str(), (ssize_t) 1024) == -1) {
+      perror("connect");
+      exit(EXIT_FAILURE);
+    }
+  } while(msg != "");
 }
 
 Character * Socket::getUser() { return user; }

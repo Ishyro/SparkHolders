@@ -32,8 +32,11 @@ class Way;
 class Weapon;
 class World;
 typedef struct Ammunition Ammunition;
+typedef struct CharacterDisplay CharacterDisplay;
 typedef struct Loot Loot;
+typedef struct MapDisplay MapDisplay;
 typedef struct MapLink MapLink;
+typedef struct ProjectileDisplay ProjectileDisplay;
 typedef struct Spawn Spawn;
 typedef struct Step Step;
 
@@ -61,11 +64,12 @@ class SpeechManager;
 #define DETECTION_RANGE 10
 #define DAMAGE 11
 #define DAMAGE_BUFF 12
-#define CHANNELING 13
-#define STUNNED 14
-#define SLEEPING 15
-#define CLOAKED 16
-#define INVISIBLE 17
+#define DAMAGE_REDUCTION 13
+#define CHANNELING 14
+#define STUNNED 15
+#define SLEEPING 16
+#define CLOAKED 17
+#define INVISIBLE 18
 
 // melee_type
 

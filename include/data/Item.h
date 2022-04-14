@@ -51,7 +51,7 @@ class Item {
         damage_reductions[i] = item->damage_reductions[i];
       }
     }
-    float getDamageReduction(int damage_type);
+    float getDamageReductionFromType(int damage_type);
   private:
     static long id_cpt;
     float damage_reductions[DAMAGE_TYPE_NUMBER];

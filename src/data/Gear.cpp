@@ -118,15 +118,29 @@ Ammunition * Gear::unequipAmmunition() {
   return temp;
 }
 
-float Gear::getDamageReduction(int damage_type) {
+float Gear::getDamageReductionFromType(int damage_type) {
   float resistance = 0.;
-  resistance += head->getDamageReduction(damage_type);
-  resistance += arms->getDamageReduction(damage_type);
-  resistance += body->getDamageReduction(damage_type);
-  resistance += legs->getDamageReduction(damage_type);
-  resistance += left_ring->getDamageReduction(damage_type);
-  resistance += right_ring->getDamageReduction(damage_type);
-  resistance += amulet->getDamageReduction(damage_type);
+  if(head != nullptr) {
+    resistance += head->getDamageReductionFromType(damage_type);
+  }
+  if(arms != nullptr) {
+    resistance += arms->getDamageReductionFromType(damage_type);
+  }
+  if(body != nullptr) {
+    resistance += body->getDamageReductionFromType(damage_type);
+  }
+  if(legs != nullptr) {
+    resistance += legs->getDamageReductionFromType(damage_type);
+  }
+  if(left_ring != nullptr) {
+    resistance += left_ring->getDamageReductionFromType(damage_type);
+  }
+  if(right_ring != nullptr) {
+    resistance += right_ring->getDamageReductionFromType(damage_type);
+  }
+  if(amulet != nullptr) {
+    resistance += amulet->getDamageReductionFromType(damage_type);
+  }
   return resistance;
 }
 

@@ -19,6 +19,18 @@ typedef struct Loot {
   std::list<Ammunition *> ammunitions;
 } Loot;
 
+typedef struct MapDisplay {
+  std::string name;
+  long sizeX;
+  long sizeY;
+  bool outside;
+  std::list<CharacterDisplay *> characters;
+  std::list<ProjectileDisplay *> projectiles;
+  std::list<Loot *> loots;
+  std::vector<std::vector<std::string>> tiles;
+  std::vector<std::vector<int>> lights;
+} MapDisplay;
+
 namespace map {
   static long id_cpt = 0;
 }
@@ -131,6 +143,7 @@ class Map {
     void actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
     std::string to_string();
+    static MapDisplay * from_string(std::string toread);
   private:
     int light;
     std::list<Character *> characters;

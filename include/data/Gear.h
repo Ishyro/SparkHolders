@@ -46,7 +46,7 @@ class Gear {
     Weapon * unequipWeapon();
     Ammunition * unequipAmmunition();
 
-    float getDamageReduction(int damage_type);
+    float getDamageReductionFromType(int damage_type);
 
     Item * getHead();
     Item * getArms();

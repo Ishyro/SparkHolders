@@ -84,6 +84,7 @@ int Effect::getRawDamage() {
 }
 
 int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }
+float Effect::getDamageReductionFromType(int damage_type) { return damage_reductions[damage_type]; }
 
 std::string Effect::to_string() {
   std::string msg = name + ".";
@@ -94,6 +95,9 @@ std::string Effect::to_string() {
   msg += std::to_string(tick_left) + ".";
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     msg += std::to_string(damages[i]) + ".";
+  }
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(damage_reductions[i]) + ".";
   }
   return msg;
 }
@@ -116,5 +120,10 @@ Effect * from_string(std::string msg) {
     damages[i] = stoi(msg.substr(0, msg.find('.')));
     msg = msg.substr(msg.find('.') + 1, msg.length());
   }
-  return new Effect(name, type, duration_type, power, duration, tick_left, damages);
+  float damage_reductions[DAMAGE_TYPE_NUMBER];
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damage_reductions[i] = stof(msg.substr(0, msg.find('.')));
+    msg = msg.substr(msg.find('.') + 1, msg.length());
+  }
+  return new Effect(name, type, duration_type, power, duration, tick_left, damages, damage_reductions);
  }

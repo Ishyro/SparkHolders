@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "data/Character.h"
 #include "data/Projectile.h"
 #include "data/Item.h"
@@ -93,7 +95,7 @@ void Map::removeCharacter(Character * c) { characters.remove(c); }
 void Map::killCharacter(Character * killer, Character * victim) {
   characters.remove(victim);
   SpeechManager::add(victim->death_speech);
-  Loot * loot = (Loot *) malloc(sizeof(Loot));
+  Loot * loot = new Loot();
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
@@ -265,7 +267,7 @@ std::string Map::to_string() {
   for(int x = 0; x < sizeX; x++) {
     for(int y = 0; y < sizeX; y++) {
       if(getTile(x, y) != nullptr) {
-        msg += std::to_string(x) + "," + std::to_string(y) + "," + getTile(x, y)->name + "," + std::to_string(getLight(x, y)) + "|";
+        msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(x, y)->name + ";" + std::to_string(getLight(x, y)) + "|";
       }
     }
   }
@@ -279,8 +281,70 @@ std::string Map::to_string() {
   }
   msg += "@";
   for(Loot * loot : loots) {
-    msg += std::to_string(loot->type) + "," + std::to_string(loot->x) + "," + std::to_string(loot->y) + "|";
+    msg += std::to_string(loot->type) + ";" + std::to_string(loot->x) + ";" + std::to_string(loot->y) + "|";
   }
   msg += "@";
   return msg;
+}
+
+MapDisplay * Map::from_string(std::string toread) {
+  std::string msg = toread;
+  MapDisplay * display = new MapDisplay();
+  display->name = msg.substr(0, msg.find('@'));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  display->sizeX = stol(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  display->sizeY = stol(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::string outside_str = msg.substr(0, msg.find('@'));
+  display->outside = false;
+  if(outside_str != "0") {
+    display->outside = true;
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  display->tiles = std::vector<std::vector<std::string>>(display->sizeY);
+  display->lights = std::vector<std::vector<int>>(display->sizeY);
+  for(long i = 0; i < display->sizeY; i++) {
+    display->tiles[i] = std::vector<std::string>(display->sizeX);
+    display->lights[i] = std::vector<int>(display->sizeX);
+  }
+  std::istringstream tiles(msg.substr(0, msg.find('@')));
+  std::string tile;
+  while(getline(tiles, tile, '|') && tile != "") {
+    long x = stol(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    long y = stol(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    display->tiles[x][y] = tile.substr(0, tile.find(';'));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    display->lights[x][y] = stoi(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::istringstream characters(msg.substr(0, msg.find('@')));
+  std::string character;
+  while(getline(characters, character, '|') && character != "") {
+    display->characters.push_back(Character::from_string(character));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::istringstream projectiles(msg.substr(0, msg.find('@')));
+  std::string projectile;
+  while(getline(projectiles, projectile, '|') && projectile != "") {
+    display->projectiles.push_back(Projectile::from_string(projectile));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::istringstream loots(msg.substr(0, msg.find('@')));
+  std::string loot_str;
+  while(getline(loots, loot_str, '|') && loot_str != "") {
+    Loot * loot = new Loot();
+    loot->type = stoi(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    loot->x = stol(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    loot->y = stol(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    display->loots.push_back(loot);
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  return display;
 }

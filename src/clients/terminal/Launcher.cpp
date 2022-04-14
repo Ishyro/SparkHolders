@@ -1,23 +1,33 @@
 #include <string>
 
+#include "communication/Client.h"
 #include "communication/Socket.h"
 
+#include "data/Map.h"
+
+void displayMap(MapDisplay * display) {
+  // clear terminal
+  std::cout << "\033[2J\033[1;1H";
+  std::cout << display->name << std::endl << std::endl;
+  for(int x = 0; x < display->sizeX; x++) {
+    for(int y = 0; y < display->sizeY; y++) {
+      std::cout << display->tiles[x][y].at(0);
+    }
+    std::cout << std::endl;
+  }
+}
+
 void communicate(Socket s) {
-  for(std::string msg; msg != "CLOSED"; msg = s.read()) {
-    if (msg != "") {
-      std::cout << msg << std::endl;
+  while(true) {
+    MapDisplay * display = Client::receive(s, nullptr);
+    if(display != nullptr) {
+      displayMap(display);
+      delete display;
     }
   }
 }
 
 int main(int argc, char ** argv) {
-  std::string one  = "one";
-  std::string two = "two";
-  std::string three = "three";
-  std::string foor = "foor";
-  std::string five = "five";
-  std::string six = "six";
-
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
   communicate(s);
