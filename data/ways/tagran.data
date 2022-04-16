@@ -1,0 +1,9 @@
+name = tagran
+type = CULTURE
+hpIncr = -1
+manaIncr = 3
+armorIncr = 0
+soulBurnIncr = 2
+flowIncr = 2
+effects =
+skills =

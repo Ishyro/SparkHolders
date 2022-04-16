@@ -1,0 +1,9 @@
+name = human
+type = RACE
+hpIncr = 5
+manaIncr = 5
+armorIncr = 1
+soulBurnIncr = 0
+flowIncr = 1
+effects =
+skills =

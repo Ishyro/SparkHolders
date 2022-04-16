@@ -68,6 +68,7 @@ class Character {
     {}
     Character(
       const Character * from_database,
+      std::string name,
       int x,
       int y,
       int orientation,
@@ -80,7 +81,7 @@ class Character {
       Way * religion,
       Way * profession
     ):
-      name(from_database->name),
+      name(name),
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speechs(from_database->talking_speechs),

@@ -90,6 +90,8 @@ namespace FileOpener {
     std::list<Quest *> * quests = new std::list<Quest *>();
     std::list<Event *> * events = new std::list<Event *>();
     std::list<Spawn *> * spawns = new std::list<Spawn *>();
+    std::list<Attributes *> * startingAttributes = new std::list<Attributes *>();
+    std::list<Way *> * startingWays = new std::list<Way *>();
 
     while(getline(file,line)) {
       while(line != "" && std::isspace(line.at(0))) {
@@ -107,18 +109,20 @@ namespace FileOpener {
         while(std::isspace(command.at(command.length() - 1))) {
           command = command.substr(0, command.length() - 1);
         }
-        executeCommand(keyword, command, world, quests, events, spawns, database);
+        executeCommand(keyword, command, world, quests, events, spawns, startingAttributes, startingWays, database);
       }
     }
     file.close();
-    Adventure * adventure = new Adventure(name, spawns->size(), database, world, *quests, *events, *spawns);
+    Adventure * adventure = new Adventure(name, spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
     delete quests;
     delete events;
     delete spawns;
+    delete startingAttributes;
+    delete startingWays;
     return adventure;
   }
 
-  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, Database * database) {
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database) {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
@@ -159,7 +163,7 @@ namespace FileOpener {
       else if (ai_str == "NocturnalAgressiveAI") {
         ai = new NocturnalAgressiveAI(x, y);
       }
-      Character * c = new Character(database->getCharacter(name), x, y, orientation, map->id, team, ai, race, origin, culture, religion, profession);
+      Character * c = new Character(database->getCharacter(name), name, x, y, orientation, map->id, team, ai, race, origin, culture, religion, profession);
       c->applyAttributes(attributes);
       map->addCharacter(c);
     }
@@ -219,6 +223,12 @@ namespace FileOpener {
       spawn->map_id = world->getMap(map_str)->id;
       spawns->push_back(spawn);
     }
+    else if(keyword == "StartingAttributes") {
+      startingAttributes->push_back( (Attributes *) database->getAttributes(command));
+    }
+    else if(keyword == "StartingWay") {
+      startingWays->push_back( (Way *) database->getWay(command));
+    }
   }
 
   void AttributesOpener(std::string fileName, Database * database) {
@@ -249,8 +259,7 @@ namespace FileOpener {
     std::string weapon_str = values.at("weapon");
     Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
     std::string ammunition_str = values.at("ammunition");
-    Ammunition * ammunition = new Ammunition();
-    ammunition = nullptr;
+    Ammunition * ammunition = nullptr;
     if(ammunition_str != "none") {
       ammunition = (Ammunition *) database->getAmmunition(ammunition_str);
       long number = stol(values.at("number"));
@@ -267,7 +276,10 @@ namespace FileOpener {
     std::istringstream is(values.at("player_character"));
     bool player_character;
     is >> std::boolalpha >> player_character;
-    Speech * death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
+    Speech * death_speech = nullptr;
+    if(values.at("death_speech") != "none") {
+      death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
+    }
     std::list<const Speech *> talking_speechs = std::list<const Speech *>();
     std::istringstream is_2(values.at("talking_speechs"));
     std::string talking_speech;
@@ -388,7 +400,7 @@ namespace FileOpener {
         getline(is, wall, ' ');
         if(wall != "none") {
           // WARNING: Segfault if a wall level up
-          Character * c = new Character(database->getCharacter(wall), x, y, NORTH, map->id, "none", new PlayerAI(), nullptr, nullptr, nullptr, nullptr, nullptr);
+          Character * c = new Character(database->getCharacter(wall), wall, x, y, NORTH, map->id, "none", new PlayerAI(), nullptr, nullptr, nullptr, nullptr, nullptr);
           c->applyAttributes(database->getAttributes(wall));
           map->addCharacter(c);
         }

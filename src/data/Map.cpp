@@ -310,6 +310,12 @@ MapDisplay * Map::from_string(std::string toread) {
   }
   std::istringstream tiles(msg.substr(0, msg.find('@')));
   std::string tile;
+  for(long x = 0; x < display->sizeX; x++) {
+    for(long y = 0; y < display->sizeY; y++) {
+      display->tiles[x][y] = "";
+    }
+  }
+
   while(getline(tiles, tile, '|') && tile != "") {
     long x = stol(tile.substr(0, tile.find(';')));
     tile = tile.substr(tile.find(';') + 1, tile.length());

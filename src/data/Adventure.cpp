@@ -127,6 +127,8 @@ long Adventure::getTick() { return tick; }
 void Adventure::incrTick() { tick++; }
 World * Adventure::getWorld() { return world; }
 int Adventure::getLight() { return light; }
+std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
+std::list<Way *> Adventure::getStartingWays() { return startingWays; }
 void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getNPCs() {
@@ -197,13 +199,28 @@ void Adventure::actAllProjectiles() {
   }
 }
 
-void Adventure::spawnPlayer(Character * c) {
+Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
-  c->move(spawn->x, spawn->y, spawn->orientation);
-  c->setCurrentMapId(spawn->map_id);
-  c->setAI(new PlayerAI());
+  Character * player = new Character(
+    database->getCharacter("Player"),
+    name,
+    spawn->x,
+    spawn->y,
+    spawn->orientation,
+    spawn->map_id,
+    "adventurer",
+    new PlayerAI(),
+    race,
+    origin,
+    culture,
+    religion,
+    profession
+  );
+  player->applyAttributes(attr);
+  world->getMap(spawn->map_id)->addCharacter(player);
   spawns.remove(spawn);
   delete spawn;
+  return player;
 }
 
 void Adventure::applySoulBurn() {

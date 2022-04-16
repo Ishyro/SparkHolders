@@ -1,0 +1,13 @@
+name = Player
+player_character = true
+death_speech = none
+talking_speechs =
+type = HUMAN
+gold = 50
+xp = 0
+level = 1
+items =
+weapons =
+ammunitions =
+effects =
+skills =

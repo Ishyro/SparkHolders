@@ -3,6 +3,8 @@
 class Socket;
 
 namespace Server {
-  Action * receive(Socket s, Adventure * adventure);
-  void send(Socket s, Map * map, Adventure * adventure);
+  Action * receiveAction(Socket s, Adventure * adventure);
+  Character * receiveChoices(Socket s, Adventure * adventure);
+  void sendMap(Socket s, Map * map);
+  void sendStartingPossibilites(Socket s, Adventure * adventure);
 }

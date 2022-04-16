@@ -53,7 +53,8 @@ class Map {
       sizeY(sizeY),
       outside(outside),
       tiles(sizeY),
-      lights(sizeY)
+      lights(sizeY),
+      light(0)
     {
       for(long i = 0; i < sizeY; i++) {
         tiles[i] = std::vector<Tile *>(sizeX);
@@ -69,11 +70,12 @@ class Map {
       sizeY(map->sizeY),
       outside(map->outside),
       tiles(map->tiles),
-      lights(map->lights)
+      lights(map->lights),
+      light(map->light)
     {}
     // use this only for players, too much work for every characters
     Map(const Map * map, Character * player):
-      name(name),
+      name(map->name),
       sizeX(map->sizeX),
       sizeY(map->sizeY),
       outside(map->outside),
@@ -81,8 +83,6 @@ class Map {
       lights(map->sizeY),
       light(map->light)
     {
-      tiles = std::vector<std::vector<Tile *>>();
-      lights = std::vector<std::vector<int>>();
       for(long i = 0; i < sizeY; i++) {
         tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);

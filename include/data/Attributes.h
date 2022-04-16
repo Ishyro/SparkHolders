@@ -41,6 +41,8 @@ class Attributes {
       baseDetectionRange(baseDetectionRange),
       startingGear(startingGear)
     {}
+    std::string to_string();
+    static Attributes * from_string(std::string toread);
 };
 
 #endif // _ATTRIBUTES_H_

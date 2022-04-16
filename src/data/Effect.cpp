@@ -102,7 +102,7 @@ std::string Effect::to_string() {
   return msg;
 }
 
-Effect * from_string(std::string msg) {
+Effect * Effect::from_string(std::string msg) {
   std::string name = msg.substr(0, msg.find('.'));
   msg = msg.substr(msg.find('.') + 1, msg.length());
   int type = stoi(msg.substr(0, msg.find('.')));

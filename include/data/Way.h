@@ -38,6 +38,8 @@ class Way {
     {}
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    std::string to_string();
+    static Way * from_string(std::string toread);
   private:
     std::list<Effect *> effects;
     std::list<Skill *> skills;

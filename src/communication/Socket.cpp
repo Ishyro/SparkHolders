@@ -38,12 +38,14 @@ std::string Socket::read() {
     char * msg = (char *) malloc(sizeof(char) * 1024);
     if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
       std::string part = std::string(msg);
+      free(msg);
       if(part.find(delimiter) != std::string::npos) {
         result += part.substr(0, part.find(delimiter));
       } else {
         return result += part.substr(0, part.find(final_delimiter));
       }
     } else {
+      free(msg);
       return "CLOSED";
     }
   }

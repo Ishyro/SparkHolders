@@ -9,9 +9,14 @@ data/ways/ruminant.data
 data/ways/sheep.data
 data/ways/slow.data
 data/ways/countryside.data
+data/ways/human.data
+data/ways/tagran.data
+data/ways/soldier.data
 # speechs
 data/speechs/beh.data
 # attributes
 data/attributes/sheep.data
+data/attributes/vanguard.data
 # characters
+data/characters/player.data
 data/characters/sheep.data

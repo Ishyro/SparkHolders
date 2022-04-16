@@ -39,6 +39,17 @@ class Gear {
       weapon(gear->weapon),
       ammunition(gear->ammunition)
     {}
+      Gear():
+        head(nullptr),
+        arms(nullptr),
+        legs(nullptr),
+        body(nullptr),
+        left_ring(nullptr),
+        right_ring(nullptr),
+        amulet(nullptr),
+        weapon(nullptr),
+        ammunition(nullptr)
+      {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
     Ammunition * equip(Ammunition * new_ammunition);

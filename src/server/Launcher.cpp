@@ -1,5 +1,7 @@
+//#include <barrier>
 #include <thread>
 #include <vector>
+#include <unistd.h>
 
 #include "data/Action.h"
 #include "data/Adventure.h"
@@ -12,17 +14,12 @@
 #include "communication/Server.h"
 
 #include "server/Launcher.h"
+#include "server/Link.h"
 
 // to remove after testing
 #include <iostream>
 #include <chrono>
 #include <ctime>
-
-void communicate(Socket s, Adventure * adventure) {
-  while(true) {
-    Server::send(s, adventure->getWorld()->getMap("test_1"), adventure);
-  }
-}
 
 int main(int argc, char ** argv) {
 
@@ -36,16 +33,20 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
   adventure->applyDayLight();
 
-  std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
-  std::vector<Socket > sockets = std::vector<Socket >(adventure->maxPlayers);
+  // std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
+  std::vector<Link *> links = std::vector<Link *>(adventure->maxPlayers);
   ServerSocket ss = ServerSocket(45678, adventure->maxPlayers);
+  //std::barrier sync_point(adventure->maxPlayers, Server::receive);
   for(int i = 0; i < adventure->maxPlayers; i++) {
-    sockets[i] = ss.accept();
-    threads[i] = std::thread(communicate, sockets[i], adventure);
+    links[i] = new Link(ss.accept(), adventure);
+    //threads[i] = std::thread(communicate, sockets[i], sync_point, adventure);
   }
 
   while(true) {
     auto start = std::chrono::system_clock::now();
+    for(int i = 0; i < adventure->maxPlayers; i++) {
+      links[i]->sendMap();
+    }
     adventure->applyDayLight();
     adventure->incrTick();
     adventure->applySoulBurn();
@@ -59,5 +60,6 @@ int main(int argc, char ** argv) {
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
+    sleep(1);
   }
 }

@@ -25,7 +25,9 @@ class Adventure {
       World * world,
       std::list<Quest *> quests,
       std::list<Event *> events,
-      std::list<Spawn *> spawns
+      std::list<Spawn *> spawns,
+      std::list<Attributes *> startingAttributes,
+      std::list<Way *> startingWays
     ):
       name(name),
       maxPlayers(maxPlayers),
@@ -33,7 +35,9 @@ class Adventure {
       world(world),
       quests(quests),
       events(events),
-      spawns(spawns)
+      spawns(spawns),
+      startingAttributes(startingAttributes),
+      startingWays(startingWays)
     {
       party = std::list<Character *>();
       preserved_players = std::list<Character *>();
@@ -58,6 +62,8 @@ class Adventure {
     void event();
     World * getWorld();
     int getLight();
+    std::list<Attributes *> getStartingAttributes();
+    std::list<Way *> getStartingWays();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
     std::list<Character *> getNPCs();
@@ -67,7 +73,7 @@ class Adventure {
     void applyDayLight();
     void incrDayLight();
     void actAllProjectiles();
-    void spawnPlayer(Character * c);
+Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applySoulBurn();
   private:
     World * world;
@@ -80,6 +86,8 @@ class Adventure {
     std::list<Quest *> quests;
     std::list<Event *> events;
     std::list<Spawn *> spawns;
+    std::list<Attributes *> startingAttributes;
+    std::list<Way *> startingWays;
 };
 
 #endif // _ADVENTURE_H_

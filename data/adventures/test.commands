@@ -11,6 +11,14 @@ Spawn.5%5%NORTH%test_1%
 #Spawn.4%5%NORTH%test_1%
 #Spawn.5%4%NORTH%test_1%
 #Spawn.4%4%NORTH%test_1%
+# add starting attributes
+StartingAttributes.Vanguard
+# add starting ways
+StartingWay.human
+StartingWay.countryside
+StartingWay.tagran
+StartingWay.atheist
+StartingWay.soldier
 # add characters
 Character.sheep%2%3%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
 Character.sheep%7%2%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
