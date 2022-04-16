@@ -21,5 +21,5 @@ void Link::sendMap() {
   Server::sendMap(s, map);
   delete map;
 }
-  
-Action * Link::receiveAction() { return Server::receiveAction(s, adventure); }
+
+Action * Link::receiveAction() { return Server::receiveAction(s, player, adventure); }

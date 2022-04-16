@@ -6,7 +6,7 @@
 class ServerSocket {
 
 	public :
-		ServerSocket(int port, int maxPlayers);
+		ServerSocket(int port, int maxPlayers, bool local);
 		int getFD() { return socketfd; }
 		bool isOpen() const { return socketfd != -1; }
 		Socket accept();

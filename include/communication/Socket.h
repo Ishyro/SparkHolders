@@ -20,15 +20,11 @@ class Socket {
 		void connect(in_addr ipv4, int port);
 		std::string read();
 		void write(std::string msg);
-		Character * getUser();
 		int getFD();
 		bool isOpen() const;
 		void close();
 	private:
 		int fd;
-		Character * user;
 };
-
-std::ostream & operator<< (std::ostream & os, struct sockaddr_in * addr);
 
 #endif /* _SOCKET_H_ */

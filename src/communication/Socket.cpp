@@ -70,7 +70,6 @@ void Socket::write(std::string msg) {
   } while(msg != "");
 }
 
-Character * Socket::getUser() { return user; }
 int Socket::getFD() { return fd; }
 bool Socket::isOpen() const { return fd != -1; }
 

@@ -43,6 +43,7 @@ void communicate(Link * link) {
       }
       delete display;
     }
+    link->sendAction(nullptr);
   }
 }
 

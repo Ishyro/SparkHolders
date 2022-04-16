@@ -183,13 +183,14 @@ std::list<Action *> Adventure::getNPCsActions() {
   return actions;
 }
 
+#include <iostream>
 void Adventure::executeActions(std::list<Action *> actions) {
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    if(action->getUser() != nullptr) {
+    if(action != nullptr && action->getUser() != nullptr) {
       action->execute(this);
-      delete action;
     }
+    delete action;
   }
 }
 
@@ -198,7 +199,6 @@ void Adventure::actAllProjectiles() {
     pair.second->actAllProjectiles(this);
   }
 }
-
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   Character * player = new Character(

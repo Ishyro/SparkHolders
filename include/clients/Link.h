@@ -20,7 +20,6 @@ class Link {
     std::list<Attributes *> * attributes;
     std::list<Way *> * ways;
     Adventure * adventure;
-    Character * player;
     Socket s;
 };
 

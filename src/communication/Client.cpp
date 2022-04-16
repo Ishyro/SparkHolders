@@ -42,6 +42,7 @@ namespace Client {
   }
 
   void sendAction(Socket s, Action * action, Adventure * adventure) {
-    s.write(std::string("REST"));
+    s.write(std::to_string(REST) + "@");
+    delete action;
   }
 }

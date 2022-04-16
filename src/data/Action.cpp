@@ -17,8 +17,10 @@
 
 #include "data/Action.h"
 
+#include <iostream>
+
 void Action::execute(Adventure * adventure) {
-  switch(this->type) {
+  switch(type) {
     case MOVE:
       adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation);
       break;

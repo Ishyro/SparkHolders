@@ -14,7 +14,7 @@
 #include "communication/Server.h"
 
 namespace Server {
-  Action * receiveAction(Socket s, Adventure * adventure) {
+  Action * receiveAction(Socket s, Character * user, Adventure * adventure) {
     std::string msg = s.read();
     int keyword = stoi(msg.substr(0, msg.find('@')));
     msg = msg.substr(msg.find('@') + 1, msg.length());
@@ -22,23 +22,22 @@ namespace Server {
       case MOVE: {
         int orientation = stoi(msg.substr(0, msg.find('@')));
         msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(MOVE, s.getUser(), orientation, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-        break;
+        return new Action(MOVE, user, orientation, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
       }
       case CHANGE_MAP: {
-        MapLink * link = adventure->getWorld()->getMapLink(s.getUser()->getX(), s.getUser()->getY(), s.getUser()->getCurrentMapId());
-        if(link != nullptr);
-        return new Action(CHANGE_MAP, s.getUser(), 0, nullptr, nullptr, nullptr, link, nullptr, nullptr);
-        break;
+        MapLink * link = adventure->getWorld()->getMapLink(user->getX(), user->getY(), user->getCurrentMapId());
+        if(link != nullptr) {
+          return new Action(CHANGE_MAP, user, 0, nullptr, nullptr, nullptr, link, nullptr, nullptr);
+        }
+        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
       }
       case GRAB:
-        return new Action(GRAB, s.getUser(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-        break;
+        return new Action(GRAB, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
       case REST:
+        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
       default:
-        return new Action(REST, s.getUser(), 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
     }
-    return nullptr;
   }
 
   Character * receiveChoices(Socket s, Adventure * adventure) {

@@ -35,7 +35,7 @@ int main(int argc, char ** argv) {
 
   // std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
   std::vector<Link *> links = std::vector<Link *>(adventure->maxPlayers);
-  ServerSocket ss = ServerSocket(45678, adventure->maxPlayers);
+  ServerSocket ss = ServerSocket(45678, adventure->maxPlayers, true);
   //std::barrier sync_point(adventure->maxPlayers, Server::receive);
   for(int i = 0; i < adventure->maxPlayers; i++) {
     links[i] = new Link(ss.accept(), adventure);
@@ -50,13 +50,18 @@ int main(int argc, char ** argv) {
     adventure->applyDayLight();
     adventure->incrTick();
     adventure->applySoulBurn();
-    // ask playerActions
+    std::list<Action *> actionsPlayers = std::list<Action *>();
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions
+    for(int i = 0; i < adventure->maxPlayers; i++) {
+      actionsPlayers.push_back(links[i]->receiveAction());
+    }
     adventure->actAllProjectiles();
+    adventure->executeActions(actionsPlayers);
     adventure->executeActions(actionsNPCs);
-    actionsNPCs.clear();
     adventure->incrDayLight();
+    actionsPlayers.clear();
+    actionsNPCs.clear();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
