@@ -194,16 +194,16 @@ class SpeechManager;
 
 #define DAMAGE_TYPE_NUMBER 10
 
-#define SLASH 0
-#define PUNCTURE 1
-#define IMPACT 2
-#define FIRE 3
-#define THUNDER 4
-#define COLD 5
-#define POISON 6
-#define NEUTRAL 7 // unaffected by damage reductions, but still by armor
-#define TRUE 8
-#define SOUL 9 // true_damage + mana_damage
+#define SLASH_DAMAGE 0
+#define PUNCTURE_DAMAGE 1
+#define IMPACT_DAMAGE 2
+#define FIRE_DAMAGE 3
+#define THUNDER_DAMAGE 4
+#define COLD_DAMAGE 5
+#define POISON_DAMAGE 6
+#define NEUTRAL_DAMAGE 7 // unaffected by damage reductions, but still by armor
+#define TRUE_DAMAGE 8
+#define SOUL_DAMAGE 9 // true_damage + mana_damage
 
 // loot_type
 

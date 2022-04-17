@@ -64,6 +64,7 @@ class Adventure {
     int getLight();
     std::list<Attributes *> getStartingAttributes();
     std::list<Way *> getStartingWays();
+    Database * getDatabase();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
     std::list<Character *> getNPCs();

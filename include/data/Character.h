@@ -232,7 +232,7 @@ class Character {
     void receiveAttack(int damage, int damage_type, int orientation);
     void receiveCriticalAttack(int damage, int damage_type);
     std::string to_string();
-    static CharacterDisplay * from_string(std::string toread);
+    static CharacterDisplay * from_string(std::string to_read);
 
   private:
     static long id_cpt;

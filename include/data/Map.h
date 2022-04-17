@@ -7,7 +7,9 @@
 #include <cmath>
 
 #include "data/Character.h"
+#include "data/Database.h"
 #include "data/Projectile.h"
+#include "data/Tile.h"
 
 typedef struct Loot {
   int type;
@@ -21,14 +23,15 @@ typedef struct Loot {
 
 typedef struct MapDisplay {
   std::string name;
+  long offsetX;
+  long offsetY;
   long sizeX;
   long sizeY;
   bool outside;
   std::list<CharacterDisplay *> characters;
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
-  std::vector<std::vector<std::string>> tiles;
-  std::vector<std::vector<int>> lights;
+  std::vector<std::vector<Tile *>> tiles;
 } MapDisplay;
 
 namespace map {
@@ -39,6 +42,8 @@ class Map {
   public:
     const std::string name;
     const long id = ++map::id_cpt;
+    const long offsetX;
+    const long offsetY;
     const long sizeX;
     const long sizeY;
     const bool outside;
@@ -49,6 +54,8 @@ class Map {
       const bool outside
     ):
       name(name),
+      offsetX(0),
+      offsetY(0),
       sizeX(sizeX),
       sizeY(sizeY),
       outside(outside),
@@ -66,6 +73,8 @@ class Map {
     }
     Map(const Map * map, std::string name):
       name(name),
+      offsetX(0),
+      offsetY(0),
       sizeX(map->sizeX),
       sizeY(map->sizeY),
       outside(map->outside),
@@ -74,13 +83,15 @@ class Map {
       light(map->light)
     {}
     // use this only for players, too much work for every characters
-    Map(const Map * map, Character * player):
+    Map(const Map * map, Character * player, Database * database):
       name(map->name),
-      sizeX(map->sizeX),
-      sizeY(map->sizeY),
+      offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
+      offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
+      sizeX(map->sizeX - offsetX),
+      sizeY(map->sizeY - offsetY),
       outside(map->outside),
-      tiles(map->sizeY),
-      lights(map->sizeY),
+      tiles(sizeY),
+      lights(sizeY),
       light(map->light)
     {
       for(long i = 0; i < sizeY; i++) {
@@ -95,7 +106,7 @@ class Map {
             lights[x][y] = map->lights[x][y];
           }
           else {
-            tiles[x][y] = nullptr;
+            tiles[x][y] = (Tile *) database->getTile("mist");
             lights[x][y] = -light;
           }
         }
@@ -104,17 +115,20 @@ class Map {
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
       for(Character * c : map->characters) {
-        if(tiles[c->getX()][c->getY()] != nullptr) {
+        if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
+          tiles[c->getX() - offsetX][c->getY() - offsetY]->name != "mist") {
           characters.push_back(c);
         }
       }
       for(Projectile * p : map->projectiles) {
-        if(tiles[p->getX()][p->getY()] != nullptr) {
+        if(p->getX() - offsetX >= 0 && p->getX() - offsetX < sizeX && p->getY() - offsetY >= 0 && p->getY() - offsetY < sizeY &&
+          tiles[p->getX() - offsetX][p->getY() - offsetY]->name != "mist") {
           projectiles.push_back(p);
         }
       }
       for(Loot * l : map->loots) {
-        if(tiles[l->x][l->y] != nullptr) {
+        if(l->x - offsetX >= 0 && l->x - offsetX < sizeX && l->y - offsetY >= 0 && l->y - offsetY < sizeY &&
+          tiles[l->x - offsetX][l->y - offsetY]->name != "mist") {
           loots.push_back(l);
         }
       }
@@ -143,7 +157,7 @@ class Map {
     void actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
     std::string to_string();
-    static MapDisplay * from_string(std::string toread);
+    static MapDisplay * from_string(std::string to_read);
   private:
     int light;
     std::list<Character *> characters;

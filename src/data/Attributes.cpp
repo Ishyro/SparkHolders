@@ -13,8 +13,8 @@ std::string Attributes::to_string() {
   return msg;
 }
 
-Attributes * Attributes::from_string(std::string toread) {
-  std::string msg = toread;
+Attributes * Attributes::from_string(std::string to_read) {
+  std::string msg = to_read;
   std::string name = msg.substr(0, msg.find(';'));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   int baseHp = stoi(msg.substr(0, msg.find(';')));

@@ -129,6 +129,7 @@ World * Adventure::getWorld() { return world; }
 int Adventure::getLight() { return light; }
 std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
 std::list<Way *> Adventure::getStartingWays() { return startingWays; }
+Database * Adventure::getDatabase() { return database; }
 void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getNPCs() {
@@ -183,7 +184,6 @@ std::list<Action *> Adventure::getNPCsActions() {
   return actions;
 }
 
-#include <iostream>
 void Adventure::executeActions(std::list<Action *> actions) {
   for(Action * action : actions) {
     // the user might have been killed and deleted

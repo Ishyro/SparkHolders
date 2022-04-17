@@ -39,7 +39,7 @@ class Way {
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::string to_string();
-    static Way * from_string(std::string toread);
+    static Way * from_string(std::string to_read);
   private:
     std::list<Effect *> effects;
     std::list<Skill *> skills;

@@ -1,10 +1,7 @@
 #include <sstream>
 
-#include "data/Character.h"
-#include "data/Projectile.h"
 #include "data/Item.h"
 #include "data/Weapon.h"
-#include "data/Tile.h"
 
 #include "communication/SpeechManager.h"
 
@@ -259,16 +256,18 @@ void Map::actAllProjectiles(Adventure * adventure) {
   }
 }
 
+#include <iostream>
+
 std::string Map::to_string() {
   std::string msg = name + "@";
+  msg += std::to_string(offsetX) + "@";
+  msg += std::to_string(offsetY) + "@";
   msg += std::to_string(sizeX) + "@";
   msg += std::to_string(sizeY) + "@";
   msg += std::to_string(outside) + "@";
   for(int x = 0; x < sizeX; x++) {
     for(int y = 0; y < sizeX; y++) {
-      if(getTile(x, y) != nullptr) {
-        msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(x, y)->name + ";" + std::to_string(getLight(x, y)) + "|";
-      }
+      msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(x, y)->name + ";" + std::to_string(getTile(x, y)->untraversable) + ";" + std::to_string(getLight(x, y)) + "|";
     }
   }
   msg += "@";
@@ -287,44 +286,41 @@ std::string Map::to_string() {
   return msg;
 }
 
-MapDisplay * Map::from_string(std::string toread) {
-  std::string msg = toread;
+MapDisplay * Map::from_string(std::string to_read) {
+  std::string msg = to_read;
   MapDisplay * display = new MapDisplay();
   display->name = msg.substr(0, msg.find('@'));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  display->offsetX = stol(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  display->offsetY = stol(msg.substr(0, msg.find('@')));
   msg = msg.substr(msg.find('@') + 1, msg.length());
   display->sizeX = stol(msg.substr(0, msg.find('@')));
   msg = msg.substr(msg.find('@') + 1, msg.length());
   display->sizeY = stol(msg.substr(0, msg.find('@')));
   msg = msg.substr(msg.find('@') + 1, msg.length());
   std::string outside_str = msg.substr(0, msg.find('@'));
-  display->outside = false;
-  if(outside_str != "0") {
-    display->outside = true;
-  }
+  display->outside = (outside_str == "1");
   msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->tiles = std::vector<std::vector<std::string>>(display->sizeY);
-  display->lights = std::vector<std::vector<int>>(display->sizeY);
+  display->tiles = std::vector<std::vector<Tile *>>(display->sizeY);
   for(long i = 0; i < display->sizeY; i++) {
-    display->tiles[i] = std::vector<std::string>(display->sizeX);
-    display->lights[i] = std::vector<int>(display->sizeX);
+    display->tiles[i] = std::vector<Tile *>(display->sizeX);
   }
   std::istringstream tiles(msg.substr(0, msg.find('@')));
   std::string tile;
-  for(long x = 0; x < display->sizeX; x++) {
-    for(long y = 0; y < display->sizeY; y++) {
-      display->tiles[x][y] = "";
-    }
-  }
-
   while(getline(tiles, tile, '|') && tile != "") {
     long x = stol(tile.substr(0, tile.find(';')));
     tile = tile.substr(tile.find(';') + 1, tile.length());
     long y = stol(tile.substr(0, tile.find(';')));
     tile = tile.substr(tile.find(';') + 1, tile.length());
-    display->tiles[x][y] = tile.substr(0, tile.find(';'));
+    std::string name = tile.substr(0, tile.find(';'));
     tile = tile.substr(tile.find(';') + 1, tile.length());
-    display->lights[x][y] = stoi(tile.substr(0, tile.find(';')));
+    std::string untraversable_str = tile.substr(0, tile.find(';'));
+    bool untraversable = (untraversable_str == "1");
     tile = tile.substr(tile.find(';') + 1, tile.length());
+    int light = stoi(tile.substr(0, tile.find(';')));
+    tile = tile.substr(tile.find(';') + 1, tile.length());
+    display->tiles[x][y] = new Tile(name, untraversable, light);
   }
   msg = msg.substr(msg.find('@') + 1, msg.length());
   std::istringstream characters(msg.substr(0, msg.find('@')));

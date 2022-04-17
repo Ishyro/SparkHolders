@@ -35,7 +35,7 @@ std::string Socket::read() {
   char delimiter = '&';
   std::string result = std::string("");
   while(true) {
-    char * msg = (char *) malloc(sizeof(char) * 1024);
+    char * msg = new char [1024];
     if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
       std::string part = std::string(msg);
       free(msg);
@@ -45,7 +45,7 @@ std::string Socket::read() {
         return result += part.substr(0, part.find(final_delimiter));
       }
     } else {
-      free(msg);
+      delete msg;
       return "CLOSED";
     }
   }

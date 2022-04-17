@@ -17,7 +17,7 @@ void Link::playerChoices() {
 }
 
 void Link::sendMap() {
-  Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player);
+  Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
   Server::sendMap(s, map);
   delete map;
 }

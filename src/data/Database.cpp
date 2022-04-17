@@ -180,16 +180,16 @@ Database::Database() {
 
   macros.insert(std::make_pair("DAMAGE_TYPE_NUMBER",DAMAGE_TYPE_NUMBER));
 
-  macros.insert(std::make_pair("SLASH",SLASH));
-  macros.insert(std::make_pair("PUNCTURE",PUNCTURE));
-  macros.insert(std::make_pair("IMPACT",IMPACT));
-  macros.insert(std::make_pair("FIRE",FIRE));
-  macros.insert(std::make_pair("THUNDER",THUNDER));
-  macros.insert(std::make_pair("COLD",COLD));
-  macros.insert(std::make_pair("POISON",POISON));
-  macros.insert(std::make_pair("NEUTRAL",NEUTRAL));
-  macros.insert(std::make_pair("TRUE",TRUE));
-  macros.insert(std::make_pair("SOUL",SOUL));
+  macros.insert(std::make_pair("SLASH_DAMAGE",SLASH_DAMAGE));
+  macros.insert(std::make_pair("PUNCTURE_DAMAGE",PUNCTURE_DAMAGE));
+  macros.insert(std::make_pair("IMPACT_DAMAGE",IMPACT_DAMAGE));
+  macros.insert(std::make_pair("FIRE_DAMAGE",FIRE_DAMAGE));
+  macros.insert(std::make_pair("THUNDER_DAMAGE",THUNDER_DAMAGE));
+  macros.insert(std::make_pair("COLD_DAMAGE",COLD_DAMAGE));
+  macros.insert(std::make_pair("POISON_DAMAGE",POISON_DAMAGE));
+  macros.insert(std::make_pair("NEUTRAL_DAMAGE",NEUTRAL_DAMAGE));
+  macros.insert(std::make_pair("TRUE_DAMAGE",TRUE_DAMAGE));
+  macros.insert(std::make_pair("SOUL_DAMAGE",SOUL_DAMAGE));
 
   // loot_type
 

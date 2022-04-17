@@ -1,6 +1,7 @@
 # tiles
 data/tiles/grass.data
 data/tiles/void.data
+data/tiles/mist.data
 # maps
 data/maps/test.data
 # ways

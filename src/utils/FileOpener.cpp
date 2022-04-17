@@ -346,16 +346,16 @@ namespace FileOpener {
       effects.push_back((Effect*) database->getEffect(effect));
     }
     float damage_reductions[DAMAGE_TYPE_NUMBER];
-    damage_reductions[SLASH] = stof(values.at("SLASH_REDUCTION"));
-    damage_reductions[PUNCTURE] = stof(values.at("PUNCTURE_REDUCTION"));
-    damage_reductions[IMPACT] = stof(values.at("IMPACT_REDUCTION"));
-    damage_reductions[FIRE] = stof(values.at("FIRE_REDUCTION"));
-    damage_reductions[THUNDER] = stof(values.at("THUNDER_REDUCTION"));
-    damage_reductions[COLD] = stof(values.at("COLD_REDUCTION"));
-    damage_reductions[POISON] = stof(values.at("POISON_REDUCTION"));
-    damage_reductions[NEUTRAL] = 0.;
-    damage_reductions[TRUE] = 0.;
-    damage_reductions[SOUL] = 0.;
+    damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
+    damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
+    damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
+    damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
+    damage_reductions[THUNDER_DAMAGE] = stof(values.at("THUNDER_REDUCTION"));
+    damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
+    damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
+    damage_reductions[NEUTRAL_DAMAGE] = 0.;
+    damage_reductions[TRUE_DAMAGE] = 0.;
+    damage_reductions[SOUL_DAMAGE] = 0.;
     Item * item = new Item(name, equipable, consumable, type, gold_value, effects, damage_reductions);
     database->addItem(item);
   }
@@ -485,16 +485,16 @@ namespace FileOpener {
       effects.push_back((Effect *) database->getEffect(effect));
     }
     int damages[DAMAGE_TYPE_NUMBER];
-    damages[SLASH] = stoi(values.at("SLASH"));
-    damages[PUNCTURE] = stoi(values.at("PUNCTURE"));
-    damages[IMPACT] = stoi(values.at("IMPACT"));
-    damages[FIRE] = stoi(values.at("FIRE"));
-    damages[THUNDER] = stoi(values.at("THUNDER"));
-    damages[COLD] = stoi(values.at("COLD"));
-    damages[POISON] = stoi(values.at("POISON"));
-    damages[NEUTRAL] = stoi(values.at("NEUTRAL"));
-    damages[TRUE] = stoi(values.at("TRUE"));
-    damages[SOUL] = stoi(values.at("SOUL"));
+    damages[SLASH_DAMAGE] = stoi(values.at("SLASH"));
+    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE"));
+    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT"));
+    damages[FIRE_DAMAGE] = stoi(values.at("FIRE"));
+    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER"));
+    damages[COLD_DAMAGE] = stoi(values.at("COLD"));
+    damages[POISON_DAMAGE] = stoi(values.at("POISON"));
+    damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL"));
+    damages[TRUE_DAMAGE] = stoi(values.at("TRUE"));
+    damages[SOUL_DAMAGE] = stoi(values.at("SOUL"));
     Weapon * weapon = new Weapon(name, melee, range, type, weight, gold_value, use_ammo, ammo_type, effects, damages);
     database->addWeapon(weapon);
   }

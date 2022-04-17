@@ -195,8 +195,8 @@ std::string Projectile::to_string() {
   return msg;
 }
 
-ProjectileDisplay * Projectile::from_string(std::string toread) {
-  std::string msg = toread;
+ProjectileDisplay * Projectile::from_string(std::string to_read) {
+  std::string msg = to_read;
   ProjectileDisplay * display = new ProjectileDisplay();
   display->name = msg.substr(0, msg.find(';'));
   msg = msg.substr(msg.find(';') + 1, msg.length());

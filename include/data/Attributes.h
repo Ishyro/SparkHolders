@@ -42,7 +42,7 @@ class Attributes {
       startingGear(startingGear)
     {}
     std::string to_string();
-    static Attributes * from_string(std::string toread);
+    static Attributes * from_string(std::string to_read);
 };
 
 #endif // _ATTRIBUTES_H_

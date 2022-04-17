@@ -438,14 +438,14 @@ void Character::receiveAttack(int damage, int damage_type, int orientation) {
   if(isInWeakState()) {
     return receiveCriticalAttack(damage, damage_type);
   }
-  if(damage_type == SOUL) {
+  if(damage_type == SOUL_DAMAGE) {
     hp -= damage;
     payMana(damage);
   }
-  if(damage_type == TRUE) {
+  if(damage_type == TRUE_DAMAGE) {
     hp -= damage;
   }
-  if(damage_type == NEUTRAL) {
+  if(damage_type == NEUTRAL_DAMAGE) {
     hp -= std::max(0, damage - getArmor());
   }
   else {
@@ -454,14 +454,14 @@ void Character::receiveAttack(int damage, int damage_type, int orientation) {
 }
 
 void Character::receiveCriticalAttack(int damage, int damage_type) {
-  if(damage_type == SOUL) {
+  if(damage_type == SOUL_DAMAGE) {
     hp -= damage * 2;
     mana -= damage * 2;
   }
-  if(damage_type == TRUE) {
+  if(damage_type == TRUE_DAMAGE) {
     hp -= damage * 2;
   }
-  if(damage_type == NEUTRAL) {
+  if(damage_type == NEUTRAL_DAMAGE) {
     hp -= std::max(0, damage * 2 - getArmor());
   }
   else {
@@ -490,8 +490,8 @@ std::string Character::to_string() {
   return msg;
 }
 
-CharacterDisplay * Character::from_string(std::string toread) {
-  std::string msg = toread;
+CharacterDisplay * Character::from_string(std::string to_read) {
+  std::string msg = to_read;
   CharacterDisplay * display = new CharacterDisplay();
   display->name = msg.substr(0, msg.find(';'));
   msg = msg.substr(msg.find(';') + 1, msg.length());
@@ -502,10 +502,7 @@ CharacterDisplay * Character::from_string(std::string toread) {
   display->mana = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   std::string player_character_str = msg.substr(0, msg.find(';'));
-  display->player_character = false;
-  if(player_character_str != "0") {
-    display->player_character = true;
-  }
+  display->player_character = (player_character_str == "1");
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->type = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
