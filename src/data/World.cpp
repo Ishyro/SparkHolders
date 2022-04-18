@@ -7,6 +7,8 @@
 
 #include "data/World.h"
 
+#include <iostream>
+
 void World::addMap(Map * map) {
   maps.insert(std::pair<long, Map *>(map->id, map));
 }

@@ -5,7 +5,7 @@ TestLands
 Map.test_1
 Map.test_2
 # add map links
-Maplink.test_1%test_2%9%5%WEST%0%5%EAST%
+MapLink.test_1%test_2%9%5%WEST%0%5%EAST%
 # add spawns
 Spawn.5%5%NORTH%test_1%
 #Spawn.4%5%NORTH%test_1%
@@ -20,7 +20,7 @@ StartingWay.tagran
 StartingWay.atheist
 StartingWay.soldier
 # add characters
-Character.sheep%2%3%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
-Character.sheep%7%2%NORTH%test_1%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
-Character.sheep%6%3%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
-Character.sheep%1%8%NORTH%test_2%nature%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%6%3%NORTH%test_2%prey%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%
+Character.sheep%1%8%NORTH%test_2%prey%DiurnalPassiveAI%sheep%countryside%slow%atheist%ruminant%sheep%

@@ -14,10 +14,7 @@
 #define NEUTRAL_COLOR 3
 #define ENNEMY_COLOR 4
 
-void displayMap(MapDisplay * display, WINDOW * screen) {
-  int cols = 0;
-  int lines = 0;
-  getmaxyx(screen, lines, cols);
+void displayMap(MapDisplay * display, WINDOW * screen, int lines, int cols) {
   mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
   for(int y = display->sizeY - 1; y >= 0 ; y--) {
     for(int x = 0; x < display->sizeX; x++) {
@@ -48,10 +45,7 @@ void displayMap(MapDisplay * display, WINDOW * screen) {
   wrefresh(screen);
 }
 
-void displayTileMap(MapDisplay * display, WINDOW * screen) {
-  int cols = 0;
-  int lines = 0;
-  getmaxyx(screen, lines, cols);
+void displayTileMap(MapDisplay * display, WINDOW * screen, int lines, int cols) {
   mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
   for(int y = display->sizeY - 1; y >= 0 ; y--) {
     for(int x = 0; x < display->sizeX; x++) {
@@ -65,10 +59,7 @@ void displayTileMap(MapDisplay * display, WINDOW * screen) {
   wrefresh(screen);
 }
 
-void displayLightMap(MapDisplay * display, WINDOW * screen) {
-  int cols = 0;
-  int lines = 0;
-  getmaxyx(screen, lines, cols);
+void displayLightMap(MapDisplay * display, WINDOW * screen, int lines, int cols) {
   mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
   for(int y = display->sizeY - 1; y >= 0 ; y--) {
     for(int x = 0; x < display->sizeX; x++) {
@@ -83,10 +74,13 @@ void displayLightMap(MapDisplay * display, WINDOW * screen) {
 }
 
 void communicate(Link * link, WINDOW * screen) {
+  int lines = 0;
+  int cols = 0;
+  getmaxyx(screen, lines, cols);
   while(true) {
     MapDisplay * display = link->receiveMap();
     if(display != nullptr) {
-      displayMap(display, screen);
+      displayMap(display, screen, lines, cols);
       for(CharacterDisplay * character : display->characters) {
         delete character;
       }
@@ -100,12 +94,80 @@ void communicate(Link * link, WINDOW * screen) {
       }
       delete display;
     }
-    link->sendAction(nullptr);
+    bool done = false;
+    int type;
+    int orientation = NO_ORIENTATION;
+    ProjectileDisplay * projectile = nullptr;
+    Skill * skill = nullptr;
+    CharacterDisplay * target = nullptr;
+    Item * item = nullptr;
+    Weapon * weapon = nullptr;
+    while(!done) {
+      char keyPressed = getch();
+      switch(keyPressed) {
+        case '5':
+          type = REST;
+          orientation;
+          done = true;
+          break;
+        case '1':
+          type = MOVE;
+          orientation = SOUTH_WEST;
+          done = true;
+          break;
+        case '2':
+          type = MOVE;
+          orientation = SOUTH;
+          done = true;
+          break;
+        case '3':
+          type = MOVE;
+          orientation = SOUTH_EAST;
+          done = true;
+          break;
+        case '4':
+          type = MOVE;
+          orientation = WEST;
+          done = true;
+          break;
+        case '6':
+          type = MOVE;
+          orientation = EAST;
+          done = true;
+          break;
+        case '7':
+          type = MOVE;
+          orientation = NORTH_WEST;
+          done = true;
+          break;
+        case '8':
+          type = MOVE;
+          orientation = NORTH;
+          done = true;
+          break;
+        case '9':
+          type = MOVE;
+          orientation = NORTH_EAST;
+          done = true;
+          break;
+        case '<':
+        case '>':
+          type = CHANGE_MAP;
+          done = true;
+          break;
+        default:
+          ;
+      }
+    }
+    link->sendAction(type, orientation, projectile, skill, target, item, weapon);
   }
 }
 
 int main(int argc, char ** argv) {
   initscr();
+  cbreak();
+  //raw();
+  noecho();
   curs_set(0);
   start_color();
   use_default_colors();
@@ -119,7 +181,7 @@ int main(int argc, char ** argv) {
   WINDOW * mapScreen = subwin(stdscr, LINES / 2, COLS, 0, 0);
   WINDOW * otherScreen = subwin(stdscr, LINES / 2, COLS, LINES / 2, 0);
   box(mapScreen, ACS_VLINE, ACS_HLINE);
-  box(otherScreen, ACS_VLINE, ACS_HLINE);
+  // box(otherScreen, ACS_VLINE, ACS_HLINE);
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
   Link * link = new Link(s, nullptr);

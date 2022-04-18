@@ -21,6 +21,8 @@ void Link::sendChoices(std::string name, std::string attibutes, std::string race
 }
 
 MapDisplay * Link::receiveMap() { return Client::receiveMap(s, adventure); }
-void Link::sendAction(Action * action) { Client::sendAction(s, action, adventure); }
+void Link::sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon) {
+  Client::sendAction(s, type, orientation, projectile, skill, target, item, weapon, adventure);
+}
 std::list<Attributes *> Link::getStartingAttributes() { return *attributes; }
 std::list<Way *> Link::getStartingWays() { return *ways; }

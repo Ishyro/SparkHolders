@@ -13,7 +13,7 @@ class Link {
     void loadChoices();
     void sendChoices(std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
     MapDisplay * receiveMap();
-    void sendAction(Action * action);
+    void sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon);
     std::list<Attributes *> getStartingAttributes();
     std::list<Way *> getStartingWays();
   private:

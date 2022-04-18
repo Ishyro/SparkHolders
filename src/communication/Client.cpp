@@ -37,12 +37,25 @@ namespace Client {
     }
   }
 
-  void sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
-    s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
+  void sendAction(Socket s, int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon, Adventure * adventure) {
+    std::string msg = std::to_string(type) + "@";
+    switch(type) {
+      case MOVE:
+        msg += std::to_string(orientation) + "@";
+        break;
+      case CHANGE_MAP:
+        break;
+      case GRAB:
+        break;
+      case REST:
+        break;
+      default:
+        ;
+    }
+    s.write(msg);
   }
 
-  void sendAction(Socket s, Action * action, Adventure * adventure) {
-    s.write(std::to_string(REST) + "@");
-    delete action;
+  void sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
+    s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
   }
 }
