@@ -84,6 +84,8 @@ void Map::crumble(long x, long y) {
   }
 }
 
+#include <iostream>
+
 void Map::addCharacter(Character * c) { characters.push_back(c); }
 void Map::addProjectile(Projectile * p) { projectiles.push_back(p); }
 void Map::addLoot(Loot * l) { loots.push_back(l); }
@@ -93,6 +95,9 @@ void Map::killCharacter(Character * killer, Character * victim) {
   characters.remove(victim);
   SpeechManager::add(victim->death_speech);
   Loot * loot = new Loot();
+  loot->weapons = std::list<Weapon *>();
+  loot->items = std::list<Item *>();
+  loot->ammunitions = std::list<Ammunition *>();
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
@@ -106,7 +111,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     loot->ammunitions.push_back(a);
   }
   loot->type = CORPSE;
-  if(loot->gold = 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunitions.empty()) {
+  if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunitions.empty()) {
     delete loot;
   } else {
     loots.push_back(loot);
@@ -209,16 +214,23 @@ void Map::move(Character *c, int orientation) {
       break;
   }
   if(is_legal) {
+    Character * to_kill = nullptr;
     for(Character * other : characters) {
       if (other->getX() == destX && other->getY() == destY) {
         if(c->getTeam() != other->getTeam()) {
           c->attack(other);
           if(!other->isAlive()) {
-            killCharacter(c, other);
+            to_kill = other;
+          } else {
+            return;
           }
         }
-        return;
       }
+    }
+    if(to_kill != nullptr) {
+      characters.remove(to_kill);
+      killCharacter(c, to_kill);
+      return;
     }
     c->move(orientation);
   }

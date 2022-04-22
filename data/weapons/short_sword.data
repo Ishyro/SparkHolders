@@ -1,0 +1,19 @@
+name = short sword
+melee = true
+range = SHORT
+type = SHORT_SWORD
+weight = LIGHT
+gold_value = 50
+use_ammo = false
+effects =
+#damages
+SLASH = 12
+PUNCTURE = 6
+IMPACT = 2
+FIRE = 0
+THUNDER = 0
+COLD = 0
+POISON = 0
+NEUTRAL = 0
+TRUE = 0
+SOUL = 0

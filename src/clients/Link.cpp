@@ -11,8 +11,8 @@
 #include "clients/Link.h"
 
 void Link::loadChoices() {
-  attributes = new std::list<Attributes *>();
-  ways = new std::list<Way *>();
+  attributes = new std::vector<Attributes *>();
+  ways = new std::vector<Way *>();
   Client::receiveStartingPossibilites(s, attributes, ways, adventure);
 }
 
@@ -24,5 +24,5 @@ MapDisplay * Link::receiveMap() { return Client::receiveMap(s, adventure); }
 void Link::sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon) {
   Client::sendAction(s, type, orientation, projectile, skill, target, item, weapon, adventure);
 }
-std::list<Attributes *> Link::getStartingAttributes() { return *attributes; }
-std::list<Way *> Link::getStartingWays() { return *ways; }
+std::vector<Attributes *> Link::getStartingAttributes() { return *attributes; }
+std::vector<Way *> Link::getStartingWays() { return *ways; }

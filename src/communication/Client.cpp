@@ -12,7 +12,7 @@
 
 namespace Client {
 
-  void receiveStartingPossibilites(Socket s, std::list<Attributes *> * attributes, std::list<Way *> * ways,  Adventure * adventure) {
+  void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways,  Adventure * adventure) {
     std::string msg = s.read();
     std::istringstream attrs(msg.substr(0, msg.find('@')));
     std::string attr;

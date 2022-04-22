@@ -477,7 +477,10 @@ namespace FileOpener {
     std::istringstream is_2(values.at("use_ammo"));
     bool use_ammo;
     is_2 >> std::boolalpha >> use_ammo;
-    int ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
+    int ammo_type = 0;
+    if(use_ammo) {
+      ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
+    }
     std::list<Effect *> effects = std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
     std::string effect;

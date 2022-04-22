@@ -13,11 +13,14 @@ data/ways/countryside.data
 data/ways/human.data
 data/ways/tagran.data
 data/ways/soldier.data
-# speechs
-data/speechs/beh.data
+# items
+# weapons
+data/weapons/short_sword.data
 # attributes
 data/attributes/sheep.data
 data/attributes/vanguard.data
+# speechs
+data/speechs/beh.data
 # characters
 data/characters/player.data
 data/characters/sheep.data
