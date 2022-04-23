@@ -65,8 +65,8 @@ void Socket::write(std::string msg) {
       msg = "";
     }
     if(::write(fd, (void *) tosend.c_str(), (ssize_t) 1024) == -1) {
-      perror("connect");
-      exit(EXIT_FAILURE);
+      close();
+      throw CloseException();
     }
   } while(msg != "");
 }

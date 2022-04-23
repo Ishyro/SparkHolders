@@ -332,51 +332,57 @@ void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
 void Character::removeAmmunition(Ammunition * a) { ammunitions.remove(a); }
 
 int Character::isChanneling() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == CHANNELING) {
-      return e->getTickLeft();
+      max = std::max(max, e->getTickLeft());
     }
   }
-  return 0;
+  return max;
 }
 
 int Character::isStunned() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == STUNNED) {
-      return e->getTickLeft();
+      max = std::max(max, e->getTickLeft());
     }
   }
-  return 0;
+  return max;
 }
 
 int Character::isCloaked() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == CLOAKED) {
-      return e->getTickLeft();
+      max = std::max(max, e->getTickLeft());
     }
   }
-  return 0;
+  return max;
 }
 
 int Character::isInvisible() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == INVISIBLE) {
-      return e->getTickLeft();
+      max = std::max(max, e->getTickLeft());
     }
   }
-  return 0;
+  return max;
 }
 
 int Character::isSleeping() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == SLEEPING) {
-      return e->getTickLeft();
+      max = std::max(max, e->getTickLeft());
     }
   }
-  return 0;
+  return max;
 }
 
 int Character::cloakPower() {
+  int max = 0;
   for(auto e : effects) {
     if(e->type == CLOAKED) {
       return e->power;

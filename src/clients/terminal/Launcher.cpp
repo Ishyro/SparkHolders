@@ -117,15 +117,49 @@ int main(int argc, char ** argv) {
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
   Link * link = new Link(s, nullptr);
-  std::vector<std::string> choices;
-  try {
+
+  if (argc == 1) {
+    try {
+      link->loadChoices();
+    } catch (CloseException &e) {
+      endwin();
+      s.close();
+      delete link;
+      return EXIT_FAILURE;
+    }
+    std::vector<std::string> choices;
     choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays());
-  } catch (CloseException &e) {
-    endwin();
-    s.close();
-    return EXIT_FAILURE;
+    try {
+      link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
+    } catch (CloseException &e) {
+      endwin();
+      s.close();
+      delete link;
+      return EXIT_FAILURE;
+    }
+  } else if (argc == 2) {
+    // reconnect mode
+    try {
+      if(s.read() != "RECONNECT") {
+        endwin();
+        s.close();
+        delete link;
+        return EXIT_FAILURE;
+      }
+      s.write(std::string(argv[1]));
+      if(s.read() != "OK") {
+        endwin();
+        s.close();
+        delete link;
+        return EXIT_FAILURE;
+      }
+    } catch (CloseException &e) {
+      endwin();
+      s.close();
+      delete link;
+      return EXIT_FAILURE;
+    }
   }
-  link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
   int separator = (float) LINES / 1.5;
   WINDOW * mapScreen = subwin(stdscr, separator, COLS, 0, 0);
   WINDOW * otherScreen = subwin(stdscr, LINES - separator, COLS, separator, 0);
@@ -140,7 +174,12 @@ int main(int argc, char ** argv) {
   } catch (CloseException &e) {
 
   }
+  wclear(mapScreen);
+  wclear(mapScreen);
+  delwin(otherScreen);
+  delwin(otherScreen);
   endwin();
   s.close();
+  delete link;
   return EXIT_SUCCESS;
 }

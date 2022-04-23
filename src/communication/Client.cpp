@@ -16,8 +16,11 @@ namespace Client {
     std::string msg;
     try {
       msg = s.read();
-    } catch (CloseException &e) {
+    } catch (const CloseException &e) {
       throw e;
+    }
+    if(msg.find("RECONNECT") != std::string::npos) {
+      throw CloseException();
     }
     std::istringstream attrs(msg.substr(0, msg.find('@')));
     std::string attr;
@@ -36,7 +39,7 @@ namespace Client {
   MapDisplay * receiveMap(Socket s, Adventure * adventure) {
     try {
       return Map::from_string(s.read());
-    } catch (CloseException &e) {
+    } catch (const CloseException &e) {
       throw e;
     }
   }
@@ -56,10 +59,18 @@ namespace Client {
       default:
         ;
     }
-    s.write(msg);
+    try {
+      s.write(msg);
+    } catch (const CloseException &e) {
+      throw e;
+    }
   }
 
   void sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
-    s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
+    try {
+      s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
+    } catch (const CloseException &e) {
+      throw e;
+    }
   }
 }

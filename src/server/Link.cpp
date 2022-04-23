@@ -14,23 +14,32 @@
 #include <iostream>
 
 void Link::playerChoices() {
-  Server::sendStartingPossibilites(s, adventure);
   try {
+    Server::sendStartingPossibilites(s, adventure);
     player = Server::receiveChoices(s, adventure);
-  } catch (CloseException &e) {
+  } catch (const CloseException &e) {
+    markClosed();
     throw e;
   }
 }
 
 void Link::sendMap() {
-  Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
-  Server::sendMap(s, map);
-  delete map;
+  if(!isClosed() && ! lastStateSend) {
+    Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
+    try {
+      Server::sendMap(s, map);
+    } catch (const CloseException &e) {
+      markClosed();
+    }
+    delete map;
+    lastStateSend = true;
+  }
 }
 
 Action * Link::receiveAction() {
-  if(!isClosed()) {
+  if(!isClosed() && lastStateSend) {
     try {
+      lastStateSend = false;
       return Server::receiveAction(s, player, adventure);
     } catch (const CloseException &e) {
       markClosed();
@@ -42,3 +51,4 @@ Action * Link::receiveAction() {
 bool Link::isClosed() { return closed; }
 void Link::markClosed() { closed = true; }
 Character * Link::getPlayer() { return player; }
+void Link::changeSocket(Socket s) { this->s = s; closed = false; }

@@ -34,6 +34,31 @@ void startCommunication(Link ** link, ServerSocket ss, Adventure * adventure) {
   }
 }
 
+void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, bool * noPlayers, Adventure * adventure) {
+  while(!*noPlayers) {
+    Socket newSocket = ss.accept();
+    bool used = false;
+    std::string playerName;
+    try {
+      newSocket.write(std::string("RECONNECT"));
+      playerName = newSocket.read();
+    } catch (CloseException &e) {
+      continue;
+    }
+    for(int i = 0; i < adventure->maxPlayers; i++) {
+      if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
+        (*links)[i]->changeSocket(newSocket);
+        used = true;
+        newSocket.write(std::string("OK"));
+        break;
+      }
+    }
+    if(!used) {
+      newSocket.close();
+    }
+  }
+}
+
 int main(int argc, char ** argv) {
 
   if (argc < 2) {
@@ -56,7 +81,9 @@ int main(int argc, char ** argv) {
   for(int i = 0; i < adventure->maxPlayers; i++) {
     threads[i].join();
   }
+  threads.clear();
   bool noPlayers = false;
+  std::thread thread = std::thread(relinkCommunication, &links, ss, &noPlayers, adventure);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
     for(int i = 0; i < adventure->maxPlayers; i++) {
@@ -69,7 +96,9 @@ int main(int argc, char ** argv) {
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions
     for(int i = 0; i < adventure->maxPlayers; i++) {
-      actionsPlayers.push_back(links[i]->receiveAction());
+      if(!links[i]->getPlayer()->isInWeakState()) {
+        actionsPlayers.push_back(links[i]->receiveAction());
+      }
     }
     adventure->actAllProjectiles();
     adventure->executeActions(actionsPlayers);
@@ -90,5 +119,6 @@ int main(int argc, char ** argv) {
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
   }
+  delete adventure;
   ss.close();
 }

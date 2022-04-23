@@ -18,7 +18,7 @@ namespace Server {
     std::string msg;
     try {
       msg = s.read();
-    } catch (CloseException &e) {
+    } catch (const CloseException &e) {
       throw e;
     }
     int keyword = stoi(msg.substr(0, msg.find('@')));
@@ -49,7 +49,7 @@ namespace Server {
     std::string msg;
     try {
       msg = s.read();
-    } catch (CloseException &e) {
+    } catch (const CloseException &e) {
       throw e;
     }
     std::string name = msg.substr(0, msg.find('@'));
@@ -130,7 +130,11 @@ namespace Server {
   }
 
   void sendMap(Socket s, Map * map) {
-    s.write(map->to_string());
+    try {
+      s.write(map->to_string());
+    } catch (const CloseException &e) {
+      throw e;
+    }
   }
   void sendStartingPossibilites(Socket s, Adventure * adventure) {
     std::string msg = "";
@@ -144,6 +148,10 @@ namespace Server {
       msg += way->to_string() + "|";
     }
     msg += "@";
-    s.write(msg);
+    try {
+      s.write(msg);
+    } catch (const CloseException &e) {
+      throw e;
+    }
   }
 }
