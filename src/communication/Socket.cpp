@@ -46,7 +46,8 @@ std::string Socket::read() {
       }
     } else {
       delete msg;
-      return "CLOSED";
+      close();
+      throw CloseException();
     }
   }
 }

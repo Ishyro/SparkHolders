@@ -14,11 +14,22 @@ data/ways/human.data
 data/ways/tagran.data
 data/ways/soldier.data
 # items
+data/items/iron_boots.data
+data/items/iron_cuirass.data
+data/items/iron_gauntlets.data
+data/items/iron_helmet.data
+data/items/leather_boots.data
+data/items/leather_cuirass.data
+data/items/leather_gauntlets.data
+data/items/leather_helmet.data
 # weapons
 data/weapons/short_sword.data
 # attributes
 data/attributes/sheep.data
 data/attributes/vanguard.data
+data/attributes/guardian.data
+data/attributes/elementalist.data
+data/attributes/shadow.data
 # speechs
 data/speechs/beh.data
 # characters

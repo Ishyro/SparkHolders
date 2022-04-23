@@ -11,9 +11,15 @@
 
 #include "server/Link.h"
 
+#include <iostream>
+
 void Link::playerChoices() {
   Server::sendStartingPossibilites(s, adventure);
-  player = Server::receiveChoices(s, adventure);
+  try {
+    player = Server::receiveChoices(s, adventure);
+  } catch (CloseException &e) {
+    throw e;
+  }
 }
 
 void Link::sendMap() {
@@ -22,4 +28,17 @@ void Link::sendMap() {
   delete map;
 }
 
-Action * Link::receiveAction() { return Server::receiveAction(s, player, adventure); }
+Action * Link::receiveAction() {
+  if(!isClosed()) {
+    try {
+      return Server::receiveAction(s, player, adventure);
+    } catch (const CloseException &e) {
+      markClosed();
+    }
+  }
+  return new Action(REST, player, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+}
+
+bool Link::isClosed() { return closed; }
+void Link::markClosed() { closed = true; }
+Character * Link::getPlayer() { return player; }

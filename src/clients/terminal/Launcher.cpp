@@ -117,16 +117,30 @@ int main(int argc, char ** argv) {
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
   Link * link = new Link(s, nullptr);
-  std::vector<std::string> choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays());
+  std::vector<std::string> choices;
+  try {
+    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays());
+  } catch (CloseException &e) {
+    endwin();
+    s.close();
+    return EXIT_FAILURE;
+  }
   link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
-  clear();
   int separator = (float) LINES / 1.5;
   WINDOW * mapScreen = subwin(stdscr, separator, COLS, 0, 0);
   WINDOW * otherScreen = subwin(stdscr, LINES - separator, COLS, separator, 0);
+  std::string to_print = "WAITING FOR OTHER PLAYERS...";
+  mvwprintw(stdscr, LINES / 2, COLS / 2 - to_print.length() / 2, to_print.c_str());
+  wrefresh(stdscr);
+  clear();
   box(mapScreen, ACS_VLINE, ACS_HLINE);
   box(otherScreen, ACS_VLINE, ACS_HLINE);
-  wrefresh(mapScreen);
-  communicate(link, mapScreen);
+  try {
+    communicate(link, mapScreen);
+  } catch (CloseException &e) {
+
+  }
   endwin();
   s.close();
+  return EXIT_SUCCESS;
 }

@@ -20,6 +20,19 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include "data/Character.h"
+
+void startCommunication(Link ** link, ServerSocket ss, Adventure * adventure) {
+  bool done = false;
+  while(!done) {
+    try {
+      *link = new Link(ss.accept(), adventure);
+      done = true;
+    } catch (CloseException &e) {
+      delete *link;
+    }
+  }
+}
 
 int main(int argc, char ** argv) {
 
@@ -33,16 +46,18 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
   adventure->applyDayLight();
 
-  // std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
+  std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
   std::vector<Link *> links = std::vector<Link *>(adventure->maxPlayers);
   ServerSocket ss = ServerSocket(45678, adventure->maxPlayers, true);
   //std::barrier sync_point(adventure->maxPlayers, Server::receive);
   for(int i = 0; i < adventure->maxPlayers; i++) {
-    links[i] = new Link(ss.accept(), adventure);
-    //threads[i] = std::thread(communicate, sockets[i], sync_point, adventure);
+    threads[i] = std::thread(startCommunication, &links[i], ss, adventure);
   }
-
-  while(true) {
+  for(int i = 0; i < adventure->maxPlayers; i++) {
+    threads[i].join();
+  }
+  bool noPlayers = false;
+  while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
     for(int i = 0; i < adventure->maxPlayers; i++) {
       links[i]->sendMap();
@@ -59,11 +74,21 @@ int main(int argc, char ** argv) {
     adventure->actAllProjectiles();
     adventure->executeActions(actionsPlayers);
     adventure->executeActions(actionsNPCs);
-    adventure->incrDayLight();
+    if(adventure->getTick() % 5 == 0) {
+      adventure->incrDayLight();
+    }
     actionsPlayers.clear();
     actionsNPCs.clear();
+    noPlayers = true;
+    for(int i = 0; i < adventure->maxPlayers; i++) {
+      if(!links[i]->isClosed()) {
+        noPlayers = false;
+        break;
+      }
+    }
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
   }
+  ss.close();
 }

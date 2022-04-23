@@ -15,7 +15,12 @@
 
 namespace Server {
   Action * receiveAction(Socket s, Character * user, Adventure * adventure) {
-    std::string msg = s.read();
+    std::string msg;
+    try {
+      msg = s.read();
+    } catch (CloseException &e) {
+      throw e;
+    }
     int keyword = stoi(msg.substr(0, msg.find('@')));
     msg = msg.substr(msg.find('@') + 1, msg.length());
     switch(keyword) {
@@ -41,7 +46,12 @@ namespace Server {
   }
 
   Character * receiveChoices(Socket s, Adventure * adventure) {
-    std::string msg = s.read();
+    std::string msg;
+    try {
+      msg = s.read();
+    } catch (CloseException &e) {
+      throw e;
+    }
     std::string name = msg.substr(0, msg.find('@'));
     msg = msg.substr(msg.find('@') + 1, msg.length());
     Attributes * attr = nullptr;

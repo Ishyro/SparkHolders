@@ -345,7 +345,8 @@ namespace Display {
       }
       wrefresh(professionScreen);
       int color = WHITE;
-      if(characterName != "") {
+      if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
+        && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos) {
         color = GREEN;
       }
       if(cursorX == 6 && cursorY == 0) {
@@ -363,7 +364,9 @@ namespace Display {
       }
       screens.push_back(displayCharacter(selectedAttributes, selectedRace, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, color, characterScreen, COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5) - 2, 5, 1 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5));
       color = WHITE;
-      if(characterName != "" && selectedAttributes != nullptr && selectedRace != nullptr && selectedOrigin != nullptr && selectedCulture != nullptr && selectedReligion != nullptr && selectedProfession != nullptr) {
+      if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
+        && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos && !nameMode && selectedAttributes != nullptr
+        && selectedRace != nullptr && selectedOrigin != nullptr && selectedCulture != nullptr && selectedReligion != nullptr && selectedProfession != nullptr) {
         color = GREEN;
       }
       if(cursorX == 6 && cursorY == 2) {
@@ -384,6 +387,21 @@ namespace Display {
             case '4':
             case char(68): // LEFT ARROW
               cursorX = (cursorX - 1 + 7) % 7;
+              if(cursorX == 0) {
+                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
+              } else if(cursorX == 1) {
+                cursorY = std::min(cursorY, (int) races.size() - 1);
+              } else if(cursorX == 2) {
+                cursorY = std::min(cursorY, (int) origins.size() - 1);
+              } else if(cursorX == 3) {
+                cursorY = std::min(cursorY, (int) cultures.size() - 1);
+              } else if(cursorX == 4) {
+                cursorY = std::min(cursorY, (int) religions.size() - 1);
+              } else if(cursorX == 5) {
+                cursorY = std::min(cursorY, (int) professions.size() - 1);
+              } else if(cursorX == 6) {
+                cursorY = std::min(cursorY, 2);
+              }
               done2 = true;
               break;
             case '8':
@@ -409,6 +427,21 @@ namespace Display {
             case '6':
             case char(67): // RIGHT ARROW
               cursorX = (cursorX + 1) % 7;
+              if(cursorX == 0) {
+                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
+              } else if(cursorX == 1) {
+                cursorY = std::min(cursorY, (int) races.size() - 1);
+              } else if(cursorX == 2) {
+                cursorY = std::min(cursorY, (int) origins.size() - 1);
+              } else if(cursorX == 3) {
+                cursorY = std::min(cursorY, (int) cultures.size() - 1);
+              } else if(cursorX == 4) {
+                cursorY = std::min(cursorY, (int) religions.size() - 1);
+              } else if(cursorX == 5) {
+                cursorY = std::min(cursorY, (int) professions.size() - 1);
+              } else if(cursorX == 6) {
+                cursorY = std::min(cursorY, 2);
+              }
               done2 = true;
               break;
             case '2':
@@ -448,7 +481,9 @@ namespace Display {
                 if(cursorY == 0) {
                   nameMode = true;
                 } else if(cursorY == 2) {
-                  if(characterName != "" && selectedAttributes != nullptr && selectedRace != nullptr && selectedOrigin != nullptr && selectedCulture != nullptr && selectedReligion != nullptr && selectedProfession != nullptr) {
+                  if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
+                    && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos && !nameMode && selectedAttributes != nullptr
+                    && selectedRace != nullptr && selectedOrigin != nullptr && selectedCulture != nullptr && selectedReligion != nullptr && selectedProfession != nullptr) {
                     done = true;
                   }
                 }
@@ -483,6 +518,7 @@ namespace Display {
       }
       screens.clear();
     }
+    clear();
     result[0] = characterName;
     result[1] = selectedAttributes->name;
     result[2] = selectedRace->name;

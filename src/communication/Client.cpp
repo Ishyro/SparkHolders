@@ -13,7 +13,12 @@
 namespace Client {
 
   void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways,  Adventure * adventure) {
-    std::string msg = s.read();
+    std::string msg;
+    try {
+      msg = s.read();
+    } catch (CloseException &e) {
+      throw e;
+    }
     std::istringstream attrs(msg.substr(0, msg.find('@')));
     std::string attr;
     while(getline(attrs, attr, '|') && attr != "") {
@@ -29,11 +34,10 @@ namespace Client {
   }
 
   MapDisplay * receiveMap(Socket s, Adventure * adventure) {
-    std::string msg = s.read();
-    if (msg != "") {
-      return Map::from_string(msg);
-    } else {
-      return nullptr;
+    try {
+      return Map::from_string(s.read());
+    } catch (CloseException &e) {
+      throw e;
     }
   }
 

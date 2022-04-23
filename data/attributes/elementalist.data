@@ -1,9 +1,9 @@
-name = Vanguard
-baseHp = 50
-baseMana = 30
-baseArmor = 10
-baseSoulBurn = 60
-baseFlow = 5
+name = Elementalist
+baseHp = 30
+baseMana = 50
+baseArmor = 0
+baseSoulBurn = 100
+baseFlow = 15
 baseVisionRange = 10
 baseVisionPower = 5
 baseDetectionRange = 1

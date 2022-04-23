@@ -488,16 +488,16 @@ namespace FileOpener {
       effects.push_back((Effect *) database->getEffect(effect));
     }
     int damages[DAMAGE_TYPE_NUMBER];
-    damages[SLASH_DAMAGE] = stoi(values.at("SLASH"));
-    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE"));
-    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT"));
-    damages[FIRE_DAMAGE] = stoi(values.at("FIRE"));
-    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER"));
-    damages[COLD_DAMAGE] = stoi(values.at("COLD"));
-    damages[POISON_DAMAGE] = stoi(values.at("POISON"));
-    damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL"));
-    damages[TRUE_DAMAGE] = stoi(values.at("TRUE"));
-    damages[SOUL_DAMAGE] = stoi(values.at("SOUL"));
+    damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
+    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
+    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
+    damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
+    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER_DAMAGE"));
+    damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
+    damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
+    damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+    damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
+    damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
     Weapon * weapon = new Weapon(name, melee, range, type, weight, gold_value, use_ammo, ammo_type, effects, damages);
     database->addWeapon(weapon);
   }

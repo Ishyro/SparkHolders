@@ -1,0 +1,13 @@
+name = leather helmet
+equipable = true
+consumable = false
+type = HEAD
+gold_value = 10
+effects =
+SLASH_REDUCTION = 0.05
+PUNCTURE_REDUCTION = 0.05
+IMPACT_REDUCTION = 0.05
+FIRE_REDUCTION = 0.1
+THUNDER_REDUCTION = 0.1
+COLD_REDUCTION = 0.05
+POISON_REDUCTION = 0.

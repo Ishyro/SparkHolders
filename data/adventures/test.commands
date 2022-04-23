@@ -13,6 +13,9 @@ Spawn.5%5%NORTH%test_1%
 #Spawn.4%4%NORTH%test_1%
 # add starting attributes
 StartingAttributes.Vanguard
+StartingAttributes.Guardian
+StartingAttributes.Elementalist
+StartingAttributes.Shadow
 # add starting ways
 StartingWay.human
 StartingWay.countryside

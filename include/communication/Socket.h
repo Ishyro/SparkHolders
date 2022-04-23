@@ -9,8 +9,13 @@
 #include <string>
 #include <iosfwd>
 #include <iostream>
+#include <exception>
 
 #include "Values.h"
+
+class CloseException : public std::exception {
+
+};
 
 class Socket {
 	public :

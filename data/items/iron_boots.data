@@ -1,0 +1,13 @@
+name = iron boots
+equipable = true
+consumable = false
+type = LEGS
+gold_value = 10
+effects =
+SLASH_REDUCTION = 0.15
+PUNCTURE_REDUCTION = 0.075
+IMPACT_REDUCTION = 0.075
+FIRE_REDUCTION = 0.
+THUNDER_REDUCTION = -0.05
+COLD_REDUCTION = 0.05
+POISON_REDUCTION = 0.
