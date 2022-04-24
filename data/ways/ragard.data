@@ -1,8 +1,8 @@
-name = Sheep
-type = RACE
-hpIncr = 0
+name = Ragard
+type = RELIGION
+hpIncr = 10
 manaIncr = 0
-armorIncr = 0
+armorIncr = 5
 soulBurnIncr = 0
 flowIncr = 0
 effects =

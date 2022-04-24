@@ -26,6 +26,7 @@ typedef struct CharacterDisplay {
   int armor;
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   int damages[DAMAGE_TYPE_NUMBER];
+  int teamRelation;
 } CharacterDisplay;
 
 class Character {
@@ -266,6 +267,7 @@ class Character {
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
+    std::string attributes;
     Way * race;
     Way * origin;
     Way * culture;

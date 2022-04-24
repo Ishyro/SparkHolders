@@ -13,7 +13,9 @@
 void Link::loadChoices() {
   attributes = new std::vector<Attributes *>();
   ways = new std::vector<Way *>();
+  waysIncompatibilities = new std::list<std::pair<const std::string, const std::string>>();
   try {
+    Client::receiveWaysIncompabilities(s, waysIncompatibilities);
     Client::receiveStartingPossibilites(s, attributes, ways, adventure);
   } catch (const CloseException &e) {
     throw e;
@@ -46,3 +48,4 @@ void Link::sendAction(int type, int orientation, ProjectileDisplay * projectile,
 
 std::vector<Attributes *> Link::getStartingAttributes() { return *attributes; }
 std::vector<Way *> Link::getStartingWays() { return *ways; }
+std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return *waysIncompatibilities; }

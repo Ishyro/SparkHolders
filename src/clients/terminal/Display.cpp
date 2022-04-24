@@ -35,9 +35,26 @@ namespace Display {
       std::string to_print;
       char truc = character->name.at(0);
       to_print = truc;
-      wattron(screen, COLOR_PAIR(BLUE));
+      int color;
+      switch(character->teamRelation) {
+        case SAME:
+          color = BLUE;
+          break;
+        case ALLY:
+          color = GREEN;
+          break;
+        case NEUTRAL:
+          color = YELLOW;
+          break;
+        case ENEMY:
+          color = RED;
+          break;
+        default:
+          color = WHITE;
+      }
+      wattron(screen, COLOR_PAIR(color));
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - character->y, character->x + cols / 2 - display->sizeX / 2, to_print.c_str());
-      wattroff(screen, COLOR_PAIR(BLUE));
+      wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
       std::string to_print = "~\0";
@@ -202,7 +219,47 @@ namespace Display {
     return characterScreen;
   }
 
-  std::vector<std::string> selectChoices(std::vector<Attributes *> startingAttributes, std::vector<Way *> startingWays) {
+  bool compatibleWays(Way * way1, Way * way2, Way * way3, Way * way4, Way * way5, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities) {
+    if(way2 != nullptr) {
+      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way2->name);
+      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
+        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
+          (pair1.first == pair2.second && pair1.second == pair2.first)) {
+            return false;
+        }
+      }
+    }
+    if(way3 != nullptr) {
+      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way3->name);
+      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
+        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
+          (pair1.first == pair2.second && pair1.second == pair2.first)) {
+            return false;
+        }
+      }
+    }
+    if(way4 != nullptr) {
+      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way4->name);
+      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
+        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
+          (pair1.first == pair2.second && pair1.second == pair2.first)) {
+            return false;
+        }
+      }
+    }
+    if(way5 != nullptr) {
+      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way5->name);
+      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
+        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
+          (pair1.first == pair2.second && pair1.second == pair2.first)) {
+            return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  std::vector<std::string> selectChoices(std::vector<Attributes *> startingAttributes, std::vector<Way *> startingWays, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities) {
     Attributes * selectedAttributes = nullptr;
     Way * selectedRace = nullptr;
     Way * selectedOrigin = nullptr;
@@ -264,6 +321,11 @@ namespace Display {
       int cultureCount = 0;
       int religionCount = 0;
       int professionCount = 0;
+      std::vector<Way *> availableRaces = std::vector<Way *>();
+      std::vector<Way *> availableOrigins = std::vector<Way *>();
+      std::vector<Way *> availableCultures = std::vector<Way *>();
+      std::vector<Way *> availableReligions = std::vector<Way *>();
+      std::vector<Way *> availableProfessions = std::vector<Way *>();
       std::string to_print = "ATTRIBUTES";
       mvwprintw(attributesScreen, 1, 1 + ATTRIBUTES_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
       to_print = "RACES";
@@ -297,7 +359,10 @@ namespace Display {
         if(cursorX == 1 && cursorY == raceCount) {
           color = BLUE;
         }
-        screens.push_back(displayWay(way, raceCount++, color, raceScreen, 0, ATTRIBUTES_LENGTH + 2));
+        if(compatibleWays(way, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, waysIncompatibilities)) {
+          screens.push_back(displayWay(way, raceCount++, color, raceScreen, 0, ATTRIBUTES_LENGTH + 2));
+          availableRaces.push_back(way);
+        }
       }
       wrefresh(raceScreen);
       for(Way * way : origins) {
@@ -308,7 +373,10 @@ namespace Display {
         if(cursorX == 2 && cursorY == originCount) {
           color = BLUE;
         }
-        screens.push_back(displayWay(way, originCount++, color, originScreen, 0, ATTRIBUTES_LENGTH + 2 + WAY_LENGTH + 2));
+        if(compatibleWays(way, selectedRace, selectedCulture, selectedReligion, selectedProfession, waysIncompatibilities)) {
+          screens.push_back(displayWay(way, originCount++, color, originScreen, 0, ATTRIBUTES_LENGTH + 2 + WAY_LENGTH + 2));
+          availableOrigins.push_back(way);
+        }
       }
       wrefresh(originScreen);
       for(Way * way : cultures) {
@@ -319,7 +387,10 @@ namespace Display {
         if(cursorX == 3 && cursorY == cultureCount) {
           color = BLUE;
         }
-        screens.push_back(displayWay(way, cultureCount++, color, cultureScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 2));
+        if(compatibleWays(way, selectedRace, selectedOrigin, selectedReligion, selectedProfession, waysIncompatibilities)) {
+          screens.push_back(displayWay(way, cultureCount++, color, cultureScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 2));
+          availableCultures.push_back(way);
+        }
       }
       wrefresh(cultureScreen);
       for(Way * way : religions) {
@@ -330,7 +401,10 @@ namespace Display {
         if(cursorX == 4 && cursorY == religionCount) {
           color = BLUE;
         }
-        screens.push_back(displayWay(way, religionCount++, color, religionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 3));
+        if(compatibleWays(way, selectedRace, selectedOrigin, selectedCulture, selectedProfession, waysIncompatibilities)) {
+          screens.push_back(displayWay(way, religionCount++, color, religionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 3));
+          availableReligions.push_back(way);
+        }
       }
       wrefresh(religionScreen);
       for(Way * way : professions) {
@@ -341,7 +415,10 @@ namespace Display {
         if(cursorX == 5 && cursorY == professionCount) {
           color = BLUE;
         }
-        screens.push_back(displayWay(way, professionCount++, color, professionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 4));
+        if(compatibleWays(way, selectedRace, selectedOrigin, selectedCulture, selectedReligion, waysIncompatibilities)) {
+          screens.push_back(displayWay(way, professionCount++, color, professionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 4));
+          availableProfessions.push_back(way);
+        }
       }
       wrefresh(professionScreen);
       int color = WHITE;
@@ -390,15 +467,15 @@ namespace Display {
               if(cursorX == 0) {
                 cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
               } else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) races.size() - 1);
+                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
               } else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) origins.size() - 1);
+                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
               } else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) cultures.size() - 1);
+                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
               } else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) religions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
               } else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) professions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
               } else if(cursorX == 6) {
                 cursorY = std::min(cursorY, 2);
               }
@@ -409,15 +486,15 @@ namespace Display {
               if(cursorX == 0) {
                 cursorY = (cursorY - 1 + startingAttributes.size()) % startingAttributes.size();
               } else if(cursorX == 1) {
-                cursorY = (cursorY - 1 + races.size()) % races.size();
+                cursorY = (cursorY - 1 + availableRaces.size()) % availableRaces.size();
               } else if(cursorX == 2) {
-                cursorY = (cursorY - 1 + origins.size()) % origins.size();
+                cursorY = (cursorY - 1 + availableOrigins.size()) % availableOrigins.size();
               } else if(cursorX == 3) {
-                cursorY = (cursorY - 1 + cultures.size()) % cultures.size();
+                cursorY = (cursorY - 1 + availableCultures.size()) % availableCultures.size();
               } else if(cursorX == 4) {
-                cursorY = (cursorY - 1 + religions.size()) % religions.size();
+                cursorY = (cursorY - 1 + availableReligions.size()) % availableReligions.size();
               } else if(cursorX == 5) {
-                cursorY = (cursorY - 1 + professions.size()) % professions.size();
+                cursorY = (cursorY - 1 + availableProfessions.size()) % availableProfessions.size();
               } else if(cursorX == 6) {
                 cursorY = (cursorY - 1 + 3) % 3;
               }
@@ -430,15 +507,15 @@ namespace Display {
               if(cursorX == 0) {
                 cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
               } else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) races.size() - 1);
+                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
               } else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) origins.size() - 1);
+                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
               } else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) cultures.size() - 1);
+                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
               } else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) religions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
               } else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) professions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
               } else if(cursorX == 6) {
                 cursorY = std::min(cursorY, 2);
               }
@@ -449,15 +526,15 @@ namespace Display {
               if(cursorX == 0) {
                 cursorY = (cursorY + 1) % startingAttributes.size();
               } else if(cursorX == 1) {
-                cursorY = (cursorY + 1) % races.size();
+                cursorY = (cursorY + 1) % availableRaces.size();
               } else if(cursorX == 2) {
-                cursorY = (cursorY + 1) % origins.size();
+                cursorY = (cursorY + 1) % availableOrigins.size();
               } else if(cursorX == 3) {
-                cursorY = (cursorY + 1) % cultures.size();
+                cursorY = (cursorY + 1) % availableCultures.size();
               } else if(cursorX == 4) {
-                cursorY = (cursorY + 1) % religions.size();
+                cursorY = (cursorY + 1) % availableReligions.size();
               } else if(cursorX == 5) {
-                cursorY = (cursorY + 1) % professions.size();
+                cursorY = (cursorY + 1) % availableProfessions.size();
               } else if(cursorX == 6) {
                 cursorY = (cursorY + 1) % 3;
               }
@@ -466,17 +543,41 @@ namespace Display {
             }
             case char(10): { // ENTER
               if(cursorX == 0) {
-                selectedAttributes = startingAttributes[cursorY];
+                if(selectedAttributes == startingAttributes[cursorY]) {
+                  selectedAttributes = nullptr;
+                } else {
+                  selectedAttributes = startingAttributes[cursorY];
+                }
               } else if(cursorX == 1) {
-                selectedRace = races[cursorY];
+                if(selectedRace == availableRaces[cursorY]) {
+                  selectedRace = nullptr;
+                } else {
+                  selectedRace = availableRaces[cursorY];
+                }
               } else if(cursorX == 2) {
-                selectedOrigin = origins[cursorY];
+                if(selectedOrigin == availableOrigins[cursorY]) {
+                  selectedOrigin = nullptr;
+                } else {
+                  selectedOrigin = availableOrigins[cursorY];
+                }
               } else if(cursorX == 3) {
-                selectedCulture = cultures[cursorY];
+                if(selectedCulture == availableCultures[cursorY]) {
+                  selectedCulture = nullptr;
+                } else {
+                  selectedCulture = availableCultures[cursorY];
+                }
               } else if(cursorX == 4) {
-                selectedReligion = religions[cursorY];
+                if(selectedReligion == availableReligions[cursorY]) {
+                  selectedReligion = nullptr;
+                } else {
+                  selectedReligion = availableReligions[cursorY];
+                }
               } else if(cursorX == 5) {
-                selectedProfession = professions[cursorY];
+                if(selectedProfession == availableProfessions[cursorY]) {
+                  selectedProfession = nullptr;
+                } else {
+                  selectedProfession = availableProfessions[cursorY];
+                }
               } else if(cursorX == 6) {
                 if(cursorY == 0) {
                   nameMode = true;

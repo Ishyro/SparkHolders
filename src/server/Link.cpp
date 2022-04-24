@@ -15,6 +15,7 @@
 
 void Link::playerChoices() {
   try {
+    Server::sendWaysIncompabilities(s, adventure);
     Server::sendStartingPossibilites(s, adventure);
     player = Server::receiveChoices(s, adventure);
   } catch (const CloseException &e) {
@@ -27,7 +28,7 @@ void Link::sendMap() {
   if(!isClosed() && ! lastStateSend) {
     Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
     try {
-      Server::sendMap(s, map);
+      Server::sendMap(s, map, player, adventure);
     } catch (const CloseException &e) {
       markClosed();
     }

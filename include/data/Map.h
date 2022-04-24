@@ -156,7 +156,7 @@ class Map {
     void move(Character *, int orientation);
     void actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
-    std::string to_string();
+    std::string to_string(Character * player, Adventure * adventure);
     static MapDisplay * from_string(std::string to_read);
   private:
     int light;

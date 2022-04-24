@@ -244,4 +244,11 @@ class SpeechManager;
 #define ECONOMICS 7
 #define REST 8
 
+// teams relations
+
+#define SAME 1
+#define ALLY 2
+#define NEUTRAL 3
+#define ENEMY 4
+
 #endif // _VALUES_H_

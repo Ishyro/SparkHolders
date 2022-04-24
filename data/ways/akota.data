@@ -1,0 +1,9 @@
+name = Akota
+type = RELIGION
+hpIncr = 25
+manaIncr = 25
+armorIncr = 10
+soulBurnIncr = 10
+flowIncr = 10
+effects =
+skills =

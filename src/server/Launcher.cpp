@@ -2,9 +2,11 @@
 #include <thread>
 #include <vector>
 #include <unistd.h>
+#include <string>
 
 #include "data/Action.h"
 #include "data/Adventure.h"
+#include "data/Character.h"
 #include "data/World.h"
 
 #include "utils/FileOpener.h"
@@ -20,7 +22,6 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
-#include "data/Character.h"
 
 void startCommunication(Link ** link, ServerSocket ss, Adventure * adventure) {
   bool done = false;
@@ -34,8 +35,8 @@ void startCommunication(Link ** link, ServerSocket ss, Adventure * adventure) {
   }
 }
 
-void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, bool * noPlayers, Adventure * adventure) {
-  while(!*noPlayers) {
+void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, Adventure * adventure, int playersNumber) {
+  while(true) {
     Socket newSocket = ss.accept();
     bool used = false;
     std::string playerName;
@@ -45,7 +46,7 @@ void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, bool * no
     } catch (CloseException &e) {
       continue;
     }
-    for(int i = 0; i < adventure->maxPlayers; i++) {
+    for(int i = 0; i < playersNumber; i++) {
       if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
         (*links)[i]->changeSocket(newSocket);
         used = true;
@@ -71,22 +72,28 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
   adventure->applyDayLight();
 
-  std::vector<std::thread > threads = std::vector<std::thread >(adventure->maxPlayers);
-  std::vector<Link *> links = std::vector<Link *>(adventure->maxPlayers);
-  ServerSocket ss = ServerSocket(45678, adventure->maxPlayers, true);
+  int playersNumber = adventure->maxPlayers;
+
+  if (argc >= 3) {
+    playersNumber = std::min(playersNumber, stoi(std::string(argv[2])));
+  }
+
+  std::vector<std::thread > threads = std::vector<std::thread >(playersNumber);
+  std::vector<Link *> links = std::vector<Link *>(playersNumber);
+  ServerSocket ss = ServerSocket(45678, playersNumber, true);
   //std::barrier sync_point(adventure->maxPlayers, Server::receive);
-  for(int i = 0; i < adventure->maxPlayers; i++) {
+  for(int i = 0; i < playersNumber; i++) {
     threads[i] = std::thread(startCommunication, &links[i], ss, adventure);
   }
-  for(int i = 0; i < adventure->maxPlayers; i++) {
+  for(int i = 0; i < playersNumber; i++) {
     threads[i].join();
   }
   threads.clear();
   bool noPlayers = false;
-  std::thread thread = std::thread(relinkCommunication, &links, ss, &noPlayers, adventure);
+  std::thread thread = std::thread(relinkCommunication, &links, ss, adventure, playersNumber);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
-    for(int i = 0; i < adventure->maxPlayers; i++) {
+    for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }
     adventure->applyDayLight();
@@ -95,7 +102,7 @@ int main(int argc, char ** argv) {
     std::list<Action *> actionsPlayers = std::list<Action *>();
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions
-    for(int i = 0; i < adventure->maxPlayers; i++) {
+    for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->getPlayer()->isInWeakState()) {
         actionsPlayers.push_back(links[i]->receiveAction());
       }
@@ -109,7 +116,7 @@ int main(int argc, char ** argv) {
     actionsPlayers.clear();
     actionsNPCs.clear();
     noPlayers = true;
-    for(int i = 0; i < adventure->maxPlayers; i++) {
+    for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->isClosed()) {
         noPlayers = false;
         break;

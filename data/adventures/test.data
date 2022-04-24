@@ -5,14 +5,25 @@ data/tiles/mist.data
 # maps
 data/maps/test.data
 # ways
+data/ways/ahoz.data
+data/ways/akota.data
+data/ways/armythas.data
 data/ways/atheist.data
+data/ways/beastiona.data
+data/ways/birphan.data
+data/ways/countryside.data
+data/ways/elf.data
+data/ways/ellinka.data
+data/ways/godless.data
+data/ways/green_town.data
+data/ways/human.data
+data/ways/pyrra.data
+data/ways/ragard.data
 data/ways/ruminant.data
 data/ways/sheep.data
 data/ways/slow.data
-data/ways/countryside.data
-data/ways/human.data
-data/ways/tagran.data
 data/ways/soldier.data
+data/ways/tagran.data
 # items
 data/items/iron_boots.data
 data/items/iron_cuirass.data

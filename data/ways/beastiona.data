@@ -1,0 +1,9 @@
+name = Beastiona
+type = RELIGION
+hpIncr = 5
+manaIncr = 0
+armorIncr = 3
+soulBurnIncr = 0
+flowIncr = 3
+effects =
+skills =

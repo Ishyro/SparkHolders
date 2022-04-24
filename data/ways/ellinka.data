@@ -1,0 +1,9 @@
+name = Ellinka
+type = ORIGIN
+hpIncr = 3
+manaIncr = 1
+armorIncr = 1
+soulBurnIncr = 1
+flowIncr = 0
+effects =
+skills =

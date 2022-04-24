@@ -1,4 +1,4 @@
-name = sheep
+name = Sheep
 player_character = false
 death_speech = beh
 talking_speechs = beh

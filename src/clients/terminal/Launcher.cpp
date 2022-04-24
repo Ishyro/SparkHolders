@@ -39,6 +39,7 @@ void communicate(Link * link, WINDOW * screen) {
     Weapon * weapon = nullptr;
     while(!done) {
       char keyPressed = getch();
+      flushinp();
       switch(keyPressed) {
         case '5':
           type = REST;
@@ -128,7 +129,7 @@ int main(int argc, char ** argv) {
       return EXIT_FAILURE;
     }
     std::vector<std::string> choices;
-    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays());
+    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities());
     try {
       link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
     } catch (CloseException &e) {

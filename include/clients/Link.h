@@ -2,6 +2,8 @@
 #define _LINK_H_
 
 #include <vector>
+#include <map>
+#include <list>
 
 #include "Values.h"
 
@@ -14,9 +16,11 @@ class Link {
     void sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon);
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
+    std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
   private:
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
+    std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities;
     Adventure * adventure;
     Socket s;
 };

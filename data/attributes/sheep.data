@@ -1,4 +1,4 @@
-name = sheep
+name = Sheep
 baseHp = 10
 baseMana = 1
 baseArmor = 1
@@ -12,7 +12,7 @@ arms = none
 legs = none
 body = none
 left_ring = none
-right_ring = none 
+right_ring = none
 amulet = none
 weapon = none
 ammunition = none

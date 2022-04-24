@@ -129,13 +129,14 @@ namespace Server {
     return adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
   }
 
-  void sendMap(Socket s, Map * map) {
+  void sendMap(Socket s, Map * map, Character * player, Adventure * adventure) {
     try {
-      s.write(map->to_string());
+      s.write(map->to_string(player, adventure));
     } catch (const CloseException &e) {
       throw e;
     }
   }
+
   void sendStartingPossibilites(Socket s, Adventure * adventure) {
     std::string msg = "";
     std::list<Attributes *> attributes = adventure->getStartingAttributes();
@@ -148,6 +149,18 @@ namespace Server {
       msg += way->to_string() + "|";
     }
     msg += "@";
+    try {
+      s.write(msg);
+    } catch (const CloseException &e) {
+      throw e;
+    }
+  }
+
+  void sendWaysIncompabilities(Socket s, Adventure * adventure) {
+    std::string msg = "";
+    for(std::pair<const std::string, const std::string> pair : adventure->getDatabase()->getWaysIncompatibilities()) {
+      msg += pair.first + "|" + pair.second + "|" + "@";
+    }
     try {
       s.write(msg);
     } catch (const CloseException &e) {

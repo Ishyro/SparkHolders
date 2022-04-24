@@ -12,6 +12,7 @@
 #include "data/Character.h"
 
 void Character::applyAttributes(const Attributes * attributes) {
+  this->attributes = attributes->name; 
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
   hp=maxHp;

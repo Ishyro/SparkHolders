@@ -1,5 +1,6 @@
 #include <sstream>
 
+#include "data/Adventure.h"
 #include "data/Item.h"
 #include "data/Weapon.h"
 
@@ -273,9 +274,7 @@ void Map::actAllProjectiles(Adventure * adventure) {
   }
 }
 
-#include <iostream>
-
-std::string Map::to_string() {
+std::string Map::to_string(Character * player, Adventure * adventure) {
   std::string msg = name + "@";
   msg += std::to_string(offsetX) + "@";
   msg += std::to_string(offsetY) + "@";
@@ -289,7 +288,7 @@ std::string Map::to_string() {
   }
   msg += "@";
   for(Character * character : characters) {
-    msg += character->to_string() + "|";
+    msg += character->to_string() + std::to_string(adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam())) + "|";
   }
   msg += "@";
   for(Projectile * projectile : projectiles) {
@@ -343,7 +342,9 @@ MapDisplay * Map::from_string(std::string to_read) {
   std::istringstream characters(msg.substr(0, msg.find('@')));
   std::string character;
   while(getline(characters, character, '|') && character != "") {
-    display->characters.push_back(Character::from_string(character));
+    CharacterDisplay * characterDisplay = Character::from_string(character);
+    characterDisplay->teamRelation = stoi(character.substr(character.rfind(';') + 1, character.length()));
+    display->characters.push_back(characterDisplay);
   }
   msg = msg.substr(msg.find('@') + 1, msg.length());
   std::istringstream projectiles(msg.substr(0, msg.find('@')));

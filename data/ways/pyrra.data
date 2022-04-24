@@ -1,0 +1,9 @@
+name = Pyrra
+type = RELIGION
+hpIncr = 0
+manaIncr = 5
+armorIncr = 0
+soulBurnIncr = 3
+flowIncr = 3
+effects =
+skills =

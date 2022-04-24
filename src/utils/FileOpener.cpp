@@ -229,6 +229,22 @@ namespace FileOpener {
     else if(keyword == "StartingWay") {
       startingWays->push_back( (Way *) database->getWay(command));
     }
+    else if(keyword == "TeamLink") {
+      int relation = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      std::string team1 = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      std::string team2 = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      database->addRelation(team1, team2, relation);
+    }
+    else if(keyword == "WayImcompatibility") {
+      std::string way1 = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      std::string way2 = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      database->addWayImcompatibility(way1, way2);
+    }
   }
 
   void AttributesOpener(std::string fileName, Database * database) {

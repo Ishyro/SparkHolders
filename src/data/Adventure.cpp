@@ -208,7 +208,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
     spawn->y,
     spawn->orientation,
     spawn->map_id,
-    "adventurer",
+    "party",
     new PlayerAI(),
     race,
     origin,

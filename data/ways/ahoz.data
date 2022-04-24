@@ -1,9 +1,9 @@
-name = Tagran
+name = Aho'z
 type = CULTURE
-hpIncr = -1
+hpIncr = 2
 manaIncr = 3
 armorIncr = 0
-soulBurnIncr = 2
-flowIncr = 2
+soulBurnIncr = 0
+flowIncr = 3
 effects =
 skills =

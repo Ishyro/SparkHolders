@@ -1,0 +1,9 @@
+name = Green Town
+type = ORIGIN
+hpIncr = 3
+manaIncr = 3
+armorIncr = 1
+soulBurnIncr = -1
+flowIncr = 0
+effects =
+skills =

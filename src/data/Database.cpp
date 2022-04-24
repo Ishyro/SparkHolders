@@ -17,20 +17,24 @@
 Database::Database() {
   macros = std::map<const std::string,const int>();
 
-  attributes = std::map<const std::string,const Attributes * >();
-  characters = std::map<const std::string,const Character * >();
-  effects = std::map<const std::string,const Effect * >();
-  events = std::map<const std::string,const Event * >();
-  items = std::map<const std::string,const Item * >();
-  maps = std::map<const std::string,const Map * >();
-  projectiles = std::map<const std::string,const Projectile * >();
-  ammunitions = std::map<const std::string,const Ammunition * >();
-  quests = std::map<const std::string,const Quest * >();
-  skills = std::map<const std::string,const Skill * >();
-  speechs = std::map<const std::string,const Speech * >();
-  tiles = std::map<const std::string,const Tile * >();
-  ways = std::map<const std::string,const Way * >();
-  weapons = std::map<const std::string,const Weapon * >();
+  attributes = std::map<const std::string, const Attributes * >();
+  characters = std::map<const std::string, const Character * >();
+  effects = std::map<const std::string, const Effect * >();
+  events = std::map<const std::string, const Event * >();
+  items = std::map<const std::string, const Item * >();
+  maps = std::map<const std::string, const Map * >();
+  projectiles = std::map<const std::string, const Projectile * >();
+  ammunitions = std::map<const std::string, const Ammunition * >();
+  quests = std::map<const std::string, const Quest * >();
+  skills = std::map<const std::string, const Skill * >();
+  speechs = std::map<const std::string, const Speech * >();
+  tiles = std::map<const std::string, const Tile * >();
+  ways = std::map<const std::string, const Way * >();
+  weapons = std::map<const std::string, const Weapon * >();
+  relations = std::map<const std::string, std::map<const std::string, int>>();
+  waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
+
+  // effect_duration_type
 
   macros.insert(std::make_pair("INSTANT",INSTANT));
   macros.insert(std::make_pair("INFINITE",INFINITE));
@@ -218,6 +222,13 @@ Database::Database() {
   macros.insert(std::make_pair("SPEACH",SPEACH));
   macros.insert(std::make_pair("WARNING",WARNING));
   macros.insert(std::make_pair("ERROR",ERROR));
+
+  // teams relations
+
+  macros.insert(std::make_pair("SAME",SAME));
+  macros.insert(std::make_pair("ALLY",ALLY));
+  macros.insert(std::make_pair("NEUTRAL",NEUTRAL));
+  macros.insert(std::make_pair("ENEMY",ENEMY));
 }
 
 const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
@@ -236,6 +247,18 @@ const Speech * Database::getSpeech(const std::string speech) { return speechs.at
 const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
+const int Database::getRelation(const std::string team1, const std::string team2) {
+  if(team1 == team2) {
+    return SAME;
+  }
+  try {
+    return relations.at(team1).at(team2);
+  } catch (const std::out_of_range &e) {
+    return NEUTRAL;
+  }
+}
+
+std::list<std::pair<const std::string, const std::string>> Database::getWaysIncompatibilities() { return waysIncompatibilities; }
 
 void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
 void Database::addCharacter(const Character * character) { characters.insert(std::make_pair(character->name, character)); }
@@ -251,3 +274,19 @@ void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(
 void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addWeapon(const Weapon * weapon) { weapons.insert(std::make_pair(weapon->name, weapon)); }
+void Database::addRelation(const std::string team1, const std::string team2, int relation) {
+  if(relations.find(team1) == relations.end()) {
+    std::map<const std::string, int> map = std::map<const std::string, int>();
+    relations.insert(std::make_pair(team1, map));
+  }
+  relations.at(team1).insert(std::make_pair(team2, relation));
+  if(relations.find(team2) == relations.end()) {
+    std::map<const std::string, int> map = std::map<const std::string, int>();
+    relations.insert(std::make_pair(team2, map));
+  }
+  relations.at(team2).insert(std::make_pair(team1, relation));
+}
+
+void Database::addWayImcompatibility(const std::string way1, const std::string way2) {
+  waysIncompatibilities.push_back(std::make_pair(way1, way2));
+}

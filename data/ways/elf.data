@@ -1,7 +1,7 @@
-name = Tagran
-type = CULTURE
-hpIncr = -1
-manaIncr = 3
+name = Elf
+type = RACE
+hpIncr = 3
+manaIncr = 5
 armorIncr = 0
 soulBurnIncr = 2
 flowIncr = 2

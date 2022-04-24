@@ -36,6 +36,24 @@ namespace Client {
     msg = msg.substr(msg.find('@') + 1, msg.length());
   }
 
+  void receiveWaysIncompabilities(Socket s, std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities) {
+    std::string msg;
+    try {
+      msg = s.read();
+    } catch (const CloseException &e) {
+      throw e;
+    }
+    std::istringstream ways(msg);
+    std::string _2ways;
+    while(getline(ways, _2ways, '@') && _2ways != "") {
+      std::string way1 = _2ways.substr(0, _2ways.find('|'));
+      _2ways = _2ways.substr(_2ways.find('|') + 1, _2ways.length());
+      std::string way2 = _2ways.substr(0, _2ways.find('|'));
+      _2ways = _2ways.substr(_2ways.find('|') + 1, _2ways.length());
+      waysIncompatibilities->push_back(std::make_pair(way1, way2));
+    }
+  }
+
   MapDisplay * receiveMap(Socket s, Adventure * adventure) {
     try {
       return Map::from_string(s.read());

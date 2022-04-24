@@ -1,0 +1,9 @@
+name = Birphan
+type = CULTURE
+hpIncr = 3
+manaIncr = 1
+armorIncr = 2
+soulBurnIncr = 1
+flowIncr = 0
+effects =
+skills =
