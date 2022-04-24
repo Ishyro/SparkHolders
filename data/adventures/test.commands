@@ -39,27 +39,27 @@ WayImcompatibility.Elf%Ellinka%
 WayImcompatibility.Birphan%Armythas%
 WayImcompatibility.Tagran%Ellinka%
 # add TeamLink
-TeamLink.ENEMY%party%predator%
-TeamLink.ENEMY%prey%predator%
-TeamLink.ENEMY%adventurer%predator%
-TeamLink.ENEMY%Birph citizen%predator%
-TeamLink.ENEMY%Birph farmer%predator%
-TeamLink.ENEMY%Birph soldier%predator%
-TeamLink.ENEMY%Birph citizen%Tagr soldier%
-TeamLink.ENEMY%Birph farmer%Tagr soldier%
-TeamLink.ENEMY%Birph soldier%Tagr soldier%
-TeamLink.ENEMY%Tagr citizen%Birph soldier%
-TeamLink.ENEMY%Tagr farmer%Birph soldier%
-TeamLink.ENEMY%Tagr soldier%Birph soldier%
-TeamLink.ENEMY%Birph soldier%Tagr Soldier%
-TeamLink.ALLY%Birph citizen%Birph farmer%
-TeamLink.ALLY%Birph citizen%Birph soldier%
-TeamLink.ALLY%Birph soldier%Birph farmer%
-TeamLink.ALLY%Tagr citizen%Tagr farmer%
-TeamLink.ALLY%Tagr citizen%Tagr soldier%
-TeamLink.ALLY%Tagr soldier%Tagr farmer%
-TeamLink.ALLY%prey%Birph farmer%
-TeamLink.ALLY%prey%Tagr farmer%
+TeamRelation.ENEMY%party%predator%
+TeamRelation.ENEMY%prey%predator%
+TeamRelation.ENEMY%adventurer%predator%
+TeamRelation.ENEMY%Birph citizen%predator%
+TeamRelation.ENEMY%Birph farmer%predator%
+TeamRelation.ENEMY%Birph soldier%predator%
+TeamRelation.ENEMY%Birph citizen%Tagr soldier%
+TeamRelation.ENEMY%Birph farmer%Tagr soldier%
+TeamRelation.ENEMY%Birph soldier%Tagr soldier%
+TeamRelation.ENEMY%Tagr citizen%Birph soldier%
+TeamRelation.ENEMY%Tagr farmer%Birph soldier%
+TeamRelation.ENEMY%Tagr soldier%Birph soldier%
+TeamRelation.ENEMY%Birph soldier%Tagr Soldier%
+TeamRelation.ALLY%Birph citizen%Birph farmer%
+TeamRelation.ALLY%Birph citizen%Birph soldier%
+TeamRelation.ALLY%Birph soldier%Birph farmer%
+TeamRelation.ALLY%Tagr citizen%Tagr farmer%
+TeamRelation.ALLY%Tagr citizen%Tagr soldier%
+TeamRelation.ALLY%Tagr soldier%Tagr farmer%
+TeamRelation.ALLY%prey%Birph farmer%
+TeamRelation.ALLY%prey%Tagr farmer%
 # add characters
 Character.Sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
 Character.Sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%

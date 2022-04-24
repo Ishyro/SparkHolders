@@ -229,7 +229,7 @@ namespace FileOpener {
     else if(keyword == "StartingWay") {
       startingWays->push_back( (Way *) database->getWay(command));
     }
-    else if(keyword == "TeamLink") {
+    else if(keyword == "TeamRelation") {
       int relation = database->getTargetFromMacro(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       std::string team1 = command.substr(0, command.find('%'));
