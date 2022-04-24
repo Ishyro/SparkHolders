@@ -12,8 +12,8 @@ std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }
 // TODO : return right tile
-Tile * Map::getTile(long x, long y) { return tiles[x][y]; }
-int Map::getLight(long x, long y) { return lights[x][y] + light; }
+Tile * Map::getTile(long y, long x) { return tiles[y][x]; }
+int Map::getLight(long y, long x) { return std::max(lights[y][x], light); }
 void Map::applyDayLight(int light) { this->light = light; }
 
 void Map::calculateLights() {
@@ -21,59 +21,59 @@ void Map::calculateLights() {
   long lightX[sizeX*sizeY];
   long lightY[sizeX*sizeY];
   long cpt = 0;
-  for(long x = 0; x < sizeX; x++) {
-    for(long y = 0; y < sizeY; y++) {
-      lights[x][y] = tiles[x][y]->light;
-      if (lights[x][y] > 0) {
+  for(long y = 0; y < sizeY; y++) {
+    for(long x = 0; x < sizeX; x++) {
+      lights[y][x] = tiles[y][x]->light;
+      if (lights[y][x] > 0) {
         lightX[cpt] = x;
         lightY[cpt++] = y;
       }
     }
   }
   for(long i = 0; i < cpt; i++) {
-    propagateLight(lightX[i],lightY[i]);
+    propagateLight(lightY[i],lightX[i]);
   }
 }
 
-void Map::propagateLight(long x, long y) {
-  int light = lights[x][y] - 1;
-  if(x > 1 && y > 1 && light > lights[x - 1][y - 1]) {
-    lights[x - 1][y - 1] = light;
-    propagateLight(x - 1,y - 1);
+void Map::propagateLight(long y, long x) {
+  int light = lights[y][x] - 1;
+  if(x > 1 && y > 1 && light > lights[y - 1][x - 1]) {
+    lights[y - 1][x - 1] = light;
+    propagateLight(y - 1, x - 1);
   }
-  if(x > 1 && light > lights[x - 1][y]) {
-    lights[x - 1][y] = light;
-    propagateLight(x - 1,y);
+  if(x > 1 && light > lights[y][x - 1]) {
+    lights[y][x - 1] = light;
+    propagateLight(y, x - 1);
   }
-  if(x > 1 && y < sizeY - 2 && light > lights[x - 1][y + 1]) {
-    lights[x - 1][y + 1] = light;
-    propagateLight(x - 1,y + 1);
+  if(x > 1 && y < sizeY - 1 && light > lights[y + 1][x - 1]) {
+    lights[y + 1][x - 1] = light;
+    propagateLight(y + 1, x - 1);
   }
-  if(y > 1 && light > lights[x][y - 1]) {
-    lights[x][y-1] = light;
-    propagateLight(x,y - 1);
+  if(y > 1 && light > lights[y - 1][x]) {
+    lights[y-1][x] = light;
+    propagateLight(y - 1, x);
   }
-  if(y < sizeY - 2 && light > lights[x][y + 1]) {
-    lights[x][y + 1] = light;
-    propagateLight(x,y + 1);
+  if(y < sizeY - 1 && light > lights[y + 1][x]) {
+    lights[y + 1][x] = light;
+    propagateLight(y + 1, x);
   }
-  if(x < sizeX - 2 && y > 1 && light > lights[x + 1][y - 1]) {
-    lights[x + 1][y - 1] = light;
-    propagateLight(x + 1,y - 1);
+  if(x < sizeX - 1 && y > 1 && light > lights[y - 1][x + 1]) {
+    lights[y - 1][x + 1] = light;
+    propagateLight(y - 1, x + 1);
   }
-  if(x < sizeX - 2 && light > lights[x + 1][y]) {
-    lights[x + 1][y] = light;
-    propagateLight(x +1,y);
+  if(x < sizeX - 1 && light > lights[y][x + 1]) {
+    lights[y][x + 1] = light;
+    propagateLight(y, x + 1);
   }
-  if(x < sizeX - 2 && y < sizeY - 2 && light > lights[x + 1][y + 1]) {
-    lights[x + 1][y + 1] = light;
-    propagateLight(x + 1,y + 1);
+  if(x < sizeX - 1 && y < sizeY - 1 && light > lights[y + 1][x + 1]) {
+    lights[y + 1][x + 1] = light;
+    propagateLight(y + 1, x + 1);
   }
 }
 
-void Map::setTile(long x, long y, Tile * tile) { tiles[x][y] = tile; }
+void Map::setTile(long y, long x, Tile * tile) { tiles[y][x] = tile; }
 
-void Map::crumble(long x, long y) {
+void Map::crumble(long y, long x) {
   for(auto character : characters) {
     if(character->getX() == x && character->getY() == y) {
       if(character->type == WALL) {
@@ -84,8 +84,6 @@ void Map::crumble(long x, long y) {
     }
   }
 }
-
-#include <iostream>
 
 void Map::addCharacter(Character * c) { characters.push_back(c); }
 void Map::addProjectile(Projectile * p) { projectiles.push_back(p); }
@@ -158,56 +156,56 @@ void Map::move(Character *c, int orientation) {
   long destY;
   switch(orientation) {
     case NORTH:
-      if(c->getY() < sizeY - 1 && !tiles[c->getX()][c->getY() + 1]->untraversable) {
+      if(c->getY() < sizeY - 1 && !tiles[c->getY() + 1][c->getX()]->untraversable) {
         is_legal = true;
         destX = c->getX();
         destY = c->getY() + 1;
       }
       break;
     case NORTH_EAST:
-      if(c->getY() < sizeY - 1 && c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY() + 1]->untraversable) {
+      if(c->getY() < sizeY - 1 && c->getX() < sizeX - 1 && !tiles[c->getY() + 1][c->getX() + 1]->untraversable) {
         is_legal = true;
         destX = c->getX() + 1;
         destY = c->getY() + 1;
       }
       break;
     case EAST:
-      if(c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY()]->untraversable) {
+      if(c->getX() < sizeX - 1 && !tiles[c->getY()][c->getX() + 1]->untraversable) {
         is_legal = true;
         destX = c->getX() + 1;
         destY = c->getY();
       }
       break;
     case SOUTH_EAST:
-      if(c->getY() > 0 && c->getX() < sizeX - 1 && !tiles[c->getX() + 1][c->getY() - 1]->untraversable) {
+      if(c->getY() > 0 && c->getX() < sizeX - 1 && !tiles[c->getY() - 1][c->getX() + 1]->untraversable) {
         is_legal = true;
         destX = c->getX() + 1;
         destY = c->getY() - 1;
       }
       break;
     case SOUTH:
-      if(c->getY() > 0 && !tiles[c->getX()][c->getY() - 1]->untraversable) {
+      if(c->getY() > 0 && !tiles[c->getY() - 1][c->getX()]->untraversable) {
         is_legal = true;
         destX = c->getX();
         destY = c->getY() - 1;
       }
       break;
     case SOUTH_WEST:
-      if(c->getY() > 0 && c->getX() > 0 && !tiles[c->getX() - 1][c->getY() - 1]->untraversable) {
+      if(c->getY() > 0 && c->getX() > 0 && !tiles[c->getY() - 1][c->getX() - 1]->untraversable) {
         is_legal = true;
         destX = c->getX() - 1;
         destY = c->getY() - 1;
       }
       break;
     case WEST:
-      if(c->getX() > 0 && !tiles[c->getX() - 1][c->getY()]->untraversable) {
+      if(c->getX() > 0 && !tiles[c->getY()][c->getX() - 1]->untraversable) {
         is_legal = true;
         destX = c->getX() - 1;
         destY = c->getY();
       }
       break;
     case NORTH_WEST:
-      if(c->getY() < sizeY - 1, c->getX() > 0 && !tiles[c->getX() - 1][c->getY() + 1]->untraversable) {
+      if(c->getY() < sizeY - 1 && c->getX() > 0 && !tiles[c->getY() + 1][c->getX() - 1]->untraversable) {
         is_legal = true;
         destX = c->getX() - 1;
         destY = c->getY() + 1;
@@ -281,22 +279,22 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
   msg += std::to_string(sizeX) + "@";
   msg += std::to_string(sizeY) + "@";
   msg += std::to_string(outside) + "@";
-  for(int x = 0; x < sizeX; x++) {
-    for(int y = 0; y < sizeX; y++) {
-      msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(x, y)->name + ";" + std::to_string(getTile(x, y)->untraversable) + ";" + std::to_string(getLight(x, y)) + "|";
+  for(int y = 0; y < sizeY; y++) {
+    for(int x = 0; x < sizeX; x++) {
+      msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(y, x)->name + ";" + std::to_string(getTile(y, x)->untraversable) + ";" + std::to_string(getLight(y, x)) + "|";
     }
   }
   msg += "@";
   for(Character * character : characters) {
-    msg += character->to_string() + std::to_string(adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam())) + "|";
+    msg += character->to_string(offsetY, offsetX) + std::to_string(adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam())) + "|";
   }
   msg += "@";
   for(Projectile * projectile : projectiles) {
-    msg += projectile->to_string() + "|";
+    msg += projectile->to_string(offsetY, offsetX) + "|";
   }
   msg += "@";
   for(Loot * loot : loots) {
-    msg += std::to_string(loot->type) + ";" + std::to_string(loot->x) + ";" + std::to_string(loot->y) + "|";
+    msg += std::to_string(loot->type) + ";" + std::to_string(loot->x - offsetX) + ";" + std::to_string(loot->y - offsetY) + "|";
   }
   msg += "@";
   return msg;
@@ -336,7 +334,7 @@ MapDisplay * Map::from_string(std::string to_read) {
     tile = tile.substr(tile.find(';') + 1, tile.length());
     int light = stoi(tile.substr(0, tile.find(';')));
     tile = tile.substr(tile.find(';') + 1, tile.length());
-    display->tiles[x][y] = new Tile(name, untraversable, light);
+    display->tiles[y][x] = new Tile(name, untraversable, light);
   }
   msg = msg.substr(msg.find('@') + 1, msg.length());
   std::istringstream characters(msg.substr(0, msg.find('@')));

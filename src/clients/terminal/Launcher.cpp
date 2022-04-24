@@ -38,8 +38,8 @@ void communicate(Link * link, WINDOW * screen) {
     Item * item = nullptr;
     Weapon * weapon = nullptr;
     while(!done) {
-      char keyPressed = getch();
       flushinp();
+      int keyPressed = getch();
       switch(keyPressed) {
         case '5':
           type = REST;

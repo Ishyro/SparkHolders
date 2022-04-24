@@ -93,12 +93,13 @@ int main(int argc, char ** argv) {
   std::thread thread = std::thread(relinkCommunication, &links, ss, adventure, playersNumber);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
+    adventure->incrTick();
+    adventure->applyDayLight();
+    adventure->applySoulBurn();
+    adventure->applyLevelUps();
     for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }
-    adventure->applyDayLight();
-    adventure->incrTick();
-    adventure->applySoulBurn();
     std::list<Action *> actionsPlayers = std::list<Action *>();
     std::list<Action *> actionsNPCs = adventure->getNPCsActions();
     // receive playerActions

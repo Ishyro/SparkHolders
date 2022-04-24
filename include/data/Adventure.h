@@ -74,8 +74,9 @@ class Adventure {
     void applyDayLight();
     void incrDayLight();
     void actAllProjectiles();
-Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
+    Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applySoulBurn();
+    void applyLevelUps();
   private:
     World * world;
     Database * database;

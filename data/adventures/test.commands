@@ -1,15 +1,26 @@
 # Adventure name
-TestLands
+The Main Place
 # add maps
-Map.test_1
-Map.test_2
+Map.Central Square
+Map.House North_1
+Map.House North_2
+Map.House East_1
+Map.House East_2
+Map.House South_1
+Map.House South_2
+Map.House West_1
+Map.House West_2
 # add map links
-MapLink.test_1%test_2%9%5%WEST%0%5%EAST%
 # add spawns
-Spawn.5%5%NORTH%test_1%
-Spawn.4%5%NORTH%test_1%
-Spawn.5%4%NORTH%test_1%
-Spawn.4%4%NORTH%test_1%
+Spawn.50%100%NORTH%Central Square%
+Spawn.6%6%NORTH%House North_1%
+Spawn.6%6%NORTH%House North_2%
+Spawn.6%6%NORTH%House East_1%
+Spawn.6%6%NORTH%House East_2%
+Spawn.6%6%NORTH%House South_1%
+Spawn.6%6%NORTH%House South_2%
+Spawn.6%6%NORTH%House West_1%
+Spawn.6%6%NORTH%House West_2%
 # add starting attributes
 StartingAttributes.Vanguard
 StartingAttributes.Guardian
@@ -61,7 +72,7 @@ TeamRelation.ALLY%Tagr soldier%Tagr farmer%
 TeamRelation.ALLY%prey%Birph farmer%
 TeamRelation.ALLY%prey%Tagr farmer%
 # add characters
-Character.Sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-Character.Sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-Character.Sheep%6%3%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-Character.Sheep%1%8%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
+#Character.Sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
+#Character.Sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
+#Character.Sheep%6%3%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
+#Character.Sheep%1%8%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%

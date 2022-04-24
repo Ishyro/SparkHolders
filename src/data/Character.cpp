@@ -12,7 +12,7 @@
 #include "data/Character.h"
 
 void Character::applyAttributes(const Attributes * attributes) {
-  this->attributes = attributes->name; 
+  this->attributes = attributes->name;
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
   hp=maxHp;
@@ -227,12 +227,11 @@ void Character::payMana(int cost) {
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
-  if(level * level * 1000 >= xp) { // INSERT FORMULA HERE
+  while(level * level * 1000 >= xp) { // INSERT FORMULA HERE
     level++;
-    incrFlow();
-    incrArmor();
     incrMaxHp();
     incrMaxMana();
+    incrArmor();
     incrSoulBurnTreshold();
     incrFlow();
     hpHeal(getMaxHp() / 2);
@@ -476,15 +475,15 @@ void Character::receiveCriticalAttack(int damage, int damage_type) {
   }
 }
 
-std::string Character::to_string() {
+std::string Character::to_string(long offsetY, long offsetX) {
   std::string msg = name + ";";
   msg += std::to_string(id) + ";";
   msg += std::to_string(hp) + ";";
   msg += std::to_string(mana) + ";";
   msg += std::to_string(player_character) + ";";
   msg += std::to_string(type) + ";";
-  msg += std::to_string(x) + ";";
-  msg += std::to_string(y) + ";";
+  msg += std::to_string(x - offsetX) + ";";
+  msg += std::to_string(y - offsetY) + ";";
   msg += std::to_string(orientation) + ";";
   msg += team + ";";
   msg += std::to_string(getArmor()) + ";";

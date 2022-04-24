@@ -177,12 +177,12 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
   }
 }
 
-std::string Projectile::to_string() {
+std::string Projectile::to_string(long offsetY, long offsetX) {
   std::string msg = name + ";";
   msg += std::to_string(id) + ";";
   msg += std::to_string(projectile_type) + ";";
-  msg += std::to_string(x) + ";";
-  msg += std::to_string(y) + ";";
+  msg += std::to_string(x - offsetX) + ";";
+  msg += std::to_string(y - offsetY) + ";";
   msg += std::to_string(orientation) + ";";
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     msg += std::to_string(damages[i]) + ";";

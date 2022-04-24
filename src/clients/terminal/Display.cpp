@@ -18,17 +18,19 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
     mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
-    for(int y = display->sizeY - 1; y >= 0 ; y--) {
+    for(int y = display->sizeY - 1; y >= 0; y--) {
       for(int x = 0; x < display->sizeX; x++) {
         std::string to_print = ".\0"; // middle dot - ·
-        if(display->tiles[x][y]->untraversable) {
+        if(display->tiles[y][x]->untraversable) {
           to_print = "#\0";
         }
-        if(display->tiles[x][y]->name == "mist") { // unseen
-          to_print = " \0";
+        if(display->tiles[y][x]->name == "mist") { // unseen
+          to_print = "~\0";
         }
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
       }
     }
     for(CharacterDisplay * character : display->characters) {
@@ -53,14 +55,20 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - character->y, character->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - character->y, character->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
-      std::string to_print = "~\0";
+      std::string to_print = "\"\0";
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - projectile->y, projectile->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - projectile->y, projectile->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
+    }
+    for(Loot * loot : display->loots) {
+      std::string to_print = "*\0";
+      wattron(screen, COLOR_PAIR(YELLOW));
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - loot->y, loot->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      wattroff(screen, COLOR_PAIR(YELLOW));
     }
     wrefresh(screen);
   }
@@ -69,12 +77,14 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
     mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
     for(int y = display->sizeY - 1; y >= 0 ; y--) {
       for(int x = 0; x < display->sizeX; x++) {
         char * to_print = new char [2];
         to_print[1] = '\0';
-        to_print[0] = display->tiles[x][y]->name.at(0);
+        to_print[0] = display->tiles[y][x]->name.at(0);
         mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print);
         delete to_print;
       }
@@ -86,12 +96,14 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
     mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
     for(int y = display->sizeY - 1; y >= 0 ; y--) {
       for(int x = 0; x < display->sizeX; x++) {
         char * to_print = new char [2];
         to_print[1] = '\0';
-        to_print[0] = std::to_string(display->tiles[x][y]->light).at(0);
+        to_print[0] = std::to_string(display->tiles[y][x]->light).at(0);
         mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print);
         delete to_print;
       }
@@ -458,7 +470,7 @@ namespace Display {
       wrefresh(characterScreen);
       bool done2 = false;
       while(!done2) {
-        char keyPressed = getch();
+        int keyPressed = getch();
         if(!nameMode) {
           switch(keyPressed) {
             case '4':

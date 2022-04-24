@@ -58,7 +58,7 @@ void Adventure::softMoveCharacterToMap(Character * character, long map_id, long 
         i = x - power;
         break;
     }
-    if((conflict = map->getTile(i, j)->untraversable)) {
+    if((conflict = map->getTile(j, i)->untraversable)) {
       continue;
     }
     for(auto c : map->getCharacters()) {
@@ -88,7 +88,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long 
       removePlayer(c);
     }
   }
-  if(map->getTile(x, y)->untraversable) {
+  if(map->getTile(y, x)->untraversable) {
     world->getMap(character->getCurrentMapId())->removeCharacter(character);
     delete character;
     return;
@@ -229,5 +229,11 @@ void Adventure::applySoulBurn() {
     if(!c->isAlive()) {
       getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
     }
+  }
+}
+
+void Adventure::applyLevelUps() {
+  for(Character * c : getNPCs()) {
+    c->gainLevel();
   }
 }

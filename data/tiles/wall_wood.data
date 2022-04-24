@@ -1,0 +1,3 @@
+name = wall_wood
+untraversable = true
+light = 0

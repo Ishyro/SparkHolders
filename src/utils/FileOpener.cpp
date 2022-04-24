@@ -403,23 +403,7 @@ namespace FileOpener {
         std::string tile;
         getline(is, tile, ' ');
         std::string test = database->getTile(tile)->name;
-        map->setTile(x, y, (Tile *)database->getTile(tile));
-      }
-    }
-    // separation between tiles and walls
-    getline(file,line);
-    for(int y = sizeY - 1; y >= 0; y--) {
-      getline(file,line);
-      std::istringstream is(line);
-      for(int x = sizeX - 1; x >= 0; x--) {
-        std::string wall;
-        getline(is, wall, ' ');
-        if(wall != "none") {
-          // WARNING: Segfault if a wall level up
-          Character * c = new Character(database->getCharacter(wall), wall, x, y, NORTH, map->id, "none", new PlayerAI(), nullptr, nullptr, nullptr, nullptr, nullptr);
-          c->applyAttributes(database->getAttributes(wall));
-          map->addCharacter(c);
-        }
+        map->setTile(y, x, (Tile *)database->getTile(tile));
       }
     }
 

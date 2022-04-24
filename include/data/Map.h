@@ -1,10 +1,10 @@
 #ifndef _MAP_H_
 #define _MAP_H_
 
+#include <algorithm>
 #include <list>
 #include <vector>
 #include <string>
-#include <cmath>
 
 #include "data/Character.h"
 #include "data/Database.h"
@@ -82,13 +82,14 @@ class Map {
       lights(map->lights),
       light(map->light)
     {}
+
     // use this only for players, too much work for every characters
-    Map(const Map * map, Character * player, Database * database):
+    Map(Map * map, Character * player, Database * database):
       name(map->name),
       offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
       offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
-      sizeX(map->sizeX - offsetX),
-      sizeY(map->sizeY - offsetY),
+      sizeX(std::min(map->sizeX, (long) player->getX() + (long) std::max(player->getVisionRange(), player->getDetectionRange())) - offsetX),
+      sizeY(std::min(map->sizeY, (long) player->getY() + (long) std::max(player->getVisionRange(), player->getDetectionRange())) - offsetY),
       outside(map->outside),
       tiles(sizeY),
       lights(sizeY),
@@ -98,16 +99,15 @@ class Map {
         tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);
       }
-      for(long x = 0; x < sizeX; x++) {
-        for(long y = 0; y < sizeY; y++) {
-          int distance = std::max(abs(player->getX() - x), abs(player->getY() -y));
-          if ( (distance <= player->getVisionRange() && getLight(x, y) >= 10 - player->getVisionPower()) || distance <= player->getDetectionRange() ) {
-            tiles[x][y] = map->tiles[x][y];
-            lights[x][y] = map->lights[x][y];
+      for(long y = 0; y < sizeY; y++) {
+        for(long x = 0; x < sizeX; x++) {
+          int distance = std::max(abs(player->getX() - (x + offsetX)), abs(player->getY() - (y + offsetY)));
+          if ( (distance <= player->getVisionRange() && map->getLight(y + offsetY, x + offsetX) >= 10 - player->getVisionPower()) || distance <= player->getDetectionRange() ) {
+            tiles[y][x] = map->tiles[y + offsetY][x + offsetX];
+            lights[y][x] = map->lights[y + offsetY][x + offsetX];
           }
           else {
-            tiles[x][y] = (Tile *) database->getTile("mist");
-            lights[x][y] = -light;
+            tiles[y][x] = (Tile *) database->getTile("mist");
           }
         }
       }
@@ -116,19 +116,19 @@ class Map {
       loots = std::list<Loot *>();
       for(Character * c : map->characters) {
         if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
-          tiles[c->getX() - offsetX][c->getY() - offsetY]->name != "mist") {
+          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "mist") {
           characters.push_back(c);
         }
       }
       for(Projectile * p : map->projectiles) {
         if(p->getX() - offsetX >= 0 && p->getX() - offsetX < sizeX && p->getY() - offsetY >= 0 && p->getY() - offsetY < sizeY &&
-          tiles[p->getX() - offsetX][p->getY() - offsetY]->name != "mist") {
+          tiles[p->getY() - offsetY][p->getX() - offsetX]->name != "mist") {
           projectiles.push_back(p);
         }
       }
       for(Loot * l : map->loots) {
         if(l->x - offsetX >= 0 && l->x - offsetX < sizeX && l->y - offsetY >= 0 && l->y - offsetY < sizeY &&
-          tiles[l->x - offsetX][l->y - offsetY]->name != "mist") {
+          tiles[l->y - offsetY][l->x - offsetX]->name != "mist") {
           loots.push_back(l);
         }
       }
@@ -136,13 +136,13 @@ class Map {
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
-    Tile * getTile(long x, long y);
-    void setTile(long x, long y, Tile * tile);
-    int getLight(long x, long y);
+    Tile * getTile(long y, long x);
+    void setTile(long y, long x, Tile * tile);
+    int getLight(long y, long x);
     void calculateLights();
-    void propagateLight(long x, long y);
+    void propagateLight(long y, long x);
     void applyDayLight(int light);
-    void crumble(long x, long y);
+    void crumble(long y, long x);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
     void addLoot(Loot * l);
