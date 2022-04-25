@@ -1,0 +1,9 @@
+name = Beastiona's Follower
+type = RELIGION
+hpIncr = 5
+manaIncr = 0
+armorIncr = 0
+soulBurnIncr = 5
+flowIncr = 5
+effects =
+skills =

@@ -1,8 +1,8 @@
-name = Pyrra
+name = Yarglay's Follower
 type = RELIGION
-hpIncr = 0
-manaIncr = 5
-armorIncr = 0
+hpIncr = 3
+manaIncr = 3
+armorIncr = 3
 soulBurnIncr = 3
 flowIncr = 3
 effects =

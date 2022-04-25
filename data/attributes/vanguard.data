@@ -1,9 +1,9 @@
 name = Vanguard
-baseHp = 50
-baseMana = 30
-baseArmor = 10
-baseSoulBurn = 60
-baseFlow = 5
+baseHp = 150
+baseMana = 100
+baseArmor = 20
+baseSoulBurn = 75
+baseFlow = 25
 baseVisionRange = 10
 baseVisionPower = 6
 baseDetectionRange = 1

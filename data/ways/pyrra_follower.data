@@ -1,0 +1,9 @@
+name = Pyrra's Follower
+type = RELIGION
+hpIncr = 0
+manaIncr = 5
+armorIncr = 0
+soulBurnIncr = 5
+flowIncr = 5
+effects =
+skills =

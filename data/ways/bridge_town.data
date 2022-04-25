@@ -1,9 +1,9 @@
-name = Armythas
+name = Bridge Town
 type = ORIGIN
-hpIncr = 2
+hpIncr = 0
 manaIncr = 4
 armorIncr = 0
-soulBurnIncr = 2
-flowIncr = 2
+soulBurnIncr = 3
+flowIncr = 3
 effects =
 skills =

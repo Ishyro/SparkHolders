@@ -1,9 +1,9 @@
 name = Aho'z
 type = CULTURE
 hpIncr = 2
-manaIncr = 3
-armorIncr = 0
-soulBurnIncr = 0
-flowIncr = 3
+manaIncr = 5
+armorIncr = 3
+soulBurnIncr = -5
+flowIncr = 5
 effects =
 skills =

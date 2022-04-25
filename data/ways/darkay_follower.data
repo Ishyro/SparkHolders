@@ -1,0 +1,9 @@
+name = Darkay's Follower
+type = RELIGION
+hpIncr = 4
+manaIncr = 4
+armorIncr = 3
+soulBurnIncr = 2
+flowIncr = 2
+effects =
+skills =

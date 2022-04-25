@@ -1,9 +1,9 @@
-name = Beastiona
+name = Ragard's Follower
 type = RELIGION
-hpIncr = 5
+hpIncr = 10
 manaIncr = 0
-armorIncr = 3
+armorIncr = 5
 soulBurnIncr = 0
-flowIncr = 3
+flowIncr = 0
 effects =
 skills =

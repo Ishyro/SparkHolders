@@ -1,9 +1,9 @@
 name = Green Town
 type = ORIGIN
-hpIncr = 3
-manaIncr = 3
-armorIncr = 1
-soulBurnIncr = -1
+hpIncr = 6
+manaIncr = 2
+armorIncr = 2
+soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =

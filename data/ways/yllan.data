@@ -1,8 +1,8 @@
-name = Armythas
-type = ORIGIN
+name = Yllan
+type = CULTURE
 hpIncr = 2
-manaIncr = 4
-armorIncr = 0
+manaIncr = 2
+armorIncr = 2
 soulBurnIncr = 2
 flowIncr = 2
 effects =

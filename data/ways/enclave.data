@@ -1,7 +1,7 @@
-name = Ellinka
+name = Enclave
 type = ORIGIN
-hpIncr = 4
-manaIncr = 1
+hpIncr = 3
+manaIncr = 2
 armorIncr = 3
 soulBurnIncr = 1
 flowIncr = 1

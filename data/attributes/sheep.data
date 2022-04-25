@@ -1,7 +1,7 @@
 name = Sheep
-baseHp = 10
-baseMana = 1
-baseArmor = 1
+baseHp = 50
+baseMana = 10
+baseArmor = 5
 baseSoulBurn = 0
 baseFlow = 0
 baseVisionRange = 10

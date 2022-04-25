@@ -14,11 +14,11 @@
 #define YELLOW 3
 #define RED 4
 
-#define ATTRIBUTES_HEIGHT 11
+#define ATTRIBUTES_HEIGHT 12
 #define ATTRIBUTES_LENGTH 25
 
-#define WAY_HEIGHT 8
-#define WAY_LENGTH 20
+#define WAY_HEIGHT 9
+#define WAY_LENGTH 25
 
 namespace Display {
 

@@ -1,0 +1,9 @@
+name = Barbarian
+type = CULTURE
+hpIncr = 6
+manaIncr = 2
+armorIncr = 4
+soulBurnIncr = -1
+flowIncr = -1
+effects =
+skills =

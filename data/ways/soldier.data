@@ -1,9 +1,9 @@
 name = Soldier
 type = PROFESSION
 hpIncr = 10
-manaIncr = 0
-armorIncr = 5
-soulBurnIncr = 0
-flowIncr = -1
+manaIncr = -1
+armorIncr = 10
+soulBurnIncr = -2
+flowIncr = -2
 effects =
 skills =

@@ -1,7 +1,7 @@
-name = Ragard
-type = RELIGION
-hpIncr = 10
-manaIncr = 0
+name = Dwarf
+type = RACE
+hpIncr = 5
+manaIncr = 5
 armorIncr = 5
 soulBurnIncr = 0
 flowIncr = 0

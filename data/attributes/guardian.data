@@ -1,9 +1,9 @@
 name = Guardian
-baseHp = 75
-baseMana = 15
-baseArmor = 15
-baseSoulBurn = 75
-baseFlow = 5
+baseHp = 200
+baseMana = 75
+baseArmor = 40
+baseSoulBurn = 100
+baseFlow = 15
 baseVisionRange = 10
 baseVisionPower = 6
 baseDetectionRange = 1

@@ -1,0 +1,9 @@
+name = Assassin
+type = PROFESSION
+hpIncr = -2
+manaIncr = 5
+armorIncr = -3
+soulBurnIncr = 10
+flowIncr = 5
+effects =
+skills =

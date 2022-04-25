@@ -112,55 +112,32 @@ namespace Display {
   }
 
   WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX) {
-    int lines = 0;
-    int cols = 0;
-    getmaxyx(screen, lines, cols);
-    int numberX = cols / ATTRIBUTES_LENGTH;
-    int numberY = lines / ATTRIBUTES_HEIGHT;
-    int placeX = place;
-    int placeY = 0;
-    while((ATTRIBUTES_LENGTH + 1) * (placeX + 1) > cols) {
-      placeY++;
-      placeX -= numberX;
-    }
-    WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_LENGTH, offsetY + 2 + ATTRIBUTES_HEIGHT * placeY, offsetX + 1 + ATTRIBUTES_LENGTH * placeX);
+    WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_LENGTH, offsetY + 2 + ATTRIBUTES_HEIGHT * place, offsetX + 1);
     wattron(attributesScreen, COLOR_PAIR(color));
     box(attributesScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(attributesScreen, 1, 1, (std::string("Name: ") + attributes->name).c_str());
-    mvwprintw(attributesScreen, 2, 1, (std::string("Hp: ") + std::to_string(attributes->baseHp)).c_str());
-    mvwprintw(attributesScreen, 3, 1, (std::string("Mana: ") + std::to_string(attributes->baseMana)).c_str());
-    mvwprintw(attributesScreen, 4, 1, (std::string("Armor: ") + std::to_string(attributes->baseArmor)).c_str());
-    mvwprintw(attributesScreen, 5, 1, (std::string("Soulburn: ") + std::to_string(attributes->baseSoulBurn)).c_str());
-    mvwprintw(attributesScreen, 6, 1, (std::string("Flow: ") + std::to_string(attributes->baseFlow)).c_str());
-    mvwprintw(attributesScreen, 7, 1, (std::string("Vision Range: ") + std::to_string(attributes->baseVisionRange)).c_str());
-    mvwprintw(attributesScreen, 8, 1, (std::string("Vision Power: ") + std::to_string(attributes->baseVisionPower)).c_str());
-    mvwprintw(attributesScreen, 9, 1, (std::string("Detection Range: ") + std::to_string(attributes->baseDetectionRange)).c_str());
+    mvwprintw(attributesScreen, 1, ATTRIBUTES_LENGTH / 2 - attributes->name.length() / 2, attributes->name.c_str());
+    mvwprintw(attributesScreen, 3, 1, (std::string("Hp: ") + std::to_string(attributes->baseHp)).c_str());
+    mvwprintw(attributesScreen, 4, 1, (std::string("Mana: ") + std::to_string(attributes->baseMana)).c_str());
+    mvwprintw(attributesScreen, 5, 1, (std::string("Armor: ") + std::to_string(attributes->baseArmor)).c_str());
+    mvwprintw(attributesScreen, 6, 1, (std::string("Soulburn: ") + std::to_string(attributes->baseSoulBurn)).c_str());
+    mvwprintw(attributesScreen, 7, 1, (std::string("Flow: ") + std::to_string(attributes->baseFlow)).c_str());
+    mvwprintw(attributesScreen, 8, 1, (std::string("Vision Range: ") + std::to_string(attributes->baseVisionRange)).c_str());
+    mvwprintw(attributesScreen, 9, 1, (std::string("Vision Power: ") + std::to_string(attributes->baseVisionPower)).c_str());
+    mvwprintw(attributesScreen, 10, 1, (std::string("Detection Range: ") + std::to_string(attributes->baseDetectionRange)).c_str());
     wattroff(attributesScreen, COLOR_PAIR(color));
-    touchwin(screen);
     return attributesScreen;
   }
 
   WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX) {
-    int lines = 0;
-    int cols = 0;
-    getmaxyx(screen, lines, cols);
-    int numberX = cols / WAY_LENGTH;
-    int numberY = lines / WAY_HEIGHT;
-    int placeX = place;
-    int placeY = 0;
-    while((WAY_LENGTH + 1) * (placeX + 1) > cols) {
-      placeY++;
-      placeX -= numberX;
-    }
-    WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_LENGTH, offsetY + 2 + WAY_HEIGHT * placeY, offsetX + 1 + WAY_LENGTH * placeX);
+    WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_LENGTH, offsetY + 2 + WAY_HEIGHT * place, offsetX + 1);
     wattron(wayScreen, COLOR_PAIR(color));
     box(wayScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(wayScreen, 1, 1, (std::string("Name: ") + way->name).c_str());
-    mvwprintw(wayScreen, 2, 1, (std::string("+Hp: ") + std::to_string(way->hpIncr)).c_str());
-    mvwprintw(wayScreen, 3, 1, (std::string("+Mana: ") + std::to_string(way->manaIncr)).c_str());
-    mvwprintw(wayScreen, 4, 1, (std::string("+Armor: ") + std::to_string(way->armorIncr)).c_str());
-    mvwprintw(wayScreen, 5, 1, (std::string("+Soulburn: ") + std::to_string(way->soulBurnIncr)).c_str());
-    mvwprintw(wayScreen, 6, 1, (std::string("+Flow: ") + std::to_string(way->flowIncr)).c_str());
+    mvwprintw(wayScreen, 1, WAY_LENGTH / 2 - way->name.length() / 2, way->name.c_str());
+    mvwprintw(wayScreen, 3, 1, (std::string("+Hp: ") + std::to_string(way->hpIncr)).c_str());
+    mvwprintw(wayScreen, 4, 1, (std::string("+Mana: ") + std::to_string(way->manaIncr)).c_str());
+    mvwprintw(wayScreen, 5, 1, (std::string("+Armor: ") + std::to_string(way->armorIncr)).c_str());
+    mvwprintw(wayScreen, 6, 1, (std::string("+Soulburn: ") + std::to_string(way->soulBurnIncr)).c_str());
+    mvwprintw(wayScreen, 7, 1, (std::string("+Flow: ") + std::to_string(way->flowIncr)).c_str());
     wattroff(wayScreen, COLOR_PAIR(color));
     return wayScreen;
   }
@@ -169,7 +146,7 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
-    WINDOW * characterScreen = subwin(screen, ATTRIBUTES_HEIGHT - 1, sizeX, offsetY, offsetX);
+    WINDOW * characterScreen = subwin(screen, ATTRIBUTES_HEIGHT - 2, sizeX, offsetY, offsetX);
     int hpIncr = 0;
     int manaIncr = 0;
     int armorIncr = 0;
@@ -212,6 +189,7 @@ namespace Display {
     }
     wattron(characterScreen, COLOR_PAIR(color));
     box(characterScreen, ACS_VLINE, ACS_HLINE);
+    int space = cols / 2;
     if(attributes != nullptr) {
       mvwprintw(characterScreen, 1, 1, (std::string("Hp: ") + std::to_string(attributes->baseHp)).c_str());
       mvwprintw(characterScreen, 2, 1, (std::string("Mana: ") + std::to_string(attributes->baseMana)).c_str());
@@ -222,11 +200,11 @@ namespace Display {
       mvwprintw(characterScreen, 7, 1, (std::string("Vision Power: ") + std::to_string(attributes->baseVisionPower)).c_str());
       mvwprintw(characterScreen, 8, 1, (std::string("Detection Range: ") + std::to_string(attributes->baseDetectionRange)).c_str());
     }
-    mvwprintw(characterScreen, 1, ATTRIBUTES_LENGTH + 1, (std::string("Hp bonus on level up: ") + std::to_string(hpIncr)).c_str());
-    mvwprintw(characterScreen, 2, ATTRIBUTES_LENGTH + 1, (std::string("Mana bonus on level up: ") + std::to_string(manaIncr)).c_str());
-    mvwprintw(characterScreen, 3, ATTRIBUTES_LENGTH + 1, (std::string("Armor bonus on level up: ") + std::to_string(armorIncr)).c_str());
-    mvwprintw(characterScreen, 4, ATTRIBUTES_LENGTH + 1, (std::string("Soulburn bonus on level up: ") + std::to_string(soulBurnIncr)).c_str());
-    mvwprintw(characterScreen, 5, ATTRIBUTES_LENGTH + 1, (std::string("Flow bonus on level up: ") + std::to_string(flowIncr)).c_str());
+    mvwprintw(characterScreen, 1, space, (std::string("+Hp: ") + std::to_string(hpIncr)).c_str());
+    mvwprintw(characterScreen, 2, space, (std::string("+Mana: ") + std::to_string(manaIncr)).c_str());
+    mvwprintw(characterScreen, 3, space, (std::string("+Armor: ") + std::to_string(armorIncr)).c_str());
+    mvwprintw(characterScreen, 4, space, (std::string("+Soulburn: ") + std::to_string(soulBurnIncr)).c_str());
+    mvwprintw(characterScreen, 5, space, (std::string("+Flow: ") + std::to_string(flowIncr)).c_str());
     wattroff(characterScreen, COLOR_PAIR(color));
     return characterScreen;
   }
@@ -324,7 +302,15 @@ namespace Display {
     box(religionScreen, ACS_VLINE, ACS_HLINE);
     box(professionScreen, ACS_VLINE, ACS_HLINE);
     box(characterScreen, ACS_VLINE, ACS_HLINE);
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(attributesScreen, lines, cols);
+    int numberAttributes = lines / ATTRIBUTES_HEIGHT;
+    getmaxyx(raceScreen, lines, cols);
+    int numberWays = lines / WAY_HEIGHT;
     std::list<WINDOW *> screens = std::list<WINDOW *>();
+    int currentPannel = 0;
+    int skip = 0;
     bool nameMode = false;
     while(!done) {
       int attributesCount = 0;
@@ -338,21 +324,25 @@ namespace Display {
       std::vector<Way *> availableCultures = std::vector<Way *>();
       std::vector<Way *> availableReligions = std::vector<Way *>();
       std::vector<Way *> availableProfessions = std::vector<Way *>();
-      std::string to_print = "ATTRIBUTES";
+      std::string to_print = "CLASSE";
       mvwprintw(attributesScreen, 1, 1 + ATTRIBUTES_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "RACES";
+      to_print = "RACE";
       mvwprintw(raceScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "ORIGINS";
+      to_print = "ORIGIN";
       mvwprintw(originScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "CULTURES";
+      to_print = "CULTURE";
       mvwprintw(cultureScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "RELIGIONS";
+      to_print = "RELIGION";
       mvwprintw(religionScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "PROFESSIONS";
+      to_print = "PROFESSION";
       mvwprintw(professionScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
       to_print = "CHARACTER";
       mvwprintw(characterScreen, 1, (COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5)) / 2 - to_print.length() / 2, to_print.c_str());
+      skip = 0;
       for(Attributes * attributes : startingAttributes) {
+        if(skip++ < currentPannel * numberAttributes) {
+          continue;
+        }
         int color = WHITE;
         if(selectedAttributes != nullptr && selectedAttributes->name == attributes->name) {
           color = GREEN;
@@ -363,7 +353,11 @@ namespace Display {
         screens.push_back(displayAttributes(attributes, attributesCount++, color, attributesScreen, 0, 0));
       }
       wrefresh(attributesScreen);
+      skip = 0;
       for(Way * way : races) {
+        if(skip++ < currentPannel * numberWays) {
+          continue;
+        }
         int color = WHITE;
         if(selectedRace != nullptr && selectedRace->name == way->name) {
           color = GREEN;
@@ -377,7 +371,11 @@ namespace Display {
         }
       }
       wrefresh(raceScreen);
+      skip = 0;
       for(Way * way : origins) {
+        if(skip++ < currentPannel * numberWays) {
+          continue;
+        }
         int color = WHITE;
         if(selectedOrigin != nullptr && selectedOrigin->name == way->name) {
           color = GREEN;
@@ -391,7 +389,11 @@ namespace Display {
         }
       }
       wrefresh(originScreen);
+      skip = 0;
       for(Way * way : cultures) {
+        if(skip++ < currentPannel * numberWays) {
+          continue;
+        }
         int color = WHITE;
         if(selectedCulture != nullptr && selectedCulture->name == way->name) {
           color = GREEN;
@@ -405,7 +407,11 @@ namespace Display {
         }
       }
       wrefresh(cultureScreen);
+      skip = 0;
       for(Way * way : religions) {
+        if(skip++ < currentPannel * numberWays) {
+          continue;
+        }
         int color = WHITE;
         if(selectedReligion != nullptr && selectedReligion->name == way->name) {
           color = GREEN;
@@ -419,7 +425,11 @@ namespace Display {
         }
       }
       wrefresh(religionScreen);
+      skip = 0;
       for(Way * way : professions) {
+        if(skip++ < currentPannel * numberWays) {
+          continue;
+        }
         int color = WHITE;
         if(selectedProfession != nullptr && selectedProfession->name == way->name) {
           color = GREEN;
@@ -461,11 +471,14 @@ namespace Display {
       if(cursorX == 6 && cursorY == 2) {
         color = BLUE;
       }
-      WINDOW * confirmScreen = subwin(characterScreen, 3, COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5) - 2, 5 + ATTRIBUTES_HEIGHT - 1, 1 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5);
+
+      int width = COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5) - 2;
+      WINDOW * confirmScreen = subwin(characterScreen, 3, width, 5 + ATTRIBUTES_HEIGHT - 1, 1 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5);
       screens.push_back(confirmScreen);
       wattron(confirmScreen, COLOR_PAIR(color));
       box(confirmScreen, ACS_VLINE, ACS_HLINE);
-      mvwprintw(confirmScreen, 1, 1, std::string("CONFIRM CHARACTER CREATION").c_str());
+      to_print = "CONFIRM CHARACTER CREATION";
+      mvwprintw(confirmScreen, 1, width / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(confirmScreen, COLOR_PAIR(color));
       wrefresh(characterScreen);
       bool done2 = false;
@@ -477,38 +490,72 @@ namespace Display {
             case char(68): // LEFT ARROW
               cursorX = (cursorX - 1 + 7) % 7;
               if(cursorX == 0) {
-                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
+                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1 - currentPannel * numberAttributes);
               } else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
+                cursorY = std::min(cursorY, (int) availableRaces.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
+                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1 - currentPannel *  numberWays);
               } else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
+                cursorY = std::min(cursorY, (int) availableCultures.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableReligions.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 6) {
                 cursorY = std::min(cursorY, 2);
+              }
+              if(cursorY < 0) {
+                cursorY = 0;
               }
               done2 = true;
               break;
             case '8':
             case char(65): { // UP ARROW
+              cursorY--;
               if(cursorX == 0) {
-                cursorY = (cursorY - 1 + startingAttributes.size()) % startingAttributes.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberAttributes -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 1) {
-                cursorY = (cursorY - 1 + availableRaces.size()) % availableRaces.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberWays -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 2) {
-                cursorY = (cursorY - 1 + availableOrigins.size()) % availableOrigins.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberWays -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 3) {
-                cursorY = (cursorY - 1 + availableCultures.size()) % availableCultures.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberWays -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 4) {
-                cursorY = (cursorY - 1 + availableReligions.size()) % availableReligions.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberWays -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 5) {
-                cursorY = (cursorY - 1 + availableProfessions.size()) % availableProfessions.size();
+                if(cursorY == -1 && currentPannel > 0) {
+                  cursorY = numberWays -1;
+                  currentPannel--;
+                } else if(cursorY == -1) {
+                  cursorY++;
+                }
               } else if(cursorX == 6) {
-                cursorY = (cursorY - 1 + 3) % 3;
+                cursorY = (cursorY + 3) % 3;
               }
               done2 = true;
               break;
@@ -517,74 +564,108 @@ namespace Display {
             case char(67): // RIGHT ARROW
               cursorX = (cursorX + 1) % 7;
               if(cursorX == 0) {
-                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
+                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1 - currentPannel * numberAttributes);
               } else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
+                cursorY = std::min(cursorY, (int) availableRaces.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
+                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
+                cursorY = std::min(cursorY, (int) availableCultures.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableReligions.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
+                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1 - currentPannel * numberWays);
               } else if(cursorX == 6) {
                 cursorY = std::min(cursorY, 2);
+              }
+              if(cursorY < 0) {
+                cursorY = 0;
               }
               done2 = true;
               break;
             case '2':
             case char(66): { // DOWN ARROW
+              cursorY++;
               if(cursorX == 0) {
-                cursorY = (cursorY + 1) % startingAttributes.size();
+                if(cursorY == numberAttributes && startingAttributes.size() > numberAttributes) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == startingAttributes.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 1) {
-                cursorY = (cursorY + 1) % availableRaces.size();
+                if(cursorY == numberWays && availableRaces.size() > numberWays) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == availableRaces.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 2) {
-                cursorY = (cursorY + 1) % availableOrigins.size();
+                if(cursorY == numberWays && availableOrigins.size() > numberWays) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == availableOrigins.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 3) {
-                cursorY = (cursorY + 1) % availableCultures.size();
+                if(cursorY == numberWays && availableCultures.size() > numberWays) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == availableCultures.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 4) {
-                cursorY = (cursorY + 1) % availableReligions.size();
+                if(cursorY == numberWays && availableReligions.size() > numberWays) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == availableReligions.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 5) {
-                cursorY = (cursorY + 1) % availableProfessions.size();
+                if(cursorY == numberWays && availableProfessions.size() > numberWays) {
+                  cursorY = 0;
+                  currentPannel++;
+                } else if(cursorY == availableProfessions.size()) {
+                  cursorY--;
+                }
               } else if(cursorX == 6) {
-                cursorY = (cursorY + 1) % 3;
+                cursorY = cursorY % 3;
               }
               done2 = true;
               break;
             }
             case char(10): { // ENTER
               if(cursorX == 0) {
-                if(selectedAttributes == startingAttributes[cursorY]) {
+                if(selectedAttributes == startingAttributes[cursorY + currentPannel * numberAttributes]) {
                   selectedAttributes = nullptr;
                 } else {
-                  selectedAttributes = startingAttributes[cursorY];
+                  selectedAttributes = startingAttributes[cursorY + currentPannel * numberAttributes];
                 }
-              } else if(cursorX == 1) {
+              } else if(cursorX == 1 && availableRaces.size() > 0) {
                 if(selectedRace == availableRaces[cursorY]) {
                   selectedRace = nullptr;
                 } else {
                   selectedRace = availableRaces[cursorY];
                 }
-              } else if(cursorX == 2) {
+              } else if(cursorX == 2 && availableOrigins.size() > 0) {
                 if(selectedOrigin == availableOrigins[cursorY]) {
                   selectedOrigin = nullptr;
                 } else {
                   selectedOrigin = availableOrigins[cursorY];
                 }
-              } else if(cursorX == 3) {
+              } else if(cursorX == 3 && availableCultures.size() > 0) {
                 if(selectedCulture == availableCultures[cursorY]) {
                   selectedCulture = nullptr;
                 } else {
                   selectedCulture = availableCultures[cursorY];
                 }
-              } else if(cursorX == 4) {
+              } else if(cursorX == 4 && availableReligions.size() > 0) {
                 if(selectedReligion == availableReligions[cursorY]) {
                   selectedReligion = nullptr;
                 } else {
                   selectedReligion = availableReligions[cursorY];
                 }
-              } else if(cursorX == 5) {
+              } else if(cursorX == 5 && availableProfessions.size() > 0) {
                 if(selectedProfession == availableProfessions[cursorY]) {
                   selectedProfession = nullptr;
                 } else {

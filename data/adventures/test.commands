@@ -29,26 +29,90 @@ StartingAttributes.Shadow
 # add starting ways
 StartingWay.Human
 StartingWay.Elf
-StartingWay.Countryside
+StartingWay.Beastman
+StartingWay.Dwarf
+StartingWay.Orc
 StartingWay.Armythas
 StartingWay.Ellinka
+StartingWay.Bridge Town
 StartingWay.Green Town
+StartingWay.Scranem
+StartingWay.Countryside
+StartingWay.Enclave
 StartingWay.Tagran
 StartingWay.Birphan
+StartingWay.Yllan
+StartingWay.Barbarian
+StartingWay.Traveler
+StartingWay.Woodland
 StartingWay.Aho'z
-StartingWay.Beastiona
-StartingWay.Pyrra
-StartingWay.Ragard
+StartingWay.Yarglay's Follower
+StartingWay.Darkay's Follower
+StartingWay.Beastiona's Follower
+StartingWay.Pyrra's Follower
+StartingWay.Ragard's Follower
 StartingWay.Soldier
+StartingWay.Scholar
+StartingWay.Battlemage
+StartingWay.Assassin
 # add ways incompatibility
-WayImcompatibility.Elf%Tagran%
-WayImcompatibility.Elf%Birphan%
-WayImcompatibility.Human%Aho'z%
 WayImcompatibility.Human%Green Town%
+WayImcompatibility.Human%Enclave%
+WayImcompatibility.Human%Aho'z%
 WayImcompatibility.Elf%Armythas%
 WayImcompatibility.Elf%Ellinka%
-WayImcompatibility.Birphan%Armythas%
-WayImcompatibility.Tagran%Ellinka%
+WayImcompatibility.Elf%Enclave%
+WayImcompatibility.Elf%Tagran%
+WayImcompatibility.Elf%Birphan%
+WayImcompatibility.Elf%Barbarian%
+WayImcompatibility.Beastman%Armythas%
+WayImcompatibility.Beastman%Ellinka%
+WayImcompatibility.Beastman%Enclave%
+WayImcompatibility.Beastman%Tagran%
+WayImcompatibility.Beastman%Birphan%
+WayImcompatibility.Beastman%Aho'z%
+WayImcompatibility.Dwarf%Armythas%
+WayImcompatibility.Dwarf%Ellinka%
+WayImcompatibility.Dwarf%Green Town%
+WayImcompatibility.Dwarf%Scranem%
+WayImcompatibility.Dwarf%Tagran%
+WayImcompatibility.Dwarf%Birphan%
+WayImcompatibility.Dwarf%Woodland%
+WayImcompatibility.Dwarf%Aho'z%
+WayImcompatibility.Orc%Armythas%
+WayImcompatibility.Orc%Ellinka%
+WayImcompatibility.Orc%Scranem%
+WayImcompatibility.Orc%Tagran%
+WayImcompatibility.Orc%Birphan%
+WayImcompatibility.Orc%Aho'z%
+WayImcompatibility.Armythas%Birphan%
+WayImcompatibility.Armythas%Yllan%
+WayImcompatibility.Armythas%Barbarian%
+WayImcompatibility.Armythas%Woodland%
+WayImcompatibility.Armythas%Aho'z%
+WayImcompatibility.Ellinka%Tagran%
+WayImcompatibility.Ellinka%Yllan%
+WayImcompatibility.Ellinka%Barbarian%
+WayImcompatibility.Ellinka%Woodland%
+WayImcompatibility.Ellinka%Aho'z%
+WayImcompatibility.Bridge Town%Tagran%
+WayImcompatibility.Bridge Town%Birphan%
+WayImcompatibility.Bridge Town%Barbarian%
+WayImcompatibility.Bridge Town%Woodland%
+WayImcompatibility.Bridge Town%Aho'z%
+WayImcompatibility.Green Town%Tagran%
+WayImcompatibility.Green Town%Birphan%
+WayImcompatibility.Green Town%Yllan%
+WayImcompatibility.Green Town%Barbarian%
+WayImcompatibility.Scranem%Tagran%
+WayImcompatibility.Scranem%Birphan%
+WayImcompatibility.Scranem%Yllan%
+WayImcompatibility.Scranem%Aho'z%
+WayImcompatibility.Enclave%Tagran%
+WayImcompatibility.Enclave%Birphan%
+WayImcompatibility.Enclave%Yllan%
+WayImcompatibility.Enclave%Woodland%
+WayImcompatibility.Enclave%Aho'z%
 # add TeamLink
 TeamRelation.ENEMY%party%predator%
 TeamRelation.ENEMY%prey%predator%

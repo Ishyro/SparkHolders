@@ -1,9 +1,9 @@
-name = Tagran
+name = Woodland
 type = CULTURE
-hpIncr = 1
+hpIncr = 2
 manaIncr = 3
 armorIncr = 1
-soulBurnIncr = 2
-flowIncr = 3
+soulBurnIncr = 1
+flowIncr = 2
 effects =
 skills =

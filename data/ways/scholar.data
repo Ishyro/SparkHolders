@@ -1,0 +1,9 @@
+name = Scholar
+type = PROFESSION
+hpIncr = -2
+manaIncr = 10
+armorIncr = -3
+soulBurnIncr = 5
+flowIncr = 5
+effects =
+skills =

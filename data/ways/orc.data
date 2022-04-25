@@ -1,0 +1,9 @@
+name = Orc
+type = RACE
+hpIncr = 7
+manaIncr = 1
+armorIncr = 7
+soulBurnIncr = 0
+flowIncr = 0
+effects =
+skills =
