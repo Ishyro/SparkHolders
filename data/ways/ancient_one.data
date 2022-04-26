@@ -1,9 +1,9 @@
 name = Ancient One
 type = RACE
-hpIncr = 25
-manaIncr = 25
-armorIncr = 25
-soulBurnIncr = 25
-flowIncr = 25
+hpIncr = 50
+manaIncr = 50
+armorIncr = 10
+soulBurnIncr = 10
+flowIncr = 10
 effects =
 skills =

@@ -153,7 +153,7 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c);
-    void move(Character *, int orientation);
+    void move(Character *, int orientation, Adventure * adventure);
     void actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
     std::string to_string(Character * player, Adventure * adventure);

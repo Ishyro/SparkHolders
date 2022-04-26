@@ -1,7 +1,7 @@
 name = Barbarian
 type = CULTURE
-hpIncr = 6
-manaIncr = 2
+hpIncr = 10
+manaIncr = 5
 armorIncr = 4
 soulBurnIncr = -1
 flowIncr = -1

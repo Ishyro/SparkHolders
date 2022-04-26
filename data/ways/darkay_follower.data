@@ -1,9 +1,9 @@
 name = Darkay's Follower
 type = RELIGION
-hpIncr = 4
-manaIncr = 4
-armorIncr = 3
-soulBurnIncr = 2
-flowIncr = 2
+hpIncr = -5
+manaIncr = -5
+armorIncr = 1
+soulBurnIncr = 3
+flowIncr = 3
 effects =
 skills =

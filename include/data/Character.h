@@ -173,6 +173,7 @@ class Character {
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
 
+    void setOrientation(int orientation);
     void move(int orientation);
     void move(int x, int y);
     void move(int x, int y, int orientation);
@@ -230,8 +231,8 @@ class Character {
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
     void attack(Character * target);
-    void receiveAttack(int damage, int damage_type, int orientation);
-    void receiveCriticalAttack(int damage, int damage_type);
+    void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
+    void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
     std::string to_string(long offsetY, long offsetX);
     static CharacterDisplay * from_string(std::string to_read);
 

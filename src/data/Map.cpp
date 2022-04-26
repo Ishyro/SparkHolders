@@ -150,10 +150,11 @@ void Map::takeLoot(Character * c) {
   }
 }
 
-void Map::move(Character *c, int orientation) {
+void Map::move(Character *c, int orientation, Adventure * adventure) {
   bool is_legal = false;
   long destX;
   long destY;
+  c->setOrientation(orientation);
   switch(orientation) {
     case NORTH:
       if(c->getY() < sizeY - 1 && !tiles[c->getY() + 1][c->getX()]->untraversable) {
@@ -216,13 +217,15 @@ void Map::move(Character *c, int orientation) {
     Character * to_kill = nullptr;
     for(Character * other : characters) {
       if (other->getX() == destX && other->getY() == destY) {
-        if(c->getTeam() != other->getTeam()) {
+        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY) {
           c->attack(other);
           if(!other->isAlive()) {
             to_kill = other;
           } else {
             return;
           }
+        } else {
+          return; // there is a character, can't move on this position
         }
       }
     }

@@ -1,7 +1,7 @@
 name = Soldier
 type = PROFESSION
-hpIncr = 10
-manaIncr = -1
+hpIncr = 20
+manaIncr = 0
 armorIncr = 10
 soulBurnIncr = -2
 flowIncr = -2

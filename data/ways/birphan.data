@@ -1,9 +1,9 @@
 name = Birphan
 type = CULTURE
-hpIncr = 4
-manaIncr = 2
+hpIncr = 7
+manaIncr = 3
 armorIncr = 3
-soulBurnIncr = 1
+soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =

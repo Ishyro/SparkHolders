@@ -1,8 +1,8 @@
 name = Scholar
 type = PROFESSION
-hpIncr = -2
+hpIncr = 0
 manaIncr = 10
-armorIncr = -3
+armorIncr = -2
 soulBurnIncr = 5
 flowIncr = 5
 effects =

@@ -1,8 +1,8 @@
 name = Orc
 type = RACE
-hpIncr = 7
+hpIncr = 4
 manaIncr = 1
-armorIncr = 7
+armorIncr = 4
 soulBurnIncr = 0
 flowIncr = 0
 effects =

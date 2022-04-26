@@ -1,0 +1,9 @@
+name = Yllian
+type = CULTURE
+hpIncr = 0
+manaIncr = 0
+armorIncr = 0
+soulBurnIncr = 3
+flowIncr = 2
+effects =
+skills =

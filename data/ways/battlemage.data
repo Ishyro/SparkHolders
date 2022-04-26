@@ -1,9 +1,9 @@
 name = Battlemage
 type = PROFESSION
-hpIncr = 3
-manaIncr = 3
-armorIncr = 3
-soulBurnIncr = 3
-flowIncr = 3
+hpIncr = 10
+manaIncr = 10
+armorIncr = 2
+soulBurnIncr = 2
+flowIncr = 2
 effects =
 skills =

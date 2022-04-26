@@ -37,9 +37,7 @@ void Effect::activate(Character * target) {
       case DETECTION_RANGE:
         target->incrDetectionRange();
       case DAMAGE:
-        for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-          target->receiveAttack(damages[i], i, NO_ORIENTATION);
-        }
+        target->receiveAttack(damages, NO_ORIENTATION);
         break;
       // no duration means INFINITE for next effects (can be cancelled)
       default:
@@ -57,9 +55,7 @@ bool Effect::tick(Character * target) {
       target->manaHeal(power);
       break;
     case DAMAGE:
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        target->receiveAttack(damages[i], i, NO_ORIENTATION);
-      }
+      target->receiveAttack(damages, NO_ORIENTATION);
       break;
     default:
       ;

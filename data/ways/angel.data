@@ -1,9 +1,9 @@
-name = Elf
+name = Angel
 type = RACE
-hpIncr = 5
+hpIncr = 0
 manaIncr = 5
 armorIncr = 0
-soulBurnIncr = 1
+soulBurnIncr = 2
 flowIncr = 2
 effects =
 skills =

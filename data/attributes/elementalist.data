@@ -1,8 +1,8 @@
 name = Elementalist
 baseHp = 100
-baseMana = 250
-baseArmor = 0
-baseSoulBurn = 150
+baseMana = 350
+baseArmor = 10
+baseSoulBurn = 50
 baseFlow = 50
 baseVisionRange = 10
 baseVisionPower = 6

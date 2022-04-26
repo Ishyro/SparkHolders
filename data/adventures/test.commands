@@ -13,6 +13,7 @@ Map.House West_2
 # add map links
 # add spawns
 Spawn.50%100%NORTH%Central Square%
+Spawn.50%99%NORTH%Central Square%
 Spawn.6%6%NORTH%House North_1%
 Spawn.6%6%NORTH%House North_2%
 Spawn.6%6%NORTH%House East_1%
@@ -32,6 +33,7 @@ StartingWay.Elf
 StartingWay.Beastman
 StartingWay.Dwarf
 StartingWay.Orc
+StartingWay.Angel
 StartingWay.Armythas
 StartingWay.Ellinka
 StartingWay.Bridge Town
@@ -39,13 +41,15 @@ StartingWay.Green Town
 StartingWay.Scranem
 StartingWay.Countryside
 StartingWay.Enclave
+StartingWay.Celestia
 StartingWay.Tagran
 StartingWay.Birphan
-StartingWay.Yllan
+StartingWay.Yllian
 StartingWay.Barbarian
 StartingWay.Traveler
 StartingWay.Woodland
 StartingWay.Aho'z
+StartingWay.Secluded
 StartingWay.Yarglay's Follower
 StartingWay.Darkay's Follower
 StartingWay.Beastiona's Follower
@@ -62,12 +66,14 @@ WayImcompatibility.Human%Aho'z%
 WayImcompatibility.Elf%Armythas%
 WayImcompatibility.Elf%Ellinka%
 WayImcompatibility.Elf%Enclave%
+WayImcompatibility.Elf%Celestia%
 WayImcompatibility.Elf%Tagran%
 WayImcompatibility.Elf%Birphan%
 WayImcompatibility.Elf%Barbarian%
 WayImcompatibility.Beastman%Armythas%
 WayImcompatibility.Beastman%Ellinka%
 WayImcompatibility.Beastman%Enclave%
+WayImcompatibility.Beastman%Celestia%
 WayImcompatibility.Beastman%Tagran%
 WayImcompatibility.Beastman%Birphan%
 WayImcompatibility.Beastman%Aho'z%
@@ -82,59 +88,88 @@ WayImcompatibility.Dwarf%Aho'z%
 WayImcompatibility.Orc%Armythas%
 WayImcompatibility.Orc%Ellinka%
 WayImcompatibility.Orc%Scranem%
+WayImcompatibility.Orc%Celestia%
 WayImcompatibility.Orc%Tagran%
 WayImcompatibility.Orc%Birphan%
 WayImcompatibility.Orc%Aho'z%
+WayImcompatibility.Angel%Armythas%
+WayImcompatibility.Angel%Ellinka%
+WayImcompatibility.Angel%Green Town%
+WayImcompatibility.Angel%Scranem%
+WayImcompatibility.Angel%Enclave%
+WayImcompatibility.Angel%Countryside%
+WayImcompatibility.Angel%Tagran%
+WayImcompatibility.Angel%Birphan%
+WayImcompatibility.Angel%Aho'z%
+WayImcompatibility.Angel%Woodland%
 WayImcompatibility.Armythas%Birphan%
-WayImcompatibility.Armythas%Yllan%
+WayImcompatibility.Armythas%Yllian%
 WayImcompatibility.Armythas%Barbarian%
 WayImcompatibility.Armythas%Woodland%
 WayImcompatibility.Armythas%Aho'z%
+WayImcompatibility.Armythas%Secluded%
 WayImcompatibility.Ellinka%Tagran%
-WayImcompatibility.Ellinka%Yllan%
+WayImcompatibility.Ellinka%Yllian%
 WayImcompatibility.Ellinka%Barbarian%
 WayImcompatibility.Ellinka%Woodland%
 WayImcompatibility.Ellinka%Aho'z%
+WayImcompatibility.Ellinka%Secluded%
 WayImcompatibility.Bridge Town%Tagran%
 WayImcompatibility.Bridge Town%Birphan%
 WayImcompatibility.Bridge Town%Barbarian%
 WayImcompatibility.Bridge Town%Woodland%
 WayImcompatibility.Bridge Town%Aho'z%
+WayImcompatibility.Bridge Town%Secluded%
 WayImcompatibility.Green Town%Tagran%
 WayImcompatibility.Green Town%Birphan%
-WayImcompatibility.Green Town%Yllan%
+WayImcompatibility.Green Town%Yllian%
 WayImcompatibility.Green Town%Barbarian%
+WayImcompatibility.Green Town%Secluded%
 WayImcompatibility.Scranem%Tagran%
 WayImcompatibility.Scranem%Birphan%
-WayImcompatibility.Scranem%Yllan%
+WayImcompatibility.Scranem%Yllian%
 WayImcompatibility.Scranem%Aho'z%
 WayImcompatibility.Enclave%Tagran%
 WayImcompatibility.Enclave%Birphan%
-WayImcompatibility.Enclave%Yllan%
+WayImcompatibility.Enclave%Yllian%
 WayImcompatibility.Enclave%Woodland%
 WayImcompatibility.Enclave%Aho'z%
-# add TeamLink
+WayImcompatibility.Countryside%Aho'z%
+WayImcompatibility.Celestia%Tagran%
+WayImcompatibility.Celestia%Birphan%
+WayImcompatibility.Celestia%Yllian%
+WayImcompatibility.Celestia%Woodland%
+WayImcompatibility.Celestia%Barbarian%
+WayImcompatibility.Celestia%Aho'z%
+# add TeamRelation
 TeamRelation.ENEMY%party%predator%
 TeamRelation.ENEMY%prey%predator%
 TeamRelation.ENEMY%adventurer%predator%
-TeamRelation.ENEMY%Birph citizen%predator%
-TeamRelation.ENEMY%Birph farmer%predator%
-TeamRelation.ENEMY%Birph soldier%predator%
-TeamRelation.ENEMY%Birph citizen%Tagr soldier%
-TeamRelation.ENEMY%Birph farmer%Tagr soldier%
-TeamRelation.ENEMY%Birph soldier%Tagr soldier%
-TeamRelation.ENEMY%Tagr citizen%Birph soldier%
-TeamRelation.ENEMY%Tagr farmer%Birph soldier%
-TeamRelation.ENEMY%Tagr soldier%Birph soldier%
-TeamRelation.ENEMY%Birph soldier%Tagr Soldier%
-TeamRelation.ALLY%Birph citizen%Birph farmer%
-TeamRelation.ALLY%Birph citizen%Birph soldier%
-TeamRelation.ALLY%Birph soldier%Birph farmer%
-TeamRelation.ALLY%Tagr citizen%Tagr farmer%
-TeamRelation.ALLY%Tagr citizen%Tagr soldier%
-TeamRelation.ALLY%Tagr soldier%Tagr farmer%
-TeamRelation.ALLY%prey%Birph farmer%
-TeamRelation.ALLY%prey%Tagr farmer%
+TeamRelation.ENEMY%Birph%predator%
+TeamRelation.ENEMY%Tagr%predator%
+TeamRelation.ENEMY%Yllian%predator%
+TeamRelation.ENEMY%Aho'z%predator%
+TeamRelation.ENEMY%Scranem%predator%
+TeamRelation.ENEMY%party%undead%
+TeamRelation.ENEMY%prey%undead%
+TeamRelation.ENEMY%adventurer%undead%
+TeamRelation.ENEMY%Birph%undead%
+TeamRelation.ENEMY%Tagr%undead%
+TeamRelation.ENEMY%Yllian%undead%
+TeamRelation.ENEMY%Aho'z%undead%
+TeamRelation.ENEMY%Scranem%undead%
+TeamRelation.ENEMY%predator%undead%
+TeamRelation.ENEMY%Birph%Tagr%
+TeamRelation.ENEMY%party%bandit%
+TeamRelation.ENEMY%prey%bandit%
+TeamRelation.ENEMY%adventurer%bandit%
+TeamRelation.ENEMY%Birph%bandit%
+TeamRelation.ENEMY%Tagr%bandit%
+TeamRelation.ENEMY%Yllian%bandit%
+TeamRelation.ENEMY%Aho'z%bandit%
+TeamRelation.ENEMY%Scranem%bandit%
+TeamRelation.ENEMY%predator%bandit%
+TeamRelation.ENEMY%undead%bandit%
 # add characters
 #Character.Sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
 #Character.Sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%

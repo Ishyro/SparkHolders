@@ -103,6 +103,10 @@ int main(int argc, char ** argv) {
   initscr();
   cbreak();
   noecho();
+  setlocale(LC_ALL, "");
+  nl();
+  intrflush(stdscr, FALSE);
+  keypad(stdscr, TRUE);
   curs_set(0);
   start_color();
   use_default_colors();

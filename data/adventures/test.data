@@ -24,6 +24,7 @@ data/ways/aether_academy.data
 data/ways/ahoz.data
 data/ways/akota_follower.data
 data/ways/ancient_one.data
+data/ways/angel.data
 data/ways/armythas.data
 data/ways/assassin.data
 data/ways/atheist.data
@@ -33,6 +34,7 @@ data/ways/beastiona_follower.data
 data/ways/beastman.data
 data/ways/birphan.data
 data/ways/bridge_town.data
+data/ways/celestia.data
 data/ways/countryside.data
 data/ways/darkay_follower.data
 data/ways/dwarf.data
@@ -48,14 +50,15 @@ data/ways/ragard_follower.data
 data/ways/ruminant.data
 data/ways/scholar.data
 data/ways/scranem.data
+data/ways/secluded.data
 data/ways/sheep.data
 data/ways/slow.data
 data/ways/soldier.data
 data/ways/tagran.data
 data/ways/traveler.data
 data/ways/woodland.data
-data/ways/yarlgay_follower.data
-data/ways/yllan.data
+data/ways/yarglay_follower.data
+data/ways/yllian.data
 # items
 data/items/iron_boots.data
 data/items/iron_cuirass.data

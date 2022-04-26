@@ -1,7 +1,7 @@
 name = Countryside
 type = ORIGIN
-hpIncr = 5
-manaIncr = 2
+hpIncr = 7
+manaIncr = 3
 armorIncr = 3
 soulBurnIncr = 0
 flowIncr = 0

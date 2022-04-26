@@ -1,9 +1,9 @@
-name = Bridge Town
+name = Celestia
 type = ORIGIN
 hpIncr = 0
 manaIncr = 5
 armorIncr = 0
-soulBurnIncr = 2
-flowIncr = 2
+soulBurnIncr = 4
+flowIncr = 0
 effects =
 skills =

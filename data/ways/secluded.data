@@ -1,0 +1,9 @@
+name = Secluded
+type = CULTURE
+hpIncr = -5
+manaIncr = 15
+armorIncr = -2
+soulBurnIncr = 3
+flowIncr = 2
+effects =
+skills =

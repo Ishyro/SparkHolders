@@ -1,9 +1,9 @@
 name = Assassin
 type = PROFESSION
-hpIncr = -2
+hpIncr = 5
 manaIncr = 5
-armorIncr = -3
-soulBurnIncr = 10
-flowIncr = 5
+armorIncr = 3
+soulBurnIncr = 5
+flowIncr = 0
 effects =
 skills =

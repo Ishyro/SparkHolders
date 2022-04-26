@@ -1,9 +1,9 @@
 name = Aether Academy
 type = CULTURE
-hpIncr = -3
-manaIncr = 10
-armorIncr = -3
+hpIncr = -5
+manaIncr = 30
+armorIncr = -5
 soulBurnIncr = 10
-flowIncr = 5
+flowIncr = 10
 effects =
 skills =

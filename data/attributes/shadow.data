@@ -1,7 +1,7 @@
 name = Shadow
-baseHp = 100
-baseMana = 100
-baseArmor = 10
+baseHp = 175
+baseMana = 125
+baseArmor = 20
 baseSoulBurn = 50
 baseFlow = 10
 baseVisionRange = 12

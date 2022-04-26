@@ -1,9 +1,9 @@
 name = Akota's Follower
 type = RELIGION
-hpIncr = 10
-manaIncr = 10
-armorIncr = 10
-soulBurnIncr = 10
-flowIncr = 10
+hpIncr = 15
+manaIncr = 15
+armorIncr = 3
+soulBurnIncr = 3
+flowIncr = 3
 effects =
 skills =

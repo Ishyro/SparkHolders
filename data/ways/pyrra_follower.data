@@ -1,9 +1,9 @@
 name = Pyrra's Follower
 type = RELIGION
-hpIncr = 0
+hpIncr = -5
 manaIncr = 5
-armorIncr = 0
-soulBurnIncr = 5
-flowIncr = 5
+armorIncr = -1
+soulBurnIncr = 3
+flowIncr = 3
 effects =
 skills =

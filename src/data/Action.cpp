@@ -22,7 +22,7 @@
 void Action::execute(Adventure * adventure) {
   switch(type) {
     case MOVE:
-      adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation);
+      adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation, adventure);
       break;
     case CHANGE_MAP:
       if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
