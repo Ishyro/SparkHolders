@@ -1,0 +1,14 @@
+door = porte%
+fireplace = cheminée%
+floor_stone = pavé%
+floor_wood = planche%
+grass = herbe%
+lava = lave%
+mist = brouillard%
+torch_ground = torche_sol%
+torch_wall = torche_mur%
+tree = arbre%
+void = vide%
+wall_stone = mur_pierre%
+wall_wood = mur_bois%
+water = eau%

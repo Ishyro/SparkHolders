@@ -1,4 +1,4 @@
-name = leather gauntlets
+name = TXT_LEATHER_GAUNTLETS
 equipable = true
 consumable = false
 type = ARMS

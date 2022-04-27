@@ -1,0 +1,17 @@
+Hp = Hp%
+Mana = Mana%
+Armor = Armor%
+Soulburn = Soulburn%
+Flow = Flow%
+Vision Range = Vision Range%
+Vision Power = Vision Power%
+Detection Range = Detection Range%
+CLASS = CLASS%
+RACE = RACE%
+ORIGIN = ORIGIN%
+CULTURE = CULTURE%
+RELIGION = RELIGION%
+PROFESSION = PROFESSION%
+CHARACTER = CHARACTER%
+Name = Name%
+CONFIRM CHARACTER CREATION = CONFIRM CHARACTER CREATION%

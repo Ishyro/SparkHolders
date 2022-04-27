@@ -1,4 +1,4 @@
-name = leather helmet
+name = TXT_LEATHER_HELMET
 equipable = true
 consumable = false
 type = HEAD

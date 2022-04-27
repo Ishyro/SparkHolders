@@ -1,4 +1,4 @@
-name = iron gauntlets
+name = TXT_IRON_CUIRASS
 equipable = true
 consumable = false
 type = ARMS

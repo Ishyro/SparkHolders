@@ -1,4 +1,4 @@
-name = iron boots
+name = TXT_IRON_BOOTS
 equipable = true
 consumable = false
 type = LEGS

@@ -34,7 +34,7 @@
 namespace FileOpener {
 
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
-    std::map<const std::string,std::string> result = std::map<const std::string,std::string>();
+    std::map<const std::string, std::string> result = std::map<const std::string,std::string>();
     std::fstream file;
     file.open(fileName, std::ios::in);
     if(!file) {
@@ -172,7 +172,7 @@ namespace FileOpener {
       events->push_back(event);
     }
     else if(keyword == "Map") {
-      Map * map = new Map(database->getMap(command.substr(0, command.find('_'))), command);
+      Map * map = new Map(database->getMap(command.substr(0, command.find('#'))), command);
       world->addMap(map);
     }
     else if(keyword == "MapLink") {
@@ -237,6 +237,9 @@ namespace FileOpener {
       std::string team2 = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
       database->addRelation(team1, team2, relation);
+    }
+    else if(keyword == "Traduction") {
+      database->addTraductionPath(command);
     }
     else if(keyword == "WayImcompatibility") {
       std::string way1 = command.substr(0, command.find('%'));

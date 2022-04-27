@@ -202,7 +202,7 @@ void Adventure::actAllProjectiles() {
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   Character * player = new Character(
-    database->getCharacter("Player"),
+    database->getCharacter("TXT_PLAYER"),
     name,
     spawn->x,
     spawn->y,

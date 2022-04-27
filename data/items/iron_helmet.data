@@ -1,4 +1,4 @@
-name = iron helmet
+name = TXT_IRON_HELMET
 equipable = true
 consumable = false
 type = HEAD

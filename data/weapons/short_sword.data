@@ -1,4 +1,4 @@
-name = short sword
+name = TXT_SHORT_SWORD
 melee = true
 range = SHORT
 type = SHORT_SWORD

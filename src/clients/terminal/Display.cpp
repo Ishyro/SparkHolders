@@ -10,20 +10,22 @@
 #include "data/Tile.h"
 #include "data/Way.h"
 
+#include "clients/Translator.h"
+
 #include "clients/terminal/Display.h"
 
 namespace Display {
 
-  void displayMap(MapDisplay * display, WINDOW * screen) {
+  void displayMap(MapDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
     for(int y = display->sizeY - 1; y >= 0; y--) {
       for(int x = 0; x < display->sizeX; x++) {
-        std::string to_print = "."; // middle dot - ·
+        std::string to_print = "·"; // middle dot - ·
         if(display->tiles[y][x]->untraversable) {
           to_print = "#";
         }
@@ -35,8 +37,8 @@ namespace Display {
     }
     for(CharacterDisplay * character : display->characters) {
       std::string to_print;
-      char truc = character->name.at(0);
-      to_print = truc;
+      char ch = t->getCharacterName(character->name).at(0);
+      to_print = ch;
       int color;
       switch(character->teamRelation) {
         case SAME:
@@ -59,13 +61,13 @@ namespace Display {
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
-      std::string to_print = "\"\0";
+      std::string to_print = "\"";
       wattron(screen, COLOR_PAIR(RED));
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - projectile->y, projectile->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
-      std::string to_print = "*\0";
+      std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - loot->y, loot->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
@@ -73,76 +75,74 @@ namespace Display {
     wrefresh(screen);
   }
 
-  void displayTileMap(MapDisplay * display, WINDOW * screen) {
+  void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
     for(int y = display->sizeY - 1; y >= 0 ; y--) {
       for(int x = 0; x < display->sizeX; x++) {
-        char * to_print = new char [2];
-        to_print[1] = '\0';
-        to_print[0] = display->tiles[y][x]->name.at(0);
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print);
-        delete to_print;
+        std::string to_print;
+        char ch = t->getTileName(display->tiles[y][x]->name).at(0);
+        to_print = ch;
+        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
   }
 
-  void displayLightMap(MapDisplay * display, WINDOW * screen) {
+  void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - display->name.length() / 2, display->name.c_str());
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
     for(int y = display->sizeY - 1; y >= 0 ; y--) {
       for(int x = 0; x < display->sizeX; x++) {
-        char * to_print = new char [2];
-        to_print[1] = '\0';
-        to_print[0] = std::to_string(display->tiles[y][x]->light).at(0);
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print);
-        delete to_print;
+        std::string to_print;
+        char ch = std::to_string(display->tiles[y][x]->light).at(0);
+        to_print = ch;
+        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
   }
 
-  WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX) {
+  WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t) {
     WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_LENGTH, offsetY + 2 + ATTRIBUTES_HEIGHT * place, offsetX + 1);
     wattron(attributesScreen, COLOR_PAIR(color));
     box(attributesScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(attributesScreen, 1, ATTRIBUTES_LENGTH / 2 - attributes->name.length() / 2, attributes->name.c_str());
-    mvwprintw(attributesScreen, 3, 1, (std::string("Hp: ") + std::to_string(attributes->baseHp)).c_str());
-    mvwprintw(attributesScreen, 4, 1, (std::string("Mana: ") + std::to_string(attributes->baseMana)).c_str());
-    mvwprintw(attributesScreen, 5, 1, (std::string("Armor: ") + std::to_string(attributes->baseArmor)).c_str());
-    mvwprintw(attributesScreen, 6, 1, (std::string("Soulburn: ") + std::to_string(attributes->baseSoulBurn)).c_str());
-    mvwprintw(attributesScreen, 7, 1, (std::string("Flow: ") + std::to_string(attributes->baseFlow)).c_str());
-    mvwprintw(attributesScreen, 8, 1, (std::string("Vision Range: ") + std::to_string(attributes->baseVisionRange)).c_str());
-    mvwprintw(attributesScreen, 9, 1, (std::string("Vision Power: ") + std::to_string(attributes->baseVisionPower)).c_str());
-    mvwprintw(attributesScreen, 10, 1, (std::string("Detection Range: ") + std::to_string(attributes->baseDetectionRange)).c_str());
+    mvwprintw(attributesScreen, 1, ATTRIBUTES_LENGTH / 2 - t->getAttributesName(attributes->name).length() / 2, t->getAttributesName(attributes->name).c_str());
+    mvwprintw(attributesScreen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
+    mvwprintw(attributesScreen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
+    mvwprintw(attributesScreen, 5, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
+    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+    mvwprintw(attributesScreen, 7, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+    mvwprintw(attributesScreen, 8, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+    mvwprintw(attributesScreen, 9, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+    mvwprintw(attributesScreen, 10, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     wattroff(attributesScreen, COLOR_PAIR(color));
     return attributesScreen;
   }
 
-  WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX) {
+  WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t) {
     WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_LENGTH, offsetY + 2 + WAY_HEIGHT * place, offsetX + 1);
     wattron(wayScreen, COLOR_PAIR(color));
     box(wayScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(wayScreen, 1, WAY_LENGTH / 2 - way->name.length() / 2, way->name.c_str());
-    mvwprintw(wayScreen, 3, 1, (std::string("+Hp: ") + std::to_string(way->hpIncr)).c_str());
-    mvwprintw(wayScreen, 4, 1, (std::string("+Mana: ") + std::to_string(way->manaIncr)).c_str());
-    mvwprintw(wayScreen, 5, 1, (std::string("+Armor: ") + std::to_string(way->armorIncr)).c_str());
-    mvwprintw(wayScreen, 6, 1, (std::string("+Soulburn: ") + std::to_string(way->soulBurnIncr)).c_str());
-    mvwprintw(wayScreen, 7, 1, (std::string("+Flow: ") + std::to_string(way->flowIncr)).c_str());
+    mvwprintw(wayScreen, 1, WAY_LENGTH / 2 - t->getWayName(way->name).length() / 2, t->getWayName(way->name).c_str());
+    mvwprintw(wayScreen, 3, 1, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(way->hpIncr)).c_str());
+    mvwprintw(wayScreen, 4, 1, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(way->manaIncr)).c_str());
+    mvwprintw(wayScreen, 5, 1, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(way->armorIncr)).c_str());
+    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
+    mvwprintw(wayScreen, 7, 1, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
     wattroff(wayScreen, COLOR_PAIR(color));
     return wayScreen;
   }
 
-  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int color, WINDOW * screen, int sizeX, int offsetY, int offsetX) {
+  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int color, WINDOW * screen, int sizeX, int offsetY, int offsetX, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
@@ -191,20 +191,20 @@ namespace Display {
     box(characterScreen, ACS_VLINE, ACS_HLINE);
     int space = cols / 2;
     if(attributes != nullptr) {
-      mvwprintw(characterScreen, 1, 1, (std::string("Hp: ") + std::to_string(attributes->baseHp)).c_str());
-      mvwprintw(characterScreen, 2, 1, (std::string("Mana: ") + std::to_string(attributes->baseMana)).c_str());
-      mvwprintw(characterScreen, 3, 1, (std::string("Armor: ") + std::to_string(attributes->baseArmor)).c_str());
-      mvwprintw(characterScreen, 4, 1, (std::string("Soulburn: ") + std::to_string(attributes->baseSoulBurn)).c_str());
-      mvwprintw(characterScreen, 5, 1, (std::string("Flow: ") + std::to_string(attributes->baseFlow)).c_str());
-      mvwprintw(characterScreen, 6, 1, (std::string("Vision Range: ") + std::to_string(attributes->baseVisionRange)).c_str());
-      mvwprintw(characterScreen, 7, 1, (std::string("Vision Power: ") + std::to_string(attributes->baseVisionPower)).c_str());
-      mvwprintw(characterScreen, 8, 1, (std::string("Detection Range: ") + std::to_string(attributes->baseDetectionRange)).c_str());
+      mvwprintw(characterScreen, 1, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
+      mvwprintw(characterScreen, 2, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
+      mvwprintw(characterScreen, 3, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
+      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+      mvwprintw(characterScreen, 5, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+      mvwprintw(characterScreen, 6, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+      mvwprintw(characterScreen, 7, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+      mvwprintw(characterScreen, 8, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     }
-    mvwprintw(characterScreen, 1, space, (std::string("+Hp: ") + std::to_string(hpIncr)).c_str());
-    mvwprintw(characterScreen, 2, space, (std::string("+Mana: ") + std::to_string(manaIncr)).c_str());
-    mvwprintw(characterScreen, 3, space, (std::string("+Armor: ") + std::to_string(armorIncr)).c_str());
-    mvwprintw(characterScreen, 4, space, (std::string("+Soulburn: ") + std::to_string(soulBurnIncr)).c_str());
-    mvwprintw(characterScreen, 5, space, (std::string("+Flow: ") + std::to_string(flowIncr)).c_str());
+    mvwprintw(characterScreen, 1, space, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(hpIncr)).c_str());
+    mvwprintw(characterScreen, 2, space, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(manaIncr)).c_str());
+    mvwprintw(characterScreen, 3, space, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(armorIncr)).c_str());
+    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
+    mvwprintw(characterScreen, 5, space, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
     wattroff(characterScreen, COLOR_PAIR(color));
     return characterScreen;
   }
@@ -249,7 +249,12 @@ namespace Display {
     return true;
   }
 
-  std::vector<std::string> selectChoices(std::vector<Attributes *> startingAttributes, std::vector<Way *> startingWays, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities) {
+  std::vector<std::string> selectChoices(
+    std::vector<Attributes *> startingAttributes,
+    std::vector<Way *> startingWays,
+    std::list<std::pair<const std::string, const std::string>> waysIncompatibilities,
+    Translator * t)
+  {
     Attributes * selectedAttributes = nullptr;
     Way * selectedRace = nullptr;
     Way * selectedOrigin = nullptr;
@@ -331,19 +336,19 @@ namespace Display {
       std::vector<Way *> availableCultures = std::vector<Way *>(cultures.size());
       std::vector<Way *> availableReligions = std::vector<Way *>(religions.size());
       std::vector<Way *> availableProfessions = std::vector<Way *>(professions.size());
-      std::string to_print = "CLASS";
+      std::string to_print = t->getStandardName("CLASS");
       mvwprintw(attributesScreen, 1, 1 + ATTRIBUTES_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "RACE";
+      to_print = t->getStandardName("RACE");
       mvwprintw(raceScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "ORIGIN";
+      to_print = t->getStandardName("ORIGIN");
       mvwprintw(originScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "CULTURE";
+      to_print = t->getStandardName("CULTURE");
       mvwprintw(cultureScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "RELIGION";
+      to_print = t->getStandardName("RELIGION");
       mvwprintw(religionScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "PROFESSION";
+      to_print = t->getStandardName("PROFESSION");
       mvwprintw(professionScreen, 1, 1 + WAY_LENGTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = "CHARACTER";
+      to_print = t->getStandardName("CHARACTER");
       mvwprintw(characterScreen, 1, (COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5)) / 2 - to_print.length() / 2, to_print.c_str());
       for(Attributes * attributes : startingAttributes) {
         if(skip++ < currentPannel * numberAttributes) {
@@ -356,7 +361,7 @@ namespace Display {
         if(cursorX == 0 && cursorY == attributesCount) {
           color = BLUE;
         }
-        screens.push_back(displayAttributes(attributes, attributesCount++, color, attributesScreen, 0, 0));
+        screens.push_back(displayAttributes(attributes, attributesCount++, color, attributesScreen, 0, 0, t));
       }
       wrefresh(attributesScreen);
       skip = 0;
@@ -372,7 +377,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, raceCount, color, raceScreen, 0, ATTRIBUTES_LENGTH + 2));
+          screens.push_back(displayWay(way, raceCount, color, raceScreen, 0, ATTRIBUTES_LENGTH + 2, t));
           availableRaces[raceCount++] = way;
         }
       }
@@ -391,7 +396,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, originCount, color, originScreen, 0, ATTRIBUTES_LENGTH + 2 + WAY_LENGTH + 2));
+          screens.push_back(displayWay(way, originCount, color, originScreen, 0, ATTRIBUTES_LENGTH + 2 + WAY_LENGTH + 2, t));
           availableOrigins[originCount++] = way;
         }
       }
@@ -410,7 +415,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, cultureCount, color, cultureScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 2));
+          screens.push_back(displayWay(way, cultureCount, color, cultureScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 2, t));
           availableCultures[cultureCount++] = way;
         }
       }
@@ -429,7 +434,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, religionCount, color, religionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 3));
+          screens.push_back(displayWay(way, religionCount, color, religionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 3, t));
           availableReligions[religionCount++] = way;
         }
       }
@@ -448,7 +453,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, professionCount, color, professionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 4));
+          screens.push_back(displayWay(way, professionCount, color, professionScreen, 0, ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 4, t));
           availableProfessions[professionCount++] = way;
         }
       }
@@ -466,13 +471,13 @@ namespace Display {
       screens.push_back(nameScreen);
       wattron(nameScreen, COLOR_PAIR(color));
       box(nameScreen, ACS_VLINE, ACS_HLINE);
-      mvwprintw(nameScreen, 1, 1, (std::string("Name: ") + characterName).c_str());
+      mvwprintw(nameScreen, 1, 1, (t->getStandardName("Name") + std::string(": ") + characterName).c_str());
       wattroff(nameScreen, COLOR_PAIR(color));
       color = WHITE;
       if(cursorX == 6 && cursorY == 1) {
         color = BLUE;
       }
-      screens.push_back(displayCharacter(selectedAttributes, selectedRace, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, color, characterScreen, COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5) - 2, 5, 1 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5));
+      screens.push_back(displayCharacter(selectedAttributes, selectedRace, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, color, characterScreen, COLS - (ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5) - 2, 5, 1 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5, t));
       color = WHITE;
       if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
         && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos && !nameMode && selectedAttributes != nullptr
@@ -488,7 +493,7 @@ namespace Display {
       screens.push_back(confirmScreen);
       wattron(confirmScreen, COLOR_PAIR(color));
       box(confirmScreen, ACS_VLINE, ACS_HLINE);
-      to_print = "CONFIRM CHARACTER CREATION";
+      to_print = t->getStandardName("CONFIRM CHARACTER CREATION");
       mvwprintw(confirmScreen, 1, width / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(confirmScreen, COLOR_PAIR(color));
       wrefresh(characterScreen);
@@ -686,7 +691,7 @@ namespace Display {
               } else if(cursorX == 6) {
                 if(cursorY == 0) {
                   nameMode = true;
-                  move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (std::string("Name: ") + characterName).length());
+                  move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (t->getStandardName("Name") + characterName).length() + 2);
                   curs_set(1);
                 } else if(cursorY == 2) {
                   if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
@@ -712,13 +717,13 @@ namespace Display {
             case KEY_BACKSPACE:
               if(characterName != "") {
                 characterName = characterName.substr(0, characterName.length() - 1);
-                move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (std::string("Name: ") + characterName).length());
+                move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (t->getStandardName("Name") + characterName).length() + 2);
               }
               done2 = true;
               break;
             default:
               characterName += keyPressed;
-              move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (std::string("Name: ") + characterName).length());
+              move(3, 2 + ATTRIBUTES_LENGTH + 2 + (WAY_LENGTH + 2) * 5 + (t->getStandardName("Name") + characterName).length() + 2);
               done2 = true;
           }
         }

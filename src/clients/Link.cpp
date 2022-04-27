@@ -22,6 +22,14 @@ void Link::loadChoices() {
   }
 }
 
+std::list<std::string> Link::receiveTraductionPaths() {
+  try {
+    return Client::receiveTraductionPaths(s);
+  } catch (const CloseException &e) {
+    throw e;
+  }
+}
+
 void Link::sendChoices(std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
   try {
     Client::sendChoices(s, name, attibutes, race, origin, culture, religion, profession, adventure);

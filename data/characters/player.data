@@ -1,4 +1,4 @@
-name = Player
+name = TXT_PLAYER
 player_character = true
 death_speech = none
 talking_speechs =

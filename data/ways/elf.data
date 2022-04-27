@@ -1,4 +1,4 @@
-name = Elf
+name = TXT_ELF
 type = RACE
 hpIncr = 5
 manaIncr = 5

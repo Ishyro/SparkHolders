@@ -11,6 +11,7 @@ class Link {
   public:
     Link(Socket s, Adventure * adventure):s(s),adventure(adventure) {}
     void loadChoices();
+    std::list<std::string> receiveTraductionPaths();
     void sendChoices(std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
     MapDisplay * receiveMap();
     void sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon);

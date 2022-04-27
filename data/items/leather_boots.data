@@ -1,4 +1,4 @@
-name = leather boots
+name = TXT_LEATHER_BOOTS
 equipable = true
 consumable = false
 type = LEGS

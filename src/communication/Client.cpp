@@ -36,6 +36,22 @@ namespace Client {
     msg = msg.substr(msg.find('@') + 1, msg.length());
   }
 
+  std::list<std::string> receiveTraductionPaths(Socket s) {
+    std::string msg;
+    try {
+      msg = s.read();
+    } catch (const CloseException &e) {
+      throw e;
+    }
+    std::list<std::string> result = std::list<std::string>();
+    std::istringstream paths(msg);
+    std::string path;
+    while(getline(paths, path, '@') && path != "") {
+      result.push_back(path);
+    }
+    return result;
+  }
+
   void receiveWaysIncompabilities(Socket s, std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities) {
     std::string msg;
     try {

@@ -167,4 +167,17 @@ namespace Server {
       throw e;
     }
   }
+
+  void sendTraductionPaths(Socket s, Adventure * adventure) {
+    std::string msg = "";
+    for(std::string path : adventure->getDatabase()->getTraductionPaths()) {
+      msg += path + "@";
+    }
+    try {
+      s.write(msg);
+    } catch (const CloseException &e) {
+      throw e;
+    }
+
+  }
 }

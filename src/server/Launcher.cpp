@@ -50,8 +50,14 @@ void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, Adventure
       if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
         (*links)[i]->changeSocket(newSocket);
         used = true;
-        newSocket.write(std::string("OK"));
-        break;
+        try {
+          newSocket.write(std::string("OK"));
+          Server::sendTraductionPaths(newSocket, adventure);
+          break;
+        } catch (CloseException &e) {
+          used = false;
+          (*links)[i]->markClosed();
+        }
       }
     }
     if(!used) {
@@ -94,7 +100,6 @@ int main(int argc, char ** argv) {
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
     adventure->incrTick();
-    adventure->applyDayLight();
     adventure->applySoulBurn();
     adventure->applyLevelUps();
     for(int i = 0; i < playersNumber; i++) {
@@ -111,8 +116,9 @@ int main(int argc, char ** argv) {
     adventure->actAllProjectiles();
     adventure->executeActions(actionsPlayers);
     adventure->executeActions(actionsNPCs);
-    if(adventure->getTick() % 5 == 0) {
+    if(adventure->getTick() % 10 == 0) {
       adventure->incrDayLight();
+      adventure->applyDayLight();
     }
     actionsPlayers.clear();
     actionsNPCs.clear();

@@ -33,6 +33,7 @@ Database::Database() {
   weapons = std::map<const std::string, const Weapon * >();
   relations = std::map<const std::string, std::map<const std::string, int>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
+  paths = std::list<std::string>();
 
   // effect_duration_type
 
@@ -258,6 +259,8 @@ const int Database::getRelation(const std::string team1, const std::string team2
   }
 }
 
+std::list<std::string> Database::getTraductionPaths() { return paths; }
+
 std::list<std::pair<const std::string, const std::string>> Database::getWaysIncompatibilities() { return waysIncompatibilities; }
 
 void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
@@ -290,3 +293,4 @@ void Database::addRelation(const std::string team1, const std::string team2, int
 void Database::addWayImcompatibility(const std::string way1, const std::string way2) {
   waysIncompatibilities.push_back(std::make_pair(way1, way2));
 }
+void Database::addTraductionPath(const std::string path) { paths.push_back(path); };

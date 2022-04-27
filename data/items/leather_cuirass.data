@@ -1,4 +1,4 @@
-name = leather cuirass
+name = TXT_LEATHER_CUIRASS
 equipable = true
 consumable = false
 type = BODY

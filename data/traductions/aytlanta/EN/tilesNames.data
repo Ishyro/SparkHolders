@@ -1,0 +1,14 @@
+door = door%
+fireplace = fireplace%
+floor_stone = floor_stone%
+floor_wood = floor_wood%
+grass = grass%
+lava = lava%
+mist = mist%
+torch_ground = torch_ground%
+torch_wall = torch_wall%
+tree = tree%
+void = void%
+wall_stone = wall_stone%
+wall_wood = wall_wood%
+water = water%

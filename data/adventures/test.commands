@@ -1,153 +1,155 @@
 # Adventure name
 The Main Place
+# traductions files
+Traduction.data/traductions/aytlanta
 # add maps
-Map.Central Square
-Map.House North_1
-Map.House North_2
-Map.House East_1
-Map.House East_2
-Map.House South_1
-Map.House South_2
-Map.House West_1
-Map.House West_2
+Map.TXT_CENTRAL_SQUARE
+Map.TXT_HOUSE_NORTH#1
+Map.TXT_HOUSE_NORTH#2
+Map.TXT_HOUSE_EAST#1
+Map.TXT_HOUSE_EAST#2
+Map.TXT_HOUSE_SOUTH#1
+Map.TXT_HOUSE_SOUTH#2
+Map.TXT_HOUSE_WEST#1
+Map.TXT_HOUSE_WEST#2
 # add map links
 # add spawns
-Spawn.50%100%NORTH%Central Square%
-Spawn.50%99%NORTH%Central Square%
-Spawn.6%6%NORTH%House North_1%
-Spawn.6%6%NORTH%House North_2%
-Spawn.6%6%NORTH%House East_1%
-Spawn.6%6%NORTH%House East_2%
-Spawn.6%6%NORTH%House South_1%
-Spawn.6%6%NORTH%House South_2%
-Spawn.6%6%NORTH%House West_1%
-Spawn.6%6%NORTH%House West_2%
+Spawn.50%100%NORTH%TXT_CENTRAL_SQUARE%
+Spawn.50%99%NORTH%TXT_CENTRAL_SQUARE%
+Spawn.6%6%NORTH%TXT_HOUSE_NORTH#1%
+Spawn.6%6%NORTH%TXT_HOUSE_NORTH#2%
+Spawn.6%6%NORTH%TXT_HOUSE_EAST#1%
+Spawn.6%6%NORTH%TXT_HOUSE_EAST#2%
+Spawn.6%6%NORTH%TXT_HOUSE_SOUTH#1%
+Spawn.6%6%NORTH%TXT_HOUSE_SOUTH#2%
+Spawn.6%6%NORTH%TXT_HOUSE_WEST#1%
+Spawn.6%6%NORTH%TXT_HOUSE_WEST#2%
 # add starting attributes
-StartingAttributes.Vanguard
-StartingAttributes.Guardian
-StartingAttributes.Elementalist
-StartingAttributes.Shadow
+StartingAttributes.TXT_VANGUARD
+StartingAttributes.TXT_GUARDIAN
+StartingAttributes.TXT_ELEMENTALIST
+StartingAttributes.TXT_SHADOW
 # add starting ways
-StartingWay.Human
-StartingWay.Elf
-StartingWay.Beastman
-StartingWay.Dwarf
-StartingWay.Orc
-StartingWay.Angel
-StartingWay.Armythas
-StartingWay.Ellinka
-StartingWay.Bridge Town
-StartingWay.Green Town
-StartingWay.Scranem
-StartingWay.Countryside
-StartingWay.Enclave
-StartingWay.Celestia
-StartingWay.Tagran
-StartingWay.Birphan
-StartingWay.Yllian
-StartingWay.Barbarian
-StartingWay.Traveler
-StartingWay.Woodland
-StartingWay.Aho'z
-StartingWay.Secluded
-StartingWay.Yarglay's Follower
-StartingWay.Darkay's Follower
-StartingWay.Beastiona's Follower
-StartingWay.Pyrra's Follower
-StartingWay.Ragard's Follower
-StartingWay.Soldier
-StartingWay.Scholar
-StartingWay.Battlemage
-StartingWay.Assassin
+StartingWay.TXT_HUMAN
+StartingWay.TXT_ELF
+StartingWay.TXT_BEASTMAN
+StartingWay.TXT_DWARF
+StartingWay.TXT_ORC
+StartingWay.TXT_ANGEL
+StartingWay.TXT_ARMYTHAS
+StartingWay.TXT_ELLINKA
+StartingWay.TXT_BRIDGE_TOWN
+StartingWay.TXT_GREEN_TOWN
+StartingWay.TXT_SCRANEM
+StartingWay.TXT_COUNTRYSIDE
+StartingWay.TXT_ENCLAVE
+StartingWay.TXT_CELESTIA
+StartingWay.TXT_TAGRAN
+StartingWay.TXT_BIRPHAN
+StartingWay.TXT_YLLIAN
+StartingWay.TXT_BARBARIAN
+StartingWay.TXT_TRAVELER
+StartingWay.TXT_WOODLAND
+StartingWay.TXT_AHOZ
+StartingWay.TXT_SECLUDED
+StartingWay.TXT_YARGLEY_FOLLOWER
+StartingWay.TXT_DARKAY_FOLLOWER
+StartingWay.TXT_BEASTIONA_FOLLOWER
+StartingWay.TXT_PYRRA_FOLLOWER
+StartingWay.TXT_RAGARD_FOLLOWER
+StartingWay.TXT_SOLDIER
+StartingWay.TXT_SCHOLAR
+StartingWay.TXT_BATTLEMAGE
+StartingWay.TXT_ASSASSIN
 # add ways incompatibility
-WayImcompatibility.Human%Green Town%
-WayImcompatibility.Human%Enclave%
-WayImcompatibility.Human%Aho'z%
-WayImcompatibility.Elf%Armythas%
-WayImcompatibility.Elf%Ellinka%
-WayImcompatibility.Elf%Enclave%
-WayImcompatibility.Elf%Celestia%
-WayImcompatibility.Elf%Tagran%
-WayImcompatibility.Elf%Birphan%
-WayImcompatibility.Elf%Barbarian%
-WayImcompatibility.Beastman%Armythas%
-WayImcompatibility.Beastman%Ellinka%
-WayImcompatibility.Beastman%Enclave%
-WayImcompatibility.Beastman%Celestia%
-WayImcompatibility.Beastman%Tagran%
-WayImcompatibility.Beastman%Birphan%
-WayImcompatibility.Beastman%Aho'z%
-WayImcompatibility.Dwarf%Armythas%
-WayImcompatibility.Dwarf%Ellinka%
-WayImcompatibility.Dwarf%Green Town%
-WayImcompatibility.Dwarf%Scranem%
-WayImcompatibility.Dwarf%Tagran%
-WayImcompatibility.Dwarf%Birphan%
-WayImcompatibility.Dwarf%Woodland%
-WayImcompatibility.Dwarf%Aho'z%
-WayImcompatibility.Orc%Armythas%
-WayImcompatibility.Orc%Ellinka%
-WayImcompatibility.Orc%Scranem%
-WayImcompatibility.Orc%Celestia%
-WayImcompatibility.Orc%Tagran%
-WayImcompatibility.Orc%Birphan%
-WayImcompatibility.Orc%Aho'z%
-WayImcompatibility.Angel%Armythas%
-WayImcompatibility.Angel%Ellinka%
-WayImcompatibility.Angel%Green Town%
-WayImcompatibility.Angel%Scranem%
-WayImcompatibility.Angel%Enclave%
-WayImcompatibility.Angel%Countryside%
-WayImcompatibility.Angel%Tagran%
-WayImcompatibility.Angel%Birphan%
-WayImcompatibility.Angel%Aho'z%
-WayImcompatibility.Angel%Woodland%
-WayImcompatibility.Armythas%Birphan%
-WayImcompatibility.Armythas%Yllian%
-WayImcompatibility.Armythas%Barbarian%
-WayImcompatibility.Armythas%Woodland%
-WayImcompatibility.Armythas%Aho'z%
-WayImcompatibility.Armythas%Secluded%
-WayImcompatibility.Ellinka%Tagran%
-WayImcompatibility.Ellinka%Yllian%
-WayImcompatibility.Ellinka%Barbarian%
-WayImcompatibility.Ellinka%Woodland%
-WayImcompatibility.Ellinka%Aho'z%
-WayImcompatibility.Ellinka%Secluded%
-WayImcompatibility.Bridge Town%Tagran%
-WayImcompatibility.Bridge Town%Birphan%
-WayImcompatibility.Bridge Town%Barbarian%
-WayImcompatibility.Bridge Town%Woodland%
-WayImcompatibility.Bridge Town%Aho'z%
-WayImcompatibility.Bridge Town%Secluded%
-WayImcompatibility.Green Town%Tagran%
-WayImcompatibility.Green Town%Birphan%
-WayImcompatibility.Green Town%Yllian%
-WayImcompatibility.Green Town%Barbarian%
-WayImcompatibility.Green Town%Secluded%
-WayImcompatibility.Scranem%Tagran%
-WayImcompatibility.Scranem%Birphan%
-WayImcompatibility.Scranem%Yllian%
-WayImcompatibility.Scranem%Aho'z%
-WayImcompatibility.Enclave%Tagran%
-WayImcompatibility.Enclave%Birphan%
-WayImcompatibility.Enclave%Yllian%
-WayImcompatibility.Enclave%Woodland%
-WayImcompatibility.Enclave%Aho'z%
-WayImcompatibility.Countryside%Aho'z%
-WayImcompatibility.Celestia%Tagran%
-WayImcompatibility.Celestia%Birphan%
-WayImcompatibility.Celestia%Yllian%
-WayImcompatibility.Celestia%Woodland%
-WayImcompatibility.Celestia%Barbarian%
-WayImcompatibility.Celestia%Aho'z%
+WayImcompatibility.TXT_HUMAN%TXT_GREEN_TOWN%
+WayImcompatibility.TXT_HUMAN%TXT_ENCLAVE%
+WayImcompatibility.TXT_HUMAN%TXT_AHOZ%
+WayImcompatibility.TXT_ELF%TXT_ARMYTHAS%
+WayImcompatibility.TXT_ELF%TXT_ELLINKA%
+WayImcompatibility.TXT_ELF%TXT_ENCLAVE%
+WayImcompatibility.TXT_ELF%TXT_CELESTIA%
+WayImcompatibility.TXT_ELF%TXT_TAGRAN%
+WayImcompatibility.TXT_ELF%TXT_BIRPHAN%
+WayImcompatibility.TXT_ELF%TXT_BARBARIAN%
+WayImcompatibility.TXT_BEASTMAN%TXT_ARMYTHAS%
+WayImcompatibility.TXT_BEASTMAN%TXT_ELLINKA%
+WayImcompatibility.TXT_BEASTMAN%TXT_ENCLAVE%
+WayImcompatibility.TXT_BEASTMAN%TXT_CELESTIA%
+WayImcompatibility.TXT_BEASTMAN%TXT_TAGRAN%
+WayImcompatibility.TXT_BEASTMAN%TXT_BIRPHAN%
+WayImcompatibility.TXT_BEASTMAN%TXT_AHOZ%
+WayImcompatibility.TXT_DWARF%TXT_ARMYTHAS%
+WayImcompatibility.TXT_DWARF%TXT_ELLINKA%
+WayImcompatibility.TXT_DWARF%TXT_GREEN_TOWN%
+WayImcompatibility.TXT_DWARF%TXT_SCRANEM%
+WayImcompatibility.TXT_DWARF%TXT_TAGRAN%
+WayImcompatibility.TXT_DWARF%TXT_BIRPHAN%
+WayImcompatibility.TXT_DWARF%TXT_WOODLAND%
+WayImcompatibility.TXT_DWARF%TXT_AHOZ%
+WayImcompatibility.TXT_ORC%TXT_ARMYTHAS%
+WayImcompatibility.TXT_ORC%TXT_ELLINKA%
+WayImcompatibility.TXT_ORC%TXT_SCRANEM%
+WayImcompatibility.TXT_ORC%TXT_CELESTIA%
+WayImcompatibility.TXT_ORC%TXT_TAGRAN%
+WayImcompatibility.TXT_ORC%TXT_BIRPHAN%
+WayImcompatibility.TXT_ORC%TXT_AHOZ%
+WayImcompatibility.TXT_ANGEL%TXT_ARMYTHAS%
+WayImcompatibility.TXT_ANGEL%TXT_ELLINKA%
+WayImcompatibility.TXT_ANGEL%TXT_GREEN_TOWN%
+WayImcompatibility.TXT_ANGEL%TXT_SCRANEM%
+WayImcompatibility.TXT_ANGEL%TXT_ENCLAVE%
+WayImcompatibility.TXT_ANGEL%TXT_COUNTRYSIDE%
+WayImcompatibility.TXT_ANGEL%TXT_TAGRAN%
+WayImcompatibility.TXT_ANGEL%TXT_BIRPHAN%
+WayImcompatibility.TXT_ANGEL%TXT_AHOZ%
+WayImcompatibility.TXT_ANGEL%TXT_WOODLAND%
+WayImcompatibility.TXT_ARMYTHAS%TXT_BIRPHAN%
+WayImcompatibility.TXT_ARMYTHAS%TXT_YLLIAN%
+WayImcompatibility.TXT_ARMYTHAS%TXT_BARBARIAN%
+WayImcompatibility.TXT_ARMYTHAS%TXT_WOODLAND%
+WayImcompatibility.TXT_ARMYTHAS%TXT_AHOZ%
+WayImcompatibility.TXT_ARMYTHAS%TXT_SECLUDED%
+WayImcompatibility.TXT_ELLINKA%TXT_TAGRAN%
+WayImcompatibility.TXT_ELLINKA%TXT_YLLIAN%
+WayImcompatibility.TXT_ELLINKA%TXT_BARBARIAN%
+WayImcompatibility.TXT_ELLINKA%TXT_WOODLAND%
+WayImcompatibility.TXT_ELLINKA%TXT_AHOZ%
+WayImcompatibility.TXT_ELLINKA%TXT_SECLUDED%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_TAGRAN%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_BIRPHAN%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_BARBARIAN%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_WOODLAND%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_AHOZ%
+WayImcompatibility.TXT_BRIDGE_TOWN%TXT_SECLUDED%
+WayImcompatibility.TXT_GREEN_TOWN%TXT_TAGRAN%
+WayImcompatibility.TXT_GREEN_TOWN%TXT_BIRPHAN%
+WayImcompatibility.TXT_GREEN_TOWN%TXT_YLLIAN%
+WayImcompatibility.TXT_GREEN_TOWN%TXT_BARBARIAN%
+WayImcompatibility.TXT_GREEN_TOWN%TXT_SECLUDED%
+WayImcompatibility.TXT_SCRANEM%TXT_TAGRAN%
+WayImcompatibility.TXT_SCRANEM%TXT_BIRPHAN%
+WayImcompatibility.TXT_SCRANEM%TXT_YLLIAN%
+WayImcompatibility.TXT_SCRANEM%TXT_AHOZ%
+WayImcompatibility.TXT_ENCLAVE%TXT_TAGRAN%
+WayImcompatibility.TXT_ENCLAVE%TXT_BIRPHAN%
+WayImcompatibility.TXT_ENCLAVE%TXT_YLLIAN%
+WayImcompatibility.TXT_ENCLAVE%TXT_WOODLAND%
+WayImcompatibility.TXT_ENCLAVE%TXT_AHOZ%
+WayImcompatibility.TXT_COUNTRYSIDE%TXT_AHOZ%
+WayImcompatibility.TXT_CELESTIA%TXT_TAGRAN%
+WayImcompatibility.TXT_CELESTIA%TXT_BIRPHAN%
+WayImcompatibility.TXT_CELESTIA%TXT_YLLIAN%
+WayImcompatibility.TXT_CELESTIA%TXT_WOODLAND%
+WayImcompatibility.TXT_CELESTIA%TXT_BARBARIAN%
+WayImcompatibility.TXT_CELESTIA%TXT_AHOZ%
 # add TeamRelation
 TeamRelation.ENEMY%party%predator%
 TeamRelation.ENEMY%prey%predator%
 TeamRelation.ENEMY%adventurer%predator%
 TeamRelation.ENEMY%Birph%predator%
 TeamRelation.ENEMY%Tagr%predator%
-TeamRelation.ENEMY%Yllian%predator%
+TeamRelation.ENEMY%Yllia%predator%
 TeamRelation.ENEMY%Aho'z%predator%
 TeamRelation.ENEMY%Scranem%predator%
 TeamRelation.ENEMY%party%undead%
@@ -155,7 +157,7 @@ TeamRelation.ENEMY%prey%undead%
 TeamRelation.ENEMY%adventurer%undead%
 TeamRelation.ENEMY%Birph%undead%
 TeamRelation.ENEMY%Tagr%undead%
-TeamRelation.ENEMY%Yllian%undead%
+TeamRelation.ENEMY%Yllia%undead%
 TeamRelation.ENEMY%Aho'z%undead%
 TeamRelation.ENEMY%Scranem%undead%
 TeamRelation.ENEMY%predator%undead%
@@ -165,13 +167,13 @@ TeamRelation.ENEMY%prey%bandit%
 TeamRelation.ENEMY%adventurer%bandit%
 TeamRelation.ENEMY%Birph%bandit%
 TeamRelation.ENEMY%Tagr%bandit%
-TeamRelation.ENEMY%Yllian%bandit%
+TeamRelation.ENEMY%Yllia%bandit%
 TeamRelation.ENEMY%Aho'z%bandit%
 TeamRelation.ENEMY%Scranem%bandit%
 TeamRelation.ENEMY%predator%bandit%
 TeamRelation.ENEMY%undead%bandit%
 # add characters
-#Character.Sheep%2%3%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-#Character.Sheep%7%2%NORTH%test_1%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-#Character.Sheep%6%3%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
-#Character.Sheep%1%8%NORTH%test_2%prey%DiurnalPassiveAI%Sheep%Countryside%Slow%Godless%Ruminant%Sheep%
+#Character.TXT_SHEEP%2%3%NORTH%test_1%prey%DiurnalPassiveAI%TXT_SHEEP%TXT_COUNTRYSIDE%TXT_SLOW%TXT_GODLESS%TXT_RUMINANT%TXT_SHEEP%
+#Character.TXT_SHEEP%7%2%NORTH%test_1%prey%DiurnalPassiveAI%TXT_SHEEP%TXT_COUNTRYSIDE%TXT_SLOW%TXT_GODLESS%TXT_RUMINANT%TXT_SHEEP%
+#Character.TXT_SHEEP%6%3%NORTH%test_2%prey%DiurnalPassiveAI%TXT_SHEEP%TXT_COUNTRYSIDE%TXT_SLOW%TXT_GODLESS%TXT_RUMINANT%TXT_SHEEP%
+#Character.TXT_SHEEP%1%8%NORTH%test_2%prey%DiurnalPassiveAI%TXT_SHEEP%TXT_COUNTRYSIDE%TXT_SLOW%TXT_GODLESS%TXT_RUMINANT%TXT_SHEEP%

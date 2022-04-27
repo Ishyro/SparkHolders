@@ -5,17 +5,18 @@
 #include "communication/Socket.h"
 
 #include "clients/Link.h"
+#include "clients/Translator.h"
 
 #include "clients/terminal/Display.h"
 
 #include "data/Map.h"
 #include "data/Tile.h"
 
-void communicate(Link * link, WINDOW * screen) {
+void communicate(Link * link, WINDOW * screen, Translator * t) {
   while(true) {
     MapDisplay * display = link->receiveMap();
     if(display != nullptr) {
-      Display::displayMap(display, screen);
+      Display::displayMap(display, screen, t);
       for(CharacterDisplay * character : display->characters) {
         delete character;
       }
@@ -100,10 +101,10 @@ void communicate(Link * link, WINDOW * screen) {
 }
 
 int main(int argc, char ** argv) {
+  setlocale(LC_ALL, "");
   initscr();
   cbreak();
   noecho();
-  setlocale(LC_ALL, "");
   nl();
   intrflush(stdscr, FALSE);
   keypad(stdscr, TRUE);
@@ -122,10 +123,11 @@ int main(int argc, char ** argv) {
   Socket s = Socket();
   s.connect("127.0.0.1", 45678);
   Link * link = new Link(s, nullptr);
-
-  if (argc == 1) {
+  Translator * t;
+  if (argc == 2) {
     try {
       link->loadChoices();
+      t = new Translator(link->receiveTraductionPaths(), std::string(argv[1]));
     } catch (CloseException &e) {
       endwin();
       s.close();
@@ -133,7 +135,7 @@ int main(int argc, char ** argv) {
       return EXIT_FAILURE;
     }
     std::vector<std::string> choices;
-    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities());
+    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
     try {
       link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
     } catch (CloseException &e) {
@@ -142,7 +144,7 @@ int main(int argc, char ** argv) {
       delete link;
       return EXIT_FAILURE;
     }
-  } else if (argc == 2) {
+  } else if (argc == 3) {
     // reconnect mode
     try {
       if(s.read() != "RECONNECT") {
@@ -151,13 +153,14 @@ int main(int argc, char ** argv) {
         delete link;
         return EXIT_FAILURE;
       }
-      s.write(std::string(argv[1]));
+      s.write(std::string(argv[2]));
       if(s.read() != "OK") {
         endwin();
         s.close();
         delete link;
         return EXIT_FAILURE;
       }
+      t = new Translator(link->receiveTraductionPaths(), std::string(argv[1]));
     } catch (CloseException &e) {
       endwin();
       s.close();
@@ -175,7 +178,7 @@ int main(int argc, char ** argv) {
   box(mapScreen, ACS_VLINE, ACS_HLINE);
   box(otherScreen, ACS_VLINE, ACS_HLINE);
   try {
-    communicate(link, mapScreen);
+    communicate(link, mapScreen, t);
   } catch (CloseException &e) {
 
   }

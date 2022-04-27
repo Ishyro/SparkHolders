@@ -8,4 +8,5 @@ namespace Server {
   void sendMap(Socket s, Map * map, Character * player, Adventure * adventure);
   void sendStartingPossibilites(Socket s, Adventure * adventure);
   void sendWaysIncompabilities(Socket s, Adventure * adventure);
+  void sendTraductionPaths(Socket s, Adventure * adventure);
 }

@@ -91,7 +91,7 @@ CLIENT_GRAPHICS_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_GRAPHICS)/%.h,$(BIN_CLIENT
 CC=g++
 CC_FLAGS=-O2 -pipe -pthread -fpermissive -g
 CC_INCLUDES=-I $(INCLUDE)
-CC_LIBRARIES=-lcurses -lformw -lmenuw -lpanelw -lncursesw
+CC_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 
 # Rules
 
