@@ -1,0 +1,32 @@
+Hp = Vos points de vie. Vous mourrez quand vous avez O.%
+Mana = Vos points de mana. Chaque sort que vous lancez coûte du mana. Vous mourrez quand vous avez O.%
+Armor = La réduction de dégâts que vous avez contre tous les types de dégâts exceptés TRUE et SOUL.%
+Soulburn = A chaque fois que vous payez du mana (recevoir des dêgats de SOUL compte aussi), il sera converti en Brûlure de l'Ame.
+A chaque tour, vous perdez le max entre 10 pourcents de cette valeur de Seuil et votre Brûlure de l'Ame actuelle.
+Si vous avez plus de Brûlure de l'Ame que cette valeur, vous recevrez un nombre de dégâts TRUE équivalent.%
+Flow = Le maximum de mana que vous pouvez dépenser en un tour. Ne s'applique pas au mana que vous payez lorsque vous recevez des dégâts SOUL.%
+Vision Range = La distance jusqu'à laquelle vous pouvez voir des choses.%
+Vision Power = Determine comment vous voyez dans le noir.%
+Detection Range = La distance jusqu'à laquelle vous pouvez voir des choses sans vous soucier de la lumière.%
+CLASS = CLASS%
+RACE = RACE%
+ORIGIN = ORIGIN%
+CULTURE = CULTURE%
+RELIGION = RELIGION%
+PROFESSION = PROFESSION%
+CHARACTER = Pv : Vos points de vie. Vous mourrez quand vous avez O.
+Mana : Vos points de mana. Chaque sort que vous lancez coûte du mana. Vous mourrez quand vous avez O.
+Armure : La réduction de dégâts que vous avez contre tous les types de dégâts exceptés TRUE et SOUL.
+Seuil : A chaque fois que vous payez du mana (recevoir des dêgats de SOUL compte aussi), il sera converti en Brûlure de l'Ame.
+A chaque tour, vous perdez le max entre 10 pourcents de cette valeur de Seuil et votre Brûlure de l'Ame actuelle.
+Si vous avez plus de Brûlure de l'Ame que cette valeur, vous recevrez un nombre de dégâts TRUE équivalent.
+Flux : Le maximum de mana que vous pouvez dépenser en un tour. Ne s'applique pas au mana que vous payez lorsque vous recevez des dégâts SOUL.
+Champ de Vision : La distance jusqu'à laquelle vous pouvez voir des choses.
+Acuité : Determine comment vous voyez dans le noir.
+Détection : La distance jusqu'à laquelle vous pouvez voir des choses sans vous soucier de la lumière.%
+CONFIRM CHARACTER CREATION = Sélectionez une Classe et une Voie de chaque type pour créer votre personnage.
+Votre Classe determinera vos attributs, équipements et capacités de départ.
+Vos Voies détermineront la croissance de vos attributs.
+il sera possible de changez vos Voies durant votre aventure, mais pas votre Classe.
+(Changer votre Religion ou votre Profession sera simple, mais changer votre Race ou votre Origine ne sera possible que lors de rares évènements).%
+Name = Le nom de votre personnage.%

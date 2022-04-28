@@ -1,11 +1,11 @@
 Hp = Pv %
 Mana = Mana %
 Armor = Armure %
-Soulburn = Brûlure de Mana %
+Soulburn = Seuil %
 Flow = Flux%
 Vision Range = Champ de Vision %
 Vision Power = Acuité %
-Detection Range = Champ de Détection  %
+Detection Range = Détection  %
 CLASS = CLASSE%
 RACE = RACE%
 ORIGIN = ORIGINE%

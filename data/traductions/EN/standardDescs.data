@@ -1,0 +1,32 @@
+Hp = Your health points. You die when they reach 0.%
+Mana = Your mana points. Each spell you cast will cost mana. You die when they reach 0.%
+Armor = The flat damage reduction you have against all damage types except TRUE and SOUL.%
+Soulburn = Everytime you use mana (receiving SOUL damage count as well), it will be converted into Soulburn.
+Every round, you will lose the max between 10 percent of this Threshold value and your current Soulburn.
+If you have more Soulburn than this Threshold, losing any amount of Soulburn will result in receiving the same amount of TRUE damage.%
+Flow = The maximum amount of mana you can spend in a single round. Does not apply to mana cost you pay when receiving SOUL damage.%
+Vision Range = The range inside which you can see things.%
+Vision Power = How well you can see in the dark.%
+Detection Range = The range inside which you can see things without any concern about light level.%
+CLASS = CLASS%
+RACE = RACE%
+ORIGIN = ORIGIN%
+CULTURE = CULTURE%
+RELIGION = RELIGION%
+PROFESSION = PROFESSION%
+CHARACTER = Hp: Your health points. You die when they reach 0.
+Mana: Your mana points. Each spell you cast will cost mana. You die when they reach 0.
+Armor: The flat damage reduction you have against all damage types except TRUE and SOUL.
+Soulburn: Everytime you use mana (receiving SOUL damage count as well), it will be converted into Soulburn.
+Every round, you will lose the max between 10 percent of this Threshold value and your current Soulburn.
+If you have more Soulburn than this Threshold, losing any amount of Soulburn will result in receiving the same amount of TRUE damage.
+Flow: The maximum amount of mana you can spend in a single round. Does not apply to mana cost you pay when receiving SOUL damage.
+Vision Range: The range inside which you can see things.
+Vision Power: How well you can see in the dark.
+Detection Range: The range inside which you can see things without any concern about light level.%
+CONFIRM CHARACTER CREATION = Select one Class and a Way of each type to create your character.
+Your Class will determine your starting attributes, gear and skills.
+Your ways will determine your attributes growth.
+You will be able to change some of your Ways during your adventure, but not your Class.
+(Changing your Religion of Profession will be easy, but changing your Race or Origin will be possible only with rare events).%
+Name = Your character name.%

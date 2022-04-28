@@ -282,9 +282,6 @@ const std::string Translator::getStandardDesc(std::string to_translate) {
         while(std::isspace(value.at(0))) {
           value = value.substr(1, value.length() - 1);
         }
-        while(std::isspace(value.at(value.length() - 1))) {
-          value = value.substr(0, value.length() - 1);
-        }
         map->insert(std::make_pair(key,value));
       }
       else {
