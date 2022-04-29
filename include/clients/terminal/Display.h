@@ -22,6 +22,7 @@
 
 namespace Display {
 
+  void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print);
   void displayMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t);

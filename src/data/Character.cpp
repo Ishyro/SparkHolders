@@ -214,11 +214,11 @@ void Character::incrDetectionRange() { detectionRange++; }
 void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
 
 void Character::applySoulBurn() {
-  if(isSoulBurning()) {
-    int souldBurn = (int) floor( (float) currentSoulBurn - (float) soulBurnTreshold / 10.);
-    hp -= souldBurn;
-    currentSoulBurn -= souldBurn;
+  int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 10., (float) soulBurnTreshold / 10.);
+  if(currentSoulBurn > soulBurnTreshold) {
+    hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
+  currentSoulBurn -= soulBurnReduction;
 }
 
 void Character::gainGold(long gold) { this->gold += gold; }

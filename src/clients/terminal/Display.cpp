@@ -1,4 +1,5 @@
 #include <string>
+#include <sstream>
 
 #include "communication/Client.h"
 #include "communication/Socket.h"
@@ -15,6 +16,45 @@
 #include "clients/terminal/Display.h"
 
 namespace Display {
+
+  void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    std::istringstream stream(to_print);
+    std::string line = "";
+    std::string word;
+    int currentLength = 0;
+    while(getline(stream, word, ' ') && word != "") {
+      if(line == "") {
+        line = word;
+        currentLength = word.length();
+        continue;
+      }
+      int begin = word.find('\n');
+      if(begin != std::string::npos) {
+        if(currentLength == cols) {
+          line += word;
+        } else if(currentLength + 1 + begin <= cols) {
+          line += " " + word;
+        } else {
+          line += "\n" + word;
+        }
+        currentLength = word.length() - begin - 1;
+      }
+      else if(currentLength == cols) {
+        line += word;
+        currentLength = word.length();
+      } else if(currentLength + 1 + word.length() <= cols) {
+        line += " " + word;
+        currentLength += 1 + word.length();
+      } else {
+        line += "\n" + word;
+        currentLength = word.length();
+      }
+    }
+    mvwprintw(screen, offsetY, offsetX, line.c_str());
+  }
 
   void displayMap(MapDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
@@ -506,7 +546,7 @@ namespace Display {
         case 6: to_print = t->getWayDesc(availableProfessions[cursorY]->name); break;
         default: to_print = "";
       }
-      mvwprintw(descriptionScreen, 0, 0, to_print.c_str());
+      print(descriptionScreen, 0, 0, to_print.c_str());
       WINDOW * confirmScreen = subwin(characterScreen, 3, characterWidth, LINES - 4, 1);
       screens.push_back(confirmScreen);
       wattron(confirmScreen, COLOR_PAIR(color));

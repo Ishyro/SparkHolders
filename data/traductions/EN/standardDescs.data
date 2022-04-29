@@ -24,9 +24,13 @@ Flow: The maximum amount of mana you can spend in a single round. Does not apply
 Vision Range: The range inside which you can see things.
 Vision Power: How well you can see in the dark.
 Detection Range: The range inside which you can see things without any concern about light level.%
-CONFIRM CHARACTER CREATION = Select one Class and a Way of each type to create your character.
+CONFIRM CHARACTER CREATION = Born with the Soul Spark, you are a Mage, blessed by the Gods.
+Select one Class and a Way of each type to create your character.
+
 Your Class will determine your starting attributes, gear and skills.
+
 Your ways will determine your attributes growth.
+
 You will be able to change some of your Ways during your adventure, but not your Class.
 (Changing your Religion of Profession will be easy, but changing your Race or Origin will be possible only with rare events).%
 Name = Your character name.%
