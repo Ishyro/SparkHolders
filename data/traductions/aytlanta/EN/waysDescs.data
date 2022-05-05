@@ -12,7 +12,7 @@ the Ancient One are revered by all the pathetics creatures that call themselves 
 TXT_ANGEL = Angels are a pride race. Showing extreme xenophobia, most of them live among themselves in Celestia.
 Since their wings aren't strong enough to let them fly, an Angel who doesn't learn Wind magic to reach this feat will be shuned by the others.%
 
-TXT_ARMYTHAS = Capital of Tagr, Armythas is the largest city of Ayltanta. While mostly populated by Humans, all sort of races can be found in her streets.
+TXT_ARMYTHAS = Capital of Tagr, Armythas is the largest city of Aytlanta. While mostly populated by Humans, all sort of races can be found in her streets.
 A lot of mages are trained in her Academy.%
 
 TXT_ASSASSIN = Working for one of the numerous guilds of assassins, you learned to hide in the shadows, to kill with a single strike.%
@@ -41,7 +41,9 @@ TXT_CELESTIA = The city of angels. At the top of a mountain west to Aether Fores
 
 TXT_COUNTRYSIDE = Wherever they are, small settlements will always be the same.%
 
-TXT_DARKAY_FOLLOWER = Darkay is the God of Life and Death, the Everlasting Cycle, and Avatar of the Law. His Herald is the Unbidden.%
+TXT_DARKAY_FOLLOWER = Darkay is the God of Life and Death, the Everlasting Cycle, Avatar of the Law. His Herald is the Unbidden.
+Seen as a merciless god, Darkay's dedicated followers aren't as numerous as the other gods, but everyone offers him a prayer from time to time.
+This is especially true for the elderly.%
 
 TXT_DWARF = Small but strong, dwarves are born to mine mountains, and harvest their gems. This is what they do.%
 
@@ -61,6 +63,8 @@ TXT_HUMAN = Humans are the most prominent race on Aytlanta. They traveled beyond
 
 TXT_ORC = Orcs are stronger than the other races, but they weren't able to found a lasting society. They were brought into slavery by the Khonori for centuries, and hunted for sports by the Birphans.
 Following the revolt of Khorak Gaalk, they were able to found multiple Enclaves in the New Lands where they can leave in peace.%
+
+TXT_PHILLA_FOLLOWER = Philla is the Goddess of the Dawn, Avatar of Loyalty. Her Herald is the Winds' Shepherd. Her cult his mostly find in human cities, she is the godess with the highet number of followers.%
 
 TXT_PYRRA_FOLLOWER = Pyrra is the Goddess of Fire, Avatar of Victory. Her Herald is the Red Ribbon.%
 
@@ -84,7 +88,7 @@ TXT_TAGRAN = Kindgom of the Old Lands, always at war with his neighbor Birph, Ta
 TXT_TRAVELER = Never bound to one place, never bound to one people, you traveled all around the Old Lands and the New Lands.
 You have seen so much you don't really remember back home.%
 
-TXT_WOODLAND = Scranem, the Aether Forest, the Everlasting Greenlands... Living in a forest is considered a peculiar thing by then non followers of Beastiona.%
+TXT_WOODLAND = Scranem, the Aether Forest, the Everlasting Greenlands... Living in a forest is considered a peculiar thing by the non-followers of Beastiona.%
 
 TXT_YARGLEY_FOLLOWER = Yargley is the Godess of Lightning, Avatar of Order. Prominent among nobles and their court, her Herald is the Executioner.%
 

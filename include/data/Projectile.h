@@ -8,8 +8,8 @@
 
 typedef struct Ammunition {
   Projectile * projectile;
-  long number;
-  long gold_value;
+  int number;
+  int gold_value;
   int ammo_type;
 } Ammunition;
 
@@ -20,7 +20,7 @@ typedef struct ProjectileDisplay {
   long x;
   long y;
   int orientation;
-  float damages[DAMAGE_TYPE_NUMBER];
+  int damages[DAMAGE_TYPE_NUMBER];
   int speed;
   int area;
   float waste_per_tile;
@@ -108,7 +108,9 @@ class Projectile {
     void attack_single_target(Character * target, Adventure * adventure);
     void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
     std::string to_string(long offsetY, long offsetX);
+    static std::string ammo_to_string(Ammunition * ammo);
     static ProjectileDisplay * from_string(std::string to_read);
+    static Ammunition * ammo_from_string(std::string to_read);
   private:
     long current_map_id;
     long x;

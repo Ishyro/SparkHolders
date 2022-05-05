@@ -1,13 +1,16 @@
+#include <sstream>
+
 #include "ai/AI.h"
 #include "data/Attributes.h"
 #include "data/Database.h"
+#include "data/Effect.h"
 #include "data/Gear.h"
 #include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Effect.h"
+#include "data/Projectile.h"
 #include "data/skills/Skill.h"
-#include "data/World.h"
 #include "data/Way.h"
+#include "data/Weapon.h"
+#include "data/World.h"
 
 #include "data/Character.h"
 
@@ -273,15 +276,6 @@ void Character::equip(Weapon * to_equip) {
   }
 }
 
-void Character::equip(Ammunition * to_equip) {
-  if(to_equip != nullptr) {
-    Ammunition * old_ammunition = gear->equip(to_equip);
-    if(old_ammunition != nullptr) {
-      ammunitions.push_back(old_ammunition);
-    }
-  }
-}
-
 void Character::unequip(int type) {
   Item * old_item = gear->unequip(type);
   if(old_item != nullptr) {
@@ -299,13 +293,6 @@ void Character::unequipWeapon() {
       removeEffect(e);
     }
     weapons.push_back(old_weapon);
-  }
-}
-
-void Character::unequipAmmunition() {
-  Ammunition * old_ammunition = gear->unequipAmmunition();
-  if(old_ammunition != nullptr) {
-    ammunitions.push_back(old_ammunition);
   }
 }
 
@@ -437,6 +424,33 @@ void Character::attack(Character * target) {
   target->receiveAttack(realDamages, orientation);
 }
 
+Projectile * Character::shoot() {
+  if(!gear->getWeapon()->melee) {
+    if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
+      if(gear->getWeapon()->use_ammo) {
+        gear->getWeapon()->useAmmo();
+      }
+      int realDamages[DAMAGE_TYPE_NUMBER];
+      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+        realDamages[damage_type] = getDamageFromType(damage_type);
+      }
+      return nullptr;//new Projectile();
+    }
+  }
+  return nullptr;
+}
+
+void Character::reload(Ammunition * ammo) {
+  Ammunition * oldAmmo = gear->getWeapon()->reload(ammo);
+  if(ammo->number == 0) {
+    ammunitions.remove(ammo);
+    delete ammo;
+  }
+  if(oldAmmo != nullptr) {
+    ammunitions.push_back(oldAmmo);
+  }
+}
+
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
   if(orientation != NO_ORIENTATION) {
     int diff = abs(orientation - this->orientation) % 8;
@@ -539,6 +553,148 @@ CharacterDisplay * Character::from_string(std::string to_read) {
     display->damages[i] = stoi(msg.substr(0, msg.find(';')));
     msg = msg.substr(msg.find(';') + 1, msg.length());
   }
-
   return display;
+}
+
+std::string Character::full_to_string(Adventure * adventure) {
+  std::string msg = name + "@";
+  msg += std::to_string(player_character) + "@";
+  msg += std::to_string(type) + "@";
+  msg += std::to_string(x) + "@";
+  msg += std::to_string(y) + "@";
+  msg += std::to_string(orientation) + "@";
+  msg += std::to_string(current_map_id) + "@";
+  msg += std::to_string(gold) + "@";
+  msg += std::to_string(xp) + "@";
+  msg += std::to_string(level) + "@";
+  msg += team + "@";
+  msg += gear->to_string() + "@";
+  for(Item * item : items) {
+    msg += item->to_string(); + "|";
+  }
+  msg += "@";
+  for(Weapon * weapon : weapons) {
+    msg += weapon->to_string(); + "|";
+  }
+  msg += "@";
+  for(Ammunition * ammo : ammunitions) {
+    msg += Projectile::ammo_to_string(ammo); + "|";
+  }
+  msg += "@";
+  for(Effect * effect : effects) {
+    msg += effect->to_string(); + "|";
+  }
+  msg += "@";
+  for(Skill * skill : skills) {
+    msg += skill->to_string(); + "|";
+  }
+  msg += "@";
+  msg += ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string() + "@";
+  msg += race->to_string() + "@";
+  msg += origin->to_string() + "@";
+  msg += culture->to_string() + "@";
+  msg += religion->to_string() + "@";
+  msg += profession->to_string() + "@";
+  return msg;
+}
+
+Character * Character::full_from_string(std::string to_read) {
+  std::string msg = to_read;
+  std::string name = msg.substr(0, msg.find('@'));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::string player_character_str = msg.substr(0, msg.find('@'));
+  bool player_character = (player_character_str == "1");
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int type = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  long x = stol(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  long y = stol(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int orientation = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int current_map_id = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int gold = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int xp = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  int level = stoi(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::string team = msg.substr(0, msg.find('@'));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Gear * gear = Gear::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::list<Item *> * items = new std::list<Item *>();
+  std::istringstream isItems(msg.substr(0, msg.find('@')));
+  std::string item;
+  while(getline(isItems, item, '|') && item != "") {
+    items->push_back(Item::from_string(item));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::list<Weapon *> * weapons = new std::list<Weapon *>();
+  std::istringstream isWeapons(msg.substr(0, msg.find('@')));
+  std::string weapon;
+  while(getline(isWeapons, weapon, '|') && weapon != "") {
+    weapons->push_back(Weapon::from_string(weapon));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::list<Ammunition *> * ammunitions = new std::list<Ammunition *>();
+  std::istringstream isAmmunitions(msg.substr(0, msg.find('@')));
+  std::string ammo;
+  while(getline(isAmmunitions, ammo, '|') && ammo != "") {
+    ammunitions->push_back(Projectile::ammo_from_string(ammo));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::list<Effect *> * effects = new std::list<Effect *>();
+  std::istringstream isEffects(msg.substr(0, msg.find('@')));
+  std::string effect;
+  while(getline(isEffects, effect, '|') && effect != "") {
+    effects->push_back(Effect::from_string(effect));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::list<Skill *> * skills = new std::list<Skill *>();
+  std::istringstream isSkills(msg.substr(0, msg.find('@')));
+  std::string skill;
+  while(getline(isSkills, skill, '|') && skill != "") {
+    skills->push_back(Skill::from_string(skill));
+  }
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Attributes * attributes = Attributes::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Way * race = Way::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Way * origin = Way::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Way * culture = Way::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Way * religion = Way::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  Way * profession = Way::from_string(msg.substr(0, msg.find('@')));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
+  return new Character(
+    name,
+    player_character,
+    type,
+    x,
+    y,
+    orientation,
+    current_map_id,
+    gold,
+    xp,
+    level,
+    team,
+    gear,
+    items,
+    weapons,
+    ammunitions,
+    effects,
+    skills,
+    attributes,
+    race,
+    origin,
+    culture,
+    religion,
+    profession
+  );
 }

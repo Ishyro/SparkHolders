@@ -1,0 +1,9 @@
+name = TXT_PHILLA_FOLLOWER
+type = RELIGION
+hpIncr = 0
+manaIncr = 10
+armorIncr = 0
+soulBurnIncr = 1
+flowIncr = 2
+effects =
+skills =

@@ -126,6 +126,25 @@ namespace Server {
     if(profession == nullptr) {
       return nullptr;
     }
+    std::list<std::pair<const std::string, const std::string>> pairs = std::list<std::pair<const std::string, const std::string>>();
+    pairs.push_back(std::make_pair(race->name, origin->name));
+    pairs.push_back(std::make_pair(race->name, culture->name));
+    pairs.push_back(std::make_pair(race->name, religion->name));
+    pairs.push_back(std::make_pair(race->name, profession->name));
+    pairs.push_back(std::make_pair(origin->name, culture->name));
+    pairs.push_back(std::make_pair(origin->name, religion->name));
+    pairs.push_back(std::make_pair(origin->name, profession->name));
+    pairs.push_back(std::make_pair(culture->name, religion->name));
+    pairs.push_back(std::make_pair(culture->name, profession->name));
+    pairs.push_back(std::make_pair(religion->name, profession->name));
+    for(std::pair<const std::string, const std::string> pair1 : pairs) {
+      for(std::pair<const std::string, const std::string> pair2 : adventure->getDatabase()->getWaysIncompatibilities()) {
+        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
+          (pair1.first == pair2.second && pair1.second == pair2.first)) {
+            return nullptr;
+        }
+      }
+    }
     return adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
   }
 

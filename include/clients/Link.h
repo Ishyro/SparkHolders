@@ -18,11 +18,14 @@ class Link {
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
+    void updateCharacter(CharacterDisplay * serverSide);
   private:
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
     std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities;
     Adventure * adventure;
+    Character * player;
+    long serverCharacterId;
     Socket s;
 };
 

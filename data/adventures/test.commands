@@ -53,10 +53,12 @@ StartingWay.TXT_WOODLAND
 StartingWay.TXT_AHOZ
 StartingWay.TXT_SECLUDED
 StartingWay.TXT_YARGLEY_FOLLOWER
+StartingWay.TXT_PHILLA_FOLLOWER
 StartingWay.TXT_DARKAY_FOLLOWER
 StartingWay.TXT_BEASTIONA_FOLLOWER
 StartingWay.TXT_PYRRA_FOLLOWER
 StartingWay.TXT_RAGARD_FOLLOWER
+StartingWay.TXT_CAELIA_FOLLOWER
 StartingWay.TXT_SOLDIER
 StartingWay.TXT_SCHOLAR
 StartingWay.TXT_BATTLEMAGE
@@ -90,6 +92,7 @@ WayImcompatibility.TXT_DWARF%TXT_AHOZ%
 WayImcompatibility.TXT_ORC%TXT_ARMYTHAS%
 WayImcompatibility.TXT_ORC%TXT_ELLINKA%
 WayImcompatibility.TXT_ORC%TXT_SCRANEM%
+WayImcompatibility.TXT_ORC%TXT_GREEN_TOWN%
 WayImcompatibility.TXT_ORC%TXT_CELESTIA%
 WayImcompatibility.TXT_ORC%TXT_TAGRAN%
 WayImcompatibility.TXT_ORC%TXT_BIRPHAN%

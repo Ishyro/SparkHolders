@@ -34,6 +34,7 @@ data/ways/beastiona_follower.data
 data/ways/beastman.data
 data/ways/birphan.data
 data/ways/bridge_town.data
+data/ways/caelia_follower.data
 data/ways/celestia.data
 data/ways/countryside.data
 data/ways/darkay_follower.data
@@ -45,6 +46,7 @@ data/ways/godless.data
 data/ways/green_town.data
 data/ways/human.data
 data/ways/orc.data
+data/ways/philla_follower.data
 data/ways/pyrra_follower.data
 data/ways/ragard_follower.data
 data/ways/ruminant.data

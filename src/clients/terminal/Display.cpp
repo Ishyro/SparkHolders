@@ -250,35 +250,44 @@ namespace Display {
   }
 
   bool compatibleWays(Way * way1, Way * way2, Way * way3, Way * way4, Way * way5, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities) {
+    std::list<std::pair<const std::string, const std::string>> pairs = std::list<std::pair<const std::string, const std::string>>();
+    if(way1 != nullptr) {
+      if(way2 != nullptr) {
+        pairs.push_back(std::make_pair(way1->name, way2->name));
+      }
+      if(way3 != nullptr) {
+        pairs.push_back(std::make_pair(way1->name, way3->name));
+      }
+      if(way4 != nullptr) {
+        pairs.push_back(std::make_pair(way1->name, way4->name));
+      }
+      if(way5 != nullptr) {
+        pairs.push_back(std::make_pair(way1->name, way5->name));
+      }
+    }
     if(way2 != nullptr) {
-      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way2->name);
-      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
-        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
-          (pair1.first == pair2.second && pair1.second == pair2.first)) {
-            return false;
-        }
+      if(way3 != nullptr) {
+        pairs.push_back(std::make_pair(way2->name, way3->name));
+      }
+      if(way4 != nullptr) {
+        pairs.push_back(std::make_pair(way2->name, way4->name));
+      }
+      if(way5 != nullptr) {
+        pairs.push_back(std::make_pair(way2->name, way5->name));
       }
     }
     if(way3 != nullptr) {
-      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way3->name);
-      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
-        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
-          (pair1.first == pair2.second && pair1.second == pair2.first)) {
-            return false;
-        }
+      if(way4 != nullptr) {
+        pairs.push_back(std::make_pair(way3->name, way4->name));
+      }
+      if(way5 != nullptr) {
+        pairs.push_back(std::make_pair(way3->name, way5->name));
       }
     }
-    if(way4 != nullptr) {
-      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way4->name);
-      for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
-        if((pair1.first == pair2.first && pair1.second == pair2.second) ||
-          (pair1.first == pair2.second && pair1.second == pair2.first)) {
-            return false;
-        }
-      }
+    if(way4 != nullptr && way5 != nullptr) {
+      pairs.push_back(std::make_pair(way4->name, way5->name));
     }
-    if(way5 != nullptr) {
-      std::pair<const std::string, const std::string> pair1 = std::make_pair(way1->name, way5->name);
+    for(std::pair<const std::string, const std::string> pair1 : pairs) {
       for(std::pair<const std::string, const std::string> pair2 : waysIncompatibilities) {
         if((pair1.first == pair2.first && pair1.second == pair2.second) ||
           (pair1.first == pair2.second && pair1.second == pair2.first)) {

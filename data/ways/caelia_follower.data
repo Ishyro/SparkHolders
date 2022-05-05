@@ -1,0 +1,9 @@
+name = TXT_CAELIA_FOLLOWER
+type = RELIGION
+hpIncr = 10
+manaIncr = 10
+armorIncr = 0
+soulBurnIncr = 0
+flowIncr = 1
+effects =
+skills =

@@ -11,3 +11,11 @@ float Item::getDamageReductionFromType(int damage_type) {
   }
   return reduction;
 }
+
+std::string Item::to_string() {
+
+}
+
+Item * Item::from_string(std::string to_read) {
+
+}

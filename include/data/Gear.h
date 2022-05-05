@@ -15,8 +15,7 @@ class Gear {
       Item * left_ring,
       Item * right_ring,
       Item * amulet,
-      Weapon * weapon,
-      Ammunition * ammunition
+      Weapon * weapon
     ):
       head(head),
       arms(arms),
@@ -25,8 +24,7 @@ class Gear {
       left_ring(left_ring),
       right_ring(right_ring),
       amulet(amulet),
-      weapon(weapon),
-      ammunition(ammunition)
+      weapon(weapon)
     {}
     Gear(const Gear * gear):
       head(gear->head),
@@ -36,8 +34,7 @@ class Gear {
       left_ring(gear->left_ring),
       right_ring(gear->right_ring),
       amulet(gear->amulet),
-      weapon(gear->weapon),
-      ammunition(gear->ammunition)
+      weapon(gear->weapon)
     {}
       Gear():
         head(nullptr),
@@ -47,15 +44,12 @@ class Gear {
         left_ring(nullptr),
         right_ring(nullptr),
         amulet(nullptr),
-        weapon(nullptr),
-        ammunition(nullptr)
+        weapon(nullptr)
       {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
-    Ammunition * equip(Ammunition * new_ammunition);
     Item * unequip(int type);
     Weapon * unequipWeapon();
-    Ammunition * unequipAmmunition();
 
     float getDamageReductionFromType(int damage_type);
 
@@ -67,7 +61,8 @@ class Gear {
     Item * getRight_ring();
     Item * getAmulet();
     Weapon * getWeapon();
-    Ammunition * getAmmunition();
+    std::string to_string();
+    static Gear * from_string(std::string to_read);
   private:
     Item * head;
     Item * arms;
@@ -77,7 +72,6 @@ class Gear {
     Item * right_ring;
     Item * amulet;
     Weapon * weapon;
-    Ammunition * ammunition;
 };
 
 #endif // _GEAR_H_

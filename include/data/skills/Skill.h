@@ -35,6 +35,8 @@ class Skill {
 
     void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L);
     long getManaCost(long overcharge);
+    std::string to_string();
+    static Skill * from_string(std::string to_read);
 };
 
 #endif // _SKILL_H_

@@ -61,12 +61,6 @@ Weapon * Gear::equip(Weapon * new_weapon) {
   return temp;
 }
 
-Ammunition * Gear::equip(Ammunition * new_ammunition) {
-  Ammunition * temp = ammunition;
-  ammunition = new_ammunition;
-  return temp;
-}
-
 Item * Gear::unequip(int type) {
   Item * old_item;
   switch(type) {
@@ -112,12 +106,6 @@ Weapon * Gear::unequipWeapon() {
   return temp;
 }
 
-Ammunition * Gear::unequipAmmunition() {
-  Ammunition * temp = ammunition;
-  ammunition = nullptr;
-  return temp;
-}
-
 float Gear::getDamageReductionFromType(int damage_type) {
   float resistance = 0.;
   if(head != nullptr) {
@@ -152,4 +140,11 @@ Item * Gear::getLeft_ring() { return left_ring; }
 Item * Gear::getRight_ring() { return right_ring; }
 Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
-Ammunition * Gear::getAmmunition() { return ammunition; }
+
+std::string Gear::to_string() {
+
+}
+
+Gear * Gear::from_string(std::string to_read) {
+
+}

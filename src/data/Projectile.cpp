@@ -229,3 +229,24 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
 
   return display;
 }
+
+std::string Projectile::ammo_to_string(Ammunition * ammo) {
+  std::string msg = ammo->projectile->name + "|";
+  msg += std::to_string(ammo->number) + "|";
+  msg += std::to_string(ammo->gold_value) + "|";
+  msg += std::to_string(ammo->ammo_type) + "|";
+  return msg;
+}
+
+Ammunition * Projectile::ammo_from_string(std::string to_read) {
+  std::string msg = to_read;
+  Ammunition * ammo = new Ammunition();
+  //std::string msg = ammo->projectile->name + "|";
+  ammo->number = stoi(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  ammo->gold_value = stoi(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  ammo->ammo_type = stoi(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  return ammo;
+}

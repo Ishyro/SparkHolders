@@ -14,3 +14,12 @@ long Skill::getManaCost(long overcharge) {
   }
   return mana_cost;
 }
+
+
+std::string Skill::to_string() {
+
+}
+
+Skill * Skill::from_string(std::string to_read) {
+
+}

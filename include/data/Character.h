@@ -111,15 +111,23 @@ class Character {
     {}
     Character(
       std::string name,
-      int hp,
-      int mana,
       bool player_character,
       int type,
       long x,
       long y,
       int orientation,
-      std::list<Effect *> effects,
+      int current_map_id,
+      long gold,
+      long xp,
+      int level,
       std::string team,
+      Gear * gear,
+      std::list<Item *> * items,
+      std::list<Weapon *> * weapons,
+      std::list<Ammunition *> * ammunitions,
+      std::list<Effect *> * effects,
+      std::list<Skill *> * skills,
+      Attributes * attributes,
       Way * race,
       Way * origin,
       Way * culture,
@@ -127,21 +135,31 @@ class Character {
       Way * profession
     ):
       name(name),
-      hp(hp),
-      mana(mana),
       player_character(player_character),
       type(type),
       x(x),
       y(y),
       orientation(orientation),
-      effects(effects),
+      current_map_id(current_map_id),
+      gold(gold),
+      xp(xp),
+      level(level),
+      ai(nullptr),
       team(team),
+      gear(gear),
+      items(*items),
+      weapons(*weapons),
+      ammunitions(*ammunitions),
+      effects(*effects),
+      skills(*skills),
       race(race),
       origin(origin),
       culture(culture),
       religion(religion),
       profession(profession)
-    {}
+    {
+      applyAttributes(attributes);
+    }
     void applyAttributes(const Attributes * attributes);
     bool isAlive();
     bool isSoulBurning();
@@ -200,10 +218,8 @@ class Character {
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
-    void equip(Ammunition * to_equip);
     void unequip(int type);
     void unequipWeapon();
-    void unequipAmmunition();
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
@@ -230,18 +246,22 @@ class Character {
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
+    Projectile * shoot();
+    void reload(Ammunition * ammo);
     void attack(Character * target);
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
     std::string to_string(long offsetY, long offsetX);
+    std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
+    static Character * full_from_string(std::string to_read);
 
   private:
     static long id_cpt;
-    long current_map_id;
     int x;
     int y;
     int orientation;
+    int current_map_id;
     int hp;
     int maxHp;
     int mana;

@@ -52,6 +52,8 @@ class Item {
       }
     }
     float getDamageReductionFromType(int damage_type);
+    std::string to_string();
+    static Item * from_string(std::string to_read);
   private:
     static long id_cpt;
     float damage_reductions[DAMAGE_TYPE_NUMBER];

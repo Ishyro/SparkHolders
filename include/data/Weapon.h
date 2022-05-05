@@ -21,6 +21,7 @@ class Weapon {
     const int gold_value;
     const bool use_ammo;
     const int ammo_type;
+    const int capacity;
     const std::list<Effect *> effects;
     Weapon(
       std::string name,
@@ -42,9 +43,10 @@ class Weapon {
       gold_value(gold_value),
       use_ammo(use_ammo),
       ammo_type(ammo_type),
+      capacity(capacity),
       effects(effects)
     {
-      current_capacity=0;
+      ammo = nullptr;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
       }
@@ -59,8 +61,9 @@ class Weapon {
       use_ammo(weapon->use_ammo),
       ammo_type(weapon->ammo_type),
       effects(weapon->effects),
-      current_capacity(weapon->current_capacity)
+      capacity(weapon->capacity)
     {
+      ammo = nullptr;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = weapon->damages[i];
       }
@@ -68,8 +71,12 @@ class Weapon {
     int getCurrentCapacity();
     int getRawDamage();
     int getDamageFromType(int damage_type);
+    void useAmmo();
+    Ammunition * reload(Ammunition * ammo);
+    std::string to_string();
+    static Weapon * from_string(std::string to_read);
   private:
-    int current_capacity;
+    Ammunition * ammo;
     int damages[DAMAGE_TYPE_NUMBER];
 };
 
