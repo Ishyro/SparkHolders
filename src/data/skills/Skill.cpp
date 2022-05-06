@@ -17,9 +17,9 @@ long Skill::getManaCost(long overcharge) {
 
 
 std::string Skill::to_string() {
-
+  return "";
 }
 
 Skill * Skill::from_string(std::string to_read) {
-
+  return nullptr;
 }

@@ -12,24 +12,12 @@
 #include "data/Map.h"
 #include "data/Tile.h"
 
-void communicate(Link * link, WINDOW * screen, Translator * t) {
+void communicate(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * commandsScreen, Translator * t) {
   while(true) {
     MapDisplay * display = link->receiveMap();
-    if(display != nullptr) {
-      Display::displayMap(display, screen, t);
-      for(CharacterDisplay * character : display->characters) {
-        delete character;
-      }
-      for(ProjectileDisplay * projectile : display->projectiles) {
-        delete projectile;
-      }
-      for(std::vector<Tile *> tiles : display->tiles) {
-        for(Tile * tile : tiles) {
-          delete tile;
-        }
-      }
-      delete display;
-    }
+    Display::displayMap(display, link->getPlayer(), mapScreen, t);
+    Display::displayStats(link->getPlayer(), statsScreen, t);
+    Display::displayCommands(commandsScreen, t);
     bool done = false;
     int type;
     int orientation = NO_ORIENTATION;
@@ -44,7 +32,6 @@ void communicate(Link * link, WINDOW * screen, Translator * t) {
       switch(keyPressed) {
         case '5':
           type = REST;
-          orientation;
           done = true;
           break;
         case '1':
@@ -97,6 +84,18 @@ void communicate(Link * link, WINDOW * screen, Translator * t) {
       }
     }
     link->sendAction(type, orientation, projectile, skill, target, item, weapon);
+    for(CharacterDisplay * character : display->characters) {
+      delete character;
+    }
+    for(ProjectileDisplay * projectile : display->projectiles) {
+      delete projectile;
+    }
+    for(std::vector<Tile *> tiles : display->tiles) {
+      for(Tile * tile : tiles) {
+        delete tile;
+      }
+    }
+    delete display;
   }
 }
 
@@ -169,23 +168,32 @@ int main(int argc, char ** argv) {
     }
   }
   int separator = (float) LINES / 1.5;
+  float ratio = 2.25;
   WINDOW * mapScreen = subwin(stdscr, separator, COLS, 0, 0);
-  WINDOW * otherScreen = subwin(stdscr, LINES - separator, COLS, separator, 0);
+  WINDOW * statsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, 0);
+  WINDOW * displayScreen = subwin(stdscr, LINES - separator, std::ceil((float) COLS - 2. * ratio * (float) (LINES - separator)), separator, ratio * (LINES - separator));
+  WINDOW * commandsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, std::ceil((float) COLS - ratio * (float) (LINES - separator)));
   std::string to_print = "WAITING FOR OTHER PLAYERS...";
   mvwprintw(stdscr, LINES / 2, COLS / 2 - to_print.length() / 2, to_print.c_str());
   wrefresh(stdscr);
   clear();
   box(mapScreen, ACS_VLINE, ACS_HLINE);
-  box(otherScreen, ACS_VLINE, ACS_HLINE);
+  box(statsScreen, ACS_VLINE, ACS_HLINE);
+  box(displayScreen, ACS_VLINE, ACS_HLINE);
+  box(commandsScreen, ACS_VLINE, ACS_HLINE);
   try {
-    communicate(link, mapScreen, t);
+    communicate(link, mapScreen, statsScreen, displayScreen, commandsScreen, t);
   } catch (CloseException &e) {
 
   }
   wclear(mapScreen);
-  wclear(mapScreen);
-  delwin(otherScreen);
-  delwin(otherScreen);
+  wclear(statsScreen);
+  wclear(displayScreen);
+  wclear(commandsScreen);
+  delwin(mapScreen);
+  delwin(statsScreen);
+  delwin(displayScreen);
+  delwin(commandsScreen);
   endwin();
   s.close();
   delete link;

@@ -142,9 +142,76 @@ Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
 
 std::string Gear::to_string() {
-
+  std::string msg = "";
+  if(head != nullptr) {
+    msg += head->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(arms != nullptr) {
+    msg += arms->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(legs != nullptr) {
+    msg += legs->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(body != nullptr) {
+    msg += body->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(left_ring != nullptr) {
+    msg += left_ring->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(right_ring != nullptr) {
+    msg += right_ring->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(amulet != nullptr) {
+    msg += amulet->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  if(weapon != nullptr) {
+    msg += weapon->to_string() + "|";
+  } else {
+    msg += "none|";
+  }
+  return msg;
 }
 
 Gear * Gear::from_string(std::string to_read) {
-
+  std::string msg = to_read;
+  Item * head = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * arms = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * legs = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * body = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * left_ring = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * right_ring = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Item * amulet = Item::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  Weapon * weapon = Weapon::from_string(msg.substr(0, msg.find('|')));
+  msg = msg.substr(msg.find('|') + 1, msg.length());
+  return new Gear(
+    head,
+    arms,
+    legs,
+    body,
+    left_ring,
+    right_ring,
+    amulet,
+    weapon
+  );
 }

@@ -1,7 +1,6 @@
 #include <sstream>
 
 #include "ai/AI.h"
-#include "data/Attributes.h"
 #include "data/Database.h"
 #include "data/Effect.h"
 #include "data/Gear.h"
@@ -15,7 +14,6 @@
 #include "data/Character.h"
 
 void Character::applyAttributes(const Attributes * attributes) {
-  this->attributes = attributes->name;
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
   hp=maxHp;
@@ -45,6 +43,7 @@ int Character::getMaxHp() {
 }
 
 int Character::getMana() { return mana; }
+    void setMana(int mana);
 
 int Character::getMaxMana() {
   int bonus = 0;
@@ -119,7 +118,7 @@ std::list<Ammunition *> Character::getAmmunitions() { return ammunitions; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
-void Character::setOrientation(int orientation) { this->orientation == orientation; }
+void Character::setOrientation(int orientation) { this->orientation = orientation; }
 void Character::move(int orientation) {
   switch(orientation) {
     case NORTH:
@@ -151,6 +150,7 @@ void Character::move(int orientation) {
       x--;
       break;
   }
+  this->orientation = orientation;
 }
 
 void Character::move(int x, int y) {
@@ -173,6 +173,7 @@ void Character::incrMaxHp() {
   incr += profession->hpIncr;
   maxHp += std::max(incr, 0);
 }
+void Character::setHp(int hp) { this->hp = hp; }
 void Character::manaHeal(int mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
 void Character::incrMaxMana() {
   int incr = 0;
@@ -183,6 +184,7 @@ void Character::incrMaxMana() {
   incr += profession->manaIncr;
   maxMana += std::max(incr, 0);
 }
+void Character::setMana(int mana) { this->mana = mana; }
 void Character::incrArmor() {
   int incr = 0;
   incr += race->armorIncr;
@@ -201,6 +203,7 @@ void Character::incrSoulBurnTreshold() {
   incr += profession->soulBurnIncr;
   soulBurnTreshold += std::max(incr, 0);
 }
+void Character::setCurrentSoulBurn(int soulBurn) { this->currentSoulBurn = soulBurn; }
 void Character::incrFlow() {
   int incr = 0;
   incr += race->flowIncr;
@@ -221,7 +224,7 @@ void Character::applySoulBurn() {
   if(currentSoulBurn > soulBurnTreshold) {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
-  currentSoulBurn -= soulBurnReduction;
+  currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction);
 }
 
 void Character::gainGold(long gold) { this->gold += gold; }
@@ -231,7 +234,7 @@ void Character::payMana(int cost) {
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
-  while(level * level * 1000 >= xp) { // INSERT FORMULA HERE
+  while(xp >= level * level * 1000) { // INSERT FORMULA HERE
     level++;
     incrMaxHp();
     incrMaxMana();
@@ -505,6 +508,7 @@ std::string Character::to_string(long offsetY, long offsetX) {
   msg += std::to_string(id) + ";";
   msg += std::to_string(hp) + ";";
   msg += std::to_string(mana) + ";";
+  msg += std::to_string(currentSoulBurn) + ";";
   msg += std::to_string(player_character) + ";";
   msg += std::to_string(type) + ";";
   msg += std::to_string(x - offsetX) + ";";
@@ -531,6 +535,8 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->hp = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->mana = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->soulBurn = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   std::string player_character_str = msg.substr(0, msg.find(';'));
   display->player_character = (player_character_str == "1");
@@ -685,11 +691,11 @@ Character * Character::full_from_string(std::string to_read) {
     level,
     team,
     gear,
-    items,
-    weapons,
-    ammunitions,
-    effects,
-    skills,
+    *items,
+    *weapons,
+    *ammunitions,
+    *effects,
+    *skills,
     attributes,
     race,
     origin,

@@ -23,9 +23,11 @@
 namespace Display {
 
   void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print);
-  void displayMap(MapDisplay * display, WINDOW * screen, Translator * t);
+  void displayMap(MapDisplay * display, Character * player, WINDOW * screen, Translator * t);
   void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t);
+  void displayStats(Character * player, WINDOW * screen, Translator * t);
+  void displayCommands(WINDOW * screen, Translator * t);
   WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t);
   WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t);
   WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int color, WINDOW * screen, int sizeX, int offsetY, int offsetX, Translator * t);

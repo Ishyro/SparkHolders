@@ -210,13 +210,13 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
     spawn->map_id,
     "party",
     new PlayerAI(),
+    attr,
     race,
     origin,
     culture,
     religion,
     profession
   );
-  player->applyAttributes(attr);
   world->getMap(spawn->map_id)->addCharacter(player);
   spawns.remove(spawn);
   delete spawn;

@@ -18,7 +18,7 @@ class Link {
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
-    void updateCharacter(CharacterDisplay * serverSide);
+    Character * getPlayer();
   private:
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;

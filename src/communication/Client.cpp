@@ -3,6 +3,7 @@
 #include "data/Adventure.h"
 #include "data/Attributes.h"
 #include "data/Action.h"
+#include "data/Character.h"
 #include "data/Map.h"
 #include "data/Way.h"
 
@@ -100,9 +101,10 @@ namespace Client {
     }
   }
 
-  void sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
+  Character * sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
     try {
       s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
+      return Character::full_from_string(s.read());
     } catch (const CloseException &e) {
       throw e;
     }

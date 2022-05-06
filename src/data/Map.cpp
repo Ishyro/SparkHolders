@@ -154,7 +154,6 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
   bool is_legal = false;
   long destX;
   long destY;
-  c->setOrientation(orientation);
   switch(orientation) {
     case NORTH:
       if(c->getY() < sizeY - 1 && !tiles[c->getY() + 1][c->getX()]->untraversable) {
@@ -218,6 +217,7 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
     for(Character * other : characters) {
       if (other->getX() == destX && other->getY() == destY) {
         if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY) {
+          c->setOrientation(orientation);
           c->attack(other);
           if(!other->isAlive()) {
             to_kill = other;
@@ -235,6 +235,8 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
       return;
     }
     c->move(orientation);
+  } else {
+    c->setOrientation(orientation);
   }
 }
 

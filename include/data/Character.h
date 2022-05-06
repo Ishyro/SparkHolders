@@ -6,6 +6,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "data/Attributes.h"
+
 #include "Values.h"
 
 namespace character {
@@ -17,6 +19,7 @@ typedef struct CharacterDisplay {
   int id;
   int hp;
   int mana;
+  int soulBurn;
   bool player_character;
   int type;
   long x;
@@ -37,6 +40,7 @@ class Character {
     const Speech * death_speech;
     const std::list<const Speech *> talking_speechs;
     const int type;
+    const std::string attributes;
     // not instancied character constructor
     Character(
       std::string name,
@@ -76,6 +80,7 @@ class Character {
       int current_map_id,
       std::string team,
       AI * ai,
+      Attributes * attributes,
       Way * race,
       Way * origin,
       Way * culture,
@@ -89,26 +94,27 @@ class Character {
       type(from_database->type),
       gold(from_database->gold),
       xp(from_database->xp),
-      visionRange(from_database->visionRange),
-      visionPower(from_database->visionPower),
-      detectionRange(from_database->detectionRange),
-      items(from_database->items),
-      weapons(from_database->weapons),
-      ammunitions(from_database->ammunitions),
-      effects(from_database->effects),
-      skills(from_database->skills),
+      level(from_database->level),
       x(x),
       y(y),
       orientation(orientation),
       current_map_id(current_map_id),
       team(team),
       ai(ai),
+      items(from_database->items),
+      weapons(from_database->weapons),
+      ammunitions(from_database->ammunitions),
+      effects(from_database->effects),
+      skills(from_database->skills),
+      attributes(attributes->name),
       race(race),
       origin(origin),
       culture(culture),
       religion(religion),
       profession(profession)
-    {}
+    {
+      applyAttributes(attributes);
+    }
     Character(
       std::string name,
       bool player_character,
@@ -122,11 +128,11 @@ class Character {
       int level,
       std::string team,
       Gear * gear,
-      std::list<Item *> * items,
-      std::list<Weapon *> * weapons,
-      std::list<Ammunition *> * ammunitions,
-      std::list<Effect *> * effects,
-      std::list<Skill *> * skills,
+      std::list<Item *> items,
+      std::list<Weapon *> weapons,
+      std::list<Ammunition *> ammunitions,
+      std::list<Effect *> effects,
+      std::list<Skill *> skills,
       Attributes * attributes,
       Way * race,
       Way * origin,
@@ -147,11 +153,12 @@ class Character {
       ai(nullptr),
       team(team),
       gear(gear),
-      items(*items),
-      weapons(*weapons),
-      ammunitions(*ammunitions),
-      effects(*effects),
-      skills(*skills),
+      items(items),
+      weapons(weapons),
+      ammunitions(ammunitions),
+      effects(effects),
+      skills(skills),
+      attributes(attributes->name),
       race(race),
       origin(origin),
       culture(culture),
@@ -197,10 +204,13 @@ class Character {
     void move(int x, int y, int orientation);
     void hpHeal(int hp);
     void incrMaxHp();
+    void setHp(int hp);
     void manaHeal(int mana);
     void incrMaxMana();
+    void setMana(int mana);
     void incrArmor();
     void incrSoulBurnTreshold();
+    void setCurrentSoulBurn(int soulBurn);
     void incrFlow();
     void incrVisionRange();
     void incrVisionPower();
@@ -288,7 +298,6 @@ class Character {
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
-    std::string attributes;
     Way * race;
     Way * origin;
     Way * culture;

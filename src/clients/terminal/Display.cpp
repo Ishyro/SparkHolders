@@ -56,7 +56,7 @@ namespace Display {
     mvwprintw(screen, offsetY, offsetX, line.c_str());
   }
 
-  void displayMap(MapDisplay * display, WINDOW * screen, Translator * t) {
+  void displayMap(MapDisplay * display, Character * player, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
@@ -112,6 +112,41 @@ namespace Display {
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - loot->y, loot->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
+    std::string to_print = "";
+    switch(player->getOrientation()) {
+      case NORTH:
+        to_print = "NORTH";
+        break;
+      case NORTH_EAST:
+        to_print = "NORTH_EAST";
+        break;
+      case EAST:
+        to_print = "EAST";
+        break;
+      case SOUTH_EAST:
+        to_print = "SOUTH_EAST";
+        break;
+      case SOUTH:
+        to_print = "SOUTH";
+        break;
+      case SOUTH_WEST:
+        to_print = "SOUTH_WEST";
+        break;
+      case WEST:
+        to_print = "WEST";
+        break;
+      case NORTH_WEST:
+        to_print = "NORTH_WEST";
+        break;
+      case NO_ORIENTATION:
+        to_print = "NO_ORIENTATION";
+        break;
+    }
+    mvwprintw(screen, lines - 4, 1, to_print.c_str());
+    to_print = std::string("X: ") + std::to_string(player->getX());
+    mvwprintw(screen, lines - 3, 1, to_print.c_str());
+    to_print = std::string("Y: ") + std::to_string(player->getY());
+    mvwprintw(screen, lines - 2, 1, to_print.c_str());
     wrefresh(screen);
   }
 
@@ -148,6 +183,36 @@ namespace Display {
         mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
       }
     }
+    wrefresh(screen);
+  }
+
+  void displayStats(Character * player, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
+    std::string to_print = player->name + ", " + t->getAttributesName(player->attributes);
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());
+    mvwprintw(screen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnTreshold())).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(player->getArmor())).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
+    wrefresh(screen);
+  }
+
+  void displayCommands(WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
     wrefresh(screen);
   }
 

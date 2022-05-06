@@ -145,7 +145,13 @@ namespace Server {
         }
       }
     }
-    return adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
+    Character * player = adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
+    try {
+      s.write(player->full_to_string(adventure));
+    } catch (const CloseException &e) {
+      throw e;
+    }
+    return player;
   }
 
   void sendMap(Socket s, Map * map, Character * player, Adventure * adventure) {
