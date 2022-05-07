@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 
+#include "data/Settings.h"
 #include "Values.h"
 
 typedef struct Spawn {
@@ -42,6 +43,12 @@ class Adventure {
       party = std::list<Character *>();
       preserved_players = std::list<Character *>();
       tick = 0;
+      light = Settings::getStartingHour() % Settings::getLightMaxPower();
+      if(Settings::getStartingHour() < Settings::getLightMaxPower()) {
+        lightUp = true;
+      } else {
+        lightUp = false;
+      }
     }
     /*
     Adventure(Save * save) {
@@ -49,14 +56,14 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, long mapId, long x, long y);
-    void hardMoveCharacterToMap(Character * character, long mapId, long x, long y);
+    void softMoveCharacterToMap(Character * character, long mapId, long y, long x);
+    void hardMoveCharacterToMap(Character * character, long mapId, long y, long x);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
-    void resurrect(Character * player, long map_id, long x, long y);
+    void resurrect(Character * player, long map_id, long y, long x);
     long getTick();
     void incrTick();
     void event();
@@ -73,6 +80,7 @@ class Adventure {
     void executeActions(std::list<Action *> actions);
     void applyDayLight();
     void incrDayLight();
+    std::string getTime();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applySoulBurn();
@@ -81,8 +89,8 @@ class Adventure {
     World * world;
     Database * database;
     long tick;
-    int light = 4;
-    bool lightUp = true;
+    int light;
+    bool lightUp;
     std::list<Character *> party;
     std::list<Character *> preserved_players;
     std::list<Quest *> quests;

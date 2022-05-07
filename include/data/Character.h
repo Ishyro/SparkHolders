@@ -200,8 +200,8 @@ class Character {
 
     void setOrientation(int orientation);
     void move(int orientation);
-    void move(int x, int y);
-    void move(int x, int y, int orientation);
+    void move(int y, int x);
+    void move(int y, int x, int orientation);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);

@@ -278,7 +278,8 @@ void Map::actAllProjectiles(Adventure * adventure) {
 }
 
 std::string Map::to_string(Character * player, Adventure * adventure) {
-  std::string msg = name + "@";
+  std::string msg = adventure->getTime() + "@";
+  msg += name + "@";
   msg += std::to_string(offsetX) + "@";
   msg += std::to_string(offsetY) + "@";
   msg += std::to_string(sizeX) + "@";
@@ -308,6 +309,8 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
 MapDisplay * Map::from_string(std::string to_read) {
   std::string msg = to_read;
   MapDisplay * display = new MapDisplay();
+  display->time = msg.substr(0, msg.find('@'));
+  msg = msg.substr(msg.find('@') + 1, msg.length());
   display->name = msg.substr(0, msg.find('@'));
   msg = msg.substr(msg.find('@') + 1, msg.length());
   display->offsetX = stol(msg.substr(0, msg.find('@')));

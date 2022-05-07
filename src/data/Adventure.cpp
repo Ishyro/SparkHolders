@@ -17,13 +17,13 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, long map_id, long x, long y) {
+void Adventure::softMoveCharacterToMap(Character * character, long map_id, long y, long x) {
   Map * map = world->getMap(map_id);
   long i = x;
   long j = y;
   bool conflict = false;
   int power = -1; // power = 0 in first loop turn
-  int k = 0;
+  int k = NORTH;
   while(conflict) {
     if(k % 8 == 0) {
       power++;
@@ -70,11 +70,11 @@ void Adventure::softMoveCharacterToMap(Character * character, long map_id, long 
   }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   map->addCharacter(character);
-  character->move(i, j);
+  character->move(j, i);
   character->setCurrentMapId(map_id);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long x, long y) {
+void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long y, long x) {
   Map * map = world->getMap(map_id);
   for(auto c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
@@ -95,7 +95,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long 
   }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   map->addCharacter(character);
-  character->move(x, y);
+  character->move(y, x);
   character->setCurrentMapId(map_id);
 }
 
@@ -109,9 +109,9 @@ std::list<Character *> Adventure::getParty() { return party; }
 
 std::list<Character *> Adventure::getPreservedPlayers() { return preserved_players; }
 
-void Adventure::resurrect(Character * player, long map_id, long x, long y) {
+void Adventure::resurrect(Character * player, long map_id, long y, long x) {
   if(std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
-    softMoveCharacterToMap(player, map_id, x, y);
+    softMoveCharacterToMap(player, map_id, y, x);
   }
 }
 
@@ -164,13 +164,27 @@ void Adventure::applyDayLight() {
 }
 
 void Adventure::incrDayLight() {
-  lightUp ? light++ : light--;
-  if(light == 10) {
-    lightUp = false;
+  if(tick % Settings::getLighDuration() == 0) {
+    lightUp ? light++ : light--;
+    if(light == Settings::getLightMaxPower()) {
+      lightUp = false;
+    }
+    if(light == 0) {
+      lightUp = true;
+    }
+    applyDayLight();
   }
-  if(light == 0) {
-    lightUp = true;
-  }
+}
+
+std::string Adventure::getTime() {
+  int year = (Settings::getStartingYear() * Settings::getYearDurationInTick() + tick) / Settings::getYearDurationInTick();
+  int month = 1 + ((Settings::getStartingMonth() * Settings::getMonthDurationInTick() + tick) % Settings::getYearDurationInTick()) / Settings::getMonthDurationInTick();
+  int week = 1 + ((Settings::getStartingWeek() * Settings::getWeekDurationInTick() + tick) % Settings::getMonthDurationInTick()) / Settings::getWeekDurationInTick();
+  int day = 1 + ((Settings::getStartingDay() * Settings::getDayDurationInTick() + tick) % Settings::getWeekDurationInTick()) / Settings::getDayDurationInTick();
+  int hour = ((Settings::getStartingHour() * Settings::getHourDurationInTick() + tick) % Settings::getDayDurationInTick()) / Settings::getHourDurationInTick();
+  int minutes = Settings::getHourDuration() * ((float) (tick  % Settings::getHourDurationInTick())) / ( (float) Settings::getHourDurationInTick());
+  return std::to_string(year) + std::string("|") + std::to_string(month) + std::string("|") + std::to_string(week)
+  + std::string("|") + std::to_string(day) + std::string("|") + std::to_string(hour) + std::string("|") + std::to_string(minutes);
 }
 
 std::list<Action *> Adventure::getNPCsActions() {

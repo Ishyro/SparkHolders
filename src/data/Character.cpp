@@ -153,11 +153,11 @@ void Character::move(int orientation) {
   this->orientation = orientation;
 }
 
-void Character::move(int x, int y) {
+void Character::move(int y, int x) {
   this->x = x;
   this->y = y;
 }
-void Character::move(int x, int y, int orientation) {
+void Character::move(int y, int x, int orientation) {
   this->x = x;
   this->y = y;
   this->orientation = orientation;

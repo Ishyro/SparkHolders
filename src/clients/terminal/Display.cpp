@@ -142,11 +142,23 @@ namespace Display {
         to_print = "NO_ORIENTATION";
         break;
     }
+    // player position
     mvwprintw(screen, lines - 4, 1, to_print.c_str());
     to_print = std::string("X: ") + std::to_string(player->getX());
     mvwprintw(screen, lines - 3, 1, to_print.c_str());
     to_print = std::string("Y: ") + std::to_string(player->getY());
     mvwprintw(screen, lines - 2, 1, to_print.c_str());
+    // time
+    std::string msg = display->time;
+    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip years
+    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip months
+    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip weeks
+    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip days
+    to_print = msg.substr(0, msg.find('|')) + ":"; // hours
+    msg = msg.substr(msg.find('|') + 1, msg.length());
+    to_print += msg.substr(0, msg.find('|')); // minutes
+    mvwprintw(screen, lines - 2, cols - 2 - to_print.length(), to_print.c_str());
+
     wrefresh(screen);
   }
 

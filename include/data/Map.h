@@ -22,6 +22,7 @@ typedef struct Loot {
 } Loot;
 
 typedef struct MapDisplay {
+  std::string time;
   std::string name;
   long offsetX;
   long offsetY;

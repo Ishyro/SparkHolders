@@ -31,6 +31,8 @@
 #include "data/World.h"
 #include "data/Database.h"
 
+#include "data/Settings.h"
+
 namespace FileOpener {
 
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {

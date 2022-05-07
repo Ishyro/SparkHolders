@@ -9,6 +9,8 @@
 #include "data/Character.h"
 #include "data/World.h"
 
+#include "data/Settings.h"
+
 #include "utils/FileOpener.h"
 
 #include "communication/Socket.h"
@@ -86,7 +88,7 @@ int main(int argc, char ** argv) {
 
   std::vector<std::thread > threads = std::vector<std::thread >(playersNumber);
   std::vector<Link *> links = std::vector<Link *>(playersNumber);
-  ServerSocket ss = ServerSocket(45678, playersNumber, true);
+  ServerSocket ss = ServerSocket(Settings::getPort(), playersNumber, true);
   //std::barrier sync_point(adventure->maxPlayers, Server::receive);
   for(int i = 0; i < playersNumber; i++) {
     threads[i] = std::thread(startCommunication, &links[i], ss, adventure);
@@ -116,10 +118,7 @@ int main(int argc, char ** argv) {
     adventure->actAllProjectiles();
     adventure->executeActions(actionsPlayers);
     adventure->executeActions(actionsNPCs);
-    if(adventure->getTick() % 10 == 0) {
-      adventure->incrDayLight();
-      adventure->applyDayLight();
-    }
+    adventure->incrDayLight();
     actionsPlayers.clear();
     actionsNPCs.clear();
     noPlayers = true;
