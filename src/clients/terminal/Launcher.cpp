@@ -40,6 +40,7 @@ void communicate(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW *
           done = true;
           break;
         case '2':
+        case KEY_DOWN:
           type = MOVE;
           orientation = SOUTH;
           done = true;
@@ -50,11 +51,13 @@ void communicate(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW *
           done = true;
           break;
         case '4':
+        case KEY_LEFT:
           type = MOVE;
           orientation = WEST;
           done = true;
           break;
         case '6':
+        case KEY_RIGHT:
           type = MOVE;
           orientation = EAST;
           done = true;
@@ -65,6 +68,7 @@ void communicate(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW *
           done = true;
           break;
         case '8':
+        case KEY_UP:
           type = MOVE;
           orientation = NORTH;
           done = true;
@@ -77,6 +81,20 @@ void communicate(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW *
         case '<':
         case '>':
           type = CHANGE_MAP;
+          done = true;
+          break;
+        case ' ':
+          type = GRAB;
+          done = true;
+          break;
+        case 'x':
+        case 'X':
+          type = REST;
+          done = true;
+          break;
+        case 'c':
+        case 'C':
+          type = REST;
           done = true;
           break;
         default:
@@ -173,7 +191,7 @@ int main(int argc, char ** argv) {
   WINDOW * statsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, 0);
   WINDOW * displayScreen = subwin(stdscr, LINES - separator, std::ceil((float) COLS - 2. * ratio * (float) (LINES - separator)), separator, ratio * (LINES - separator));
   WINDOW * commandsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, std::ceil((float) COLS - ratio * (float) (LINES - separator)));
-  std::string to_print = "WAITING FOR OTHER PLAYERS...";
+  std::string to_print = t->getStandardName("WAITING FOR OTHER PLAYERS...");
   mvwprintw(stdscr, LINES / 2, COLS / 2 - to_print.length() / 2, to_print.c_str());
   wrefresh(stdscr);
   clear();

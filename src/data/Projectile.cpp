@@ -5,9 +5,9 @@
 
 #include "data/Projectile.h"
 
-long Projectile::getX() { return x; }
-long Projectile::getY() { return y; }
-long Projectile::getDestX() {
+int Projectile::getX() { return x; }
+int Projectile::getY() { return y; }
+int Projectile::getDestX() {
   if(target_type == SINGLE_CHARACTER) {
     return target->getX();
   }
@@ -15,7 +15,7 @@ long Projectile::getDestX() {
     return dest_x;
   }
 }
-long Projectile::getDestY() {
+int Projectile::getDestY() {
   if(target_type == SINGLE_CHARACTER) {
     return target->getY();
   }
@@ -148,10 +148,10 @@ int Projectile::getRawDamage() {
 
 bool Projectile::noDamage() { return getRawDamage() == 0; }
 
-void Projectile::setX(long x) { this->x = x; }
-void Projectile::setY(long y) { this->y = y; }
-void Projectile::setDestX(long dest_x) { this->dest_x = dest_x; }
-void Projectile::setDestY(long dest_y) { this->dest_y = dest_y; }
+void Projectile::setX(int x) { this->x = x; }
+void Projectile::setY(int y) { this->y = y; }
+void Projectile::setDestX(int dest_x) { this->dest_x = dest_x; }
+void Projectile::setDestY(int dest_y) { this->dest_y = dest_y; }
 void Projectile::setTarget(Character * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
@@ -197,6 +197,51 @@ std::string Projectile::to_string(long offsetY, long offsetX) {
   return msg;
 }
 
+std::string Projectile::full_to_string() {
+  std::string msg = name + ".";
+  msg += std::to_string(projectile_type) + ".";
+  msg += std::to_string(target_type) + ".";
+  msg += std::to_string(homing) + ".";
+  msg += std::to_string(x) + ".";
+  msg += std::to_string(y) + ".";
+  msg += std::to_string(dest_x) + ".";
+  msg += std::to_string(dest_y) + ".";
+  if(skill != nullptr) {
+    //msg += std::to_string(skill) + ".";
+  } else {
+    msg += "none.";
+  }
+  if(target != nullptr) {
+    msg += std::to_string(target->id) + ".";
+  } else {
+    msg += "none.";
+  }
+  if(owner != nullptr) {
+    msg += std::to_string(owner->id) + ".";
+  } else {
+    msg += "none.";
+  }
+  msg += std::to_string(orientation) + ".";
+  msg += std::to_string(speed) + ".";
+  msg += std::to_string(area) + ".";
+  msg += std::to_string(overcharge) + ".";
+  msg += std::to_string(waste_per_tile) + ".";
+  msg += std::to_string(waste_per_tile_area) + ".";
+  msg += std::to_string(waste_per_hit) + ".";
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    msg += std::to_string(damages[i]) + ".";
+  }
+  return msg;
+}
+
+std::string Projectile::ammo_to_string(Ammunition * ammo) {
+  std::string msg = ammo->projectile->full_to_string() + ";";
+  msg += std::to_string(ammo->number) + ";";
+  msg += std::to_string(ammo->gold_value) + ";";
+  msg += std::to_string(ammo->ammo_type) + ";";
+  return msg;
+}
+
 ProjectileDisplay * Projectile::from_string(std::string to_read) {
   std::string msg = to_read;
   ProjectileDisplay * display = new ProjectileDisplay();
@@ -206,9 +251,9 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->projectile_type = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->x = stol(msg.substr(0, msg.find(';')));
+  display->x = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->y = stol(msg.substr(0, msg.find(';')));
+  display->y = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->orientation = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
@@ -230,23 +275,97 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   return display;
 }
 
-std::string Projectile::ammo_to_string(Ammunition * ammo) {
-  std::string msg = ammo->projectile->name + "|";
-  msg += std::to_string(ammo->number) + "|";
-  msg += std::to_string(ammo->gold_value) + "|";
-  msg += std::to_string(ammo->ammo_type) + "|";
-  return msg;
+
+Projectile * Projectile::full_from_string(std::string to_read) {
+  std::string msg = to_read;
+  const std::string name = msg.substr(0, msg.find('.'));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int projectile_type = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int target_type = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  std::string homing_str = msg.substr(0, msg.find('.'));
+  bool homing = (homing_str == "1");
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int x = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int y = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int dest_x = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int dest_y = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  std::string skill_str = msg.substr(0, msg.find('.'));
+  Skill * skill = nullptr;
+  if(skill_str != "none") {
+
+  }
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+
+  std::string target_str = msg.substr(0, msg.find('.'));
+  Character * target = nullptr;
+  if(target_str != "none") {
+
+  }
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  std::string owner_str = msg.substr(0, msg.find('.'));
+  Character * owner = nullptr;
+  if(owner_str != "none") {
+
+  }
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int orientation = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int speed = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int area = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int overcharge = stoi(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  float waste_per_tile = stof(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  float waste_per_tile_area = stof(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  float waste_per_hit = stof(msg.substr(0, msg.find('.')));
+  msg = msg.substr(msg.find('.') + 1, msg.length());
+  int damages[DAMAGE_TYPE_NUMBER];
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damages[i] = stoi(msg.substr(0, msg.find('.')));
+    msg = msg.substr(msg.find('.') + 1, msg.length());
+  }
+  return new Projectile(
+    name,
+    projectile_type,
+    target_type,
+    homing,
+    x,
+    y,
+    dest_x,
+    dest_y,
+    skill,
+    target,
+    owner,
+    orientation,
+    speed,
+    area,
+    overcharge,
+    waste_per_tile,
+    waste_per_tile_area,
+    waste_per_hit,
+    damages
+  );
 }
 
 Ammunition * Projectile::ammo_from_string(std::string to_read) {
   std::string msg = to_read;
   Ammunition * ammo = new Ammunition();
-  //std::string msg = ammo->projectile->name + "|";
-  ammo->number = stoi(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  ammo->gold_value = stoi(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  ammo->ammo_type = stoi(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
+  ammo->projectile = Projectile::full_from_string(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  ammo->number = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  ammo->gold_value = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  ammo->ammo_type = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
   return ammo;
 }

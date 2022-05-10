@@ -96,7 +96,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
   Loot * loot = new Loot();
   loot->weapons = std::list<Weapon *>();
   loot->items = std::list<Item *>();
-  loot->ammunitions = std::list<Ammunition *>();
+  loot->ammunition = std::list<Ammunition *>();
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
@@ -107,10 +107,10 @@ void Map::killCharacter(Character * killer, Character * victim) {
     loot->items.push_back(i);
   }
   for(Ammunition * a : victim->getAmmunitions()) {
-    loot->ammunitions.push_back(a);
+    loot->ammunition.push_back(a);
   }
   loot->type = CORPSE;
-  if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunitions.empty()) {
+  if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {
     delete loot;
   } else {
     loots.push_back(loot);
@@ -142,7 +142,7 @@ void Map::takeLoot(Character * c) {
       for(auto w : l->weapons) {
         c->addWeapon(w);
       }
-      for(auto a : l->ammunitions) {
+      for(auto a : l->ammunition) {
         c->addAmmunition(a);
       }
       delete l;

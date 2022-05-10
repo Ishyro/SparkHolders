@@ -53,7 +53,7 @@ class Character {
       int level,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
-      std::list<Ammunition *> ammunitions,
+      std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills
     ):
@@ -67,7 +67,7 @@ class Character {
       level(level),
       items(items),
       weapons(weapons),
-      ammunitions(ammunitions),
+      ammunition(ammunition),
       effects(effects),
       skills(skills)
     {}
@@ -103,7 +103,7 @@ class Character {
       ai(ai),
       items(from_database->items),
       weapons(from_database->weapons),
-      ammunitions(from_database->ammunitions),
+      ammunition(from_database->ammunition),
       effects(from_database->effects),
       skills(from_database->skills),
       attributes(attributes->name),
@@ -130,7 +130,7 @@ class Character {
       Gear * gear,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
-      std::list<Ammunition *> ammunitions,
+      std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       Attributes * attributes,
@@ -155,7 +155,7 @@ class Character {
       gear(gear),
       items(items),
       weapons(weapons),
-      ammunitions(ammunitions),
+      ammunition(ammunition),
       effects(effects),
       skills(skills),
       attributes(attributes->name),
@@ -294,7 +294,7 @@ class Character {
     Gear * gear;
     std::list<Item *> items;
     std::list<Weapon *> weapons;
-    std::list<Ammunition *> ammunitions;
+    std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 

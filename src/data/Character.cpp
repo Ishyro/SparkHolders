@@ -114,7 +114,7 @@ long Character::getCurrentMapId() { return current_map_id; }
 
 std::list<Item *> Character::getItems() { return items; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
-std::list<Ammunition *> Character::getAmmunitions() { return ammunitions; }
+std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
@@ -317,10 +317,10 @@ void Character::setWay(Way * way) {
 
 void Character::addItem(Item * i) { items.push_back(i); }
 void Character::addWeapon(Weapon * w) { weapons.push_back(w); }
-void Character::addAmmunition(Ammunition * a) { ammunitions.push_back(a); }
+void Character::addAmmunition(Ammunition * a) { ammunition.push_back(a); }
 void Character::removeItem(Item * i) { items.remove(i); }
 void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
-void Character::removeAmmunition(Ammunition * a) { ammunitions.remove(a); }
+void Character::removeAmmunition(Ammunition * a) { ammunition.remove(a); }
 
 int Character::isChanneling() {
   int max = 0;
@@ -446,11 +446,11 @@ Projectile * Character::shoot() {
 void Character::reload(Ammunition * ammo) {
   Ammunition * oldAmmo = gear->getWeapon()->reload(ammo);
   if(ammo->number == 0) {
-    ammunitions.remove(ammo);
+    ammunition.remove(ammo);
     delete ammo;
   }
   if(oldAmmo != nullptr) {
-    ammunitions.push_back(oldAmmo);
+    ammunition.push_back(oldAmmo);
   }
 }
 
@@ -583,7 +583,7 @@ std::string Character::full_to_string(Adventure * adventure) {
     msg += weapon->to_string(); + "|";
   }
   msg += "@";
-  for(Ammunition * ammo : ammunitions) {
+  for(Ammunition * ammo : ammunition) {
     msg += Projectile::ammo_to_string(ammo); + "|";
   }
   msg += "@";
@@ -645,11 +645,11 @@ Character * Character::full_from_string(std::string to_read) {
     weapons->push_back(Weapon::from_string(weapon));
   }
   msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::list<Ammunition *> * ammunitions = new std::list<Ammunition *>();
+  std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
   std::istringstream isAmmunitions(msg.substr(0, msg.find('@')));
   std::string ammo;
   while(getline(isAmmunitions, ammo, '|') && ammo != "") {
-    ammunitions->push_back(Projectile::ammo_from_string(ammo));
+    ammunition->push_back(Projectile::ammo_from_string(ammo));
   }
   msg = msg.substr(msg.find('@') + 1, msg.length());
   std::list<Effect *> * effects = new std::list<Effect *>();
@@ -693,7 +693,7 @@ Character * Character::full_from_string(std::string to_read) {
     gear,
     *items,
     *weapons,
-    *ammunitions,
+    *ammunition,
     *effects,
     *skills,
     attributes,

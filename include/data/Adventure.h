@@ -42,7 +42,7 @@ class Adventure {
     {
       party = std::list<Character *>();
       preserved_players = std::list<Character *>();
-      tick = 0;
+      round = 0;
       light = Settings::getStartingHour() % Settings::getLightMaxPower();
       if(Settings::getStartingHour() < Settings::getLightMaxPower()) {
         lightUp = true;
@@ -64,8 +64,8 @@ class Adventure {
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
     void resurrect(Character * player, long map_id, long y, long x);
-    long getTick();
-    void incrTick();
+    long getRound();
+    void incrRound();
     void event();
     World * getWorld();
     int getLight();
@@ -88,7 +88,7 @@ class Adventure {
   private:
     World * world;
     Database * database;
-    long tick;
+    long round;
     int light;
     bool lightUp;
     std::list<Character *> party;

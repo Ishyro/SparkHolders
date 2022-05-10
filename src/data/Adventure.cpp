@@ -117,14 +117,14 @@ void Adventure::resurrect(Character * player, long map_id, long y, long x) {
 
 void Adventure::event() {
   for(auto e : events) {
-    if(tick == e->tick) {
+    if(round == e->round) {
       e->activate(this);
     }
   }
 }
 
-long Adventure::getTick() { return tick; }
-void Adventure::incrTick() { tick++; }
+long Adventure::getRound() { return round; }
+void Adventure::incrRound() { round++; }
 World * Adventure::getWorld() { return world; }
 int Adventure::getLight() { return light; }
 std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
@@ -164,7 +164,7 @@ void Adventure::applyDayLight() {
 }
 
 void Adventure::incrDayLight() {
-  if(tick % Settings::getLighDuration() == 0) {
+  if(round % Settings::getLighDuration() == 0) {
     lightUp ? light++ : light--;
     if(light == Settings::getLightMaxPower()) {
       lightUp = false;
@@ -177,14 +177,27 @@ void Adventure::incrDayLight() {
 }
 
 std::string Adventure::getTime() {
-  int year = (Settings::getStartingYear() * Settings::getYearDurationInTick() + tick) / Settings::getYearDurationInTick();
-  int month = 1 + ((Settings::getStartingMonth() * Settings::getMonthDurationInTick() + tick) % Settings::getYearDurationInTick()) / Settings::getMonthDurationInTick();
-  int week = 1 + ((Settings::getStartingWeek() * Settings::getWeekDurationInTick() + tick) % Settings::getMonthDurationInTick()) / Settings::getWeekDurationInTick();
-  int day = 1 + ((Settings::getStartingDay() * Settings::getDayDurationInTick() + tick) % Settings::getWeekDurationInTick()) / Settings::getDayDurationInTick();
-  int hour = ((Settings::getStartingHour() * Settings::getHourDurationInTick() + tick) % Settings::getDayDurationInTick()) / Settings::getHourDurationInTick();
-  int minutes = Settings::getHourDuration() * ((float) (tick  % Settings::getHourDurationInTick())) / ( (float) Settings::getHourDurationInTick());
-  return std::to_string(year) + std::string("|") + std::to_string(month) + std::string("|") + std::to_string(week)
-  + std::string("|") + std::to_string(day) + std::string("|") + std::to_string(hour) + std::string("|") + std::to_string(minutes);
+  int year = (Settings::getStartingYear() * Settings::getYearDurationInRound() + round) / Settings::getYearDurationInRound();
+  int month = 1 + ((Settings::getStartingMonth() * Settings::getMonthDurationInRound() + round) % Settings::getYearDurationInRound()) / Settings::getMonthDurationInRound();
+  int week = 1 + ((Settings::getStartingWeek() * Settings::getWeekDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getWeekDurationInRound();
+  int day = 1 + ((Settings::getStartingDay() * Settings::getDayDurationInRound() + round) % Settings::getWeekDurationInRound()) / Settings::getDayDurationInRound();
+  int hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
+  int minutes = Settings::getHourDuration() * ((float) (round  % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
+  int charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  int charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  std::string result = std::to_string(year) + std::string("|") + std::to_string(month) + std::string("|")
+  + std::to_string(week) + std::string("|") + std::to_string(day) + std::string("|");
+  std::string hour_str = std::to_string(hour) + std::string("|");
+  while(hour_str.length() - charHoursSize - 1 > 0) {
+    hour_str = std::to_string(0) + hour_str;
+  }
+  result += hour_str;
+  std::string minutes_str = std::to_string(minutes) + std::string("|");
+  while(minutes_str.length() - charMinutesSize - 1 > 0) {
+    minutes_str = std::to_string(0) + minutes_str;
+  }
+  result += minutes_str;
+  return result;
 }
 
 std::list<Action *> Adventure::getNPCsActions() {

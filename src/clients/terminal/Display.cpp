@@ -225,6 +225,14 @@ namespace Display {
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
+    std::string to_print = t->getStandardName("CONTROLS");
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    mvwprintw(screen, 3, 1, (t->getStandardName("NUMPAD") + std::string(": ") + t->getStandardName("MOVE") + std::string(" / ") +  t->getStandardName("ATTACK")).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("5") + std::string(": ") + t->getStandardName("REST")).c_str());
+    mvwprintw(screen, 5, 1, (t->getStandardName("<") + std::string(": ") + t->getStandardName("OPEN")).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("X") + std::string(": ") + t->getStandardName("USE SKILL")).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("C") + std::string(": ") + t->getStandardName("SHOOT")).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("SPACEBAR") + std::string(": ") + t->getStandardName("LOOT")).c_str());
     wrefresh(screen);
   }
 

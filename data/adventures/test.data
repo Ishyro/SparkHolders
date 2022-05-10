@@ -70,8 +70,14 @@ data/items/leather_boots.data
 data/items/leather_cuirass.data
 data/items/leather_gauntlets.data
 data/items/leather_helmet.data
+# skills without summoning
+# projectiles
+data/projectiles/wood_arrow.data
+# ammunition
+data/ammunition/wood_arrow.data
 # weapons
 data/weapons/short_sword.data
+data/weapons/short_bow.data
 # attributes
 data/attributes/sheep.data
 data/attributes/vanguard.data
@@ -83,3 +89,4 @@ data/speechs/beh.data
 # characters
 data/characters/player.data
 data/characters/sheep.data
+# skills with summoning

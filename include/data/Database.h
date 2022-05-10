@@ -39,7 +39,7 @@ class Database {
     void addItem(const Item * item);
     void addMap(const Map * map);
     void addProjectile(const Projectile * projectile);
-    void addAmmunition(const Ammunition * ammunition);
+    void addAmmunition(const Ammunition * ammo);
     void addQuest(const Quest * quest);
     void addSkill(const Skill * skill);
     void addSpeech(const Speech * speech);
@@ -60,7 +60,7 @@ class Database {
     std::map<const std::string, const Item * > items;
     std::map<const std::string, const Map * > maps;
     std::map<const std::string, const Projectile * > projectiles;
-    std::map<const std::string, const Ammunition * > ammunitions;
+    std::map<const std::string, const Ammunition * > ammunition;
     std::map<const std::string, const Quest * > quests;
     std::map<const std::string, const Skill * > skills;
     std::map<const std::string, const Speech * > speechs;

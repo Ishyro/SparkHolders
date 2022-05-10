@@ -11,13 +11,13 @@ class Event {
     const std::string name;
     const int type;
     const int character_apparition_type;
-    const int tick;
+    const int round;
     const bool hasQuest;
     Event(
       std::string name,
       int type,
       int character_apparition_type,
-      int tick,
+      int round,
       bool hasQuest,
       Quest * quest,
       std::list<Character *> characters,
@@ -29,7 +29,7 @@ class Event {
       name(name),
       type(type),
       character_apparition_type(character_apparition_type),
-      tick(tick),
+      round(round),
       hasQuest(hasQuest),
       quest(quest),
       characters(characters),
@@ -42,7 +42,7 @@ class Event {
       name(event->name),
       type(event->type),
       character_apparition_type(event->character_apparition_type),
-      tick(event->tick),
+      round(event->round),
       hasQuest(event->hasQuest),
       quest(event->quest),
       characters(event->characters),

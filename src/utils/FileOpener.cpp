@@ -315,11 +315,18 @@ namespace FileOpener {
     while(getline(is_4, weapon, '%')) {
       weapons->push_back((Weapon *) database->getWeapon(weapon));
     }
-    std::list<Ammunition *> * ammunitions = new std::list<Ammunition *>();
-    std::istringstream is_5(values.at("ammunitions"));
-    std::string ammunition;
-    while(getline(is_5, ammunition, '%')) {
-      ammunitions->push_back((Ammunition *) database->getAmmunition(ammunition));
+    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
+    std::istringstream is_5(values.at("ammunition"));
+    std::string ammo;
+    while(getline(is_5, ammo, '%')) {
+      std::string ammo_name = ammo.substr(0, ammo.find('|'));
+      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
+      Ammunition * new_ammo = new Ammunition();
+      new_ammo->projectile = base_ammo->projectile;
+      new_ammo->gold_value = base_ammo->gold_value;
+      new_ammo->ammo_type = base_ammo->ammo_type;
+      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
+      ammunition->push_back(new_ammo);
     }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_6(values.at("effects"));
@@ -333,11 +340,11 @@ namespace FileOpener {
     while(getline(is_7, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, xp, level, *items, *weapons, *ammunitions, *effects, *skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, xp, level, *items, *weapons, *ammunition, *effects, *skills);
     database->addCharacter(character);
     delete items;
     delete weapons;
-    delete ammunitions;
+    delete ammunition;
     delete effects;
     delete skills;
   }
@@ -415,9 +422,47 @@ namespace FileOpener {
     database->addMap(map);
   }
 
-  void ProjectileOpener(std::string fileName, Database * database) {}
+  void ProjectileOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
+    int target_type = database->getTargetFromMacro(values.at("target_type"));
+    std::istringstream is(values.at("homing"));
+    bool homing;
+    is >> std::boolalpha >> homing;
+    std::string skill_str = values.at("skill");
+    Skill * skill = nullptr;
+    if(skill_str != "none") {
+      skill = (Skill *) database->getSkill(skill_str);
+    }
+    int speed = stoi(values.at("speed"));
+    int area = stoi(values.at("area"));
+    float waste_per_tile = stoi(values.at("waste_per_tile"));
+    float waste_per_tile_area = stoi(values.at("waste_per_tile_area"));
+    float waste_per_hit = stoi(values.at("waste_per_hit"));
+    int damages[DAMAGE_TYPE_NUMBER];
+    damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
+    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
+    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
+    damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
+    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER_DAMAGE"));
+    damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
+    damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
+    damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+    damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
+    damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+    Projectile * projectile = new Projectile(name, projectile_type, target_type, homing, skill, speed, area, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
+    database->addProjectile(projectile);
+  }
 
-  void AmmunitionOpener(std::string fileName, Database * database) {}
+  void AmmunitionOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    Ammunition * ammo = new Ammunition();
+    ammo->projectile = (Projectile *) database->getProjectile(values.at("projectile"));
+    ammo->gold_value = stoi(values.at("gold_value"));
+    ammo->ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
+    database->addAmmunition(ammo);
+  }
 
   void QuestOpener(std::string fileName, Database * database) {}
 
@@ -536,7 +581,7 @@ namespace FileOpener {
     else if(last_folder == "projectiles") {
       ProjectileOpener(fileName, database);
     }
-    else if(last_folder == "ammunitions") {
+    else if(last_folder == "ammunition") {
       AmmunitionOpener(fileName, database);
     }
     else if(last_folder == "quests") {

@@ -24,7 +24,7 @@ Database::Database() {
   items = std::map<const std::string, const Item * >();
   maps = std::map<const std::string, const Map * >();
   projectiles = std::map<const std::string, const Projectile * >();
-  ammunitions = std::map<const std::string, const Ammunition * >();
+  ammunition = std::map<const std::string, const Ammunition * >();
   quests = std::map<const std::string, const Quest * >();
   skills = std::map<const std::string, const Skill * >();
   speechs = std::map<const std::string, const Speech * >();
@@ -241,7 +241,7 @@ const Event * Database::getEvent(const std::string event) { return events.at(eve
 const Item * Database::getItem(const std::string item) { return items.at(item); }
 const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
-const Ammunition * Database::getAmmunition(const std::string ammunition) { return ammunitions.at(ammunition); }
+const Ammunition * Database::getAmmunition(const std::string ammo) { return ammunition.at(ammo); }
 const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
@@ -270,7 +270,7 @@ void Database::addEvent(const Event * event) { events.insert(std::make_pair(even
 void Database::addItem(const Item * item) { items.insert(std::make_pair(item->name, item)); }
 void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
-void Database::addAmmunition(const Ammunition * ammunition) { ammunitions.insert(std::make_pair(ammunition->projectile->name, ammunition)); }
+void Database::addAmmunition(const Ammunition * ammo) { ammunition.insert(std::make_pair(ammo->projectile->name, ammo)); }
 void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }

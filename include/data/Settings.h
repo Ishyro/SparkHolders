@@ -7,7 +7,7 @@
 #define YEAR_DURATION 500
 #define MONTH_DURATION 50
 #define WEEK_DURATION 5
-#define HOUR_DURATION 100
+#define HOUR_DURATION 50
 
 #define PORT 45678
 
@@ -19,11 +19,11 @@ namespace Settings {
   int getWeekDuration(); // in days
   int getDayDuration(); // in hours
   int getHourDuration(); // in minutes
-  int getYearDurationInTick(); // in ticks
-  int getMonthDurationInTick(); // in ticks
-  int getWeekDurationInTick(); // in ticks
-  int getDayDurationInTick(); // in ticks
-  int getHourDurationInTick(); // in ticks
+  int getYearDurationInRound(); // in ticks
+  int getMonthDurationInRound(); // in ticks
+  int getWeekDurationInRound(); // in ticks
+  int getDayDurationInRound(); // in ticks
+  int getHourDurationInRound(); // in ticks
   int getStartingYear();
   int getStartingMonth();
   int getStartingWeek();

@@ -101,9 +101,8 @@ int main(int argc, char ** argv) {
   std::thread thread = std::thread(relinkCommunication, &links, ss, adventure, playersNumber);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
-    adventure->incrTick();
-    adventure->applySoulBurn();
     adventure->applyLevelUps();
+    adventure->applySoulBurn();
     for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }
@@ -118,7 +117,6 @@ int main(int argc, char ** argv) {
     adventure->actAllProjectiles();
     adventure->executeActions(actionsPlayers);
     adventure->executeActions(actionsNPCs);
-    adventure->incrDayLight();
     actionsPlayers.clear();
     actionsNPCs.clear();
     noPlayers = true;
@@ -128,6 +126,8 @@ int main(int argc, char ** argv) {
         break;
       }
     }
+    adventure->incrDayLight();
+    adventure->incrRound();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
