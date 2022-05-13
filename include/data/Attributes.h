@@ -41,6 +41,8 @@ class Attributes {
       baseDetectionRange(baseDetectionRange),
       startingGear(startingGear)
     {}
+    bool operator == (const Attributes& a) const { return name == a.name; }
+    bool operator != (const Attributes& a) const { return !operator==(a); }
     std::string to_string();
     static Attributes * from_string(std::string to_read);
 };

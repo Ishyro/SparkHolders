@@ -6,8 +6,14 @@
 
 #include "Values.h"
 
+namespace event {
+  static long id_cpt = 0;
+}
+
+
 class Event {
   public:
+    const long id = ++event::id_cpt;
     const std::string name;
     const int type;
     const int character_apparition_type;
@@ -52,6 +58,8 @@ class Event {
       effects(event->effects)
     {}
     void activate(Adventure * adventure);
+    bool operator == (const Event& e) const { return id == e.id; }
+    bool operator != (const Event& e) const { return !operator==(e); }
   private:
     Quest * quest;
     std::list<Character *> characters;

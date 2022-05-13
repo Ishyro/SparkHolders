@@ -166,13 +166,6 @@ Database::Database() {
   macros.insert(std::make_pair("BULLET",BULLET));
   macros.insert(std::make_pair("SPECIAL",SPECIAL));
 
-  // projectile_target_type
-
-  macros.insert(std::make_pair("SINGLE_CHARACTER",SINGLE_CHARACTER));
-  macros.insert(std::make_pair("SINGLE_TILE",SINGLE_TILE));
-  macros.insert(std::make_pair("MULTIPLE_CHARACTERS",MULTIPLE_CHARACTERS));
-  macros.insert(std::make_pair("MULTIPLE_TILES",MULTIPLE_TILES));
-
   // character_type
 
   macros.insert(std::make_pair("HUMAN",HUMAN));
@@ -220,7 +213,7 @@ Database::Database() {
   // speech_type
 
   macros.insert(std::make_pair("TEXT",TEXT));
-  macros.insert(std::make_pair("SPEACH",SPEACH));
+  macros.insert(std::make_pair("SPEECH",SPEECH));
   macros.insert(std::make_pair("WARNING",WARNING));
   macros.insert(std::make_pair("ERROR",ERROR));
 

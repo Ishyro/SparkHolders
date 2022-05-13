@@ -427,17 +427,51 @@ void Character::attack(Character * target) {
   target->receiveAttack(realDamages, orientation);
 }
 
-Projectile * Character::shoot() {
+Projectile * Character::shoot(const Character * target, int y, int x) {
   if(!gear->getWeapon()->melee) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
+      int added_damages[DAMAGE_TYPE_NUMBER];
+      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+        added_damages[damage_type] = getDamageFromType(damage_type);
+      }
+      Projectile * base_projectile = gear->getWeapon()->getAmmo()->projectile;
       if(gear->getWeapon()->use_ammo) {
         gear->getWeapon()->useAmmo();
       }
-      int realDamages[DAMAGE_TYPE_NUMBER];
-      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-        realDamages[damage_type] = getDamageFromType(damage_type);
+      int proj_x = this->x;
+      int proj_y = this->y;
+      switch(orientation) {
+        case NORTH:
+          proj_y++;
+          break;
+        case NORTH_EAST:
+          proj_y++;
+          proj_x++;
+          break;
+        case EAST:
+          proj_x++;
+          break;
+        case SOUTH_EAST:
+          proj_y--;
+          proj_x++;
+          break;
+        case SOUTH:
+          proj_y--;
+          break;
+        case SOUTH_WEST:
+          proj_y--;
+          proj_x--;
+          break;
+        case WEST:
+          proj_x--;
+          break;
+        case NORTH_WEST:
+          proj_y++;
+          proj_x--;
+          break;
       }
-      return nullptr;//new Projectile();
+      this->orientation = orientation;
+      return new Projectile(base_projectile, added_damages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1);
     }
   }
   return nullptr;
@@ -448,6 +482,7 @@ void Character::reload(Ammunition * ammo) {
   if(ammo->number == 0) {
     ammunition.remove(ammo);
     delete ammo;
+    ammo = nullptr;
   }
   if(oldAmmo != nullptr) {
     ammunition.push_back(oldAmmo);
@@ -503,26 +538,33 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   hp -= std::max(0, damage - getArmor());
 }
 
+#include <iostream>
+
 std::string Character::to_string(long offsetY, long offsetX) {
-  std::string msg = name + ";";
-  msg += std::to_string(id) + ";";
-  msg += std::to_string(hp) + ";";
-  msg += std::to_string(mana) + ";";
-  msg += std::to_string(currentSoulBurn) + ";";
-  msg += std::to_string(player_character) + ";";
-  msg += std::to_string(type) + ";";
-  msg += std::to_string(x - offsetX) + ";";
-  msg += std::to_string(y - offsetY) + ";";
-  msg += std::to_string(orientation) + ";";
-  msg += team + ";";
-  msg += std::to_string(getArmor()) + ";";
+  std::stringstream ss;
+  ss << name << ";";
+  ss << id << ";";
+  ss << getHp() << ";";
+  ss << getMaxHp() << ";";
+  ss << getMana() << ";";
+  ss << getMaxMana() << ";";
+  ss << getCurrentSoulBurn() << ";";
+  ss << getSoulBurnTreshold() << ";";
+  ss << getFlow() << ";";
+  ss << player_character << ";";
+  ss << type << ";";
+  ss << x - offsetX << ";";
+  ss << y - offsetY << ";";
+  ss << orientation << ";";
+  ss << team << ";";
+  ss << getArmor() << ";";
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(getDamageReductionFromType(i)) + ";";
+    ss << getDamageReductionFromType(i) << ";";
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(getDamageFromType(i)) + ";";
+    ss << getDamageFromType(i) << ";";
   }
-  return msg;
+  return ss.str();
 }
 
 CharacterDisplay * Character::from_string(std::string to_read) {
@@ -534,9 +576,17 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->hp = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->maxHp = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
   display->mana = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->maxMana = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
   display->soulBurn = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->soulBurnTreshold = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->flow = stoi(msg.substr(0, msg.find(';')));
   msg = msg.substr(msg.find(';') + 1, msg.length());
   std::string player_character_str = msg.substr(0, msg.find(';'));
   display->player_character = (player_character_str == "1");
@@ -551,8 +601,15 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   msg = msg.substr(msg.find(';') + 1, msg.length());
   display->team = msg.substr(0, msg.find(';'));
   msg = msg.substr(msg.find(';') + 1, msg.length());
+  display->armor = stoi(msg.substr(0, msg.find(';')));
+  msg = msg.substr(msg.find(';') + 1, msg.length());
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    display->damage_reductions[i] = stof(msg.substr(0, msg.find(';')));
+    std::string float_value = msg.substr(0, msg.find(';'));
+    display->damage_reductions[i] = stof(float_value);
+    if(display->damage_reductions[i] == 0) {
+      std::replace(float_value.begin(), float_value.end(), '.', ',');
+      display->damage_reductions[i] = stof(float_value);
+    }
     msg = msg.substr(msg.find(';') + 1, msg.length());
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

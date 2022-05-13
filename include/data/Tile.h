@@ -3,10 +3,6 @@
 
 #include <string>
 
-namespace tile {
-  static long id_cpt = 0;
-}
-
 class Tile {
   public:
     const std::string name;
@@ -21,8 +17,8 @@ class Tile {
       untraversable(untraversable),
       light(light)
     {}
-  private:
-    const long id = ++tile::id_cpt;
+    bool operator == (const Tile& t) const { return name == t.name; }
+    bool operator != (const Tile& t) const { return !operator==(t); }
 };
 
 #endif // _TILE_H_

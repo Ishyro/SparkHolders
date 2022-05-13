@@ -14,8 +14,13 @@ typedef struct Step {
   const Speech * when_done;
 } Step;
 
+namespace quest {
+  static long id_cpt = 0;
+}
+
 class Quest {
   public:
+    const long id = ++quest::id_cpt;
     const std::string name;
     const bool holdEvent;
     std::list<Item *> items_rewards;
@@ -46,6 +51,8 @@ class Quest {
     void getCurrentStep();
     bool stepDone(Adventure * adventure);
     bool questDone();
+    bool operator == (const Quest& q) const { return id == q.id; }
+    bool operator != (const Quest& q) const { return !operator==(q); }
   private:
     std::list<Step *> steps;
     Event * event;

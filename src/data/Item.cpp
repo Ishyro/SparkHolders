@@ -56,7 +56,12 @@ Item * Item::from_string(std::string to_read) {
   msg = msg.substr(msg.find(';') + 1, msg.length());
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damage_reductions[i] = stof(msg.substr(0, msg.find(';')));
+    std::string float_value = msg.substr(0, msg.find(';'));
+    damage_reductions[i] = stof(float_value);
+    if(damage_reductions[i] == 0) {
+      std::replace(float_value.begin(), float_value.end(), '.', ',');
+      damage_reductions[i] = stof(float_value);
+    }
     msg = msg.substr(msg.find(';') + 1, msg.length());
   }
   return new Item(

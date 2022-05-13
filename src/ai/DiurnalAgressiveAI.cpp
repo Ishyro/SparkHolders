@@ -24,9 +24,9 @@ Action * DiurnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
         }
       }
     }
-    return new Action(MOVE, c, orientation, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "");
   } else {
-    return new Action(REST, c, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "");
   }
   return nullptr;
 }

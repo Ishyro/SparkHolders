@@ -69,13 +69,16 @@ class Weapon {
         damages[i] = weapon->damages[i];
       }
     }
-    int getCurrentCapacity();
     int getRawDamage();
     int getDamageFromType(int damage_type);
+    int getCurrentCapacity();
+    Ammunition * getAmmo();
     void useAmmo();
     Ammunition * reload(Ammunition * ammo);
     std::string to_string();
     static Weapon * from_string(std::string to_read);
+    bool operator == (const Weapon& w) const { return id == w.id; }
+    bool operator != (const Weapon& w) const { return !operator==(w); }
   private:
     Ammunition * ammo;
     int damages[DAMAGE_TYPE_NUMBER];

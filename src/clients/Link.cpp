@@ -15,7 +15,7 @@ void Link::loadChoices() {
   waysIncompatibilities = new std::list<std::pair<const std::string, const std::string>>();
   try {
     Client::receiveWaysIncompabilities(s, waysIncompatibilities);
-    Client::receiveStartingPossibilites(s, attributes, ways, adventure);
+    Client::receiveStartingPossibilites(s, attributes, ways);
   } catch (const CloseException &e) {
     throw e;
   }
@@ -31,7 +31,7 @@ std::list<std::string> Link::receiveTraductionPaths() {
 
 void Link::sendChoices(std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
   try {
-    player = Client::sendChoices(s, name, attibutes, race, origin, culture, religion, profession, adventure);
+    player = Client::sendChoices(s, name, attibutes, race, origin, culture, religion, profession);
   } catch (const CloseException &e) {
     throw e;
   }
@@ -39,7 +39,7 @@ void Link::sendChoices(std::string name, std::string attibutes, std::string race
 
 MapDisplay * Link::receiveMap() {
   try {
-    MapDisplay * map = Client::receiveMap(s, adventure);
+    MapDisplay * map = Client::receiveMap(s);
     for(CharacterDisplay * display : map->characters) {
       if(display->id == player->id) {
         player->move(display->y + map->offsetY, display->x + map->offsetX, display->orientation);
@@ -54,9 +54,9 @@ MapDisplay * Link::receiveMap() {
   }
 }
 
-void Link::sendAction(int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon) {
+void Link::sendAction(int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object) {
   try {
-    Client::sendAction(s, type, orientation, projectile, skill, target, item, weapon, adventure);
+    Client::sendAction(s, type, orientation, skill, target_id, target_x, target_y, object);
   } catch (const CloseException &e) {
     throw e;
   }

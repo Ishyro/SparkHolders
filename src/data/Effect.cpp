@@ -83,43 +83,48 @@ int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }
 float Effect::getDamageReductionFromType(int damage_type) { return damage_reductions[damage_type]; }
 
 std::string Effect::to_string() {
-  std::string msg = name + ".";
-  msg += std::to_string(type) + ".";
-  msg += std::to_string(duration_type) + ".";
-  msg += std::to_string(power) + ".";
-  msg += std::to_string(duration) + ".";
-  msg += std::to_string(tick_left) + ".";
+  std::string msg = name + "/";
+  msg += std::to_string(type) + "/";
+  msg += std::to_string(duration_type) + "/";
+  msg += std::to_string(power) + "/";
+  msg += std::to_string(duration) + "/";
+  msg += std::to_string(tick_left) + "/";
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damages[i]) + ".";
+    msg += std::to_string(damages[i]) + "/";
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damage_reductions[i]) + ".";
+    msg += std::to_string(damage_reductions[i]) + "/";
   }
   return msg;
 }
 
 Effect * Effect::from_string(std::string msg) {
-  std::string name = msg.substr(0, msg.find('.'));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
-  int type = stoi(msg.substr(0, msg.find('.')));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
-  int duration_type = stoi(msg.substr(0, msg.find('.')));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
-  int power = stoi(msg.substr(0, msg.find('.')));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
-  int duration = stoi(msg.substr(0, msg.find('.')));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
-  int tick_left = stoi(msg.substr(0, msg.find('.')));
-  msg = msg.substr(msg.find('.') + 1, msg.length());
+  std::string name = msg.substr(0, msg.find('/'));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int type = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int duration_type = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int power = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int duration = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int tick_left = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
   int damages[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] = stoi(msg.substr(0, msg.find('.')));
-    msg = msg.substr(msg.find('.') + 1, msg.length());
+    damages[i] = stoi(msg.substr(0, msg.find('/')));
+    msg = msg.substr(msg.find('/') + 1, msg.length());
   }
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damage_reductions[i] = stof(msg.substr(0, msg.find('.')));
-    msg = msg.substr(msg.find('.') + 1, msg.length());
+    std::string float_value = msg.substr(0, msg.find('/'));
+    damage_reductions[i] = stof(float_value);
+    if(damage_reductions[i] == 0) {
+      std::replace(float_value.begin(), float_value.end(), '.', ',');
+      damage_reductions[i] = stof(float_value);
+    }
+    msg = msg.substr(msg.find('/') + 1, msg.length());
   }
   return new Effect(name, type, duration_type, power, duration, tick_left, damages, damage_reductions);
  }

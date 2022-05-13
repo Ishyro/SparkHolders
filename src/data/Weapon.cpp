@@ -30,11 +30,20 @@ int Weapon::getDamageFromType(int damage_type) {
   return damage;
 }
 
-int Weapon::getCurrentCapacity() { return ammo->number; }
+int Weapon::getCurrentCapacity() {
+  if(this->ammo != nullptr) {
+    return ammo->number;
+  } else {
+    return 0;
+  }
+}
+
+Ammunition * Weapon::getAmmo() { return ammo; }
 
 void Weapon::useAmmo() {
   if(this->ammo != nullptr && --this->ammo->number == 0) {
     delete this->ammo;
+    this->ammo = nullptr;
   }
 }
 

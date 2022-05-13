@@ -3,6 +3,8 @@
 
 #include <list>
 
+#include "data/Item.h"
+#include "data/Weapon.h"
 #include "Values.h"
 
 class Gear {
@@ -27,25 +29,50 @@ class Gear {
       weapon(weapon)
     {}
     Gear(const Gear * gear):
-      head(gear->head),
-      arms(gear->arms),
-      legs(gear->legs),
-      body(gear->body),
-      left_ring(gear->left_ring),
-      right_ring(gear->right_ring),
-      amulet(gear->amulet),
-      weapon(gear->weapon)
+      head(nullptr),
+      arms(nullptr),
+      legs(nullptr),
+      body(nullptr),
+      left_ring(nullptr),
+      right_ring(nullptr),
+      amulet(nullptr),
+      weapon(nullptr)
+    {
+      if(gear->head != nullptr) {
+        head = new Item(gear->head);
+      }
+      if(gear->arms != nullptr) {
+        arms = new Item(gear->arms);
+      }
+      if(gear->legs != nullptr) {
+        legs = new Item(gear->legs);
+      }
+      if(gear->body != nullptr) {
+        body = new Item(gear->body);
+      }
+      if(gear->left_ring != nullptr) {
+        left_ring = new Item(gear->left_ring);
+      }
+      if(gear->right_ring != nullptr) {
+        right_ring = new Item(gear->right_ring);
+      }
+      if(gear->amulet != nullptr) {
+        amulet = new Item(gear->amulet);
+      }
+      if(gear->weapon != nullptr) {
+        weapon = new Weapon(gear->weapon);
+      }
+    }
+    Gear():
+      head(nullptr),
+      arms(nullptr),
+      legs(nullptr),
+      body(nullptr),
+      left_ring(nullptr),
+      right_ring(nullptr),
+      amulet(nullptr),
+      weapon(nullptr)
     {}
-      Gear():
-        head(nullptr),
-        arms(nullptr),
-        legs(nullptr),
-        body(nullptr),
-        left_ring(nullptr),
-        right_ring(nullptr),
-        amulet(nullptr),
-        weapon(nullptr)
-      {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
     Item * unequip(int type);

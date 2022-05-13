@@ -37,12 +37,10 @@ class Projectile {
     const long id = ++projectile::id_cpt;
     const std::string name;
     const int projectile_type;
-    const int target_type;
     const bool homing;
     Projectile(
       const std::string name,
       int projectile_type,
-      int target_type,
       bool homing,
       Skill * skill,
       int speed,
@@ -54,7 +52,6 @@ class Projectile {
     ):
       name(name),
       projectile_type(projectile_type),
-      target_type(target_type),
       homing(homing),
       skill(skill),
       speed(speed),
@@ -65,6 +62,7 @@ class Projectile {
       waste_per_hit(waste_per_hit)
     {
       lost = false;
+      current_map_id = 0;
       x = 0;
       y = 0;
       dest_x = 0;
@@ -75,10 +73,13 @@ class Projectile {
       overcharge = 0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
+        this->current_damages[i] = damages[i];
       }
     }
     Projectile(
       const Projectile * projectile,
+      int added_damages[DAMAGE_TYPE_NUMBER],
+      int current_map_id,
       int x,
       int y,
       int dest_x,
@@ -90,8 +91,8 @@ class Projectile {
     ):
       name(projectile->name),
       projectile_type(projectile->projectile_type),
-      target_type(projectile->target_type),
       homing(projectile->homing),
+      current_map_id(current_map_id),
       x(x),
       y(y),
       dest_x(dest_x),
@@ -102,18 +103,22 @@ class Projectile {
       orientation(orientation),
       speed(projectile->speed),
       area(projectile->area),
-      overcharge(projectile->overcharge),
+      overcharge(overcharge),
       waste_per_tile(projectile->waste_per_tile),
       waste_per_tile_area(projectile->waste_per_tile_area),
       waste_per_hit(projectile->waste_per_hit)
     {
       lost = false;
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = projectile->damages[i] + added_damages[i];
+        this->current_damages[i] = projectile->current_damages[i] + added_damages[i];
+      }
     }
     Projectile(
       const std::string name,
       int projectile_type,
-      int target_type,
       bool homing,
+      int current_map_id,
       int x,
       int y,
       int dest_x,
@@ -132,8 +137,8 @@ class Projectile {
     ):
       name(name),
       projectile_type(projectile_type),
-      target_type(target_type),
       homing(homing),
+      current_map_id(current_map_id),
       x(x),
       y(y),
       dest_x(dest_x),
@@ -152,6 +157,7 @@ class Projectile {
       lost = false;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
+        this->current_damages[i] = damages[i];
       }
     }
     int getX();
@@ -183,10 +189,13 @@ class Projectile {
     static ProjectileDisplay * from_string(std::string to_read);
     static Projectile * full_from_string(std::string to_read);
     static Ammunition * ammo_from_string(std::string to_read);
+    bool operator == (const Projectile& p) const { return id == p.id; }
+    bool operator != (const Projectile& p) const { return !operator==(p); }
   private:
-    long current_map_id;
+    int current_map_id;
     int x;
     int y;
+    int target_type;
     int dest_x;
     int dest_y;
     bool lost;
@@ -201,6 +210,7 @@ class Projectile {
     float waste_per_tile_area;
     float waste_per_hit;
     int damages[DAMAGE_TYPE_NUMBER];
+    int current_damages[DAMAGE_TYPE_NUMBER];
     void nextOrientation();
 };
 

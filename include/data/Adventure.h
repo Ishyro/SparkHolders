@@ -74,7 +74,8 @@ class Adventure {
     Database * getDatabase();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
-    std::list<Character *> getNPCs();
+    std::list<Character *> getCharacters();
+    Character * getCharacter(long id);
     std::list<Projectile *> getProjectiles();
     std::list<Action *> getNPCsActions();
     void executeActions(std::list<Action *> actions);

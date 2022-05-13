@@ -40,6 +40,8 @@ class Way {
     std::list<Skill *> getSkills();
     std::string to_string();
     static Way * from_string(std::string to_read);
+    bool operator == (const Way& w) const { return name == w.name; }
+    bool operator != (const Way& w) const { return !operator==(w); }
   private:
     std::list<Effect *> effects;
     std::list<Skill *> skills;

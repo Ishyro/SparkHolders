@@ -1,7 +1,3 @@
-#include "data/Item.h"
-#include "data/Weapon.h"
-#include "data/Projectile.h"
-
 #include "data/Gear.h"
 
 std::list<Item *> Gear::equip(Item * new_item) {

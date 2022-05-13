@@ -17,6 +17,8 @@ class Speech {
       name(name),
       content(content)
     {}
+    bool operator == (const Speech& s) const { return name == s.name; }
+    bool operator != (const Speech& s) const { return !operator==(s); }
 };
 
 #endif // _SPEECH_H_

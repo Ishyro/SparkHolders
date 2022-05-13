@@ -426,7 +426,6 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
-    int target_type = database->getTargetFromMacro(values.at("target_type"));
     std::istringstream is(values.at("homing"));
     bool homing;
     is >> std::boolalpha >> homing;
@@ -437,9 +436,9 @@ namespace FileOpener {
     }
     int speed = stoi(values.at("speed"));
     int area = stoi(values.at("area"));
-    float waste_per_tile = stoi(values.at("waste_per_tile"));
-    float waste_per_tile_area = stoi(values.at("waste_per_tile_area"));
-    float waste_per_hit = stoi(values.at("waste_per_hit"));
+    float waste_per_tile = stof(values.at("waste_per_tile"));
+    float waste_per_tile_area = stof(values.at("waste_per_tile_area"));
+    float waste_per_hit = stof(values.at("waste_per_hit"));
     int damages[DAMAGE_TYPE_NUMBER];
     damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
     damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
@@ -451,7 +450,7 @@ namespace FileOpener {
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Projectile * projectile = new Projectile(name, projectile_type, target_type, homing, skill, speed, area, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
+    Projectile * projectile = new Projectile(name, projectile_type, homing, skill, speed, area, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
     database->addProjectile(projectile);
   }
 

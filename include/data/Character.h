@@ -18,8 +18,12 @@ typedef struct CharacterDisplay {
   std::string name;
   int id;
   int hp;
+  int maxHp;
   int mana;
+  int maxMana;
   int soulBurn;
+  int soulBurnTreshold;
+  int flow;
   bool player_character;
   int type;
   long x;
@@ -256,7 +260,7 @@ class Character {
     void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
-    Projectile * shoot();
+    Projectile * shoot(const Character * target, int y, int x);
     void reload(Ammunition * ammo);
     void attack(Character * target);
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
@@ -265,9 +269,10 @@ class Character {
     std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
     static Character * full_from_string(std::string to_read);
+    bool operator == (const Character& c) const { return id == c.id; }
+    bool operator != (const Character& c) const { return !operator==(c); }
 
   private:
-    static long id_cpt;
     int x;
     int y;
     int orientation;

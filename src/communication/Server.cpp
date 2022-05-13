@@ -27,21 +27,45 @@ namespace Server {
       case MOVE: {
         int orientation = stoi(msg.substr(0, msg.find('@')));
         msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(MOVE, user, orientation, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "");
+      }
+      case REST:
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
+      case SHOOT: {
+        int orientation = stoi(msg.substr(0, msg.find('@')));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        const Character * target = adventure->getCharacter(stoi(msg.substr(0, msg.find('@'))));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        int target_x = stoi(msg.substr(0, msg.find('@')));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        int target_y = stoi(msg.substr(0, msg.find('@')));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "");
+      }
+      case RELOAD: {
+        std::string object = msg.substr(0, msg.find('@'));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object);
+      }
+      case SWAP_GEAR: {
+        std::string object = msg.substr(0, msg.find('@'));
+        msg = msg.substr(msg.find('@') + 1, msg.length());
+        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object);
       }
       case CHANGE_MAP: {
         MapLink * link = adventure->getWorld()->getMapLink(user->getX(), user->getY(), user->getCurrentMapId());
         if(link != nullptr) {
-          return new Action(CHANGE_MAP, user, 0, nullptr, nullptr, nullptr, link, nullptr, nullptr);
+          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "");
         }
-        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
       }
       case GRAB:
-        return new Action(GRAB, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-      case REST:
-        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
+      case USE_SKILL:
+      case USE_ITEM:
+      case ECONOMICS:
       default:
-        return new Action(REST, user, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
     }
   }
 

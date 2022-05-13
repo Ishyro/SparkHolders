@@ -54,8 +54,9 @@ class Item {
     float getDamageReductionFromType(int damage_type);
     std::string to_string();
     static Item * from_string(std::string to_read);
+    bool operator == (const Item& i) const { return id == i.id; }
+    bool operator != (const Item& i) const { return !operator==(i); }
   private:
-    static long id_cpt;
     float damage_reductions[DAMAGE_TYPE_NUMBER];
 };
 

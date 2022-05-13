@@ -9,8 +9,13 @@
 
 #include "utils/FileOpener.h"
 
+namespace effect {
+  static long id_cpt = 0;
+}
+
 class Effect {
   public:
+    const long id = ++effect::id_cpt;
     const std::string name;
     const int type;
     const int duration_type;
@@ -81,6 +86,8 @@ class Effect {
     bool tick(Character * target); // if true, delete effect
     std::string to_string();
     static Effect * from_string(std::string msg);
+    bool operator == (const Effect& e) const { return id == e.id; }
+    bool operator != (const Effect& e) const { return !operator==(e); }
   private:
     int tick_left;
     int damages[DAMAGE_TYPE_NUMBER];

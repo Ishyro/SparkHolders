@@ -79,6 +79,7 @@ void Map::crumble(long y, long x) {
       if(character->type == WALL) {
         removeCharacter(character);
         delete character;
+        character = nullptr;
       }
       else break;
     }
@@ -117,12 +118,14 @@ void Map::killCharacter(Character * killer, Character * victim) {
   }
   killer->gainXP(victim->getXP() / 2);
   delete victim;
+  victim = nullptr;
 }
 
 void Map::removeProjectile(Projectile * p) { projectiles.remove(p); }
 void Map::destroyProjectile(Projectile * p) {
   projectiles.remove(p);
   delete p;
+  p = nullptr;
 }
 
 void Map::removeLoot(Loot * l) { loots.remove(l); }
@@ -130,6 +133,7 @@ void Map::removeLoot(Loot * l) { loots.remove(l); }
 void Map::destroyLoot(Loot * l) {
   loots.remove(l);
   delete l;
+  l = nullptr;
 }
 
 void Map::takeLoot(Character * c) {
@@ -146,6 +150,7 @@ void Map::takeLoot(Character * c) {
         c->addAmmunition(a);
       }
       delete l;
+      l = nullptr;
     }
   }
 }
@@ -240,8 +245,8 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
   }
 }
 
-void Map::actProjectile(Projectile * p, Adventure * adventure) {
-  for(int i = 0; i <= p->getSpeed(); i++) {
+bool Map::actProjectile(Projectile * p, Adventure * adventure) {
+  for(int i = 0; i < p->getSpeed(); i++) {
     p->move();
     if(p->isAtDest()) {
       p->setLost(true);
@@ -264,17 +269,25 @@ void Map::actProjectile(Projectile * p, Adventure * adventure) {
       }
     }
     if(p->noDamage()) {
-      projectiles.remove(p);
-      delete p;
-      break;
+      return true;
     }
   }
+  return false;
 }
 
 void Map::actAllProjectiles(Adventure * adventure) {
-  for(Projectile * p : projectiles) {
-    actProjectile(p, adventure);
+  std::list<Projectile *> new_projectiles;
+  for(Projectile * projectile : projectiles) {
+    if(projectile != nullptr) {
+      if(actProjectile(projectile, adventure)) {
+        delete projectile;
+      } else {
+        new_projectiles.push_back(projectile);
+      }
+    }
   }
+  projectiles.clear();
+  projectiles = new_projectiles;
 }
 
 std::string Map::to_string(Character * player, Adventure * adventure) {

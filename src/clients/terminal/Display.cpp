@@ -65,7 +65,7 @@ namespace Display {
     mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
     for(int y = display->sizeY - 1; y >= 0; y--) {
       for(int x = 0; x < display->sizeX; x++) {
-        std::string to_print = "·"; // middle dot - ·
+        std::string to_print = "·";
         if(display->tiles[y][x]->untraversable) {
           to_print = "#";
         }
@@ -101,7 +101,36 @@ namespace Display {
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
-      std::string to_print = "\"";
+      std::string to_print = "";
+      switch(projectile->orientation) {
+        case NORTH:
+          to_print = "↑";
+          break;
+        case NORTH_EAST:
+          to_print = "↗";
+          break;
+        case EAST:
+          to_print = "→";
+          break;
+        case SOUTH_EAST:
+          to_print = "↘";
+          break;
+        case SOUTH:
+          to_print = "↓";
+          break;
+        case SOUTH_WEST:
+          to_print = "↙";
+          break;
+        case WEST:
+          to_print = "←";
+          break;
+        case NORTH_WEST:
+          to_print = "↖";
+          break;
+        case NO_ORIENTATION:
+          to_print = "•";
+          break;
+      }
       wattron(screen, COLOR_PAIR(RED));
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - projectile->y, projectile->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
@@ -216,6 +245,37 @@ namespace Display {
     mvwprintw(screen, 10, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
     mvwprintw(screen, 12, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
     mvwprintw(screen, 13, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
+    wrefresh(screen);
+  }
+
+
+
+  void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wclear(screen);
+    box(screen, ACS_VLINE, ACS_HLINE);
+    std::string to_print = target->name + ", " + target->team;
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(target->hp) + std::string(" / ") + std::to_string(target->maxHp)).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(target->mana) + std::string(" / ") + std::to_string(target->maxMana)).c_str());
+    mvwprintw(screen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(target->soulBurn) + std::string(" / ") + std::to_string(target->soulBurnTreshold)).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(target->flow)).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(target->armor)).c_str());
+
+    mvwprintw(screen, 7, 1, t->getStandardName("Damages and Reductions").c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(target->armor)).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(target->damages[SLASH_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[SLASH_DAMAGE])).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[PUNCTURE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[PUNCTURE_DAMAGE])).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[IMPACT_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[IMPACT_DAMAGE])).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[FIRE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FIRE_DAMAGE])).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("THUNDER") + std::string(": ") + std::to_string(target->damages[THUNDER_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[THUNDER_DAMAGE])).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[COLD_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[COLD_DAMAGE])).c_str());
+    mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[POISON_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[POISON_DAMAGE])).c_str());
+    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[NEUTRAL_DAMAGE])).c_str());
+    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[TRUE_DAMAGE])).c_str());
+    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[SOUL_DAMAGE])).c_str());
     wrefresh(screen);
   }
 
@@ -905,5 +965,295 @@ namespace Display {
     result[5] = selectedReligion->name;
     result[6] = selectedProfession->name;
     return result;
+  }
+
+  void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t) {
+    while(true) {
+      MapDisplay * display = link->receiveMap();
+      displayMap(display, link->getPlayer(), mapScreen, t);
+      displayStats(link->getPlayer(), statsScreen, t);
+      displayCommands(targetScreen, t);
+      bool done = false;
+      int type;
+      int orientation = NO_ORIENTATION;
+      Skill * skill = nullptr;
+      int target_id = 0;
+      int target_x = link->getPlayer()->getX() - display->offsetX;
+      int target_y = link->getPlayer()->getY() - display->offsetY;
+      std::string object = "";
+      while(!done) {
+        flushinp();
+        int keyPressed = getch();
+        switch(keyPressed) {
+          case '5':
+            type = REST;
+            done = true;
+            break;
+          case '1':
+            type = MOVE;
+            orientation = SOUTH_WEST;
+            done = true;
+            break;
+          case '2':
+          case KEY_DOWN:
+            type = MOVE;
+            orientation = SOUTH;
+            done = true;
+            break;
+          case '3':
+            type = MOVE;
+            orientation = SOUTH_EAST;
+            done = true;
+            break;
+          case '4':
+          case KEY_LEFT:
+            type = MOVE;
+            orientation = WEST;
+            done = true;
+            break;
+          case '6':
+          case KEY_RIGHT:
+            type = MOVE;
+            orientation = EAST;
+            done = true;
+            break;
+          case '7':
+            type = MOVE;
+            orientation = NORTH_WEST;
+            done = true;
+            break;
+          case '8':
+          case KEY_UP:
+            type = MOVE;
+            orientation = NORTH;
+            done = true;
+            break;
+          case '9':
+            type = MOVE;
+            orientation = NORTH_EAST;
+            done = true;
+            break;
+          case '<':
+          case '>':
+            type = CHANGE_MAP;
+            done = true;
+            break;
+          case ' ':
+            type = GRAB;
+            done = true;
+            break;
+          case 'x':
+          case 'X':
+            type = USE_SKILL;
+            skill = selectSkill(displayScreen, link->getPlayer()->getSkills(), t);
+            if(skill != nullptr && selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
+              done = true;
+            }
+            break;
+          case 'c':
+          case 'C':
+            type = SHOOT;
+            if(selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
+              done = true;
+            }
+            break;
+          case 'v':
+          case 'V':
+            type = SWAP_GEAR;
+            object = "TXT_SHORT_BOW";
+            done = true;
+            break;
+          case 'b':
+          case 'B':
+            type = RELOAD;
+            object = "TXT_WOOD_ARROW";
+            done = true;
+            break;
+          default:
+            ;
+        }
+      }
+      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object);
+      for(CharacterDisplay * character : display->characters) {
+        delete character;
+      }
+      for(ProjectileDisplay * projectile : display->projectiles) {
+        delete projectile;
+      }
+      for(std::vector<Tile *> tiles : display->tiles) {
+        for(Tile * tile : tiles) {
+          delete tile;
+        }
+      }
+      delete display;
+    }
+  }
+
+
+  Skill * selectSkill(WINDOW * displayScreen, std::list<Skill *> skills, Translator * t) {
+    return nullptr;
+  }
+
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t) {
+    bool done = false;
+    int lines = 0;
+    int cols = 0;
+    int player_x = target_x;
+    int player_y = target_y;
+    getmaxyx(mapScreen, lines, cols);
+    cchar_t *wch_old = new cchar_t();
+    mvwin_wch(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2, wch_old);
+    while(!done) {
+      flushinp();
+      int keyPressed = getch();
+      target_id = 0;
+      wmove(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2);
+      wecho_wchar(mapScreen, wch_old);
+      switch(keyPressed) {
+        case '4':
+        case KEY_LEFT:
+          if(target_x > 0) {
+            target_x--;
+          }
+          break;
+        case '7':
+          if(target_x > 0 && target_y < display->sizeY - 1) {
+            target_x--;
+            target_y++;
+          }
+          break;
+        case '8':
+        case KEY_UP: {
+          if(target_y < display->sizeY - 1) {
+            target_y++;
+          }
+          break;
+        }
+        case '9': {
+          if(target_x < display->sizeX - 1 && target_y < display->sizeY - 1) {
+            target_x++;
+            target_y++;
+          }
+          break;
+        }
+        case '6':
+        case KEY_RIGHT:
+          if(target_x < display->sizeX - 1) {
+            target_x++;
+          }
+          break;
+        case '3':
+          if(target_x < display->sizeX - 1 && target_y > 0) {
+            target_x++;
+            target_y--;
+          }
+          break;
+        case '2':
+        case KEY_DOWN: {
+          if(target_y > 0) {
+            target_y--;
+          }
+          break;
+        }
+        case '1':
+          if(target_x > 0 && target_y > 0) {
+            target_x--;
+            target_y--;
+          }
+          break;
+        case '\n': {
+          done = true;
+          float x = target_x - player_x;
+          float y = target_y - player_y;
+          if(y > 0.) {
+            if(x == 0.) {
+                orientation = NORTH;
+            } else {
+              float ratio = y / x;
+              if(ratio > -2.) {
+                  orientation = NORTH_WEST;
+              }
+              else if(ratio > -0.5) {
+                  orientation = WEST;
+              }
+              else if(ratio > 0.) {
+                  orientation = EAST;
+              }
+              else if(ratio > 0.5) {
+                  orientation = NORTH_EAST;
+              }
+              else if(ratio > 2.) {
+                  orientation = NORTH;
+              }
+              else {
+                orientation = NORTH;
+              }
+            }
+          }
+          else if(y < 0.) {
+            if(x == 0.) {
+                orientation = SOUTH;
+            } else {
+              float ratio = y / x;
+              if(ratio > -2.) {
+                  orientation = SOUTH_EAST;
+              }
+              else if(ratio > -0.5) {
+                  orientation = EAST;
+              }
+              else if(ratio > 0.) {
+                  orientation = WEST;
+              }
+              else if(ratio > 0.5) {
+                  orientation = SOUTH_WEST;
+              }
+              else if(ratio > 2.) {
+                  orientation = SOUTH;
+              }
+              else {
+                orientation = SOUTH;
+              }
+            }
+          }
+          // y == 0
+          else {
+            if(x > 0.) {
+              orientation = EAST;
+            }
+            else if(x < 0.) {
+              orientation = WEST;
+            }
+          }
+          target_x += display->offsetX;
+          target_y += display->offsetY;
+          break;
+        }
+        case ' ': {
+          done = true;
+          target_x = player_x;
+          target_y = player_y;
+          return false;
+        }
+        default:
+          ;
+      }
+      wclear(targetScreen);
+      box(targetScreen, ACS_VLINE, ACS_HLINE);
+      wrefresh(targetScreen);
+      for(CharacterDisplay * character : display->characters) {
+        if(character->x == target_x && character->y == target_y) {
+          target_id = character->id;
+          displayTarget(character, targetScreen, t);
+          break;
+        }
+      }
+      wmove(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2);
+      win_wch(mapScreen, wch_old);
+      wattron(mapScreen, COLOR_PAIR(BACK_RED));
+      wprintw(mapScreen, "X");
+      wattroff(mapScreen, COLOR_PAIR(BACK_RED));
+      wrefresh(mapScreen);
+    }
+    return true;
   }
 }

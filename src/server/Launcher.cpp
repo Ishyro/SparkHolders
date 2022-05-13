@@ -33,6 +33,7 @@ void startCommunication(Link ** link, ServerSocket ss, Adventure * adventure) {
       done = true;
     } catch (CloseException &e) {
       delete *link;
+      *link = nullptr;
     }
   }
 }

@@ -12,32 +12,32 @@ class Action {
   public:
     const int type;
     const int orientation;
-    const Projectile * projectile;
     const Skill * skill;
     const Character * target;
+    const int target_x;
+    const int target_y;
     const MapLink * link;
-    const Item * item;
-    const Weapon * weapon;
+    const std::string object;
     Action(
       const int type,
       Character * user,
       const int orientation,
-      const Projectile * projectile,
       const Skill * skill,
       const Character * target,
+      const int target_x,
+      const int target_y,
       const MapLink * link,
-      const Item * item,
-      const Weapon * weapon
+      const std::string object
     ):
       type(type),
       user(user),
       orientation(orientation),
-      projectile(projectile),
       skill(skill),
       target(target),
+      target_x(target_x),
+      target_y(target_y),
       link(link),
-      item(item),
-      weapon(weapon)
+      object(object)
     {}
     void execute(Adventure * adventure);
     Character * getUser();

@@ -132,17 +132,28 @@ std::list<Way *> Adventure::getStartingWays() { return startingWays; }
 Database * Adventure::getDatabase() { return database; }
 void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
-std::list<Character *> Adventure::getNPCs() {
-  std::list<Character *> npcs = std::list<Character *>();
+std::list<Character *> Adventure::getCharacters() {
+  std::list<Character *> characters = std::list<Character *>();
   for (auto pair : world->getMaps()) {
     for (Character * character : pair.second->getCharacters()) {
       // no check on player_character, because we want mind controlled players to act as npc
       // this imply that the player AI needs to send nullptr when asked for an Action
       // otherwise players will have 2 Actions per round
-      npcs.push_back(character);
+      characters.push_back(character);
     }
   }
-  return npcs;
+  return characters;
+}
+
+Character * Adventure::getCharacter(long id) {
+  if(id != 0) {
+    for(Character * c : getCharacters()) {
+      if(id == c->id) {
+        return c;
+      }
+    }
+  }
+  return nullptr;
 }
 
 std::list<Projectile *> Adventure::getProjectiles() {
@@ -202,7 +213,7 @@ std::string Adventure::getTime() {
 
 std::list<Action *> Adventure::getNPCsActions() {
   std::list<Action *> actions = std::list<Action *>();
-  for(Character * npc : getNPCs()) {
+  for(Character * npc : getCharacters()) {
     Action * action = npc->getAI()->getAction(this, npc);
     if(action != nullptr) {
       actions.push_back(action);
@@ -218,6 +229,7 @@ void Adventure::executeActions(std::list<Action *> actions) {
       action->execute(this);
     }
     delete action;
+    action = nullptr;
   }
 }
 
@@ -251,7 +263,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
 }
 
 void Adventure::applySoulBurn() {
-  for(Character * c : getNPCs()) {
+  for(Character * c : getCharacters()) {
     c->applySoulBurn();
     if(!c->isAlive()) {
       getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
@@ -260,7 +272,7 @@ void Adventure::applySoulBurn() {
 }
 
 void Adventure::applyLevelUps() {
-  for(Character * c : getNPCs()) {
+  for(Character * c : getCharacters()) {
     c->gainLevel();
   }
 }

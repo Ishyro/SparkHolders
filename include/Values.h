@@ -175,13 +175,6 @@ class SpeechManager;
 #define BULLET 5
 #define SPECIAL 6
 
-// projectile_target_type
-
-#define SINGLE_CHARACTER 1
-#define SINGLE_TILE 2
-#define MULTIPLE_CHARACTERS 3
-#define MULTIPLE_TILES 4
-
 // character_type
 
 #define HUMAN 1
@@ -229,20 +222,22 @@ class SpeechManager;
 // speech_type
 
 #define TEXT 1
-#define SPEACH 2
+#define SPEECH 2
 #define WARNING 3
 #define ERROR 4
 
 // action_type
 
 #define MOVE 1
-#define CHANGE_MAP 2
-#define GRAB 3
-#define USE_SKILL 4
-#define USE_ITEM 5
-#define SWAP_GEAR 6
-#define ECONOMICS 7
-#define REST 8
+#define REST 2
+#define SHOOT 3
+#define RELOAD 4
+#define SWAP_GEAR 5
+#define CHANGE_MAP 6
+#define GRAB 7
+#define USE_SKILL 8
+#define USE_ITEM 9
+#define ECONOMICS 10
 
 // teams relations
 

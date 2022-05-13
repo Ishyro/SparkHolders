@@ -24,6 +24,35 @@ void Action::execute(Adventure * adventure) {
     case MOVE:
       adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation, adventure);
       break;
+    case REST:
+      break;
+    case SHOOT: {
+      user->setOrientation(orientation);
+      Projectile * projectile = user->shoot(target, target_y, target_x);
+      if(projectile != nullptr) {
+        adventure->getWorld()->getMap(user->getCurrentMapId())->addProjectile(projectile);
+      }
+      break;
+    }
+    case RELOAD:
+      for(Ammunition * ammo : user->getAmmunitions()) {
+        if(ammo->projectile->name == object) {
+          user->reload(ammo);
+        }
+      }
+      break;
+    case SWAP_GEAR:
+      for(Item * item : user->getItems()) {
+        if(item->name == object) {
+          user->equip(item);
+        }
+      }
+      for(Weapon * weapon : user->getWeapons()) {
+        if(weapon->name == object) {
+          user->equip(weapon);
+        }
+      }
+      break;
     case CHANGE_MAP:
       if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
@@ -41,7 +70,11 @@ void Action::execute(Adventure * adventure) {
     case GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user);
       break;
-    case REST:
+    case USE_SKILL:
+      break;
+    case USE_ITEM:
+      break;
+    case ECONOMICS:
       break;
     default: ;
   }

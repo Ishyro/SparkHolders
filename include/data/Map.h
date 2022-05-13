@@ -155,10 +155,12 @@ class Map {
     void destroyLoot(Loot * l);
     void takeLoot(Character * c);
     void move(Character *, int orientation, Adventure * adventure);
-    void actProjectile(Projectile * p, Adventure * adventure);
+    bool actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);
     std::string to_string(Character * player, Adventure * adventure);
     static MapDisplay * from_string(std::string to_read);
+    bool operator == (const Map& m) const { return id == m.id; }
+    bool operator != (const Map& m) const { return !operator==(m); }
   private:
     int light;
     std::list<Character *> characters;

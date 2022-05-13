@@ -13,7 +13,7 @@
 
 namespace Client {
 
-  void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways,  Adventure * adventure) {
+  void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways) {
     std::string msg;
     try {
       msg = s.read();
@@ -71,7 +71,7 @@ namespace Client {
     }
   }
 
-  MapDisplay * receiveMap(Socket s, Adventure * adventure) {
+  MapDisplay * receiveMap(Socket s) {
     try {
       return Map::from_string(s.read());
     } catch (const CloseException &e) {
@@ -79,17 +79,35 @@ namespace Client {
     }
   }
 
-  void sendAction(Socket s, int type, int orientation, ProjectileDisplay * projectile, Skill * skill, CharacterDisplay * target, Item * item, Weapon * weapon, Adventure * adventure) {
+  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object) {
     std::string msg = std::to_string(type) + "@";
     switch(type) {
       case MOVE:
         msg += std::to_string(orientation) + "@";
         break;
+      case REST:
+        break;
+      case SHOOT:
+        msg += std::to_string(orientation) + "@";
+        msg += std::to_string(target_id) + "@";
+        msg += std::to_string(target_x) + "@";
+        msg += std::to_string(target_y) + "@";
+        break;
+      case RELOAD:
+        msg += object + "@";
+        break;
+      case SWAP_GEAR:
+        msg += object + "@";
+        break;
       case CHANGE_MAP:
         break;
       case GRAB:
         break;
-      case REST:
+      case USE_SKILL:
+        break;
+      case USE_ITEM:
+        break;
+      case ECONOMICS:
         break;
       default:
         ;
@@ -101,7 +119,7 @@ namespace Client {
     }
   }
 
-  Character * sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession, Adventure * adventure) {
+  Character * sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
     try {
       s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
       return Character::full_from_string(s.read());
