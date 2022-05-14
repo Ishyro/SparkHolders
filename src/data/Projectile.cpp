@@ -32,6 +32,7 @@ Character * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
 void Projectile::move() {
+  nextOrientation();
   switch(orientation) {
     case NORTH:
       y++;
@@ -62,11 +63,12 @@ void Projectile::move() {
       x--;
       break;
   }
-  nextOrientation();
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    current_damages[damage_type] -= (int) ceil( ((float) damages[damage_type]) * waste_per_tile);
-    if(current_damages[damage_type] < 0) {
-      current_damages[damage_type] = 0;
+  if(current_travel++ >= falloff_range) {
+    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      current_damages[damage_type] -= (int) ceil( ((float) damages[damage_type]) * waste_per_tile);
+      if(current_damages[damage_type] < 0) {
+        current_damages[damage_type] = 0;
+      }
     }
   }
 }
@@ -83,28 +85,27 @@ void Projectile::nextOrientation() {
     if(target_x == 0.) {
         way_to_the_target = NORTH;
     } else {
+      way_to_the_target = NORTH;
       float ratio = target_y / target_x;
       if(ratio > -2.) {
           way_to_the_target = NORTH_WEST;
       }
-      else if(ratio > -0.5) {
+      if(ratio > -0.5) {
           way_to_the_target = WEST;
       }
-      else if(ratio > 0.) {
+      if(ratio > 0.) {
           way_to_the_target = EAST;
       }
-      else if(ratio > 0.5) {
+      if(ratio > 0.5) {
           way_to_the_target = NORTH_EAST;
       }
-      else if(ratio > 2.) {
+      if(ratio > 2.) {
           way_to_the_target = NORTH;
-      }
-      else {
-        way_to_the_target = NORTH;
       }
     }
   }
   else if(target_y < 0.) {
+    way_to_the_target = SOUTH;
     if(target_x == 0.) {
         way_to_the_target = SOUTH;
     } else {
@@ -112,20 +113,17 @@ void Projectile::nextOrientation() {
       if(ratio > -2.) {
           way_to_the_target = SOUTH_EAST;
       }
-      else if(ratio > -0.5) {
+      if(ratio > -0.5) {
           way_to_the_target = EAST;
       }
-      else if(ratio > 0.) {
+      if(ratio > 0.) {
           way_to_the_target = WEST;
       }
-      else if(ratio > 0.5) {
+      if(ratio > 0.5) {
           way_to_the_target = SOUTH_WEST;
       }
-      else if(ratio > 2.) {
+      if(ratio > 2.) {
           way_to_the_target = SOUTH;
-      }
-      else {
-        way_to_the_target = SOUTH;
       }
     }
   }
@@ -138,12 +136,11 @@ void Projectile::nextOrientation() {
       way_to_the_target = WEST;
     }
   }
-  int diff = orientation - way_to_the_target;
-  if(diff > 0) {
+  int diff = way_to_the_target - orientation;
+  if(diff > 0 || diff <= -4) {
     orientation = (orientation + 1) % 8;
-  }
-  if(diff < 0) {
-    orientation = (orientation - 1) % 8;
+  } else if(diff < 0 || diff >= 4) {
+    orientation = (8 + orientation - 1) % 8;
   }
 }
 
@@ -241,6 +238,7 @@ std::string Projectile::full_to_string() {
   msg += std::to_string(speed) + "/";
   msg += std::to_string(area) + "/";
   msg += std::to_string(overcharge) + "/";
+  msg += std::to_string(falloff_range) + "/";
   msg += std::to_string(waste_per_tile) + "/";
   msg += std::to_string(waste_per_tile_area) + "/";
   msg += std::to_string(waste_per_hit) + "/";
@@ -353,6 +351,8 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   msg = msg.substr(msg.find('/') + 1, msg.length());
   int overcharge = stoi(msg.substr(0, msg.find('/')));
   msg = msg.substr(msg.find('/') + 1, msg.length());
+  int falloff_range = stoi(msg.substr(0, msg.find('/')));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
   std::string float_value = msg.substr(0, msg.find(';'));
   float waste_per_tile = stof(float_value);
   if(waste_per_tile == 0) {
@@ -395,6 +395,7 @@ Projectile * Projectile::full_from_string(std::string to_read) {
     speed,
     area,
     overcharge,
+    falloff_range,
     waste_per_tile,
     waste_per_tile_area,
     waste_per_hit,

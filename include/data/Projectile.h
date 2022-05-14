@@ -45,6 +45,7 @@ class Projectile {
       Skill * skill,
       int speed,
       int area,
+      int falloff_range,
       float waste_per_tile,
       float waste_per_tile_area,
       float waste_per_hit,
@@ -57,6 +58,7 @@ class Projectile {
       speed(speed),
       area(area),
       overcharge(overcharge),
+      falloff_range(falloff_range),
       waste_per_tile(waste_per_tile),
       waste_per_tile_area(waste_per_tile_area),
       waste_per_hit(waste_per_hit)
@@ -71,6 +73,7 @@ class Projectile {
       owner = nullptr;
       orientation = NO_ORIENTATION;
       overcharge = 0;
+      current_travel = 0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->current_damages[i] = damages[i];
@@ -78,7 +81,7 @@ class Projectile {
     }
     Projectile(
       const Projectile * projectile,
-      int added_damages[DAMAGE_TYPE_NUMBER],
+      int realDamages[DAMAGE_TYPE_NUMBER],
       int current_map_id,
       int x,
       int y,
@@ -104,14 +107,16 @@ class Projectile {
       speed(projectile->speed),
       area(projectile->area),
       overcharge(overcharge),
+      falloff_range(projectile->falloff_range),
+      current_travel(projectile->current_travel),
       waste_per_tile(projectile->waste_per_tile),
       waste_per_tile_area(projectile->waste_per_tile_area),
       waste_per_hit(projectile->waste_per_hit)
     {
       lost = false;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        this->damages[i] = projectile->damages[i] + added_damages[i];
-        this->current_damages[i] = projectile->current_damages[i] + added_damages[i];
+        this->damages[i] = realDamages[i];
+        this->current_damages[i] = realDamages[i];
       }
     }
     Projectile(
@@ -130,6 +135,7 @@ class Projectile {
       int speed,
       int area,
       int overcharge,
+      int falloff_range,
       float waste_per_tile,
       float waste_per_tile_area,
       float waste_per_hit,
@@ -150,11 +156,13 @@ class Projectile {
       speed(speed),
       area(area),
       overcharge(overcharge),
+      falloff_range(falloff_range),
       waste_per_tile(waste_per_tile),
       waste_per_tile_area(waste_per_tile_area),
       waste_per_hit(waste_per_hit)
     {
       lost = false;
+      current_travel = 0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->current_damages[i] = damages[i];
@@ -206,6 +214,8 @@ class Projectile {
     int speed;
     int area;
     int overcharge;
+    int falloff_range;
+    int current_travel;
     float waste_per_tile;
     float waste_per_tile_area;
     float waste_per_hit;

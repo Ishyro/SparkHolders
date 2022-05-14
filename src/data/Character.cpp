@@ -430,9 +430,9 @@ void Character::attack(Character * target) {
 Projectile * Character::shoot(const Character * target, int y, int x) {
   if(!gear->getWeapon()->melee) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
-      int added_damages[DAMAGE_TYPE_NUMBER];
+      int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-        added_damages[damage_type] = getDamageFromType(damage_type);
+        realDamages[damage_type] = getDamageFromType(damage_type);
       }
       Projectile * base_projectile = gear->getWeapon()->getAmmo()->projectile;
       if(gear->getWeapon()->use_ammo) {
@@ -471,7 +471,7 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
           break;
       }
       this->orientation = orientation;
-      return new Projectile(base_projectile, added_damages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1);
+      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1);
     }
   }
   return nullptr;
@@ -491,8 +491,8 @@ void Character::reload(Ammunition * ammo) {
 
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
   if(orientation != NO_ORIENTATION) {
-    int diff = abs(orientation - this->orientation) % 8;
-    if(diff <= 1 && diff >= 7) {
+    int diff = abs(8 + orientation - this->orientation) % 8;
+    if(diff <= 1 || diff >= 7) {
       return receiveCriticalAttack(damages);
     }
   }
@@ -502,11 +502,11 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) 
   int damage = 0;
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     if(damage_type == SOUL_DAMAGE) {
-      hp -= damage;
-      payMana(damage);
+      hp -= damages[damage_type];
+      payMana(damages[damage_type]);
     }
     if(damage_type == TRUE_DAMAGE) {
-      hp -= damage;
+      hp -= damages[damage_type];
     }
     if(damage_type == NEUTRAL_DAMAGE) {
       damage += damages[damage_type];
@@ -522,11 +522,11 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   int damage = 0;
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     if(damage_type == SOUL_DAMAGE) {
-      hp -= damage * 2;
-      payMana(damage * 2);
+      hp -= damages[damage_type] * 2;
+      payMana(damages[damage_type] * 2);
     }
     if(damage_type == TRUE_DAMAGE) {
-      hp -= damage * 2;
+      hp -= damages[damage_type] * 2;
     }
     if(damage_type == NEUTRAL_DAMAGE) {
       damage += damages[damage_type] * 2;
@@ -537,8 +537,6 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   }
   hp -= std::max(0, damage - getArmor());
 }
-
-#include <iostream>
 
 std::string Character::to_string(long offsetY, long offsetX) {
   std::stringstream ss;

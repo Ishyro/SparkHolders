@@ -436,6 +436,7 @@ namespace FileOpener {
     }
     int speed = stoi(values.at("speed"));
     int area = stoi(values.at("area"));
+    int falloff_range = stoi(values.at("falloff_range"));
     float waste_per_tile = stof(values.at("waste_per_tile"));
     float waste_per_tile_area = stof(values.at("waste_per_tile_area"));
     float waste_per_hit = stof(values.at("waste_per_hit"));
@@ -450,7 +451,7 @@ namespace FileOpener {
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Projectile * projectile = new Projectile(name, projectile_type, homing, skill, speed, area, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
+    Projectile * projectile = new Projectile(name, projectile_type, homing, skill, speed, area, falloff_range, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
     database->addProjectile(projectile);
   }
 

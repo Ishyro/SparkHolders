@@ -975,7 +975,7 @@ namespace Display {
       displayCommands(targetScreen, t);
       bool done = false;
       int type;
-      int orientation = NO_ORIENTATION;
+      int orientation = link->getPlayer()->getOrientation();
       Skill * skill = nullptr;
       int target_id = 0;
       int target_x = link->getPlayer()->getX() - display->offsetX;
@@ -1169,24 +1169,22 @@ namespace Display {
             if(x == 0.) {
                 orientation = NORTH;
             } else {
+              orientation = NORTH;
               float ratio = y / x;
               if(ratio > -2.) {
                   orientation = NORTH_WEST;
               }
-              else if(ratio > -0.5) {
+              if(ratio > -0.5) {
                   orientation = WEST;
               }
-              else if(ratio > 0.) {
+              if(ratio > 0.) {
                   orientation = EAST;
               }
-              else if(ratio > 0.5) {
+              if(ratio > 0.5) {
                   orientation = NORTH_EAST;
               }
-              else if(ratio > 2.) {
+              if(ratio > 2.) {
                   orientation = NORTH;
-              }
-              else {
-                orientation = NORTH;
               }
             }
           }
@@ -1194,24 +1192,22 @@ namespace Display {
             if(x == 0.) {
                 orientation = SOUTH;
             } else {
+              orientation = SOUTH;
               float ratio = y / x;
               if(ratio > -2.) {
                   orientation = SOUTH_EAST;
               }
-              else if(ratio > -0.5) {
+              if(ratio > -0.5) {
                   orientation = EAST;
               }
-              else if(ratio > 0.) {
+              if(ratio > 0.) {
                   orientation = WEST;
               }
-              else if(ratio > 0.5) {
+              if(ratio > 0.5) {
                   orientation = SOUTH_WEST;
               }
-              else if(ratio > 2.) {
+              if(ratio > 2.) {
                   orientation = SOUTH;
-              }
-              else {
-                orientation = SOUTH;
               }
             }
           }
@@ -1224,8 +1220,6 @@ namespace Display {
               orientation = WEST;
             }
           }
-          target_x += display->offsetX;
-          target_y += display->offsetY;
           break;
         }
         case ' ': {
@@ -1254,6 +1248,8 @@ namespace Display {
       wattroff(mapScreen, COLOR_PAIR(BACK_RED));
       wrefresh(mapScreen);
     }
+    target_x += display->offsetX;
+    target_y += display->offsetY;
     return true;
   }
 }
