@@ -71,7 +71,7 @@ class SpeechManager;
 #define CLOAKED 17
 #define INVISIBLE 18
 
-// melee_type
+// weapon_type
 
 #define LONG_SWORD 1
 #define SHORT_SWORD 2
@@ -82,21 +82,18 @@ class SpeechManager;
 #define AXE 7
 #define WARHAMMER 8
 #define DAGGER 9
+#define BOW 10
+#define CROSSBOW 11
+#define MAGIC_STAFF 12
+#define RIFLE 13
+#define PISTOL 14
+#define SLING 15
 
 // melee_range
 
 #define SHORT 1
 #define STANDARD 2
 #define LONG 3
-
-// range_type
-
-#define BOW 1
-#define CROSSBOW 2
-#define MAGIC_STAFF 3
-#define RIFLE 4
-#define PISTOL 5
-#define SLING 6
 
 // weight
 
@@ -169,7 +166,7 @@ class SpeechManager;
 // projectile_type
 
 #define FIRE_FORM 1
-#define THUNDER_FORM 2
+#define LIGHTNING_FORM 2
 #define AIR 3
 #define ARROW 4
 #define BULLET 5
@@ -191,7 +188,7 @@ class SpeechManager;
 #define PUNCTURE_DAMAGE 1
 #define IMPACT_DAMAGE 2
 #define FIRE_DAMAGE 3
-#define THUNDER_DAMAGE 4
+#define LIGHTNING_DAMAGE 4
 #define COLD_DAMAGE 5
 #define POISON_DAMAGE 6
 #define NEUTRAL_DAMAGE 7 // unaffected by damage reductions, but still by armor

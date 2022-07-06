@@ -353,27 +353,27 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   msg = msg.substr(msg.find('/') + 1, msg.length());
   int falloff_range = stoi(msg.substr(0, msg.find('/')));
   msg = msg.substr(msg.find('/') + 1, msg.length());
-  std::string float_value = msg.substr(0, msg.find(';'));
+  std::string float_value = msg.substr(0, msg.find('/'));
   float waste_per_tile = stof(float_value);
   if(waste_per_tile == 0) {
     std::replace(float_value.begin(), float_value.end(), '.', ',');
     waste_per_tile = stof(float_value);
   }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  float_value = msg.substr(0, msg.find(';'));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  float_value = msg.substr(0, msg.find('/'));
   float waste_per_tile_area = stof(float_value);
   if(waste_per_tile_area == 0) {
     std::replace(float_value.begin(), float_value.end(), '.', ',');
     waste_per_tile_area = stof(float_value);
   }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  float_value = msg.substr(0, msg.find(';'));
+  msg = msg.substr(msg.find('/') + 1, msg.length());
+  float_value = msg.substr(0, msg.find('/'));
   float waste_per_hit = stof(float_value);
   if(waste_per_hit == 0) {
     std::replace(float_value.begin(), float_value.end(), '.', ',');
     waste_per_hit = stof(float_value);
   }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  msg = msg.substr(msg.find('/') + 1, msg.length());
   int damages[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = stoi(msg.substr(0, msg.find('/')));

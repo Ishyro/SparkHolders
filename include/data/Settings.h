@@ -2,7 +2,7 @@
 #define _SETTINGS_H_
 
 #define LIGHT_MAX_POWER 10
-#define LIGHT_DURATION 10
+#define LIGHT_DURATION 50
 
 #define YEAR_DURATION 500
 #define MONTH_DURATION 50

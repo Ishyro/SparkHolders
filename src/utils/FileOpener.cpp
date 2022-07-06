@@ -375,7 +375,7 @@ namespace FileOpener {
     damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
     damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
     damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
-    damage_reductions[THUNDER_DAMAGE] = stof(values.at("THUNDER_REDUCTION"));
+    damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
     damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
     damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
     damage_reductions[NEUTRAL_DAMAGE] = 0.;
@@ -445,7 +445,7 @@ namespace FileOpener {
     damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
     damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
     damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER_DAMAGE"));
+    damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
     damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
     damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
@@ -544,7 +544,7 @@ namespace FileOpener {
     damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
     damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
     damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-    damages[THUNDER_DAMAGE] = stoi(values.at("THUNDER_DAMAGE"));
+    damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
     damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
     damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));

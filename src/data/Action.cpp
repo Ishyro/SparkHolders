@@ -42,14 +42,19 @@ void Action::execute(Adventure * adventure) {
       }
       break;
     case SWAP_GEAR:
-      for(Item * item : user->getItems()) {
-        if(item->name == object) {
-          user->equip(item);
-        }
-      }
       for(Weapon * weapon : user->getWeapons()) {
         if(weapon->name == object) {
           user->equip(weapon);
+        }
+      }
+      for(Ammunition * ammo : user->getAmmunitions()) {
+        if(ammo->projectile->name == object) {
+          user->reload(ammo);
+        }
+      }
+      for(Item * item : user->getItems()) {
+        if(item->name == object) {
+          user->equip(item);
         }
       }
       break;

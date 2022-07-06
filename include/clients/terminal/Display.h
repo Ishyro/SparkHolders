@@ -32,6 +32,9 @@ namespace Display {
   void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayStats(Character * player, WINDOW * screen, Translator * t);
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t);
+  WINDOW * displayWeapon(Weapon * weapon, WINDOW * screen, Translator * t);
+  WINDOW * displayAmmo(Ammunition * ammo, WINDOW * screen, Translator * t);
+  WINDOW * displayItem(Item * item, WINDOW * screen, Translator * t);
   void displayCommands(WINDOW * screen, Translator * t);
   WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t);
   WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t);
@@ -41,6 +44,8 @@ namespace Display {
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t);
   Skill * selectSkill(WINDOW * displayScreen, std::list<Skill *> skills, Translator * t);
   bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t);
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & item_type, Translator * t);
+  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t);
 };
 
 #endif // _DISPLAY_H_

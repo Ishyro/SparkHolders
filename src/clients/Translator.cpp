@@ -33,8 +33,8 @@ Translator::Translator(std::list<std::string> bases, const std::string language)
     std::string path = base + "/" + language + "/";
     loadValuesFromFile(path + "attributesNames.data", &attributesNames);
     loadValuesFromFile(path + "attributesDescs.data", &attributesDescs);
-    loadValuesFromFile(path + "characterNames.data", &characterNames);
-    loadValuesFromFile(path + "characterDescs.data", &characterDescs);
+    loadValuesFromFile(path + "charactersNames.data", &characterNames);
+    loadValuesFromFile(path + "charactersDescs.data", &characterDescs);
     loadValuesFromFile(path + "effectsNames.data", &effectsNames);
     loadValuesFromFile(path + "effectsDescs.data", &effectsDescs);
     loadValuesFromFile(path + "itemsNames.data", &itemsNames);

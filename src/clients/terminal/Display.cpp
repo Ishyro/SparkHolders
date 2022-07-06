@@ -6,6 +6,7 @@
 
 #include "data/Attributes.h"
 #include "data/Character.h"
+#include "data/Effect.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Tile.h"
@@ -270,13 +271,127 @@ namespace Display {
     mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[PUNCTURE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[PUNCTURE_DAMAGE])).c_str());
     mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[IMPACT_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[IMPACT_DAMAGE])).c_str());
     mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[FIRE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FIRE_DAMAGE])).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("THUNDER") + std::string(": ") + std::to_string(target->damages[THUNDER_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[THUNDER_DAMAGE])).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[LIGHTNING_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[LIGHTNING_DAMAGE])).c_str());
     mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[COLD_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[COLD_DAMAGE])).c_str());
     mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[POISON_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[POISON_DAMAGE])).c_str());
     mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[NEUTRAL_DAMAGE])).c_str());
     mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[TRUE_DAMAGE])).c_str());
     mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[SOUL_DAMAGE])).c_str());
     wrefresh(screen);
+  }
+
+  WINDOW * displayWeapon(Weapon * weapon, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wattron(screen, COLOR_PAIR(WHITE));
+    std::string to_print = t->getWeaponName(weapon->name);
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    int i = 3;
+    mvwprintw(screen, i++, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("weapon_type_") + std::to_string(weapon->type))).c_str());
+    if(weapon->melee) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
+    }
+    mvwprintw(screen, i++, 1, (t->getStandardName("Weight") + std::string(": ") + std::to_string(weapon->weight)).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(weapon->gold_value)).c_str());
+    if(weapon->use_ammo) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("Capacity") + std::string(": ") + std::to_string(weapon->getCurrentCapacity()) + std::string(" / ") + std::to_string(weapon->capacity)).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Ammo type") + std::string(": ") + t->getStandardName(std::string("ammo_type_") + std::to_string(weapon->ammo_type))).c_str());
+    }
+    mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(SLASH_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(weapon->getDamageFromType(IMPACT_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(FIRE_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(weapon->getDamageFromType(COLD_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(POISON_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(weapon->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(TRUE_DAMAGE))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(SOUL_DAMAGE))).c_str());
+
+    wattroff(screen, COLOR_PAIR(WHITE));
+    // should be constants
+    int separator = (float) LINES * 3 / 5;
+    float ratio = 2.25;
+    WINDOW * descScreen = subwin(screen, lines - 3 - 1, cols - 20 - 1, separator + 3, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 20);
+    wattron(descScreen, COLOR_PAIR(WHITE));
+    print(descScreen, 0, 0, (t->getWeaponDesc(weapon->name)));
+    wattroff(descScreen, COLOR_PAIR(WHITE));
+    wrefresh(descScreen);
+    wrefresh(screen);
+    return descScreen;
+  }
+
+  WINDOW * displayAmmo(Ammunition * ammo, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wattron(screen, COLOR_PAIR(WHITE));
+    std::string to_print = t->getProjectileName(ammo->projectile->name);
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    mvwprintw(screen, 3, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("ammo_type_") + std::to_string(ammo->ammo_type))).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("Number") + std::string(": ") + std::to_string(ammo->number)).c_str());
+    mvwprintw(screen, 5, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(ammo->gold_value)).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SLASH_DAMAGE))).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(IMPACT_DAMAGE))).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(FIRE_DAMAGE))).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(COLD_DAMAGE))).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(POISON_DAMAGE))).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
+    mvwprintw(screen, 15, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(TRUE_DAMAGE))).c_str());
+    mvwprintw(screen, 16, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SOUL_DAMAGE))).c_str());
+
+    wattroff(screen, COLOR_PAIR(WHITE));
+    // should be constants
+    int separator = (float) LINES * 3 / 5;
+    float ratio = 2.25;
+    WINDOW * descScreen = subwin(screen, lines - 3 - 1, cols - 20 - 1, separator + 3, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 20);
+    wattron(descScreen, COLOR_PAIR(WHITE));
+    print(descScreen, 0, 0, (t->getProjectileDesc(ammo->projectile->name)));
+    wattroff(descScreen, COLOR_PAIR(WHITE));
+    wrefresh(descScreen);
+    wrefresh(screen);
+    return descScreen;
+  }
+
+  WINDOW * displayItem(Item * item, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wattron(screen, COLOR_PAIR(WHITE));
+    std::string to_print = t->getItemName(item->name);
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    int i = 3;
+    mvwprintw(screen, i++, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("item_type_") + std::to_string(item->type))).c_str());
+    mvwprintw(screen, i++, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(item->gold_value)).c_str());
+    if(item->consumable) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("Effects")).c_str());
+      for(Effect * effect : item->effects) {
+        mvwprintw(screen, i++, 5, (t->getEffectName(effect->name)).c_str());
+      }
+    }
+    if(item->equipable) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(item->getDamageReductionFromType(SLASH_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(item->getDamageReductionFromType(PUNCTURE_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(item->getDamageReductionFromType(IMPACT_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(item->getDamageReductionFromType(FIRE_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(item->getDamageReductionFromType(LIGHTNING_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(item->getDamageReductionFromType(COLD_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(item->getDamageReductionFromType(POISON_DAMAGE))).c_str());
+    }
+    wattroff(screen, COLOR_PAIR(WHITE));
+    // should be constants
+    int separator = (float) LINES * 3 / 5;
+    float ratio = 2.25;
+    WINDOW * descScreen = subwin(screen, lines - 3 - 1, cols - 20 - 1, separator + 3, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 20);
+    wattron(descScreen, COLOR_PAIR(WHITE));
+    print(descScreen, 0, 0, (t->getItemDesc(item->name)));
+    wattroff(descScreen, COLOR_PAIR(WHITE));
+    wrefresh(descScreen);
+    wrefresh(screen);
+    return descScreen;
   }
 
   void displayCommands(WINDOW * screen, Translator * t) {
@@ -290,6 +405,8 @@ namespace Display {
     mvwprintw(screen, 3, 1, (t->getStandardName("NUMPAD") + std::string(": ") + t->getStandardName("MOVE") + std::string(" / ") +  t->getStandardName("ATTACK")).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("5") + std::string(": ") + t->getStandardName("REST")).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("<") + std::string(": ") + t->getStandardName("OPEN")).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("I") + std::string(": ") + t->getStandardName("INVENTORY")).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("R") + std::string(": ") + t->getStandardName("RELOAD")).c_str());
     mvwprintw(screen, 6, 1, (t->getStandardName("X") + std::string(": ") + t->getStandardName("USE SKILL")).c_str());
     mvwprintw(screen, 7, 1, (t->getStandardName("C") + std::string(": ") + t->getStandardName("SHOOT")).c_str());
     mvwprintw(screen, 8, 1, (t->getStandardName("SPACEBAR") + std::string(": ") + t->getStandardName("LOOT")).c_str());
@@ -973,8 +1090,10 @@ namespace Display {
       displayMap(display, link->getPlayer(), mapScreen, t);
       displayStats(link->getPlayer(), statsScreen, t);
       displayCommands(targetScreen, t);
+      wrefresh(targetScreen);
       bool done = false;
       int type;
+      int item_type = 0;
       int orientation = link->getPlayer()->getOrientation();
       Skill * skill = nullptr;
       int target_id = 0;
@@ -1052,22 +1171,69 @@ namespace Display {
             break;
           case 'c':
           case 'C':
-            type = SHOOT;
-            if(selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
+            if(!link->getPlayer()->getGear()->getWeapon()->melee) {
+              if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+                type = SHOOT;
+                if(selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
+                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+                    link->getPlayer()->getGear()->getWeapon()->useAmmo();
+                  }
+                  done = true;
+                }
+              }
+            }
+            break;
+          case 'i':
+          case 'I':
+            type = SWAP_GEAR;
+            object = selectItem(displayScreen, targetScreen, link->getPlayer(), item_type, t);
+            if(object != "") {
+              switch(item_type) {
+                case 0:
+                  for(Weapon * weapon : link->getPlayer()->getWeapons()) {
+                    if(weapon->name == object) {
+                      link->getPlayer()->equip(weapon);
+                    }
+                  }
+                  break;
+                case 1:
+                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+                    for(Ammunition * ammo : link->getPlayer()->getAmmunitions()) {
+                      if(ammo->projectile->name == object) {
+                        link->getPlayer()->reload(ammo);
+                      }
+                    }
+                  }
+                  break;
+                case 2:
+                  for(Item * item : link->getPlayer()->getItems()) {
+                    if(item->name == object) {
+                      link->getPlayer()->equip(item);
+                    }
+                  }
+                  break;
+                default:
+                  ;
+              }
               done = true;
             }
             break;
-          case 'v':
-          case 'V':
-            type = SWAP_GEAR;
-            object = "TXT_SHORT_BOW";
-            done = true;
-            break;
-          case 'b':
-          case 'B':
+          case 'r':
+          case 'R':
             type = RELOAD;
-            object = "TXT_WOOD_ARROW";
-            done = true;
+            if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+              object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
+              if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
+              || link->getPlayer()->getGear()->getWeapon()->getAmmo()->projectile->name != object
+              || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon()->capacity)) {
+                for(Ammunition * ammo : link->getPlayer()->getAmmunitions()) {
+                  if(ammo->projectile->name == object) {
+                    link->getPlayer()->reload(ammo);
+                  }
+                }
+                done = true;
+              }
+            }
             break;
           default:
             ;
@@ -1251,5 +1417,254 @@ namespace Display {
     target_x += display->offsetX;
     target_y += display->offsetY;
     return true;
+  }
+
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & item_type, Translator * t) {
+      std::string result = "";
+      bool done = false;
+      int cursorX = 0;
+      int cursorY = 0;
+      int lines = 0;
+      int cols = 0;
+      getmaxyx(displayScreen, lines, cols);
+      int size = player->getWeapons().size() + player->getAmmunitions().size() + player->getItems().size();
+      while(!done) {
+        WINDOW * tempScreen = nullptr;
+        wclear(displayScreen);
+        wclear(targetScreen);
+        box(displayScreen, ACS_VLINE, ACS_HLINE);
+        box(targetScreen, ACS_VLINE, ACS_HLINE);
+        std::string to_print = t->getStandardName("INVENTORY");
+        mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+        int currentX = 0;
+        int currentY = 0;
+        int offset = 0;
+        int sizeX = 0;
+        int maxY = 0;
+        int color = WHITE;
+        for(Weapon * weapon : player->getWeapons()) {
+          if(currentY >= lines - 4) {
+            offset += sizeX + 3;
+            maxY = currentY - 1;
+            currentY = 0;
+            currentX++;
+          }
+          if(cursorX == currentX && cursorY == currentY) {
+            color = BLUE;
+          } else {
+            color = WHITE;
+          }
+          std::string to_print = t->getWeaponName(weapon->name);
+          if(color == BLUE) {
+            result = weapon->name;
+            item_type = 0;
+            tempScreen = displayWeapon(weapon, targetScreen, t);
+          }
+          sizeX = std::max(sizeX, (int) to_print.length());
+          wattron(displayScreen, COLOR_PAIR(color));
+          mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
+          wattroff(displayScreen, COLOR_PAIR(color));
+        }
+        for (Ammunition * ammo : player->getAmmunitions()) {
+          if(currentY >= lines - 4) {
+            offset += sizeX + 3;
+            maxY = currentY - 1;
+            currentY = 0;
+            currentX++;
+          }
+          if(cursorX == currentX && cursorY == currentY) {
+            color = BLUE;
+          } else {
+            color = WHITE;
+          }
+          std::string to_print = t->getProjectileName(ammo->projectile->name);
+          if(color == BLUE) {
+            result = ammo->projectile->name;
+            item_type = 1;
+            tempScreen = displayAmmo(ammo, targetScreen, t);
+          }
+          sizeX = std::max(sizeX, (int) to_print.length());
+          wattron(displayScreen, COLOR_PAIR(color));
+          mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
+          wattroff(displayScreen, COLOR_PAIR(color));
+        }
+        for (Item * item : player->getItems()) {
+          if(currentY >= lines - 4) {
+            offset += sizeX + 3;
+            maxY = currentY - 1;
+            currentY = 0;
+            currentX++;
+          }
+          if(cursorX == currentX && cursorY == currentY) {
+            color = BLUE;
+          } else {
+            color = WHITE;
+          }
+          std::string to_print = t->getItemName(item->name);
+          if(color == BLUE) {
+            result = item->name;
+            item_type = 2;
+            tempScreen = displayItem(item, targetScreen, t);
+          }
+          sizeX = std::max(sizeX, (int) to_print.length());
+          wattron(displayScreen, COLOR_PAIR(color));
+          mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
+          wattroff(displayScreen, COLOR_PAIR(color));
+        }
+        currentY--;
+
+        wrefresh(displayScreen);
+        wrefresh(targetScreen);
+        flushinp();
+        int keyPressed = getch();
+        switch(keyPressed) {
+          case '4':
+          case KEY_LEFT:
+            if(cursorX > 0) {
+              cursorX--;
+            }
+            break;
+          case '8':
+          case KEY_UP: {
+            if(cursorY > 0) {
+              cursorY--;
+            }
+            break;
+          }
+          case '6':
+          case KEY_RIGHT:
+            if(cursorX < currentX) {
+              cursorX++;
+            }
+            break;
+          case '2':
+          case KEY_DOWN: {
+            if(cursorY < maxY) {
+              cursorY++;
+            }
+            break;
+          }
+          case '\n':
+            done = true;
+            break;
+          case ' ':
+            done = true;
+            result = "";
+          default:
+            ;
+        }
+        if(tempScreen != nullptr) {
+          wclear(tempScreen);
+          delwin(tempScreen);
+        }
+      }
+      wclear(displayScreen);
+      wclear(targetScreen);
+      box(displayScreen, ACS_VLINE, ACS_HLINE);
+      box(targetScreen, ACS_VLINE, ACS_HLINE);
+      wrefresh(displayScreen);
+      wrefresh(targetScreen);
+      return result;
+  }
+
+  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t) {
+    std::string result = "";
+    bool done = false;
+    int cursorX = 0;
+    int cursorY = 0;
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(displayScreen, lines, cols);
+    int size = player->getWeapons().size() + player->getAmmunitions().size() + player->getItems().size();
+    while(!done) {
+      WINDOW * tempScreen = nullptr;
+      wclear(displayScreen);
+      wclear(targetScreen);
+      box(displayScreen, ACS_VLINE, ACS_HLINE);
+      box(targetScreen, ACS_VLINE, ACS_HLINE);
+      std::string to_print = t->getStandardName("INVENTORY");
+      mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+      int currentX = 0;
+      int currentY = 0;
+      int offset = 0;
+      int sizeX = 0;
+      int maxY = 0;
+      int color = WHITE;
+      for (Ammunition * ammo : player->getAmmunitions()) {
+        if(currentY >= lines - 4) {
+          offset += sizeX + 3;
+          maxY = currentY - 1;
+          currentY = 0;
+          currentX++;
+        }
+        if(cursorX == currentX && cursorY == currentY) {
+          color = BLUE;
+        } else {
+          color = WHITE;
+        }
+        std::string to_print = t->getProjectileName(ammo->projectile->name);
+        if(color == BLUE) {
+          result = ammo->projectile->name;
+          tempScreen = displayAmmo(ammo, targetScreen, t);
+        }
+        sizeX = std::max(sizeX, (int) to_print.length());
+        wattron(displayScreen, COLOR_PAIR(color));
+        mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
+        wattroff(displayScreen, COLOR_PAIR(color));
+      }
+      currentY--;
+
+      wrefresh(displayScreen);
+      wrefresh(targetScreen);
+      flushinp();
+      int keyPressed = getch();
+      switch(keyPressed) {
+        case '4':
+        case KEY_LEFT:
+          if(cursorX > 0) {
+            cursorX--;
+          }
+          break;
+        case '8':
+        case KEY_UP: {
+          if(cursorY > 0) {
+            cursorY--;
+          }
+          break;
+        }
+        case '6':
+        case KEY_RIGHT:
+          if(cursorX < currentX) {
+            cursorX++;
+          }
+          break;
+        case '2':
+        case KEY_DOWN: {
+          if(cursorY < maxY) {
+            cursorY++;
+          }
+          break;
+        }
+        case '\n':
+          done = true;
+          break;
+        case ' ':
+          done = true;
+          result = "";
+        default:
+          ;
+      }
+      if(tempScreen != nullptr) {
+        wclear(tempScreen);
+        delwin(tempScreen);
+      }
+    }
+    wclear(displayScreen);
+    wclear(targetScreen);
+    box(displayScreen, ACS_VLINE, ACS_HLINE);
+    box(targetScreen, ACS_VLINE, ACS_HLINE);
+    wrefresh(displayScreen);
+    wrefresh(targetScreen);
+    return result;
   }
 }

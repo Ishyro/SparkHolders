@@ -13,7 +13,7 @@
 
 #include "data/Character.h"
 
-void Character::applyAttributes(const Attributes * attributes) {
+void Character::applyAttributes(const Attributes * attributes, bool applyGear) {
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
   hp=maxHp;
@@ -25,7 +25,9 @@ void Character::applyAttributes(const Attributes * attributes) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
-  gear = new Gear(attributes->startingGear);
+  if(applyGear) {
+    gear = new Gear(attributes->startingGear);
+  }
 }
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
@@ -112,6 +114,7 @@ std::string Character::getTeam() { return team; }
 
 long Character::getCurrentMapId() { return current_map_id; }
 
+Gear * Character::getGear() { return gear; }
 std::list<Item *> Character::getItems() { return items; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
@@ -267,11 +270,12 @@ void Character::equip(Item * to_equip) {
 void Character::equip(Weapon * to_equip) {
   if(to_equip != nullptr) {
     Weapon * old_weapon = gear->equip(to_equip);
+    removeWeapon(to_equip);
     if(old_weapon != nullptr) {
       for(auto e : old_weapon->effects) {
         removeEffect(e);
       }
-      weapons.push_back(old_weapon);
+      addWeapon(old_weapon);
     }
     for(auto e : to_equip->effects) {
       addEffect(e);
@@ -631,23 +635,23 @@ std::string Character::full_to_string(Adventure * adventure) {
   msg += team + "@";
   msg += gear->to_string() + "@";
   for(Item * item : items) {
-    msg += item->to_string(); + "|";
+    msg += item->to_string() + "|";
   }
   msg += "@";
   for(Weapon * weapon : weapons) {
-    msg += weapon->to_string(); + "|";
+    msg += weapon->to_string() + "|";
   }
   msg += "@";
   for(Ammunition * ammo : ammunition) {
-    msg += Projectile::ammo_to_string(ammo); + "|";
+    msg += Projectile::ammo_to_string(ammo) + "|";
   }
   msg += "@";
   for(Effect * effect : effects) {
-    msg += effect->to_string(); + "|";
+    msg += effect->to_string() + "|";
   }
   msg += "@";
   for(Skill * skill : skills) {
-    msg += skill->to_string(); + "|";
+    msg += skill->to_string() + "|";
   }
   msg += "@";
   msg += ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string() + "@";

@@ -117,7 +117,7 @@ class Character {
       religion(religion),
       profession(profession)
     {
-      applyAttributes(attributes);
+      applyAttributes(attributes, true);
     }
     Character(
       std::string name,
@@ -169,9 +169,9 @@ class Character {
       religion(religion),
       profession(profession)
     {
-      applyAttributes(attributes);
+      applyAttributes(attributes, false);
     }
-    void applyAttributes(const Attributes * attributes);
+    void applyAttributes(const Attributes * attributes, bool applyGear);
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -196,6 +196,7 @@ class Character {
     AI * getAI();
     std::string getTeam();
 
+    Gear * getGear();
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();
     std::list<Ammunition *> getAmmunitions();
