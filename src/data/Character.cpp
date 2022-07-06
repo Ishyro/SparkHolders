@@ -13,6 +13,8 @@
 
 #include "data/Character.h"
 
+#include "utils/String.h"
+
 void Character::applyAttributes(const Attributes * attributes, bool applyGear) {
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
@@ -543,200 +545,170 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
 }
 
 std::string Character::to_string(long offsetY, long offsetX) {
-  std::stringstream ss;
-  ss << name << ";";
-  ss << id << ";";
-  ss << getHp() << ";";
-  ss << getMaxHp() << ";";
-  ss << getMana() << ";";
-  ss << getMaxMana() << ";";
-  ss << getCurrentSoulBurn() << ";";
-  ss << getSoulBurnTreshold() << ";";
-  ss << getFlow() << ";";
-  ss << player_character << ";";
-  ss << type << ";";
-  ss << x - offsetX << ";";
-  ss << y - offsetY << ";";
-  ss << orientation << ";";
-  ss << team << ";";
-  ss << getArmor() << ";";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_int(ss, id);
+  String::insert_int(ss, getHp());
+  String::insert_int(ss, getMaxHp());
+  String::insert_int(ss, getMana());
+  String::insert_int(ss, getMaxMana());
+  String::insert_int(ss, getCurrentSoulBurn());
+  String::insert_int(ss, getSoulBurnTreshold());
+  String::insert_int(ss, getFlow());
+  String::insert_bool(ss, player_character);
+  String::insert_int(ss, type);
+  String::insert_int(ss, x - offsetX);
+  String::insert_int(ss, y - offsetY);
+  String::insert_int(ss, orientation);
+  String::insert(ss, team);
+  String::insert_int(ss, getArmor());
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    ss << getDamageReductionFromType(i) << ";";
+    String::insert_float(ss, getDamageReductionFromType(i));
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    ss << getDamageFromType(i) << ";";
+    String::insert_int(ss, getDamageFromType(i));
   }
-  return ss.str();
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 CharacterDisplay * Character::from_string(std::string to_read) {
-  std::string msg = to_read;
   CharacterDisplay * display = new CharacterDisplay();
-  display->name = msg.substr(0, msg.find(';'));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->id = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->hp = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->maxHp = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->mana = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->maxMana = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->soulBurn = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->soulBurnTreshold = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->flow = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  std::string player_character_str = msg.substr(0, msg.find(';'));
-  display->player_character = (player_character_str == "1");
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->type = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->x = stol(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->y = stol(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->orientation = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->team = msg.substr(0, msg.find(';'));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->armor = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  display->name = String::extract(ss);
+  display->id = String::extract_int(ss);
+  display->hp = String::extract_int(ss);
+  display->maxHp = String::extract_int(ss);
+  display->mana = String::extract_int(ss);
+  display->maxMana = String::extract_int(ss);
+  display->soulBurn = String::extract_int(ss);
+  display->soulBurnTreshold = String::extract_int(ss);
+  display->flow = String::extract_int(ss);
+  display->player_character = String::extract_bool(ss);
+  display->type = String::extract_int(ss);
+  display->x = String::extract_int(ss);
+  display->y = String::extract_int(ss);
+  display->orientation = String::extract_int(ss);
+  display->team = String::extract(ss);
+  display->armor = String::extract_int(ss);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    std::string float_value = msg.substr(0, msg.find(';'));
-    display->damage_reductions[i] = stof(float_value);
-    if(display->damage_reductions[i] == 0) {
-      std::replace(float_value.begin(), float_value.end(), '.', ',');
-      display->damage_reductions[i] = stof(float_value);
-    }
-    msg = msg.substr(msg.find(';') + 1, msg.length());
+    display->damage_reductions[i] = String::extract_float(ss);
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    display->damages[i] = stoi(msg.substr(0, msg.find(';')));
-    msg = msg.substr(msg.find(';') + 1, msg.length());
+    display->damages[i] = String::extract_int(ss);
   }
+  delete ss;
   return display;
 }
 
 std::string Character::full_to_string(Adventure * adventure) {
-  std::string msg = name + "@";
-  msg += std::to_string(player_character) + "@";
-  msg += std::to_string(type) + "@";
-  msg += std::to_string(x) + "@";
-  msg += std::to_string(y) + "@";
-  msg += std::to_string(orientation) + "@";
-  msg += std::to_string(current_map_id) + "@";
-  msg += std::to_string(gold) + "@";
-  msg += std::to_string(xp) + "@";
-  msg += std::to_string(level) + "@";
-  msg += team + "@";
-  msg += gear->to_string() + "@";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_bool(ss, player_character);
+  String::insert_int(ss, type);
+  String::insert_int(ss, x);
+  String::insert_int(ss, y);
+  String::insert_int(ss, orientation);
+  String::insert_int(ss, current_map_id);
+  String::insert_int(ss, gold);
+  String::insert_int(ss, xp);
+  String::insert_int(ss, level);
+  String::insert(ss, team);
+  String::insert(ss, gear->to_string());
+  std::stringstream * ss_items = new std::stringstream();
   for(Item * item : items) {
-    msg += item->to_string() + "|";
+    String::insert(ss_items, item->to_string());
   }
-  msg += "@";
-  for(Weapon * weapon : weapons) {
-    msg += weapon->to_string() + "|";
+  String::insert(ss, ss_items->str());
+  delete ss_items;
+  std::stringstream * ss_weapons = new std::stringstream();
+  for(Weapon * _weapon : weapons) {
+    String::insert(ss_weapons, _weapon->to_string());
   }
-  msg += "@";
+  String::insert(ss, ss_weapons->str());
+  delete ss_weapons;
+  std::stringstream * ss_ammunition = new std::stringstream();
   for(Ammunition * ammo : ammunition) {
-    msg += Projectile::ammo_to_string(ammo) + "|";
+    String::insert(ss_ammunition, Projectile::ammo_to_string(ammo));
   }
-  msg += "@";
+  String::insert(ss, ss_ammunition->str());
+  delete ss_ammunition;
+  std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
-    msg += effect->to_string() + "|";
+    String::insert(ss_effects, effect->to_string());
   }
-  msg += "@";
+  String::insert(ss, ss_effects->str());
+  delete ss_effects;
+  std::stringstream * ss_skills = new std::stringstream();
   for(Skill * skill : skills) {
-    msg += skill->to_string() + "|";
+    String::insert(ss_skills, skill->to_string());
   }
-  msg += "@";
-  msg += ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string() + "@";
-  msg += race->to_string() + "@";
-  msg += origin->to_string() + "@";
-  msg += culture->to_string() + "@";
-  msg += religion->to_string() + "@";
-  msg += profession->to_string() + "@";
-  return msg;
+  String::insert(ss, ss_skills->str());
+  delete ss_skills;
+
+  String::insert(ss, ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string());
+  String::insert(ss, race->to_string());
+  String::insert(ss, origin->to_string());
+  String::insert(ss, culture->to_string());
+  String::insert(ss, religion->to_string());
+  String::insert(ss, profession->to_string());
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 Character * Character::full_from_string(std::string to_read) {
-  std::string msg = to_read;
-  std::string name = msg.substr(0, msg.find('@'));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::string player_character_str = msg.substr(0, msg.find('@'));
-  bool player_character = (player_character_str == "1");
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int type = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  long x = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  long y = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int orientation = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int current_map_id = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int gold = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int xp = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  int level = stoi(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::string team = msg.substr(0, msg.find('@'));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Gear * gear = Gear::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  std::string  name = String::extract(ss);
+  bool player_character = String::extract_bool(ss);
+  int type = String::extract_int(ss);
+  int x = String::extract_int(ss);
+  int y = String::extract_int(ss);
+  int orientation = String::extract_int(ss);
+  int current_map_id = String::extract_int(ss);
+  int gold = String::extract_int(ss);
+  int xp = String::extract_int(ss);
+  int level = String::extract_int(ss);
+  std::string team = String::extract(ss);
+  Gear * gear = Gear::from_string(String::extract(ss));
+  std::stringstream * ss_items = new std::stringstream(String::extract(ss));
   std::list<Item *> * items = new std::list<Item *>();
-  std::istringstream isItems(msg.substr(0, msg.find('@')));
-  std::string item;
-  while(getline(isItems, item, '|') && item != "") {
-    items->push_back(Item::from_string(item));
+  while(ss_items->rdbuf()->in_avail() != 0) {
+    items->push_back(Item::from_string(String::extract(ss_items)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_items;
+  std::stringstream * ss_weapons = new std::stringstream(String::extract(ss));
   std::list<Weapon *> * weapons = new std::list<Weapon *>();
-  std::istringstream isWeapons(msg.substr(0, msg.find('@')));
-  std::string weapon;
-  while(getline(isWeapons, weapon, '|') && weapon != "") {
-    weapons->push_back(Weapon::from_string(weapon));
+  while(ss_weapons->rdbuf()->in_avail() != 0) {
+    weapons->push_back(Weapon::from_string(String::extract(ss_weapons)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_weapons;
+  std::stringstream * ss_ammunition = new std::stringstream(String::extract(ss));
   std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-  std::istringstream isAmmunitions(msg.substr(0, msg.find('@')));
-  std::string ammo;
-  while(getline(isAmmunitions, ammo, '|') && ammo != "") {
-    ammunition->push_back(Projectile::ammo_from_string(ammo));
+  while(ss_ammunition->rdbuf()->in_avail() != 0) {
+    ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_ammunition)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_ammunition;
+  std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
-  std::istringstream isEffects(msg.substr(0, msg.find('@')));
-  std::string effect;
-  while(getline(isEffects, effect, '|') && effect != "") {
-    effects->push_back(Effect::from_string(effect));
+  while(ss_effects->rdbuf()->in_avail() != 0) {
+    effects->push_back(Effect::from_string(String::extract(ss_effects)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_effects;
+  std::stringstream * ss_skills = new std::stringstream(String::extract(ss));
   std::list<Skill *> * skills = new std::list<Skill *>();
-  std::istringstream isSkills(msg.substr(0, msg.find('@')));
-  std::string skill;
-  while(getline(isSkills, skill, '|') && skill != "") {
-    skills->push_back(Skill::from_string(skill));
+  while(ss_skills->rdbuf()->in_avail() != 0) {
+    skills->push_back(Skill::from_string(String::extract(ss_skills)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Attributes * attributes = Attributes::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Way * race = Way::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Way * origin = Way::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Way * culture = Way::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Way * religion = Way::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  Way * profession = Way::from_string(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_skills;
+  Attributes * attributes = Attributes::from_string(String::extract(ss));
+  Way * race = Way::from_string(String::extract(ss));
+  Way * origin = Way::from_string(String::extract(ss));
+  Way * culture = Way::from_string(String::extract(ss));
+  Way * religion = Way::from_string(String::extract(ss));
+  Way * profession = Way::from_string(String::extract(ss));
+  delete ss;
   return new Character(
     name,
     player_character,

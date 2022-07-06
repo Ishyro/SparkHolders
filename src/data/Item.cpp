@@ -4,6 +4,8 @@
 
 #include "data/Item.h"
 
+#include "utils/String.h"
+
 float Item::getDamageReductionFromType(int damage_type) {
   float reduction = damage_reductions[damage_type];
   for(Effect * e : effects) {
@@ -15,55 +17,47 @@ float Item::getDamageReductionFromType(int damage_type) {
 }
 
 std::string Item::to_string() {
-  std::string msg = name + ";";
-  msg += std::to_string(equipable) + ";";
-  msg += std::to_string(consumable) + ";";
-  msg += std::to_string(type) + ";";
-  msg += std::to_string(gold_value) + ";";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_bool(ss, equipable);
+  String::insert_bool(ss, consumable);
+  String::insert_int(ss, type);
+  String::insert_int(ss, gold_value);
+  std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
-    msg += effect->to_string(); + ",";
+    String::insert(ss_effects, effect->to_string());
   }
-  msg += ";";
+  String::insert(ss, ss_effects->str());
+  delete ss_effects;
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damage_reductions[i]) + ";";
+    String::insert_float(ss, damage_reductions[i]);
   }
-  return msg;
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 Item * Item::from_string(std::string to_read) {
-  std::string msg = to_read;
   if(to_read == "none") {
     return nullptr;
   }
-  std::string name = msg.substr(0, msg.find(';'));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  std::string equipable_str = msg.substr(0, msg.find(';'));
-  bool equipable = (equipable_str == "1");
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  std::string consumable_str = msg.substr(0, msg.find(';'));
-  bool consumable = (consumable_str == "1");
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  int type = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  int gold_value = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  std::string name = String::extract(ss);
+  bool equipable = String::extract_bool(ss);
+  bool consumable = String::extract_bool(ss);
+  int type = String::extract_int(ss);
+  int gold_value = String::extract_int(ss);
+  std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
-  std::istringstream isEffects(msg.substr(0, msg.find(';')));
-  std::string effect;
-  while(getline(isEffects, effect, ',') && effect != "") {
-    effects->push_back(Effect::from_string(effect));
+  while(ss_effects->rdbuf()->in_avail() != 0) {
+    effects->push_back(Effect::from_string(String::extract(ss_effects)));
   }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  delete ss_effects;
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    std::string float_value = msg.substr(0, msg.find(';'));
-    damage_reductions[i] = stof(float_value);
-    if(damage_reductions[i] == 0) {
-      std::replace(float_value.begin(), float_value.end(), '.', ',');
-      damage_reductions[i] = stof(float_value);
-    }
-    msg = msg.substr(msg.find(';') + 1, msg.length());
+    damage_reductions[i] = String::extract_float(ss);
   }
+  delete ss;
   return new Item(
     name,
     equipable,

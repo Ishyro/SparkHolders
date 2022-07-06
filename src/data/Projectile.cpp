@@ -5,6 +5,8 @@
 
 #include "data/Projectile.h"
 
+#include "utils/String.h"
+
 int Projectile::getX() { return x; }
 int Projectile::getY() { return y; }
 int Projectile::getDestX() {
@@ -193,192 +195,137 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
 }
 
 std::string Projectile::to_string(long offsetY, long offsetX) {
-  std::string msg = name + ";";
-  msg += std::to_string(id) + ";";
-  msg += std::to_string(projectile_type) + ";";
-  msg += std::to_string(x - offsetX) + ";";
-  msg += std::to_string(y - offsetY) + ";";
-  msg += std::to_string(orientation) + ";";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_int(ss, id);
+  String::insert_int(ss, projectile_type);
+  String::insert_int(ss, x - offsetX);
+  String::insert_int(ss, y - offsetY);
+  String::insert_int(ss, orientation);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(current_damages[i]) + ";";
+    String::insert_int(ss, current_damages[i]);
   }
-  msg += std::to_string(speed) + ";";
-  msg += std::to_string(area) + ";";
-  msg += std::to_string(waste_per_tile) + ";";
-  msg += std::to_string(waste_per_tile_area) + ";";
-  msg += std::to_string(waste_per_hit) + ";";
-  return msg;
+  String::insert_int(ss, speed);
+  String::insert_int(ss, area);
+  String::insert_float(ss, waste_per_tile);
+  String::insert_float(ss, waste_per_tile_area);
+  String::insert_float(ss, waste_per_hit);
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 std::string Projectile::full_to_string() {
-  std::string msg = name + "/";
-  msg += std::to_string(projectile_type) + "/";
-  msg += std::to_string(homing) + "/";
-  msg += std::to_string(current_map_id) + "/";
-  msg += std::to_string(x) + "/";
-  msg += std::to_string(y) + "/";
-  msg += std::to_string(dest_x) + "/";
-  msg += std::to_string(dest_y) + "/";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_int(ss, projectile_type);
+  String::insert_bool(ss, homing);
+  String::insert_int(ss, current_map_id);
+  String::insert_int(ss, x);
+  String::insert_int(ss, y);
+  String::insert_int(ss, dest_x);
+  String::insert_int(ss, dest_y);
   if(skill != nullptr) {
-    //msg += std::to_string(skill) + "/";
+    // String::insert(ss, Skill::to_string(skill));
   } else {
-    msg += "none/";
+    String::insert(ss, "none");
   }
   if(target != nullptr) {
-    msg += std::to_string(target->id) + "/";
+    String::insert_int(ss, target->id);
   } else {
-    msg += "none/";
+    String::insert_int(ss, -1);
   }
   if(owner != nullptr) {
-    msg += std::to_string(owner->id) + "/";
+    String::insert_int(ss, owner->id);
   } else {
-    msg += "none/";
+    String::insert_int(ss, -1);
   }
-  msg += std::to_string(orientation) + "/";
-  msg += std::to_string(speed) + "/";
-  msg += std::to_string(area) + "/";
-  msg += std::to_string(overcharge) + "/";
-  msg += std::to_string(falloff_range) + "/";
-  msg += std::to_string(waste_per_tile) + "/";
-  msg += std::to_string(waste_per_tile_area) + "/";
-  msg += std::to_string(waste_per_hit) + "/";
+  String::insert_int(ss, orientation);
+  String::insert_int(ss, speed);
+  String::insert_int(ss, area);
+  String::insert_int(ss, overcharge);
+  String::insert_int(ss, falloff_range);
+  String::insert_float(ss, waste_per_tile);
+  String::insert_float(ss, waste_per_tile_area);
+  String::insert_float(ss, waste_per_hit);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damages[i]) + "/";
+    String::insert_int(ss, damages[i]);
   }
-  return msg;
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 std::string Projectile::ammo_to_string(Ammunition * ammo) {
-  std::string msg = ammo->projectile->full_to_string() + ";";
-  msg += std::to_string(ammo->number) + ";";
-  msg += std::to_string(ammo->gold_value) + ";";
-  msg += std::to_string(ammo->ammo_type) + ";";
-  return msg;
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, ammo->projectile->full_to_string());
+  String::insert_int(ss, ammo->number);
+  String::insert_int(ss, ammo->gold_value);
+  String::insert_int(ss, ammo->ammo_type);
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 ProjectileDisplay * Projectile::from_string(std::string to_read) {
-  std::string msg = to_read;
   ProjectileDisplay * display = new ProjectileDisplay();
-  display->name = msg.substr(0, msg.find(';'));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->id = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->projectile_type = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->x = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->y = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->orientation = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  display->name = String::extract(ss);
+  display->id = String::extract_int(ss);
+  display->projectile_type = String::extract_int(ss);
+  display->x = String::extract_int(ss);
+  display->y = String::extract_int(ss);
+  display->orientation = String::extract_int(ss);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    display->damages[i] = stoi(msg.substr(0, msg.find(';')));
-    msg = msg.substr(msg.find(';') + 1, msg.length());
+    display->damages[i] = String::extract_int(ss);
   }
-  display->speed = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  display->area = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  std::string float_value = msg.substr(0, msg.find(';'));
-  display->waste_per_tile = stof(float_value);
-  if(display->waste_per_tile == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    display->waste_per_tile = stof(float_value);
-  }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  float_value = msg.substr(0, msg.find(';'));
-  display->waste_per_tile_area = stof(float_value);
-  if(display->waste_per_tile_area == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    display->waste_per_tile_area = stof(float_value);
-  }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  float_value = msg.substr(0, msg.find(';'));
-  display->waste_per_hit = stof(float_value);
-  if(display->waste_per_hit == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    display->waste_per_hit = stof(float_value);
-  }
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-
+  display->speed = String::extract_int(ss);
+  display->area = String::extract_int(ss);
+  display->waste_per_tile = String::extract_float(ss);
+  display->waste_per_tile_area = String::extract_float(ss);
+  display->waste_per_hit = String::extract_float(ss);
+  delete ss;
   return display;
 }
 
-
 Projectile * Projectile::full_from_string(std::string to_read) {
-  std::string msg = to_read;
-  const std::string name = msg.substr(0, msg.find('/'));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int projectile_type = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  std::string homing_str = msg.substr(0, msg.find('/'));
-  bool homing = (homing_str == "1");
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int current_map_id = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int x = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int y = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int dest_x = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int dest_y = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  std::string skill_str = msg.substr(0, msg.find('/'));
+  std::stringstream * ss = new std::stringstream(to_read);
+  std::string name = String::extract(ss);
+  int projectile_type = String::extract_int(ss);
+  bool homing = String::extract_bool(ss);
+  int current_map_id = String::extract_int(ss);
+  int x = String::extract_int(ss);
+  int y = String::extract_int(ss);
+  int dest_x = String::extract_int(ss);
+  int dest_y = String::extract_int(ss);
+  std::string skill_str = String::extract(ss);
   Skill * skill = nullptr;
   if(skill_str != "none") {
-
+    // skill = Skill::from_string(skill_str));
   }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-
-  std::string target_str = msg.substr(0, msg.find('/'));
+  int target_id = String::extract_int(ss);
   Character * target = nullptr;
-  if(target_str != "none") {
-
+  if(target_id != -1) {
+    // skill = Skill::from_string(skill_str));
   }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  std::string owner_str = msg.substr(0, msg.find('/'));
+  int owner_id = String::extract_int(ss);
   Character * owner = nullptr;
-  if(owner_str != "none") {
-
+  if(owner_id != -1) {
+    // skill = Skill::from_string(skill_str));
   }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int orientation = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int speed = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int area = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int overcharge = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int falloff_range = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  std::string float_value = msg.substr(0, msg.find('/'));
-  float waste_per_tile = stof(float_value);
-  if(waste_per_tile == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    waste_per_tile = stof(float_value);
-  }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  float_value = msg.substr(0, msg.find('/'));
-  float waste_per_tile_area = stof(float_value);
-  if(waste_per_tile_area == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    waste_per_tile_area = stof(float_value);
-  }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  float_value = msg.substr(0, msg.find('/'));
-  float waste_per_hit = stof(float_value);
-  if(waste_per_hit == 0) {
-    std::replace(float_value.begin(), float_value.end(), '.', ',');
-    waste_per_hit = stof(float_value);
-  }
-  msg = msg.substr(msg.find('/') + 1, msg.length());
+  int orientation = String::extract_int(ss);
+  int speed = String::extract_int(ss);
+  int area = String::extract_int(ss);
+  int overcharge = String::extract_int(ss);
+  int falloff_range = String::extract_int(ss);
+  float waste_per_tile = String::extract_float(ss);
+  float waste_per_tile_area = String::extract_float(ss);
+  float waste_per_hit = String::extract_float(ss);
   int damages[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] = stoi(msg.substr(0, msg.find('/')));
-    msg = msg.substr(msg.find('/') + 1, msg.length());
+    damages[i] = String::extract_int(ss);
   }
+  delete ss;
   return new Projectile(
     name,
     projectile_type,
@@ -404,15 +351,12 @@ Projectile * Projectile::full_from_string(std::string to_read) {
 }
 
 Ammunition * Projectile::ammo_from_string(std::string to_read) {
-  std::string msg = to_read;
   Ammunition * ammo = new Ammunition();
-  ammo->projectile = Projectile::full_from_string(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  ammo->number = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  ammo->gold_value = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
-  ammo->ammo_type = stoi(msg.substr(0, msg.find(';')));
-  msg = msg.substr(msg.find(';') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  ammo->projectile = Projectile::full_from_string(String::extract(ss));
+  ammo->number = String::extract_int(ss);
+  ammo->gold_value = String::extract_int(ss);
+  ammo->ammo_type = String::extract_int(ss);
+  delete ss;
   return ammo;
 }

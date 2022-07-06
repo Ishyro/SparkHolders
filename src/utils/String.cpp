@@ -2,7 +2,6 @@
 
 #include "utils/String.h"
 
-
 std::string String::extract(std::stringstream * ss) {
   std::string to_return = "";
   std::string extracted;
@@ -10,7 +9,7 @@ std::string String::extract(std::stringstream * ss) {
   int close_count = 0;
   do {
     getline(*ss, extracted, '}');
-    to_return += "}";
+    to_return += extracted + "}";
     close_count++;
     open_count += std::count(extracted.begin(), extracted.end(), '{');
   } while(open_count != close_count);
@@ -20,7 +19,7 @@ std::string String::extract(std::stringstream * ss) {
 bool String::extract_bool(std::stringstream * ss) {
   std::istringstream ss_bool(extract(ss));
   bool result;
-  ss_bool >> std::boolalpha >> result;
+  ss_bool >> result;
   return result;
 }
 
@@ -38,7 +37,7 @@ float String::extract_float(std::stringstream * ss) {
   return result;
 }
 
-void String::insert(std::stringstream * ss, std::string data) { *ss << data; }
-void String::insert_bool(std::stringstream * ss, bool data) { *ss << data; }
-void String::insert_int(std::stringstream * ss, int data) { *ss << data; }
-void String::insert_float(std::stringstream * ss, float data) { *ss << data; }
+void String::insert(std::stringstream * ss, std::string data) { *ss << '{' << data << '}'; }
+void String::insert_bool(std::stringstream * ss, bool data) { *ss << '{' << data << '}'; }
+void String::insert_int(std::stringstream * ss, int data) { *ss << '{' << data << '}' ; }
+void String::insert_float(std::stringstream * ss, float data) { *ss << '{' << data << '}'; }

@@ -1,5 +1,7 @@
 #include "data/Effect.h"
 
+#include "utils/String.h"
+
 void Effect::activate(Character * target) {
   if(duration != 0) {
     target->addEffect(this);
@@ -83,48 +85,40 @@ int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }
 float Effect::getDamageReductionFromType(int damage_type) { return damage_reductions[damage_type]; }
 
 std::string Effect::to_string() {
-  std::string msg = name + "/";
-  msg += std::to_string(type) + "/";
-  msg += std::to_string(duration_type) + "/";
-  msg += std::to_string(power) + "/";
-  msg += std::to_string(duration) + "/";
-  msg += std::to_string(tick_left) + "/";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
+  String::insert_int(ss, type);
+  String::insert_int(ss, duration_type);
+  String::insert_int(ss, power);
+  String::insert_int(ss, duration);
+  String::insert_int(ss, tick_left);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damages[i]) + "/";
+    String::insert_int(ss, damages[i]);
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    msg += std::to_string(damage_reductions[i]) + "/";
+    String::insert_float(ss, damage_reductions[i]);
   }
-  return msg;
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
-Effect * Effect::from_string(std::string msg) {
-  std::string name = msg.substr(0, msg.find('/'));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int type = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int duration_type = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int power = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int duration = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
-  int tick_left = stoi(msg.substr(0, msg.find('/')));
-  msg = msg.substr(msg.find('/') + 1, msg.length());
+Effect * Effect::from_string(std::string to_read) {
+  std::stringstream * ss = new std::stringstream(to_read);
+  std::string name = String::extract(ss);
+  int type = String::extract_int(ss);
+  int duration_type = String::extract_int(ss);
+  int power = String::extract_int(ss);
+  int duration = String::extract_int(ss);
+  int tick_left = String::extract_int(ss);
   int damages[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] = stoi(msg.substr(0, msg.find('/')));
-    msg = msg.substr(msg.find('/') + 1, msg.length());
+    damages[i] = String::extract_int(ss);
   }
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    std::string float_value = msg.substr(0, msg.find('/'));
-    damage_reductions[i] = stof(float_value);
-    if(damage_reductions[i] == 0) {
-      std::replace(float_value.begin(), float_value.end(), '.', ',');
-      damage_reductions[i] = stof(float_value);
-    }
-    msg = msg.substr(msg.find('/') + 1, msg.length());
+    damage_reductions[i] = String::extract_float(ss);
   }
+  delete ss;
   return new Effect(name, type, duration_type, power, duration, tick_left, damages, damage_reductions);
  }

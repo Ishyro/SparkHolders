@@ -1,4 +1,5 @@
 #include "data/Gear.h"
+#include "utils/String.h"
 
 std::list<Item *> Gear::equip(Item * new_item) {
   std::list<Item *> unequip;
@@ -138,68 +139,62 @@ Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
 
 std::string Gear::to_string() {
-  std::string msg = "";
+  std::stringstream * ss = new std::stringstream();
   if(head != nullptr) {
-    msg += head->to_string() + "|";
+    String::insert(ss, head->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(arms != nullptr) {
-    msg += arms->to_string() + "|";
+    String::insert(ss, arms->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(legs != nullptr) {
-    msg += legs->to_string() + "|";
+    String::insert(ss, legs->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(body != nullptr) {
-    msg += body->to_string() + "|";
+    String::insert(ss, body->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(left_ring != nullptr) {
-    msg += left_ring->to_string() + "|";
+    String::insert(ss, left_ring->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(right_ring != nullptr) {
-    msg += right_ring->to_string() + "|";
+    String::insert(ss, right_ring->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(amulet != nullptr) {
-    msg += amulet->to_string() + "|";
+    String::insert(ss, amulet->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
   if(weapon != nullptr) {
-    msg += weapon->to_string() + "|";
+    String::insert(ss, weapon->to_string());
   } else {
-    msg += "none|";
+    String::insert(ss, "none");
   }
-  return msg;
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 Gear * Gear::from_string(std::string to_read) {
-  std::string msg = to_read;
-  Item * head = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * arms = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * legs = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * body = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * left_ring = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * right_ring = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Item * amulet = Item::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
-  Weapon * weapon = Weapon::from_string(msg.substr(0, msg.find('|')));
-  msg = msg.substr(msg.find('|') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  Item * head = Item::from_string(String::extract(ss));
+  Item * arms = Item::from_string(String::extract(ss));
+  Item * legs = Item::from_string(String::extract(ss));
+  Item * body = Item::from_string(String::extract(ss));
+  Item * left_ring = Item::from_string(String::extract(ss));
+  Item * right_ring = Item::from_string(String::extract(ss));
+  Item * amulet = Item::from_string(String::extract(ss));
+  Weapon * weapon = Weapon::from_string(String::extract(ss));
   return new Gear(
     head,
     arms,

@@ -332,16 +332,16 @@ namespace Display {
     mvwprintw(screen, 3, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("ammo_type_") + std::to_string(ammo->ammo_type))).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("Number") + std::string(": ") + std::to_string(ammo->number)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(ammo->gold_value)).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SLASH_DAMAGE))).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(IMPACT_DAMAGE))).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(FIRE_DAMAGE))).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(COLD_DAMAGE))).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(POISON_DAMAGE))).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
-    mvwprintw(screen, 15, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(TRUE_DAMAGE))).c_str());
-    mvwprintw(screen, 16, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SOUL_DAMAGE))).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SLASH_DAMAGE))).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(IMPACT_DAMAGE))).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(FIRE_DAMAGE))).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(COLD_DAMAGE))).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(POISON_DAMAGE))).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(TRUE_DAMAGE))).c_str());
+    mvwprintw(screen, 15, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SOUL_DAMAGE))).c_str());
 
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -1511,7 +1511,7 @@ namespace Display {
           mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
           wattroff(displayScreen, COLOR_PAIR(color));
         }
-        currentY--;
+        maxY = std::max(--currentY, maxY);
 
         wrefresh(displayScreen);
         wrefresh(targetScreen);
@@ -1612,7 +1612,7 @@ namespace Display {
         mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
         wattroff(displayScreen, COLOR_PAIR(color));
       }
-      currentY--;
+      maxY = std::max(--currentY, maxY);
 
       wrefresh(displayScreen);
       wrefresh(targetScreen);

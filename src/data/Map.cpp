@@ -8,6 +8,8 @@
 
 #include "data/Map.h"
 
+#include "utils/String.h"
+
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }
@@ -291,99 +293,94 @@ void Map::actAllProjectiles(Adventure * adventure) {
 }
 
 std::string Map::to_string(Character * player, Adventure * adventure) {
-  std::string msg = adventure->getTime() + "@";
-  msg += name + "@";
-  msg += std::to_string(offsetX) + "@";
-  msg += std::to_string(offsetY) + "@";
-  msg += std::to_string(sizeX) + "@";
-  msg += std::to_string(sizeY) + "@";
-  msg += std::to_string(outside) + "@";
+  std::stringstream * ss = new std::stringstream();
+  String::insert(ss, adventure->getTime());
+  String::insert(ss, name);
+  String::insert_int(ss, offsetX);
+  String::insert_int(ss, offsetY);
+  String::insert_int(ss, sizeX);
+  String::insert_int(ss, sizeY);
+  String::insert_bool(ss, outside);
   for(int y = 0; y < sizeY; y++) {
     for(int x = 0; x < sizeX; x++) {
-      msg += std::to_string(x) + ";" + std::to_string(y) + ";" + getTile(y, x)->name + ";" + std::to_string(getTile(y, x)->untraversable) + ";" + std::to_string(getLight(y, x)) + "|";
+      String::insert_int(ss, x);
+      String::insert_int(ss, y);
+      String::insert(ss, getTile(y, x)->name);
+      String::insert_bool(ss, getTile(y, x)->untraversable);
+      String::insert_int(ss, getLight(y, x));
     }
   }
-  msg += "@";
+  std::stringstream * ss_characters = new std::stringstream();
   for(Character * character : characters) {
-    msg += character->to_string(offsetY, offsetX) + std::to_string(adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam())) + "|";
+    String::insert(ss_characters, character->to_string(offsetY, offsetX));
+    String::insert_int(ss_characters, adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam()));
   }
-  msg += "@";
+  String::insert(ss, ss_characters->str());
+  delete ss_characters;
+  std::stringstream * ss_projectiles = new std::stringstream();
   for(Projectile * projectile : projectiles) {
-    msg += projectile->to_string(offsetY, offsetX) + "|";
+    String::insert(ss_projectiles, projectile->to_string(offsetY, offsetX));
   }
-  msg += "@";
+  String::insert(ss, ss_projectiles->str());
+  delete ss_projectiles;
+  std::stringstream * ss_loots = new std::stringstream();
   for(Loot * loot : loots) {
-    msg += std::to_string(loot->type) + ";" + std::to_string(loot->x - offsetX) + ";" + std::to_string(loot->y - offsetY) + "|";
+    String::insert_int(ss_loots, loot->type);
+    String::insert_int(ss_loots, loot->x - offsetX);
+    String::insert_int(ss_loots, loot->y - offsetY);
   }
-  msg += "@";
-  return msg;
+  String::insert(ss, ss_loots->str());
+  delete ss_loots;
+  std::string result = ss->str();
+  delete ss;
+  return result;
 }
 
 MapDisplay * Map::from_string(std::string to_read) {
-  std::string msg = to_read;
   MapDisplay * display = new MapDisplay();
-  display->time = msg.substr(0, msg.find('@'));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->name = msg.substr(0, msg.find('@'));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->offsetX = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->offsetY = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->sizeX = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  display->sizeY = stol(msg.substr(0, msg.find('@')));
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::string outside_str = msg.substr(0, msg.find('@'));
-  display->outside = (outside_str == "1");
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  std::stringstream * ss = new std::stringstream(to_read);
+  display->time = String::extract(ss);
+  display->name = String::extract(ss);
+  display->offsetX = String::extract_int(ss);
+  display->offsetY = String::extract_int(ss);
+  display->sizeX = String::extract_int(ss);
+  display->sizeY = String::extract_int(ss);
+  display->outside = String::extract_bool(ss);
   display->tiles = std::vector<std::vector<Tile *>>(display->sizeY);
   for(long i = 0; i < display->sizeY; i++) {
     display->tiles[i] = std::vector<Tile *>(display->sizeX);
   }
-  std::istringstream tiles(msg.substr(0, msg.find('@')));
-  std::string tile;
-  while(getline(tiles, tile, '|') && tile != "") {
-    long x = stol(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    long y = stol(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    std::string name = tile.substr(0, tile.find(';'));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    std::string untraversable_str = tile.substr(0, tile.find(';'));
-    bool untraversable = (untraversable_str == "1");
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    int light = stoi(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    display->tiles[y][x] = new Tile(name, untraversable, light);
+  for(int y = 0; y < display->sizeY; y++) {
+    for(int x = 0; x < display->sizeX; x++) {
+      int i = String::extract_int(ss);
+      int j = String::extract_int(ss);
+      std::string name = String::extract(ss);
+      bool untraversable = String::extract_bool(ss);
+      int light = String::extract_int(ss);
+      display->tiles[j][i] = new Tile(name, untraversable, light);
+    }
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::istringstream characters(msg.substr(0, msg.find('@')));
-  std::string character;
-  while(getline(characters, character, '|') && character != "") {
-    CharacterDisplay * characterDisplay = Character::from_string(character);
-    characterDisplay->teamRelation = stoi(character.substr(character.rfind(';') + 1, character.length()));
+  std::stringstream * ss_characters = new std::stringstream(String::extract(ss));
+  while(ss_characters->rdbuf()->in_avail() != 0) {
+    CharacterDisplay * characterDisplay = Character::from_string(String::extract(ss_characters));
+    characterDisplay->teamRelation = String::extract_int(ss_characters);
     display->characters.push_back(characterDisplay);
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::istringstream projectiles(msg.substr(0, msg.find('@')));
-  std::string projectile;
-  while(getline(projectiles, projectile, '|') && projectile != "") {
-    display->projectiles.push_back(Projectile::from_string(projectile));
+  delete ss_characters;
+  std::stringstream * ss_projectiles = new std::stringstream(String::extract(ss));
+  while(ss_projectiles->rdbuf()->in_avail() != 0) {
+    display->projectiles.push_back(Projectile::from_string(String::extract(ss_projectiles)));
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
-  std::istringstream loots(msg.substr(0, msg.find('@')));
-  std::string loot_str;
-  while(getline(loots, loot_str, '|') && loot_str != "") {
+  delete ss_projectiles;
+  std::stringstream * ss_loots = new std::stringstream(String::extract(ss));
+  while(ss_loots->rdbuf()->in_avail() != 0) {
     Loot * loot = new Loot();
-    loot->type = stoi(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    loot->x = stol(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
-    loot->y = stol(tile.substr(0, tile.find(';')));
-    tile = tile.substr(tile.find(';') + 1, tile.length());
+    loot->type = String::extract_int(ss_loots);
+    loot->x = String::extract_int(ss_loots);
+    loot->y = String::extract_int(ss_loots);
     display->loots.push_back(loot);
   }
-  msg = msg.substr(msg.find('@') + 1, msg.length());
+  delete ss_loots;
+  delete ss;
   return display;
 }
