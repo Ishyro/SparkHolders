@@ -9,10 +9,10 @@
 #include "Values.h"
 
 typedef struct Spawn {
-  long x;
-  long y;
+  int x;
+  int y;
   int orientation;
-  long map_id;
+  int map_id;
 } Spawn;
 
 class Adventure {
@@ -56,14 +56,14 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, long mapId, long y, long x);
-    void hardMoveCharacterToMap(Character * character, long mapId, long y, long x);
+    void softMoveCharacterToMap(Character * character, int mapId, int y, int x);
+    void hardMoveCharacterToMap(Character * character, int mapId, int y, int x);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
-    void resurrect(Character * player, long map_id, long y, long x);
+    void resurrect(Character * player, int map_id, int y, int x);
     long getRound();
     void incrRound();
     void event();

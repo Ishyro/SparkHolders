@@ -70,9 +70,11 @@ data/items/leather_boots.data
 data/items/leather_cuirass.data
 data/items/leather_gauntlets.data
 data/items/leather_helmet.data
-# skills without summoning
+# pseudoskills without summoning or projectile
+# skills without summoning or projectile
 # projectiles
 data/projectiles/wood_arrow.data
+data/projectiles/fireball.data
 # ammunition
 data/ammunition/wood_arrow.data
 # weapons
@@ -86,7 +88,12 @@ data/attributes/elementalist.data
 data/attributes/shadow.data
 # speechs
 data/speechs/beh.data
+# pseudoskills with projectile
+data/pseudoskills/fireball.data
+# skills with projectile
+data/skills/fireball.data
 # characters
 data/characters/player.data
 data/characters/sheep.data
+# pseudoskills with summoning
 # skills with summoning

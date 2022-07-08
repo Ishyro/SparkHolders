@@ -6,11 +6,11 @@
 #include <map>
 
 typedef struct MapLink {
-    long x1;
-    long y1;
+    int x1;
+    int y1;
     int orientation1;
-    long x2;
-    long y2;
+    int x2;
+    int y2;
     int orientation2;
     Map * map1;
     Map * map2;
@@ -20,17 +20,17 @@ class World {
   public:
     const std::string name;
     World(std::string name):name(name) {
-      maps = std::map<const long, Map *>();
+      maps = std::map<const int, Map *>();
       links = std::list<MapLink *>();
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
-    Map * getMap(long map_id);
+    Map * getMap(int map_id);
     Map * getMap(std::string name);
-    std::map<const long, Map *> getMaps();
-    MapLink * getMapLink(long x, long y, long mapId);
+    std::map<const int, Map *> getMaps();
+    MapLink * getMapLink(int y, int x, int mapId);
   private:
-    std::map<const long, Map *> maps;
+    std::map<const int, Map *> maps;
     std::list<MapLink *> links;
 };
 

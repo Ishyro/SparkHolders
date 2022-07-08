@@ -8,7 +8,7 @@ Action * AI::getAction(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
-int AI::getFleeOrientation(Character * self, long x, long y) {
+int AI::getFleeOrientation(Character * self, int x, int y) {
   float target_x = x - self->getX();
   float target_y = y - self->getY();
   int orientation = NORTH; // default if already same tile
@@ -64,7 +64,7 @@ int AI::getFleeOrientation(Character * self, long x, long y) {
   return orientation;
 }
 
-int AI::getFollowOrientation(Character * self, long x, long y) {
+int AI::getFollowOrientation(Character * self, int x, int y) {
   float target_x = x - self->getX();
   float target_y = y - self->getY();
   int orientation = NORTH; // default if already same tile

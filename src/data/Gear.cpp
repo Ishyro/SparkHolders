@@ -1,4 +1,5 @@
 #include "data/Gear.h"
+
 #include "utils/String.h"
 
 std::list<Item *> Gear::equip(Item * new_item) {

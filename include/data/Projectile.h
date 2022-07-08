@@ -2,6 +2,7 @@
 #define _PROJECTILE_H_
 
 #include <string>
+#include <list>
 #include <cmath>
 
 #include "Values.h"
@@ -15,7 +16,7 @@ typedef struct Ammunition {
 
 typedef struct ProjectileDisplay {
   std::string name;
-  int id;
+  long id;
   int projectile_type;
   int x;
   int y;
@@ -72,7 +73,7 @@ class Projectile {
       target = nullptr;
       owner = nullptr;
       orientation = NO_ORIENTATION;
-      overcharge = 0;
+      overcharge = 1;
       current_travel = 0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
@@ -90,7 +91,8 @@ class Projectile {
       Character * target,
       Character * owner,
       int orientation,
-      int overcharge
+      int overcharge,
+      int overcharge_area
     ):
       name(projectile->name),
       projectile_type(projectile->projectile_type),
@@ -105,7 +107,7 @@ class Projectile {
       owner(owner),
       orientation(orientation),
       speed(projectile->speed),
-      area(projectile->area),
+      area(projectile->area + overcharge_area),
       overcharge(overcharge),
       falloff_range(projectile->falloff_range),
       current_travel(projectile->current_travel),
@@ -191,7 +193,7 @@ class Projectile {
     void setLost(bool state);
     void attack_single_target(Character * target, Adventure * adventure);
     void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
-    std::string to_string(long offsetY, long offsetX);
+    std::string to_string(int offsetY, int offsetX);
     std::string full_to_string();
     static std::string ammo_to_string(Ammunition * ammo);
     static ProjectileDisplay * from_string(std::string to_read);

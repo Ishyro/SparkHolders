@@ -10,4 +10,4 @@ items =
 weapons = TXT_SHORT_BOW%
 ammunition = TXT_WOOD_ARROW|5%
 effects =
-skills =
+skills = TXT_FIREBALL%

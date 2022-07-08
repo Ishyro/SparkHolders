@@ -65,16 +65,20 @@ class Effect {
         this->damage_reductions[i] = damage_reductions[i];
       }
     }
-    Effect(Effect * base, long overcharge):
+    Effect(
+      Effect * base,
+      int overcharge_power,
+      int overcharge_duration
+    ):
       name(base->name),
       type(base->type),
       duration_type(base->duration_type),
-      power(base->power * overcharge),
-      duration(base->duration * overcharge)
+      power(base->power * overcharge_power),
+      duration(base->duration * overcharge_duration)
     {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        this->damages[i] = base->damages[i] * overcharge;
-        this->damage_reductions[i] = damage_reductions[i] * overcharge;
+        this->damages[i] = base->damages[i] * overcharge_power;
+        this->damage_reductions[i] = damage_reductions[i] * overcharge_power;
       }
     }
     int getRawDamage();

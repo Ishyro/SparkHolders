@@ -24,6 +24,8 @@ class Translator {
     const std::string getQuestDesc(std::string to_translate);
     const std::string getSpeechName(std::string to_translate);
     const std::string getSpeechDesc(std::string to_translate);
+    const std::string getSkillName(std::string to_translate);
+    const std::string getSkillDesc(std::string to_translate);
     const std::string getTileName(std::string to_translate);
     const std::string getTileDesc(std::string to_translate);
     const std::string getWayName(std::string to_translate);
@@ -50,6 +52,8 @@ class Translator {
     std::map<const std::string, const std::string> questsDescs;
     std::map<const std::string, const std::string> speechsNames;
     std::map<const std::string, const std::string> speechsDescs;
+    std::map<const std::string, const std::string> skillsNames;
+    std::map<const std::string, const std::string> skillsDescs;
     std::map<const std::string, const std::string> tilesNames;
     std::map<const std::string, const std::string> tilesDescs;
     std::map<const std::string, const std::string> waysNames;

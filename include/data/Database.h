@@ -24,6 +24,7 @@ class Database {
     const Ammunition * getAmmunition(const std::string ammunition);
     const Quest * getQuest(const std::string quest);
     const Skill * getSkill(const std::string skill);
+    const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
     const Tile * getTile(const std::string tile);
     const Way * getWay(const std::string way);
@@ -42,6 +43,7 @@ class Database {
     void addAmmunition(const Ammunition * ammo);
     void addQuest(const Quest * quest);
     void addSkill(const Skill * skill);
+    void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
     void addTile(const Tile * tile);
     void addWay(const Way * way);
@@ -63,6 +65,7 @@ class Database {
     std::map<const std::string, const Ammunition * > ammunition;
     std::map<const std::string, const Quest * > quests;
     std::map<const std::string, const Skill * > skills;
+    std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
     std::map<const std::string, const Tile * > tiles;
     std::map<const std::string, const Way * > ways;

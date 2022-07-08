@@ -1,37 +1,60 @@
-#ifndef _PSEUDOSKILL_H_
-#define _PSEUDOSKILL_H_
+#ifndef _PSEUDO_SKILL_H_
+#define _PSEUDO_SKILL_H_
 
 #include <list>
 #include <cmath>
 
-#include "Values.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Effect.h"
+#include "data/Map.h"
+#include "data/World.h"
+
+#include "Values.h"
 
 class PseudoSkill {
   public:
+    const std::string name;
+    const int skill_type;
     const int target_type;
-    const long overcharge_type;
-    const long mana_cost;
+    const int mana_cost;
     const std::list<Effect *> effects;
-    const int range;
+    const int power;
     PseudoSkill(
+      std::string name,
+      int skill_type,
       int target_type,
-      long overcharge_type,
-      long mana_cost,
-      std::list<Effect *> effects,
-      int range
+      int mana_cost,
+      std::list<Effect *> effects
     ):
+      name(name),
+      skill_type(skill_type),
       target_type(target_type),
-      overcharge_type(overcharge_type),
       mana_cost(mana_cost),
       effects(effects),
-      range(range)
+      power(0)
+    {}
+    PseudoSkill(
+      std::string name,
+      int skill_type,
+      int target_type,
+      int mana_cost,
+      std::list<Effect *> effects,
+      int power
+    ):
+      name(name),
+      skill_type(skill_type),
+      target_type(target_type),
+      mana_cost(mana_cost),
+      effects(effects),
+      power(power)
     {}
 
-    virtual void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L) = 0;
-    long getManaCost(long overcharge);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id = 0, int x = 0, int y = 0);
+    int getPower();
+    int getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge);
+    std::string to_string();
+    static PseudoSkill * from_string(std::string to_read);
 };
 
-#endif // _PSEUDOSKILL_H_
+#endif // _PSEUDO_SKILL_H_

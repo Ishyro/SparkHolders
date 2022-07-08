@@ -109,12 +109,12 @@ int Character::getDetectionRange() {
 
 long Character::getGold() { return gold; }
 long Character::getXP() { return xp; }
-long Character::getLevel() { return level; }
+int Character::getLevel() { return level; }
 
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 
-long Character::getCurrentMapId() { return current_map_id; }
+int Character::getCurrentMapId() { return current_map_id; }
 
 Gear * Character::getGear() { return gear; }
 std::list<Item *> Character::getItems() { return items; }
@@ -222,7 +222,7 @@ void Character::incrVisionRange() { visionRange++; }
 void Character::incrVisionPower() {visionPower++; }
 void Character::incrDetectionRange() { detectionRange++; }
 
-void Character::setCurrentMapId(long map_id) { this->current_map_id = map_id; }
+void Character::setCurrentMapId(int map_id) { this->current_map_id = map_id; }
 
 void Character::applySoulBurn() {
   int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 10., (float) soulBurnTreshold / 10.);
@@ -398,8 +398,8 @@ bool Character::isInWeakState() {
 }
 
 // Warning : Dangerous
-void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge) {
-  skill->activate(this, target, adventure, overcharge);
+void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge, int x, int y) {
+  skill->activate(this, target, adventure, overcharge, current_map_id, x, y);
 }
 
 int Character::getDamageFromType(int damage_type) {
@@ -476,8 +476,7 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
           proj_x--;
           break;
       }
-      this->orientation = orientation;
-      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1);
+      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1, 1);
     }
   }
   return nullptr;
@@ -544,10 +543,10 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   hp -= std::max(0, damage - getArmor());
 }
 
-std::string Character::to_string(long offsetY, long offsetX) {
+std::string Character::to_string(int offsetY, int offsetX) {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
-  String::insert_int(ss, id);
+  String::insert_long(ss, id);
   String::insert_int(ss, getHp());
   String::insert_int(ss, getMaxHp());
   String::insert_int(ss, getMana());
@@ -577,7 +576,7 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   CharacterDisplay * display = new CharacterDisplay();
   std::stringstream * ss = new std::stringstream(to_read);
   display->name = String::extract(ss);
-  display->id = String::extract_int(ss);
+  display->id = String::extract_long(ss);
   display->hp = String::extract_int(ss);
   display->maxHp = String::extract_int(ss);
   display->mana = String::extract_int(ss);
@@ -611,8 +610,8 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, y);
   String::insert_int(ss, orientation);
   String::insert_int(ss, current_map_id);
-  String::insert_int(ss, gold);
-  String::insert_int(ss, xp);
+  String::insert_long(ss, gold);
+  String::insert_long(ss, xp);
   String::insert_int(ss, level);
   String::insert(ss, team);
   String::insert(ss, gear->to_string());
@@ -667,8 +666,8 @@ Character * Character::full_from_string(std::string to_read) {
   int y = String::extract_int(ss);
   int orientation = String::extract_int(ss);
   int current_map_id = String::extract_int(ss);
-  int gold = String::extract_int(ss);
-  int xp = String::extract_int(ss);
+  int gold = String::extract_long(ss);
+  int xp = String::extract_long(ss);
   int level = String::extract_int(ss);
   std::string team = String::extract(ss);
   Gear * gear = Gear::from_string(String::extract(ss));

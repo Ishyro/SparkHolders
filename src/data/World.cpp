@@ -10,14 +10,14 @@
 #include <iostream>
 
 void World::addMap(Map * map) {
-  maps.insert(std::pair<long, Map *>(map->id, map));
+  maps.insert(std::pair<int, Map *>(map->id, map));
 }
 
 void World::addMapLink(MapLink * link) {
   links.push_back(link);
 }
 
-Map * World::getMap(long map_id) { return maps.at(map_id); }
+Map * World::getMap(int map_id) { return maps.at(map_id); }
 
 Map * World::getMap(std::string name) {
     for (auto pair = maps.begin(); pair != maps.end(); pair++) {
@@ -28,9 +28,9 @@ Map * World::getMap(std::string name) {
     return nullptr;
 }
 
-std::map<const long, Map *> World::getMaps() { return maps; }
+std::map<const int, Map *> World::getMaps() { return maps; }
 
-MapLink * World::getMapLink(long x, long y, long mapId) {
+MapLink * World::getMapLink(int y, int x, int mapId) {
   for(MapLink * link : links) {
     if((link->map1->id == mapId && link->x1 == x && link->y1 == y) ||
       (link->map2->id == mapId && link->x2 == x && link->y2 == y)) {

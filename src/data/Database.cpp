@@ -27,6 +27,7 @@ Database::Database() {
   ammunition = std::map<const std::string, const Ammunition * >();
   quests = std::map<const std::string, const Quest * >();
   skills = std::map<const std::string, const Skill * >();
+  pseudoSkills = std::map<const std::string, const PseudoSkill * >();
   speechs = std::map<const std::string, const Speech * >();
   tiles = std::map<const std::string, const Tile * >();
   ways = std::map<const std::string, const Way * >();
@@ -80,18 +81,6 @@ Database::Database() {
   macros.insert(std::make_pair("PISTOL", PISTOL));
   macros.insert(std::make_pair("SLING", SLING));
 
-  // melee_range
-
-  macros.insert(std::make_pair("SHORT", SHORT));
-  macros.insert(std::make_pair("STANDARD", STANDARD));
-  macros.insert(std::make_pair("LONG", LONG));
-
-  // weight
-
-  macros.insert(std::make_pair("LIGHT", LIGHT));
-  macros.insert(std::make_pair("MEDIUM", MEDIUM));
-  macros.insert(std::make_pair("HEAVY", HEAVY));
-
   // item_type
 
   macros.insert(std::make_pair("UNEQUIPABLE", UNEQUIPABLE));
@@ -119,21 +108,22 @@ Database::Database() {
   // skill_target
 
   macros.insert(std::make_pair("SELF", SELF));
-  macros.insert(std::make_pair("TOUCH", TOUCH));
   macros.insert(std::make_pair("TARGET", TARGET));
   macros.insert(std::make_pair("TILE", TILE));
 
-  // skill_special
+  // skill_type
 
-  macros.insert(std::make_pair("TIMESTOP", TIMESTOP));
-  macros.insert(std::make_pair("TILESWAP", TILESWAP));
-  macros.insert(std::make_pair("TELEPORT", TELEPORT));
-  macros.insert(std::make_pair("MAPLINKER", MAPLINKER));
-  macros.insert(std::make_pair("TEAMCHANGER", TEAMCHANGER));
-  macros.insert(std::make_pair("MINDCONTROL", MINDCONTROL));
-  macros.insert(std::make_pair("PROJECTILE", PROJECTILE));
-  macros.insert(std::make_pair("SUMMON", SUMMON));
-  macros.insert(std::make_pair("RESURRECTION", RESURRECTION));
+  macros.insert(std::make_pair("CHANNELED_SKILL", CHANNELED_SKILL));
+  macros.insert(std::make_pair("INSTANT_SKILL", INSTANT_SKILL));
+  macros.insert(std::make_pair("MAP_LINKER_SKILL", MAP_LINKER_SKILL));
+  macros.insert(std::make_pair("MIND_CONTROL_SKILL", MIND_CONTROL_SKILL));
+  macros.insert(std::make_pair("PROJECTILE_SKILL", PROJECTILE_SKILL));
+  macros.insert(std::make_pair("RESURRECTION_SKILL", RESURRECTION_SKILL));
+  macros.insert(std::make_pair("SIMPLE_SKILL", SIMPLE_SKILL));
+  macros.insert(std::make_pair("SUMMON_SKILL", SUMMON_SKILL));
+  macros.insert(std::make_pair("TEAM_CHANGER_SKILL", TEAM_CHANGER_SKILL));
+  macros.insert(std::make_pair("TELEPORT_SKILL", TELEPORT_SKILL));
+  macros.insert(std::make_pair("TILE_SWAP_SKILL", TILE_SWAP_SKILL));
 
   // skill_overcharge_type
 
@@ -206,6 +196,7 @@ Database::Database() {
   macros.insert(std::make_pair("CULTURE", CULTURE));
   macros.insert(std::make_pair("RELIGION", RELIGION));
   macros.insert(std::make_pair("PROFESSION", PROFESSION));
+  macros.insert(std::make_pair("TITLE", TITLE));
 
   // speech_type
 
@@ -234,6 +225,7 @@ const Projectile * Database::getProjectile(const std::string projectile) { retur
 const Ammunition * Database::getAmmunition(const std::string ammo) { return ammunition.at(ammo); }
 const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
+const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
@@ -263,6 +255,7 @@ void Database::addProjectile(const Projectile * projectile) { projectiles.insert
 void Database::addAmmunition(const Ammunition * ammo) { ammunition.insert(std::make_pair(ammo->projectile->name, ammo)); }
 void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
+void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }

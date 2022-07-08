@@ -1,11 +1,13 @@
-#ifndef _MAPLINKERSKILL_H_
-#define _MAPLINKERSKILL_H_
+#ifndef _MAP_LINKER_SKILL_H_
+#define _MAP_LINKER_SKILL_H_
 
 #include "data/skills/PseudoSkill.h"
 
 class MapLinkerSkill : public PseudoSkill {
+  using PseudoSkill::PseudoSkill;
   public:
-    void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id = 0, int x = 0, int y = 0);
+    int getPower();
 };
 
-#endif // _MAPLINKERSKILL_H_
+#endif // _MAP_LINKER_SKILL_H_

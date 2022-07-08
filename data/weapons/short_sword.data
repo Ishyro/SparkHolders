@@ -1,8 +1,8 @@
 name = TXT_SHORT_SWORD
 melee = true
-range = SHORT
+range = 1
 type = SHORT_SWORD
-weight = LIGHT
+weight = 5
 gold_value = 50
 use_ammo = false
 effects =

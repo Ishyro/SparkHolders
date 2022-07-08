@@ -13,8 +13,8 @@
 
 typedef struct Loot {
   int type;
-  long x;
-  long y;
+  int x;
+  int y;
   long gold;
   std::list<Weapon *> weapons;
   std::list<Item *> items;
@@ -24,10 +24,10 @@ typedef struct Loot {
 typedef struct MapDisplay {
   std::string time;
   std::string name;
-  long offsetX;
-  long offsetY;
-  long sizeX;
-  long sizeY;
+  int offsetX;
+  int offsetY;
+  int sizeX;
+  int sizeY;
   bool outside;
   std::list<CharacterDisplay *> characters;
   std::list<ProjectileDisplay *> projectiles;
@@ -43,15 +43,15 @@ class Map {
   public:
     const std::string name;
     const long id = ++map::id_cpt;
-    const long offsetX;
-    const long offsetY;
-    const long sizeX;
-    const long sizeY;
+    const int offsetX;
+    const int offsetY;
+    const int sizeX;
+    const int sizeY;
     const bool outside;
     Map(
       const std::string name,
-      const long sizeX,
-      const long sizeY,
+      const int sizeX,
+      const int sizeY,
       const bool outside
     ):
       name(name),
@@ -64,7 +64,7 @@ class Map {
       lights(sizeY),
       light(0)
     {
-      for(long i = 0; i < sizeY; i++) {
+      for(int i = 0; i < sizeY; i++) {
         tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);
       }
@@ -89,19 +89,19 @@ class Map {
       name(map->name),
       offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
       offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
-      sizeX(std::min(map->sizeX, (long) player->getX() + (long) std::max(player->getVisionRange(), player->getDetectionRange())) - offsetX),
-      sizeY(std::min(map->sizeY, (long) player->getY() + (long) std::max(player->getVisionRange(), player->getDetectionRange())) - offsetY),
+      sizeX(std::min(map->sizeX, player->getX() + std::max(player->getVisionRange(), player->getDetectionRange())) - offsetX),
+      sizeY(std::min(map->sizeY, player->getY() + std::max(player->getVisionRange(), player->getDetectionRange())) - offsetY),
       outside(map->outside),
       tiles(sizeY),
       lights(sizeY),
       light(map->light)
     {
-      for(long i = 0; i < sizeY; i++) {
+      for(int i = 0; i < sizeY; i++) {
         tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);
       }
-      for(long y = 0; y < sizeY; y++) {
-        for(long x = 0; x < sizeX; x++) {
+      for(int y = 0; y < sizeY; y++) {
+        for(int x = 0; x < sizeX; x++) {
           int distance = std::max(abs(player->getX() - (x + offsetX)), abs(player->getY() - (y + offsetY)));
           if ( (distance <= player->getVisionRange() && map->getLight(y + offsetY, x + offsetX) >= 10 - player->getVisionPower()) || distance <= player->getDetectionRange() ) {
             tiles[y][x] = map->tiles[y + offsetY][x + offsetX];
@@ -137,13 +137,13 @@ class Map {
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
-    Tile * getTile(long y, long x);
-    void setTile(long y, long x, Tile * tile);
-    int getLight(long y, long x);
+    Tile * getTile(int y, int x);
+    void setTile(int y, int x, Tile * tile);
+    int getLight(int y, int x);
     void calculateLights();
-    void propagateLight(long y, long x);
+    void propagateLight(int y, int x);
     void applyDayLight(int light);
-    void crumble(long y, long x);
+    void crumble(int y, int x);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
     void addLoot(Loot * l);

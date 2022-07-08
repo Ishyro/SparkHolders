@@ -20,6 +20,8 @@ Translator::Translator(std::list<std::string> bases, const std::string language)
   questsDescs = std::map<const std::string, const std::string>();
   speechsNames = std::map<const std::string, const std::string>();
   speechsDescs = std::map<const std::string, const std::string>();
+  skillsNames = std::map<const std::string, const std::string>();
+  skillsDescs = std::map<const std::string, const std::string>();
   tilesNames = std::map<const std::string, const std::string>();
   tilesDescs = std::map<const std::string, const std::string>();
   waysNames = std::map<const std::string, const std::string>();
@@ -47,6 +49,8 @@ Translator::Translator(std::list<std::string> bases, const std::string language)
     loadValuesFromFile(path + "questsDescs.data", &questsDescs);
     loadValuesFromFile(path + "speechsNames.data", &speechsNames);
     loadValuesFromFile(path + "speechsDescs.data", &speechsDescs);
+    loadValuesFromFile(path + "skillsNames.data", &skillsNames);
+    loadValuesFromFile(path + "skillsDescs.data", &skillsDescs);
     loadValuesFromFile(path + "tilesNames.data", &tilesNames);
     loadValuesFromFile(path + "tilesDescs.data", &tilesDescs);
     loadValuesFromFile(path + "waysNames.data", &waysNames);
@@ -189,6 +193,22 @@ const std::string Translator::getSpeechName(std::string to_translate) {
 const std::string Translator::getSpeechDesc(std::string to_translate) {
   try {
     return speechsDescs.at(to_translate);
+  } catch (const std::out_of_range &e) {
+    return to_translate;
+  }
+}
+
+const std::string Translator::getSkillName(std::string to_translate) {
+  try {
+    return skillsNames.at(to_translate);
+  } catch (const std::out_of_range &e) {
+    return to_translate;
+  }
+}
+
+const std::string Translator::getSkillDesc(std::string to_translate) {
+  try {
+    return skillsDescs.at(to_translate);
   } catch (const std::out_of_range &e) {
     return to_translate;
   }

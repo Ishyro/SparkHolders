@@ -17,10 +17,10 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, long map_id, long y, long x) {
+void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y, int x) {
   Map * map = world->getMap(map_id);
-  long i = x;
-  long j = y;
+  int i = x;
+  int j = y;
   bool conflict = false;
   int power = -1; // power = 0 in first loop turn
   int k = NORTH;
@@ -74,7 +74,7 @@ void Adventure::softMoveCharacterToMap(Character * character, long map_id, long 
   character->setCurrentMapId(map_id);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, long map_id, long y, long x) {
+void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y, int x) {
   Map * map = world->getMap(map_id);
   for(auto c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
@@ -109,7 +109,7 @@ std::list<Character *> Adventure::getParty() { return party; }
 
 std::list<Character *> Adventure::getPreservedPlayers() { return preserved_players; }
 
-void Adventure::resurrect(Character * player, long map_id, long y, long x) {
+void Adventure::resurrect(Character * player, int map_id, int y, int x) {
   if(std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
     softMoveCharacterToMap(player, map_id, y, x);
   }

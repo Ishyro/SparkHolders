@@ -1,11 +1,13 @@
-#ifndef _SUMMONSKILL_H_
-#define _SUMMONSKILL_H_
+#ifndef _SUMMON_SKILL_H_
+#define _SUMMON_SKILL_H_
 
 #include "data/skills/PseudoSkill.h"
 
 class SummonSkill : public PseudoSkill {
+  using PseudoSkill::PseudoSkill;
   public:
-    void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id = 0, int x = 0, int y = 0);
+    int getPower();
 };
 
-#endif // _SUMMONSKILL_H_
+#endif // _SUMMON_SKILL_H_

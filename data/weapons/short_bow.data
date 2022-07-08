@@ -1,8 +1,8 @@
 name = TXT_SHORT_BOW
 melee = false
-range = SHORT
+range = 10
 type = BOW
-weight = LIGHT
+weight = 5
 gold_value = 50
 use_ammo = true
 ammo_type = ARROW

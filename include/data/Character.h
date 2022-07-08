@@ -16,7 +16,7 @@ namespace character {
 
 typedef struct CharacterDisplay {
   std::string name;
-  int id;
+  long id;
   int hp;
   int maxHp;
   int mana;
@@ -26,8 +26,8 @@ typedef struct CharacterDisplay {
   int flow;
   bool player_character;
   int type;
-  long x;
-  long y;
+  int x;
+  int y;
   int orientation;
   std::string team;
   int armor;
@@ -123,8 +123,8 @@ class Character {
       std::string name,
       bool player_character,
       int type,
-      long x,
-      long y,
+      int x,
+      int y,
       int orientation,
       int current_map_id,
       long gold,
@@ -188,10 +188,10 @@ class Character {
     int getVisionRange();
     int getVisionPower();
     int getDetectionRange();
-    long getCurrentMapId();
+    int getCurrentMapId();
     long getGold();
     long getXP();
-    long getLevel();
+    int getLevel();
 
     AI * getAI();
     std::string getTeam();
@@ -220,7 +220,7 @@ class Character {
     void incrVisionRange();
     void incrVisionPower();
     void incrDetectionRange();
-    void setCurrentMapId(long map_id);
+    void setCurrentMapId(int map_id);
 
     void applySoulBurn();
     void gainGold(long gold);
@@ -258,7 +258,7 @@ class Character {
     int cloakPower();
     bool isInWeakState();
 
-    void useSkill(Skill * skill, Character * target, Adventure * adventure, long overcharge);
+    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge, int x, int y);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
     Projectile * shoot(const Character * target, int y, int x);
@@ -266,7 +266,7 @@ class Character {
     void attack(Character * target);
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
-    std::string to_string(long offsetY, long offsetX);
+    std::string to_string(int offsetY, int offsetX);
     std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
     static Character * full_from_string(std::string to_read);

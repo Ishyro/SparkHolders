@@ -53,7 +53,7 @@ namespace Server {
         return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object);
       }
       case CHANGE_MAP: {
-        MapLink * link = adventure->getWorld()->getMapLink(user->getX(), user->getY(), user->getCurrentMapId());
+        MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
         if(link != nullptr) {
           return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "");
         }

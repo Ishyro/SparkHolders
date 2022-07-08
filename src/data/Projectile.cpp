@@ -194,10 +194,10 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
   }
 }
 
-std::string Projectile::to_string(long offsetY, long offsetX) {
+std::string Projectile::to_string(int offsetY, int offsetX) {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
-  String::insert_int(ss, id);
+  String::insert_long(ss, id);
   String::insert_int(ss, projectile_type);
   String::insert_int(ss, x - offsetX);
   String::insert_int(ss, y - offsetY);
@@ -226,19 +226,9 @@ std::string Projectile::full_to_string() {
   String::insert_int(ss, dest_x);
   String::insert_int(ss, dest_y);
   if(skill != nullptr) {
-    // String::insert(ss, Skill::to_string(skill));
+    String::insert(ss, skill->to_string());
   } else {
     String::insert(ss, "none");
-  }
-  if(target != nullptr) {
-    String::insert_int(ss, target->id);
-  } else {
-    String::insert_int(ss, -1);
-  }
-  if(owner != nullptr) {
-    String::insert_int(ss, owner->id);
-  } else {
-    String::insert_int(ss, -1);
   }
   String::insert_int(ss, orientation);
   String::insert_int(ss, speed);
@@ -271,7 +261,7 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   ProjectileDisplay * display = new ProjectileDisplay();
   std::stringstream * ss = new std::stringstream(to_read);
   display->name = String::extract(ss);
-  display->id = String::extract_int(ss);
+  display->id = String::extract_long(ss);
   display->projectile_type = String::extract_int(ss);
   display->x = String::extract_int(ss);
   display->y = String::extract_int(ss);
@@ -301,18 +291,10 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   std::string skill_str = String::extract(ss);
   Skill * skill = nullptr;
   if(skill_str != "none") {
-    // skill = Skill::from_string(skill_str));
+    skill = Skill::from_string(skill_str);
   }
-  int target_id = String::extract_int(ss);
   Character * target = nullptr;
-  if(target_id != -1) {
-    // skill = Skill::from_string(skill_str));
-  }
-  int owner_id = String::extract_int(ss);
   Character * owner = nullptr;
-  if(owner_id != -1) {
-    // skill = Skill::from_string(skill_str));
-  }
   int orientation = String::extract_int(ss);
   int speed = String::extract_int(ss);
   int area = String::extract_int(ss);

@@ -27,6 +27,10 @@ int String::extract_int(std::stringstream * ss) {
   return stoi(extract(ss));
 }
 
+long String::extract_long(std::stringstream * ss) {
+  return stol(extract(ss));
+}
+
 float String::extract_float(std::stringstream * ss) {
   std::string msg = extract(ss);
   float result = stof(msg);
@@ -40,4 +44,5 @@ float String::extract_float(std::stringstream * ss) {
 void String::insert(std::stringstream * ss, std::string data) { *ss << '{' << data << '}'; }
 void String::insert_bool(std::stringstream * ss, bool data) { *ss << '{' << data << '}'; }
 void String::insert_int(std::stringstream * ss, int data) { *ss << '{' << data << '}' ; }
+void String::insert_long(std::stringstream * ss, long data) { *ss << '{' << data << '}' ; }
 void String::insert_float(std::stringstream * ss, float data) { *ss << '{' << data << '}'; }

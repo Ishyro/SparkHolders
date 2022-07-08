@@ -31,6 +31,21 @@
 #include "data/World.h"
 #include "data/Database.h"
 
+#include "data/skills/PseudoSkill.h"
+#include "data/skills/Skill.h"
+
+#include "data/skills/ChanneledSkill.h"
+#include "data/skills/InstantSkill.h"
+#include "data/skills/MapLinkerSkill.h"
+#include "data/skills/MindControlSkill.h"
+#include "data/skills/ProjectileSkill.h"
+#include "data/skills/ResurrectionSkill.h"
+#include "data/skills/SimpleSkill.h"
+#include "data/skills/SummonSkill.h"
+#include "data/skills/TeamChangerSkill.h"
+#include "data/skills/TeleportSkill.h"
+#include "data/skills/TileSwapSkill.h"
+
 #include "data/Settings.h"
 
 namespace FileOpener {
@@ -128,9 +143,9 @@ namespace FileOpener {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
-      long x = stol(command.substr(0, command.find('%')));
+      int x = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      long y = stol(command.substr(0, command.find('%')));
+      int y = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
@@ -181,15 +196,15 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       std::string map2_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
-      long x1 = stol(command.substr(0, command.find('%')));
+      int x1 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      long y1 = stol(command.substr(0, command.find('%')));
+      int y1 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int orientation1 = database->getTargetFromMacro(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      long x2 = stol(command.substr(0, command.find('%')));
+      int x2 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      long y2 = stol(command.substr(0, command.find('%')));
+      int y2 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int orientation2 = database->getTargetFromMacro(command.substr(0, command.find('%')));
       Map * map1 = world->getMap(map1_str);
@@ -214,9 +229,9 @@ namespace FileOpener {
     }
     else if(keyword == "Spawn") {
       Spawn * spawn = new Spawn();
-      spawn->x = stol(command.substr(0, command.find('%')));
+      spawn->x = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      spawn->y = stol(command.substr(0, command.find('%')));
+      spawn->y = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       spawn->orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
@@ -396,9 +411,9 @@ namespace FileOpener {
     std::string name;
     getline(file,name);
     getline(file,line);
-    const long sizeX = (long) stol(line);
+    const int sizeX = stoi(line);
     getline(file,line);
-    const long sizeY = (long) stol(line);
+    const int sizeY = stoi(line);
     getline(file,line);
     bool outside;
     std::istringstream is(line);
@@ -466,7 +481,54 @@ namespace FileOpener {
 
   void QuestOpener(std::string fileName, Database * database) {}
 
-  void SkillOpener(std::string fileName, Database * database) {}
+  void SkillOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int target_type = database->getTargetFromMacro(values.at("target_type"));
+    int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
+    int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
+    int overcharge_area_type = database->getTargetFromMacro(values.at("overcharge_area_type"));
+    int range = stoi(values.at("range"));
+    std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
+    std::istringstream is_skills(values.at("skills"));
+    std::string pseudoSkill;
+    while(getline(is_skills, pseudoSkill, '%')) {
+      skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
+    }
+    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_area_type, range, *skills);
+    database->addSkill(skill);
+    delete skills;
+  }
+
+  void PseudoSkillOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int skill_type = database->getTargetFromMacro(values.at("skill_type"));
+    int target_type = database->getTargetFromMacro(values.at("target_type"));
+    int mana_cost = stoi(values.at("mana_cost"));
+    std::list<Effect *> * effects = new std::list<Effect *>();
+    std::istringstream is_effects(values.at("effects"));
+    std::string effect;
+    PseudoSkill * pseudoSkill;
+    while(getline(is_effects, effect, '%')) {
+      effects->push_back((Effect *) database->getEffect(effect));
+    }
+    switch(skill_type) {
+      case SIMPLE_SKILL:
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
+        break;
+      case PROJECTILE_SKILL: {
+        Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, *effects);
+        ((ProjectileSkill *) pseudoSkill)->setProjectile(projectile);
+        break;
+      }
+      default:
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
+    }
+    database->addPseudoSkill(pseudoSkill);
+    delete effects;
+  }
 
   void SpeechOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
@@ -520,9 +582,9 @@ namespace FileOpener {
     std::istringstream is(values.at("melee"));
     bool melee;
     is >> std::boolalpha >> melee;
-    int range = database->getTargetFromMacro(values.at("range"));
+    int range = stoi(values.at("range"));
     int type = database->getTargetFromMacro(values.at("type"));
-    int weight = database->getTargetFromMacro(values.at("weight"));
+    int weight = stoi(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_2(values.at("use_ammo"));
     bool use_ammo;
@@ -589,6 +651,9 @@ namespace FileOpener {
     }
     else if(last_folder == "skills") {
       SkillOpener(fileName, database);
+    }
+    else if(last_folder == "pseudoskills") {
+      PseudoSkillOpener(fileName, database);
     }
     else if(last_folder == "speechs") {
       SpeechOpener(fileName, database);

@@ -14,17 +14,17 @@ std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }
 // TODO : return right tile
-Tile * Map::getTile(long y, long x) { return tiles[y][x]; }
-int Map::getLight(long y, long x) { return std::max(lights[y][x], light); }
+Tile * Map::getTile(int y, int x) { return tiles[y][x]; }
+int Map::getLight(int y, int x) { return std::max(lights[y][x], light); }
 void Map::applyDayLight(int light) { this->light = light; }
 
 void Map::calculateLights() {
   // initialize
-  long lightX[sizeX*sizeY];
-  long lightY[sizeX*sizeY];
-  long cpt = 0;
-  for(long y = 0; y < sizeY; y++) {
-    for(long x = 0; x < sizeX; x++) {
+  int lightX[sizeX*sizeY];
+  int lightY[sizeX*sizeY];
+  int cpt = 0;
+  for(int y = 0; y < sizeY; y++) {
+    for(int x = 0; x < sizeX; x++) {
       lights[y][x] = tiles[y][x]->light;
       if (lights[y][x] > 0) {
         lightX[cpt] = x;
@@ -32,12 +32,12 @@ void Map::calculateLights() {
       }
     }
   }
-  for(long i = 0; i < cpt; i++) {
+  for(int i = 0; i < cpt; i++) {
     propagateLight(lightY[i],lightX[i]);
   }
 }
 
-void Map::propagateLight(long y, long x) {
+void Map::propagateLight(int y, int x) {
   int light = lights[y][x] - 1;
   if(x > 1 && y > 1 && light > lights[y - 1][x - 1]) {
     lights[y - 1][x - 1] = light;
@@ -73,9 +73,9 @@ void Map::propagateLight(long y, long x) {
   }
 }
 
-void Map::setTile(long y, long x, Tile * tile) { tiles[y][x] = tile; }
+void Map::setTile(int y, int x, Tile * tile) { tiles[y][x] = tile; }
 
-void Map::crumble(long y, long x) {
+void Map::crumble(int y, int x) {
   for(auto character : characters) {
     if(character->getX() == x && character->getY() == y) {
       if(character->type == WALL) {
@@ -159,8 +159,8 @@ void Map::takeLoot(Character * c) {
 
 void Map::move(Character *c, int orientation, Adventure * adventure) {
   bool is_legal = false;
-  long destX;
-  long destY;
+  int destX;
+  int destY;
   switch(orientation) {
     case NORTH:
       if(c->getY() < sizeY - 1 && !tiles[c->getY() + 1][c->getX()]->untraversable) {
@@ -347,7 +347,7 @@ MapDisplay * Map::from_string(std::string to_read) {
   display->sizeY = String::extract_int(ss);
   display->outside = String::extract_bool(ss);
   display->tiles = std::vector<std::vector<Tile *>>(display->sizeY);
-  for(long i = 0; i < display->sizeY; i++) {
+  for(int i = 0; i < display->sizeY; i++) {
     display->tiles[i] = std::vector<Tile *>(display->sizeX);
   }
   for(int y = 0; y < display->sizeY; y++) {

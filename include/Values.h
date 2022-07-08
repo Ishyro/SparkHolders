@@ -89,18 +89,6 @@ class SpeechManager;
 #define PISTOL 14
 #define SLING 15
 
-// melee_range
-
-#define SHORT 1
-#define STANDARD 2
-#define LONG 3
-
-// weight
-
-#define LIGHT 1
-#define MEDIUM 2
-#define HEAVY 3
-
 // item_type
 
 #define UNEQUIPABLE 0
@@ -128,21 +116,22 @@ class SpeechManager;
 // skill_target
 
 #define SELF 1
-#define TOUCH 2
-#define TARGET 3
-#define TILE 4
+#define TARGET 2
+#define TILE 3
 
-// skill_special
+// skill_type
 
-#define TIMESTOP 1
-#define TILESWAP 2
-#define TELEPORT 3
-#define MAPLINKER 4
-#define TEAMCHANGER 5
-#define MINDCONTROL 6
-#define PROJECTILE 7
-#define SUMMON 8
-#define RESURRECTION 9
+#define CHANNELED_SKILL 1
+#define INSTANT_SKILL 2
+#define MAP_LINKER_SKILL 3
+#define MIND_CONTROL_SKILL 4
+#define PROJECTILE_SKILL 5
+#define RESURRECTION_SKILL 6
+#define SIMPLE_SKILL 7
+#define SUMMON_SKILL 8
+#define TEAM_CHANGER_SKILL 9
+#define TELEPORT_SKILL 10
+#define TILE_SWAP_SKILL 11
 
 // skill_overcharge_type
 
@@ -215,6 +204,7 @@ class SpeechManager;
 #define CULTURE 3
 #define RELIGION 4
 #define PROFESSION 5
+#define TITLE 6
 
 // speech_type
 
@@ -228,13 +218,14 @@ class SpeechManager;
 #define MOVE 1
 #define REST 2
 #define SHOOT 3
-#define RELOAD 4
-#define SWAP_GEAR 5
-#define CHANGE_MAP 6
-#define GRAB 7
-#define USE_SKILL 8
-#define USE_ITEM 9
-#define ECONOMICS 10
+#define FORCE_STRIKE 4
+#define RELOAD 5
+#define SWAP_GEAR 6
+#define CHANGE_MAP 7
+#define GRAB 8
+#define USE_SKILL 9
+#define USE_ITEM 10
+#define ECONOMICS 11
 
 // teams relations
 

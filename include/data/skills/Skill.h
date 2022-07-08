@@ -13,28 +13,32 @@ class Skill {
   public:
     const std::string name;
     const int target_type;
-    const long overcharge_type;
-    const long mana_cost;
-    const std::list<PseudoSkill *> effects;
+    const int overcharge_power_type;
+    const int overcharge_duration_type;
+    const int overcharge_area_type;
     const int range;
+    const std::list<PseudoSkill *> skills;
     Skill(
       std::string name,
       int target_type,
-      long overcharge_type,
-      long mana_cost,
-      std::list<PseudoSkill *> effects,
-      int range
+      int overcharge_power_type,
+      int overcharge_duration_type,
+      int overcharge_area_type,
+      int range,
+      std::list<PseudoSkill *> skills
     ):
       name(name),
       target_type(target_type),
-      overcharge_type(overcharge_type),
-      mana_cost(mana_cost),
-      effects(effects),
-      range(range)
+      overcharge_power_type(overcharge_power_type),
+      overcharge_duration_type(overcharge_duration_type),
+      overcharge_area_type(overcharge_area_type),
+      range(range),
+      skills(skills)
     {}
 
-    void activate(Character * owner, Character * target, Adventure * adventure, long overcharge, long map_id = 0L, long x = 0L, long y = 0L);
-    long getManaCost(long overcharge);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge, int map_id = 0, int x = 0, int y = 0);
+    int getManaCost(int overcharge);
+    int getPower();
     std::string to_string();
     static Skill * from_string(std::string to_read);
 };

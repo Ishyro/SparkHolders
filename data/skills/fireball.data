@@ -1,0 +1,7 @@
+name = TXT_FIREBALL
+target_type = TARGET
+overcharge_power_type = LINEAR
+overcharge_duration_type = NO_OVERCHARGE
+overcharge_area_type = SQUARE
+range = 15
+skills = TXT_FIREBALL%

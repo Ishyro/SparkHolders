@@ -12,6 +12,8 @@
 #include "data/Tile.h"
 #include "data/Way.h"
 
+#include "data/skills/Skill.h"
+
 #include "clients/Translator.h"
 
 #include "clients/terminal/Display.h"
@@ -249,7 +251,32 @@ namespace Display {
     wrefresh(screen);
   }
 
+  WINDOW * displaySkill(Skill * skill, WINDOW * screen, Translator * t) {
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(screen, lines, cols);
+    wattron(screen, COLOR_PAIR(WHITE));
+    std::string to_print = t->getSkillName(skill->name);
+    mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+    mvwprintw(screen, 3, 1, (t->getStandardName("Targeting") + std::string(": ") + t->getStandardName(std::string("target_type_") + std::to_string(skill->target_type))).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range)).c_str());
+    mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower())).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("Power overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_power_type))).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("Duration overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_duration_type))).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("Area overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_area_type))).c_str());
 
+    wattroff(screen, COLOR_PAIR(WHITE));
+    // should be constants
+    int separator = (float) LINES * 3 / 5;
+    float ratio = 2.25;
+    WINDOW * descScreen = subwin(screen, lines - 10 - 1, cols - 1, separator + 10, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 1);
+    wattron(descScreen, COLOR_PAIR(WHITE));
+    print(descScreen, 0, 0, (t->getSkillDesc(skill->name)));
+    wattroff(descScreen, COLOR_PAIR(WHITE));
+    wrefresh(descScreen);
+    wrefresh(screen);
+    return descScreen;
+  }
 
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t) {
     int lines = 0;
@@ -289,9 +316,7 @@ namespace Display {
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
     int i = 3;
     mvwprintw(screen, i++, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("weapon_type_") + std::to_string(weapon->type))).c_str());
-    if(weapon->melee) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
-    }
+    mvwprintw(screen, i++, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
     mvwprintw(screen, i++, 1, (t->getStandardName("Weight") + std::string(": ") + std::to_string(weapon->weight)).c_str());
     mvwprintw(screen, i++, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(weapon->gold_value)).c_str());
     if(weapon->use_ammo) {
@@ -1093,7 +1118,7 @@ namespace Display {
       wrefresh(targetScreen);
       bool done = false;
       int type;
-      int item_type = 0;
+      int object_type = 0;
       int orientation = link->getPlayer()->getOrientation();
       Skill * skill = nullptr;
       int target_id = 0;
@@ -1164,31 +1189,34 @@ namespace Display {
           case 'x':
           case 'X':
             type = USE_SKILL;
-            skill = selectSkill(displayScreen, link->getPlayer()->getSkills(), t);
-            if(skill != nullptr && selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
+            skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), object_type, t);
+            if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
               done = true;
             }
             break;
           case 'c':
           case 'C':
-            if(!link->getPlayer()->getGear()->getWeapon()->melee) {
-              if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
-                type = SHOOT;
-                if(selectTarget(mapScreen, targetScreen, display, target_id, target_x, target_y, orientation, t)) {
-                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-                    link->getPlayer()->getGear()->getWeapon()->useAmmo();
-                  }
-                  done = true;
+            type = REST;
+            if(link->getPlayer()->getGear()->getWeapon()->melee) {
+              type = FORCE_STRIKE;
+            } else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+              type = SHOOT;
+            }
+            if(type == SHOOT || type == FORCE_STRIKE) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
+                if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+                  link->getPlayer()->getGear()->getWeapon()->useAmmo();
                 }
+                done = true;
               }
             }
             break;
           case 'i':
           case 'I':
             type = SWAP_GEAR;
-            object = selectItem(displayScreen, targetScreen, link->getPlayer(), item_type, t);
+            object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, t);
             if(object != "") {
-              switch(item_type) {
+              switch(object_type) {
                 case 0:
                   for(Weapon * weapon : link->getPlayer()->getWeapons()) {
                     if(weapon->name == object) {
@@ -1255,12 +1283,108 @@ namespace Display {
     }
   }
 
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, Translator * t) {
+    Skill * result = nullptr;
+    bool done = false;
+    int cursorX = 0;
+    int cursorY = 0;
+    int lines = 0;
+    int cols = 0;
+    getmaxyx(displayScreen, lines, cols);
+    int size = player->getSkills().size();
+    while(!done) {
+      WINDOW * tempScreen = nullptr;
+      wclear(displayScreen);
+      wclear(targetScreen);
+      box(displayScreen, ACS_VLINE, ACS_HLINE);
+      box(targetScreen, ACS_VLINE, ACS_HLINE);
+      std::string to_print = t->getStandardName("SKILLS");
+      mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
+      int currentX = 0;
+      int currentY = 0;
+      int offset = 0;
+      int sizeX = 0;
+      int maxY = 0;
+      int color = WHITE;
+      for (Skill * skill : player->getSkills()) {
+        if(currentY >= lines - 4) {
+          offset += sizeX + 3;
+          maxY = currentY - 1;
+          currentY = 0;
+          currentX++;
+        }
+        if(cursorX == currentX && cursorY == currentY) {
+          color = BLUE;
+        } else {
+          color = WHITE;
+        }
+        std::string to_print = t->getSkillName(skill->name);
+        if(color == BLUE) {
+          result = skill;
+          tempScreen = displaySkill(skill, targetScreen, t);
+        }
+        sizeX = std::max(sizeX, (int) to_print.length());
+        wattron(displayScreen, COLOR_PAIR(color));
+        mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
+        wattroff(displayScreen, COLOR_PAIR(color));
+      }
+      maxY = std::max(--currentY, maxY);
 
-  Skill * selectSkill(WINDOW * displayScreen, std::list<Skill *> skills, Translator * t) {
-    return nullptr;
+      wrefresh(displayScreen);
+      wrefresh(targetScreen);
+      flushinp();
+      int keyPressed = getch();
+      switch(keyPressed) {
+        case '4':
+        case KEY_LEFT:
+          if(cursorX > 0) {
+            cursorX--;
+          }
+          break;
+        case '8':
+        case KEY_UP: {
+          if(cursorY > 0) {
+            cursorY--;
+          }
+          break;
+        }
+        case '6':
+        case KEY_RIGHT:
+          if(cursorX < currentX) {
+            cursorX++;
+          }
+          break;
+        case '2':
+        case KEY_DOWN: {
+          if(cursorY < maxY) {
+            cursorY++;
+          }
+          break;
+        }
+        case '\n':
+          done = true;
+          break;
+        case ' ':
+          done = true;
+          result = nullptr;
+        default:
+          ;
+      }
+      if(tempScreen != nullptr) {
+        wclear(tempScreen);
+        delwin(tempScreen);
+      }
+    }
+    wclear(displayScreen);
+    wclear(targetScreen);
+    box(displayScreen, ACS_VLINE, ACS_HLINE);
+    box(targetScreen, ACS_VLINE, ACS_HLINE);
+    wrefresh(displayScreen);
+    wrefresh(targetScreen);
+    return result;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t) {
     bool done = false;
     int lines = 0;
     int cols = 0;
@@ -1273,6 +1397,8 @@ namespace Display {
       flushinp();
       int keyPressed = getch();
       target_id = 0;
+      int previous_x = target_x;
+      int previous_y = target_y;
       wmove(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2);
       wecho_wchar(mapScreen, wch_old);
       switch(keyPressed) {
@@ -1397,6 +1523,10 @@ namespace Display {
         default:
           ;
       }
+      if(std::max(abs(target_x - player_x), abs(target_y - player_y)) > range) {
+        target_x = previous_x;
+        target_y = previous_y;
+      }
       wclear(targetScreen);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
       wrefresh(targetScreen);
@@ -1419,7 +1549,7 @@ namespace Display {
     return true;
   }
 
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & item_type, Translator * t) {
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, Translator * t) {
       std::string result = "";
       bool done = false;
       int cursorX = 0;
@@ -1457,7 +1587,7 @@ namespace Display {
           std::string to_print = t->getWeaponName(weapon->name);
           if(color == BLUE) {
             result = weapon->name;
-            item_type = 0;
+            object_type = 0;
             tempScreen = displayWeapon(weapon, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
@@ -1480,7 +1610,7 @@ namespace Display {
           std::string to_print = t->getProjectileName(ammo->projectile->name);
           if(color == BLUE) {
             result = ammo->projectile->name;
-            item_type = 1;
+            object_type = 1;
             tempScreen = displayAmmo(ammo, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
@@ -1503,7 +1633,7 @@ namespace Display {
           std::string to_print = t->getItemName(item->name);
           if(color == BLUE) {
             result = item->name;
-            item_type = 2;
+            object_type = 2;
             tempScreen = displayItem(item, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
@@ -1575,14 +1705,14 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(displayScreen, lines, cols);
-    int size = player->getWeapons().size() + player->getAmmunitions().size() + player->getItems().size();
+    int size = player->getAmmunitions().size();
     while(!done) {
       WINDOW * tempScreen = nullptr;
       wclear(displayScreen);
       wclear(targetScreen);
       box(displayScreen, ACS_VLINE, ACS_HLINE);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
-      std::string to_print = t->getStandardName("INVENTORY");
+      std::string to_print = t->getStandardName("AMMUNITION");
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       int currentX = 0;
       int currentY = 0;
