@@ -1,28 +1,47 @@
 #include "data/skills/PseudoSkill.h"
 
+#include "data/skills/ChanneledSkill.h"
+#include "data/skills/InstantSkill.h"
+#include "data/skills/MapLinkerSkill.h"
+#include "data/skills/MindControlSkill.h"
+#include "data/skills/ProjectileSkill.h"
+#include "data/skills/ResurrectionSkill.h"
+#include "data/skills/SimpleSkill.h"
+#include "data/skills/SummonSkill.h"
+#include "data/skills/TeamChangerSkill.h"
+#include "data/skills/TeleportSkill.h"
+#include "data/skills/TileSwapSkill.h"
+
 #include "utils/String.h"
 
 int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge) {
-  int cost = -2 * mana_cost;
+  int cost = 0;
   switch(overcharge_power_type) {
     case NO_OVERCHARGE:
       cost += mana_cost;
+      break;
     case LINEAR:
       cost += mana_cost * overcharge;
+      break;
     case SQUARE:
       cost += mana_cost * overcharge * overcharge;
+      break;
     case EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
+      break;
     default:
       ;
   }
   switch(overcharge_duration_type) {
     case NO_OVERCHARGE:
       cost += mana_cost;
+      break;
     case LINEAR:
       cost += mana_cost * overcharge;
+      break;
     case SQUARE:
       cost += mana_cost * overcharge * overcharge;
+      break;
     case EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
     default:
@@ -31,31 +50,20 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
   switch(overcharge_area_type) {
     case NO_OVERCHARGE:
       cost += mana_cost;
+      break;
     case LINEAR:
       cost += mana_cost * overcharge;
+      break;
     case SQUARE:
       cost += mana_cost * overcharge * overcharge;
+      break;
     case EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
+      break;
     default:
       ;
   }
-  return cost;
-}
-
-
-void PseudoSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id, int x, int y) {}
-
-int PseudoSkill::getPower() {
-  int power = 0;
-  for(Effect * effect : effects) {
-    if(effect->power != 0) {
-      power += effect->power;
-    } else {
-      power += effect->getRawDamage();
-    }
-  }
-  return power;
+  return cost - 2 * mana_cost;
 }
 
 std::string PseudoSkill::to_string() {
@@ -79,12 +87,107 @@ PseudoSkill * PseudoSkill::from_string(std::string to_read) {
   int power = String::extract_int(ss);
   std::list<Effect *> * effects = new std::list<Effect *>();
   delete ss;
-  return new PseudoSkill(
-    name,
-    skill_type,
-    target_type,
-    mana_cost,
-    *effects,
-    power
-  );
+  switch(skill_type) {
+    case CHANNELED_SKILL:
+      return new ChanneledSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case INSTANT_SKILL:
+      return new InstantSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case MAP_LINKER_SKILL:
+      return new MapLinkerSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case MIND_CONTROL_SKILL:
+      return new MindControlSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case PROJECTILE_SKILL:
+      return new ProjectileSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case RESURRECTION_SKILL:
+      return new ResurrectionSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case SIMPLE_SKILL:
+      return new SimpleSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case SUMMON_SKILL:
+      return new SummonSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case TEAM_CHANGER_SKILL:
+      return new TeamChangerSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case TELEPORT_SKILL:
+      return new TeleportSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    case TILE_SWAP_SKILL:
+      return new TileSwapSkill(
+        name,
+        skill_type,
+        target_type,
+        mana_cost,
+        *effects,
+        power
+      );
+    default:
+      return nullptr;
+  }
 }

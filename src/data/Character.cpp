@@ -307,6 +307,14 @@ void Character::unequipWeapon() {
 
 void Character::addEffect(Effect * e) { effects.push_back(e); }
 void Character::addSkill(Skill * s) { skills.push_back(s); }
+bool Character::hasSkill(Skill * s) {
+  for(Skill * skill : skills) {
+    if(skill->name == s->name) {
+      return true;
+    }
+  }
+  return false;
+}
 void Character::removeEffect(Effect * e) { effects.remove(e); }
 void Character::removeSkill(Skill * s) { skills.remove(s); }
 
@@ -622,8 +630,8 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, ss_items->str());
   delete ss_items;
   std::stringstream * ss_weapons = new std::stringstream();
-  for(Weapon * _weapon : weapons) {
-    String::insert(ss_weapons, _weapon->to_string());
+  for(Weapon * weapon : weapons) {
+    String::insert(ss_weapons, weapon->to_string());
   }
   String::insert(ss, ss_weapons->str());
   delete ss_weapons;

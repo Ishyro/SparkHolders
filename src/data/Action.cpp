@@ -34,6 +34,10 @@ void Action::execute(Adventure * adventure) {
       }
       break;
     }
+    case FORCE_STRIKE: {
+      user->setOrientation(orientation);
+      break;
+    }
     case RELOAD:
       for(Ammunition * ammo : user->getAmmunitions()) {
         if(ammo->projectile->name == object) {
@@ -75,8 +79,14 @@ void Action::execute(Adventure * adventure) {
     case GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user);
       break;
-    case USE_SKILL:
+    case USE_SKILL: {
+      user->setOrientation(orientation);
+      Skill * skill = (Skill *) adventure->getDatabase()->getSkill(object);
+      if(user->hasSkill(skill)) {
+        user->useSkill(skill, (Character *) target, adventure, overcharge, target_x, target_y);
+      }
       break;
+    }
     case USE_ITEM:
       break;
     case ECONOMICS:

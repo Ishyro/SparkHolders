@@ -54,9 +54,9 @@ MapDisplay * Link::receiveMap() {
   }
 }
 
-void Link::sendAction(int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object) {
+void Link::sendAction(int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge) {
   try {
-    Client::sendAction(s, type, orientation, skill, target_id, target_x, target_y, object);
+    Client::sendAction(s, type, orientation, skill, target_id, target_x, target_y, object, overcharge);
   } catch (const CloseException &e) {
     throw e;
   }

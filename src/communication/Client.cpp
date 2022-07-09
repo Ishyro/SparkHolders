@@ -11,6 +11,8 @@
 
 #include "communication/Client.h"
 
+#include "utils/String.h"
+
 namespace Client {
 
   void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways) {
@@ -23,18 +25,18 @@ namespace Client {
     if(msg.find("RECONNECT") != std::string::npos) {
       throw CloseException();
     }
-    std::istringstream attrs(msg.substr(0, msg.find('@')));
-    std::string attr;
-    while(getline(attrs, attr, '|') && attr != "") {
-      attributes->push_back(Attributes::from_string(attr));
+    std::stringstream * ss = new std::stringstream(msg);
+    std::stringstream * ss_attributes = new std::stringstream(String::extract(ss));
+    while(ss_attributes->rdbuf()->in_avail() != 0) {
+      attributes->push_back(Attributes::from_string(String::extract(ss_attributes)));
     }
-    msg = msg.substr(msg.find('@') + 1, msg.length());
-    std::istringstream ways2(msg.substr(0, msg.find('@')));
-    std::string way;
-    while(getline(ways2, way, '|') && way != "") {
-      ways->push_back(Way::from_string(way));
+    delete ss_attributes;
+    std::stringstream * ss_ways = new std::stringstream(String::extract(ss));
+    while(ss_ways->rdbuf()->in_avail() != 0) {
+      ways->push_back(Way::from_string(String::extract(ss_ways)));
     }
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    delete ss_ways;
+    delete ss;;
   }
 
   std::list<std::string> receiveTraductionPaths(Socket s) {
@@ -45,11 +47,11 @@ namespace Client {
       throw e;
     }
     std::list<std::string> result = std::list<std::string>();
-    std::istringstream paths(msg);
-    std::string path;
-    while(getline(paths, path, '@') && path != "") {
-      result.push_back(path);
+    std::stringstream * ss_trads = new std::stringstream(msg);
+    while(ss_trads->rdbuf()->in_avail() != 0) {
+      result.push_back(String::extract(ss_trads));
     }
+    delete ss_trads;
     return result;
   }
 
@@ -60,15 +62,13 @@ namespace Client {
     } catch (const CloseException &e) {
       throw e;
     }
-    std::istringstream ways(msg);
-    std::string _2ways;
-    while(getline(ways, _2ways, '@') && _2ways != "") {
-      std::string way1 = _2ways.substr(0, _2ways.find('|'));
-      _2ways = _2ways.substr(_2ways.find('|') + 1, _2ways.length());
-      std::string way2 = _2ways.substr(0, _2ways.find('|'));
-      _2ways = _2ways.substr(_2ways.find('|') + 1, _2ways.length());
+    std::stringstream * ss_ways = new std::stringstream(msg);
+    while(ss_ways->rdbuf()->in_avail() != 0) {
+      std::string way1 = String::extract(ss_ways);
+      std::string way2 = String::extract(ss_ways);
       waysIncompatibilities->push_back(std::make_pair(way1, way2));
     }
+    delete ss_ways;
   }
 
   MapDisplay * receiveMap(Socket s) {
@@ -79,31 +79,44 @@ namespace Client {
     }
   }
 
-  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object) {
-    std::string msg = std::to_string(type) + "@";
+  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert_int(ss, type);
     switch(type) {
       case MOVE:
-        msg += std::to_string(orientation) + "@";
+        String::insert_int(ss, orientation);
         break;
       case REST:
         break;
       case SHOOT:
-        msg += std::to_string(orientation) + "@";
-        msg += std::to_string(target_id) + "@";
-        msg += std::to_string(target_x) + "@";
-        msg += std::to_string(target_y) + "@";
+        String::insert_int(ss, orientation);
+        String::insert_int(ss, target_id);
+        String::insert_int(ss, target_x);
+        String::insert_int(ss, target_y);
+        break;
+      case FORCE_STRIKE:
+        String::insert_int(ss, orientation);
+        String::insert_int(ss, target_id);
+        String::insert_int(ss, target_x);
+        String::insert_int(ss, target_y);
         break;
       case RELOAD:
-        msg += object + "@";
+        String::insert(ss, object);
         break;
       case SWAP_GEAR:
-        msg += object + "@";
+        String::insert(ss, object);
         break;
       case CHANGE_MAP:
         break;
       case GRAB:
         break;
       case USE_SKILL:
+        String::insert(ss, object);
+        String::insert_int(ss, orientation);
+        String::insert_int(ss, target_id);
+        String::insert_int(ss, target_x);
+        String::insert_int(ss, target_y);
+        String::insert_int(ss, overcharge);
         break;
       case USE_ITEM:
         break;
@@ -113,15 +126,25 @@ namespace Client {
         ;
     }
     try {
-      s.write(msg);
+      s.write(ss->str());
     } catch (const CloseException &e) {
       throw e;
     }
+    delete ss;
   }
 
   Character * sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert(ss, name);
+    String::insert(ss, attibutes);
+    String::insert(ss, race);
+    String::insert(ss, origin);
+    String::insert(ss, culture);
+    String::insert(ss, religion);
+    String::insert(ss, profession);
     try {
-      s.write(name + "@" + attibutes + "@" + race + "@" + origin + "@" + culture + "@" + religion + "@" + profession + "@");
+      s.write(ss->str());
+      delete ss;
       return Character::full_from_string(s.read());
     } catch (const CloseException &e) {
       throw e;

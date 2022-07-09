@@ -8,3 +8,15 @@ void SimpleSkill::activate(Character * owner, Character * target, Adventure * ad
     to_add->activate(target);
   }
 }
+
+int SimpleSkill::getPower() {
+  int power = 0;
+  for(Effect * effect : effects) {
+    if(effect->power != 0) {
+      power += effect->power;
+    } else {
+      power += effect->getRawDamage();
+    }
+  }
+  return power;
+}

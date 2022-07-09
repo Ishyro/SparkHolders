@@ -1124,6 +1124,7 @@ namespace Display {
       int target_id = 0;
       int target_x = link->getPlayer()->getX() - display->offsetX;
       int target_y = link->getPlayer()->getY() - display->offsetY;
+      int overcharge = 1;
       std::string object = "";
       while(!done) {
         flushinp();
@@ -1192,6 +1193,7 @@ namespace Display {
             skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), object_type, t);
             if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
               done = true;
+              object = skill->name;
             }
             break;
           case 'c':
@@ -1267,7 +1269,7 @@ namespace Display {
             ;
         }
       }
-      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object);
+      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge);
       for(CharacterDisplay * character : display->characters) {
         delete character;
       }

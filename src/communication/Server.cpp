@@ -13,6 +13,8 @@
 
 #include "communication/Server.h"
 
+#include "utils/String.h"
+
 namespace Server {
   Action * receiveAction(Socket s, Character * user, Adventure * adventure) {
     std::string msg;
@@ -21,51 +23,59 @@ namespace Server {
     } catch (const CloseException &e) {
       throw e;
     }
-    int keyword = stoi(msg.substr(0, msg.find('@')));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
-    switch(keyword) {
+    std::stringstream * ss = new std::stringstream(msg);
+    int type = String::extract_int(ss);
+    switch(type) {
       case MOVE: {
-        int orientation = stoi(msg.substr(0, msg.find('@')));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "");
+        int orientation = String::extract_int(ss);
+        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1);
       }
       case REST:
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
       case SHOOT: {
-        int orientation = stoi(msg.substr(0, msg.find('@')));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        const Character * target = adventure->getCharacter(stoi(msg.substr(0, msg.find('@'))));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        int target_x = stoi(msg.substr(0, msg.find('@')));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        int target_y = stoi(msg.substr(0, msg.find('@')));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "");
+        int orientation = String::extract_int(ss);
+        const Character * target = adventure->getCharacter(String::extract_int(ss));
+        int target_x = String::extract_int(ss);
+        int target_y = String::extract_int(ss);
+        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1);
+      }
+      case FORCE_STRIKE: {
+        int orientation = String::extract_int(ss);
+        const Character * target = adventure->getCharacter(String::extract_int(ss));
+        int target_x = String::extract_int(ss);
+        int target_y = String::extract_int(ss);
+        return new Action(FORCE_STRIKE, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1);
       }
       case RELOAD: {
-        std::string object = msg.substr(0, msg.find('@'));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object);
+        std::string object = String::extract(ss);
+        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1);
       }
       case SWAP_GEAR: {
-        std::string object = msg.substr(0, msg.find('@'));
-        msg = msg.substr(msg.find('@') + 1, msg.length());
-        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object);
+        std::string object = String::extract(ss);
+        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1);
       }
       case CHANGE_MAP: {
         MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
         if(link != nullptr) {
-          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "");
+          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "", 1);
         }
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
       }
       case GRAB:
-        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
-      case USE_SKILL:
+        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
+      case USE_SKILL: {
+        std::string object = String::extract(ss);
+        int orientation = String::extract_int(ss);
+        const Character * target = adventure->getCharacter(String::extract_int(ss));
+        int target_x = String::extract_int(ss);
+        int target_y = String::extract_int(ss);
+        int overcharge = String::extract_int(ss);
+        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge);
+      }
       case USE_ITEM:
       case ECONOMICS:
       default:
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "");
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
     }
   }
 
@@ -76,11 +86,11 @@ namespace Server {
     } catch (const CloseException &e) {
       throw e;
     }
-    std::string name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::stringstream * ss = new std::stringstream(msg);
+
+    std::string  name = String::extract(ss);
     Attributes * attr = nullptr;
-    std::string attr_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string attr_name = String::extract(ss);
     for(Attributes * attr2 : adventure->getStartingAttributes()) {
       if(attr2->name == attr_name) {
         attr = attr2;
@@ -91,8 +101,7 @@ namespace Server {
       return nullptr;
     }
     Way * race = nullptr;
-    std::string race_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string race_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == race_name && way->type == RACE) {
         race = way;
@@ -103,8 +112,7 @@ namespace Server {
       return nullptr;
     }
     Way * origin = nullptr;
-    std::string origin_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string origin_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == origin_name && way->type == ORIGIN) {
         origin = way;
@@ -115,8 +123,7 @@ namespace Server {
       return nullptr;
     }
     Way * culture = nullptr;
-    std::string culture_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string culture_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == culture_name && way->type == CULTURE) {
         culture = way;
@@ -127,8 +134,7 @@ namespace Server {
       return nullptr;
     }
     Way * religion = nullptr;
-    std::string religion_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string religion_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == religion_name && way->type == RELIGION) {
         religion = way;
@@ -139,8 +145,7 @@ namespace Server {
       return nullptr;
     }
     Way * profession = nullptr;
-    std::string profession_name = msg.substr(0, msg.find('@'));
-    msg = msg.substr(msg.find('@') + 1, msg.length());
+    std::string profession_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == profession_name && way->type == PROFESSION) {
         profession = way;
@@ -175,6 +180,7 @@ namespace Server {
     } catch (const CloseException &e) {
       throw e;
     }
+    delete ss;
     return player;
   }
 
@@ -187,46 +193,53 @@ namespace Server {
   }
 
   void sendStartingPossibilites(Socket s, Adventure * adventure) {
-    std::string msg = "";
     std::list<Attributes *> attributes = adventure->getStartingAttributes();
     std::list<Way *> ways = adventure->getStartingWays();
+    std::stringstream * ss = new std::stringstream();
+    std::stringstream * ss_attributes = new std::stringstream();
     for(Attributes * attr : attributes) {
-      msg += attr->to_string() + "|";
+      String::insert(ss_attributes, attr->to_string());
     }
-    msg += "@";
+    String::insert(ss, ss_attributes->str());
+    delete ss_attributes;
+    std::stringstream * ss_ways = new std::stringstream();
     for(Way * way : ways) {
-      msg += way->to_string() + "|";
+      String::insert(ss_ways, way->to_string());
     }
-    msg += "@";
+    String::insert(ss, ss_ways->str());
+    delete ss_ways;
     try {
-      s.write(msg);
+      s.write(ss->str());
     } catch (const CloseException &e) {
       throw e;
     }
+    delete ss;
   }
 
   void sendWaysIncompabilities(Socket s, Adventure * adventure) {
-    std::string msg = "";
+    std::stringstream * ss_ways = new std::stringstream();
     for(std::pair<const std::string, const std::string> pair : adventure->getDatabase()->getWaysIncompatibilities()) {
-      msg += pair.first + "|" + pair.second + "|" + "@";
+      String::insert(ss_ways, pair.first);
+      String::insert(ss_ways, pair.second);
     }
     try {
-      s.write(msg);
+      s.write(ss_ways->str());
     } catch (const CloseException &e) {
       throw e;
     }
+    delete ss_ways;
   }
 
   void sendTraductionPaths(Socket s, Adventure * adventure) {
-    std::string msg = "";
+    std::stringstream * ss_trads = new std::stringstream();
     for(std::string path : adventure->getDatabase()->getTraductionPaths()) {
-      msg += path + "@";
+      String::insert(ss_trads, path);
     }
     try {
-      s.write(msg);
+      s.write(ss_trads->str());
     } catch (const CloseException &e) {
       throw e;
     }
-
+    delete ss_trads;
   }
 }

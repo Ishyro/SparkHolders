@@ -47,7 +47,7 @@ Action * Link::receiveAction() {
       markClosed();
     }
   }
-  return new Action(REST, player, 0, nullptr, nullptr, 0, 0, nullptr, "");
+  return new Action(REST, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1);
 }
 
 bool Link::isClosed() { return closed; }

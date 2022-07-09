@@ -1,5 +1,7 @@
 #include "data/skills/ProjectileSkill.h"
 
+#include "utils/String.h"
+
 void ProjectileSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id, int x, int y) {
   int overcharge_power = overcharge_power_type == NO_OVERCHARGE ? 1 : overcharge;
   int overcharge_area = overcharge_area_type == NO_OVERCHARGE ? 1 : overcharge;

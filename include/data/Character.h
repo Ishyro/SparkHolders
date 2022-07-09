@@ -238,6 +238,7 @@ class Character {
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
+    bool hasSkill(Skill * s);
     void removeEffect(Effect * e);
     void removeSkill(Skill * s);
 
