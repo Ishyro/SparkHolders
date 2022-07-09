@@ -406,8 +406,8 @@ bool Character::isInWeakState() {
 }
 
 // Warning : Dangerous
-void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge, int x, int y) {
-  skill->activate(this, target, adventure, overcharge, current_map_id, x, y);
+void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int x, int y) {
+  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_area, current_map_id, x, y);
 }
 
 int Character::getDamageFromType(int damage_type) {
@@ -484,7 +484,7 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
           proj_x--;
           break;
       }
-      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1, 1);
+      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1, 1, 1);
     }
   }
   return nullptr;

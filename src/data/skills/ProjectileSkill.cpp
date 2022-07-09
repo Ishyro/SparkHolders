@@ -2,9 +2,7 @@
 
 #include "utils/String.h"
 
-void ProjectileSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge, int map_id, int x, int y) {
-  int overcharge_power = overcharge_power_type == NO_OVERCHARGE ? 1 : overcharge;
-  int overcharge_area = overcharge_area_type == NO_OVERCHARGE ? 1 : overcharge;
+void ProjectileSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id, int x, int y) {
   int realDamages[DAMAGE_TYPE_NUMBER];
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     realDamages[damage_type] = projectile->getDamageFromType(damage_type) * overcharge_power;
@@ -46,7 +44,7 @@ void ProjectileSkill::activate(Character * owner, Character * target, Adventure 
       proj_x--;
       break;
   }
-  Projectile * to_add = new Projectile(projectile, realDamages, owner->getCurrentMapId(), proj_x, proj_y, x, y, (Character *) target, owner, owner->getOrientation(), overcharge, overcharge_area);
+  Projectile * to_add = new Projectile(projectile, realDamages, owner->getCurrentMapId(), proj_x, proj_y, x, y, (Character *) target, owner, owner->getOrientation(), overcharge_power, overcharge_duration, overcharge_area);
   adventure->getWorld()->getMap(owner->getCurrentMapId())->addProjectile(to_add);
 }
 

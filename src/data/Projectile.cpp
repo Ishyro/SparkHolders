@@ -174,7 +174,7 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
     current_damages[i] -= (int) ceil( ((float) damages[i]) * waste_per_hit);
   }
   if(skill != nullptr) {
-    skill->activate(owner, target, adventure, overcharge);
+    skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_area);
   }
 }
 
@@ -188,7 +188,7 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
       }
       target->receiveAttack(reducedDamages, NO_ORIENTATION);
       if(skill != nullptr) {
-        skill->activate(owner, target, adventure, overcharge);
+        skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_area);
       }
     }
   }
@@ -233,7 +233,9 @@ std::string Projectile::full_to_string() {
   String::insert_int(ss, orientation);
   String::insert_int(ss, speed);
   String::insert_int(ss, area);
-  String::insert_int(ss, overcharge);
+  String::insert_int(ss, overcharge_power);
+  String::insert_int(ss, overcharge_duration);
+  String::insert_int(ss, overcharge_area);
   String::insert_int(ss, falloff_range);
   String::insert_float(ss, waste_per_tile);
   String::insert_float(ss, waste_per_tile_area);
@@ -298,7 +300,9 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   int orientation = String::extract_int(ss);
   int speed = String::extract_int(ss);
   int area = String::extract_int(ss);
-  int overcharge = String::extract_int(ss);
+  int overcharge_power = String::extract_int(ss);
+  int overcharge_duration = String::extract_int(ss);
+  int overcharge_area = String::extract_int(ss);
   int falloff_range = String::extract_int(ss);
   float waste_per_tile = String::extract_float(ss);
   float waste_per_tile_area = String::extract_float(ss);
@@ -323,7 +327,9 @@ Projectile * Projectile::full_from_string(std::string to_read) {
     orientation,
     speed,
     area,
-    overcharge,
+    overcharge_power,
+    overcharge_duration,
+    overcharge_area,
     falloff_range,
     waste_per_tile,
     waste_per_tile_area,

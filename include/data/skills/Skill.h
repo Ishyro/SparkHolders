@@ -36,8 +36,8 @@ class Skill {
       skills(skills)
     {}
 
-    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge, int map_id = 0, int x = 0, int y = 0);
-    int getManaCost(int overcharge);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id = 0, int x = 0, int y = 0);
+    int getManaCost(int overcharge_power, int overcharge_duration, int overcharge_area);
     int getPower();
     std::string to_string();
     static Skill * from_string(std::string to_read);

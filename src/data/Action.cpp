@@ -83,7 +83,7 @@ void Action::execute(Adventure * adventure) {
       user->setOrientation(orientation);
       Skill * skill = (Skill *) adventure->getDatabase()->getSkill(object);
       if(user->hasSkill(skill)) {
-        user->useSkill(skill, (Character *) target, adventure, overcharge, target_x, target_y);
+        user->useSkill(skill, (Character *) target, adventure, overcharge_power, overcharge_duration, overcharge_area, target_x, target_y);
       }
       break;
     }

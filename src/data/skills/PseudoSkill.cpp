@@ -14,20 +14,20 @@
 
 #include "utils/String.h"
 
-int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge) {
+int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area) {
   int cost = 0;
   switch(overcharge_power_type) {
     case NO_OVERCHARGE:
       cost += mana_cost;
       break;
     case LINEAR:
-      cost += mana_cost * overcharge;
+      cost += mana_cost * overcharge_power;
       break;
     case SQUARE:
-      cost += mana_cost * overcharge * overcharge;
+      cost += mana_cost * overcharge_power * overcharge_power;
       break;
     case EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
+      cost += mana_cost * (int) std::pow(2. , (double) overcharge_power - 1);
       break;
     default:
       ;
@@ -37,13 +37,13 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
       cost += mana_cost;
       break;
     case LINEAR:
-      cost += mana_cost * overcharge;
+      cost += mana_cost * overcharge_duration;
       break;
     case SQUARE:
-      cost += mana_cost * overcharge * overcharge;
+      cost += mana_cost * overcharge_duration * overcharge_duration;
       break;
     case EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
+      cost += mana_cost * (int) std::pow(2. , (double) overcharge_duration - 1);
     default:
       ;
   }
@@ -52,13 +52,13 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
       cost += mana_cost;
       break;
     case LINEAR:
-      cost += mana_cost * overcharge;
+      cost += mana_cost * overcharge_area;
       break;
     case SQUARE:
-      cost += mana_cost * overcharge * overcharge;
+      cost += mana_cost * overcharge_area * overcharge_area;
       break;
     case EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge - 1);
+      cost += mana_cost * (int) std::pow(2. , (double) overcharge_area - 1);
       break;
     default:
       ;

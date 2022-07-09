@@ -58,7 +58,6 @@ class Projectile {
       skill(skill),
       speed(speed),
       area(area),
-      overcharge(overcharge),
       falloff_range(falloff_range),
       waste_per_tile(waste_per_tile),
       waste_per_tile_area(waste_per_tile_area),
@@ -73,7 +72,9 @@ class Projectile {
       target = nullptr;
       owner = nullptr;
       orientation = NO_ORIENTATION;
-      overcharge = 1;
+      overcharge_power = 1;
+      overcharge_duration = 1;
+      overcharge_area = 1;
       current_travel = 0;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
@@ -91,7 +92,8 @@ class Projectile {
       Character * target,
       Character * owner,
       int orientation,
-      int overcharge,
+      int overcharge_power,
+      int overcharge_duration,
       int overcharge_area
     ):
       name(projectile->name),
@@ -107,8 +109,10 @@ class Projectile {
       owner(owner),
       orientation(orientation),
       speed(projectile->speed),
-      area(projectile->area + overcharge_area),
-      overcharge(overcharge),
+      area(projectile->area * overcharge_area),
+      overcharge_power(overcharge_power),
+      overcharge_duration(overcharge_duration),
+      overcharge_area(overcharge_area),
       falloff_range(projectile->falloff_range),
       current_travel(projectile->current_travel),
       waste_per_tile(projectile->waste_per_tile),
@@ -136,7 +140,9 @@ class Projectile {
       int orientation,
       int speed,
       int area,
-      int overcharge,
+      int overcharge_power,
+      int overcharge_duration,
+      int overcharge_area,
       int falloff_range,
       float waste_per_tile,
       float waste_per_tile_area,
@@ -157,7 +163,9 @@ class Projectile {
       orientation(orientation),
       speed(speed),
       area(area),
-      overcharge(overcharge),
+      overcharge_power(overcharge_power),
+      overcharge_duration(overcharge_duration),
+      overcharge_area(overcharge_area),
       falloff_range(falloff_range),
       waste_per_tile(waste_per_tile),
       waste_per_tile_area(waste_per_tile_area),
@@ -215,7 +223,9 @@ class Projectile {
     int orientation;
     int speed;
     int area;
-    int overcharge;
+    int overcharge_power;
+    int overcharge_duration;
+    int overcharge_area;
     int falloff_range;
     int current_travel;
     float waste_per_tile;

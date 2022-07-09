@@ -18,7 +18,9 @@ class Action {
     const int target_y;
     const MapLink * link;
     const std::string object;
-    const int overcharge;
+    const int overcharge_power;
+    const int overcharge_duration;
+    const int overcharge_area;
     Action(
       const int type,
       Character * user,
@@ -29,7 +31,9 @@ class Action {
       const int target_y,
       const MapLink * link,
       const std::string object,
-      const int overcharge
+      const int overcharge_power,
+      const int overcharge_duration,
+      const int overcharge_area
     ):
       type(type),
       user(user),
@@ -40,7 +44,9 @@ class Action {
       target_y(target_y),
       link(link),
       object(object),
-      overcharge(overcharge)
+      overcharge_power(overcharge_power),
+      overcharge_duration(overcharge_duration),
+      overcharge_area(overcharge_area)
     {}
     void execute(Adventure * adventure);
     Character * getUser();

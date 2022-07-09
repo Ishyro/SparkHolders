@@ -28,54 +28,56 @@ namespace Server {
     switch(type) {
       case MOVE: {
         int orientation = String::extract_int(ss);
-        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1);
+        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case REST:
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case SHOOT: {
         int orientation = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
-        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1);
+        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case FORCE_STRIKE: {
         int orientation = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
-        return new Action(FORCE_STRIKE, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1);
+        return new Action(FORCE_STRIKE, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case RELOAD: {
         std::string object = String::extract(ss);
-        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1);
+        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case SWAP_GEAR: {
         std::string object = String::extract(ss);
-        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1);
+        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case CHANGE_MAP: {
         MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
         if(link != nullptr) {
-          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "", 1);
+          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "", 1, 1, 1);
         }
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case GRAB:
-        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
+        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case USE_SKILL: {
         std::string object = String::extract(ss);
         int orientation = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
-        int overcharge = String::extract_int(ss);
-        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge);
+        int overcharge_power = String::extract_int(ss);
+        int overcharge_duration = String::extract_int(ss);
+        int overcharge_area = String::extract_int(ss);
+        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_area);
       }
       case USE_ITEM:
       case ECONOMICS:
       default:
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1);
+        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
 

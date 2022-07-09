@@ -2,17 +2,17 @@
 
 #include "utils/String.h"
 
-void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge, int map_id, int x, int y) {
-  owner->payMana(getManaCost(overcharge));
+void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id, int x, int y) {
+  owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_area));
   for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge, map_id, x, y);
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area, map_id, x, y);
   }
 }
 
-int Skill::getManaCost(int overcharge) {
+int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overcharge_area) {
   int mana_cost = 0;
   for(PseudoSkill * skill : skills) {
-    mana_cost += skill->getManaCost(overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge);
+    mana_cost += skill->getManaCost(overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area);
   }
   return mana_cost;
 }

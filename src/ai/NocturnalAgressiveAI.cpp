@@ -24,9 +24,9 @@ Action * NocturnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
         }
       }
     }
-    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1);
+    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   } else {
-    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1);
+    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   return nullptr;
 }
