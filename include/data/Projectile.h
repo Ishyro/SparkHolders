@@ -187,6 +187,10 @@ class Projectile {
     int getDamageFromType(int damage_type);
     int getSpeed();
     int getArea();
+    int getFalloffRange();
+    float getWastePerTile();
+    float getWastePerTile_area();
+    float getWastePerHit();
     Character * getTarget();
     Character * getOwner();
     bool isAtDest();
@@ -195,6 +199,12 @@ class Projectile {
     void setY(int setY);
     void setDestX(int destX);
     void setDestY(int destY);
+    void setSpeed(int speed);
+    void setArea(int area);
+    void setFalloffRange(int falloff_range);
+    void setWastePerTile(float waste_per_tile);
+    void setWastePerTile_area(float waste_per_tile_area);
+    void setWastePerHit(float waste_per_hit);
     void setTarget(Character * target);
     void setOwner(Character * owner);
     void move();

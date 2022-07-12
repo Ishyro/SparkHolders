@@ -13,6 +13,19 @@
 #include "data/Way.h"
 
 #include "data/skills/Skill.h"
+#include "data/skills/PseudoSkill.h"
+
+#include "data/skills/ChanneledSkill.h"
+#include "data/skills/InstantSkill.h"
+#include "data/skills/MapLinkerSkill.h"
+#include "data/skills/MindControlSkill.h"
+#include "data/skills/ProjectileSkill.h"
+#include "data/skills/ResurrectionSkill.h"
+#include "data/skills/SimpleSkill.h"
+#include "data/skills/SummonSkill.h"
+#include "data/skills/TeamChangerSkill.h"
+#include "data/skills/TeleportSkill.h"
+#include "data/skills/TileSwapSkill.h"
 
 #include "clients/Translator.h"
 
@@ -262,15 +275,67 @@ namespace Display {
     mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge_power)).c_str());
     mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_area))).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("Power overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_power_type))).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("Duration overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_duration_type))).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("Area overcharge") + std::string(": ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_area_type))).c_str());
-
+    int i = 7;
+    for(PseudoSkill * pseudoSkill : skill->skills) {
+      switch(pseudoSkill->skill_type) {
+        case PROJECTILE_SKILL: {
+          Projectile * projectile = ((ProjectileSkill *) pseudoSkill)->getProjectile();
+          mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed())).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange())).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge_area)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile())).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area())).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
+        }
+        default:
+          ;
+      }
+    }
+    int damage_SLASH = skill->getDamageFromType(SLASH_DAMAGE, overcharge_power);
+    if(damage_SLASH != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
+    }
+    int damage_PUNCTURE = skill->getDamageFromType(PUNCTURE_DAMAGE, overcharge_power);
+    if(damage_PUNCTURE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
+    }
+    int damage_IMPACT = skill->getDamageFromType(IMPACT_DAMAGE, overcharge_power);
+    if(damage_IMPACT != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(damage_IMPACT)).c_str());
+    }
+    int damage_FIRE = skill->getDamageFromType(FIRE_DAMAGE, overcharge_power);
+    if(damage_FIRE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
+    }
+    int damage_LIGHTNING = skill->getDamageFromType(LIGHTNING_DAMAGE, overcharge_power);
+    if(damage_LIGHTNING != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
+    }
+    int damage_COLD = skill->getDamageFromType(COLD_DAMAGE, overcharge_power);
+    if(damage_COLD != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
+    }
+    int damage_POISON = skill->getDamageFromType(POISON_DAMAGE, overcharge_power);
+    if(damage_POISON != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
+    }
+    int damage_NEUTRAL = skill->getDamageFromType(NEUTRAL_DAMAGE, overcharge_power);
+    if(damage_NEUTRAL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
+    }
+    int damage_TRUE = skill->getDamageFromType(TRUE_DAMAGE, overcharge_power);
+    if(damage_TRUE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
+    }
+    int damage_SOUL = skill->getDamageFromType(SOUL_DAMAGE, overcharge_power);
+    if(damage_SOUL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
+    }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
     int separator = (float) LINES * 3 / 5;
     float ratio = 2.25;
-    WINDOW * descScreen = subwin(screen, lines - 11 - 1, cols - 2, separator + 11, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 1);
+    WINDOW * descScreen = subwin(screen, lines - i - 2, cols - 2, separator + i + 1, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 1);
     wattron(descScreen, COLOR_PAIR(WHITE));
     print(descScreen, 0, 0, (t->getSkillDesc(skill->name)));
     wattroff(descScreen, COLOR_PAIR(WHITE));
@@ -324,16 +389,55 @@ namespace Display {
       mvwprintw(screen, i++, 1, (t->getStandardName("Capacity") + std::string(": ") + std::to_string(weapon->getCurrentCapacity()) + std::string(" / ") + std::to_string(weapon->capacity)).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("Ammo type") + std::string(": ") + t->getStandardName(std::string("ammo_type_") + std::to_string(weapon->ammo_type))).c_str());
     }
-    mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(SLASH_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(weapon->getDamageFromType(IMPACT_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(FIRE_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(weapon->getDamageFromType(COLD_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(POISON_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(weapon->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(TRUE_DAMAGE))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(SOUL_DAMAGE))).c_str());
+    if(weapon->getAmmo() != nullptr && weapon->getAmmo()->projectile != nullptr) {
+      Projectile * projectile = weapon->getAmmo()->projectile;
+      mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
+    }
+    int damage_SLASH = weapon->getDamageFromType(SLASH_DAMAGE);
+    if(damage_SLASH != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
+    }
+    int damage_PUNCTURE = weapon->getDamageFromType(PUNCTURE_DAMAGE);
+    if(damage_PUNCTURE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
+    }
+    int damage_IMPACT = weapon->getDamageFromType(IMPACT_DAMAGE);
+    if(damage_IMPACT != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(damage_IMPACT)).c_str());
+    }
+    int damage_FIRE = weapon->getDamageFromType(FIRE_DAMAGE);
+    if(damage_FIRE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
+    }
+    int damage_LIGHTNING = weapon->getDamageFromType(LIGHTNING_DAMAGE);
+    if(damage_LIGHTNING != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
+    }
+    int damage_COLD = weapon->getDamageFromType(COLD_DAMAGE);
+    if(damage_COLD != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
+    }
+    int damage_POISON = weapon->getDamageFromType(POISON_DAMAGE);
+    if(damage_POISON != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
+    }
+    int damage_NEUTRAL = weapon->getDamageFromType(NEUTRAL_DAMAGE);
+    if(damage_NEUTRAL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
+    }
+    int damage_TRUE = weapon->getDamageFromType(TRUE_DAMAGE);
+    if(damage_TRUE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
+    }
+    int damage_SOUL = weapon->getDamageFromType(SOUL_DAMAGE);
+    if(damage_SOUL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
+    }
 
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -358,16 +462,47 @@ namespace Display {
     mvwprintw(screen, 3, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("ammo_type_") + std::to_string(ammo->ammo_type))).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("Number") + std::string(": ") + std::to_string(ammo->number)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(ammo->gold_value)).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SLASH_DAMAGE))).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(IMPACT_DAMAGE))).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(FIRE_DAMAGE))).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(COLD_DAMAGE))).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(POISON_DAMAGE))).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE))).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(TRUE_DAMAGE))).c_str());
-    mvwprintw(screen, 15, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(ammo->projectile->getDamageFromType(SOUL_DAMAGE))).c_str());
+    int i = 6;
+    int damage_SLASH = ammo->projectile->getDamageFromType(SLASH_DAMAGE);
+    if(damage_SLASH != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
+    }
+    int damage_PUNCTURE = ammo->projectile->getDamageFromType(PUNCTURE_DAMAGE);
+    if(damage_PUNCTURE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
+    }
+    int damage_IMPACT = ammo->projectile->getDamageFromType(IMPACT_DAMAGE);
+    if(damage_IMPACT != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(damage_IMPACT)).c_str());
+    }
+    int damage_FIRE = ammo->projectile->getDamageFromType(FIRE_DAMAGE);
+    if(damage_FIRE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
+    }
+    int damage_LIGHTNING = ammo->projectile->getDamageFromType(LIGHTNING_DAMAGE);
+    if(damage_LIGHTNING != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
+    }
+    int damage_COLD = ammo->projectile->getDamageFromType(COLD_DAMAGE);
+    if(damage_COLD != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
+    }
+    int damage_POISON = ammo->projectile->getDamageFromType(POISON_DAMAGE);
+    if(damage_POISON != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
+    }
+    int damage_NEUTRAL = ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE);
+    if(damage_NEUTRAL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
+    }
+    int damage_TRUE = ammo->projectile->getDamageFromType(TRUE_DAMAGE);
+    if(damage_TRUE != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
+    }
+    int damage_SOUL = ammo->projectile->getDamageFromType(SOUL_DAMAGE);
+    if(damage_SOUL != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
+    }
 
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -431,11 +566,11 @@ namespace Display {
     mvwprintw(screen, 3, 1, (t->getStandardName("NUMPAD") + std::string(": ") + t->getStandardName("MOVE") + std::string(" / ") +  t->getStandardName("ATTACK")).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("5") + std::string(": ") + t->getStandardName("REST")).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("<") + std::string(": ") + t->getStandardName("OPEN")).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("I") + std::string(": ") + t->getStandardName("INVENTORY")).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("I") + std::string(": ") + t->getStandardName("INVENTORY")).c_str());
     mvwprintw(screen, 7, 1, (t->getStandardName("R") + std::string(": ") + t->getStandardName("RELOAD")).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("X") + std::string(": ") + t->getStandardName("USE SKILL")).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("C") + std::string(": ") + t->getStandardName("SHOOT")).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("SPACEBAR") + std::string(": ") + t->getStandardName("LOOT")).c_str());
+    mvwprintw(screen, 8, 1, (t->getStandardName("X") + std::string(": ") + t->getStandardName("USE SKILL")).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("C") + std::string(": ") + t->getStandardName("SHOOT")).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("SPACEBAR") + std::string(": ") + t->getStandardName("LOOT")).c_str());
     wrefresh(screen);
   }
 
@@ -1406,7 +1541,7 @@ namespace Display {
       } else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Power Overcharging") + std::string(": ") + std::to_string(overcharge_power);
+      to_print = t->getStandardName("Power Overcharging") + std::string(": ") + std::to_string(overcharge_power) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_power_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2 - 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
@@ -1415,7 +1550,7 @@ namespace Display {
       } else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Duration Overcharging") + std::string(": ") + std::to_string(overcharge_duration);
+      to_print = t->getStandardName("Duration Overcharging") + std::string(": ") + std::to_string(overcharge_duration) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_duration_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
@@ -1424,7 +1559,7 @@ namespace Display {
       } else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Area Overcharging") + std::string(": ") + std::to_string(overcharge_area);
+      to_print = t->getStandardName("Area Overcharging") + std::string(": ") + std::to_string(overcharge_area) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_area_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2 + 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));

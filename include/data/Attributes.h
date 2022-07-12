@@ -17,7 +17,6 @@ class Attributes {
     const int baseVisionRange;
     const int baseVisionPower;
     const int baseDetectionRange;
-    const Gear * startingGear;
     Attributes(
       std::string name,
       int baseHp,
@@ -28,6 +27,8 @@ class Attributes {
       int baseVisionRange,
       int baseVisionPower,
       int baseDetectionRange,
+      std::list<Effect *> effects,
+      std::list<Skill *> skills,
       Gear * startingGear
     ):
       name(name),
@@ -39,12 +40,21 @@ class Attributes {
       baseVisionRange(baseVisionRange),
       baseVisionPower(baseVisionPower),
       baseDetectionRange(baseDetectionRange),
+      effects(effects),
+      skills(skills),
       startingGear(startingGear)
     {}
-    bool operator == (const Attributes& a) const { return name == a.name; }
-    bool operator != (const Attributes& a) const { return !operator==(a); }
+    std::list<Effect *> getEffects();
+    std::list<Skill *> getSkills();
+    Gear * getStartingGear();
     std::string to_string();
     static Attributes * from_string(std::string to_read);
+    bool operator == (const Attributes& a) const { return name == a.name; }
+    bool operator != (const Attributes& a) const { return !operator==(a); }
+  private:
+    std::list<Effect *> effects;
+    std::list<Skill *> skills;
+    Gear * startingGear;
 };
 
 #endif // _ATTRIBUTES_H_

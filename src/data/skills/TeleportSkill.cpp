@@ -5,3 +5,11 @@ void TeleportSkill::activate(Character * owner, Character * target, Adventure * 
 int TeleportSkill::getPower() {
   return 0;
 }
+
+int TeleportSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float TeleportSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

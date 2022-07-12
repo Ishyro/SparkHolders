@@ -19,7 +19,6 @@ class PseudoSkill {
     const int target_type;
     const int mana_cost;
     const std::list<Effect *> effects;
-    const int power;
     PseudoSkill(
       std::string name,
       int skill_type,
@@ -31,27 +30,13 @@ class PseudoSkill {
       skill_type(skill_type),
       target_type(target_type),
       mana_cost(mana_cost),
-      effects(effects),
-      power(0)
-    {}
-    PseudoSkill(
-      std::string name,
-      int skill_type,
-      int target_type,
-      int mana_cost,
-      std::list<Effect *> effects,
-      int power
-    ):
-      name(name),
-      skill_type(skill_type),
-      target_type(target_type),
-      mana_cost(mana_cost),
-      effects(effects),
-      power(power)
+      effects(effects)
     {}
 
     virtual void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id = 0, int x = 0, int y = 0) = 0;
     virtual int getPower() = 0;
+    virtual int getDamageFromType(int dammage_type, int overcharge_power) = 0;
+    virtual float getDamageReductionFromType(int dammage_type, int overcharge_power) = 0;
     int getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area);
     std::string to_string();
     static PseudoSkill * from_string(std::string to_read);

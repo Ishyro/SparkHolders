@@ -5,3 +5,11 @@ void TeamChangerSkill::activate(Character * owner, Character * target, Adventure
 int TeamChangerSkill::getPower() {
   return 0;
 }
+
+int TeamChangerSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float TeamChangerSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

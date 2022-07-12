@@ -30,6 +30,10 @@ int Projectile::getOrientation() { return orientation; }
 int Projectile::getDamageFromType(int damage_type) { return damages[damage_type]; }
 int Projectile::getSpeed() { return speed; }
 int Projectile::getArea() { return area; }
+int Projectile::getFalloffRange() { return falloff_range; }
+float Projectile::getWastePerTile() { return waste_per_tile; }
+float Projectile::getWastePerTile_area() { return waste_per_tile_area; }
+float Projectile::getWastePerHit() { return waste_per_hit; }
 Character * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
@@ -149,7 +153,9 @@ void Projectile::nextOrientation() {
 bool Projectile::isAtDest() {
   return x == getDestX() && y == getDestY();
 }
-
+float getWastePerTile();
+float getWastePerTile_area();
+float getWastePerHit();
 int Projectile::getRawDamage() {
   int power = 0;
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
@@ -164,6 +170,12 @@ void Projectile::setX(int x) { this->x = x; }
 void Projectile::setY(int y) { this->y = y; }
 void Projectile::setDestX(int dest_x) { this->dest_x = dest_x; }
 void Projectile::setDestY(int dest_y) { this->dest_y = dest_y; }
+void Projectile::setSpeed(int speed) { this->speed = speed; }
+void Projectile::setArea(int area) { this->area = area; }
+void Projectile::setFalloffRange(int falloff_range) { this->falloff_range = falloff_range; }
+void Projectile::setWastePerTile(float waste_per_tile) { this->waste_per_tile = waste_per_tile; }
+void Projectile::setWastePerTile_area(float waste_per_tile_area) { this->waste_per_tile_area = waste_per_tile_area; }
+void Projectile::setWastePerHit(float waste_per_hit) { this->waste_per_hit = waste_per_hit; }
 void Projectile::setTarget(Character * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }

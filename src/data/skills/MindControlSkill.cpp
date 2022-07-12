@@ -5,3 +5,11 @@ void MindControlSkill::activate(Character * owner, Character * target, Adventure
 int MindControlSkill::getPower() {
   return 0;
 }
+
+int MindControlSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float MindControlSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

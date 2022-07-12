@@ -5,3 +5,11 @@ void ResurrectionSkill::activate(Character * owner, Character * target, Adventur
 int ResurrectionSkill::getPower() {
   return 0;
 }
+
+int ResurrectionSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float ResurrectionSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

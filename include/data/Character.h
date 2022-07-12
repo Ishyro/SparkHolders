@@ -171,7 +171,7 @@ class Character {
     {
       applyAttributes(attributes, false);
     }
-    void applyAttributes(const Attributes * attributes, bool applyGear);
+    void applyAttributes(Attributes * attributes, bool init);
     bool isAlive();
     bool isSoulBurning();
     int getX();

@@ -5,3 +5,11 @@ void TileSwapSkill::activate(Character * owner, Character * target, Adventure * 
 int TileSwapSkill::getPower() {
   return 0;
 }
+
+int TileSwapSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float TileSwapSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

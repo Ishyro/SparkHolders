@@ -72,7 +72,19 @@ std::string PseudoSkill::to_string() {
   String::insert_int(ss, skill_type);
   String::insert_int(ss, target_type);
   String::insert_int(ss, mana_cost);
-  String::insert_int(ss, getPower());
+  std::stringstream * ss_effects = new std::stringstream();
+  for(Effect * effect : effects) {
+    String::insert(ss_effects, effect->to_string());
+  }
+  String::insert(ss, ss_effects->str());
+  delete ss_effects;
+  switch(skill_type) {
+    case PROJECTILE_SKILL:
+      String::insert(ss, ((ProjectileSkill *) this)->getProjectile()->full_to_string());
+      break;
+    default:
+      ;
+  }
   std::string result = ss->str();
   delete ss;
   return result;
@@ -84,110 +96,117 @@ PseudoSkill * PseudoSkill::from_string(std::string to_read) {
   int skill_type = String::extract_int(ss);
   int target_type = String::extract_int(ss);
   int mana_cost = String::extract_int(ss);
-  int power = String::extract_int(ss);
+  std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
-  delete ss;
+  while(ss_effects->rdbuf()->in_avail() != 0) {
+    effects->push_back(Effect::from_string(String::extract(ss_effects)));
+  }
+  delete ss_effects;
+  PseudoSkill * result = nullptr;
   switch(skill_type) {
     case CHANNELED_SKILL:
-      return new ChanneledSkill(
+      result = new ChanneledSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case INSTANT_SKILL:
-      return new InstantSkill(
+      result = new InstantSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case MAP_LINKER_SKILL:
-      return new MapLinkerSkill(
+      result = new MapLinkerSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case MIND_CONTROL_SKILL:
-      return new MindControlSkill(
+      result = new MindControlSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case PROJECTILE_SKILL:
-      return new ProjectileSkill(
+      result = new ProjectileSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      ((ProjectileSkill *) result)->setProjectile(Projectile::full_from_string(String::extract(ss)));
+      break;
     case RESURRECTION_SKILL:
-      return new ResurrectionSkill(
+      result = new ResurrectionSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case SIMPLE_SKILL:
-      return new SimpleSkill(
+      result = new SimpleSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case SUMMON_SKILL:
-      return new SummonSkill(
+      result = new SummonSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case TEAM_CHANGER_SKILL:
-      return new TeamChangerSkill(
+      result = new TeamChangerSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case TELEPORT_SKILL:
-      return new TeleportSkill(
+      result = new TeleportSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     case TILE_SWAP_SKILL:
-      return new TileSwapSkill(
+      result = new TileSwapSkill(
         name,
         skill_type,
         target_type,
         mana_cost,
-        *effects,
-        power
+        *effects
       );
+      break;
     default:
-      return nullptr;
+      ;
   }
+  delete ss;
+  return result;
 }

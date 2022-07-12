@@ -248,11 +248,8 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
 }
 
 bool Map::actProjectile(Projectile * p, Adventure * adventure) {
-  for(int i = 0; i < p->getSpeed(); i++) {
-    p->move();
-    if(p->isAtDest()) {
-      p->setLost(true);
-    }
+  if(p->isAtDest()) {
+    p->setLost(true);
     if(p->getArea() > 1) {
       p->attack_multiple_targets(characters, adventure);
       for(Character * c : characters) {
@@ -260,9 +257,32 @@ bool Map::actProjectile(Projectile * p, Adventure * adventure) {
           killCharacter(p->getOwner(), c);
         }
       }
-    } else {
-      for(Character * c : characters) {
-        if(c->getX() == p->getX() && c->getY() == p->getY()) {
+    }
+  }
+  for(int i = 0; i < p->getSpeed(); i++) {
+    p->move();
+    if(p->isAtDest()) {
+      p->setLost(true);
+      if(p->getArea() > 1) {
+        p->attack_multiple_targets(characters, adventure);
+        for(Character * c : characters) {
+          if(!c->isAlive()) {
+            killCharacter(p->getOwner(), c);
+          }
+        }
+      }
+    }
+    for(Character * c : characters) {
+      if(c->getX() == p->getX() && c->getY() == p->getY()) {
+        if(p->getArea() > 1) {
+          p->attack_multiple_targets(characters, adventure);
+          for(Character * c : characters) {
+            if(!c->isAlive()) {
+              killCharacter(p->getOwner(), c);
+            }
+          }
+          break;
+        } else {
           p->attack_single_target(c, adventure);
           if(!c->isAlive()) {
             killCharacter(p->getOwner(), c);

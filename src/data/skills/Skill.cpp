@@ -20,9 +20,25 @@ int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overch
 int Skill::getPower() {
   int power = 0;
   for(PseudoSkill * skill : skills) {
-    power += skill->power;
+    power += skill->getPower();
   }
   return power;
+}
+
+int Skill::getDamageFromType(int damage_type, int overcharge_power) {
+  int damage = 0;
+  for(PseudoSkill * s : skills) {
+    damage += s->getDamageFromType(damage_type, overcharge_power);
+  }
+  return damage;
+}
+
+float Skill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  float reduction = 0.;
+  for(PseudoSkill * s : skills) {
+    reduction += s->getDamageReductionFromType(damage_type, overcharge_power);
+  }
+  return reduction;
 }
 
 std::string Skill::to_string() {

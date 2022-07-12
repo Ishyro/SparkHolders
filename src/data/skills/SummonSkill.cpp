@@ -5,3 +5,11 @@ void SummonSkill::activate(Character * owner, Character * target, Adventure * ad
 int SummonSkill::getPower() {
   return 0;
 }
+
+int SummonSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float SummonSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

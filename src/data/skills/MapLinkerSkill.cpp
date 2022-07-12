@@ -5,3 +5,11 @@ void MapLinkerSkill::activate(Character * owner, Character * target, Adventure *
 int MapLinkerSkill::getPower() {
   return 0;
 }
+
+int MapLinkerSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  return 0;
+}
+
+float MapLinkerSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
+}

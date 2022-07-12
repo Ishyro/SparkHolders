@@ -49,7 +49,7 @@ void ProjectileSkill::activate(Character * owner, Character * target, Adventure 
 }
 
 int ProjectileSkill::getPower() {
-  int power = 0;
+  int power = projectile->getRawDamage();
   for(Effect * effect : effects) {
     if(effect->power != 0) {
       power += effect->power;
@@ -57,7 +57,22 @@ int ProjectileSkill::getPower() {
       power += effect->getRawDamage();
     }
   }
-  return power + projectile->getRawDamage();
+  return power;
+}
+
+int ProjectileSkill::getDamageFromType(int damage_type, int overcharge_power) {
+  int damage = projectile->getDamageFromType(damage_type) * overcharge_power;
+  for(Effect * e : effects) {
+    if(e->type == DAMAGE_BUFF) {
+      damage += e->getDamageFromType(damage_type) * overcharge_power;
+    }
+  }
+  return damage;
+}
+
+float ProjectileSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+  return 0.;
 }
 
 void ProjectileSkill::setProjectile(Projectile * projectile) { this->projectile = projectile; }
+Projectile * ProjectileSkill::getProjectile() { return projectile; }

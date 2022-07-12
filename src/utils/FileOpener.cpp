@@ -277,6 +277,18 @@ namespace FileOpener {
     int baseVisionRange = stoi(values.at("baseVisionRange"));
     int baseVisionPower = stoi(values.at("baseVisionPower"));
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
+    std::list<Effect *> * effects = new std::list<Effect *>();
+    std::istringstream is_effects(values.at("effects"));
+    std::string effect;
+    while(getline(is_effects, effect, '%')) {
+      effects->push_back((Effect *) database->getEffect(effect));
+    }
+    std::list<Skill *> * skills = new std::list<Skill *>();
+    std::istringstream is_skills(values.at("skills"));
+    std::string skill;
+    while(getline(is_skills, skill, '%')) {
+      skills->push_back((Skill *) database->getSkill(skill));
+    }
     std::string head_str = values.at("head");
     Item * head = head_str != "none" ? (Item *) database->getItem(head_str) : nullptr;
     std::string arms_str = values.at("arms");
@@ -294,7 +306,7 @@ namespace FileOpener {
     std::string weapon_str = values.at("weapon");
     Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
     Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, weapon);
-    Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, gear);
+    Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
     database->addAttributes(attributes);
   }
 

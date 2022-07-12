@@ -15,7 +15,7 @@
 
 #include "utils/String.h"
 
-void Character::applyAttributes(const Attributes * attributes, bool applyGear) {
+void Character::applyAttributes(Attributes * attributes, bool init) {
   maxHp=attributes->baseHp;
   maxMana=attributes->baseMana;
   hp=maxHp;
@@ -27,8 +27,14 @@ void Character::applyAttributes(const Attributes * attributes, bool applyGear) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
-  if(applyGear) {
-    gear = new Gear(attributes->startingGear);
+  if(init) {
+    gear = new Gear(attributes->getStartingGear());
+    for(Effect * effect : attributes->getEffects()) {
+      addEffect(effect);
+    }
+    for(Skill * skill : attributes->getSkills()) {
+      addSkill(skill);
+    }
   }
 }
 
