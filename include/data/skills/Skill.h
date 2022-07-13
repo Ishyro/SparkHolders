@@ -15,7 +15,7 @@ class Skill {
     const int target_type;
     const int overcharge_power_type;
     const int overcharge_duration_type;
-    const int overcharge_area_type;
+    const int overcharge_range_type;
     const int range;
     const std::list<PseudoSkill *> skills;
     Skill(
@@ -23,7 +23,7 @@ class Skill {
       int target_type,
       int overcharge_power_type,
       int overcharge_duration_type,
-      int overcharge_area_type,
+      int overcharge_range_type,
       int range,
       std::list<PseudoSkill *> skills
     ):
@@ -31,13 +31,13 @@ class Skill {
       target_type(target_type),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),
-      overcharge_area_type(overcharge_area_type),
+      overcharge_range_type(overcharge_range_type),
       range(range),
       skills(skills)
     {}
 
-    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id = 0, int x = 0, int y = 0);
-    int getManaCost(int overcharge_power, int overcharge_duration, int overcharge_area);
+    void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id = 0, int x = 0, int y = 0);
+    int getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range);
     int getPower();
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);

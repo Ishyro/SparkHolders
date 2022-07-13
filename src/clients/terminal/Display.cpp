@@ -264,27 +264,29 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_area, Translator * t) {
+  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
+    wclear(screen);
     wattron(screen, COLOR_PAIR(WHITE));
+    box(screen, ACS_VLINE, ACS_HLINE);
     std::string to_print = t->getSkillName(skill->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
     mvwprintw(screen, 3, 1, (t->getStandardName("Targeting") + std::string(": ") + t->getStandardName(std::string("target_type_") + std::to_string(skill->target_type))).c_str());
-    mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range)).c_str());
+    mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range * overcharge_range)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge_power)).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_area))).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range))).c_str());
     int i = 7;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
         case PROJECTILE_SKILL: {
           Projectile * projectile = ((ProjectileSkill *) pseudoSkill)->getProjectile();
-          mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed())).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange())).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge_area)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile())).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area())).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed() * overcharge_duration)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange() * overcharge_range)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge_range)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile() / overcharge_duration)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area() / overcharge_range)).c_str());
           mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
         }
         default:
@@ -1262,7 +1264,7 @@ namespace Display {
       int target_y = link->getPlayer()->getY() - display->offsetY;
       int overcharge_power = 1;
       int overcharge_duration = 1;
-      int overcharge_area = 1;
+      int overcharge_range = 1;
       std::string object = "";
       while(!done) {
         flushinp();
@@ -1328,7 +1330,7 @@ namespace Display {
           case 'x':
           case 'X':
             type = USE_SKILL;
-            skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_area, t);
+            skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
             if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
               done = true;
               object = skill->name;
@@ -1407,7 +1409,7 @@ namespace Display {
             ;
         }
       }
-      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_area);
+      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
       for(CharacterDisplay * character : display->characters) {
         delete character;
       }
@@ -1423,7 +1425,7 @@ namespace Display {
     }
   }
 
-  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_area, Translator * t) {
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t) {
     Skill * result = nullptr;
     bool done = false;
     int cursorX = 0;
@@ -1502,7 +1504,7 @@ namespace Display {
           break;
         }
         case '\n':
-          done = selectOvercharge(displayScreen, targetScreen, result, player, overcharge_power, overcharge_duration, overcharge_area, t);
+          done = selectOvercharge(displayScreen, targetScreen, result, player, overcharge_power, overcharge_duration, overcharge_range, t);
           break;
         case ' ':
           done = true;
@@ -1524,7 +1526,7 @@ namespace Display {
     return result;
   }
 
-  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_area, Translator * t) {
+  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t) {
     int mana_cost = 0;
     int lines = 0;
     int cols = 0;
@@ -1559,13 +1561,13 @@ namespace Display {
       } else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Area Overcharging") + std::string(": ") + std::to_string(overcharge_area) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_area_type));
+      to_print = t->getStandardName("Range Overcharging") + std::string(": ") + std::to_string(overcharge_range) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_range_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2 + 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
       wrefresh(displayScreen);
       WINDOW * tempScreen = nullptr;
-      tempScreen = displaySkill(skill, targetScreen, overcharge_power, overcharge_duration, overcharge_area, t);
+      tempScreen = displaySkill(skill, targetScreen, overcharge_power, overcharge_duration, overcharge_range, t);
       flushinp();
       int keyPressed = getch();
       if(tempScreen != nullptr) {
@@ -1587,8 +1589,8 @@ namespace Display {
               }
               break;
             case 3:
-              if(overcharge_area > 1) {
-                overcharge_area--;
+              if(overcharge_range > 1) {
+                overcharge_range--;
               }
               break;
           }
@@ -1604,21 +1606,21 @@ namespace Display {
         case KEY_RIGHT:
           switch(overcharge_type) {
             case 1:
-              mana_cost = skill->getManaCost(overcharge_power + 1, overcharge_duration, overcharge_area);
+              mana_cost = skill->getManaCost(overcharge_power + 1, overcharge_duration, overcharge_range);
               if(skill->overcharge_power_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge_power++;
               }
               break;
             case 2:
-              mana_cost = skill->getManaCost(overcharge_power, overcharge_duration + 1, overcharge_area);
+              mana_cost = skill->getManaCost(overcharge_power, overcharge_duration + 1, overcharge_range);
               if(skill->overcharge_duration_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge_duration++;
               }
               break;
             case 3:
-              mana_cost = skill->getManaCost(overcharge_power, overcharge_duration, overcharge_area + 1);
-              if(skill->overcharge_area_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
-                overcharge_area++;
+              mana_cost = skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range + 1);
+              if(skill->overcharge_range_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
+                overcharge_range++;
               }
               break;
           }
@@ -1631,7 +1633,7 @@ namespace Display {
           break;
         }
         case '\n':
-          mana_cost = skill->getManaCost(overcharge_power, overcharge_duration, overcharge_area);
+          mana_cost = skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range);
           if(player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
             return true;
           }

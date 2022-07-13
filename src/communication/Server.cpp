@@ -71,8 +71,8 @@ namespace Server {
         int target_y = String::extract_int(ss);
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);
-        int overcharge_area = String::extract_int(ss);
-        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_area);
+        int overcharge_range = String::extract_int(ss);
+        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
       }
       case USE_ITEM:
       case ECONOMICS:

@@ -259,7 +259,7 @@ class Character {
     int cloakPower();
     bool isInWeakState();
 
-    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int x, int y);
+    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
     Projectile * shoot(const Character * target, int y, int x);

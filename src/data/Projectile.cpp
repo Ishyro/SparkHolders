@@ -186,7 +186,7 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
     current_damages[i] -= (int) ceil( ((float) damages[i]) * waste_per_hit);
   }
   if(skill != nullptr) {
-    skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_area);
+    skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
   }
 }
 
@@ -200,7 +200,7 @@ void Projectile::attack_multiple_targets(std::list<Character *> characters, Adve
       }
       target->receiveAttack(reducedDamages, NO_ORIENTATION);
       if(skill != nullptr) {
-        skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_area);
+        skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
       }
     }
   }
@@ -247,7 +247,7 @@ std::string Projectile::full_to_string() {
   String::insert_int(ss, area);
   String::insert_int(ss, overcharge_power);
   String::insert_int(ss, overcharge_duration);
-  String::insert_int(ss, overcharge_area);
+  String::insert_int(ss, overcharge_range);
   String::insert_int(ss, falloff_range);
   String::insert_float(ss, waste_per_tile);
   String::insert_float(ss, waste_per_tile_area);
@@ -314,7 +314,7 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   int area = String::extract_int(ss);
   int overcharge_power = String::extract_int(ss);
   int overcharge_duration = String::extract_int(ss);
-  int overcharge_area = String::extract_int(ss);
+  int overcharge_range = String::extract_int(ss);
   int falloff_range = String::extract_int(ss);
   float waste_per_tile = String::extract_float(ss);
   float waste_per_tile_area = String::extract_float(ss);
@@ -341,7 +341,7 @@ Projectile * Projectile::full_from_string(std::string to_read) {
     area,
     overcharge_power,
     overcharge_duration,
-    overcharge_area,
+    overcharge_range,
     falloff_range,
     waste_per_tile,
     waste_per_tile_area,

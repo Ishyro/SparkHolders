@@ -14,7 +14,7 @@
 
 #include "utils/String.h"
 
-int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area) {
+int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range) {
   int cost = 0;
   switch(overcharge_power_type) {
     case NO_OVERCHARGE:
@@ -47,18 +47,18 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
     default:
       ;
   }
-  switch(overcharge_area_type) {
+  switch(overcharge_range_type) {
     case NO_OVERCHARGE:
       cost += mana_cost;
       break;
     case LINEAR:
-      cost += mana_cost * overcharge_area;
+      cost += mana_cost * overcharge_range;
       break;
     case SQUARE:
-      cost += mana_cost * overcharge_area * overcharge_area;
+      cost += mana_cost * overcharge_range * overcharge_range;
       break;
     case EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge_area - 1);
+      cost += mana_cost * (int) std::pow(2. , (double) overcharge_range - 1);
       break;
     default:
       ;

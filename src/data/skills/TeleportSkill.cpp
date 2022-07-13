@@ -1,7 +1,7 @@
 #include "data/skills/TeleportSkill.h"
 
-void TeleportSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_area_type, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id, int x, int y, int range) {
-  if(target != nullptr && std::max(abs(target->getX()) - x, abs(target->getY() - y)) <= range * overcharge_area) {
+void TeleportSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
+  if(target != nullptr && std::max(abs(target->getX()) - x, abs(target->getY() - y)) <= range * overcharge_range) {
     switch(apparition_type) {
       case SOFT:
         adventure->softMoveCharacterToMap(target, map_id, y, x);
@@ -12,7 +12,7 @@ void TeleportSkill::activate(Character * owner, Character * target, Adventure * 
       default:
         ;
     }
-  } else if(owner != nullptr && std::max(abs(owner->getX()) - x, abs(owner->getY() - y)) <= range * overcharge_area) {
+  } else if(owner != nullptr && std::max(abs(owner->getX()) - x, abs(owner->getY() - y)) <= range * overcharge_range) {
     switch(apparition_type) {
       case SOFT:
         adventure->softMoveCharacterToMap(owner, map_id, y, x);

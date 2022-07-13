@@ -31,7 +31,7 @@ namespace Display {
   void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t);
   void displayStats(Character * player, WINDOW * screen, Translator * t);
-  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_area, Translator * t);
+  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t);
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t);
   WINDOW * displayWeapon(Weapon * weapon, WINDOW * screen, Translator * t);
   WINDOW * displayAmmo(Ammunition * ammo, WINDOW * screen, Translator * t);
@@ -43,8 +43,8 @@ namespace Display {
   bool compatibleWays(Way * way1, Way * way2, Way * way3, Way * way4, Way * way5, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities);
   std::vector<std::string> selectChoices(std::vector<Attributes *> startingAttributes, std::vector<Way *> startingWays, std::list<std::pair<const std::string, const std::string>> waysIncompatibilities, Translator * t);
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t);
-  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_area, Translator * t);
-  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_area, Translator * t);
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
+  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
   bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t);
   std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, Translator * t);
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t);

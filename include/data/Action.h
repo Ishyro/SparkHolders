@@ -20,7 +20,7 @@ class Action {
     const std::string object;
     const int overcharge_power;
     const int overcharge_duration;
-    const int overcharge_area;
+    const int overcharge_range;
     Action(
       const int type,
       Character * user,
@@ -33,7 +33,7 @@ class Action {
       const std::string object,
       const int overcharge_power,
       const int overcharge_duration,
-      const int overcharge_area
+      const int overcharge_range
     ):
       type(type),
       user(user),
@@ -46,7 +46,7 @@ class Action {
       object(object),
       overcharge_power(overcharge_power),
       overcharge_duration(overcharge_duration),
-      overcharge_area(overcharge_area)
+      overcharge_range(overcharge_range)
     {}
     void execute(Adventure * adventure);
     Character * getUser();

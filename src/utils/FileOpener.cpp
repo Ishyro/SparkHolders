@@ -499,7 +499,7 @@ namespace FileOpener {
     int target_type = database->getTargetFromMacro(values.at("target_type"));
     int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
-    int overcharge_area_type = database->getTargetFromMacro(values.at("overcharge_area_type"));
+    int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
     int range = stoi(values.at("range"));
     std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
     std::istringstream is_skills(values.at("skills"));
@@ -507,7 +507,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_area_type, range, *skills);
+    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, *skills);
     database->addSkill(skill);
     delete skills;
   }

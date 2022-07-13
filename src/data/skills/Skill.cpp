@@ -2,17 +2,17 @@
 
 #include "utils/String.h"
 
-void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id, int x, int y) {
-  owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_area));
+void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
+  owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_range));
   for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area, map_id, x, y, range);
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range);
   }
 }
 
-int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overcharge_area) {
+int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range) {
   int mana_cost = 0;
   for(PseudoSkill * skill : skills) {
-    mana_cost += skill->getManaCost(overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area);
+    mana_cost += skill->getManaCost(overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range);
   }
   return mana_cost;
 }
@@ -47,7 +47,7 @@ std::string Skill::to_string() {
   String::insert_int(ss, target_type);
   String::insert_int(ss, overcharge_power_type);
   String::insert_int(ss, overcharge_duration_type);
-  String::insert_int(ss, overcharge_area_type);
+  String::insert_int(ss, overcharge_range_type);
   String::insert_int(ss, range);
   std::stringstream * ss_skills = new std::stringstream();
   for(PseudoSkill * skill : skills) {
@@ -66,7 +66,7 @@ Skill * Skill::from_string(std::string to_read) {
   int target_type = String::extract_int(ss);
   int overcharge_power_type = String::extract_int(ss);
   int overcharge_duration_type = String::extract_int(ss);
-  int overcharge_area_type = String::extract_int(ss);
+  int overcharge_range_type = String::extract_int(ss);
   int range = String::extract_int(ss);
   std::stringstream * ss_skills = new std::stringstream(String::extract(ss));
   std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
@@ -80,7 +80,7 @@ Skill * Skill::from_string(std::string to_read) {
     target_type,
     overcharge_power_type,
     overcharge_duration_type,
-    overcharge_area_type,
+    overcharge_range_type,
     range,
     *skills
   );

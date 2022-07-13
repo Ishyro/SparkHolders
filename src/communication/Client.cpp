@@ -79,7 +79,7 @@ namespace Client {
     }
   }
 
-  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_area) {
+  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     switch(type) {
@@ -118,7 +118,7 @@ namespace Client {
         String::insert_int(ss, target_y);
         String::insert_int(ss, overcharge_power);
         String::insert_int(ss, overcharge_duration);
-        String::insert_int(ss, overcharge_area);
+        String::insert_int(ss, overcharge_range);
         break;
       case USE_ITEM:
         break;

@@ -412,8 +412,8 @@ bool Character::isInWeakState() {
 }
 
 // Warning : Dangerous
-void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int x, int y) {
-  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_area, current_map_id, x, y);
+void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y) {
+  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range, current_map_id, x, y);
 }
 
 int Character::getDamageFromType(int damage_type) {

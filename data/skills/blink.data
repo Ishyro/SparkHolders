@@ -2,6 +2,6 @@ name = TXT_BLINK
 target_type = TILE
 overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
-overcharge_area_type = SQUARE
+overcharge_range_type = SQUARE
 range = 5
 skills = TXT_BLINK%
