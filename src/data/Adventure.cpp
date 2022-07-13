@@ -19,15 +19,17 @@ Save * Adventure::save() {
 
 void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y, int x) {
   Map * map = world->getMap(map_id);
-  int i = x;
-  int j = y;
-  bool conflict = false;
+  bool conflict = true;
   int power = -1; // power = 0 in first loop turn
   int k = NORTH;
+  int i;
+  int j;
   while(conflict) {
     if(k % 8 == 0) {
       power++;
     }
+    i = x;
+    j = y;
     switch(k++ % 8 + 1) { // ORIENTATION
       case NORTH:
         j = y + power;
@@ -58,7 +60,7 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y,
         i = x - power;
         break;
     }
-    if((conflict = map->getTile(j, i)->untraversable)) {
+    if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (conflict = map->getTile(j, i)->untraversable)) {
       continue;
     }
     for(auto c : map->getCharacters()) {

@@ -535,6 +535,12 @@ namespace FileOpener {
         ((ProjectileSkill *) pseudoSkill)->setProjectile(projectile);
         break;
       }
+    case TELEPORT_SKILL: {
+      int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+      pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects);
+      ((TeleportSkill *) pseudoSkill)->setApparitionType(apparition_type);
+      break;
+    }
       default:
         pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
     }

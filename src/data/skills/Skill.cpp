@@ -5,7 +5,7 @@
 void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_area, int map_id, int x, int y) {
   owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_area));
   for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area, map_id, x, y);
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_area_type, overcharge_power, overcharge_duration, overcharge_area, map_id, x, y, range);
   }
 }
 

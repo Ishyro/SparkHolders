@@ -1,0 +1,6 @@
+name = TXT_BLINK
+skill_type = TELEPORT_SKILL
+target_type = TILE
+apparition_type = SOFT
+mana_cost = 25
+effects =
