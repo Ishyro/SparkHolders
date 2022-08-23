@@ -21,6 +21,8 @@ typedef struct CharacterDisplay {
   int maxHp;
   int mana;
   int maxMana;
+  float stamina;
+  float satiety;
   int soulBurn;
   int soulBurnTreshold;
   int flow;
@@ -181,6 +183,8 @@ class Character {
     int getMaxHp();
     int getMana();
     int getMaxMana();
+    float getStamina();
+    float getSatiety();
     int getArmor();
     int getSoulBurnTreshold();
     int getCurrentSoulBurn();
@@ -213,6 +217,10 @@ class Character {
     void manaHeal(int mana);
     void incrMaxMana();
     void setMana(int mana);
+    void addStamina(float stamina);
+    void addSatiety(float satiety);
+    void setStamina(float stamina);
+    void setSatiety(float satiety);
     void incrArmor();
     void incrSoulBurnTreshold();
     void setCurrentSoulBurn(int soulBurn);
@@ -223,6 +231,9 @@ class Character {
     void setCurrentMapId(int map_id);
 
     void applySoulBurn();
+    void applyTiredness();
+    void applyHunger();
+    void rest();
     void gainGold(long gold);
     void payMana(int cost);
     void gainXP(long xp);
@@ -250,6 +261,7 @@ class Character {
     void removeItem(Item * i);
     void removeWeapon(Weapon * w);
     void removeAmmunition(Ammunition * a);
+    void useItem(std::string item);
 
     int isChanneling();
     int isStunned();
@@ -283,6 +295,8 @@ class Character {
     int maxHp;
     int mana;
     int maxMana;
+    float stamina;
+    float satiety;
     int armor;
     int soulBurnTreshold;
     int currentSoulBurn;

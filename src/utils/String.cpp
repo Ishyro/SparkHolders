@@ -34,7 +34,8 @@ long String::extract_long(std::stringstream * ss) {
 float String::extract_float(std::stringstream * ss) {
   std::string msg = extract(ss);
   float result = stof(msg);
-  if(result == 0.) {
+  int int_part = (int) result;
+  if(result - int_part == 0.) {
     std::replace(msg.begin(), msg.end(), '.', ',');
     result = stof(msg);
   }

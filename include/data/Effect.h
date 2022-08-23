@@ -28,7 +28,7 @@ class Effect {
       int power,
       int duration,
       int damages[DAMAGE_TYPE_NUMBER],
-      int damage_reductions[DAMAGE_TYPE_NUMBER]
+      float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
       type(type),

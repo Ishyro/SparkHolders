@@ -7,6 +7,7 @@
 #include "data/Item.h"
 #include "data/Projectile.h"
 #include "data/skills/Skill.h"
+#include "data/Settings.h"
 #include "data/Way.h"
 #include "data/Weapon.h"
 #include "data/World.h"
@@ -27,6 +28,8 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
+  stamina = 75.;
+  satiety = 75.;
   if(init) {
     gear = new Gear(attributes->getStartingGear());
     for(Effect * effect : attributes->getEffects()) {
@@ -53,7 +56,6 @@ int Character::getMaxHp() {
 }
 
 int Character::getMana() { return mana; }
-    void setMana(int mana);
 
 int Character::getMaxMana() {
   int bonus = 0;
@@ -62,6 +64,9 @@ int Character::getMaxMana() {
       bonus += e->power;
   return std::max(maxMana + bonus, 0);
 }
+
+float Character::getStamina() { return stamina; }
+float Character::getSatiety() { return satiety; }
 
 int Character::getArmor() {
   int bonus = 0;
@@ -195,7 +200,13 @@ void Character::incrMaxMana() {
   incr += profession->manaIncr;
   maxMana += std::max(incr, 0);
 }
+
 void Character::setMana(int mana) { this->mana = mana; }
+void Character::addStamina(float stamina) { this->stamina = std::min(100.F, this->stamina + stamina); }
+void Character::addSatiety(float satiety) { this->satiety = std::min(100.F, this->satiety + satiety); }
+void Character::setStamina(float stamina) { this->stamina = stamina; }
+void Character::setSatiety(float satiety) { this->satiety = satiety; }
+
 void Character::incrArmor() {
   int incr = 0;
   incr += race->armorIncr;
@@ -236,6 +247,33 @@ void Character::applySoulBurn() {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
   currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction);
+}
+
+void Character::applyTiredness() {
+  float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
+  int manaValue = (int) std::ceil(Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F);
+  if(stamina >= 0.) {
+    stamina -= step;
+    manaHeal(manaValue);
+  } else {
+    mana -= Settings::getStaminaOverextendRatio() * manaValue;
+  }
+}
+
+void Character::applyHunger() {
+  float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
+  int hpValue = (int) std::ceil(Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F);
+  if(satiety >= 0.) {
+    satiety -= step;
+    hpHeal(hpValue);
+  } else {
+    hp -= Settings::getSatietyOverextendRatio() * hpValue;
+  }
+}
+
+void Character::rest() {
+  // +1 because the character will still apply his tiredness while sleeping
+  addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
 }
 
 void Character::gainGold(long gold) { this->gold += gold; }
@@ -341,6 +379,19 @@ void Character::addAmmunition(Ammunition * a) { ammunition.push_back(a); }
 void Character::removeItem(Item * i) { items.remove(i); }
 void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
 void Character::removeAmmunition(Ammunition * a) { ammunition.remove(a); }
+
+void Character::useItem(std::string item) {
+  for(Item * i : items) {
+    if(i->name == item && i->consumable) {
+      for(Effect * e : i->effects) {
+        e->activate(this);
+      }
+      removeItem(i);
+      delete i;
+      return;
+    }
+  }
+}
 
 int Character::isChanneling() {
   int max = 0;
@@ -565,6 +616,8 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, getMaxHp());
   String::insert_int(ss, getMana());
   String::insert_int(ss, getMaxMana());
+  String::insert_float(ss, getStamina());
+  String::insert_float(ss, getSatiety());
   String::insert_int(ss, getCurrentSoulBurn());
   String::insert_int(ss, getSoulBurnTreshold());
   String::insert_int(ss, getFlow());
@@ -595,6 +648,8 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->maxHp = String::extract_int(ss);
   display->mana = String::extract_int(ss);
   display->maxMana = String::extract_int(ss);
+  display->stamina = String::extract_float(ss);
+  display->satiety = String::extract_float(ss);
   display->soulBurn = String::extract_int(ss);
   display->soulBurnTreshold = String::extract_int(ss);
   display->flow = String::extract_int(ss);

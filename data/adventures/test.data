@@ -20,6 +20,7 @@ data/maps/house_east.data
 data/maps/house_south.data
 data/maps/house_west.data
 # effects
+data/effects/satiety_10.data
 # items
 data/items/iron_boots.data
 data/items/iron_cuirass.data
@@ -29,6 +30,7 @@ data/items/leather_boots.data
 data/items/leather_cuirass.data
 data/items/leather_gauntlets.data
 data/items/leather_helmet.data
+data/items/lamb.data
 # pseudoskills without summoning or projectile
 data/pseudoskills/blink.data
 # skills without summoning or projectile

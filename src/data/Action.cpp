@@ -25,6 +25,7 @@ void Action::execute(Adventure * adventure) {
       adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation, adventure);
       break;
     case REST:
+      user->rest();
       break;
     case SHOOT: {
       user->setOrientation(orientation);
@@ -88,6 +89,7 @@ void Action::execute(Adventure * adventure) {
       break;
     }
     case USE_ITEM:
+      user->useItem(object);
       break;
     case ECONOMICS:
       break;

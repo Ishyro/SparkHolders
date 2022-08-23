@@ -48,6 +48,8 @@ Database::Database() {
   macros.insert(std::make_pair("MANA", MANA));
   macros.insert(std::make_pair("HP_MAX", HP_MAX));
   macros.insert(std::make_pair("MANA_MAX", MANA_MAX));
+  macros.insert(std::make_pair("STAMINA", STAMINA));
+  macros.insert(std::make_pair("SATIETY", SATIETY));
   macros.insert(std::make_pair("ARMOR", ARMOR));
   macros.insert(std::make_pair("SOULBURNTRESHOLD", SOULBURNTRESHOLD));
   macros.insert(std::make_pair("FLOW", FLOW));

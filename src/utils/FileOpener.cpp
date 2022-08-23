@@ -376,7 +376,45 @@ namespace FileOpener {
     delete skills;
   }
 
-  void EffectOpener(std::string fileName, Database * database) {}
+  void EffectOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int type = database->getTargetFromMacro(values.at("type"));
+    int duration_type = database->getTargetFromMacro(values.at("duration_type"));
+    int duration = 0;
+    if(duration_type == TEMPORARY) {
+      duration = stoi(values.at("duration"));
+    }
+    int power = stoi(values.at("power"));
+    int damages[DAMAGE_TYPE_NUMBER] = {0};
+    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
+    if(type == DAMAGE || type == DAMAGE_BUFF) {
+      damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
+      damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
+      damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
+      damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
+      damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
+      damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
+      damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
+      damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+      damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
+      damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+    }
+    if(type == DAMAGE_REDUCTION) {
+      damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
+      damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[NEUTRAL_DAMAGE] = 0.;
+      damage_reductions[TRUE_DAMAGE] = 0.;
+      damage_reductions[SOUL_DAMAGE] = 0.;
+    }
+    Effect * effect = new Effect(name, type, duration_type, power, duration, damages, damage_reductions);
+    database->addEffect(effect);
+  }
 
   void EventOpener(std::string fileName, Database * database) {}
 
@@ -397,17 +435,19 @@ namespace FileOpener {
     while(getline(is_3, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
-    float damage_reductions[DAMAGE_TYPE_NUMBER];
-    damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
-    damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
-    damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
-    damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
-    damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
-    damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
-    damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
-    damage_reductions[NEUTRAL_DAMAGE] = 0.;
-    damage_reductions[TRUE_DAMAGE] = 0.;
-    damage_reductions[SOUL_DAMAGE] = 0.;
+    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
+    if(type != UNEQUIPABLE) {
+      damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
+      damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[NEUTRAL_DAMAGE] = 0.;
+      damage_reductions[TRUE_DAMAGE] = 0.;
+      damage_reductions[SOUL_DAMAGE] = 0.;
+    }
     Item * item = new Item(name, equipable, consumable, type, gold_value, *effects, damage_reductions);
     database->addItem(item);
     delete effects;

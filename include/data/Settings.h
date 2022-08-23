@@ -11,6 +11,15 @@
 
 #define PORT 45678
 
+#define MAX_NUMBER_DAYS_AWAKE 3
+#define MAX_NUMBER_DAYS_FASTING 3
+
+#define STAMINA_RECOVERY_RATIO 3
+#define SATIETY_RECOVERY_RATIO 3
+
+#define STAMINA_OVEREXTEND_RATIO 2
+#define SATIETY_OVEREXTEND_RATIO 2
+
 namespace Settings {
   int getLightMaxPower();
   int getLighDuration();
@@ -30,6 +39,12 @@ namespace Settings {
   int getStartingDay();
   int getStartingHour();
   int getPort();
+  float getMaxNumberOfDaysAwake();
+  float getMaxNumberOfDaysFasting();
+  float getStaminaRecoveryRatio();
+  float getSatietyRecoveryRatio();
+  int getStaminaOverextendRatio();
+  int getSatietyOverextendRatio();
 };
 
 #endif // _SETTINGS_H_

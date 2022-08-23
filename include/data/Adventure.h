@@ -84,8 +84,7 @@ class Adventure {
     std::string getTime();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
-    void applySoulBurn();
-    void applyLevelUps();
+    void applyRoundIteration();
   private:
     World * world;
     Database * database;

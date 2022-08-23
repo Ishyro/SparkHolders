@@ -102,8 +102,7 @@ int main(int argc, char ** argv) {
   std::thread thread = std::thread(relinkCommunication, &links, ss, adventure, playersNumber);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
-    adventure->applyLevelUps();
-    adventure->applySoulBurn();
+    adventure->applyRoundIteration();
     for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }

@@ -1,0 +1,6 @@
+name = TXT_LAMB
+equipable = false
+consumable = true
+type = UNEQUIPABLE
+gold_value = 10
+effects = TXT_SATIETY_10%

@@ -45,6 +45,8 @@ MapDisplay * Link::receiveMap() {
         player->move(display->y + map->offsetY, display->x + map->offsetX, display->orientation);
         player->setHp(display->hp);
         player->setMana(display->mana);
+        player->setStamina(display->stamina);
+        player->setSatiety(display->satiety);
         player->setCurrentSoulBurn(display->soulBurn);
       }
     }

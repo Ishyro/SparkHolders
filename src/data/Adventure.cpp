@@ -264,17 +264,14 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
   return player;
 }
 
-void Adventure::applySoulBurn() {
+void Adventure::applyRoundIteration() {
   for(Character * c : getCharacters()) {
+    c->gainLevel();
+    c->applyTiredness();
+    c->applyHunger();
     c->applySoulBurn();
     if(!c->isAlive()) {
       getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
     }
-  }
-}
-
-void Adventure::applyLevelUps() {
-  for(Character * c : getCharacters()) {
-    c->gainLevel();
   }
 }

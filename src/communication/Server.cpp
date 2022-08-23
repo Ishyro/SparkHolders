@@ -74,7 +74,10 @@ namespace Server {
         int overcharge_range = String::extract_int(ss);
         return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
       }
-      case USE_ITEM:
+      case USE_ITEM: {
+        std::string object = String::extract(ss);
+        return new Action(USE_ITEM, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+      }
       case ECONOMICS:
       default:
         return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);

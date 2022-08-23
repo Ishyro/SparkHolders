@@ -19,4 +19,10 @@ namespace Settings {
   int getStartingDay() { return 0; }
   int getStartingHour() { return 4; }
   int getPort() { return PORT; }
+  float getMaxNumberOfDaysAwake() { return MAX_NUMBER_DAYS_AWAKE; }
+  float getMaxNumberOfDaysFasting() { return MAX_NUMBER_DAYS_FASTING; }
+  float getStaminaRecoveryRatio() { return STAMINA_RECOVERY_RATIO; }
+  float getSatietyRecoveryRatio() { return SATIETY_RECOVERY_RATIO; }
+  int getStaminaOverextendRatio() { return STAMINA_OVEREXTEND_RATIO; }
+  int getSatietyOverextendRatio() { return SATIETY_OVEREXTEND_RATIO; }
 };

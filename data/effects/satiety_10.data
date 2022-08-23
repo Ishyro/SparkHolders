@@ -1,0 +1,4 @@
+name = TXT_SATIETY_10
+type = SATIETY
+duration_type = INSTANT
+power = 10

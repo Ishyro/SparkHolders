@@ -21,6 +21,12 @@ void Effect::activate(Character * target) {
       case MANA_MAX:
         target->incrMaxMana();
         break;
+      case STAMINA:
+        target->addStamina((float) power);
+        break;
+      case SATIETY:
+        target->addSatiety((float) power);
+        break;
       case ARMOR:
         target->incrArmor();
         break;

@@ -56,20 +56,22 @@ class SpeechManager;
 #define MANA 2
 #define HP_MAX 3
 #define MANA_MAX 4
-#define ARMOR 5
-#define SOULBURNTRESHOLD 6
-#define FLOW 7
-#define VISION_RANGE 8
-#define VISION_POWER 9
-#define DETECTION_RANGE 10
-#define DAMAGE 11
-#define DAMAGE_BUFF 12
-#define DAMAGE_REDUCTION 13
-#define CHANNELING 14
-#define STUNNED 15
-#define SLEEPING 16
-#define CLOAKED 17
-#define INVISIBLE 18
+#define STAMINA 5
+#define SATIETY 6
+#define ARMOR 7
+#define SOULBURNTRESHOLD 8
+#define FLOW 9
+#define VISION_RANGE 10
+#define VISION_POWER 11
+#define DETECTION_RANGE 12
+#define DAMAGE 13
+#define DAMAGE_BUFF 14
+#define DAMAGE_REDUCTION 15
+#define CHANNELING 16
+#define STUNNED 17
+#define SLEEPING 18
+#define CLOAKED 19
+#define INVISIBLE 20
 
 // weapon_type
 

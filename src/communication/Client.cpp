@@ -121,6 +121,7 @@ namespace Client {
         String::insert_int(ss, overcharge_range);
         break;
       case USE_ITEM:
+        String::insert(ss, object);
         break;
       case ECONOMICS:
         break;
