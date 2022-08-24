@@ -17,6 +17,7 @@ class Skill {
     const int overcharge_duration_type;
     const int overcharge_range_type;
     const int range;
+    const float priority;
     const std::list<PseudoSkill *> skills;
     Skill(
       std::string name,
@@ -25,6 +26,7 @@ class Skill {
       int overcharge_duration_type,
       int overcharge_range_type,
       int range,
+      float priority,
       std::list<PseudoSkill *> skills
     ):
       name(name),
@@ -33,6 +35,7 @@ class Skill {
       overcharge_duration_type(overcharge_duration_type),
       overcharge_range_type(overcharge_range_type),
       range(range),
+      priority(priority),
       skills(skills)
     {}
 

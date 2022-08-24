@@ -122,6 +122,10 @@ long Character::getGold() { return gold; }
 long Character::getXP() { return xp; }
 int Character::getLevel() { return level; }
 
+float Character::getPriorityModifier() {
+  return std::max(0.F, (std::min(75.F, stamina) - std::abs(50.F - satiety)) / gear->getWeight());
+}
+
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 
@@ -289,6 +293,17 @@ void Character::applyHunger() {
   }
 }
 
+void Character::applyEffects() {
+  for(Effect * e : effects) {
+    if(e->duration_type == TEMPORARY) {
+      if(e->tick(this)) {
+        e->desactivate(this);
+        delete e;
+      }
+    }
+  }
+}
+
 void Character::rest() {
   // +1 because the character will still apply his tiredness while sleeping
   addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
@@ -404,6 +419,11 @@ void Character::setWay(Way * way) {
       profession = way;
       break;
     case TITLE:
+      for(Way * title : titles) {
+        if(title == way) {
+          return;
+        }
+      }
       titles.push_back(way);
     default:;
   }

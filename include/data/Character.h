@@ -200,6 +200,7 @@ class Character {
     long getGold();
     long getXP();
     int getLevel();
+    float getPriorityModifier();
 
     AI * getAI();
     std::string getTeam();
@@ -240,6 +241,7 @@ class Character {
     void applySoulBurn();
     void applyTiredness();
     void applyHunger();
+    void applyEffects();
     void rest();
     void gainGold(long gold);
     void payMana(int cost);

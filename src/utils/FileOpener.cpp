@@ -435,6 +435,7 @@ namespace FileOpener {
     bool consumable;
     is_2 >> std::boolalpha >> consumable;
     int type = database->getTargetFromMacro(values.at("type"));
+    float weight = stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
@@ -455,7 +456,7 @@ namespace FileOpener {
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
-    Item * item = new Item(name, equipable, consumable, type, gold_value, *effects, damage_reductions);
+    Item * item = new Item(name, equipable, consumable, type, weight, gold_value, *effects, damage_reductions);
     database->addItem(item);
     delete effects;
   }
@@ -548,13 +549,14 @@ namespace FileOpener {
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
     int range = stoi(values.at("range"));
+    float priority = stof(values.at("priority"));
     std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
     std::istringstream is_skills(values.at("skills"));
     std::string pseudoSkill;
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, *skills);
+    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
     database->addSkill(skill);
     delete skills;
   }
@@ -649,7 +651,7 @@ namespace FileOpener {
     is >> std::boolalpha >> melee;
     int range = stoi(values.at("range"));
     int type = database->getTargetFromMacro(values.at("type"));
-    int weight = stoi(values.at("weight"));
+    float weight = stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_2(values.at("use_ammo"));
     bool use_ammo;

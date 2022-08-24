@@ -88,6 +88,7 @@ class Gear {
     Item * getRight_ring();
     Item * getAmulet();
     Weapon * getWeapon();
+    float getWeight();
     std::string to_string();
     static Gear * from_string(std::string to_read);
   private:

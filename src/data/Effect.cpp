@@ -62,6 +62,12 @@ bool Effect::tick(Character * target) {
     case MANA:
       target->manaHeal(power);
       break;
+    case STAMINA:
+      target->addStamina((float) power);
+      break;
+    case SATIETY:
+      target->addSatiety((float) power);
+      break;
     case DAMAGE:
       target->receiveAttack(damages, NO_ORIENTATION);
       break;

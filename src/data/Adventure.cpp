@@ -270,6 +270,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
 void Adventure::applyRoundIteration() {
   for(Character * c : getCharacters()) {
     c->gainLevel();
+    c->applyEffects();
     c->applyTiredness();
     c->applyHunger();
     c->applySoulBurn();

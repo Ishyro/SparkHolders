@@ -2,6 +2,7 @@ name = TXT_LEATHER_GAUNTLETS
 equipable = true
 consumable = false
 type = ARMS
+weight = 2.5
 gold_value = 10
 effects =
 SLASH_REDUCTION = 0.05

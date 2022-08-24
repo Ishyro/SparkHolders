@@ -258,11 +258,12 @@ namespace Display {
     mvwprintw(screen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnTreshold())).c_str());
     mvwprintw(screen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
     mvwprintw(screen, 9, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(player->getArmor())).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("Priority") + std::string(": ") + std::to_string(player->getPriorityModifier())).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
+    mvwprintw(screen, 15, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
     wrefresh(screen);
   }
 
@@ -279,7 +280,8 @@ namespace Display {
     mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range * overcharge_range)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge_power)).c_str());
     mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range))).c_str());
-    int i = 7;
+    mvwprintw(screen, 7, 1, (t->getStandardName("Priority") + std::string(": ") + std::to_string(skill->priority)).c_str());
+    int i = 8;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
         case PROJECTILE_SKILL: {

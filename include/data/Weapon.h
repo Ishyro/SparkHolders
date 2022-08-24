@@ -17,7 +17,7 @@ class Weapon {
     const bool melee;
     const int range; // 0 if not melee
     const int type;
-    const int weight;
+    const float weight;
     const int gold_value;
     const bool use_ammo;
     const int ammo_type;

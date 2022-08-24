@@ -139,6 +139,26 @@ Item * Gear::getRight_ring() { return right_ring; }
 Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
 
+float Gear::getWeight() {
+  float weight = 1.F;
+  if(head != nullptr) {
+    weight += head->weight;
+  }
+  if(arms != nullptr) {
+    weight += arms->weight;
+  }
+  if(body != nullptr) {
+    weight += body->weight;
+  }
+  if(legs != nullptr) {
+    weight += legs->weight;
+  }
+  if(weapon != nullptr) {
+    weight += weapon->weight;
+  }
+  return weight;
+}
+
 std::string Gear::to_string() {
   std::stringstream * ss = new std::stringstream();
   if(head != nullptr) {

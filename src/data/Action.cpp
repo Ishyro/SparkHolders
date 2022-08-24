@@ -1,13 +1,11 @@
 #include "data/Adventure.h"
 #include "data/Attributes.h"
-#include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
 #include "data/Item.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
-#include "data/skills/Skill.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
@@ -82,9 +80,8 @@ void Action::execute(Adventure * adventure) {
       break;
     case USE_SKILL: {
       user->setOrientation(orientation);
-      Skill * skill = (Skill *) adventure->getDatabase()->getSkill(object);
-      if(user->hasSkill(skill)) {
-        user->useSkill(skill, (Character *) target, adventure, overcharge_power, overcharge_duration, overcharge_range, target_x, target_y);
+      if(user->hasSkill( (Skill *) skill)) {
+        user->useSkill( (Skill *) skill, (Character *) target, adventure, overcharge_power, overcharge_duration, overcharge_range, target_x, target_y);
       }
       break;
     }

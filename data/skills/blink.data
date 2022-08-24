@@ -4,4 +4,5 @@ overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = SQUARE
 range = 5
+priority = 10.
 skills = TXT_BLINK%

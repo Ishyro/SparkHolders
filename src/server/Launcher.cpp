@@ -107,18 +107,20 @@ int main(int argc, char ** argv) {
       links[i]->sendMap();
     }
     std::list<Action *> actionsPlayers = std::list<Action *>();
-    std::list<Action *> actionsNPCs = adventure->getNPCsActions();
+    std::list<Action *> actions = adventure->getNPCsActions();
+    actions.sort();
     // receive playerActions
     for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->getPlayer()->isInWeakState()) {
         actionsPlayers.push_back(links[i]->receiveAction());
       }
     }
+    actionsPlayers.sort();
+    actions.merge(actionsPlayers);
     adventure->actAllProjectiles();
-    adventure->executeActions(actionsPlayers);
-    adventure->executeActions(actionsNPCs);
+    adventure->executeActions(actions);
     actionsPlayers.clear();
-    actionsNPCs.clear();
+    actions.clear();
     noPlayers = true;
     for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->isClosed()) {

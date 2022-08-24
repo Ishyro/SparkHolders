@@ -2,6 +2,7 @@ name = TXT_LEATHER_BOOTS
 equipable = true
 consumable = false
 type = LEGS
+weight = 2.5
 gold_value = 10
 effects =
 SLASH_REDUCTION = 0.05

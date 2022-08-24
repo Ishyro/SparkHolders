@@ -67,12 +67,13 @@ namespace Server {
         std::string object = String::extract(ss);
         int orientation = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
+        const Skill * skill = adventure->getDatabase()->getSkill(object);
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
-        return new Action(USE_SKILL, user, orientation, nullptr, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
+        return new Action(USE_SKILL, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
       }
       case USE_ITEM: {
         std::string object = String::extract(ss);

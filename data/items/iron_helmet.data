@@ -2,6 +2,7 @@ name = TXT_IRON_HELMET
 equipable = true
 consumable = false
 type = HEAD
+weight = 5.
 gold_value = 10
 effects =
 SLASH_REDUCTION = 0.15

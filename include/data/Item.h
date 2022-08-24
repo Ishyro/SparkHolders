@@ -17,6 +17,7 @@ class Item {
     const bool equipable;
     const bool consumable;
     const int type;
+    const float weight;
     const int gold_value;
     const std::list<Effect *> effects;
     Item(
@@ -24,6 +25,7 @@ class Item {
       bool equipable,
       bool consumable,
       int type,
+      float weight,
       int gold_value,
       std::list<Effect *> effects,
       float damage_reductions[DAMAGE_TYPE_NUMBER]
@@ -32,6 +34,7 @@ class Item {
       equipable(equipable),
       consumable(consumable),
       type(type),
+      weight(weight),
       gold_value(gold_value),
       effects(effects)
     {
@@ -44,6 +47,7 @@ class Item {
       equipable(item->equipable),
       consumable(item->consumable),
       type(item->type),
+      weight(item->weight),
       gold_value(item->gold_value),
       effects(item->effects)
     {
