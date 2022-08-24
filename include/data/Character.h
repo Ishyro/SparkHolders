@@ -91,7 +91,8 @@ class Character {
       Way * origin,
       Way * culture,
       Way * religion,
-      Way * profession
+      Way * profession,
+      std::list<Way *> titles
     ):
       name(name),
       player_character(from_database->player_character),
@@ -117,7 +118,8 @@ class Character {
       origin(origin),
       culture(culture),
       religion(religion),
-      profession(profession)
+      profession(profession),
+      titles(titles)
     {
       applyAttributes(attributes, true);
     }
@@ -144,7 +146,8 @@ class Character {
       Way * origin,
       Way * culture,
       Way * religion,
-      Way * profession
+      Way * profession,
+      std::list<Way *> titles
     ):
       name(name),
       player_character(player_character),
@@ -169,7 +172,8 @@ class Character {
       origin(origin),
       culture(culture),
       religion(religion),
-      profession(profession)
+      profession(profession),
+      titles(titles)
     {
       applyAttributes(attributes, false);
     }
@@ -206,6 +210,7 @@ class Character {
     std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    std::list<Way *> getTitles();
 
     void setOrientation(int orientation);
     void move(int orientation);
@@ -219,6 +224,8 @@ class Character {
     void setMana(int mana);
     void addStamina(float stamina);
     void addSatiety(float satiety);
+    void removeStamina(float stamina);
+    void removeSatiety(float satiety);
     void setStamina(float stamina);
     void setSatiety(float satiety);
     void incrArmor();
@@ -324,6 +331,7 @@ class Character {
     Way * culture;
     Way * religion;
     Way * profession;
+    std::list<Way *> titles;
 };
 
 #endif // _CHARACTER_H_

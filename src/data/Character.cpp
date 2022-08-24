@@ -133,6 +133,7 @@ std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
+std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(int orientation) { this->orientation = orientation; }
 void Character::move(int orientation) {
@@ -187,6 +188,9 @@ void Character::incrMaxHp() {
   incr += culture->hpIncr;
   incr += religion->hpIncr;
   incr += profession->hpIncr;
+  for(Way * title : titles) {
+    incr += title->hpIncr;
+  }
   maxHp += std::max(incr, 0);
 }
 void Character::setHp(int hp) { this->hp = hp; }
@@ -198,12 +202,17 @@ void Character::incrMaxMana() {
   incr += culture->manaIncr;
   incr += religion->manaIncr;
   incr += profession->manaIncr;
+  for(Way * title : titles) {
+    incr += title->manaIncr;
+  }
   maxMana += std::max(incr, 0);
 }
 
 void Character::setMana(int mana) { this->mana = mana; }
 void Character::addStamina(float stamina) { this->stamina = std::min(100.F, this->stamina + stamina); }
 void Character::addSatiety(float satiety) { this->satiety = std::min(100.F, this->satiety + satiety); }
+void Character::removeStamina(float stamina) { this->stamina = std::max(0.F, this->stamina - stamina); }
+void Character::removeSatiety(float satiety) { this->satiety = std::max(0.F, this->satiety - satiety); }
 void Character::setStamina(float stamina) { this->stamina = stamina; }
 void Character::setSatiety(float satiety) { this->satiety = satiety; }
 
@@ -214,6 +223,9 @@ void Character::incrArmor() {
   incr += culture->armorIncr;
   incr += religion->armorIncr;
   incr += profession->armorIncr;
+  for(Way * title : titles) {
+    incr += title->armorIncr;
+  }
   armor += std::max(incr, 0);
 }
 void Character::incrSoulBurnTreshold() {
@@ -223,6 +235,9 @@ void Character::incrSoulBurnTreshold() {
   incr += culture->soulBurnIncr;
   incr += religion->soulBurnIncr;
   incr += profession->soulBurnIncr;
+  for(Way * title : titles) {
+    incr += title->soulBurnIncr;
+  }
   soulBurnTreshold += std::max(incr, 0);
 }
 void Character::setCurrentSoulBurn(int soulBurn) { this->currentSoulBurn = soulBurn; }
@@ -233,6 +248,9 @@ void Character::incrFlow() {
   incr += culture->flowIncr;
   incr += religion->flowIncr;
   incr += profession->flowIncr;
+  for(Way * title : titles) {
+    incr += title->flowIncr;
+  }
   flow += std::max(incr, 0);
 }
 void Character::incrVisionRange() { visionRange++; }
@@ -252,19 +270,19 @@ void Character::applySoulBurn() {
 void Character::applyTiredness() {
   float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
   int manaValue = (int) std::ceil(Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F);
-  if(stamina >= 0.) {
-    stamina -= step;
+  if(stamina > 0.) {
+    removeStamina(step);
     manaHeal(manaValue);
   } else {
-    mana -= Settings::getStaminaOverextendRatio() * manaValue;
+    payMana(Settings::getStaminaOverextendRatio() * manaValue);
   }
 }
 
 void Character::applyHunger() {
   float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
   int hpValue = (int) std::ceil(Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F);
-  if(satiety >= 0.) {
-    satiety -= step;
+  if(satiety > 0.) {
+    removeSatiety(step);
     hpHeal(hpValue);
   } else {
     hp -= Settings::getSatietyOverextendRatio() * hpValue;
@@ -363,13 +381,56 @@ void Character::removeEffect(Effect * e) { effects.remove(e); }
 void Character::removeSkill(Skill * s) { skills.remove(s); }
 
 void Character::setWay(Way * way) {
+  Way * to_remove = nullptr;
   switch(way->type) {
-    case RACE: race = way;
-    case ORIGIN: origin = way;
-    case CULTURE: culture = way;
-    case RELIGION: religion = way;
-    case PROFESSION: profession = way;
+    case RACE:
+      to_remove = race;
+      race = way;
+      break;
+    case ORIGIN:
+      to_remove = origin;
+      origin = way;
+      break;
+    case CULTURE:
+      to_remove = culture;
+      culture = way;
+      break;
+    case RELIGION:
+      to_remove = religion;
+      religion = way;
+      break;
+    case PROFESSION:
+      to_remove = profession;
+      profession = way;
+      break;
+    case TITLE:
+      titles.push_back(way);
     default:;
+  }
+  for(Effect * e : way->getEffects()) {
+    Effect * effect = new Effect(e, 1, 1);
+    effect->activate(this);
+  }
+  for(Skill * s : way->getSkills()) {
+    addSkill(s);
+  }
+  if(to_remove != nullptr) {
+    for(Effect * e1 : to_remove->getEffects()) {
+      for(Effect * e2 : effects) {
+        if(e1->name == e2->name) {
+          e2->desactivate(this);
+          break;
+        }
+      }
+    }
+    for(Skill * s1 : to_remove->getSkills()) {
+      for(Skill * s2 : skills) {
+        if(s1 == s2) {
+          removeSkill(s2);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -721,6 +782,12 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, culture->to_string());
   String::insert(ss, religion->to_string());
   String::insert(ss, profession->to_string());
+  std::stringstream * ss_titles = new std::stringstream();
+  for(Way * title : titles) {
+    String::insert(ss_titles, title->to_string());
+  }
+  String::insert(ss, ss_titles->str());
+  delete ss_titles;
   std::string result = ss->str();
   delete ss;
   return result;
@@ -776,6 +843,12 @@ Character * Character::full_from_string(std::string to_read) {
   Way * culture = Way::from_string(String::extract(ss));
   Way * religion = Way::from_string(String::extract(ss));
   Way * profession = Way::from_string(String::extract(ss));
+  std::stringstream * ss_titles = new std::stringstream(String::extract(ss));
+  std::list<Way *> * titles = new std::list<Way *>();
+  while(ss_titles->rdbuf()->in_avail() != 0) {
+    titles->push_back(Way::from_string(String::extract(ss_titles)));
+  }
+  delete ss_titles;
   delete ss;
   return new Character(
     name,
@@ -800,6 +873,7 @@ Character * Character::full_from_string(std::string to_read) {
     origin,
     culture,
     religion,
-    profession
+    profession,
+    *titles
   );
 }

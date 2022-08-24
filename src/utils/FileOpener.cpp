@@ -166,6 +166,12 @@ namespace FileOpener {
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
+      std::list<Way *> * titles = new std::list<Way *>();
+      std::istringstream is_titles(command);
+      std::string title;
+      while(getline(is_titles, title, '%') && title != "none") {
+        titles->push_back((Way *) database->getWay(title));
+      }
       Map * map = world->getMap(map_str);
       AI * ai;
       if (ai_str == "DiurnalPassiveAI") {
@@ -180,8 +186,9 @@ namespace FileOpener {
       else if (ai_str == "NocturnalAgressiveAI") {
         ai = new NocturnalAgressiveAI(x, y);
       }
-      Character * c = new Character(database->getCharacter(name), name, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession);
+      Character * c = new Character(database->getCharacter(name), name, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession, *titles);
       map->addCharacter(c);
+      delete titles;
     }
     else if(keyword == "Event") {
       Event * event = new Event(database->getEvent(command));

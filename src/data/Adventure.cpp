@@ -243,6 +243,7 @@ void Adventure::actAllProjectiles() {
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   spawns.remove(spawn);
+  std::list<Way *> * titles = new std::list<Way *>();
   Character * player = new Character(
     database->getCharacter("TXT_PLAYER"),
     name,
@@ -257,10 +258,12 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
     origin,
     culture,
     religion,
-    profession
+    profession,
+    *titles
   );
   world->getMap(spawn->map_id)->addCharacter(player);
   delete spawn;
+  delete titles;
   return player;
 }
 
