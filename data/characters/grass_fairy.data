@@ -1,0 +1,14 @@
+name = TXT_GRASS_FAIRY
+player_character = false
+death_speech = none
+talking_speechs =
+type = NATURE
+gold = 0
+items =
+weapons =
+ammunition =
+effects = TXT_ETHERAL%
+skills = TXT_TOUCH_SOME_SOIL%
+need_to_eat = false
+can_eat_food = false
+need_to_sleep = false

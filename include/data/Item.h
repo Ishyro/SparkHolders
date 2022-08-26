@@ -56,6 +56,7 @@ class Item {
       }
     }
     float getDamageReductionFromType(int damage_type);
+    bool isFood();
     std::string to_string();
     static Item * from_string(std::string to_read);
     bool operator == (const Item& i) const { return id == i.id; }

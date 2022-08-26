@@ -223,7 +223,7 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
     Character * to_kill = nullptr;
     for(Character * other : characters) {
       if (other->getX() == destX && other->getY() == destY) {
-        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY) {
+        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY && !other->isEtheral()) {
           c->setOrientation(orientation);
           c->attack(other);
           if(!other->isAlive()) {

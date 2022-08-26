@@ -1,0 +1,5 @@
+name = TXT_NOURISH_WITH_GRASS
+skill_type = SIMPLE_SKILL
+target_type = SELF
+mana_cost = 0
+effects = TXT_SATIETY_10%

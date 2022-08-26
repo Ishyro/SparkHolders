@@ -247,6 +247,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
   Character * player = new Character(
     database->getCharacter("TXT_PLAYER"),
     name,
+    0,
     spawn->x,
     spawn->y,
     spawn->orientation,

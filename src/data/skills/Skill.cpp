@@ -1,5 +1,7 @@
 #include "data/skills/Skill.h"
 
+#include "data/skills/TileSwapSkill.h"
+
 #include "utils/String.h"
 
 void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
@@ -7,6 +9,14 @@ void Skill::activate(Character * owner, Character * target, Adventure * adventur
   for(PseudoSkill * skill : skills) {
     skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range);
   }
+}
+bool Skill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
+  for(PseudoSkill * skill : skills) {
+    if(!skill->canCast(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range) {
@@ -39,6 +49,27 @@ float Skill::getDamageReductionFromType(int damage_type, int overcharge_power) {
     reduction += s->getDamageReductionFromType(damage_type, overcharge_power);
   }
   return reduction;
+}
+
+Tile * Skill::isEatingSkill() {
+  bool is_eating_skill = false;
+  Tile * target = nullptr;
+  for(PseudoSkill * s : skills) {
+    if(s->skill_type == TILE_SWAP_SKILL) {
+      target = ( (TileSwapSkill *) s)->getCurrentTile();
+    }
+    if(s->skill_type == SIMPLE_SKILL) {
+      for(Effect * effect : s->effects) {
+        if(effect->type == SATIETY) {
+          is_eating_skill = true;
+        }
+      }
+    }
+  }
+  if(is_eating_skill) {
+    return target;
+  }
+  return nullptr;
 }
 
 std::string Skill::to_string() {

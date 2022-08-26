@@ -15,8 +15,6 @@
 
 #include "data/Action.h"
 
-#include <iostream>
-
 void Action::execute(Adventure * adventure) {
   switch(type) {
     case MOVE:
@@ -80,7 +78,7 @@ void Action::execute(Adventure * adventure) {
       break;
     case USE_SKILL: {
       user->setOrientation(orientation);
-      if(user->hasSkill( (Skill *) skill)) {
+      if(user->hasSkill( (Skill *) skill) && ( (Skill *) skill)->canCast(user, (Character *) target, adventure, overcharge_power, overcharge_duration, overcharge_range, user->getCurrentMapId(), target_x, target_y)) {
         user->useSkill( (Skill *) skill, (Character *) target, adventure, overcharge_power, overcharge_duration, overcharge_range, target_x, target_y);
       }
       break;

@@ -117,7 +117,9 @@ class Map {
       loots = std::list<Loot *>();
       for(Character * c : map->characters) {
         if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
-          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "mist") {
+          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "mist" &&
+          !c->isInvisible() &&
+          !c->isEtheral()) {
           characters.push_back(c);
         }
       }

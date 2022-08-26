@@ -6,6 +6,7 @@ data/tiles/floor_wood.data
 data/tiles/grass.data
 data/tiles/lava.data
 data/tiles/mist.data
+data/tiles/soil.data
 data/tiles/torch_ground.data
 data/tiles/torch_wall.data
 data/tiles/tree.data
@@ -21,6 +22,7 @@ data/maps/house_south.data
 data/maps/house_west.data
 # effects
 data/effects/satiety_10.data
+data/effects/etheral.data
 # items
 data/items/iron_boots.data
 data/items/iron_cuirass.data
@@ -33,7 +35,11 @@ data/items/leather_helmet.data
 data/items/lamb.data
 # pseudoskills without summoning or projectile
 data/pseudoskills/blink.data
+data/pseudoskills/eat_grass.data
+data/pseudoskills/grow_grass.data
+data/pseudoskills/nourish_with_grass.data
 # skills without summoning or projectile
+data/skills/touch_some_soil.data
 data/skills/blink.data
 # projectiles
 data/projectiles/wood_arrow.data
@@ -49,7 +55,12 @@ data/speechs/beh.data
 data/pseudoskills/fireball.data
 # skills with projectile
 data/skills/fireball.data
-# ways
+# ways without summoning skill
+data/ways/no_race.data
+data/ways/no_origin.data
+data/ways/no_culture.data
+data/ways/no_religion.data
+data/ways/no_profession.data
 data/ways/aether_academy.data
 data/ways/ahoz.data
 data/ways/akota_follower.data
@@ -79,7 +90,6 @@ data/ways/orc.data
 data/ways/philla_follower.data
 data/ways/pyrra_follower.data
 data/ways/ragard_follower.data
-data/ways/ruminant.data
 data/ways/scholar.data
 data/ways/scranem.data
 data/ways/secluded.data
@@ -91,14 +101,21 @@ data/ways/traveler.data
 data/ways/woodland.data
 data/ways/yargley_follower.data
 data/ways/yllian.data
-# attributes
+# attributes without summoning skill
+data/attributes/no_attributes.data
 data/attributes/sheep.data
 data/attributes/vanguard.data
 data/attributes/guardian.data
 data/attributes/elementalist.data
 data/attributes/shadow.data
 # characters
+data/characters/grass_fairy.data
 data/characters/player.data
 data/characters/sheep.data
 # pseudoskills with summoning
+data/pseudoskills/summon_grass_fairy.data
 # skills with summoning
+data/skills/touch_some_grass.data
+# ways with summoning skill
+data/ways/ruminant.data
+# attributes with summoning skill

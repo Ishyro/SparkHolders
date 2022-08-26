@@ -1,4 +1,4 @@
-name = TXT_RUMINANT
+name = TXT_NO_PROFESSION
 type = PROFESSION
 hpIncr = 0
 manaIncr = 0
@@ -6,4 +6,4 @@ armorIncr = 0
 soulBurnIncr = 0
 flowIncr = 0
 effects =
-skills = TXT_TOUCH_SOME_GRASS%
+skills =

@@ -72,6 +72,8 @@ class SpeechManager;
 #define SLEEPING 18
 #define CLOAKED 19
 #define INVISIBLE 20
+#define ETHERAL 21
+#define INVULNERABLE 22
 
 // weapon_type
 

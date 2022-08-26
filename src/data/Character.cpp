@@ -272,24 +272,28 @@ void Character::applySoulBurn() {
 }
 
 void Character::applyTiredness() {
-  float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
-  int manaValue = (int) std::ceil(Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F);
-  if(stamina > 0.) {
-    removeStamina(step);
-    manaHeal(manaValue);
-  } else {
-    payMana(Settings::getStaminaOverextendRatio() * manaValue);
+  if(need_to_sleep) {
+    float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
+    int manaValue = (int) std::ceil(Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F);
+    if(stamina > 0.) {
+      removeStamina(step);
+      manaHeal(manaValue);
+    } else {
+      payMana(Settings::getStaminaOverextendRatio() * manaValue);
+    }
   }
 }
 
 void Character::applyHunger() {
-  float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
-  int hpValue = (int) std::ceil(Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F);
-  if(satiety > 0.) {
-    removeSatiety(step);
-    hpHeal(hpValue);
-  } else {
-    hp -= Settings::getSatietyOverextendRatio() * hpValue;
+  if(need_to_eat) {
+    float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
+    int hpValue = (int) std::ceil(Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F);
+    if(satiety > 0.) {
+      removeSatiety(step);
+      hpHeal(hpValue);
+    } else {
+      hp -= Settings::getSatietyOverextendRatio() * hpValue;
+    }
   }
 }
 
@@ -305,8 +309,10 @@ void Character::applyEffects() {
 }
 
 void Character::rest() {
-  // +1 because the character will still apply his tiredness while sleeping
-  addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
+  if(need_to_sleep) {
+    // +1 because the character will still apply his tiredness while sleeping
+    addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
+  }
 }
 
 void Character::gainGold(long gold) { this->gold += gold; }
@@ -464,64 +470,79 @@ void Character::removeAmmunition(Ammunition * a) { ammunition.remove(a); }
 void Character::useItem(std::string item) {
   for(Item * i : items) {
     if(i->name == item && i->consumable) {
-      for(Effect * e : i->effects) {
-        e->activate(this);
+      if(i->isFood() && !can_eat_food) {
+        for(Effect * e : i->effects) {
+          e->activate(this);
+        }
+        removeItem(i);
+        delete i;
+        return;
       }
-      removeItem(i);
-      delete i;
-      return;
     }
   }
 }
 
-int Character::isChanneling() {
-  int max = 0;
+bool Character::isChanneling() {
   for(auto e : effects) {
     if(e->type == CHANNELING) {
-      max = std::max(max, e->getTickLeft());
+      return true;
     }
   }
-  return max;
+  return false;
 }
 
-int Character::isStunned() {
-  int max = 0;
+bool Character::isStunned() {
   for(auto e : effects) {
     if(e->type == STUNNED) {
-      max = std::max(max, e->getTickLeft());
+      return true;
     }
   }
-  return max;
+  return false;
 }
 
-int Character::isCloaked() {
-  int max = 0;
+bool Character::isCloaked() {
   for(auto e : effects) {
     if(e->type == CLOAKED) {
-      max = std::max(max, e->getTickLeft());
+      return true;
     }
   }
-  return max;
+  return false;
 }
 
-int Character::isInvisible() {
-  int max = 0;
+bool Character::isInvisible() {
   for(auto e : effects) {
     if(e->type == INVISIBLE) {
-      max = std::max(max, e->getTickLeft());
+      return true;
     }
   }
-  return max;
+  return false;
 }
 
-int Character::isSleeping() {
-  int max = 0;
+bool Character::isEtheral() {
   for(auto e : effects) {
-    if(e->type == SLEEPING) {
-      max = std::max(max, e->getTickLeft());
+    if(e->type == ETHERAL) {
+      return true;
     }
   }
-  return max;
+  return false;
+}
+
+bool Character::isInvulnerable() {
+  for(auto e : effects) {
+    if(e->type == INVULNERABLE) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Character::isSleeping() {
+  for(auto e : effects) {
+    if(e->type == SLEEPING) {
+      return true;
+    }
+  }
+  return false;
 }
 
 int Character::cloakPower() {
@@ -540,7 +561,7 @@ bool Character::isInWeakState() {
       return true;
     }
   }
-  return 0;
+  return false;
 }
 
 // Warning : Dangerous
@@ -641,52 +662,56 @@ void Character::reload(Ammunition * ammo) {
 }
 
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
-  if(orientation != NO_ORIENTATION) {
-    int diff = abs(8 + orientation - this->orientation) % 8;
-    if(diff <= 1 || diff >= 7) {
+  if(!isInvulnerable() && !isEtheral()) {
+    if(orientation != NO_ORIENTATION) {
+      int diff = abs(8 + orientation - this->orientation) % 8;
+      if(diff <= 1 || diff >= 7) {
+        return receiveCriticalAttack(damages);
+      }
+    }
+    if(isInWeakState()) {
       return receiveCriticalAttack(damages);
     }
+    int damage = 0;
+    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      if(damage_type == SOUL_DAMAGE) {
+        hp -= damages[damage_type];
+        payMana(damages[damage_type]);
+      }
+      if(damage_type == TRUE_DAMAGE) {
+        hp -= damages[damage_type];
+      }
+      if(damage_type == NEUTRAL_DAMAGE) {
+        damage += damages[damage_type];
+      }
+      else {
+        damage += std::max(0, (int) floor( (float) damages[damage_type] * (1. - getDamageReductionFromType(damage_type))));
+      }
+    }
+    hp -= std::max(0, damage - getArmor());
   }
-  if(isInWeakState()) {
-    return receiveCriticalAttack(damages);
-  }
-  int damage = 0;
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == SOUL_DAMAGE) {
-      hp -= damages[damage_type];
-      payMana(damages[damage_type]);
-    }
-    if(damage_type == TRUE_DAMAGE) {
-      hp -= damages[damage_type];
-    }
-    if(damage_type == NEUTRAL_DAMAGE) {
-      damage += damages[damage_type];
-    }
-    else {
-      damage += std::max(0, (int) floor( (float) damages[damage_type] * (1. - getDamageReductionFromType(damage_type))));
-    }
-  }
-  hp -= std::max(0, damage - getArmor());
 }
 
 void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
-  int damage = 0;
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == SOUL_DAMAGE) {
-      hp -= damages[damage_type] * 2;
-      payMana(damages[damage_type] * 2);
+  if(!isInvulnerable() && !isEtheral()) {
+    int damage = 0;
+    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      if(damage_type == SOUL_DAMAGE) {
+        hp -= damages[damage_type] * 2;
+        payMana(damages[damage_type] * 2);
+      }
+      if(damage_type == TRUE_DAMAGE) {
+        hp -= damages[damage_type] * 2;
+      }
+      if(damage_type == NEUTRAL_DAMAGE) {
+        damage += damages[damage_type] * 2;
+      }
+      else {
+        damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1. - .5 * getDamageReductionFromType(damage_type))));
+      }
     }
-    if(damage_type == TRUE_DAMAGE) {
-      hp -= damages[damage_type] * 2;
-    }
-    if(damage_type == NEUTRAL_DAMAGE) {
-      damage += damages[damage_type] * 2;
-    }
-    else {
-      damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1. - .5 * getDamageReductionFromType(damage_type))));
-    }
+    hp -= std::max(0, damage - getArmor());
   }
-  hp -= std::max(0, damage - getArmor());
 }
 
 std::string Character::to_string(int offsetY, int offsetX) {
@@ -760,6 +785,9 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, y);
   String::insert_int(ss, orientation);
   String::insert_int(ss, current_map_id);
+  String::insert_bool(ss, need_to_eat);
+  String::insert_bool(ss, can_eat_food);
+  String::insert_bool(ss, need_to_sleep);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
   String::insert_int(ss, level);
@@ -822,6 +850,9 @@ Character * Character::full_from_string(std::string to_read) {
   int y = String::extract_int(ss);
   int orientation = String::extract_int(ss);
   int current_map_id = String::extract_int(ss);
+  bool need_to_eat = String::extract_bool(ss);
+  bool can_eat_food = String::extract_bool(ss);
+  bool need_to_sleep = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);
   int level = String::extract_int(ss);
@@ -878,6 +909,9 @@ Character * Character::full_from_string(std::string to_read) {
     y,
     orientation,
     current_map_id,
+    need_to_eat,
+    can_eat_food,
+    need_to_sleep,
     gold,
     xp,
     level,

@@ -13,6 +13,12 @@ class AI {
   protected:
     int origin_x;
     int origin_y;
+    bool hungry;
+    bool sleepy;
+    void selectHungriness(Character * self);
+    void selectTiredness(Character * self);
+    Action * eat(Adventure * adventure, Character * self);
+    Action * trackPrey(Adventure * adventure, Character * self);
 };
 
 #endif // _AI_H_

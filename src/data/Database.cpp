@@ -64,6 +64,8 @@ Database::Database() {
   macros.insert(std::make_pair("SLEEPING", SLEEPING));
   macros.insert(std::make_pair("CLOAKED", CLOAKED));
   macros.insert(std::make_pair("INVISIBLE", INVISIBLE));
+  macros.insert(std::make_pair("ETHERAL", ETHERAL));
+  macros.insert(std::make_pair("INVULNERABLE", INVULNERABLE));
 
   // weapon_type
 

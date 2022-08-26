@@ -13,6 +13,7 @@
 #include "ai/NocturnalPassiveAI.h"
 #include "ai/DiurnalAgressiveAI.h"
 #include "ai/NocturnalAgressiveAI.h"
+#include "ai/EtheralCasterAI.h"
 
 #include "data/Adventure.h"
 #include "data/Attributes.h"
@@ -143,6 +144,8 @@ namespace FileOpener {
     if(keyword == "Character") {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
+      int xp = stoi(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       int x = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int y = stoi(command.substr(0, command.find('%')));
@@ -186,7 +189,7 @@ namespace FileOpener {
       else if (ai_str == "NocturnalAgressiveAI") {
         ai = new NocturnalAgressiveAI(x, y);
       }
-      Character * c = new Character(database->getCharacter(name), name, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession, *titles);
+      Character * c = new Character(database->getCharacter(name), name, xp, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession, *titles);
       map->addCharacter(c);
       delete titles;
     }
@@ -320,9 +323,9 @@ namespace FileOpener {
   void CharacterOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is(values.at("player_character"));
+    std::istringstream is_player_character(values.at("player_character"));
     bool player_character;
-    is >> std::boolalpha >> player_character;
+    is_player_character >> std::boolalpha >> player_character;
     Speech * death_speech = nullptr;
     if(values.at("death_speech") != "none") {
       death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
@@ -335,8 +338,15 @@ namespace FileOpener {
     }
     int type = database->getTargetFromMacro(values.at("type"));
     long gold = stol(values.at("gold"));
-    long xp = stol(values.at("xp"));
-    int level = stoi(values.at("level"));
+    std::istringstream is_need_to_eat(values.at("need_to_eat"));
+    bool need_to_eat;
+    is_need_to_eat >> std::boolalpha >> need_to_eat;
+    std::istringstream is_can_eat_food(values.at("can_eat_food"));
+    bool can_eat_food;
+    is_can_eat_food >> std::boolalpha >> can_eat_food;
+    std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
+    bool need_to_sleep;
+    is_need_to_sleep >> std::boolalpha >> need_to_sleep;
     std::list<Item *> * items = new std::list<Item *>();
     std::istringstream is_3(values.at("items"));
     std::string item;
@@ -374,7 +384,7 @@ namespace FileOpener {
     while(getline(is_7, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, xp, level, *items, *weapons, *ammunition, *effects, *skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
     database->addCharacter(character);
     delete items;
     delete weapons;
@@ -584,12 +594,52 @@ namespace FileOpener {
         ((ProjectileSkill *) pseudoSkill)->setProjectile(projectile);
         break;
       }
-    case TELEPORT_SKILL: {
-      int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
-      pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects);
-      ((TeleportSkill *) pseudoSkill)->setApparitionType(apparition_type);
-      break;
-    }
+      case TELEPORT_SKILL: {
+        int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects);
+        ((TeleportSkill *) pseudoSkill)->setApparitionType(apparition_type);
+        break;
+      }
+      case TILE_SWAP_SKILL: {
+        Tile * current_tile = (Tile *) database->getTile(values.at("current_tile"));
+        Tile * new_tile = (Tile *) database->getTile(values.at("new_tile"));
+        pseudoSkill = new TileSwapSkill(name, skill_type, target_type, mana_cost, *effects);
+        ((TileSwapSkill *) pseudoSkill)->setCurrentTile(current_tile);
+        ((TileSwapSkill *) pseudoSkill)->setNewTile(new_tile);
+        break;
+      }
+      case SUMMON_SKILL: {
+        Character * character = (Character *) database->getCharacter(values.at("character"));
+        std::string ai_str = values.at("ai");
+        Way * race = (Way *) database->getWay(values.at("race"));
+        Way * origin = (Way *) database->getWay(values.at("origin"));
+        Way * culture = (Way *) database->getWay(values.at("culture"));
+        Way * religion = (Way *) database->getWay(values.at("religion"));
+        Way * profession = (Way *) database->getWay(values.at("profession"));
+        Attributes * attributes = (Attributes *) database->getAttributes(values.at("attributes"));
+        std::list<Way *> * titles = new std::list<Way *>();
+        std::istringstream is_titles(values.at("titles"));
+        std::string title;
+        while(getline(is_titles, title, '%') && title != "none") {
+          titles->push_back((Way *) database->getWay(title));
+        }
+        int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+        int xp = stoi(values.at("xp"));
+        pseudoSkill = new SummonSkill(name, skill_type, target_type, mana_cost, *effects);
+        ((SummonSkill *) pseudoSkill)->setCharacter(character);
+        ((SummonSkill *) pseudoSkill)->setAI(ai_str);
+        ((SummonSkill *) pseudoSkill)->setRace(race);
+        ((SummonSkill *) pseudoSkill)->setOrigin(origin);
+        ((SummonSkill *) pseudoSkill)->setCulture(culture);
+        ((SummonSkill *) pseudoSkill)->setReligion(religion);
+        ((SummonSkill *) pseudoSkill)->setProfession(profession);
+        ((SummonSkill *) pseudoSkill)->setAttributes(attributes);
+        ((SummonSkill *) pseudoSkill)->setTitles(*titles);
+        ((SummonSkill *) pseudoSkill)->setApparitionType(apparition_type);
+        ((SummonSkill *) pseudoSkill)->setXp(xp);
+        delete titles;
+        break;
+      }
       default:
         pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
     }
@@ -639,8 +689,8 @@ namespace FileOpener {
     }
     Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
     database->addWay(way);
-    delete effects;
-    delete skills;
+    //delete effects;
+    //delete skills;
   }
 
   void WeaponOpener(std::string fileName, Database * database) {

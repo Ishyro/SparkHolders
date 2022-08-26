@@ -16,6 +16,15 @@ float Item::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
+bool Item::isFood() {
+  for(Effect * effect : effects) {
+    if(effect->type == SATIETY) {
+      return true;
+    }
+  }
+  return false;
+}
+
 std::string Item::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);

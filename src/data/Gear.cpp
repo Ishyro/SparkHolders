@@ -140,7 +140,7 @@ Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
 
 float Gear::getWeight() {
-  float weight = 1.F;
+  float weight = 0.F;
   if(head != nullptr) {
     weight += head->weight;
   }
@@ -156,7 +156,7 @@ float Gear::getWeight() {
   if(weapon != nullptr) {
     weight += weapon->weight;
   }
-  return weight;
+  return std::max(1.F, weight);
 }
 
 std::string Gear::to_string() {

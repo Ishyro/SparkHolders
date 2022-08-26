@@ -40,10 +40,12 @@ class Skill {
     {}
 
     void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id = 0, int x = 0, int y = 0);
+    bool canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y);
     int getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range);
     int getPower();
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
+    Tile * isEatingSkill();
     std::string to_string();
     static Skill * from_string(std::string to_read);
 };

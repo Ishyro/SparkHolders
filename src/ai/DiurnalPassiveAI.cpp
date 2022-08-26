@@ -9,6 +9,14 @@
 #include "ai/DiurnalPassiveAI.h"
 
 Action * DiurnalPassiveAI::getAction(Adventure * adventure, Character * c) {
+  selectHungriness(c);
+  selectTiredness(c);
+  if(hungry) {
+    Action * eat_food = eat(adventure, c);
+    if(eat_food != nullptr) {
+      return eat_food;
+    }
+  }
   if(adventure->getLight() >= 4) {
     Map * map = adventure->getWorld()->getMap(c->getCurrentMapId());
     int orientation = getFollowOrientation(c, origin_x, origin_y);

@@ -34,6 +34,7 @@ class PseudoSkill {
     {}
 
     virtual void activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) = 0;
+    virtual bool canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) = 0;
     virtual int getPower() = 0;
     virtual int getDamageFromType(int dammage_type, int overcharge_power) = 0;
     virtual float getDamageReductionFromType(int dammage_type, int overcharge_power) = 0;

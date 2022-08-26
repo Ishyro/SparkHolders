@@ -47,6 +47,9 @@ class Character {
     const std::list<const Speech *> talking_speechs;
     const int type;
     const std::string attributes;
+    const bool need_to_eat;
+    const bool can_eat_food;
+    const bool need_to_sleep;
     // not instancied character constructor
     Character(
       std::string name,
@@ -55,8 +58,9 @@ class Character {
       const std::list<const Speech *> talking_speechs,
       int type,
       long gold,
-      long xp,
-      int level,
+      bool need_to_eat,
+      bool can_eat_food,
+      bool need_to_sleep,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
       std::list<Ammunition *> ammunition,
@@ -69,8 +73,9 @@ class Character {
       talking_speechs(talking_speechs),
       type(type),
       gold(gold),
-      xp(xp),
-      level(level),
+      need_to_eat(need_to_eat),
+      can_eat_food(can_eat_food),
+      need_to_sleep(need_to_sleep),
       items(items),
       weapons(weapons),
       ammunition(ammunition),
@@ -80,6 +85,7 @@ class Character {
     Character(
       const Character * from_database,
       std::string name,
+      int xp,
       int x,
       int y,
       int orientation,
@@ -100,12 +106,15 @@ class Character {
       talking_speechs(from_database->talking_speechs),
       type(from_database->type),
       gold(from_database->gold),
-      xp(from_database->xp),
-      level(from_database->level),
+      xp(xp),
+      level(1),
       x(x),
       y(y),
       orientation(orientation),
       current_map_id(current_map_id),
+      need_to_eat(from_database->need_to_eat),
+      can_eat_food(from_database->can_eat_food),
+      need_to_sleep(from_database->need_to_sleep),
       team(team),
       ai(ai),
       items(from_database->items),
@@ -114,14 +123,22 @@ class Character {
       effects(from_database->effects),
       skills(from_database->skills),
       attributes(attributes->name),
-      race(race),
-      origin(origin),
-      culture(culture),
-      religion(religion),
-      profession(profession),
-      titles(titles)
+      race(nullptr),
+      origin(nullptr),
+      culture(nullptr),
+      religion(nullptr),
+      profession(nullptr),
+      titles(std::list<Way *>())
     {
       applyAttributes(attributes, true);
+      setWay(race);
+      setWay(origin);
+      setWay(culture);
+      setWay(religion);
+      setWay(profession);
+      for(Way * title : titles) {
+        setWay(title);
+      }
     }
     Character(
       std::string name,
@@ -131,6 +148,9 @@ class Character {
       int y,
       int orientation,
       int current_map_id,
+      bool need_to_eat,
+      bool can_eat_food,
+      bool need_to_sleep,
       long gold,
       long xp,
       int level,
@@ -156,6 +176,9 @@ class Character {
       y(y),
       orientation(orientation),
       current_map_id(current_map_id),
+      need_to_eat(need_to_eat),
+      can_eat_food(can_eat_food),
+      need_to_sleep(need_to_sleep),
       gold(gold),
       xp(xp),
       level(level),
@@ -272,11 +295,13 @@ class Character {
     void removeAmmunition(Ammunition * a);
     void useItem(std::string item);
 
-    int isChanneling();
-    int isStunned();
-    int isCloaked();
-    int isInvisible();
-    int isSleeping();
+    bool isChanneling();
+    bool isStunned();
+    bool isCloaked();
+    bool isInvisible();
+    bool isEtheral();
+    bool isInvulnerable();
+    bool isSleeping();
     int cloakPower();
     bool isInWeakState();
 

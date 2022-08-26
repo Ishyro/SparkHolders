@@ -1,0 +1,17 @@
+name = TXT_SUMMON_GRASS_FAIRY
+skill_type = SUMMON_SKILL
+target_type = TILE
+character = TXT_GRASS_FAIRY
+team = world
+ai = EtheralCasterAI
+race = TXT_NO_RACE
+origin = TXT_NO_ORIGIN
+culture = TXT_NO_CULTURE
+religion = TXT_NO_RELIGION
+profession = TXT_NO_PROFESSION
+attributes = TXT_NO_ATTRIBUTES
+titles =
+apparition_type = SOFT
+mana_cost = 0
+xp = 0
+effects =
