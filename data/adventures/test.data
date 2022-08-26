@@ -21,6 +21,7 @@ data/maps/house_east.data
 data/maps/house_south.data
 data/maps/house_west.data
 # effects
+data/effects/experience_10.data
 data/effects/satiety_10.data
 data/effects/etheral.data
 # items

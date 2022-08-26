@@ -192,15 +192,17 @@ void Projectile::attack_single_target(Character * target, Adventure * adventure)
 
 void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {
   for(Character * target : characters) {
-    int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
-    if(distance <= area) {
-      int reducedDamages[DAMAGE_TYPE_NUMBER];
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        reducedDamages[i] = (int) ceil( ((float) current_damages[i]) * pow(1 - waste_per_tile_area, distance));
-      }
-      target->receiveAttack(reducedDamages, NO_ORIENTATION);
-      if(skill != nullptr) {
-        skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+    if(target != nullptr && !target->isEtheral()) {
+      int distance = std::max(abs(x - target->getX()), abs(y - target->getY()));
+      if(distance <= area) {
+        int reducedDamages[DAMAGE_TYPE_NUMBER];
+        for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+          reducedDamages[i] = (int) ceil( ((float) current_damages[i]) * pow(1 - waste_per_tile_area, distance));
+        }
+        target->receiveAttack(reducedDamages, NO_ORIENTATION);
+        if(skill != nullptr) {
+          skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+        }
       }
     }
   }

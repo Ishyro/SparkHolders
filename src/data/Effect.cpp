@@ -44,8 +44,12 @@ void Effect::activate(Character * target) {
         break;
       case DETECTION_RANGE:
         target->incrDetectionRange();
+        break;
       case DAMAGE:
         target->receiveAttack(damages, NO_ORIENTATION);
+        break;
+      case EXPERIENCE:
+        target->gainXP(power);
         break;
       // no duration means INFINITE for next effects (can be cancelled)
       default:
@@ -70,6 +74,9 @@ bool Effect::tick(Character * target) {
       break;
     case DAMAGE:
       target->receiveAttack(damages, NO_ORIENTATION);
+      break;
+    case EXPERIENCE:
+      target->gainXP(power);
       break;
     default:
       ;

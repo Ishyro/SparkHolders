@@ -33,6 +33,22 @@ void Action::execute(Adventure * adventure) {
     }
     case FORCE_STRIKE: {
       user->setOrientation(orientation);
+      if(target != nullptr) {
+        user->attack( (Character *) target);
+        if(!( (Character *) target)->isAlive()) {
+          adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, (Character *) target);
+        }
+      } else {
+        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
+          if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
+            user->attack(c);
+            if(!c->isAlive()) {
+              adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, c);
+            }
+            break;
+          }
+        }
+      }
       break;
     }
     case RELOAD:

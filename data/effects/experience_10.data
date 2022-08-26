@@ -1,0 +1,5 @@
+name = TXT_EXPERIENCE_10
+type = EXPERIENCE
+duration_type = INSTANT
+duration = 0
+power = 10

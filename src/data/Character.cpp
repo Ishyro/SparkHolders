@@ -593,15 +593,17 @@ float Character::getDamageReductionFromType(int damage_type) {
 }
 
 void Character::attack(Character * target) {
-  int realDamages[DAMAGE_TYPE_NUMBER];
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    realDamages[damage_type] = getDamageFromType(damage_type);
+  if(gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
+    int realDamages[DAMAGE_TYPE_NUMBER];
+    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      realDamages[damage_type] = getDamageFromType(damage_type);
+    }
+    target->receiveAttack(realDamages, orientation);
   }
-  target->receiveAttack(realDamages, orientation);
 }
 
 Projectile * Character::shoot(const Character * target, int y, int x) {
-  if(!gear->getWeapon()->melee) {
+  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - this->x), abs(y - this->y))) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
@@ -734,6 +736,8 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, orientation);
   String::insert(ss, team);
   String::insert_int(ss, getArmor());
+  String::insert_int(ss, xp);
+  String::insert_int(ss, level);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, getDamageReductionFromType(i));
   }
@@ -766,6 +770,8 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->orientation = String::extract_int(ss);
   display->team = String::extract(ss);
   display->armor = String::extract_int(ss);
+  display->xp = String::extract_int(ss);
+  display->level = String::extract_int(ss);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damage_reductions[i] = String::extract_float(ss);
   }

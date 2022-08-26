@@ -15,7 +15,7 @@ class Weapon {
     const std::string name;
     const long id = ++weapon::id_cpt;
     const bool melee;
-    const int range; // 0 if not melee
+    const int range;
     const int type;
     const float weight;
     const int gold_value;

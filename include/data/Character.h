@@ -33,6 +33,8 @@ typedef struct CharacterDisplay {
   int orientation;
   std::string team;
   int armor;
+  int xp;
+  int level;
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   int damages[DAMAGE_TYPE_NUMBER];
   int teamRelation;

@@ -222,8 +222,8 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
   if(is_legal) {
     Character * to_kill = nullptr;
     for(Character * other : characters) {
-      if (other->getX() == destX && other->getY() == destY) {
-        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY && !other->isEtheral()) {
+      if (other != nullptr && other->getX() == destX && other->getY() == destY && !other->isEtheral()) {
+        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY) {
           c->setOrientation(orientation);
           c->attack(other);
           if(!other->isAlive()) {
@@ -247,33 +247,25 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
   }
 }
 
+#include <iostream>
+
 bool Map::actProjectile(Projectile * p, Adventure * adventure) {
-  if(p->isAtDest()) {
-    p->setLost(true);
-    if(p->getArea() > 1) {
-      p->attack_multiple_targets(characters, adventure);
-      for(Character * c : characters) {
-        if(!c->isAlive()) {
-          killCharacter(p->getOwner(), c);
-        }
-      }
-    }
-  }
   for(int i = 0; i < p->getSpeed(); i++) {
-    p->move();
     if(p->isAtDest()) {
       p->setLost(true);
       if(p->getArea() > 1) {
         p->attack_multiple_targets(characters, adventure);
         for(Character * c : characters) {
-          if(!c->isAlive()) {
+          if(c != nullptr && !c->isAlive()) {
             killCharacter(p->getOwner(), c);
           }
         }
+        p->move();
+        continue;
       }
     }
     for(Character * c : characters) {
-      if(c->getX() == p->getX() && c->getY() == p->getY()) {
+      if(c != nullptr && c->getX() == p->getX() && c->getY() == p->getY() && !c->isEtheral()) {
         if(p->getArea() > 1) {
           p->attack_multiple_targets(characters, adventure);
           for(Character * c : characters) {
@@ -288,11 +280,14 @@ bool Map::actProjectile(Projectile * p, Adventure * adventure) {
             killCharacter(p->getOwner(), c);
           }
         }
+        p->move();
+        break;
       }
     }
     if(p->noDamage()) {
       return true;
     }
+    p->move();
   }
   return false;
 }

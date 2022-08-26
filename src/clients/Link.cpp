@@ -48,6 +48,7 @@ MapDisplay * Link::receiveMap() {
         player->setStamina(display->stamina);
         player->setSatiety(display->satiety);
         player->setCurrentSoulBurn(display->soulBurn);
+        player->gainXP(display->xp - player->getXP());
       }
     }
     return map;

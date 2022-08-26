@@ -56,6 +56,7 @@ Database::Database() {
   macros.insert(std::make_pair("VISION_RANGE", VISION_RANGE));
   macros.insert(std::make_pair("VISION_POWER", VISION_POWER));
   macros.insert(std::make_pair("DETECTION_RANGE", DETECTION_RANGE));
+  macros.insert(std::make_pair("EXPERIENCE", EXPERIENCE));
   macros.insert(std::make_pair("DAMAGE", DAMAGE));
   macros.insert(std::make_pair("DAMAGE_BUFF", DAMAGE_BUFF));
   macros.insert(std::make_pair("DAMAGE_REDUCTION", DAMAGE_REDUCTION));

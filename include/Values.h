@@ -64,16 +64,17 @@ class SpeechManager;
 #define VISION_RANGE 10
 #define VISION_POWER 11
 #define DETECTION_RANGE 12
-#define DAMAGE 13
-#define DAMAGE_BUFF 14
-#define DAMAGE_REDUCTION 15
-#define CHANNELING 16
-#define STUNNED 17
-#define SLEEPING 18
-#define CLOAKED 19
-#define INVISIBLE 20
-#define ETHERAL 21
-#define INVULNERABLE 22
+#define EXPERIENCE 13
+#define DAMAGE 14
+#define DAMAGE_BUFF 15
+#define DAMAGE_REDUCTION 16
+#define CHANNELING 17
+#define STUNNED 18
+#define SLEEPING 19
+#define CLOAKED 20
+#define INVISIBLE 21
+#define ETHERAL 22
+#define INVULNERABLE 23
 
 // weapon_type
 
