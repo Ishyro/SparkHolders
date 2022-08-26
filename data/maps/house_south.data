@@ -1,15 +1,23 @@
-TXT_HOUSE_SOUTH
-11
-11
-false
-wall_wood wall_wood wall_wood wall_wood wall_stone fireplace wall_stone wall_wood wall_wood wall_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_stone floor_stone floor_stone floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-torch_wall floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood torch_wall
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood floor_wood wall_wood
-wall_wood wall_wood wall_wood wall_wood wall_wood door wall_wood wall_wood wall_wood wall_wood wall_wood
+name = TXT_HOUSE_SOUTH
+width = 11
+height = 11
+outside = false
+0 = wall_wood
+1 = wall_stone
+2 = fireplace
+3 = floor_wood
+4 = floor_stone
+5 = torch_wall
+6 = door
+!end
+0 0 0 0 1 2 1 0 0 0 0
+0 3 3 3 4 4 4 3 3 3 0
+0 3 3 3 3 3 3 3 3 3 0
+0 3 3 3 3 3 3 3 3 3 0
+1 3 3 3 3 3 3 3 3 3 1
+5 3 3 3 3 3 3 3 3 3 5
+1 3 3 3 3 3 3 3 3 3 1
+0 3 3 3 3 3 3 3 3 3 0
+0 3 3 3 3 3 3 3 3 3 0
+0 3 3 3 3 3 3 3 3 3 0
+0 0 0 0 0 6 0 0 0 0 0

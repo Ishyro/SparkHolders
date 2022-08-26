@@ -64,6 +64,9 @@ namespace FileOpener {
       while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }
+      if(line == "!end") {
+        break;
+      }
       if(line != "" && line.at(0) != '#') {
         std::string key = line.substr(0, line.find(delimiter));
         while(std::isspace(key.at(key.length() - 1))) {
@@ -472,33 +475,30 @@ namespace FileOpener {
   }
 
   void MapOpener(std::string fileName, Database * database) {
-    std::fstream file;
-    file.open(fileName, std::ios::in);
-    if(!file) {
-      std::cout << "File not found: " + fileName << std::endl;
-    }
-    std::string line;
-    std::string name;
-    getline(file,name);
-    getline(file,line);
-    const int sizeX = stoi(line);
-    getline(file,line);
-    const int sizeY = stoi(line);
-    getline(file,line);
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int sizeX = stoi(values.at("width"));
+    int sizeY = stoi(values.at("height"));
+    std::istringstream is(values.at("outside"));
     bool outside;
-    std::istringstream is(line);
     is >> std::boolalpha >> outside;
 
     Map * map = new Map(name, sizeX, sizeY, outside);
 
+    std::fstream file;
+    std::string line;
+    file.open(fileName, std::ios::in);
+    if(!file) {
+      std::cout << "File not found: " + fileName << std::endl;
+    }
+    while(getline(file,line) && line != "!end");
     for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
       std::istringstream is(line);
       for(int x = 0; x < sizeX; x++) {
         std::string tile;
         getline(is, tile, ' ');
-        std::string test = database->getTile(tile)->name;
-        map->setTile(y, x, (Tile *)database->getTile(tile));
+        map->setTile(y, x, (Tile *)database->getTile(values.at(tile)));
       }
     }
 
