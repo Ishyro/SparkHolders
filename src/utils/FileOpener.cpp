@@ -207,19 +207,15 @@ namespace FileOpener {
     else if(keyword == "MapLink") {
       std::string map1_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
-      std::string map2_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
       int x1 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int y1 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      int orientation1 = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      std::string map2_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
       int x2 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int y2 = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int orientation2 = database->getTargetFromMacro(command.substr(0, command.find('%')));
       Map * map1 = world->getMap(map1_str);
       Map * map2 = world->getMap(map2_str);
       MapLink * link = new MapLink();
@@ -227,10 +223,8 @@ namespace FileOpener {
       link->map2 = map2;
       link->x1 = x1;
       link->y1 = y1;
-      link->orientation1 = orientation1;
       link->x2 = x2;
       link->y2 = y2;
-      link->orientation2 = orientation2;
       world->addMapLink(link);
     }
     else if(keyword == "Loot") {
@@ -242,13 +236,13 @@ namespace FileOpener {
     }
     else if(keyword == "Spawn") {
       Spawn * spawn = new Spawn();
+      std::string map_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
       spawn->x = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       spawn->y = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       spawn->orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string map_str = command.substr(0, command.find('%'));
       spawn->map_id = world->getMap(map_str)->id;
       spawns->push_back(spawn);
     }

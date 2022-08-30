@@ -8,10 +8,8 @@
 typedef struct MapLink {
     int x1;
     int y1;
-    int orientation1;
     int x2;
     int y2;
-    int orientation2;
     Map * map1;
     Map * map2;
 } MapLink;

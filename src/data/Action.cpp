@@ -78,13 +78,13 @@ void Action::execute(Adventure * adventure) {
     case CHANGE_MAP:
       if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->x2, link->y2, link->orientation2);
+        user->move(link->y2, link->x2);
         user->setCurrentMapId(link->map2->id);
         adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
       }
       else if(user->getX() == link->x2 && user->getY() == link->y2 && user->getCurrentMapId() == link->map2->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->x1, link->y1, link->orientation1);
+        user->move(link->y1, link->x1);
         user->setCurrentMapId(link->map1->id);
         adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
       }
