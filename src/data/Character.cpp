@@ -126,6 +126,16 @@ float Character::getPriorityModifier() {
   return std::max(0.F, (std::min(75.F, stamina) - std::abs(50.F - satiety)) / gear->getWeight());
 }
 
+float Character::getDamageMultiplier() {
+  int multiplier = 0;
+  for(Effect * e : effects) {
+    if(e->type == DAMAGE_MULTIPLIER) {
+      multiplier += e->power;
+    }
+  }
+  return std::max(0.F, 1.F + ((float) multiplier) / 100.F);
+}
+
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 
@@ -381,7 +391,7 @@ void Character::unequip(int type) {
 void Character::unequipWeapon() {
   Weapon * old_weapon = gear->unequipWeapon();
   if(old_weapon != nullptr) {
-    for(auto e : old_weapon->effects) {
+    for(Effect * e : old_weapon->effects) {
       removeEffect(e);
     }
     weapons.push_back(old_weapon);
@@ -579,7 +589,7 @@ int Character::getDamageFromType(int damage_type) {
       damage += e->getDamageFromType(damage_type);
     }
   }
-  return damage;
+  return (int) std::ceil((float) damage * getDamageMultiplier());
 }
 
 float Character::getDamageReductionFromType(int damage_type) {
@@ -687,7 +697,7 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) 
         damage += damages[damage_type];
       }
       else {
-        damage += std::max(0, (int) floor( (float) damages[damage_type] * (1. - getDamageReductionFromType(damage_type))));
+        damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
     }
     hp -= std::max(0, damage - getArmor());
@@ -709,7 +719,12 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
         damage += damages[damage_type] * 2;
       }
       else {
-        damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1. - .5 * getDamageReductionFromType(damage_type))));
+        float damage_reduction = getDamageReductionFromType(damage_type);
+        if(damage_reduction > 0.F) {
+          damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
+        } else {
+          damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
+        }
       }
     }
     hp -= std::max(0, damage - getArmor());

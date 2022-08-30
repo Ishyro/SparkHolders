@@ -226,6 +226,7 @@ class Character {
     long getXP();
     int getLevel();
     float getPriorityModifier();
+    float getDamageMultiplier();
 
     AI * getAI();
     std::string getTeam();

@@ -68,13 +68,14 @@ class SpeechManager;
 #define DAMAGE 14
 #define DAMAGE_BUFF 15
 #define DAMAGE_REDUCTION 16
-#define CHANNELING 17
-#define STUNNED 18
-#define SLEEPING 19
-#define CLOAKED 20
-#define INVISIBLE 21
-#define ETHERAL 22
-#define INVULNERABLE 23
+#define DAMAGE_MULTIPLIER 17
+#define CHANNELING 18
+#define STUNNED 19
+#define SLEEPING 20
+#define CLOAKED 21
+#define INVISIBLE 22
+#define ETHERAL 23
+#define INVULNERABLE 24
 
 // weapon_type
 

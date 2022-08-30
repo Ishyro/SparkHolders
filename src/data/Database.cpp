@@ -60,6 +60,7 @@ Database::Database() {
   macros.insert(std::make_pair("DAMAGE", DAMAGE));
   macros.insert(std::make_pair("DAMAGE_BUFF", DAMAGE_BUFF));
   macros.insert(std::make_pair("DAMAGE_REDUCTION", DAMAGE_REDUCTION));
+  macros.insert(std::make_pair("DAMAGE_MULTIPLIER", DAMAGE_MULTIPLIER));
   macros.insert(std::make_pair("CHANNELING", CHANNELING));
   macros.insert(std::make_pair("STUNNED", STUNNED));
   macros.insert(std::make_pair("SLEEPING", SLEEPING));
