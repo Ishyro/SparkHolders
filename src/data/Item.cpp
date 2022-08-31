@@ -69,7 +69,7 @@ Item * Item::from_string(std::string to_read) {
     damage_reductions[i] = String::extract_float(ss);
   }
   delete ss;
-  return new Item(
+  Item * result = new Item(
     name,
     equipable,
     consumable,
@@ -79,4 +79,6 @@ Item * Item::from_string(std::string to_read) {
     *effects,
     damage_reductions
   );
+  delete effects;
+  return result;
 }

@@ -216,6 +216,7 @@ Gear * Gear::from_string(std::string to_read) {
   Item * right_ring = Item::from_string(String::extract(ss));
   Item * amulet = Item::from_string(String::extract(ss));
   Weapon * weapon = Weapon::from_string(String::extract(ss));
+  delete ss;
   return new Gear(
     head,
     arms,

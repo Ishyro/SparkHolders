@@ -108,7 +108,7 @@ Skill * Skill::from_string(std::string to_read) {
   }
   delete ss_skills;
   delete ss;
-  return new Skill(
+  Skill * result = new Skill(
     name,
     target_type,
     overcharge_power_type,
@@ -118,4 +118,6 @@ Skill * Skill::from_string(std::string to_read) {
     priority,
     *skills
   );
+  delete skills;
+  return result;
 }

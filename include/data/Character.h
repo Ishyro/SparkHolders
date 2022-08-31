@@ -46,7 +46,7 @@ class Character {
     const std::string name;
     const bool player_character;
     const Speech * death_speech;
-    const std::list<const Speech *> talking_speechs;
+    const std::list<Speech *> talking_speechs;
     const int type;
     const std::string attributes;
     const bool need_to_eat;
@@ -57,7 +57,8 @@ class Character {
       std::string name,
       bool player_character,
       const Speech * death_speech,
-      const std::list<const Speech *> talking_speechs,
+      const std::list<Speech *> talking_speechs,
+      std::list<Item *> loot,
       int type,
       long gold,
       bool need_to_eat,
@@ -73,6 +74,7 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speechs(talking_speechs),
+      loot(loot),
       type(type),
       gold(gold),
       need_to_eat(need_to_eat),
@@ -106,6 +108,7 @@ class Character {
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speechs(from_database->talking_speechs),
+      loot(std::list<Item *>()),
       type(from_database->type),
       gold(from_database->gold),
       xp(xp),
@@ -119,8 +122,8 @@ class Character {
       need_to_sleep(from_database->need_to_sleep),
       team(team),
       ai(ai),
-      items(from_database->items),
-      weapons(from_database->weapons),
+      items(std::list<Item *>()),
+      weapons(std::list<Weapon *>()),
       ammunition(from_database->ammunition),
       effects(from_database->effects),
       skills(from_database->skills),
@@ -132,6 +135,15 @@ class Character {
       profession(nullptr),
       titles(std::list<Way *>())
     {
+      for(Item * item : from_database->items) {
+        items.push_back(new Item(item));
+      }
+      for(Item * item : from_database->loot) {
+        loot.push_back(new Item(item));
+      }
+      for(Weapon * weapon : from_database->weapons) {
+        weapons.push_back(new Weapon(weapon));
+      }
       applyAttributes(attributes, true);
       setWay(race);
       setWay(origin);
@@ -145,6 +157,9 @@ class Character {
     Character(
       std::string name,
       bool player_character,
+      const Speech * death_speech,
+      const std::list<Speech *> talking_speechs,
+      std::list<Item *> loot,
       int type,
       int x,
       int y,
@@ -173,6 +188,9 @@ class Character {
     ):
       name(name),
       player_character(player_character),
+      death_speech(death_speech),
+      talking_speechs(talking_speechs),
+      loot(loot),
       type(type),
       x(x),
       y(y),
@@ -201,6 +219,8 @@ class Character {
       titles(titles)
     {
       applyAttributes(attributes, false);
+      // always client side
+      delete attributes;
     }
     void applyAttributes(Attributes * attributes, bool init);
     bool isAlive();
@@ -228,11 +248,15 @@ class Character {
     float getPriorityModifier();
     float getDamageMultiplier();
 
+    bool needToSend();
+    void setNeedToSend(bool need_to_send);
+
     AI * getAI();
     std::string getTeam();
 
     Gear * getGear();
     std::list<Item *> getItems();
+    std::list<Item *> getLoot();
     std::list<Weapon *> getWeapons();
     std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
@@ -322,6 +346,7 @@ class Character {
     static Character * full_from_string(std::string to_read);
     bool operator == (const Character& c) const { return id == c.id; }
     bool operator != (const Character& c) const { return !operator==(c); }
+    void deepDelete();
 
   private:
     int x;
@@ -341,6 +366,7 @@ class Character {
     int visionRange;
     int visionPower;
     int detectionRange;
+    bool need_to_send = false;
 
     long gold;
     long xp;
@@ -351,6 +377,7 @@ class Character {
 
     Gear * gear;
     std::list<Item *> items;
+    std::list<Item *> loot;
     std::list<Weapon *> weapons;
     std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;

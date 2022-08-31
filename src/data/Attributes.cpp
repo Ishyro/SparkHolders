@@ -64,5 +64,8 @@ Attributes * Attributes::from_string(std::string to_read) {
   delete ss_skills;
   Gear * gear = Gear::from_string(String::extract(ss));
   delete ss;
-  return new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
+  Attributes * result = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
+  delete effects;
+  delete skills;
+  return result;
 }

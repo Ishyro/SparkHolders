@@ -8,7 +8,6 @@
 #include "data/Way.h"
 
 #include "communication/Socket.h"
-
 #include "communication/Client.h"
 
 #include "utils/String.h"
@@ -36,7 +35,7 @@ namespace Client {
       ways->push_back(Way::from_string(String::extract(ss_ways)));
     }
     delete ss_ways;
-    delete ss;;
+    delete ss;
   }
 
   std::list<std::string> receiveTraductionPaths(Socket s) {
@@ -71,9 +70,22 @@ namespace Client {
     delete ss_ways;
   }
 
-  MapDisplay * receiveMap(Socket s) {
+  MapDisplay * receiveMap(Socket s, Character ** player, long * id) {
     try {
-      return Map::from_string(s.read());
+      std::string msg = s.read();
+      std::stringstream * ss = new std::stringstream(msg);
+      MapDisplay * result = nullptr;
+      if(msg.at(0) != '{') {
+        *ss >> *id;
+        (*player)->deepDelete();
+        delete *player;
+        *player = Character::full_from_string(String::extract(ss));
+        result = Map::from_string(String::extract(ss));
+      } else {
+        result = Map::from_string(msg);
+      }
+      delete ss;
+      return result;
     } catch (const CloseException &e) {
       throw e;
     }
@@ -136,10 +148,10 @@ namespace Client {
     delete ss;
   }
 
-  Character * sendChoices(Socket s, std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
+  Character * sendChoices(Socket s, std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
     std::stringstream * ss = new std::stringstream();
     String::insert(ss, name);
-    String::insert(ss, attibutes);
+    String::insert(ss, attributes);
     String::insert(ss, race);
     String::insert(ss, origin);
     String::insert(ss, culture);

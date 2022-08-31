@@ -1363,30 +1363,11 @@ namespace Display {
             object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, t);
             if(object != "") {
               switch(object_type) {
-                case 0:
-                  for(Weapon * weapon : link->getPlayer()->getWeapons()) {
-                    if(weapon->name == object) {
-                      link->getPlayer()->equip(weapon);
-                    }
-                  }
-                  break;
-                case 1:
-                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-                    for(Ammunition * ammo : link->getPlayer()->getAmmunitions()) {
-                      if(ammo->projectile->name == object) {
-                        link->getPlayer()->reload(ammo);
-                      }
-                    }
-                  }
-                  break;
                 case 2:
                   for(Item * item : link->getPlayer()->getItems()) {
                     if(item->name == object) {
-                      if(item->equipable) {
-                        link->getPlayer()->equip(item);
-                      } else {
+                      if(item->consumable) {
                         type = USE_ITEM;
-                        link->getPlayer()->useItem(item->name);
                       }
                     }
                   }
@@ -1405,11 +1386,6 @@ namespace Display {
               if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
               || link->getPlayer()->getGear()->getWeapon()->getAmmo()->projectile->name != object
               || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon()->capacity)) {
-                for(Ammunition * ammo : link->getPlayer()->getAmmunitions()) {
-                  if(ammo->projectile->name == object) {
-                    link->getPlayer()->reload(ammo);
-                  }
-                }
                 done = true;
               }
             }
@@ -1790,6 +1766,7 @@ namespace Display {
           done = true;
           target_x = player_x;
           target_y = player_y;
+          delete wch_old;
           return false;
         }
         default:
@@ -1818,6 +1795,7 @@ namespace Display {
     }
     target_x += display->offsetX;
     target_y += display->offsetY;
+    delete wch_old;
     return true;
   }
 

@@ -5,9 +5,10 @@
 #include "data/World.h"
 
 #include "communication/Socket.h"
-#include "communication/Client.h"
 
 #include "clients/Link.h"
+
+#include "communication/Client.h"
 
 void Link::loadChoices() {
   attributes = new std::vector<Attributes *>();
@@ -29,9 +30,10 @@ std::list<std::string> Link::receiveTraductionPaths() {
   }
 }
 
-void Link::sendChoices(std::string name, std::string attibutes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
+void Link::sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
   try {
-    player = Client::sendChoices(s, name, attibutes, race, origin, culture, religion, profession);
+    player = Client::sendChoices(s, name, attributes, race, origin, culture, religion, profession);
+    serverCharacterId = 0;
   } catch (const CloseException &e) {
     throw e;
   }
@@ -39,9 +41,9 @@ void Link::sendChoices(std::string name, std::string attibutes, std::string race
 
 MapDisplay * Link::receiveMap() {
   try {
-    MapDisplay * map = Client::receiveMap(s);
+    MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId);
     for(CharacterDisplay * display : map->characters) {
-      if(display->id == player->id) {
+      if(serverCharacterId == display->id) {
         player->move(display->y + map->offsetY, display->x + map->offsetX, display->orientation);
         player->setHp(display->hp);
         player->setMana(display->mana);

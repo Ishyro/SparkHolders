@@ -2,6 +2,7 @@ name = TXT_PLAYER
 player_character = true
 death_speech = none
 talking_speechs =
+loot = TXT_SENTIENT_MEAT%TXT_SENTIENT_MEAT%TXT_SENTIENT_MEAT%TXT_SENTIENT_MEAT%TXT_SENTIENT_MEAT%
 type = HUMAN
 gold = 50
 items = TXT_LAMB%

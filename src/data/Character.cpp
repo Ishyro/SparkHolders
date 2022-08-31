@@ -8,6 +8,7 @@
 #include "data/Projectile.h"
 #include "data/skills/Skill.h"
 #include "data/Settings.h"
+#include "data/Speech.h"
 #include "data/Way.h"
 #include "data/Weapon.h"
 #include "data/World.h"
@@ -136,6 +137,9 @@ float Character::getDamageMultiplier() {
   return std::max(0.F, 1.F + ((float) multiplier) / 100.F);
 }
 
+bool Character::needToSend() { return need_to_send; }
+void Character::setNeedToSend(bool need_to_send) { this->need_to_send = need_to_send; }
+
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 
@@ -143,6 +147,7 @@ int Character::getCurrentMapId() { return current_map_id; }
 
 Gear * Character::getGear() { return gear; }
 std::list<Item *> Character::getItems() { return items; }
+std::list<Item *> Character::getLoot() { return loot; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
@@ -196,6 +201,9 @@ void Character::move(int y, int x, int orientation) {
 
 void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
 void Character::incrMaxHp() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   int incr = 0;
   incr += race->hpIncr;
   incr += origin->hpIncr;
@@ -210,6 +218,9 @@ void Character::incrMaxHp() {
 void Character::setHp(int hp) { this->hp = hp; }
 void Character::manaHeal(int mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
 void Character::incrMaxMana() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   int incr = 0;
   incr += race->manaIncr;
   incr += origin->manaIncr;
@@ -231,6 +242,9 @@ void Character::setStamina(float stamina) { this->stamina = stamina; }
 void Character::setSatiety(float satiety) { this->satiety = satiety; }
 
 void Character::incrArmor() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   int incr = 0;
   incr += race->armorIncr;
   incr += origin->armorIncr;
@@ -243,6 +257,9 @@ void Character::incrArmor() {
   armor += std::max(incr, 0);
 }
 void Character::incrSoulBurnTreshold() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   int incr = 0;
   incr += race->soulBurnIncr;
   incr += origin->soulBurnIncr;
@@ -256,6 +273,9 @@ void Character::incrSoulBurnTreshold() {
 }
 void Character::setCurrentSoulBurn(int soulBurn) { this->currentSoulBurn = soulBurn; }
 void Character::incrFlow() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   int incr = 0;
   incr += race->flowIncr;
   incr += origin->flowIncr;
@@ -267,9 +287,27 @@ void Character::incrFlow() {
   }
   flow += std::max(incr, 0);
 }
-void Character::incrVisionRange() { visionRange++; }
-void Character::incrVisionPower() {visionPower++; }
-void Character::incrDetectionRange() { detectionRange++; }
+
+void Character::incrVisionRange() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  visionRange++;
+}
+
+void Character::incrVisionPower() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  visionPower++;
+}
+
+void Character::incrDetectionRange() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  detectionRange++;
+}
 
 void Character::setCurrentMapId(int map_id) { this->current_map_id = map_id; }
 
@@ -310,6 +348,9 @@ void Character::applyHunger() {
 void Character::applyEffects() {
   for(Effect * e : effects) {
     if(e->duration_type == TEMPORARY) {
+      if(player_character) {
+        setNeedToSend(true);
+      }
       if(e->tick(this)) {
         e->desactivate(this);
         delete e;
@@ -348,6 +389,9 @@ void Character::setAI(AI * ai) { this->ai = ai; }
 void Character::setTeam(std::string team) { this->team = team; }
 
 void Character::equip(Item * to_equip) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   if(to_equip != nullptr) {
     std::list<Item *> items = gear->equip(to_equip);
     for(auto item : items) {
@@ -363,6 +407,9 @@ void Character::equip(Item * to_equip) {
 }
 
 void Character::equip(Weapon * to_equip) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   if(to_equip != nullptr) {
     Weapon * old_weapon = gear->equip(to_equip);
     removeWeapon(to_equip);
@@ -379,6 +426,9 @@ void Character::equip(Weapon * to_equip) {
 }
 
 void Character::unequip(int type) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   Item * old_item = gear->unequip(type);
   if(old_item != nullptr) {
     for(auto e : old_item->effects) {
@@ -389,6 +439,9 @@ void Character::unequip(int type) {
 }
 
 void Character::unequipWeapon() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   Weapon * old_weapon = gear->unequipWeapon();
   if(old_weapon != nullptr) {
     for(Effect * e : old_weapon->effects) {
@@ -398,8 +451,20 @@ void Character::unequipWeapon() {
   }
 }
 
-void Character::addEffect(Effect * e) { effects.push_back(e); }
-void Character::addSkill(Skill * s) { skills.push_back(s); }
+void Character::addEffect(Effect * e) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  effects.push_back(e);
+}
+
+void Character::addSkill(Skill * s) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  skills.push_back(s);
+}
+
 bool Character::hasSkill(Skill * s) {
   for(Skill * skill : skills) {
     if(skill->name == s->name) {
@@ -408,10 +473,25 @@ bool Character::hasSkill(Skill * s) {
   }
   return false;
 }
-void Character::removeEffect(Effect * e) { effects.remove(e); }
-void Character::removeSkill(Skill * s) { skills.remove(s); }
+
+void Character::removeEffect(Effect * e) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  effects.remove(e);
+}
+
+void Character::removeSkill(Skill * s) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  skills.remove(s);
+}
 
 void Character::setWay(Way * way) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   Way * to_remove = nullptr;
   switch(way->type) {
     case RACE:
@@ -470,25 +550,67 @@ void Character::setWay(Way * way) {
   }
 }
 
-void Character::addItem(Item * i) { items.push_back(i); }
-void Character::addWeapon(Weapon * w) { weapons.push_back(w); }
-void Character::addAmmunition(Ammunition * a) { ammunition.push_back(a); }
-void Character::removeItem(Item * i) { items.remove(i); }
-void Character::removeWeapon(Weapon * w) { weapons.remove(w); }
-void Character::removeAmmunition(Ammunition * a) { ammunition.remove(a); }
+void Character::addItem(Item * i) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  items.push_back(i);
+}
+
+void Character::addWeapon(Weapon * w) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  weapons.push_back(w);
+}
+
+void Character::addAmmunition(Ammunition * a) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  ammunition.push_back(a);
+}
+
+void Character::removeItem(Item * i) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  items.remove(i);
+}
+
+void Character::removeWeapon(Weapon * w) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  weapons.remove(w);
+}
+
+void Character::removeAmmunition(Ammunition * a) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  ammunition.remove(a);
+}
 
 void Character::useItem(std::string item) {
+  Item * to_remove = nullptr;
   for(Item * i : items) {
     if(i->name == item && i->consumable) {
-      if(i->isFood() && !can_eat_food) {
+      if(player_character) {
+        setNeedToSend(true);
+      }
+      if(!i->isFood() || can_eat_food) {
         for(Effect * e : i->effects) {
           e->activate(this);
         }
-        removeItem(i);
-        delete i;
-        return;
+        to_remove = i;
+        break;
       }
     }
+  }
+  if(to_remove != nullptr) {
+    removeItem(to_remove);
+    delete to_remove;
   }
 }
 
@@ -621,6 +743,9 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
       }
       Projectile * base_projectile = gear->getWeapon()->getAmmo()->projectile;
       if(gear->getWeapon()->use_ammo) {
+        if(player_character) {
+          setNeedToSend(true);
+        }
         gear->getWeapon()->useAmmo();
       }
       int proj_x = this->x;
@@ -662,6 +787,9 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
 }
 
 void Character::reload(Ammunition * ammo) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
   Ammunition * oldAmmo = gear->getWeapon()->reload(ammo);
   if(ammo->number == 0) {
     ammunition.remove(ammo);
@@ -801,6 +929,23 @@ std::string Character::full_to_string(Adventure * adventure) {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_bool(ss, player_character);
+  if(death_speech != nullptr) {
+    String::insert(ss, ((Speech *) death_speech)->to_string());
+  } else {
+    String::insert(ss, "none");
+  }
+  std::stringstream * ss_talking_speechs = new std::stringstream();
+  for(Speech * talking_speech : talking_speechs) {
+    String::insert(ss_talking_speechs, talking_speech->to_string());
+  }
+  String::insert(ss, ss_talking_speechs->str());
+  delete ss_talking_speechs;
+  std::stringstream * ss_loot = new std::stringstream();
+  for(Item * item : loot) {
+    String::insert(ss_loot, item->to_string());
+  }
+  String::insert(ss, ss_loot->str());
+  delete ss_loot;
   String::insert_int(ss, type);
   String::insert_int(ss, x);
   String::insert_int(ss, y);
@@ -864,8 +1009,25 @@ std::string Character::full_to_string(Adventure * adventure) {
 
 Character * Character::full_from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
-  std::string  name = String::extract(ss);
+  std::string name = String::extract(ss);
   bool player_character = String::extract_bool(ss);
+  std::string death_speech_str = String::extract(ss);
+  Speech * death_speech = nullptr;
+  if(death_speech_str != "none") {
+    death_speech = Speech::from_string(death_speech_str);
+  }
+  std::stringstream * ss_talking_speechs = new std::stringstream(String::extract(ss));
+  std::list<Speech *> * talking_speechs = new std::list<Speech *>();
+  while(ss_talking_speechs->rdbuf()->in_avail() != 0) {
+    talking_speechs->push_back(Speech::from_string(String::extract(ss_talking_speechs)));
+  }
+  delete ss_talking_speechs;
+  std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
+  std::list<Item *> * loot = new std::list<Item *>();
+  while(ss_loot->rdbuf()->in_avail() != 0) {
+    loot->push_back(Item::from_string(String::extract(ss_loot)));
+  }
+  delete ss_loot;
   int type = String::extract_int(ss);
   int x = String::extract_int(ss);
   int y = String::extract_int(ss);
@@ -922,9 +1084,12 @@ Character * Character::full_from_string(std::string to_read) {
   }
   delete ss_titles;
   delete ss;
-  return new Character(
+  Character * result = new Character(
     name,
     player_character,
+    death_speech,
+    *talking_speechs,
+    *loot,
     type,
     x,
     y,
@@ -951,4 +1116,40 @@ Character * Character::full_from_string(std::string to_read) {
     profession,
     *titles
   );
+  delete talking_speechs;
+  delete loot;
+  delete items;
+  delete weapons;
+  delete ammunition;
+  delete effects;
+  delete skills;
+  delete titles;
+  return result;
+}
+
+void Character::deepDelete() {
+  for(Item * item : items) {
+    delete item;
+  }
+  for(Item * item : loot) {
+    delete item;
+  }
+  for(Weapon * weapon : weapons) {
+    delete weapon;
+  }
+  for(Ammunition * ammo : ammunition) {
+    delete ammo;
+  }
+  for(Skill * skill : skills) {
+    delete skill;
+  }
+  for(Way * title : titles) {
+    delete title;
+  }
+  delete gear;
+  delete race;
+  delete origin;
+  delete culture;
+  delete religion;
+  delete profession;
 }

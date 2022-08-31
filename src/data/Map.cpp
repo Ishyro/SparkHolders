@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "data/Adventure.h"
+#include "data/Effect.h"
 #include "data/Item.h"
 #include "data/Weapon.h"
 
@@ -112,13 +113,27 @@ void Map::killCharacter(Character * killer, Character * victim) {
   for(Ammunition * a : victim->getAmmunitions()) {
     loot->ammunition.push_back(a);
   }
+  for(Item * i : victim->getLoot()) {
+    loot->items.push_back(i);
+  }
   loot->type = CORPSE;
+  if(killer != victim) {
+    killer->gainXP(victim->getXP() / 2);
+  } else {
+    int damages[DAMAGE_TYPE_NUMBER] = {0};
+    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
+    int xp = victim->getXP();
+    Effect * effect = new Effect("TXT_GAIN_XP", EXPERIENCE, INSTANT, 0, xp, damages, damage_reductions);
+    std::list<Effect *> * effects = new std::list<Effect *>();
+    effects->push_back(effect);
+    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, 0.F, xp * 10, *effects, damage_reductions));
+    delete effects;
+  }
   if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {
     delete loot;
   } else {
     loots.push_back(loot);
   }
-  killer->gainXP(victim->getXP() / 2);
   delete victim;
   victim = nullptr;
 }
@@ -139,9 +154,9 @@ void Map::destroyLoot(Loot * l) {
 }
 
 void Map::takeLoot(Character * c) {
+  std::list<Loot *> to_delete = std::list<Loot *>();
   for(Loot * l : loots) {
-    if(l->x == c->getX() && l->y == c->getY()) {
-      loots.remove(l);
+    if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
       for(auto i : l->items) {
         c->addItem(i);
       }
@@ -151,10 +166,13 @@ void Map::takeLoot(Character * c) {
       for(auto a : l->ammunition) {
         c->addAmmunition(a);
       }
-      delete l;
-      l = nullptr;
+      to_delete.push_back(l);
     }
   }
+  for(Loot * l : to_delete) {
+    destroyLoot(l);
+  }
+  to_delete.clear();
 }
 
 void Map::move(Character *c, int orientation, Adventure * adventure) {
@@ -246,8 +264,6 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
     c->setOrientation(orientation);
   }
 }
-
-#include <iostream>
 
 bool Map::actProjectile(Projectile * p, Adventure * adventure) {
   for(int i = 0; i < p->getSpeed(); i++) {

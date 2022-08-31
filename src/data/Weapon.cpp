@@ -130,7 +130,7 @@ Weapon * Weapon::from_string(std::string to_read) {
     damages[i] = String::extract_int(ss);
   }
   delete ss;
-  return new Weapon(
+  Weapon * result = new Weapon(
     name,
     melee,
     range,
@@ -143,4 +143,6 @@ Weapon * Weapon::from_string(std::string to_read) {
     *effects,
     damages
   );
+  delete effects;
+  return result;
 }

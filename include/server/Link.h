@@ -1,5 +1,5 @@
-#ifndef _LINK_H_
-#define _LINK_H_
+#ifndef _LINK_SERVER_H_
+#define _LINK_SERVER_H_
 
 #include "Values.h"
 
@@ -25,4 +25,4 @@ class Link {
     bool lastStateSend;
 };
 
-#endif // _LINK_H_
+#endif // _LINK_SERVER_H_

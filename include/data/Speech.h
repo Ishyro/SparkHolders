@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "utils/String.h"
+
 #include "Values.h"
 
 class Speech {
@@ -17,6 +19,8 @@ class Speech {
       name(name),
       content(content)
     {}
+    std::string to_string();
+    static Speech * from_string(std::string to_read);
     bool operator == (const Speech& s) const { return name == s.name; }
     bool operator != (const Speech& s) const { return !operator==(s); }
 };

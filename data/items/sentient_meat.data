@@ -1,0 +1,7 @@
+name = TXT_SENTIENT_MEAT
+equipable = false
+consumable = true
+type = UNEQUIPABLE
+weight = 0.5
+gold_value = 10
+effects = TXT_SATIETY_10%

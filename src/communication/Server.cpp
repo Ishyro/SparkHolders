@@ -28,15 +28,18 @@ namespace Server {
     switch(type) {
       case MOVE: {
         int orientation = String::extract_int(ss);
+        delete ss;
         return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case REST:
+        delete ss;
         return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case SHOOT: {
         int orientation = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
+        delete ss;
         return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case FORCE_STRIKE: {
@@ -44,24 +47,29 @@ namespace Server {
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
+        delete ss;
         return new Action(FORCE_STRIKE, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case RELOAD: {
         std::string object = String::extract(ss);
+        delete ss;
         return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case SWAP_GEAR: {
         std::string object = String::extract(ss);
+        delete ss;
         return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case CHANGE_MAP: {
         MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
+        delete ss;
         if(link != nullptr) {
           return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "", 1, 1, 1);
         }
         return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case GRAB:
+        delete ss;
         return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case USE_SKILL: {
         std::string object = String::extract(ss);
@@ -73,14 +81,20 @@ namespace Server {
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
+        delete ss;
         return new Action(USE_SKILL, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
       }
       case USE_ITEM: {
         std::string object = String::extract(ss);
+        delete ss;
         return new Action(USE_ITEM, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case ECONOMICS:
+        delete ss;
+        return nullptr;
+        break;
       default:
+        delete ss;
         return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
@@ -181,6 +195,7 @@ namespace Server {
       }
     }
     Character * player = adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
+    player->setNeedToSend(true);
     try {
       s.write(player->full_to_string(adventure));
     } catch (const CloseException &e) {
@@ -192,7 +207,17 @@ namespace Server {
 
   void sendMap(Socket s, Map * map, Character * player, Adventure * adventure) {
     try {
-      s.write(map->to_string(player, adventure));
+      if(player->needToSend()) {
+        player->setNeedToSend(false);
+        std::stringstream * ss = new std::stringstream();
+        *ss << std::to_string(player->id);
+        String::insert(ss, player->full_to_string(adventure));
+        String::insert(ss, map->to_string(player, adventure));
+        s.write(ss->str());
+        delete ss;
+      } else {
+        s.write(map->to_string(player, adventure));
+      }
     } catch (const CloseException &e) {
       throw e;
     }

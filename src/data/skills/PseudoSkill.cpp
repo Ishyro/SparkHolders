@@ -208,5 +208,6 @@ PseudoSkill * PseudoSkill::from_string(std::string to_read) {
       ;
   }
   delete ss;
+  delete effects;
   return result;
 }

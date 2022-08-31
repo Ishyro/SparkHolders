@@ -56,5 +56,8 @@ Way * Way::from_string(std::string to_read) {
   }
   delete ss_skills;
   delete ss;
-  return new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
+  Way * result = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
+  delete effects;
+  delete skills;
+  return result;
 }

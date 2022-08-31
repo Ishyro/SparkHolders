@@ -315,6 +315,8 @@ namespace FileOpener {
     Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, weapon);
     Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
     database->addAttributes(attributes);
+    delete effects;
+    delete skills;
   }
 
   void CharacterOpener(std::string fileName, Database * database) {
@@ -327,11 +329,17 @@ namespace FileOpener {
     if(values.at("death_speech") != "none") {
       death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
     }
-    std::list<const Speech *> talking_speechs = std::list<const Speech *>();
+    std::list<Speech *> talking_speechs = std::list<Speech *>();
     std::istringstream is_2(values.at("talking_speechs"));
     std::string talking_speech;
     while(getline(is_2, talking_speech, '%') && talking_speech != "") {
-      talking_speechs.push_back(database->getSpeech(talking_speech));
+      talking_speechs.push_back((Speech *) database->getSpeech(talking_speech));
+    }
+    std::list<Item *> * loots = new std::list<Item *>();
+    std::istringstream is_loot(values.at("loot"));
+    std::string loot;
+    while(getline(is_loot, loot, '%')) {
+      loots->push_back((Item *) database->getItem(loot));
     }
     int type = database->getTargetFromMacro(values.at("type"));
     long gold = stol(values.at("gold"));
@@ -381,8 +389,9 @@ namespace FileOpener {
     while(getline(is_7, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speechs, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speechs, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
     database->addCharacter(character);
+    delete loots;
     delete items;
     delete weapons;
     delete ammunition;
@@ -683,8 +692,8 @@ namespace FileOpener {
     }
     Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
     database->addWay(way);
-    //delete effects;
-    //delete skills;
+    delete effects;
+    delete skills;
   }
 
   void WeaponOpener(std::string fileName, Database * database) {

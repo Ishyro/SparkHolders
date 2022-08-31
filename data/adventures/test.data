@@ -34,6 +34,7 @@ data/items/leather_cuirass.data
 data/items/leather_gauntlets.data
 data/items/leather_helmet.data
 data/items/lamb.data
+data/items/sentient_meat.data
 # pseudoskills without summoning or projectile
 data/pseudoskills/blink.data
 data/pseudoskills/eat_grass.data
