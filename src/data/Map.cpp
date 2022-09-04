@@ -96,7 +96,12 @@ void Map::addLoot(Loot * l) { loots.push_back(l); }
 void Map::removeCharacter(Character * c) { characters.remove(c); }
 void Map::killCharacter(Character * killer, Character * victim) {
   characters.remove(victim);
-  SpeechManager::add(victim->death_speech);
+  for(Character * character : characters) {
+    if(character->player_character) {
+      SpeechManager::add(victim->getDeathSpeech());
+      break;
+    }
+  }
   Loot * loot = new Loot();
   loot->weapons = std::list<Weapon *>();
   loot->items = std::list<Item *>();
@@ -362,6 +367,12 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
   }
   String::insert(ss, ss_loots->str());
   delete ss_loots;
+  std::stringstream * ss_speeches = new std::stringstream();
+  for(Speech * speech : SpeechManager::get()) {
+    String::insert(ss_speeches, speech->to_string());
+  }
+  String::insert(ss, ss_speeches->str());
+  delete ss_speeches;
   std::string result = ss->str();
   delete ss;
   return result;
@@ -412,6 +423,11 @@ MapDisplay * Map::from_string(std::string to_read) {
     display->loots.push_back(loot);
   }
   delete ss_loots;
+  std::stringstream * ss_speeches = new std::stringstream(String::extract(ss));
+  while(ss_speeches->rdbuf()->in_avail() != 0) {
+    display->speeches.push_back(Speech::from_string(String::extract(ss_speeches)));
+  }
+  delete ss_speeches;
   delete ss;
   return display;
 }

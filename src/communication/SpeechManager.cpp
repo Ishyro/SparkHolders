@@ -1,16 +1,15 @@
 #include "communication/SpeechManager.h"
 
-std::list<const Speech *> buffer;
-std::mutex mtx;
+std::list<Speech *> buffer;
 
-void SpeechManager::add(const Speech * speech) {
-  std::lock_guard<std::mutex> lck (mtx);
+void SpeechManager::add(Speech * speech) {
   buffer.push_back(speech);
 }
 
-const Speech * SpeechManager::get() {
-  std::lock_guard<std::mutex> lck (mtx);
-  const Speech * speech = buffer.front();
-  buffer.pop_front();
-  return speech;
+std::list<Speech *> SpeechManager::get() {
+  return buffer;
+}
+
+void SpeechManager::clear() {
+  buffer.clear();
 }

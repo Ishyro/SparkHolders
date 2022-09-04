@@ -102,6 +102,10 @@ void Action::execute(Adventure * adventure) {
     case USE_ITEM:
       user->useItem(object);
       break;
+    case TALKING:
+      if(object != "") {
+        ((Character *) target)->setTalkingSpeech(object, adventure->getDatabase());
+      }
     case ECONOMICS:
       break;
     default: ;

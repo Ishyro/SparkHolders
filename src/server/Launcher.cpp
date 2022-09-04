@@ -16,6 +16,7 @@
 #include "communication/Socket.h"
 #include "communication/ServerSocket.h"
 #include "communication/Server.h"
+#include "communication/SpeechManager.h"
 
 #include "server/Launcher.h"
 #include "server/Link.h"
@@ -106,6 +107,7 @@ int main(int argc, char ** argv) {
     for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }
+    SpeechManager::clear();
     std::list<Action *> actionsPlayers = std::list<Action *>();
     std::list<Action *> actions = adventure->getNPCsActions();
     actions.sort();

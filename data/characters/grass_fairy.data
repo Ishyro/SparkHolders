@@ -1,7 +1,7 @@
 name = TXT_GRASS_FAIRY
 player_character = false
 death_speech = none
-talking_speechs =
+talking_speech = none
 loot =
 type = NATURE
 gold = 0

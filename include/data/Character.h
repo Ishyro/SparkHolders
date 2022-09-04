@@ -35,6 +35,7 @@ typedef struct CharacterDisplay {
   int armor;
   int xp;
   int level;
+  Speech * talking_speech;
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   int damages[DAMAGE_TYPE_NUMBER];
   int teamRelation;
@@ -45,8 +46,6 @@ class Character {
     const long id = ++character::id_cpt;
     const std::string name;
     const bool player_character;
-    const Speech * death_speech;
-    const std::list<Speech *> talking_speechs;
     const int type;
     const std::string attributes;
     const bool need_to_eat;
@@ -56,8 +55,8 @@ class Character {
     Character(
       std::string name,
       bool player_character,
-      const Speech * death_speech,
-      const std::list<Speech *> talking_speechs,
+      Speech * death_speech,
+      Speech * talking_speech,
       std::list<Item *> loot,
       int type,
       long gold,
@@ -73,7 +72,7 @@ class Character {
       name(name),
       player_character(player_character),
       death_speech(death_speech),
-      talking_speechs(talking_speechs),
+      talking_speech(talking_speech),
       loot(loot),
       type(type),
       gold(gold),
@@ -107,7 +106,7 @@ class Character {
       name(name),
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
-      talking_speechs(from_database->talking_speechs),
+      talking_speech(from_database->talking_speech),
       loot(std::list<Item *>()),
       type(from_database->type),
       gold(from_database->gold),
@@ -157,8 +156,8 @@ class Character {
     Character(
       std::string name,
       bool player_character,
-      const Speech * death_speech,
-      const std::list<Speech *> talking_speechs,
+      Speech * death_speech,
+      Speech * talking_speech,
       std::list<Item *> loot,
       int type,
       int x,
@@ -189,7 +188,7 @@ class Character {
       name(name),
       player_character(player_character),
       death_speech(death_speech),
-      talking_speechs(talking_speechs),
+      talking_speech(talking_speech),
       loot(loot),
       type(type),
       x(x),
@@ -253,6 +252,8 @@ class Character {
 
     AI * getAI();
     std::string getTeam();
+    Speech * getDeathSpeech();
+    Speech * getTalkingSpeech();
 
     Gear * getGear();
     std::list<Item *> getItems();
@@ -300,6 +301,8 @@ class Character {
 
     void setAI(AI * ai);
     void setTeam(std::string team);
+    void setDeathSpeech(std::string option, Database * database);
+    void setTalkingSpeech(std::string option, Database * database);
 
     void equip(Item * to_equip);
     void equip(Weapon * to_equip);
@@ -374,6 +377,8 @@ class Character {
 
     AI * ai;
     std::string team;
+    Speech * death_speech;
+    Speech * talking_speech;
 
     Gear * gear;
     std::list<Item *> items;

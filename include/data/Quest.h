@@ -9,9 +9,9 @@ typedef struct Step {
   const Character * target;
   const Item * goal_item;
   const Weapon * goal_weapon;
-  const int disover_map_id;
-  const Speech * todo;
-  const Speech * when_done;
+  const int discover_map_id;
+  Speech * todo;
+  Speech * when_done;
 } Step;
 
 namespace quest {

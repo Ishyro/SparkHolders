@@ -142,6 +142,8 @@ void Character::setNeedToSend(bool need_to_send) { this->need_to_send = need_to_
 
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
+Speech * Character::getDeathSpeech() { return death_speech; }
+Speech * Character::getTalkingSpeech() { return talking_speech; }
 
 int Character::getCurrentMapId() { return current_map_id; }
 
@@ -387,6 +389,8 @@ void Character::gainLevel() {
 
 void Character::setAI(AI * ai) { this->ai = ai; }
 void Character::setTeam(std::string team) { this->team = team; }
+void Character::setDeathSpeech(std::string option, Database * database) { death_speech = death_speech->getNext(option, database); }
+void Character::setTalkingSpeech(std::string option, Database * database) { talking_speech = talking_speech->getNext(option, database); }
 
 void Character::equip(Item * to_equip) {
   if(player_character) {
@@ -881,6 +885,11 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, getArmor());
   String::insert_int(ss, xp);
   String::insert_int(ss, level);
+  if(talking_speech != nullptr) {
+    String::insert(ss, ((Speech *) talking_speech)->to_string());
+  } else {
+    String::insert(ss, "none");
+  }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, getDamageReductionFromType(i));
   }
@@ -915,6 +924,11 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->armor = String::extract_int(ss);
   display->xp = String::extract_int(ss);
   display->level = String::extract_int(ss);
+  std::string talking_speech_str = String::extract(ss);
+  Speech * talking_speech = nullptr;
+  if(talking_speech_str != "none") {
+    talking_speech = Speech::from_string(talking_speech_str);
+  }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damage_reductions[i] = String::extract_float(ss);
   }
@@ -934,12 +948,11 @@ std::string Character::full_to_string(Adventure * adventure) {
   } else {
     String::insert(ss, "none");
   }
-  std::stringstream * ss_talking_speechs = new std::stringstream();
-  for(Speech * talking_speech : talking_speechs) {
-    String::insert(ss_talking_speechs, talking_speech->to_string());
+  if(talking_speech != nullptr) {
+    String::insert(ss, ((Speech *) talking_speech)->to_string());
+  } else {
+    String::insert(ss, "none");
   }
-  String::insert(ss, ss_talking_speechs->str());
-  delete ss_talking_speechs;
   std::stringstream * ss_loot = new std::stringstream();
   for(Item * item : loot) {
     String::insert(ss_loot, item->to_string());
@@ -1016,12 +1029,11 @@ Character * Character::full_from_string(std::string to_read) {
   if(death_speech_str != "none") {
     death_speech = Speech::from_string(death_speech_str);
   }
-  std::stringstream * ss_talking_speechs = new std::stringstream(String::extract(ss));
-  std::list<Speech *> * talking_speechs = new std::list<Speech *>();
-  while(ss_talking_speechs->rdbuf()->in_avail() != 0) {
-    talking_speechs->push_back(Speech::from_string(String::extract(ss_talking_speechs)));
+  std::string talking_speech_str = String::extract(ss);
+  Speech * talking_speech = nullptr;
+  if(talking_speech_str != "none") {
+    talking_speech = Speech::from_string(talking_speech_str);
   }
-  delete ss_talking_speechs;
   std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
   std::list<Item *> * loot = new std::list<Item *>();
   while(ss_loot->rdbuf()->in_avail() != 0) {
@@ -1088,7 +1100,7 @@ Character * Character::full_from_string(std::string to_read) {
     name,
     player_character,
     death_speech,
-    *talking_speechs,
+    talking_speech,
     *loot,
     type,
     x,
@@ -1116,7 +1128,6 @@ Character * Character::full_from_string(std::string to_read) {
     profession,
     *titles
   );
-  delete talking_speechs;
   delete loot;
   delete items;
   delete weapons;

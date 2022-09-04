@@ -8,8 +8,9 @@
 
 class SpeechManager {
   public:
-    static void add(const Speech * speech);
-    static const Speech * get();
+    static void add(Speech * speech);
+    static std::list<Speech *> get();
+    static void clear();
 };
 
 #endif // _SPEECH_MANAGER_H_

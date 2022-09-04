@@ -214,10 +214,11 @@ class SpeechManager;
 
 // speech_type
 
-#define TEXT 1
-#define SPEECH 2
-#define WARNING 3
-#define ERROR 4
+#define MSG_TEXT 1
+#define MSG_VOCAL 2
+#define MSG_LOG 3
+#define MSG_WARNING 4
+#define MSG_ERROR 5
 
 // action_type
 
@@ -231,7 +232,8 @@ class SpeechManager;
 #define GRAB 8
 #define USE_SKILL 9
 #define USE_ITEM 10
-#define ECONOMICS 11
+#define TALKING 11
+#define ECONOMICS 12
 
 // teams relations
 

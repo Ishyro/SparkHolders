@@ -329,11 +329,9 @@ namespace FileOpener {
     if(values.at("death_speech") != "none") {
       death_speech = (Speech *) database->getSpeech(values.at("death_speech"));
     }
-    std::list<Speech *> talking_speechs = std::list<Speech *>();
-    std::istringstream is_2(values.at("talking_speechs"));
-    std::string talking_speech;
-    while(getline(is_2, talking_speech, '%') && talking_speech != "") {
-      talking_speechs.push_back((Speech *) database->getSpeech(talking_speech));
+    Speech * talking_speech = nullptr;
+    if(values.at("talking_speech") != "none") {
+      talking_speech = (Speech *) database->getSpeech(values.at("talking_speech"));
     }
     std::list<Item *> * loots = new std::list<Item *>();
     std::istringstream is_loot(values.at("loot"));
@@ -389,7 +387,7 @@ namespace FileOpener {
     while(getline(is_7, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speechs, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
     database->addCharacter(character);
     delete loots;
     delete items;
@@ -653,9 +651,24 @@ namespace FileOpener {
   void SpeechOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::string content = values.at("content");
-    Speech * speech = new Speech(name, content);
+    int type = database->getTargetFromMacro(values.at("type"));
+    std::istringstream is_empty(values.at("empty"));
+    bool empty;
+    is_empty >> std::boolalpha >> empty;
+    std::istringstream is_constant(values.at("constant"));
+    bool constant;
+    is_constant >> std::boolalpha >> constant;
+    std::map<const std::string, const std::string> * options = new std::map<const std::string, const std::string>();
+    std::istringstream is_options(values.at("options"));
+    std::string option;
+    while(getline(is_options, option, '%')) {
+      std::string pair1 = option.substr(0, option.find('|'));
+      std::string pair2 = option.substr(option.find('|') + 1, option.length());
+      options->insert(std::make_pair(pair1, pair2));
+    }
+    Speech * speech = new Speech(name, type, empty, constant, *options);
     database->addSpeech(speech);
+    delete options;
   }
 
   void TileOpener(std::string fileName, Database * database) {

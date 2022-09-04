@@ -1,2 +1,5 @@
 name = TXT_BEH
-content = BEEEEEEH!!!
+type = MSG_VOCAL
+empty = false
+constant = true
+options =

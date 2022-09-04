@@ -33,6 +33,7 @@ typedef struct MapDisplay {
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
   std::vector<std::vector<Tile *>> tiles;
+  std::list<Speech *> speeches;
 } MapDisplay;
 
 namespace map {

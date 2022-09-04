@@ -89,6 +89,11 @@ namespace Server {
         delete ss;
         return new Action(USE_ITEM, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
+      case TALKING: {
+        std::string object = String::extract(ss);
+        const Character * target = adventure->getCharacter(String::extract_int(ss));
+        return new Action(TALKING, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+      }
       case ECONOMICS:
         delete ss;
         return nullptr;

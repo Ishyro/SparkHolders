@@ -206,10 +206,11 @@ Database::Database() {
 
   // speech_type
 
-  macros.insert(std::make_pair("TEXT", TEXT));
-  macros.insert(std::make_pair("SPEECH", SPEECH));
-  macros.insert(std::make_pair("WARNING", WARNING));
-  macros.insert(std::make_pair("ERROR", ERROR));
+  macros.insert(std::make_pair("MSG_TEXT", MSG_TEXT));
+  macros.insert(std::make_pair("MSG_VOCAL", MSG_VOCAL));
+  macros.insert(std::make_pair("MSG_LOG", MSG_LOG));
+  macros.insert(std::make_pair("MSG_WARNING", MSG_WARNING));
+  macros.insert(std::make_pair("MSG_ERROR", MSG_ERROR));
 
   // teams relations
 
