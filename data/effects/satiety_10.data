@@ -1,4 +1,6 @@
 name = TXT_SATIETY_10
+level = 0
+attributes =
 type = SATIETY
 duration_type = INSTANT
 duration = 0

@@ -1,5 +1,6 @@
 name = TXT_BLINK
-level = 3
+level = 2
+attributes =
 target_type = TILE
 overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE

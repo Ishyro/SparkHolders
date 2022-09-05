@@ -135,7 +135,14 @@ namespace Client {
       case USE_ITEM:
         String::insert(ss, object);
         break;
+      case TALKING:
+        String::insert(ss, object);
+        String::insert_int(ss, target_id);
+        break;
       case ECONOMICS:
+        String::insert(ss, object);
+        String::insert_int(ss, orientation);
+        String::insert_int(ss, target_id);
         break;
       default:
         ;

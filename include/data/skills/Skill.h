@@ -13,6 +13,7 @@ class Skill {
   public:
     const std::string name;
     const int level;
+    const std::string attributes;
     const int target_type;
     const int overcharge_power_type;
     const int overcharge_duration_type;
@@ -23,6 +24,7 @@ class Skill {
     Skill(
       std::string name,
       int level,
+      std::string attributes,
       int target_type,
       int overcharge_power_type,
       int overcharge_duration_type,
@@ -33,6 +35,7 @@ class Skill {
     ):
       name(name),
       level(level),
+      attributes(attributes),
       target_type(target_type),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),

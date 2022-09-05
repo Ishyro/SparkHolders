@@ -925,7 +925,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case SKILL:
       for(Skill * skill : sellable_skills) {
-        if(skill->name == object_name) {
+        if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes == skill->attributes)) {
           price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             buyer->addSkill(skill);
@@ -937,8 +937,8 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case EFFECT:
       for(Effect * effect : sellable_effects) {
-        if(effect->name == object_name) {
-          price = (int) std::ceil((float) 1000.F * price_modifier);
+        if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->attributes == effect->attributes)) {
+          price = (int) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             effect->activate(buyer);
             buyer->loseGold(price);

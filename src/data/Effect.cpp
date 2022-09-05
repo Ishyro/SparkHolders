@@ -106,6 +106,8 @@ float Effect::getDamageReductionFromType(int damage_type) { return damage_reduct
 std::string Effect::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_int(ss, level);
+  String::insert(ss, attributes);
   String::insert_int(ss, type);
   String::insert_int(ss, duration_type);
   String::insert_int(ss, power);
@@ -125,6 +127,8 @@ std::string Effect::to_string() {
 Effect * Effect::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  int level = String::extract_int(ss);
+  std::string attributes = String::extract(ss);
   int type = String::extract_int(ss);
   int duration_type = String::extract_int(ss);
   int power = String::extract_int(ss);
@@ -139,5 +143,5 @@ Effect * Effect::from_string(std::string to_read) {
     damage_reductions[i] = String::extract_float(ss);
   }
   delete ss;
-  return new Effect(name, type, duration_type, power, duration, tick_left, damages, damage_reductions);
+  return new Effect(name, level, attributes, type, duration_type, power, duration, tick_left, damages, damage_reductions);
  }

@@ -1,5 +1,6 @@
 name = TXT_TOUCH_SOME_SOIL
 level = 0
+attributes =
 target_type = TILE
 overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE

@@ -17,12 +17,16 @@ class Effect {
   public:
     const long id = ++effect::id_cpt;
     const std::string name;
+    const int level;
+    const std::string attributes;
     const int type;
     const int duration_type;
     const int power;
     const int duration;
     Effect(
       std::string name,
+      int level,
+      std::string attributes,
       int type,
       int duration_type,
       int power,
@@ -31,6 +35,8 @@ class Effect {
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      level(level),
+      attributes(attributes),
       type(type),
       duration_type(duration_type),
       power(power),
@@ -44,6 +50,8 @@ class Effect {
     }
     Effect(
       std::string name,
+      int level,
+      std::string attributes,
       int type,
       int duration_type,
       int power,
@@ -53,13 +61,14 @@ class Effect {
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      level(level),
+      attributes(attributes),
       type(type),
       duration_type(duration_type),
       power(power),
       duration(duration),
       tick_left(tick_left)
     {
-      tick_left=duration;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->damage_reductions[i] = damage_reductions[i];
@@ -71,11 +80,14 @@ class Effect {
       int overcharge_duration
     ):
       name(base->name),
+      level(base->level),
+      attributes(base->attributes),
       type(base->type),
       duration_type(base->duration_type),
       power(base->power * overcharge_power),
       duration(base->duration * overcharge_duration)
     {
+      tick_left=duration;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge_power;
         this->damage_reductions[i] = damage_reductions[i] * overcharge_power;

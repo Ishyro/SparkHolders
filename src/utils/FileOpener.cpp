@@ -440,6 +440,8 @@ namespace FileOpener {
   void EffectOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
+    int level = stoi(values.at("level"));
+    std::string attributes = values.at("attributes");
     int type = database->getTargetFromMacro(values.at("type"));
     int duration_type = database->getTargetFromMacro(values.at("duration_type"));
     int duration = 0;
@@ -473,7 +475,7 @@ namespace FileOpener {
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
-    Effect * effect = new Effect(name, type, duration_type, power, duration, damages, damage_reductions);
+    Effect * effect = new Effect(name, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
     database->addEffect(effect);
   }
 
@@ -596,6 +598,7 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int level = stoi(values.at("level"));
+    std::string attributes = values.at("attributes");
     int target_type = database->getTargetFromMacro(values.at("target_type"));
     int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
@@ -608,7 +611,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
     database->addSkill(skill);
     delete skills;
   }
