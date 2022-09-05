@@ -1,4 +1,5 @@
 name = TXT_FIREBALL
+level = 3
 target_type = TARGET
 overcharge_power_type = LINEAR
 overcharge_duration_type = LINEAR

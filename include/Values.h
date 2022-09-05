@@ -220,6 +220,14 @@ class SpeechManager;
 #define MSG_WARNING 4
 #define MSG_ERROR 5
 
+// object_type
+
+#define ITEM 1
+#define WEAPON 2
+#define AMMUNITION 3
+#define SKILL 4
+#define EFFECT 5
+
 // action_type
 
 #define MOVE 1

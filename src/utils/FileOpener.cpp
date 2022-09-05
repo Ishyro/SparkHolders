@@ -350,22 +350,25 @@ namespace FileOpener {
     std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
     bool need_to_sleep;
     is_need_to_sleep >> std::boolalpha >> need_to_sleep;
+    std::istringstream is_merchant(values.at("merchant"));
+    bool merchant;
+    is_merchant >> std::boolalpha >> merchant;
     std::list<Item *> * items = new std::list<Item *>();
-    std::istringstream is_3(values.at("items"));
+    std::istringstream is_items(values.at("items"));
     std::string item;
-    while(getline(is_3, item, '%')) {
+    while(getline(is_items, item, '%')) {
       items->push_back((Item *) database->getItem(item));
     }
     std::list<Weapon *> * weapons = new std::list<Weapon *>();
-    std::istringstream is_4(values.at("weapons"));
+    std::istringstream is_weapons(values.at("weapons"));
     std::string weapon;
-    while(getline(is_4, weapon, '%')) {
+    while(getline(is_weapons, weapon, '%')) {
       weapons->push_back((Weapon *) database->getWeapon(weapon));
     }
     std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-    std::istringstream is_5(values.at("ammunition"));
+    std::istringstream is_ammunition(values.at("ammunition"));
     std::string ammo;
-    while(getline(is_5, ammo, '%')) {
+    while(getline(is_ammunition, ammo, '%')) {
       std::string ammo_name = ammo.substr(0, ammo.find('|'));
       const Ammunition * base_ammo = database->getAmmunition(ammo_name);
       Ammunition * new_ammo = new Ammunition();
@@ -376,18 +379,50 @@ namespace FileOpener {
       ammunition->push_back(new_ammo);
     }
     std::list<Effect *> * effects = new std::list<Effect *>();
-    std::istringstream is_6(values.at("effects"));
+    std::istringstream is_effects(values.at("effects"));
     std::string effect;
-    while(getline(is_6, effect, '%')) {
+    while(getline(is_effects, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
     std::list<Skill *> * skills = new std::list<Skill *>();
-    std::istringstream is_7(values.at("skills"));
+    std::istringstream is_skills(values.at("skills"));
     std::string skill;
-    while(getline(is_7, skill, '%')) {
+    while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, *items, *weapons, *ammunition, *effects, *skills);
+    std::list<Item *> * sellable_items = new std::list<Item *>();
+    std::istringstream is_sellable_items(values.at("sellable_items"));
+    while(getline(is_sellable_items, item, '%')) {
+      sellable_items->push_back((Item *) database->getItem(item));
+    }
+    std::list<Weapon *> * sellable_weapons = new std::list<Weapon *>();
+    std::istringstream is_sellable_weapons(values.at("sellable_weapons"));
+    while(getline(is_sellable_weapons, weapon, '%')) {
+      sellable_weapons->push_back((Weapon *) database->getWeapon(weapon));
+    }
+    std::list<Ammunition *> * sellable_ammunition = new std::list<Ammunition *>();
+    std::istringstream is_sellable_ammunition(values.at("sellable_ammunition"));
+    while(getline(is_sellable_ammunition, ammo, '%')) {
+      std::string ammo_name = ammo.substr(0, ammo.find('|'));
+      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
+      Ammunition * new_ammo = new Ammunition();
+      new_ammo->projectile = base_ammo->projectile;
+      new_ammo->gold_value = base_ammo->gold_value;
+      new_ammo->ammo_type = base_ammo->ammo_type;
+      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
+      sellable_ammunition->push_back(new_ammo);
+    }
+    std::list<Effect *> * sellable_effects = new std::list<Effect *>();
+    std::istringstream is_sellable_effects(values.at("sellable_effects"));
+    while(getline(is_sellable_effects, effect, '%')) {
+      sellable_effects->push_back((Effect *) database->getEffect(effect));
+    }
+    std::list<Skill *> * sellable_skills = new std::list<Skill *>();
+    std::istringstream is_sellable_skills(values.at("sellable_skills"));
+    while(getline(is_sellable_skills, skill, '%')) {
+      sellable_skills->push_back((Skill *) database->getSkill(skill));
+    }
+    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, merchant, *items, *weapons, *ammunition, *effects, *skills, *sellable_items, *sellable_weapons, *sellable_ammunition, *sellable_effects, *sellable_skills);
     database->addCharacter(character);
     delete loots;
     delete items;
@@ -395,6 +430,11 @@ namespace FileOpener {
     delete ammunition;
     delete effects;
     delete skills;
+    delete sellable_items;
+    delete sellable_weapons;
+    delete sellable_ammunition;
+    delete sellable_effects;
+    delete sellable_skills;
   }
 
   void EffectOpener(std::string fileName, Database * database) {
@@ -555,6 +595,7 @@ namespace FileOpener {
   void SkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
+    int level = stoi(values.at("level"));
     int target_type = database->getTargetFromMacro(values.at("target_type"));
     int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
@@ -567,7 +608,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
+    Skill * skill = new Skill(name, level, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
     database->addSkill(skill);
     delete skills;
   }

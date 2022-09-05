@@ -12,6 +12,7 @@
 class Skill {
   public:
     const std::string name;
+    const int level;
     const int target_type;
     const int overcharge_power_type;
     const int overcharge_duration_type;
@@ -21,6 +22,7 @@ class Skill {
     const std::list<PseudoSkill *> skills;
     Skill(
       std::string name,
+      int level,
       int target_type,
       int overcharge_power_type,
       int overcharge_duration_type,
@@ -30,6 +32,7 @@ class Skill {
       std::list<PseudoSkill *> skills
     ):
       name(name),
+      level(level),
       target_type(target_type),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),

@@ -39,6 +39,11 @@ typedef struct CharacterDisplay {
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   int damages[DAMAGE_TYPE_NUMBER];
   int teamRelation;
+  std::list<Item *> sellable_items;
+  std::list<Weapon *> sellable_weapons;
+  std::list<Ammunition *> sellable_ammunition;
+  std::list<Effect *> sellable_effects;
+  std::list<Skill *> sellable_skills;
 } CharacterDisplay;
 
 class Character {
@@ -63,11 +68,17 @@ class Character {
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      bool merchant,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
       std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
-      std::list<Skill *> skills
+      std::list<Skill *> skills,
+      std::list<Item *> sellable_items,
+      std::list<Weapon *> sellable_weapons,
+      std::list<Ammunition *> sellable_ammunition,
+      std::list<Effect *> sellable_effects,
+      std::list<Skill *> sellable_skills
     ):
       name(name),
       player_character(player_character),
@@ -79,11 +90,17 @@ class Character {
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      merchant(merchant),
       items(items),
       weapons(weapons),
       ammunition(ammunition),
       effects(effects),
-      skills(skills)
+      skills(skills),
+      sellable_items(sellable_items),
+      sellable_weapons(sellable_weapons),
+      sellable_ammunition(sellable_ammunition),
+      sellable_effects(sellable_effects),
+      sellable_skills(sellable_skills)
     {}
     Character(
       const Character * from_database,
@@ -119,6 +136,7 @@ class Character {
       need_to_eat(from_database->need_to_eat),
       can_eat_food(from_database->can_eat_food),
       need_to_sleep(from_database->need_to_sleep),
+      merchant(from_database->merchant),
       team(team),
       ai(ai),
       items(std::list<Item *>()),
@@ -126,6 +144,11 @@ class Character {
       ammunition(from_database->ammunition),
       effects(from_database->effects),
       skills(from_database->skills),
+      sellable_items(std::list<Item *>()),
+      sellable_weapons(std::list<Weapon *>()),
+      sellable_ammunition(from_database->sellable_ammunition),
+      sellable_effects(from_database->sellable_effects),
+      sellable_skills(from_database->sellable_skills),
       attributes(attributes->name),
       race(nullptr),
       origin(nullptr),
@@ -142,6 +165,12 @@ class Character {
       }
       for(Weapon * weapon : from_database->weapons) {
         weapons.push_back(new Weapon(weapon));
+      }
+      for(Item * item : from_database->sellable_items) {
+        sellable_items.push_back(new Item(item));
+      }
+      for(Weapon * weapon : from_database->sellable_weapons) {
+        sellable_weapons.push_back(new Weapon(weapon));
       }
       applyAttributes(attributes, true);
       setWay(race);
@@ -167,6 +196,7 @@ class Character {
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      bool merchant,
       long gold,
       long xp,
       int level,
@@ -177,6 +207,11 @@ class Character {
       std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      std::list<Item *> sellable_items,
+      std::list<Weapon *> sellable_weapons,
+      std::list<Ammunition *> sellable_ammunition,
+      std::list<Effect *> sellable_effects,
+      std::list<Skill *> sellable_skills,
       Attributes * attributes,
       Way * race,
       Way * origin,
@@ -198,6 +233,7 @@ class Character {
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      merchant(merchant),
       gold(gold),
       xp(xp),
       level(level),
@@ -209,6 +245,11 @@ class Character {
       ammunition(ammunition),
       effects(effects),
       skills(skills),
+      sellable_items(sellable_items),
+      sellable_weapons(sellable_weapons),
+      sellable_ammunition(sellable_ammunition),
+      sellable_effects(sellable_effects),
+      sellable_skills(sellable_skills),
       attributes(attributes->name),
       race(race),
       origin(origin),
@@ -264,6 +305,13 @@ class Character {
     std::list<Skill *> getSkills();
     std::list<Way *> getTitles();
 
+    std::list<Item *> getSellableItems();
+    std::list<Weapon *> getSellableWeapons();
+    std::list<Ammunition *> getSellableAmmunitions();
+    std::list<Effect *> getSellableEffects();
+    std::list<Skill *> getSellableSkills();
+    std::list<Way *> getSellableTitles();
+
     void setOrientation(int orientation);
     void move(int orientation);
     void move(int y, int x);
@@ -295,6 +343,7 @@ class Character {
     void applyEffects();
     void rest();
     void gainGold(long gold);
+    void loseGold(long gold);
     void payMana(int cost);
     void gainXP(long xp);
     void gainLevel();
@@ -343,6 +392,7 @@ class Character {
     void attack(Character * target);
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
+    void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
     std::string to_string(int offsetY, int offsetX);
     std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
@@ -387,6 +437,13 @@ class Character {
     std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
+
+    bool merchant;
+    std::list<Item *> sellable_items;
+    std::list<Weapon *> sellable_weapons;
+    std::list<Ammunition *> sellable_ammunition;
+    std::list<Effect *> sellable_effects;
+    std::list<Skill *> sellable_skills;
 
     Way * race;
     Way * origin;

@@ -45,6 +45,7 @@ namespace Settings {
   float getSatietyRecoveryRatio();
   int getStaminaOverextendRatio();
   int getSatietyOverextendRatio();
+  float getBuyingPriceModifier();
 };
 
 #endif // _SETTINGS_H_

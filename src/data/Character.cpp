@@ -13,6 +13,8 @@
 #include "data/Weapon.h"
 #include "data/World.h"
 
+#include "communication/SpeechManager.h"
+
 #include "data/Character.h"
 
 #include "utils/String.h"
@@ -154,6 +156,13 @@ std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
+
+std::list<Item *> Character::getSellableItems() { return sellable_items; }
+std::list<Weapon *> Character::getSellableWeapons() { return sellable_weapons; }
+std::list<Ammunition *> Character::getSellableAmmunitions() { return sellable_ammunition; }
+std::list<Effect *> Character::getSellableEffects() { return sellable_effects; }
+std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
+
 std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(int orientation) { this->orientation = orientation; }
@@ -369,6 +378,7 @@ void Character::rest() {
 }
 
 void Character::gainGold(long gold) { this->gold += gold; }
+void Character::loseGold(long gold) { this->gold = (long) std::max(0., (double) this->gold + gold); }
 void Character::payMana(int cost) {
   mana -= cost;
   currentSoulBurn += cost;
@@ -389,8 +399,16 @@ void Character::gainLevel() {
 
 void Character::setAI(AI * ai) { this->ai = ai; }
 void Character::setTeam(std::string team) { this->team = team; }
-void Character::setDeathSpeech(std::string option, Database * database) { death_speech = death_speech->getNext(option, database); }
-void Character::setTalkingSpeech(std::string option, Database * database) { talking_speech = talking_speech->getNext(option, database); }
+
+void Character::setDeathSpeech(std::string option, Database * database) {
+  death_speech = death_speech->getNext(option, database);
+  SpeechManager::add(death_speech);
+}
+
+void Character::setTalkingSpeech(std::string option, Database * database) {
+  talking_speech = talking_speech->getNext(option, database);
+  SpeechManager::add(talking_speech);
+}
 
 void Character::equip(Item * to_equip) {
   if(player_character) {
@@ -863,6 +881,77 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   }
 }
 
+void Character::trade(Character * buyer, int object_type, std::string object_name, float price_modifier) {
+  int price = 0;
+  switch (object_type) {
+    case ITEM:
+      for(Item * item : sellable_items) {
+        if(item->name == object_name) {
+          price = (int) std::ceil((float) item->gold_value * price_modifier);
+          if(buyer->getGold() >= price) {
+            buyer->addItem(item);
+            buyer->loseGold(price);
+            sellable_items.remove(item);
+            gainGold(price);
+          }
+        }
+      }
+      break;
+    case WEAPON:
+      for(Weapon * weapon : sellable_weapons) {
+        if(weapon->name == object_name) {
+          price = (int) std::ceil((float) weapon->gold_value * price_modifier);
+          if(buyer->getGold() >= price) {
+            buyer->addWeapon(weapon);
+            buyer->loseGold(price);
+            sellable_weapons.remove(weapon);
+            gainGold(price);
+          }
+        }
+      }
+      break;
+    case AMMUNITION:
+      for(Ammunition * ammo : sellable_ammunition) {
+        if(ammo->projectile->name == object_name) {
+          price = (int) std::ceil((float) ammo->gold_value * price_modifier);
+          if(buyer->getGold() >= price) {
+            buyer->addAmmunition(ammo);
+            buyer->loseGold(price);
+            sellable_ammunition.remove(ammo);
+            gainGold(price);
+          }
+        }
+      }
+      break;
+    case SKILL:
+      for(Skill * skill : sellable_skills) {
+        if(skill->name == object_name) {
+          price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
+          if(buyer->getGold() >= price) {
+            buyer->addSkill(skill);
+            buyer->loseGold(price);
+            gainGold(price);
+          }
+        }
+      }
+      break;
+    case EFFECT:
+      for(Effect * effect : sellable_effects) {
+        if(effect->name == object_name) {
+          price = (int) std::ceil((float) 1000.F * price_modifier);
+          if(buyer->getGold() >= price) {
+            effect->activate(buyer);
+            buyer->loseGold(price);
+            gainGold(price);
+          }
+        }
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 std::string Character::to_string(int offsetY, int offsetX) {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
@@ -896,6 +985,36 @@ std::string Character::to_string(int offsetY, int offsetX) {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, getDamageFromType(i));
   }
+  std::stringstream * ss_sellable_items = new std::stringstream();
+  for(Item * item : sellable_items) {
+    String::insert(ss_sellable_items, item->to_string());
+  }
+  String::insert(ss, ss_sellable_items->str());
+  delete ss_sellable_items;
+  std::stringstream * ss_sellable_weapons = new std::stringstream();
+  for(Weapon * weapon : sellable_weapons) {
+    String::insert(ss_sellable_weapons, weapon->to_string());
+  }
+  String::insert(ss, ss_sellable_weapons->str());
+  delete ss_sellable_weapons;
+  std::stringstream * ss_sellable_ammunition = new std::stringstream();
+  for(Ammunition * ammo : sellable_ammunition) {
+    String::insert(ss_sellable_ammunition, Projectile::ammo_to_string(ammo));
+  }
+  String::insert(ss, ss_sellable_ammunition->str());
+  delete ss_sellable_ammunition;
+  std::stringstream * ss_sellable_effects = new std::stringstream();
+  for(Effect * effect : sellable_effects) {
+    String::insert(ss_sellable_effects, effect->to_string());
+  }
+  String::insert(ss, ss_sellable_effects->str());
+  delete ss_sellable_effects;
+  std::stringstream * ss_sellable_skills = new std::stringstream();
+  for(Skill * skill : sellable_skills) {
+    String::insert(ss_sellable_skills, skill->to_string());
+  }
+  String::insert(ss, ss_sellable_skills->str());
+  delete ss_sellable_skills;
   std::string result = ss->str();
   delete ss;
   return result;
@@ -925,9 +1044,9 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->xp = String::extract_int(ss);
   display->level = String::extract_int(ss);
   std::string talking_speech_str = String::extract(ss);
-  Speech * talking_speech = nullptr;
+  display->talking_speech = nullptr;
   if(talking_speech_str != "none") {
-    talking_speech = Speech::from_string(talking_speech_str);
+    display->talking_speech = Speech::from_string(talking_speech_str);
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damage_reductions[i] = String::extract_float(ss);
@@ -935,6 +1054,31 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
   }
+  std::stringstream * ss_sellable_items = new std::stringstream(String::extract(ss));
+  while(ss_sellable_items->rdbuf()->in_avail() != 0) {
+    display->sellable_items.push_back(Item::from_string(String::extract(ss_sellable_items)));
+  }
+  delete ss_sellable_items;
+  std::stringstream * ss_sellable_weapons = new std::stringstream(String::extract(ss));
+  while(ss_sellable_weapons->rdbuf()->in_avail() != 0) {
+    display->sellable_weapons.push_back(Weapon::from_string(String::extract(ss_sellable_weapons)));
+  }
+  delete ss_sellable_weapons;
+  std::stringstream * ss_sellable_ammunition = new std::stringstream(String::extract(ss));
+  while(ss_sellable_ammunition->rdbuf()->in_avail() != 0) {
+    display->sellable_ammunition.push_back(Projectile::ammo_from_string(String::extract(ss_sellable_ammunition)));
+  }
+  delete ss_sellable_ammunition;
+  std::stringstream * ss_sellable_effects = new std::stringstream(String::extract(ss));
+  while(ss_sellable_effects->rdbuf()->in_avail() != 0) {
+    display->sellable_effects.push_back(Effect::from_string(String::extract(ss_sellable_effects)));
+  }
+  delete ss_sellable_effects;
+  std::stringstream * ss_sellable_skills = new std::stringstream(String::extract(ss));
+  while(ss_sellable_skills->rdbuf()->in_avail() != 0) {
+    display->sellable_skills.push_back(Skill::from_string(String::extract(ss_sellable_skills)));
+  }
+  delete ss_sellable_skills;
   delete ss;
   return display;
 }
@@ -967,6 +1111,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_bool(ss, need_to_eat);
   String::insert_bool(ss, can_eat_food);
   String::insert_bool(ss, need_to_sleep);
+  String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
   String::insert_int(ss, level);
@@ -1002,6 +1147,36 @@ std::string Character::full_to_string(Adventure * adventure) {
   }
   String::insert(ss, ss_skills->str());
   delete ss_skills;
+  std::stringstream * ss_sellable_items = new std::stringstream();
+  for(Item * item : sellable_items) {
+    String::insert(ss_sellable_items, item->to_string());
+  }
+  String::insert(ss, ss_sellable_items->str());
+  delete ss_sellable_items;
+  std::stringstream * ss_sellable_weapons = new std::stringstream();
+  for(Weapon * weapon : sellable_weapons) {
+    String::insert(ss_sellable_weapons, weapon->to_string());
+  }
+  String::insert(ss, ss_sellable_weapons->str());
+  delete ss_sellable_weapons;
+  std::stringstream * ss_sellable_ammunition = new std::stringstream();
+  for(Ammunition * ammo : sellable_ammunition) {
+    String::insert(ss_sellable_ammunition, Projectile::ammo_to_string(ammo));
+  }
+  String::insert(ss, ss_sellable_ammunition->str());
+  delete ss_sellable_ammunition;
+  std::stringstream * ss_sellable_effects = new std::stringstream();
+  for(Effect * effect : sellable_effects) {
+    String::insert(ss_sellable_effects, effect->to_string());
+  }
+  String::insert(ss, ss_sellable_effects->str());
+  delete ss_sellable_effects;
+  std::stringstream * ss_sellable_skills = new std::stringstream();
+  for(Skill * skill : sellable_skills) {
+    String::insert(ss_sellable_skills, skill->to_string());
+  }
+  String::insert(ss, ss_sellable_skills->str());
+  delete ss_sellable_skills;
 
   String::insert(ss, ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string());
   String::insert(ss, race->to_string());
@@ -1048,6 +1223,7 @@ Character * Character::full_from_string(std::string to_read) {
   bool need_to_eat = String::extract_bool(ss);
   bool can_eat_food = String::extract_bool(ss);
   bool need_to_sleep = String::extract_bool(ss);
+  bool merchant = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);
   int level = String::extract_int(ss);
@@ -1083,6 +1259,36 @@ Character * Character::full_from_string(std::string to_read) {
     skills->push_back(Skill::from_string(String::extract(ss_skills)));
   }
   delete ss_skills;
+  std::stringstream * ss_sellable_items = new std::stringstream(String::extract(ss));
+  std::list<Item *> * sellable_items = new std::list<Item *>();
+  while(ss_sellable_items->rdbuf()->in_avail() != 0) {
+    sellable_items->push_back(Item::from_string(String::extract(ss_sellable_items)));
+  }
+  delete ss_sellable_items;
+  std::stringstream * ss_sellable_weapons = new std::stringstream(String::extract(ss));
+  std::list<Weapon *> * sellable_weapons = new std::list<Weapon *>();
+  while(ss_sellable_weapons->rdbuf()->in_avail() != 0) {
+    sellable_weapons->push_back(Weapon::from_string(String::extract(ss_sellable_weapons)));
+  }
+  delete ss_sellable_weapons;
+  std::stringstream * ss_sellable_ammunition = new std::stringstream(String::extract(ss));
+  std::list<Ammunition *> * sellable_ammunition = new std::list<Ammunition *>();
+  while(ss_sellable_ammunition->rdbuf()->in_avail() != 0) {
+    sellable_ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_sellable_ammunition)));
+  }
+  delete ss_sellable_ammunition;
+  std::stringstream * ss_sellable_effects = new std::stringstream(String::extract(ss));
+  std::list<Effect *> * sellable_effects = new std::list<Effect *>();
+  while(ss_sellable_effects->rdbuf()->in_avail() != 0) {
+    sellable_effects->push_back(Effect::from_string(String::extract(ss_sellable_effects)));
+  }
+  delete ss_sellable_effects;
+  std::stringstream * ss_sellable_skills = new std::stringstream(String::extract(ss));
+  std::list<Skill *> * sellable_skills = new std::list<Skill *>();
+  while(ss_sellable_skills->rdbuf()->in_avail() != 0) {
+    sellable_skills->push_back(Skill::from_string(String::extract(ss_sellable_skills)));
+  }
+  delete ss_sellable_skills;
   Attributes * attributes = Attributes::from_string(String::extract(ss));
   Way * race = Way::from_string(String::extract(ss));
   Way * origin = Way::from_string(String::extract(ss));
@@ -1110,6 +1316,7 @@ Character * Character::full_from_string(std::string to_read) {
     need_to_eat,
     can_eat_food,
     need_to_sleep,
+    merchant,
     gold,
     xp,
     level,
@@ -1120,6 +1327,11 @@ Character * Character::full_from_string(std::string to_read) {
     *ammunition,
     *effects,
     *skills,
+    *sellable_items,
+    *sellable_weapons,
+    *sellable_ammunition,
+    *sellable_effects,
+    *sellable_skills,
     attributes,
     race,
     origin,
@@ -1134,6 +1346,11 @@ Character * Character::full_from_string(std::string to_read) {
   delete ammunition;
   delete effects;
   delete skills;
+  delete sellable_items;
+  delete sellable_weapons;
+  delete sellable_ammunition;
+  delete sellable_effects;
+  delete sellable_skills;
   delete titles;
   return result;
 }

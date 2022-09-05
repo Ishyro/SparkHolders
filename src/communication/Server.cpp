@@ -92,12 +92,16 @@ namespace Server {
       case TALKING: {
         std::string object = String::extract(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
+        delete ss;
         return new Action(TALKING, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
-      case ECONOMICS:
+      case ECONOMICS: {
+        std::string object = String::extract(ss);
+        int object_type = String::extract_int(ss);
+        const Character * target = adventure->getCharacter(String::extract_int(ss));
         delete ss;
-        return nullptr;
-        break;
+        return new Action(ECONOMICS, user, object_type, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+      }
       default:
         delete ss;
         return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);

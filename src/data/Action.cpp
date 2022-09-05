@@ -106,7 +106,9 @@ void Action::execute(Adventure * adventure) {
       if(object != "") {
         ((Character *) target)->setTalkingSpeech(object, adventure->getDatabase());
       }
+      break;
     case ECONOMICS:
+      ((Character *) target)->trade(user, orientation, object, Settings::getBuyingPriceModifier());
       break;
     default: ;
   }

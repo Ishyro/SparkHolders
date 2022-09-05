@@ -75,6 +75,7 @@ Tile * Skill::isEatingSkill() {
 std::string Skill::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_int(ss, level);
   String::insert_int(ss, target_type);
   String::insert_int(ss, overcharge_power_type);
   String::insert_int(ss, overcharge_duration_type);
@@ -95,6 +96,7 @@ std::string Skill::to_string() {
 Skill * Skill::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  int level = String::extract_int(ss);
   int target_type = String::extract_int(ss);
   int overcharge_power_type = String::extract_int(ss);
   int overcharge_duration_type = String::extract_int(ss);
@@ -110,6 +112,7 @@ Skill * Skill::from_string(std::string to_read) {
   delete ss;
   Skill * result = new Skill(
     name,
+    level,
     target_type,
     overcharge_power_type,
     overcharge_duration_type,

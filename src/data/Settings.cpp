@@ -25,4 +25,5 @@ namespace Settings {
   float getSatietyRecoveryRatio() { return SATIETY_RECOVERY_RATIO; }
   int getStaminaOverextendRatio() { return STAMINA_OVEREXTEND_RATIO; }
   int getSatietyOverextendRatio() { return SATIETY_OVEREXTEND_RATIO; }
+  float getBuyingPriceModifier() { return 1.25; }
 };
