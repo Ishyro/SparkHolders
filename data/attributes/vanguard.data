@@ -1,9 +1,10 @@
 name = TXT_VANGUARD
 baseHp = 250
 baseMana = 200
-baseArmor = 30
-baseSoulBurn = 50
-baseFlow = 30
+baseArmor = 25
+baseDamage = 25
+baseSoulBurn = 35
+baseFlow = 25
 baseVisionRange = 10
 baseVisionPower = 6
 baseDetectionRange = 1

@@ -2,6 +2,7 @@ name = TXT_RUMINANT
 type = PROFESSION
 hpIncr = 0
 manaIncr = 0
+damageIncr = 0
 armorIncr = 0
 soulBurnIncr = 0
 flowIncr = 0

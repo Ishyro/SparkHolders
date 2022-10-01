@@ -31,6 +31,7 @@ std::string Item::to_string() {
   String::insert_bool(ss, equipable);
   String::insert_bool(ss, consumable);
   String::insert_int(ss, type);
+  String::insert_bool(ss, droppable);
   String::insert_float(ss, weight);
   String::insert_int(ss, gold_value);
   std::stringstream * ss_effects = new std::stringstream();
@@ -56,6 +57,7 @@ Item * Item::from_string(std::string to_read) {
   bool equipable = String::extract_bool(ss);
   bool consumable = String::extract_bool(ss);
   int type = String::extract_int(ss);
+  bool droppable = String::extract_bool(ss);
   float weight = String::extract_float(ss);
   int gold_value = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
@@ -74,6 +76,7 @@ Item * Item::from_string(std::string to_read) {
     equipable,
     consumable,
     type,
+    droppable,
     weight,
     gold_value,
     *effects,

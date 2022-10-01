@@ -2,6 +2,7 @@ name = TXT_SHORT_BOW
 melee = false
 range = 10
 type = BOW
+droppable = true
 weight = 5.
 gold_value = 50
 use_ammo = true

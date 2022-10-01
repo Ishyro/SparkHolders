@@ -2,6 +2,7 @@ name = TXT_LEATHER_HELMET
 equipable = true
 consumable = false
 type = HEAD
+droppable = true
 weight = 2.5
 gold_value = 10
 effects =

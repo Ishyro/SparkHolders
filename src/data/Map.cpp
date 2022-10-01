@@ -110,16 +110,22 @@ void Map::killCharacter(Character * killer, Character * victim) {
   loot->y = victim->getY();
   loot->gold = victim->getGold();
   for(Weapon * w : victim->getWeapons()) {
-    loot->weapons.push_back(w);
+    if(w->droppable) {
+      loot->weapons.push_back(w);
+    }
   }
   for(Item * i : victim->getItems()) {
-    loot->items.push_back(i);
+    if(i->droppable) {
+      loot->items.push_back(i);
+    }
   }
   for(Ammunition * a : victim->getAmmunitions()) {
     loot->ammunition.push_back(a);
   }
   for(Item * i : victim->getLoot()) {
-    loot->items.push_back(i);
+    if(i->droppable) {
+      loot->items.push_back(i);
+    }
   }
   loot->type = CORPSE;
   if(killer != victim) {
@@ -131,7 +137,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     Effect * effect = new Effect("TXT_GAIN_XP", 0, "", EXPERIENCE, INSTANT, 0, xp, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, 0.F, xp * 10, *effects, damage_reductions));
+    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, xp * 10, *effects, damage_reductions));
     delete effects;
   }
   if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {

@@ -2,6 +2,7 @@ name = TXT_ELF
 type = RACE
 hpIncr = 5
 manaIncr = 5
+damageIncr = 1
 armorIncr = 0
 soulBurnIncr = 1
 flowIncr = 2

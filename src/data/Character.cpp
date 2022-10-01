@@ -25,6 +25,7 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   hp=maxHp;
   mana=maxMana;
   armor=attributes->baseArmor;
+  damage_multiplier=attributes->baseDamage;
   soulBurnTreshold=attributes->baseSoulBurn;
   flow=attributes->baseFlow;
   visionRange=attributes->baseVisionRange;
@@ -130,13 +131,13 @@ float Character::getPriorityModifier() {
 }
 
 float Character::getDamageMultiplier() {
-  int multiplier = 0;
+  int result = damage_multiplier;
   for(Effect * e : effects) {
     if(e->type == DAMAGE_MULTIPLIER) {
-      multiplier += e->power;
+      result += e->power;
     }
   }
-  return std::max(0.F, 1.F + ((float) multiplier) / 100.F);
+  return std::max(0.F, 1.F + ((float) result) / 100.F);
 }
 
 bool Character::needToSend() { return need_to_send; }
@@ -267,6 +268,21 @@ void Character::incrArmor() {
   }
   armor += std::max(incr, 0);
 }
+void Character::incrDamageMultiplier() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  int incr = 0;
+  incr += race->damageIncr;
+  incr += origin->damageIncr;
+  incr += culture->damageIncr;
+  incr += religion->damageIncr;
+  incr += profession->damageIncr;
+  for(Way * title : titles) {
+    incr += title->damageIncr;
+  }
+  damage_multiplier += std::max(incr, 0);
+}
 void Character::incrSoulBurnTreshold() {
   if(player_character) {
     setNeedToSend(true);
@@ -390,6 +406,7 @@ void Character::gainLevel() {
     incrMaxHp();
     incrMaxMana();
     incrArmor();
+    incrDamageMultiplier();
     incrSoulBurnTreshold();
     incrFlow();
     hpHeal(getMaxHp() / 2);
@@ -836,15 +853,17 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) 
     }
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == SOUL_DAMAGE) {
-        hp -= damages[damage_type];
-        payMana(damages[damage_type]);
+      if(damage_type == NEUTRAL_DAMAGE) {
+        damage += damages[damage_type];
+      }
+      if(damage_type == MIND_DAMAGE) {
+        hp -= std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
       if(damage_type == TRUE_DAMAGE) {
         hp -= damages[damage_type];
       }
-      if(damage_type == NEUTRAL_DAMAGE) {
-        damage += damages[damage_type];
+      if(damage_type == SOUL_DAMAGE) {
+        payMana(damages[damage_type]);
       }
       else {
         damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
@@ -858,15 +877,23 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
   if(!isInvulnerable() && !isEtheral()) {
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == SOUL_DAMAGE) {
-        hp -= damages[damage_type] * 2;
-        payMana(damages[damage_type] * 2);
+      if(damage_type == NEUTRAL_DAMAGE) {
+        damage += damages[damage_type] * 2;
+      }
+      if(damage_type == MIND_DAMAGE) {
+        float damage_reduction = getDamageReductionFromType(damage_type);
+        if(damage_reduction > 0.F) {
+          hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
+        } else {
+          hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
+        }
       }
       if(damage_type == TRUE_DAMAGE) {
         hp -= damages[damage_type] * 2;
       }
-      if(damage_type == NEUTRAL_DAMAGE) {
-        damage += damages[damage_type] * 2;
+      if(damage_type == SOUL_DAMAGE) {
+        hp -= damages[damage_type] * 2;
+        payMana(damages[damage_type] * 2);
       }
       else {
         float damage_reduction = getDamageReductionFromType(damage_type);
@@ -1085,6 +1112,20 @@ CharacterDisplay * Character::from_string(std::string to_read) {
 
 std::string Character::full_to_string(Adventure * adventure) {
   std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, maxHp);
+  String::insert_int(ss, maxMana);
+  String::insert_int(ss, hp);
+  String::insert_int(ss, mana);
+  String::insert_int(ss, armor);
+  String::insert_int(ss, damage_multiplier);
+  String::insert_int(ss, soulBurnTreshold);
+  String::insert_int(ss, flow);
+  String::insert_int(ss, visionRange);
+  String::insert_int(ss, visionPower);
+  String::insert_int(ss, detectionRange);
+  String::insert_int(ss, currentSoulBurn);
+  String::insert_float(ss, stamina);
+  String::insert_float(ss, satiety);
   String::insert(ss, name);
   String::insert_bool(ss, player_character);
   if(death_speech != nullptr) {
@@ -1108,6 +1149,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, y);
   String::insert_int(ss, orientation);
   String::insert_int(ss, current_map_id);
+  String::insert_bool(ss, has_soulspark);
   String::insert_bool(ss, need_to_eat);
   String::insert_bool(ss, can_eat_food);
   String::insert_bool(ss, need_to_sleep);
@@ -1178,7 +1220,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, ss_sellable_skills->str());
   delete ss_sellable_skills;
 
-  String::insert(ss, ( (Attributes *) adventure->getDatabase()->getAttributes(attributes))->to_string());
+  String::insert(ss, attributes);
   String::insert(ss, race->to_string());
   String::insert(ss, origin->to_string());
   String::insert(ss, culture->to_string());
@@ -1197,6 +1239,20 @@ std::string Character::full_to_string(Adventure * adventure) {
 
 Character * Character::full_from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
+  int maxHp = String::extract_int(ss);
+  int maxMana = String::extract_int(ss);
+  int hp = String::extract_int(ss);
+  int mana = String::extract_int(ss);
+  int armor = String::extract_int(ss);
+  int damage_multiplier = String::extract_int(ss);
+  int soulBurnTreshold = String::extract_int(ss);
+  int flow = String::extract_int(ss);
+  int visionRange = String::extract_int(ss);
+  int visionPower = String::extract_int(ss);
+  int detectionRange = String::extract_int(ss);
+  int currentSoulBurn = String::extract_int(ss);
+  float stamina = String::extract_float(ss);
+  float satiety = String::extract_float(ss);
   std::string name = String::extract(ss);
   bool player_character = String::extract_bool(ss);
   std::string death_speech_str = String::extract(ss);
@@ -1220,6 +1276,7 @@ Character * Character::full_from_string(std::string to_read) {
   int y = String::extract_int(ss);
   int orientation = String::extract_int(ss);
   int current_map_id = String::extract_int(ss);
+  bool has_soulspark = String::extract_bool(ss);
   bool need_to_eat = String::extract_bool(ss);
   bool can_eat_food = String::extract_bool(ss);
   bool need_to_sleep = String::extract_bool(ss);
@@ -1289,7 +1346,7 @@ Character * Character::full_from_string(std::string to_read) {
     sellable_skills->push_back(Skill::from_string(String::extract(ss_sellable_skills)));
   }
   delete ss_sellable_skills;
-  Attributes * attributes = Attributes::from_string(String::extract(ss));
+  std::string attributes = String::extract(ss);
   Way * race = Way::from_string(String::extract(ss));
   Way * origin = Way::from_string(String::extract(ss));
   Way * culture = Way::from_string(String::extract(ss));
@@ -1303,6 +1360,20 @@ Character * Character::full_from_string(std::string to_read) {
   delete ss_titles;
   delete ss;
   Character * result = new Character(
+    maxHp,
+    maxMana,
+    hp,
+    mana,
+    armor,
+    damage_multiplier,
+    soulBurnTreshold,
+    flow,
+    visionRange,
+    visionPower,
+    detectionRange,
+    currentSoulBurn,
+    stamina,
+    satiety,
     name,
     player_character,
     death_speech,
@@ -1313,6 +1384,7 @@ Character * Character::full_from_string(std::string to_read) {
     y,
     orientation,
     current_map_id,
+    has_soulspark,
     need_to_eat,
     can_eat_food,
     need_to_sleep,

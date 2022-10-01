@@ -1,8 +1,9 @@
 name = TXT_DWARF
 type = RACE
-hpIncr = 5
+hpIncr = 10
 manaIncr = 5
-armorIncr = 3
+armorIncr = 2
+damageIncr = 1
 soulBurnIncr = 0
 flowIncr = 0
 effects =

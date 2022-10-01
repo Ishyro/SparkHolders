@@ -1,8 +1,9 @@
 name = TXT_SHEEP
 type = RACE
-hpIncr = 0
-manaIncr = 0
-armorIncr = 0
+hpIncr = 5
+manaIncr = 1
+armorIncr = 2
+damageIncr = 25
 soulBurnIncr = 0
 flowIncr = 0
 effects =

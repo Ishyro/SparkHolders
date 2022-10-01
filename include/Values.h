@@ -88,12 +88,13 @@ class SpeechManager;
 #define AXE 7
 #define WARHAMMER 8
 #define DAGGER 9
-#define BOW 10
-#define CROSSBOW 11
-#define MAGIC_STAFF 12
-#define RIFLE 13
-#define PISTOL 14
-#define SLING 15
+#define FIST 10
+#define BOW 11
+#define CROSSBOW 12
+#define MAGIC_STAFF 13
+#define RIFLE 14
+#define PISTOL 15
+#define SLING 16
 
 // item_type
 
@@ -177,7 +178,7 @@ class SpeechManager;
 
 // damage_type
 
-#define DAMAGE_TYPE_NUMBER 10
+#define DAMAGE_TYPE_NUMBER 11
 
 #define SLASH_DAMAGE 0
 #define PUNCTURE_DAMAGE 1
@@ -187,8 +188,9 @@ class SpeechManager;
 #define COLD_DAMAGE 5
 #define POISON_DAMAGE 6
 #define NEUTRAL_DAMAGE 7 // unaffected by damage reductions, but still by armor
-#define TRUE_DAMAGE 8
-#define SOUL_DAMAGE 9 // true_damage + mana_damage
+#define MIND_DAMAGE 8 // unaffected by armor, but still by damage reductions
+#define TRUE_DAMAGE 9 // health damage
+#define SOUL_DAMAGE 10 // mana damage
 
 // loot_type
 

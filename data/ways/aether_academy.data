@@ -1,8 +1,9 @@
 name = TXT_AETHER_ACADEMY
 type = CULTURE
-hpIncr = -5
-manaIncr = 30
+hpIncr = 0
+manaIncr = 50
 armorIncr = -5
+damageIncr = -5
 soulBurnIncr = 10
 flowIncr = 10
 effects =

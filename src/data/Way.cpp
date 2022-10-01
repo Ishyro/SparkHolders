@@ -15,6 +15,7 @@ std::string Way::to_string() {
   String::insert_int(ss, hpIncr);
   String::insert_int(ss, manaIncr);
   String::insert_int(ss, armorIncr);
+  String::insert_int(ss, damageIncr);
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
   std::stringstream * ss_effects = new std::stringstream();
@@ -41,6 +42,7 @@ Way * Way::from_string(std::string to_read) {
   int hpIncr = String::extract_int(ss);
   int manaIncr = String::extract_int(ss);
   int armorIncr = String::extract_int(ss);
+  int damageIncr = String::extract_int(ss);
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
@@ -56,7 +58,7 @@ Way * Way::from_string(std::string to_read) {
   }
   delete ss_skills;
   delete ss;
-  Way * result = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
+  Way * result = new Way(name, type, hpIncr, manaIncr, armorIncr, damageIncr, soulBurnIncr, flowIncr, *effects, *skills);
   delete effects;
   delete skills;
   return result;

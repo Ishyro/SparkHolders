@@ -2,6 +2,7 @@ name = TXT_IRON_BOOTS
 equipable = true
 consumable = false
 type = LEGS
+droppable = true
 weight = 5.
 gold_value = 10
 effects =

@@ -1,9 +1,10 @@
 name = TXT_ELLINKA
 type = ORIGIN
-hpIncr = 0
+hpIncr = 5
 manaIncr = 0
 armorIncr = 3
-soulBurnIncr = 1
-flowIncr = 1
+damageIncr = 2
+soulBurnIncr = 0
+flowIncr = 0
 effects =
 skills =

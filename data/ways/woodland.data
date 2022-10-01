@@ -2,6 +2,7 @@ name = TXT_WOODLAND
 type = CULTURE
 hpIncr = 2
 manaIncr = 3
+damageIncr = 1
 armorIncr = 1
 soulBurnIncr = 1
 flowIncr = 2

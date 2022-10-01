@@ -3,6 +3,7 @@ type = RACE
 hpIncr = 0
 manaIncr = 0
 armorIncr = 0
+damageIncr = 0
 soulBurnIncr = 0
 flowIncr = 0
 effects =

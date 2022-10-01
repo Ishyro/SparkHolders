@@ -1,0 +1,5 @@
+name = TXT_WOOF
+type = MSG_VOCAL
+empty = false
+constant = true
+options =

@@ -1,9 +1,9 @@
-name = TXT_ORC
+name = TXT_WOLF
 type = RACE
-hpIncr = 4
+hpIncr = 5
 manaIncr = 1
-armorIncr = 2
-damageIncr = 3
+armorIncr = 5
+damageIncr = 10
 soulBurnIncr = 0
 flowIncr = 0
 effects =

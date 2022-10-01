@@ -588,11 +588,12 @@ namespace Display {
     mvwprintw(attributesScreen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
     mvwprintw(attributesScreen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
     mvwprintw(attributesScreen, 5, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
-    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
-    mvwprintw(attributesScreen, 7, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
-    mvwprintw(attributesScreen, 8, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
-    mvwprintw(attributesScreen, 9, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
-    mvwprintw(attributesScreen, 10, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
+    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamage) + std::string("%")).c_str());
+    mvwprintw(attributesScreen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+    mvwprintw(attributesScreen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+    mvwprintw(attributesScreen, 9, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+    mvwprintw(attributesScreen, 10, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+    mvwprintw(attributesScreen, 11, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     wattroff(attributesScreen, COLOR_PAIR(color));
     return attributesScreen;
   }
@@ -605,8 +606,9 @@ namespace Display {
     mvwprintw(wayScreen, 3, 1, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(way->hpIncr)).c_str());
     mvwprintw(wayScreen, 4, 1, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(way->manaIncr)).c_str());
     mvwprintw(wayScreen, 5, 1, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(way->armorIncr)).c_str());
-    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
-    mvwprintw(wayScreen, 7, 1, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
+    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(way->damageIncr) + std::string("%")).c_str());
+    mvwprintw(wayScreen, 7, 1, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
+    mvwprintw(wayScreen, 8, 1, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
     wattroff(wayScreen, COLOR_PAIR(color));
     return wayScreen;
   }
@@ -619,12 +621,14 @@ namespace Display {
     int hpIncr = 0;
     int manaIncr = 0;
     int armorIncr = 0;
+    int damageIncr = 0;
     int soulBurnIncr = 0;
     int flowIncr = 0;
     if(race != nullptr) {
       hpIncr += race->hpIncr;
       manaIncr += race->manaIncr;
       armorIncr += race->armorIncr;
+      damageIncr += race->damageIncr;
       soulBurnIncr += race->soulBurnIncr;
       flowIncr += race->flowIncr;
     }
@@ -632,6 +636,7 @@ namespace Display {
       hpIncr += origin->hpIncr;
       manaIncr += origin->manaIncr;
       armorIncr += origin->armorIncr;
+      damageIncr += origin->damageIncr;
       soulBurnIncr += origin->soulBurnIncr;
       flowIncr += origin->flowIncr;
     }
@@ -639,6 +644,7 @@ namespace Display {
       hpIncr += culture->hpIncr;
       manaIncr += culture->manaIncr;
       armorIncr += culture->armorIncr;
+      damageIncr += culture->damageIncr;
       soulBurnIncr += culture->soulBurnIncr;
       flowIncr += culture->flowIncr;
     }
@@ -646,6 +652,7 @@ namespace Display {
       hpIncr += religion->hpIncr;
       manaIncr += religion->manaIncr;
       armorIncr += religion->armorIncr;
+      damageIncr += religion->damageIncr;
       soulBurnIncr += religion->soulBurnIncr;
       flowIncr += religion->flowIncr;
     }
@@ -653,6 +660,7 @@ namespace Display {
       hpIncr += profession->hpIncr;
       manaIncr += profession->manaIncr;
       armorIncr += profession->armorIncr;
+      damageIncr += profession->damageIncr;
       soulBurnIncr += profession->soulBurnIncr;
       flowIncr += profession->flowIncr;
     }
@@ -663,17 +671,19 @@ namespace Display {
       mvwprintw(characterScreen, 1, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
       mvwprintw(characterScreen, 2, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
       mvwprintw(characterScreen, 3, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
-      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
-      mvwprintw(characterScreen, 5, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
-      mvwprintw(characterScreen, 6, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
-      mvwprintw(characterScreen, 7, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
-      mvwprintw(characterScreen, 8, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
+      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamage) + std::string("%")).c_str());
+      mvwprintw(characterScreen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+      mvwprintw(characterScreen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+      mvwprintw(characterScreen, 7, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+      mvwprintw(characterScreen, 8, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+      mvwprintw(characterScreen, 9, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     }
     mvwprintw(characterScreen, 1, space, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(hpIncr)).c_str());
     mvwprintw(characterScreen, 2, space, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(manaIncr)).c_str());
     mvwprintw(characterScreen, 3, space, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(armorIncr)).c_str());
-    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
-    mvwprintw(characterScreen, 5, space, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
+    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(damageIncr)).c_str());
+    mvwprintw(characterScreen, 5, space, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
+    mvwprintw(characterScreen, 6, space, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
     wattroff(characterScreen, COLOR_PAIR(color));
     return characterScreen;
   }

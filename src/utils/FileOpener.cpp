@@ -279,6 +279,7 @@ namespace FileOpener {
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
     int baseArmor = stoi(values.at("baseArmor"));
+    int baseDamage = stoi(values.at("baseDamage"));
     int baseSoulBurn = stoi(values.at("baseSoulBurn"));
     int baseFlow = stoi(values.at("baseFlow"));
     int baseVisionRange = stoi(values.at("baseVisionRange"));
@@ -313,7 +314,7 @@ namespace FileOpener {
     std::string weapon_str = values.at("weapon");
     Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
     Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, weapon);
-    Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
+    Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseDamage, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
     database->addAttributes(attributes);
     delete effects;
     delete skills;
@@ -341,6 +342,9 @@ namespace FileOpener {
     }
     int type = database->getTargetFromMacro(values.at("type"));
     long gold = stol(values.at("gold"));
+    std::istringstream is_has_soulspark(values.at("has_soulspark"));
+    bool has_soulspark;
+    is_has_soulspark >> std::boolalpha >> has_soulspark;
     std::istringstream is_need_to_eat(values.at("need_to_eat"));
     bool need_to_eat;
     is_need_to_eat >> std::boolalpha >> need_to_eat;
@@ -422,7 +426,7 @@ namespace FileOpener {
     while(getline(is_sellable_skills, skill, '%')) {
       sellable_skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, need_to_eat, can_eat_food, need_to_sleep, merchant, *items, *weapons, *ammunition, *effects, *skills, *sellable_items, *sellable_weapons, *sellable_ammunition, *sellable_effects, *sellable_skills);
+    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, has_soulspark, need_to_eat, can_eat_food, need_to_sleep, merchant, *items, *weapons, *ammunition, *effects, *skills, *sellable_items, *sellable_weapons, *sellable_ammunition, *sellable_effects, *sellable_skills);
     database->addCharacter(character);
     delete loots;
     delete items;
@@ -484,13 +488,16 @@ namespace FileOpener {
   void ItemOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is(values.at("equipable"));
+    std::istringstream is_equipable(values.at("equipable"));
     bool equipable;
-    is >> std::boolalpha >> equipable;
-    std::istringstream is_2(values.at("consumable"));
+    is_equipable >> std::boolalpha >> equipable;
+    std::istringstream is_consumable(values.at("consumable"));
     bool consumable;
-    is_2 >> std::boolalpha >> consumable;
+    is_consumable >> std::boolalpha >> consumable;
     int type = database->getTargetFromMacro(values.at("type"));
+    std::istringstream is_droppable(values.at("droppable"));
+    bool droppable;
+    is_droppable >> std::boolalpha >> droppable;
     float weight = stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
     std::list<Effect *> * effects = new std::list<Effect *>();
@@ -512,7 +519,7 @@ namespace FileOpener {
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
-    Item * item = new Item(name, equipable, consumable, type, weight, gold_value, *effects, damage_reductions);
+    Item * item = new Item(name, equipable, consumable, type, droppable, weight, gold_value, *effects, damage_reductions);
     database->addItem(item);
     delete effects;
   }
@@ -733,6 +740,7 @@ namespace FileOpener {
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
     int armorIncr = stoi(values.at("armorIncr"));
+    int damageIncr = stoi(values.at("damageIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
@@ -747,7 +755,7 @@ namespace FileOpener {
     while(getline(is_2, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, soulBurnIncr, flowIncr, *effects, *skills);
+    Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, damageIncr, soulBurnIncr, flowIncr, *effects, *skills);
     database->addWay(way);
     delete effects;
     delete skills;
@@ -756,16 +764,19 @@ namespace FileOpener {
   void WeaponOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is(values.at("melee"));
+    std::istringstream is_melee(values.at("melee"));
     bool melee;
-    is >> std::boolalpha >> melee;
+    is_melee >> std::boolalpha >> melee;
     int range = stoi(values.at("range"));
     int type = database->getTargetFromMacro(values.at("type"));
+    std::istringstream is_droppable(values.at("droppable"));
+    bool droppable;
+    is_droppable >> std::boolalpha >> droppable;
     float weight = stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
-    std::istringstream is_2(values.at("use_ammo"));
+    std::istringstream is_use_ammo(values.at("use_ammo"));
     bool use_ammo;
-    is_2 >> std::boolalpha >> use_ammo;
+    is_use_ammo >> std::boolalpha >> use_ammo;
     int ammo_type = 0;
     int capacity = 0;
     if(use_ammo) {
@@ -789,7 +800,7 @@ namespace FileOpener {
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Weapon * weapon = new Weapon(name, melee, range, type, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages);
+    Weapon * weapon = new Weapon(name, melee, range, type, droppable, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages);
     database->addWeapon(weapon);
     delete effects;
   }

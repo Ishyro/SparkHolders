@@ -17,6 +17,7 @@ class Weapon {
     const bool melee;
     const int range;
     const int type;
+    const bool droppable;
     const float weight;
     const int gold_value;
     const bool use_ammo;
@@ -28,6 +29,7 @@ class Weapon {
       bool melee,
       int range,
       int type,
+      bool droppable,
       int weight,
       int gold_value,
       bool use_ammo,
@@ -40,6 +42,7 @@ class Weapon {
       melee(melee),
       range(range),
       type(type),
+      droppable(droppable),
       weight(weight),
       gold_value(gold_value),
       use_ammo(use_ammo),
@@ -57,6 +60,7 @@ class Weapon {
       melee(weapon->melee),
       range(weapon->range),
       type(weapon->type),
+      droppable(weapon->droppable),
       weight(weapon->weight),
       gold_value(weapon->gold_value),
       use_ammo(weapon->use_ammo),

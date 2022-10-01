@@ -13,6 +13,7 @@ class Way {
     const int hpIncr;
     const int manaIncr;
     const int armorIncr;
+    const int damageIncr;
     const int soulBurnIncr;
     const int flowIncr;
     Way(
@@ -21,6 +22,7 @@ class Way {
       int hpIncr,
       int manaIncr,
       int armorIncr,
+      int damageIncr,
       int soulBurnIncr,
       int flowIncr,
       std::list<Effect *> effects,
@@ -31,6 +33,7 @@ class Way {
       hpIncr(hpIncr),
       manaIncr(manaIncr),
       armorIncr(armorIncr),
+      damageIncr(damageIncr),
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
       effects(effects),

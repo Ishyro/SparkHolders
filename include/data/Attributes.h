@@ -12,6 +12,7 @@ class Attributes {
     const int baseHp;
     const int baseMana;
     const int baseArmor;
+    const int baseDamage;
     const int baseSoulBurn;
     const int baseFlow;
     const int baseVisionRange;
@@ -22,6 +23,7 @@ class Attributes {
       int baseHp,
       int baseMana,
       int baseArmor,
+      int baseDamage,
       int baseSoulBurn,
       int baseFlow,
       int baseVisionRange,
@@ -35,6 +37,7 @@ class Attributes {
       baseHp(baseHp),
       baseMana(baseMana),
       baseArmor(baseArmor),
+      baseDamage(baseDamage),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
       baseVisionRange(baseVisionRange),

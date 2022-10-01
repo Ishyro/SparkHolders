@@ -1,0 +1,8 @@
+name = TXT_WOLF_HIDE
+equipable = false
+consumable = false
+type = UNEQUIPABLE
+droppable = true
+weight = 0.5
+gold_value = 25
+effects =

@@ -80,6 +80,7 @@ Database::Database() {
   macros.insert(std::make_pair("AXE", AXE));
   macros.insert(std::make_pair("WARHAMMER", WARHAMMER));
   macros.insert(std::make_pair("DAGGER", DAGGER));
+  macros.insert(std::make_pair("FIST", FIST));
   macros.insert(std::make_pair("BOW", BOW));
   macros.insert(std::make_pair("CROSSBOW", CROSSBOW));
   macros.insert(std::make_pair("MAGIC_STAFF", MAGIC_STAFF));
@@ -179,6 +180,7 @@ Database::Database() {
   macros.insert(std::make_pair("COLD_DAMAGE", COLD_DAMAGE));
   macros.insert(std::make_pair("POISON_DAMAGE", POISON_DAMAGE));
   macros.insert(std::make_pair("NEUTRAL_DAMAGE", NEUTRAL_DAMAGE));
+  macros.insert(std::make_pair("MIND_DAMAGE", MIND_DAMAGE));
   macros.insert(std::make_pair("TRUE_DAMAGE", TRUE_DAMAGE));
   macros.insert(std::make_pair("SOUL_DAMAGE", SOUL_DAMAGE));
 

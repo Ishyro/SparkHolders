@@ -2,6 +2,7 @@ name = TXT_IRON_CUIRASS
 equipable = true
 consumable = false
 type = ARMS
+droppable = true
 weight = 5.
 gold_value = 10
 effects =

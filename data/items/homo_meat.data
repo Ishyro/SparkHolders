@@ -1,7 +1,8 @@
-name = TXT_SENTIENT_MEAT
+name = TXT_HOMO_MEAT
 equipable = false
 consumable = true
 type = UNEQUIPABLE
+droppable = true
 weight = 0.5
 gold_value = 10
 effects = TXT_SATIETY_10%

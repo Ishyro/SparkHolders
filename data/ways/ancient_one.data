@@ -3,6 +3,7 @@ type = RACE
 hpIncr = 50
 manaIncr = 50
 armorIncr = 10
+damageIncr = 10
 soulBurnIncr = 10
 flowIncr = 10
 effects =

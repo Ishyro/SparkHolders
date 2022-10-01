@@ -18,10 +18,10 @@
 #define RED 4
 #define BACK_RED 5
 
-#define ATTRIBUTES_HEIGHT 12
+#define ATTRIBUTES_HEIGHT 13
 #define ATTRIBUTES_WIDTH 25
 
-#define WAY_HEIGHT 9
+#define WAY_HEIGHT 10
 #define WAY_WIDTH 25
 
 namespace Display {

@@ -3,6 +3,7 @@ type = RELIGION
 hpIncr = 15
 manaIncr = 15
 armorIncr = 3
+damageIncr = 3
 soulBurnIncr = 3
 flowIncr = 3
 effects =

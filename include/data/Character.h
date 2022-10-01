@@ -53,6 +53,7 @@ class Character {
     const bool player_character;
     const int type;
     const std::string attributes;
+    const bool has_soulspark;
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
@@ -65,6 +66,7 @@ class Character {
       std::list<Item *> loot,
       int type,
       long gold,
+      bool has_soulspark,
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
@@ -87,6 +89,7 @@ class Character {
       loot(loot),
       type(type),
       gold(gold),
+      has_soulspark(has_soulspark),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
@@ -133,6 +136,7 @@ class Character {
       y(y),
       orientation(orientation),
       current_map_id(current_map_id),
+      has_soulspark(from_database->has_soulspark),
       need_to_eat(from_database->need_to_eat),
       can_eat_food(from_database->can_eat_food),
       need_to_sleep(from_database->need_to_sleep),
@@ -183,6 +187,20 @@ class Character {
       }
     }
     Character(
+      int maxHp,
+      int maxMana,
+      int hp,
+      int mana,
+      int armor,
+      int damage_multiplier,
+      int soulBurnTreshold,
+      int flow,
+      int visionRange,
+      int visionPower,
+      int detectionRange,
+      int currentSoulBurn,
+      float stamina,
+      float satiety,
       std::string name,
       bool player_character,
       Speech * death_speech,
@@ -193,6 +211,7 @@ class Character {
       int y,
       int orientation,
       int current_map_id,
+      bool has_soulspark,
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
@@ -212,7 +231,7 @@ class Character {
       std::list<Ammunition *> sellable_ammunition,
       std::list<Effect *> sellable_effects,
       std::list<Skill *> sellable_skills,
-      Attributes * attributes,
+      std::string attributes,
       Way * race,
       Way * origin,
       Way * culture,
@@ -220,6 +239,20 @@ class Character {
       Way * profession,
       std::list<Way *> titles
     ):
+      maxHp(maxHp),
+      maxMana(maxMana),
+      hp(hp),
+      mana(mana),
+      armor(armor),
+      damage_multiplier(damage_multiplier),
+      soulBurnTreshold(soulBurnTreshold),
+      flow(flow),
+      visionRange(visionRange),
+      visionPower(visionPower),
+      detectionRange(detectionRange),
+      currentSoulBurn(currentSoulBurn),
+      stamina(stamina),
+      satiety(satiety),
       name(name),
       player_character(player_character),
       death_speech(death_speech),
@@ -230,6 +263,7 @@ class Character {
       y(y),
       orientation(orientation),
       current_map_id(current_map_id),
+      has_soulspark(has_soulspark),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
@@ -250,18 +284,14 @@ class Character {
       sellable_ammunition(sellable_ammunition),
       sellable_effects(sellable_effects),
       sellable_skills(sellable_skills),
-      attributes(attributes->name),
+      attributes(attributes),
       race(race),
       origin(origin),
       culture(culture),
       religion(religion),
       profession(profession),
       titles(titles)
-    {
-      applyAttributes(attributes, false);
-      // always client side
-      delete attributes;
-    }
+    {}
     void applyAttributes(Attributes * attributes, bool init);
     bool isAlive();
     bool isSoulBurning();
@@ -329,6 +359,7 @@ class Character {
     void setStamina(float stamina);
     void setSatiety(float satiety);
     void incrArmor();
+    void incrDamageMultiplier();
     void incrSoulBurnTreshold();
     void setCurrentSoulBurn(int soulBurn);
     void incrFlow();
@@ -413,6 +444,7 @@ class Character {
     float stamina;
     float satiety;
     int armor;
+    int damage_multiplier;
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;

@@ -2,6 +2,7 @@ name = TXT_TRAVELER
 type = CULTURE
 hpIncr = 5
 manaIncr = 5
+damageIncr = 1
 armorIncr = 1
 soulBurnIncr = 1
 flowIncr = 1

@@ -3,6 +3,7 @@ type = ORIGIN
 hpIncr = 0
 manaIncr = 5
 armorIncr = 0
+damageIncr = 1
 soulBurnIncr = 2
 flowIncr = 2
 effects =

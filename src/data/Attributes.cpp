@@ -16,6 +16,7 @@ std::string Attributes::to_string() {
   String::insert_int(ss, baseHp);
   String::insert_int(ss, baseMana);
   String::insert_int(ss, baseArmor);
+  String::insert_int(ss, baseDamage);
   String::insert_int(ss, baseSoulBurn);
   String::insert_int(ss, baseFlow);
   String::insert_int(ss, baseVisionRange);
@@ -45,6 +46,7 @@ Attributes * Attributes::from_string(std::string to_read) {
   int baseHp = String::extract_int(ss);
   int baseMana = String::extract_int(ss);
   int baseArmor = String::extract_int(ss);
+  int baseDamage = String::extract_int(ss);
   int baseSoulBurn = String::extract_int(ss);
   int baseFlow = String::extract_int(ss);
   int baseVisionRange = String::extract_int(ss);
@@ -64,7 +66,7 @@ Attributes * Attributes::from_string(std::string to_read) {
   delete ss_skills;
   Gear * gear = Gear::from_string(String::extract(ss));
   delete ss;
-  Attributes * result = new Attributes(name, baseHp, baseMana, baseArmor, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
+  Attributes * result = new Attributes(name, baseHp, baseMana, baseArmor, baseDamage, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
   delete effects;
   delete skills;
   return result;

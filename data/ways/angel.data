@@ -1,8 +1,9 @@
 name = TXT_ANGEL
 type = RACE
-hpIncr = 0
+hpIncr = 5
 manaIncr = 5
 armorIncr = 0
+damageIncr = 0
 soulBurnIncr = 2
 flowIncr = 2
 effects =

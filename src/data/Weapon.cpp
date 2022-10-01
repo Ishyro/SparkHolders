@@ -86,6 +86,7 @@ std::string Weapon::to_string() {
   String::insert_bool(ss, melee);
   String::insert_int(ss, range);
   String::insert_int(ss, type);
+  String::insert_bool(ss, droppable);
   String::insert_float(ss, weight);
   String::insert_int(ss, gold_value);
   String::insert_bool(ss, use_ammo);
@@ -114,6 +115,7 @@ Weapon * Weapon::from_string(std::string to_read) {
   bool melee = String::extract_bool(ss);
   int range = String::extract_int(ss);
   int type = String::extract_int(ss);
+  bool droppable = String::extract_bool(ss);
   float weight = String::extract_float(ss);
   int gold_value = String::extract_int(ss);
   bool use_ammo = String::extract_bool(ss);
@@ -135,6 +137,7 @@ Weapon * Weapon::from_string(std::string to_read) {
     melee,
     range,
     type,
+    droppable,
     weight,
     gold_value,
     use_ammo,
