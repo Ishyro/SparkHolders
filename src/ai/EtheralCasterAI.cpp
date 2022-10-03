@@ -13,7 +13,7 @@ Action * EtheralCasterAI::getAction(Adventure * adventure, Character * c) {
     adventure->getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
-    return new Action(MOVE, c, getFollowOrientation(c, origin_x, origin_y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(MOVE, c, getFollowOrientation(adventure, c, origin_x, origin_y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   if(++current_round < target_round) {
     return new Action(REST, c, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);

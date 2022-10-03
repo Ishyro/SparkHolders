@@ -2,13 +2,15 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
 
+#include "utils/MapUtil.h"
+
 #include "ai/AI.h"
 
 Action * AI::getAction(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
-int AI::getFleeOrientation(Character * self, int x, int y) {
+int AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
   float target_x = x - self->getX();
   float target_y = y - self->getY();
   int orientation = NORTH; // default if already same tile
@@ -64,7 +66,12 @@ int AI::getFleeOrientation(Character * self, int x, int y) {
   return orientation;
 }
 
-int AI::getFollowOrientation(Character * self, int x, int y) {
+int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
+  return MapUtil::getOrientationToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y);
+}
+
+/*
+int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
   float target_x = x - self->getX();
   float target_y = y - self->getY();
   int orientation = NORTH; // default if already same tile
@@ -119,6 +126,7 @@ int AI::getFollowOrientation(Character * self, int x, int y) {
   }
   return orientation;
 }
+*/
 
 void AI::selectHungriness(Character * self) {
   if(self->getSatiety() >= 66.F) {
@@ -208,7 +216,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     if(i == self->getX() && j == self->getY()) {
       return new Action(USE_SKILL, self, self->getOrientation(), skill, nullptr, i, j, nullptr, "", 1, 1, 1);
     } else {
-      return new Action(MOVE, self, getFollowOrientation(self, i, j), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+      return new Action(MOVE, self, getFollowOrientation(adventure, self, i, j), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
 }
