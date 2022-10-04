@@ -1,3 +1,4 @@
 name = mist
 untraversable = false
+opaque = true
 light = 0

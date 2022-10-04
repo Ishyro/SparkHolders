@@ -1,3 +1,4 @@
 name = torch_wall
 untraversable = true
+opaque = true
 light = 6

@@ -1,3 +1,4 @@
 name = wall_wood
 untraversable = true
+opaque = true
 light = 0

@@ -1,3 +1,4 @@
 name = water
 untraversable = true
+opaque = false
 light = 0

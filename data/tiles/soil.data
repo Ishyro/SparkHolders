@@ -1,3 +1,4 @@
 name = soil
 untraversable = false
+opaque = false
 light = 0

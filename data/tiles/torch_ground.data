@@ -1,3 +1,4 @@
 name = torch_ground
 untraversable = false
+opaque = false
 light = 6

@@ -725,11 +725,14 @@ namespace FileOpener {
   void TileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is(values.at("untraversable"));
+    std::istringstream is_untraversable(values.at("untraversable"));
     bool untraversable;
-    is >> std::boolalpha >> untraversable;
+    is_untraversable >> std::boolalpha >> untraversable;
+    std::istringstream is_opaque(values.at("opaque"));
+    bool opaque;
+    is_opaque >> std::boolalpha >> opaque;
     int light = stoi(values.at("light"));
-    Tile * tile = new Tile(name, untraversable, light);
+    Tile * tile = new Tile(name, untraversable, opaque, light);
     database->addTile(tile);
   }
 

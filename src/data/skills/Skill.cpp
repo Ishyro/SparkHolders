@@ -72,6 +72,16 @@ Tile * Skill::isEatingSkill() {
   return nullptr;
 }
 
+
+int Skill::isTeleportSkill() {
+  for(PseudoSkill * s : skills) {
+    if(s->skill_type == TELEPORT_SKILL) {
+      return range;
+    }
+  }
+  return 0;
+}
+
 std::string Skill::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);

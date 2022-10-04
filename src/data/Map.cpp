@@ -10,6 +10,7 @@
 #include "data/Map.h"
 
 #include "utils/String.h"
+#include "utils/MapUtil.h"
 
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
@@ -72,6 +73,25 @@ void Map::propagateLight(int y, int x) {
     lights[y + 1][x + 1] = light;
     propagateLight(y + 1, x + 1);
   }
+}
+
+bool Map::canSee(Character * watcher, Character * target) {
+  if(target->isInvisible() || target->isEtheral()) {
+    return false;
+  }
+  int range = MapUtil::distance(watcher->getX(), watcher->getY(), target->getX(), target->getY());
+  if(range <= watcher->getDetectionRange()) {
+    return true;
+  }
+  if(range > watcher->getVisionRange() || (watcher->getVisionPower() - target->cloakPower()) < 10 - getLight(target->getY(), target->getX())) {
+    return false;
+  }
+  for(MapUtil::Pair pair : MapUtil::getStraightPathToTarget(this, watcher->getX(), watcher->getY(), target->getX(), target->getY())) {
+    if(getTile(pair.y, pair.x)->opaque) {
+      return false;
+    }
+  }
+  return true;
 }
 
 void Map::setTile(int y, int x, Tile * tile) { tiles[y][x] = tile; }
@@ -349,6 +369,7 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
       String::insert_int(ss, y);
       String::insert(ss, getTile(y, x)->name);
       String::insert_bool(ss, getTile(y, x)->untraversable);
+      String::insert_bool(ss, getTile(y, x)->opaque);
       String::insert_int(ss, getLight(y, x));
     }
   }
@@ -404,8 +425,9 @@ MapDisplay * Map::from_string(std::string to_read) {
       int j = String::extract_int(ss);
       std::string name = String::extract(ss);
       bool untraversable = String::extract_bool(ss);
+      bool opaque = String::extract_bool(ss);
       int light = String::extract_int(ss);
-      display->tiles[j][i] = new Tile(name, untraversable, light);
+      display->tiles[j][i] = new Tile(name, untraversable, opaque, light);
     }
   }
   std::stringstream * ss_characters = new std::stringstream(String::extract(ss));

@@ -1,3 +1,4 @@
 name = void
 untraversable = true
+opaque = true
 light = 0

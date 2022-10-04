@@ -2,7 +2,6 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
 
-#include "utils/MapUtil.h"
 
 #include "ai/AI.h"
 
@@ -70,63 +69,9 @@ int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int
   return MapUtil::getOrientationToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y);
 }
 
-/*
-int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  float target_x = x - self->getX();
-  float target_y = y - self->getY();
-  int orientation = NORTH; // default if already same tile
-  if(target_y > 0.) {
-    if(target_x == 0. || target_y / target_x > 2.) {
-        orientation = NORTH;
-    }
-    else if(target_y / target_x > 0.5) {
-        orientation = NORTH_EAST;
-    }
-    else if(target_y / target_x > 0.) {
-        orientation = EAST;
-    }
-    else if(target_y / target_x > -0.5) {
-        orientation = WEST;
-    }
-    else if(target_y / target_x > -2.) {
-        orientation = NORTH_WEST;
-    }
-    else {
-      orientation = NORTH;
-    }
-  }
-  if(target_y < 0.) {
-    if(target_x == 0. || target_y / target_x > 2.) {
-        orientation = SOUTH;
-    }
-    else if(target_y / target_x > 0.5) {
-        orientation = SOUTH_WEST;
-    }
-    else if(target_y / target_x > 0.) {
-        orientation = WEST;
-    }
-    else if(target_y / target_x > -0.5) {
-        orientation = EAST;
-    }
-    else if(target_y / target_x > -2.) {
-        orientation = SOUTH_EAST;
-    }
-    else {
-      orientation = SOUTH;
-    }
-  }
-  // target_y == 0
-  else {
-    if(target_x > 0.) {
-      orientation = EAST;
-    }
-    else if(target_x < 0.) {
-      orientation = WEST;
-    }
-  }
-  return orientation;
+std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
+  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y);
 }
-*/
 
 void AI::selectHungriness(Character * self) {
   if(self->getSatiety() >= 66.F) {
@@ -222,5 +167,52 @@ Action * AI::eat(Adventure * adventure, Character * self) {
 }
 
 Action * AI::trackPrey(Adventure * adventure, Character * self) {
-  return nullptr;
+  Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
+  Character * prey = nullptr;
+  // a predator can sense prey even if they are far.
+  int max_distance_prey = self->getVisionRange() * 2;
+  int distance_prey = max_distance_prey;
+  for(Character * other : map->getCharacters()) {
+    if(other->getTeam() == "prey" || (other->getTeam() != self->getTeam() && self->getSatiety() < 15.F)) {
+      int distance = MapUtil::distance(self->getX(), self->getY(), other->getX(), other->getY());
+      if(other != self && distance <= max_distance_prey && distance < distance_prey) {
+        prey = other;
+        distance_prey = distance;
+      }
+    }
+  }
+  if(prey != nullptr) {
+    std::vector<MapUtil::Pair> path = getFollowPath(adventure, self, prey->getX(), prey->getY());
+    if(path.size() > 2) {
+      int tp_range = 0;
+      Skill * skill = nullptr;
+      for(Skill * s : self->getSkills()) {
+        skill = s;
+        if( (tp_range = skill->isTeleportSkill()) != 0) {
+          break;
+        }
+      }
+      if(tp_range != 0) {
+        int tp_index = std::min(tp_range, distance_prey);
+        MapUtil::Pair tp_target = path[tp_index];
+        return new Action(USE_SKILL, self, self->getOrientation(), skill, nullptr, tp_target.x, tp_target.y, nullptr, "", 1, 1, 1);
+      }
+    }
+    if(path.size() > 0) {
+      MapUtil::Pair next = path[0];
+      return new Action(MOVE, self, MapUtil::orientationToTarget(self->getX(), self->getY(), next.x, next.y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    }
+  }
+  return new Action(REST, self, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+}
+
+std::list<Character *> AI::getThreats(Adventure * adventure, Character * self) {
+  Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
+  std::list<Character *> threats = std::list<Character *>();
+  for(Character * other : map->getCharacters()) {
+    if(other != self && map->canSee(self, other) && adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == ENEMY) {
+      threats.push_front(other);
+    }
+  }
+  return threats;
 }

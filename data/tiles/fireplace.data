@@ -1,3 +1,4 @@
 name = fireplace
 untraversable = true
+opaque = false
 light = 8

@@ -1,3 +1,4 @@
 name = lava
 untraversable = true
+opaque = false
 light = 5

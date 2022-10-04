@@ -52,6 +52,7 @@ class Skill {
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
     Tile * isEatingSkill();
+    int isTeleportSkill();
     std::string to_string();
     static Skill * from_string(std::string to_read);
 };

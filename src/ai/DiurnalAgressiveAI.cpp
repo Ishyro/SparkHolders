@@ -9,6 +9,19 @@
 #include "ai/DiurnalAgressiveAI.h"
 
 Action * DiurnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
+  std::list<Character *> threats = getThreats(adventure, c);
+  if(!threats.empty()) {
+    return new Action(MOVE, c, NORTH, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  }
+  selectHungriness(c);
+  selectTiredness(c);
+  if(hungry) {
+    Action * eat_food = eat(adventure, c);
+    if(eat_food != nullptr) {
+      return eat_food;
+    }
+  }
+  /*
   if(adventure->getLight() >= 4) {
     Map * map = adventure->getWorld()->getMap(c->getCurrentMapId());
     int orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
@@ -28,5 +41,6 @@ Action * DiurnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
       return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
+  */
   return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

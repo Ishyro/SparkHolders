@@ -1,3 +1,4 @@
 name = wall_stone
 untraversable = true
+opaque = true
 light = 0

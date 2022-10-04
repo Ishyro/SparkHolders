@@ -146,6 +146,7 @@ class Map {
     void calculateLights();
     void propagateLight(int y, int x);
     void applyDayLight(int light);
+    bool canSee(Character * watcher, Character * target);
     void crumble(int y, int x);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
