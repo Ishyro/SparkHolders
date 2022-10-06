@@ -90,26 +90,23 @@ class Map {
       name(map->name),
       offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
       offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
-      sizeX(std::min(map->sizeX, player->getX() + std::max(player->getVisionRange(), player->getDetectionRange())) - offsetX),
-      sizeY(std::min(map->sizeY, player->getY() + std::max(player->getVisionRange(), player->getDetectionRange())) - offsetY),
+      sizeX(std::min(map->sizeX, player->getX() + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetX),
+      sizeY(std::min(map->sizeY, player->getY() + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetY),
       outside(map->outside),
-      tiles(sizeY),
       lights(sizeY),
       light(map->light)
     {
+      tiles = canSee(map, player, database);
       for(int i = 0; i < sizeY; i++) {
-        tiles[i] = std::vector<Tile *>(sizeX);
         lights[i] = std::vector<int>(sizeX);
       }
       for(int y = 0; y < sizeY; y++) {
         for(int x = 0; x < sizeX; x++) {
-          int distance = std::max(abs(player->getX() - (x + offsetX)), abs(player->getY() - (y + offsetY)));
-          if ( (distance <= player->getVisionRange() && map->getLight(y + offsetY, x + offsetX) >= 10 - player->getVisionPower()) || distance <= player->getDetectionRange() ) {
-            tiles[y][x] = map->tiles[y + offsetY][x + offsetX];
-            lights[y][x] = map->lights[y + offsetY][x + offsetX];
+          if (map->getTile(y + offsetY, x + offsetX)->name != "mist") {
+            lights[y][x] = map->getLight(y + offsetY, x + offsetX);
           }
           else {
-            tiles[y][x] = (Tile *) database->getTile("mist");
+            lights[y][x] = 0;
           }
         }
       }
@@ -163,6 +160,7 @@ class Map {
     void actAllProjectiles(Adventure * adventure);
     std::string to_string(Character * player, Adventure * adventure);
     static MapDisplay * from_string(std::string to_read);
+    static std::vector<std::vector<Tile *>> canSee(Map * map, Character * watcher, Database * database);
     bool operator == (const Map& m) const { return id == m.id; }
     bool operator != (const Map& m) const { return !operator==(m); }
   private:

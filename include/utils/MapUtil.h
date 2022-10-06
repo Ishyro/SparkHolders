@@ -22,10 +22,9 @@ namespace MapUtil {
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
   int reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
   std::list<Pair> getNeighbours(Map * map, int startX, int startY, int destX, int destY);
-  std::list<Pair> getNeighboursAllTiles(Map * map, int startX, int startY, int destX, int destY);
   std::vector<Pair> getPathToTarget(Map * map, int startX, int startY, int destX, int destY);
   int getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY);
-  std::vector<Pair> getStraightPathToTarget(Map * map, int startX, int startY, int destX, int destY);
+  std::list<Pair> getPathFromCartesianEquation(float a, int range);
 };
 
 #endif // _MAP_UTIL_H_

@@ -75,6 +75,7 @@ void Map::propagateLight(int y, int x) {
   }
 }
 
+// map initialized with mist tiles
 bool Map::canSee(Character * watcher, Character * target) {
   if(target->isInvisible() || target->isEtheral()) {
     return false;
@@ -83,15 +84,169 @@ bool Map::canSee(Character * watcher, Character * target) {
   if(range <= watcher->getDetectionRange()) {
     return true;
   }
-  if(range > watcher->getVisionRange() || (watcher->getVisionPower() - target->cloakPower()) < 10 - getLight(target->getY(), target->getX())) {
+  if(getTile(target->getY(), target->getX())->name == "mist" || range > watcher->getVisionRange() || (watcher->getVisionPower() - target->cloakPower()) < 10 - getLight(target->getY(), target->getX())) {
     return false;
   }
-  for(MapUtil::Pair pair : MapUtil::getStraightPathToTarget(this, watcher->getX(), watcher->getY(), target->getX(), target->getY())) {
-    if(getTile(pair.y, pair.x)->opaque) {
-      return false;
+  return true;
+}
+
+std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Database * database) {
+  int range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
+  int originX = std::max(0, watcher->getX() - range);
+  int endX = std::min(map->sizeX - 1, watcher->getX() + range);
+  int originY = std::max(0, watcher->getY() - range);
+  int endY = std::min(map->sizeY - 1, watcher->getY() + range);
+  std::vector<std::vector<Tile *>> result = std::vector<std::vector<Tile *>>(endY - originY + 1);
+  for(int index = 0; index <= endY - originY; index++) {
+    result[index] = std::vector<Tile *>(endX - originX + 1);
+  }
+  for(int y = 0; y <= endY - originY; y++) {
+    for(int x = 0; x <= endX - originX; x++) {
+      result[y][x] = (Tile *) database->getTile("mist");
     }
   }
-  return true;
+  for(int y = 0; y <= range; y++) {
+    float a = (float) y / (float) range;
+    std::list<MapUtil::Pair> path = MapUtil::getPathFromCartesianEquation(a, range);
+    // 8 times the same action with inverted coordinates
+    for(MapUtil::Pair pair : path) {
+      int i = pair.x + watcher->getX() - originX;
+      int j = pair.y + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(pair.y + watcher->getY(), pair.x + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(pair.y + watcher->getY(), pair.x + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = pair.x + watcher->getX() - originX;
+      int j = -pair.y + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(-pair.y + watcher->getY(), pair.x + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(-pair.y + watcher->getY(), pair.x + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = -pair.x + watcher->getX() - originX;
+      int j = pair.y + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(pair.y + watcher->getY(), -pair.x + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(pair.y + watcher->getY(), -pair.x + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = -pair.x + watcher->getX() - originX;
+      int j = -pair.y + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(-pair.y + watcher->getY(), -pair.x + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(-pair.y + watcher->getY(), -pair.x + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = pair.y + watcher->getX() - originX;
+      int j = pair.x + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(pair.x + watcher->getY(), pair.y + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(pair.x + watcher->getY(), pair.y + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = -pair.y + watcher->getX() - originX;
+      int j = pair.x + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(pair.x + watcher->getY(), -pair.y + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(pair.x + watcher->getY(), -pair.y + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = pair.y + watcher->getX() - originX;
+      int j = -pair.x + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(-pair.x + watcher->getY(), pair.y + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(-pair.x + watcher->getY(), pair.y + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+    for(MapUtil::Pair pair : path) {
+      int i = -pair.y + watcher->getX() - originX;
+      int j = -pair.x + watcher->getY() - originY;
+      if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
+        break;
+      }
+      Tile * tile = map->getTile(-pair.x + watcher->getY(), -pair.y + watcher->getX());
+      if(MapUtil::distance(pair.x, pair.y, 0, 0) <= watcher->getDetectionRange()) {
+        result[j][i] = tile;
+      }
+      if(map->getLight(-pair.x + watcher->getY(), -pair.y + watcher->getX()) >= 10 - watcher->getVisionPower()) {
+        result[j][i] = tile;
+      }
+      if(tile->opaque) {
+        break;
+      }
+    }
+  }
+  return result;
 }
 
 void Map::setTile(int y, int x, Tile * tile) { tiles[y][x] = tile; }

@@ -1,4 +1,4 @@
 name = door
 untraversable = false
-opaque = true
+opaque = false
 light = 0
