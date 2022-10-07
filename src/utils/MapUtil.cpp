@@ -9,10 +9,6 @@ int MapUtil::distance(int x1, int y1, int x2, int y2) {
   return std::max(abs(x1 - x2), abs(y1 - y2));
 }
 
-int MapUtil::distanceSqrt(int x1, int y1, int x2, int y2) {
-  return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-}
-
 int MapUtil::orientationToTarget(int x1, int y1, int x2, int y2) {
   if(x1 == x2 && y1 < y2)
     return NORTH;
@@ -240,11 +236,23 @@ int MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int destX
 
 // 0 <= a <= 1
 // y <= x
-std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquation(float a, int range) {
+std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquationFloor(float a, int range) {
   MapUtil::Pair pair;
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   for(pair.x = 0; pair.x <= range; pair.x++) {
     pair.y = std::floor(a * (float) pair.x);
+    result.push_back(pair);
+  }
+  return result;
+}
+
+// 0 <= a <= 1
+// y <= x
+std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquationCeil(float a, int range) {
+  MapUtil::Pair pair;
+  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
+  for(pair.x = 0; pair.x <= range; pair.x++) {
+    pair.y = std::ceil(a * (float) pair.x);
     result.push_back(pair);
   }
   return result;

@@ -464,6 +464,7 @@ namespace FileOpener {
       damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
       damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
       damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+      damages[MIND_DAMAGE] = stoi(values.at("MIND_DAMAGE"));
       damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
       damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
     }
@@ -476,6 +477,7 @@ namespace FileOpener {
       damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
       damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
       damage_reductions[NEUTRAL_DAMAGE] = 0.;
+      damage_reductions[MIND_DAMAGE] = stof(values.at("MIND_REDUCTION"));
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
@@ -516,6 +518,7 @@ namespace FileOpener {
       damage_reductions[COLD_DAMAGE] = stof(values.at("COLD_REDUCTION"));
       damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
       damage_reductions[NEUTRAL_DAMAGE] = 0.;
+      damage_reductions[MIND_DAMAGE] = stof(values.at("MIND_REDUCTION"));
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
@@ -584,6 +587,7 @@ namespace FileOpener {
     damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
     damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+    damages[MIND_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
     Projectile * projectile = new Projectile(name, projectile_type, homing, skill, speed, area, falloff_range, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
@@ -801,6 +805,7 @@ namespace FileOpener {
     damages[COLD_DAMAGE] = stoi(values.at("COLD_DAMAGE"));
     damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
     damages[NEUTRAL_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
+    damages[MIND_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
     Weapon * weapon = new Weapon(name, melee, range, type, droppable, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages);
