@@ -101,6 +101,7 @@ std::string Weapon::to_string() {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, damages[i]);
   }
+  String::insert(ss, Projectile::ammo_to_string(ammo));
   std::string result = ss->str();
   delete ss;
   return result;
@@ -131,6 +132,7 @@ Weapon * Weapon::from_string(std::string to_read) {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_int(ss);
   }
+  Ammunition * ammo = Projectile::ammo_from_string(String::extract(ss));
   delete ss;
   Weapon * result = new Weapon(
     name,
@@ -144,7 +146,8 @@ Weapon * Weapon::from_string(std::string to_read) {
     ammo_type,
     capacity,
     *effects,
-    damages
+    damages,
+    ammo
   );
   delete effects;
   return result;

@@ -22,7 +22,7 @@ class AI {
     void selectTiredness(Character * self);
     Action * eat(Adventure * adventure, Character * self);
     Action * trackPrey(Adventure * adventure, Character * self);
-    std::list<Character *> getThreats(Adventure * adventure, Character * self);
+    std::list<Character *> getThreats(Adventure * adventure, Map * map, Character * self, int range);
 };
 
 #endif // _AI_H_

@@ -6,6 +6,7 @@
 #include "data/Projectile.h"
 
 #include "utils/String.h"
+#include "utils/MapUtil.h"
 
 int Projectile::getX() { return x; }
 int Projectile::getY() { return y; }
@@ -83,66 +84,9 @@ void Projectile::nextOrientation() {
   if(lost) {
     return;
   }
-  float target_x = getDestX() - x;
-  float target_y = getDestY() - y;
-  int way_to_the_target = orientation; // default if already same tile
-  // projectile will simply move to its target
-  if(target_y > 0.) {
-    if(target_x == 0.) {
-        way_to_the_target = NORTH;
-    } else {
-      way_to_the_target = NORTH;
-      float ratio = target_y / target_x;
-      if(ratio > -2.) {
-          way_to_the_target = NORTH_WEST;
-      }
-      if(ratio > -0.5) {
-          way_to_the_target = WEST;
-      }
-      if(ratio > 0.) {
-          way_to_the_target = EAST;
-      }
-      if(ratio > 0.5) {
-          way_to_the_target = NORTH_EAST;
-      }
-      if(ratio > 2.) {
-          way_to_the_target = NORTH;
-      }
-    }
-  }
-  else if(target_y < 0.) {
-    way_to_the_target = SOUTH;
-    if(target_x == 0.) {
-        way_to_the_target = SOUTH;
-    } else {
-      float ratio = target_y / target_x;
-      if(ratio > -2.) {
-          way_to_the_target = SOUTH_EAST;
-      }
-      if(ratio > -0.5) {
-          way_to_the_target = EAST;
-      }
-      if(ratio > 0.) {
-          way_to_the_target = WEST;
-      }
-      if(ratio > 0.5) {
-          way_to_the_target = SOUTH_WEST;
-      }
-      if(ratio > 2.) {
-          way_to_the_target = SOUTH;
-      }
-    }
-  }
-  // target_y == 0
-  else {
-    if(target_x > 0.) {
-      way_to_the_target = EAST;
-    }
-    else if(target_x < 0.) {
-      way_to_the_target = WEST;
-    }
-  }
-  int diff = way_to_the_target - orientation;
+  int target_x = getDestX() - x;
+  int target_y = getDestY() - y;
+  int diff = MapUtil::getDirectOrientationToTarget(target_x, target_y) - orientation;
   if(diff > 0 || diff <= -4) {
     orientation = (orientation + 1) % 8;
   } else if(diff < 0 || diff >= 4) {
@@ -264,10 +208,15 @@ std::string Projectile::full_to_string() {
 
 std::string Projectile::ammo_to_string(Ammunition * ammo) {
   std::stringstream * ss = new std::stringstream();
-  String::insert(ss, ammo->projectile->full_to_string());
-  String::insert_int(ss, ammo->number);
-  String::insert_int(ss, ammo->gold_value);
-  String::insert_int(ss, ammo->ammo_type);
+  if(ammo != nullptr) {
+    String::insert(ss, ammo->projectile->full_to_string());
+    String::insert_int(ss, ammo->number);
+    String::insert_int(ss, ammo->gold_value);
+    String::insert_int(ss, ammo->ammo_type);
+  }
+  else {
+    String::insert(ss, "none");
+  }
   std::string result = ss->str();
   delete ss;
   return result;
@@ -353,12 +302,16 @@ Projectile * Projectile::full_from_string(std::string to_read) {
 }
 
 Ammunition * Projectile::ammo_from_string(std::string to_read) {
-  Ammunition * ammo = new Ammunition();
+  Ammunition * ammo = nullptr;
   std::stringstream * ss = new std::stringstream(to_read);
-  ammo->projectile = Projectile::full_from_string(String::extract(ss));
-  ammo->number = String::extract_int(ss);
-  ammo->gold_value = String::extract_int(ss);
-  ammo->ammo_type = String::extract_int(ss);
+  std::string first_message = String::extract(ss);
+  if(first_message != "none") {
+    ammo = new Ammunition();
+    ammo->projectile = Projectile::full_from_string(first_message);
+    ammo->number = String::extract_int(ss);
+    ammo->gold_value = String::extract_int(ss);
+    ammo->ammo_type = String::extract_int(ss);
+  }
   delete ss;
   return ammo;
 }

@@ -787,39 +787,8 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
         }
         gear->getWeapon()->useAmmo();
       }
-      int proj_x = this->x;
-      int proj_y = this->y;
-      switch(orientation) {
-        case NORTH:
-          proj_y++;
-          break;
-        case NORTH_EAST:
-          proj_y++;
-          proj_x++;
-          break;
-        case EAST:
-          proj_x++;
-          break;
-        case SOUTH_EAST:
-          proj_y--;
-          proj_x++;
-          break;
-        case SOUTH:
-          proj_y--;
-          break;
-        case SOUTH_WEST:
-          proj_y--;
-          proj_x--;
-          break;
-        case WEST:
-          proj_x--;
-          break;
-        case NORTH_WEST:
-          proj_y++;
-          proj_x--;
-          break;
-      }
-      return new Projectile(base_projectile, realDamages, current_map_id, proj_x, proj_y, x, y, (Character *) target, this, orientation, 1, 1, 1);
+      MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, this->x, this->y);
+      return new Projectile(base_projectile, realDamages, current_map_id, pair.x, pair.y, x, y, (Character *) target, this, orientation, 1, 1, 1);
     }
   }
   return nullptr;

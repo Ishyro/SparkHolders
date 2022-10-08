@@ -1,6 +1,7 @@
 #include "data/skills/ProjectileSkill.h"
 
 #include "utils/String.h"
+#include "utils/MapUtil.h"
 
 void ProjectileSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
   int realDamages[DAMAGE_TYPE_NUMBER];
@@ -12,39 +13,8 @@ void ProjectileSkill::activate(Character * owner, Character * target, Adventure 
       realDamages[damage_type] += effect->getDamageFromType(damage_type) * overcharge_power;
     }
   }
-  int proj_x = owner->getX();
-  int proj_y = owner->getY();
-  switch(owner->getOrientation()) {
-    case NORTH:
-      proj_y++;
-      break;
-    case NORTH_EAST:
-      proj_y++;
-      proj_x++;
-      break;
-    case EAST:
-      proj_x++;
-      break;
-    case SOUTH_EAST:
-      proj_y--;
-      proj_x++;
-      break;
-    case SOUTH:
-      proj_y--;
-      break;
-    case SOUTH_WEST:
-      proj_y--;
-      proj_x--;
-      break;
-    case WEST:
-      proj_x--;
-      break;
-    case NORTH_WEST:
-      proj_y++;
-      proj_x--;
-      break;
-  }
-  Projectile * to_add = new Projectile(projectile, realDamages, owner->getCurrentMapId(), proj_x, proj_y, x, y, (Character *) target, owner, owner->getOrientation(), overcharge_power, overcharge_duration, overcharge_range);
+  MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(owner->getOrientation(), owner->getX(), owner->getY());
+  Projectile * to_add = new Projectile(projectile, realDamages, owner->getCurrentMapId(), pair.x, pair.y, x, y, (Character *) target, owner, owner->getOrientation(), overcharge_power, overcharge_duration, overcharge_range);
   adventure->getWorld()->getMap(owner->getCurrentMapId())->addProjectile(to_add);
 }
 

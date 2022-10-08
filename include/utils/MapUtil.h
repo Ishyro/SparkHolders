@@ -17,7 +17,9 @@ namespace MapUtil {
   } Pair;
 
   int distance(int x1, int y1, int x2, int y2);
-  int orientationToTarget(int x1, int y1, int x2, int y2);
+  int getOrientationToTarget(int x1, int y1, int x2, int y2);
+  Pair getNextPairFromOrientation(int orientation, int x, int y);
+  int getDirectOrientationToTarget(int x, int y);
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
   int reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
   std::list<Pair> getNeighbours(Map * map, int startX, int startY, int destX, int destY);

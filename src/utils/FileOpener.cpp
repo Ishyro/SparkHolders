@@ -808,7 +808,7 @@ namespace FileOpener {
     damages[MIND_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Weapon * weapon = new Weapon(name, melee, range, type, droppable, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages);
+    Weapon * weapon = new Weapon(name, melee, range, type, droppable, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages, nullptr);
     database->addWeapon(weapon);
     delete effects;
   }

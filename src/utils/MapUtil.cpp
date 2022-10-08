@@ -9,7 +9,7 @@ int MapUtil::distance(int x1, int y1, int x2, int y2) {
   return std::max(abs(x1 - x2), abs(y1 - y2));
 }
 
-int MapUtil::orientationToTarget(int x1, int y1, int x2, int y2) {
+int MapUtil::getOrientationToTarget(int x1, int y1, int x2, int y2) {
   if(x1 == x2 && y1 < y2)
     return NORTH;
   if(x1 < x2 && y1 < y2)
@@ -27,6 +27,105 @@ int MapUtil::orientationToTarget(int x1, int y1, int x2, int y2) {
   if(x1 > x2 && y1 < y2)
     return NORTH_WEST;
   return NO_ORIENTATION;
+}
+
+MapUtil::Pair MapUtil::getNextPairFromOrientation(int orientation, int x, int y) {
+  MapUtil::Pair pair;
+  pair.x = x;
+  pair.y = y;
+  switch(orientation) {
+    case NORTH:
+      pair.y++;
+      break;
+    case NORTH_EAST:
+      pair.y++;
+      pair.x++;
+      break;
+    case EAST:
+      pair.x++;
+      break;
+    case SOUTH_EAST:
+      pair.y--;
+      pair.x++;
+      break;
+    case SOUTH:
+      pair.y--;
+      break;
+    case SOUTH_WEST:
+      pair.y--;
+      pair.x--;
+      break;
+    case WEST:
+      pair.x--;
+      break;
+    case NORTH_WEST:
+      pair.y++;
+      pair.x--;
+      break;
+  }
+  return pair;
+}
+
+int MapUtil::getDirectOrientationToTarget(int x, int y) {
+  int way_to_the_target = NO_ORIENTATION;
+  if(y > 0.) {
+    if(x == 0.) {
+      way_to_the_target = NORTH;
+    }
+    else {
+      float a = (float) y / (float) x;
+      way_to_the_target = NORTH;
+      if(a > -2.) {
+        way_to_the_target = NORTH_WEST;
+      }
+      if(a > -0.5) {
+        way_to_the_target = WEST;
+      }
+      if(a > 0.) {
+        way_to_the_target = EAST;
+      }
+      if(a > 0.5) {
+        way_to_the_target = NORTH_EAST;
+      }
+      if(a > 2.) {
+        way_to_the_target = NORTH;
+      }
+    }
+  }
+  else if(y < 0.) {
+    way_to_the_target = SOUTH;
+    if(x == 0.) {
+      way_to_the_target = SOUTH;
+    }
+    else {
+      float a = (float) y / (float) x;
+      if(a > -2.) {
+        way_to_the_target = SOUTH_EAST;
+      }
+      if(a > -0.5) {
+        way_to_the_target = EAST;
+      }
+      if(a > 0.) {
+        way_to_the_target = WEST;
+      }
+      if(a > 0.5) {
+        way_to_the_target = SOUTH_WEST;
+      }
+      if(a > 2.) {
+        way_to_the_target = SOUTH;
+      }
+    }
+  }
+  // y == 0
+  else {
+    if(x > 0.) {
+      way_to_the_target = EAST;
+    }
+    else if(x < 0.) {
+      way_to_the_target = WEST;
+    }
+  }
+  return way_to_the_target;
 }
 
 std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest) {
@@ -51,7 +150,7 @@ int MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cam
   for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y][current.x]) {
     previous = current;
   }
-  return orientationToTarget(start.x, start.y, previous.x, previous.y);
+  return getOrientationToTarget(start.x, start.y, previous.x, previous.y);
 }
 
 std::list<MapUtil::Pair> MapUtil::getNeighbours(Map * map, int startX, int startY, int destX, int destY) {

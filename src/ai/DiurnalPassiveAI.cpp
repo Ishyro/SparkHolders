@@ -9,32 +9,36 @@
 #include "ai/DiurnalPassiveAI.h"
 
 Action * DiurnalPassiveAI::getAction(Adventure * adventure, Character * c) {
+  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  std::list<Character *> threats = getThreats(adventure, visionMap, c, 3);
+  int orientation = NO_ORIENTATION;
+  if(!threats.empty()) {
+    Character * target = threats.front();
+    orientation = getFleeOrientation(adventure, c, target->getX(), target->getY());
+    MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, c->getX(), c->getY());
+    if(!adventure->getWorld()->getMap(c->getCurrentMapId())->getTile(pair.y, pair.x)->untraversable) {
+      delete visionMap;
+      return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    }
+    else {
+      orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
+      delete visionMap;
+      return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    }
+  }
   selectHungriness(c);
   selectTiredness(c);
   if(hungry) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
+      delete visionMap;
       return eat_food;
     }
   }
-  if(adventure->getLight() >= 4) {
-    Map * map = adventure->getWorld()->getMap(c->getCurrentMapId());
-    int orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-    Character * threat;
-    int distance_threat = 100;
-    for(Character * other : map->getCharacters()) {
-      if(other->getTeam() != c->getTeam()) {
-        int distance = std::max(abs(c->getX() - other->getX()), abs(c->getY() - other->getY()));
-        if(distance <= c->getVisionRange() && distance < distance_threat) {
-          threat = other;
-          distance_threat = distance;
-          orientation = getFleeOrientation(adventure, c, other->getX(), other->getY());
-        }
-      }
-    }
-    if(orientation != NO_ORIENTATION) {
-      return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
-    }
+  if(sleepy) {
+    delete visionMap;
+    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
-  return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
+  return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

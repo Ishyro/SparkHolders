@@ -36,7 +36,8 @@ class Weapon {
       int ammo_type,
       int capacity,
       std::list<Effect *> effects,
-      int damages[DAMAGE_TYPE_NUMBER]
+      int damages[DAMAGE_TYPE_NUMBER],
+      Ammunition * ammo
     ):
       name(name),
       melee(melee),
@@ -48,9 +49,9 @@ class Weapon {
       use_ammo(use_ammo),
       ammo_type(ammo_type),
       capacity(capacity),
-      effects(effects)
+      effects(effects),
+      ammo(ammo)
     {
-      ammo = nullptr;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
       }
@@ -66,9 +67,9 @@ class Weapon {
       use_ammo(weapon->use_ammo),
       ammo_type(weapon->ammo_type),
       capacity(weapon->capacity),
-      effects(weapon->effects)
+      effects(weapon->effects),
+      ammo(weapon->ammo)
     {
-      ammo = nullptr;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = weapon->damages[i];
       }
