@@ -9,24 +9,31 @@
 #include "ai/NocturnalAgressiveAI.h"
 
 Action * NocturnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
-  if(adventure->getLight() <= 6) {
-    Map * map = adventure->getWorld()->getMap(c->getCurrentMapId());
-    int orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-    Character * threat;
-    int distance_threat = 100;
-    for(Character * other : map->getCharacters()) {
-      if(other->getTeam() != c->getTeam()) {
-        int distance = std::max(abs(c->getX() - other->getX()), abs(c->getY() - other->getY()));
-        if(distance <= c->getVisionRange() && distance < distance_threat) {
-          threat = other;
-          distance_threat = distance;
-          orientation = getFollowOrientation(adventure, c, other->getX(), other->getY());
-        }
-      }
+  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
+  int orientation = NO_ORIENTATION;
+  if(!threats.empty()) {
+    Character * target = threats.front();
+    orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
+    delete visionMap;
+    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  }
+  selectHungriness(c);
+  selectTiredness(c);
+  if(hungry) {
+    Action * eat_food = eat(adventure, c);
+    if(eat_food != nullptr) {
+      delete visionMap;
+      return eat_food;
     }
-    if(orientation != NO_ORIENTATION) {
-      return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
-    }
+  }
+  if(sleepy && adventure->getLight() > 6) {
+    delete visionMap;
+    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  }
+  orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
+  if(orientation != NO_ORIENTATION) {
+    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

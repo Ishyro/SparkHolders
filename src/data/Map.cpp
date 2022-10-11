@@ -477,20 +477,43 @@ void Map::destroyLoot(Loot * l) {
   l = nullptr;
 }
 
-void Map::takeLoot(Character * c) {
+void Map::takeLoot(Character * c, int mode) {
   std::list<Loot *> to_delete = std::list<Loot *>();
-  for(Loot * l : loots) {
-    if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
-      for(auto i : l->items) {
-        c->addItem(i);
+  switch(mode) {
+    case FOOD: {
+      for(Loot * l : loots) {
+        if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
+          for(Item * i : l->items) {
+            if(i->isFood()) {
+              c->addItem(i);
+              l->items.remove(i);
+              break;
+            }
+          }
+          if(l->items.size() == 0 && l->weapons.size() == 0 && l->ammunition.size() == 0 && l->gold == 0) {
+            to_delete.push_back(l);
+          }
+        }
       }
-      for(auto w : l->weapons) {
-        c->addWeapon(w);
+      break;
+    }
+    case ALL: // 0
+    default: {
+      for(Loot * l : loots) {
+        if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
+          for(Item * i : l->items) {
+            c->addItem(i);
+          }
+          for(Weapon * w : l->weapons) {
+            c->addWeapon(w);
+          }
+          for(Ammunition * a : l->ammunition) {
+            c->addAmmunition(a);
+          }
+          c->gainGold(l->gold);
+          to_delete.push_back(l);
+        }
       }
-      for(auto a : l->ammunition) {
-        c->addAmmunition(a);
-      }
-      to_delete.push_back(l);
     }
   }
   for(Loot * l : to_delete) {

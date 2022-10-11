@@ -170,7 +170,7 @@ class SpeechManager;
 
 // character_type
 
-#define HUMAN 1
+#define HOMO 1
 #define UNDEAD 2
 #define NATURE 3
 #define OMONCULUS 4
@@ -196,6 +196,11 @@ class SpeechManager;
 
 #define CORPSE 1
 #define TREASURE 2
+
+// grab_mode
+
+#define ALL 0
+#define FOOD 1
 
 // quest_step_type
 

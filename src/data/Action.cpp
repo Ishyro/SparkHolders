@@ -90,7 +90,7 @@ void Action::execute(Adventure * adventure) {
       }
       break;
     case GRAB:
-      adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user);
+      adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, orientation);
       break;
     case USE_SKILL: {
       user->setOrientation(orientation);

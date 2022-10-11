@@ -162,7 +162,7 @@ Database::Database() {
 
   // character_type
 
-  macros.insert(std::make_pair("HUMAN", HUMAN));
+  macros.insert(std::make_pair("HOMO", HOMO));
   macros.insert(std::make_pair("UNDEAD", UNDEAD));
   macros.insert(std::make_pair("NATURE", NATURE));
   macros.insert(std::make_pair("OMONCULUS", OMONCULUS));

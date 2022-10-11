@@ -154,7 +154,7 @@ class Map {
     void destroyProjectile(Projectile * p);
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
-    void takeLoot(Character * c);
+    void takeLoot(Character * c, int mode);
     void move(Character *, int orientation, Adventure * adventure);
     bool actProjectile(Projectile * p, Adventure * adventure);
     void actAllProjectiles(Adventure * adventure);

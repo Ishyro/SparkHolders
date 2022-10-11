@@ -27,10 +27,13 @@ Action * DiurnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
       return eat_food;
     }
   }
-  if(sleepy) {
+  if(sleepy && adventure->getLight() < 4) {
     delete visionMap;
     return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-  return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  if(orientation != NO_ORIENTATION) {
+    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  }
+  return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

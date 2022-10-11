@@ -117,6 +117,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
 Action * AI::trackPrey(Adventure * adventure, Character * self) {
   Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
   Character * prey = nullptr;
+  Loot * corpse = nullptr;
   // a predator can sense prey even if they are far.
   int max_distance_prey = self->getVisionRange() * 2;
   int distance_prey = max_distance_prey;
@@ -129,26 +130,55 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
       }
     }
   }
-  if(prey != nullptr) {
-    std::vector<MapUtil::Pair> path = getFollowPath(adventure, self, prey->getX(), prey->getY());
-    if(path.size() > 2) {
-      int tp_range = 0;
-      Skill * skill = nullptr;
-      for(Skill * s : self->getSkills()) {
-        skill = s;
-        if( (tp_range = skill->isTeleportSkill()) != 0) {
-          break;
+  int distance_corpse = max_distance_prey;
+  for(Loot * loot : map->getLoots()) {
+    if(loot->type == CORPSE) {
+      int distance = MapUtil::distance(self->getX(), self->getY(), loot->x, loot->y);
+      if(distance <= max_distance_prey && distance < distance_corpse) {
+        bool isFood = false;
+        for(Item * item : loot->items) {
+          if(item->isFood()) {
+            isFood = true;
+            break;
+          }
+        }
+        if(isFood) {
+          corpse = loot;
+          distance_corpse = distance;
         }
       }
-      if(tp_range != 0) {
-        int tp_index = std::min(tp_range, distance_prey);
-        MapUtil::Pair tp_target = path[tp_index];
-        return new Action(USE_SKILL, self, self->getOrientation(), skill, nullptr, tp_target.x, tp_target.y, nullptr, "", 1, 1, 1);
+    }
+  }
+  if(distance_prey < distance_corpse) {
+    if(prey != nullptr) {
+      std::vector<MapUtil::Pair> path = getFollowPath(adventure, self, prey->getX(), prey->getY());
+      if(path.size() > 2) {
+        int tp_range = 0;
+        Skill * skill = nullptr;
+        for(Skill * s : self->getSkills()) {
+          skill = s;
+          if( (tp_range = skill->isTeleportSkill()) != 0) {
+            break;
+          }
+        }
+        if(tp_range != 0) {
+          int tp_index = std::min(tp_range, distance_prey);
+          MapUtil::Pair tp_target = path[tp_index];
+          return new Action(USE_SKILL, self, self->getOrientation(), skill, nullptr, tp_target.x, tp_target.y, nullptr, "", 1, 1, 1);
+        }
+      }
+      if(path.size() > 0) {
+        MapUtil::Pair next = path[0];
+        return new Action(MOVE, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), next.x, next.y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
     }
-    if(path.size() > 0) {
-      MapUtil::Pair next = path[0];
-      return new Action(MOVE, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), next.x, next.y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  }
+  else {
+    if(distance_corpse == 0) {
+      return new Action(GRAB, self, FOOD, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    }
+    else {
+      return new Action(MOVE, self, getFollowOrientation(adventure, self, corpse->x, corpse->y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
   return new Action(REST, self, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
