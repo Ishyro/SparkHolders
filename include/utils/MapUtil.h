@@ -25,8 +25,7 @@ namespace MapUtil {
   std::list<Pair> getNeighbours(Map * map, int startX, int startY, int destX, int destY);
   std::vector<Pair> getPathToTarget(Map * map, int startX, int startY, int destX, int destY);
   int getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY);
-  std::list<Pair> getPathFromCartesianEquationFloor(float a, int range);
-  std::list<Pair> getPathFromCartesianEquationCeil(float a, int range);
+  std::list<Pair> getPathFromCartesianEquation(float a, int range);
 };
 
 #endif // _MAP_UTIL_H_

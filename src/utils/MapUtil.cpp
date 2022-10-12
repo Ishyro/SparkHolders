@@ -335,23 +335,11 @@ int MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int destX
 
 // 0 <= a <= 1
 // y <= x
-std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquationFloor(float a, int range) {
+std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquation(float a, int range) {
   MapUtil::Pair pair;
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   for(pair.x = 0; pair.x <= range; pair.x++) {
     pair.y = std::floor(a * (float) pair.x);
-    result.push_back(pair);
-  }
-  return result;
-}
-
-// 0 <= a <= 1
-// y <= x
-std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquationCeil(float a, int range) {
-  MapUtil::Pair pair;
-  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
-  for(pair.x = 0; pair.x <= range; pair.x++) {
-    pair.y = std::ceil(a * (float) pair.x);
     result.push_back(pair);
   }
   return result;
