@@ -21,6 +21,8 @@
 #include "server/Launcher.h"
 #include "server/Link.h"
 
+#include <random>
+
 // to remove after testing
 #include <iostream>
 #include <chrono>
@@ -78,6 +80,7 @@ int main(int argc, char ** argv) {
   }
 
   std::string adventureFile = argv[1];
+  srand(Settings::getSeed());
 
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
   adventure->applyDayLight();
@@ -134,7 +137,7 @@ int main(int argc, char ** argv) {
     adventure->incrDayLight();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
-    // std::cout << "Round duration: " << elapsed_seconds.count() << "s\n";
+    // std::cout << "Round duration: " << elapsed_seconds.count() << "s" << std::endl;
   }
   delete adventure;
   ss.close();

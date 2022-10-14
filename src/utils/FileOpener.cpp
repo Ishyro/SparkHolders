@@ -14,6 +14,8 @@
 #include "ai/DiurnalAgressiveAI.h"
 #include "ai/NocturnalAgressiveAI.h"
 #include "ai/EtheralCasterAI.h"
+#include "ai/GuardAI.h"
+#include "ai/RoamerAI.h"
 
 #include "data/Adventure.h"
 #include "data/Attributes.h"
@@ -172,6 +174,7 @@ namespace FileOpener {
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       std::list<Way *> * titles = new std::list<Way *>();
       std::istringstream is_titles(command);
       std::string title;
@@ -191,6 +194,12 @@ namespace FileOpener {
       }
       else if (ai_str == "NocturnalAgressiveAI") {
         ai = new NocturnalAgressiveAI(x, y);
+      }
+      else if (ai_str == "GuardAI") {
+        ai = new GuardAI(x, y);
+      }
+      else if (ai_str == "RoamerAI") {
+        ai = new RoamerAI(x, y);
       }
       Character * c = new Character(database->getCharacter(name), name, xp, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession, *titles);
       map->addCharacter(c);
@@ -285,6 +294,31 @@ namespace FileOpener {
     int baseVisionRange = stoi(values.at("baseVisionRange"));
     int baseVisionPower = stoi(values.at("baseVisionPower"));
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
+    std::list<Item *> * items = new std::list<Item *>();
+    std::istringstream is_items(values.at("items"));
+    std::string item;
+    while(getline(is_items, item, '%')) {
+      items->push_back((Item *) database->getItem(item));
+    }
+    std::list<Weapon *> * weapons = new std::list<Weapon *>();
+    std::istringstream is_weapons(values.at("weapons"));
+    std::string weapon;
+    while(getline(is_weapons, weapon, '%')) {
+      weapons->push_back((Weapon *) database->getWeapon(weapon));
+    }
+    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
+    std::istringstream is_ammunition(values.at("ammunition"));
+    std::string ammo;
+    while(getline(is_ammunition, ammo, '%')) {
+      std::string ammo_name = ammo.substr(0, ammo.find('|'));
+      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
+      Ammunition * new_ammo = new Ammunition();
+      new_ammo->projectile = base_ammo->projectile;
+      new_ammo->gold_value = base_ammo->gold_value;
+      new_ammo->ammo_type = base_ammo->ammo_type;
+      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
+      ammunition->push_back(new_ammo);
+    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -312,10 +346,30 @@ namespace FileOpener {
     std::string amulet_str = values.at("amulet");
     Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
     std::string weapon_str = values.at("weapon");
-    Weapon * weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
-    Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, weapon);
-    Attributes * attributes = new Attributes(name, baseHp, baseMana, baseArmor, baseDamage, baseSoulBurn, baseFlow, baseVisionRange, baseVisionPower, baseDetectionRange, *effects, *skills, gear);
+    Weapon * current_weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
+    Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, current_weapon);
+    Attributes * attributes = new Attributes(
+      name,
+      baseHp,
+      baseMana,
+      baseArmor,
+      baseDamage,
+      baseSoulBurn,
+      baseFlow,
+      baseVisionRange,
+      baseVisionPower,
+      baseDetectionRange,
+      *items,
+      *weapons,
+      *ammunition,
+      *effects,
+      *skills,
+      gear
+    );
     database->addAttributes(attributes);
+    delete items;
+    delete weapons;
+    delete ammunition;
     delete effects;
     delete skills;
   }

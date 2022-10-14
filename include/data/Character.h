@@ -3,6 +3,8 @@
 
 #include <list>
 #include <string>
+#include <map>
+#include <array>
 #include <cmath>
 #include <algorithm>
 
@@ -146,7 +148,8 @@ class Character {
       items(std::list<Item *>()),
       weapons(std::list<Weapon *>()),
       ammunition(from_database->ammunition),
-      effects(from_database->effects),
+      //effects(from_database->effects),
+      effects(std::list<Effect *>()),
       skills(from_database->skills),
       sellable_items(std::list<Item *>()),
       sellable_weapons(std::list<Weapon *>()),
@@ -185,6 +188,7 @@ class Character {
       for(Way * title : titles) {
         setWay(title);
       }
+      initEffects(from_database->effects);
     }
     Character(
       int maxHp,
@@ -317,6 +321,7 @@ class Character {
     int getLevel();
     float getPriorityModifier();
     float getDamageMultiplier();
+    int getPowerScore();
 
     bool needToSend();
     void setNeedToSend(bool need_to_send);
@@ -333,6 +338,7 @@ class Character {
     std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> getDamageSkills();
     std::list<Way *> getTitles();
 
     std::list<Item *> getSellableItems();
@@ -421,8 +427,11 @@ class Character {
     Projectile * shoot(const Character * target, int y, int x);
     void reload(Ammunition * ammo);
     void attack(Character * target);
+    Ammunition * canReload();
+    Weapon * swapMelee();
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
+    int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages);
     void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
     std::string to_string(int offsetY, int offsetX);
     std::string full_to_string(Adventure * adventure);
@@ -433,6 +442,7 @@ class Character {
     void deepDelete();
 
   private:
+    void initEffects(std::list<Effect *> effects);
     int x;
     int y;
     int orientation;

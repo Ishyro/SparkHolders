@@ -6,17 +6,17 @@
 
 #include "ai/AI.h"
 
-#include "ai/NocturnalAgressiveAI.h"
+#include "ai/RoamerAI.h"
 
-Action * NocturnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
+#include <random>
+
+Action * RoamerAI::getAction(Adventure * adventure, Character * c) {
   Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   int orientation = NO_ORIENTATION;
   if(!threats.empty()) {
-    Character * target = threats.front();
-    orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
     delete visionMap;
-    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return attack(adventure, threats, c);
   }
   selectHungriness(c);
   selectTiredness(c);
@@ -27,7 +27,7 @@ Action * NocturnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
       return eat_food;
     }
   }
-  if(sleepy && adventure->getLight() > 6) {
+  if(sleepy && adventure->getLight() < 4) {
     delete visionMap;
     return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
@@ -36,6 +36,9 @@ Action * NocturnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
     delete visionMap;
     return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
+  // we are at destination
+  origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeX;
+  origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeY;
   delete visionMap;
   return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

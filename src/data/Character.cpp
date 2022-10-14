@@ -36,12 +36,36 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   satiety = 75.;
   if(init) {
     gear = new Gear(attributes->getStartingGear());
+    for(Item * item : attributes->getItems()) {
+      Item * toadd = new Item(item);
+      items.push_back(toadd);
+    }
+    for(Weapon * weapon : attributes->getWeapons()) {
+      Weapon * toadd = new Weapon(weapon);
+      weapons.push_back(toadd);
+    }
+    for(Ammunition * ammo : attributes->getAmmunitions()) {
+      Ammunition * toadd = new Ammunition();
+      toadd->projectile = ammo->projectile;
+      toadd->number = ammo->number;
+      toadd->gold_value = ammo->gold_value;
+      toadd->ammo_type = ammo->ammo_type;
+      ammunition.push_back(toadd);
+    }
     for(Effect * effect : attributes->getEffects()) {
-      addEffect(effect);
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
     }
     for(Skill * skill : attributes->getSkills()) {
       addSkill(skill);
     }
+  }
+}
+
+void Character::initEffects(std::list<Effect *> effects) {
+  for(Effect * effect : effects) {
+    Effect * toadd = new Effect(effect, 1, 1);
+    toadd->activate(this);
   }
 }
 
@@ -140,6 +164,10 @@ float Character::getDamageMultiplier() {
   return std::max(0.F, 1.F + ((float) result) / 100.F);
 }
 
+int Character::getPowerScore() {
+  return getMaxHp() + getMaxMana() + 5 * (getFlow() + getSoulBurnTreshold() + getArmor() + getDamageMultiplier());
+}
+
 bool Character::needToSend() { return need_to_send; }
 void Character::setNeedToSend(bool need_to_send) { this->need_to_send = need_to_send; }
 
@@ -157,6 +185,31 @@ std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
+
+std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
+  std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>>();
+  for(Skill * skill : skills) {
+    if(skill->getManaCost(1, 1, 1) < mana) {
+      std::array<int, DAMAGE_TYPE_NUMBER> damages;
+      bool isDamageSkill = false;
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        damages[i] = skill->getDamageFromType(i, 1);
+        if(damages[i] > 0) {
+          isDamageSkill = true;
+        }
+      }
+      if(isDamageSkill) {
+        result.insert(std::make_pair(skill, damages));
+      }
+    }
+  }
+  std::array<int, DAMAGE_TYPE_NUMBER> damages;
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damages[i] = getDamageFromType(i);
+  }
+  result.insert(std::make_pair(nullptr, damages));
+  return result;
+}
 
 std::list<Item *> Character::getSellableItems() { return sellable_items; }
 std::list<Weapon *> Character::getSellableWeapons() { return sellable_weapons; }
@@ -763,16 +816,6 @@ float Character::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
-void Character::attack(Character * target) {
-  if(gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
-    int realDamages[DAMAGE_TYPE_NUMBER];
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      realDamages[damage_type] = getDamageFromType(damage_type);
-    }
-    target->receiveAttack(realDamages, orientation);
-  }
-}
-
 Projectile * Character::shoot(const Character * target, int y, int x) {
   if(!gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - this->x), abs(y - this->y))) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
@@ -794,6 +837,16 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
   return nullptr;
 }
 
+void Character::attack(Character * target) {
+  if(gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
+    int realDamages[DAMAGE_TYPE_NUMBER];
+    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      realDamages[damage_type] = getDamageFromType(damage_type);
+    }
+    target->receiveAttack(realDamages, orientation);
+  }
+}
+
 void Character::reload(Ammunition * ammo) {
   if(player_character) {
     setNeedToSend(true);
@@ -807,6 +860,32 @@ void Character::reload(Ammunition * ammo) {
   if(oldAmmo != nullptr) {
     ammunition.push_back(oldAmmo);
   }
+}
+
+
+Ammunition * Character::canReload() {
+  Ammunition * ammo = nullptr;
+  int number = 0;
+  for(Ammunition * current : ammunition) {
+    if(gear->getWeapon()->ammo_type == current->ammo_type && current->number > number) {
+      ammo = current;
+      number = current->number;
+    }
+  }
+  return ammo;
+}
+
+Weapon * Character::swapMelee() {
+  Weapon * weapon = nullptr;
+  int rawDamage = 0;
+  for(Weapon * current : weapons) {
+    int currentRawDamage = current->getRawDamage();
+    if(currentRawDamage > rawDamage) {
+      weapon = current;
+      rawDamage = currentRawDamage;
+    }
+  }
+  return weapon;
 }
 
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
@@ -875,6 +954,32 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
     }
     hp -= std::max(0, damage - getArmor());
   }
+}
+
+int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages) {
+  if(isInvulnerable() || isEtheral()) {
+    return 0;
+  }
+  int damage = 0;
+  int trueDamage = 0;
+  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    if(damage_type == NEUTRAL_DAMAGE) {
+      damage += damages[damage_type];
+    }
+    if(damage_type == MIND_DAMAGE) {
+      trueDamage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+    }
+    if(damage_type == TRUE_DAMAGE) {
+      trueDamage += damages[damage_type];
+    }
+    if(damage_type == SOUL_DAMAGE) {
+      trueDamage + damages[damage_type];
+    }
+    else {
+      damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+    }
+  }
+  return trueDamage + std::max(0, damage - getArmor());
 }
 
 void Character::trade(Character * buyer, int object_type, std::string object_name, float price_modifier) {
@@ -952,9 +1057,9 @@ std::string Character::to_string(int offsetY, int offsetX) {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_long(ss, id);
-  String::insert_int(ss, getHp());
+  String::insert_int(ss, hp);
   String::insert_int(ss, getMaxHp());
-  String::insert_int(ss, getMana());
+  String::insert_int(ss, mana);
   String::insert_int(ss, getMaxMana());
   String::insert_float(ss, getStamina());
   String::insert_float(ss, getSatiety());

@@ -29,6 +29,9 @@ class Attributes {
       int baseVisionRange,
       int baseVisionPower,
       int baseDetectionRange,
+      std::list<Item *> items,
+      std::list<Weapon *> weapons,
+      std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       Gear * startingGear
@@ -43,10 +46,16 @@ class Attributes {
       baseVisionRange(baseVisionRange),
       baseVisionPower(baseVisionPower),
       baseDetectionRange(baseDetectionRange),
+      items(items),
+      weapons(weapons),
+      ammunition(ammunition),
       effects(effects),
       skills(skills),
       startingGear(startingGear)
     {}
+    std::list<Item *> getItems();
+    std::list<Weapon *> getWeapons();
+    std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     Gear * getStartingGear();
@@ -55,6 +64,9 @@ class Attributes {
     bool operator == (const Attributes& a) const { return name == a.name; }
     bool operator != (const Attributes& a) const { return !operator==(a); }
   private:
+    std::list<Item *> items;
+    std::list<Weapon *> weapons;
+    std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
     Gear * startingGear;

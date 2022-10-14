@@ -15,6 +15,7 @@ data/tiles/wall_stone.data
 data/tiles/wall_wood.data
 data/tiles/water.data
 # maps
+data/maps/cave.data
 data/maps/central_square.data
 data/maps/house_north.data
 data/maps/house_east.data
@@ -25,6 +26,7 @@ data/effects/experience_10.data
 data/effects/satiety_10.data
 data/effects/etheral.data
 # items
+data/items/bone.data
 data/items/homo_meat.data
 data/items/iron_boots.data
 data/items/iron_cuirass.data
@@ -115,11 +117,16 @@ data/attributes/vanguard.data
 data/attributes/guardian.data
 data/attributes/elementalist.data
 data/attributes/shadow.data
+data/attributes/skeleton_archer.data
+data/attributes/skeleton_magus.data
+data/attributes/skeleton_warden.data
+data/attributes/skeleton_warrior.data
 data/attributes/wolf.data
 # characters
 data/characters/grass_fairy.data
 data/characters/player.data
 data/characters/sheep.data
+data/characters/skeleton.data
 data/characters/wolf.data
 # pseudoskills with summoning
 data/pseudoskills/summon_grass_fairy.data

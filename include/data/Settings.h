@@ -46,6 +46,7 @@ namespace Settings {
   int getStaminaOverextendRatio();
   int getSatietyOverextendRatio();
   float getBuyingPriceModifier();
+  int getSeed();
 };
 
 #endif // _SETTINGS_H_

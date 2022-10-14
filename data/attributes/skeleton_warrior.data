@@ -1,10 +1,10 @@
-name = TXT_VANGUARD
-baseHp = 250
-baseMana = 200
-baseArmor = 25
-baseDamage = 25
-baseSoulBurn = 35
-baseFlow = 25
+name = TXT_SKELETON_WARRIOR
+baseHp = 200
+baseMana = 150
+baseArmor = 20
+baseDamage = 20
+baseSoulBurn = 30
+baseFlow = 20
 baseVisionRange = 10
 baseVisionPower = 6
 baseDetectionRange = 1

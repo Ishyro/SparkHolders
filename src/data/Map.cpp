@@ -43,35 +43,51 @@ void Map::propagateLight(int y, int x) {
   int light = lights[y][x] - 1;
   if(x > 1 && y > 1 && light > lights[y - 1][x - 1]) {
     lights[y - 1][x - 1] = light;
-    propagateLight(y - 1, x - 1);
+    if(!getTile(y - 1, x - 1)->opaque) {
+      propagateLight(y - 1, x - 1);
+    }
   }
   if(x > 1 && light > lights[y][x - 1]) {
     lights[y][x - 1] = light;
-    propagateLight(y, x - 1);
+    if(!getTile(y, x - 1)->opaque) {
+      propagateLight(y, x - 1);
+    }
   }
   if(x > 1 && y < sizeY - 1 && light > lights[y + 1][x - 1]) {
     lights[y + 1][x - 1] = light;
-    propagateLight(y + 1, x - 1);
+    if(!getTile(y + 1, x - 1)->opaque) {
+      propagateLight(y + 1, x - 1);
+    }
   }
   if(y > 1 && light > lights[y - 1][x]) {
-    lights[y-1][x] = light;
-    propagateLight(y - 1, x);
+    lights[y - 1][x] = light;
+    if(!getTile(y - 1, x)->opaque) {
+      propagateLight(y - 1, x);
+    }
   }
   if(y < sizeY - 1 && light > lights[y + 1][x]) {
     lights[y + 1][x] = light;
-    propagateLight(y + 1, x);
+    if(!getTile(y + 1, x)->opaque) {
+      propagateLight(y + 1, x);
+    }
   }
   if(x < sizeX - 1 && y > 1 && light > lights[y - 1][x + 1]) {
     lights[y - 1][x + 1] = light;
-    propagateLight(y - 1, x + 1);
+    if(!getTile(y - 1, x + 1)->opaque) {
+      propagateLight(y - 1, x + 1);
+    }
   }
   if(x < sizeX - 1 && light > lights[y][x + 1]) {
     lights[y][x + 1] = light;
-    propagateLight(y, x + 1);
+    if(!getTile(y, x + 1)->opaque) {
+      propagateLight(y, x + 1);
+    }
   }
   if(x < sizeX - 1 && y < sizeY - 1 && light > lights[y + 1][x + 1]) {
     lights[y + 1][x + 1] = light;
-    propagateLight(y + 1, x + 1);
+    if(!getTile(y + 1, x + 1)->opaque) {
+      propagateLight(y + 1, x + 1);
+    }
   }
 }
 
@@ -338,7 +354,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
     int xp = victim->getXP();
-    Effect * effect = new Effect("TXT_GAIN_XP", 0, "", EXPERIENCE, INSTANT, 0, xp, damages, damage_reductions);
+    Effect * effect = new Effect("TXT_GAIN_XP", victim->getLevel(), "", EXPERIENCE, INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
     loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, xp * 10, *effects, damage_reductions));

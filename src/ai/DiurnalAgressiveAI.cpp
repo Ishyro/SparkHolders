@@ -33,7 +33,9 @@ Action * DiurnalAgressiveAI::getAction(Adventure * adventure, Character * c) {
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != NO_ORIENTATION) {
+    delete visionMap;
     return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
+  delete visionMap;
   return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

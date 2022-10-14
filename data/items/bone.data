@@ -1,0 +1,8 @@
+name = TXT_BONE
+equipable = false
+consumable = false
+type = UNEQUIPABLE
+droppable = true
+weight = 0.5
+gold_value = 15
+effects =
