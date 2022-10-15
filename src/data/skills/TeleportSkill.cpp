@@ -1,7 +1,9 @@
 #include "data/skills/TeleportSkill.h"
 
+#include "utils/MapUtil.h"
+
 void TeleportSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
-  if(target != nullptr && std::max(abs(target->getX()) - x, abs(target->getY() - y)) <= range * overcharge_range) {
+  if(target != nullptr && MapUtil::distance(owner->getX(), owner->getY(), x, y) <= range * overcharge_range) {
     switch(apparition_type) {
       case SOFT:
         adventure->softMoveCharacterToMap(target, map_id, y, x);
@@ -12,7 +14,8 @@ void TeleportSkill::activate(Character * owner, Character * target, Adventure * 
       default:
         ;
     }
-  } else if(owner != nullptr && std::max(abs(owner->getX()) - x, abs(owner->getY() - y)) <= range * overcharge_range) {
+  }
+  else if(owner != nullptr && MapUtil::distance(owner->getX(), owner->getY(), x, y) <= range * overcharge_range) {
     switch(apparition_type) {
       case SOFT:
         adventure->softMoveCharacterToMap(owner, map_id, y, x);
@@ -22,6 +25,11 @@ void TeleportSkill::activate(Character * owner, Character * target, Adventure * 
         break;
       default:
         ;
+    }
+  }
+  for(Projectile * p : adventure->getWorld()->getMap(owner->getCurrentMapId())->getProjectiles()) {
+    if(p->getTarget() == owner) {
+      p->setLost(true);
     }
   }
 }

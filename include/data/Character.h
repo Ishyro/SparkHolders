@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "data/Attributes.h"
+#include "data/Projectile.h"
 
 #include "Values.h"
 
@@ -147,8 +148,7 @@ class Character {
       ai(ai),
       items(std::list<Item *>()),
       weapons(std::list<Weapon *>()),
-      ammunition(from_database->ammunition),
-      //effects(from_database->effects),
+      ammunition(std::list<Ammunition *>()),
       effects(std::list<Effect *>()),
       skills(from_database->skills),
       sellable_items(std::list<Item *>()),
@@ -172,6 +172,14 @@ class Character {
       }
       for(Weapon * weapon : from_database->weapons) {
         weapons.push_back(new Weapon(weapon));
+      }
+      for(Ammunition * ammo : from_database->ammunition) {
+        Ammunition * toadd = new Ammunition();
+        toadd->projectile = ammo->projectile;
+        toadd->number = ammo->number;
+        toadd->gold_value = ammo->gold_value;
+        toadd->ammo_type = ammo->ammo_type;
+        ammunition.push_back(toadd);
       }
       for(Item * item : from_database->sellable_items) {
         sellable_items.push_back(new Item(item));

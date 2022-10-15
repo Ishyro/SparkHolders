@@ -39,7 +39,6 @@ Character * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
 void Projectile::move(Map * map) {
-  nextOrientation(map);
   switch(orientation) {
     case NORTH:
       y++;
@@ -73,6 +72,7 @@ void Projectile::move(Map * map) {
   if(current_travel++ >= falloff_range) {
     reduceDamageTile();
   }
+  nextOrientation(map);
 }
 
 void Projectile::nextOrientation(Map * map) {

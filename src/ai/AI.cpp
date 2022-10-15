@@ -253,13 +253,13 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
   if(target != nullptr) {
     int orientation = MapUtil::getDirectOrientationToTarget(target->getX() - self->getX(), target->getY() - self->getY());
     if(skill != nullptr) {
-      return new Action(USE_SKILL, self, orientation, skill, target, 0, 0, nullptr, "", 1, 1, 1);
+      return new Action(USE_SKILL, self, orientation, skill, target, target->getX(), target->getY(), nullptr, "", 1, 1, 1);
     }
     if(self->getGear()->getWeapon()->melee) {
-      return new Action(FORCE_STRIKE, self, orientation, nullptr, target, 0, 0, nullptr, "", 1, 1, 1);
+      return new Action(FORCE_STRIKE, self, orientation, nullptr, target, target->getX(), target->getY(), nullptr, "", 1, 1, 1);
     }
     if(!self->getGear()->getWeapon()->use_ammo || self->getGear()->getWeapon()->getCurrentCapacity() > 0) {
-      return new Action(SHOOT, self, orientation, nullptr, target, 0, 0, nullptr, "", 1, 1, 1);
+      return new Action(SHOOT, self, orientation, nullptr, target, target->getX(), target->getY(), nullptr, "", 1, 1, 1);
     }
     Ammunition * ammo = nullptr;
     ammo = self->canReload();

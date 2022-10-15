@@ -5,7 +5,6 @@
 #include "data/Effect.h"
 #include "data/Gear.h"
 #include "data/Item.h"
-#include "data/Projectile.h"
 #include "data/skills/Skill.h"
 #include "data/Settings.h"
 #include "data/Speech.h"
@@ -817,7 +816,7 @@ float Character::getDamageReductionFromType(int damage_type) {
 }
 
 Projectile * Character::shoot(const Character * target, int y, int x) {
-  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - this->x), abs(y - this->y))) {
+  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, x, y)) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {

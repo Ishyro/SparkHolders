@@ -1,12 +1,12 @@
 name = TXT_GUARDIAN
-baseHp = 35000
+baseHp = 350
 baseMana = 100
-baseArmor = 5
+baseArmor = 50
 baseDamage = 10
 baseSoulBurn = 30
 baseFlow = 20
 baseVisionRange = 10
-baseVisionPower = 10
+baseVisionPower = 6
 baseDetectionRange = 1
 items =
 weapons =
