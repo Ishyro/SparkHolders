@@ -1,4 +1,5 @@
-name = lava
+name = TXT_LAVA
 untraversable = true
 opaque = false
+solid = false
 light = 5

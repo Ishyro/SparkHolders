@@ -789,8 +789,11 @@ namespace FileOpener {
     std::istringstream is_opaque(values.at("opaque"));
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
+    std::istringstream is_solid(values.at("solid"));
+    bool solid;
+    is_solid >> std::boolalpha >> solid;
     int light = stoi(values.at("light"));
-    Tile * tile = new Tile(name, untraversable, opaque, light);
+    Tile * tile = new Tile(name, untraversable, opaque, solid, light);
     database->addTile(tile);
   }
 

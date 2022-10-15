@@ -1,4 +1,5 @@
-name = mist
+name = TXT_MIST
 untraversable = false
 opaque = true
+solid = false
 light = 0

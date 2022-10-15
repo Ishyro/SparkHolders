@@ -1,4 +1,5 @@
-name = wall_wood
+name = TXT_WALL_WOOD
 untraversable = true
 opaque = true
+solid = true
 light = 0

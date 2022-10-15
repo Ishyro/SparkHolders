@@ -2,22 +2,22 @@ name = TXT_HOUSE_SOUTH
 width = 11
 height = 11
 outside = false
-0 = wall_wood
-1 = wall_stone
-2 = fireplace
-3 = floor_wood
-4 = floor_stone
-5 = torch_wall
-6 = door
+0 = TXT_WALL_WOOD
+1 = TXT_WALL_STONE
+2 = TXT_FIREPLACE
+3 = TXT_FLOOR_WOOD
+4 = TXT_FLOOR_STONE
+5 = TXT_TORCH_WALL
+6 = TXT_DOOR
 !end
 0 0 0 0 1 2 1 0 0 0 0
 0 3 3 3 4 4 4 3 3 3 0
-0 3 3 3 3 3 3 3 3 3 0
+1 3 3 3 3 3 3 3 3 3 1
+5 3 3 3 3 3 3 3 3 3 5
+1 3 3 3 3 3 3 3 3 3 1
 0 3 3 3 3 3 3 3 3 3 0
 1 3 3 3 3 3 3 3 3 3 1
 5 3 3 3 3 3 3 3 3 3 5
 1 3 3 3 3 3 3 3 3 3 1
 0 3 3 3 3 3 3 3 3 3 0
-0 3 3 3 3 3 3 3 3 3 0
-0 3 3 3 3 3 3 3 3 3 0
-0 0 0 0 0 6 0 0 0 0 0
+0 0 1 5 1 6 1 5 1 0 0

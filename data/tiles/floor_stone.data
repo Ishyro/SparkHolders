@@ -1,4 +1,5 @@
-name = floor_stone
+name = TXT_FLOOR_STONE
 untraversable = false
 opaque = false
+solid = false
 light = 0

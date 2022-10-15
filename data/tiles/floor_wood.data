@@ -1,4 +1,5 @@
-name = floor_wood
+name = TXT_FLOOR_WOOD
 untraversable = false
 opaque = false
+solid = false
 light = 0

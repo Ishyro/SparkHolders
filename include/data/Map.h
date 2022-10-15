@@ -102,7 +102,7 @@ class Map {
       }
       for(int y = 0; y < sizeY; y++) {
         for(int x = 0; x < sizeX; x++) {
-          if (map->getTile(y + offsetY, x + offsetX)->name != "mist") {
+          if (map->getTile(y + offsetY, x + offsetX)->name != "TXT_MIST") {
             lights[y][x] = map->getLight(y + offsetY, x + offsetX);
           }
           else {
@@ -115,7 +115,7 @@ class Map {
       loots = std::list<Loot *>();
       for(Character * c : map->characters) {
         if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
-          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "mist" &&
+          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "TXT_MIST" &&
           !c->isInvisible() &&
           !c->isEtheral()) {
           characters.push_back(c);
@@ -123,13 +123,13 @@ class Map {
       }
       for(Projectile * p : map->projectiles) {
         if(p->getX() - offsetX >= 0 && p->getX() - offsetX < sizeX && p->getY() - offsetY >= 0 && p->getY() - offsetY < sizeY &&
-          tiles[p->getY() - offsetY][p->getX() - offsetX]->name != "mist") {
+          tiles[p->getY() - offsetY][p->getX() - offsetX]->name != "TXT_MIST") {
           projectiles.push_back(p);
         }
       }
       for(Loot * l : map->loots) {
         if(l->x - offsetX >= 0 && l->x - offsetX < sizeX && l->y - offsetY >= 0 && l->y - offsetY < sizeY &&
-          tiles[l->y - offsetY][l->x - offsetX]->name != "mist") {
+          tiles[l->y - offsetY][l->x - offsetX]->name != "TXT_MIST") {
           loots.push_back(l);
         }
       }

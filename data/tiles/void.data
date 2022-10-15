@@ -1,4 +1,5 @@
-name = void
+name = TXT_VOID
 untraversable = true
 opaque = true
+solid = false
 light = 0

@@ -1,4 +1,5 @@
-name = door
+name = TXT_DOOR
 untraversable = false
 opaque = false
+solid = false
 light = 0

@@ -14,11 +14,11 @@ int AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y
 }
 
 int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getOrientationToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y);
+  return MapUtil::getOrientationToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y, false);
 }
 
 std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y);
+  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y, false);
 }
 
 void AI::selectHungriness(Character * self) {
@@ -277,6 +277,11 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     ammo = self->canReload();
     if(ammo != nullptr) {
       return new Action(RELOAD, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, ammo->projectile->name, 1, 1, 1);
+    }
+    Weapon * weapon = nullptr;
+    weapon = self->swapMelee();
+    if(weapon != nullptr) {
+      return new Action(SWAP_GEAR, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, weapon->name, 1, 1, 1);
     }
   }
   max = 0;

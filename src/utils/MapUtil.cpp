@@ -153,7 +153,7 @@ int MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cam
   return getOrientationToTarget(start.x, start.y, previous.x, previous.y);
 }
 
-std::list<MapUtil::Pair> MapUtil::getNeighbours(Map * map, int startX, int startY, int destX, int destY) {
+std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX, int startY, int destX, int destY) {
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
   if(startY > 0) {
@@ -217,7 +217,75 @@ std::list<MapUtil::Pair> MapUtil::getNeighbours(Map * map, int startX, int start
   return result;
 }
 
-std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int startY, int destX, int destY) {
+std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, int startY, int destX, int destY) {
+  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
+  MapUtil::Pair next = MapUtil::Pair();
+  if(startY > 0) {
+    if(!map->getTile(startY - 1, startX)->solid) {
+      next.x = startX;
+      next.y = startY - 1;
+      result.push_back(next);
+    }
+  }
+  if(startY < map->sizeY - 1) {
+    if(!map->getTile(startY + 1, startX)->solid) {
+      next.x = startX;
+      next.y = startY + 1;
+      result.push_back(next);
+    }
+  }
+  if(startX > 0) {
+    if(!map->getTile(startY, startX - 1)->solid) {
+      next.x = startX - 1;
+      next.y = startY;
+      result.push_back(next);
+    }
+  }
+  if(startX < map->sizeX - 1) {
+    if(!map->getTile(startY, startX + 1)->solid) {
+      next.x = startX + 1;
+      next.y = startY;
+      result.push_back(next);
+    }
+    if(startY > 0) {
+      if(!map->getTile(startY - 1, startX + 1)->solid) {
+        next.x = startX + 1;
+        next.y = startY - 1;
+        result.push_back(next);
+      }
+    }
+    if(startY < map->sizeY - 1) {
+      if(!map->getTile(startY + 1, startX + 1)->solid) {
+        next.x = startX + 1;
+        next.y = startY + 1;
+        result.push_back(next);
+      }
+    }
+  }
+  if(startX > 0) {
+    if(startY > 0) {
+      if(!map->getTile(startY - 1, startX - 1)->solid) {
+        next.x = startX - 1;
+        next.y = startY - 1;
+        result.push_back(next);
+      }
+    }
+    if(startY < map->sizeY - 1) {
+      if(!map->getTile(startY + 1, startX - 1)->solid) {
+        next.x = startX - 1;
+        next.y = startY + 1;
+        result.push_back(next);
+      }
+    }
+  }
+  return result;
+}
+
+std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying) {
+  std::list<MapUtil::Pair> (*getNeighbours)(Map *, int, int, int, int){ &getNeighboursTraversable };
+  if(flying) {
+    getNeighbours = &getNeighboursNonSolid;
+  }
   MapUtil::Pair start = MapUtil::Pair();
   start.x = startX;
   start.y = startY;
@@ -275,7 +343,11 @@ std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int s
   return std::vector<MapUtil::Pair>();
 }
 
-int MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY) {
+int MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying) {
+  std::list<MapUtil::Pair> (*getNeighbours)(Map *, int, int, int, int){ &getNeighboursTraversable };
+  if(flying) {
+    getNeighbours = &getNeighboursNonSolid;
+  }
   MapUtil::Pair start = MapUtil::Pair();
   start.x = startX;
   start.y = startY;

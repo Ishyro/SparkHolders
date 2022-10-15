@@ -1,4 +1,5 @@
-name = water
+name = TXT_WATER
 untraversable = true
 opaque = false
+solid = false
 light = 0

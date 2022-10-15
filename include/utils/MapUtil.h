@@ -22,9 +22,10 @@ namespace MapUtil {
   int getDirectOrientationToTarget(int x, int y);
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
   int reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
-  std::list<Pair> getNeighbours(Map * map, int startX, int startY, int destX, int destY);
-  std::vector<Pair> getPathToTarget(Map * map, int startX, int startY, int destX, int destY);
-  int getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY);
+  std::list<Pair> getNeighboursTraversable(Map * map, int startX, int startY, int destX, int destY);
+  std::list<Pair> getNeighboursNonSolid(Map * map, int startX, int startY, int destX, int destY);
+  std::vector<Pair> getPathToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying);
+  int getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying);
   std::list<Pair> getPathFromCartesianEquation(float a, int range);
 };
 

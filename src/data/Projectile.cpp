@@ -38,8 +38,8 @@ float Projectile::getWastePerHit() { return waste_per_hit; }
 Character * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
-void Projectile::move() {
-  nextOrientation();
+void Projectile::move(Map * map) {
+  nextOrientation(map);
   switch(orientation) {
     case NORTH:
       y++;
@@ -71,16 +71,15 @@ void Projectile::move() {
       break;
   }
   if(current_travel++ >= falloff_range) {
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      current_damages[damage_type] -= (int) ceil( ((float) damages[damage_type]) * waste_per_tile);
-      if(current_damages[damage_type] < 0) {
-        current_damages[damage_type] = 0;
-      }
-    }
+    reduceDamageTile();
   }
 }
 
-void Projectile::nextOrientation() {
+void Projectile::nextOrientation(Map * map) {
+  if(homing) {
+    orientation = MapUtil::getOrientationToTarget(map, x, y, getDestX(), getDestX(), true);
+    return;
+  }
   if(lost) {
     return;
   }
@@ -124,14 +123,24 @@ void Projectile::setTarget(Character * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
 
+void Projectile::reduceDamageTile() {
+  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    current_damages[damage_type] = (int) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_tile));
+  }
+}
+
+void Projectile::reduceDamageHit() {
+  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    current_damages[damage_type] = (int) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_hit));
+  }
+}
+
 void Projectile::attack_single_target(Character * target, Adventure * adventure) {
   target->receiveAttack(current_damages, orientation);
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    current_damages[i] -= (int) ceil( ((float) damages[i]) * waste_per_hit);
-  }
   if(skill != nullptr) {
     skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
   }
+  reduceDamageHit();
 }
 
 void Projectile::attack_multiple_targets(std::list<Character *> characters, Adventure * adventure) {

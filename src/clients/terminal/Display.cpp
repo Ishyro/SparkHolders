@@ -85,7 +85,7 @@ namespace Display {
         if(display->tiles[y][x]->untraversable) {
           to_print = "#";
         }
-        if(display->tiles[y][x]->name == "mist") { // unseen
+        if(display->tiles[y][x]->name == "TXT_MIST") { // unseen
           to_print = "~";
         }
         mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());

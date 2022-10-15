@@ -207,8 +207,10 @@ class Projectile {
     void setWastePerHit(float waste_per_hit);
     void setTarget(Character * target);
     void setOwner(Character * owner);
-    void move();
+    void move(Map * map);
     void setLost(bool state);
+    void reduceDamageTile();
+    void reduceDamageHit();
     void attack_single_target(Character * target, Adventure * adventure);
     void attack_multiple_targets(std::list<Character *> characters, Adventure * adventure);
     std::string to_string(int offsetY, int offsetX);
@@ -243,7 +245,7 @@ class Projectile {
     float waste_per_hit;
     int damages[DAMAGE_TYPE_NUMBER];
     int current_damages[DAMAGE_TYPE_NUMBER];
-    void nextOrientation();
+    void nextOrientation(Map * map);
 };
 
 #endif // _PROJECTILE_H_

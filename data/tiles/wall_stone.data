@@ -1,4 +1,5 @@
-name = wall_stone
+name = TXT_WALL_STONE
 untraversable = true
 opaque = true
+solid = true
 light = 0

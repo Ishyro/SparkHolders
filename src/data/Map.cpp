@@ -100,7 +100,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   if(range <= watcher->getDetectionRange()) {
     return true;
   }
-  if(getTile(target->getY(), target->getX())->name == "mist" || range > watcher->getVisionRange() || (watcher->getVisionPower() - target->cloakPower()) < 10 - getLight(target->getY(), target->getX())) {
+  if(getTile(target->getY(), target->getX())->name == "TXT_MIST" || range > watcher->getVisionRange() || (watcher->getVisionPower() - target->cloakPower()) < 10 - getLight(target->getY(), target->getX())) {
     return false;
   }
   return true;
@@ -118,7 +118,7 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
   }
   for(int y = 0; y <= endY - originY; y++) {
     for(int x = 0; x <= endX - originX; x++) {
-      result[y][x] = (Tile *) database->getTile("mist");
+      result[y][x] = (Tile *) database->getTile("TXT_MIST");
     }
   }
   for(int y = 0; y <= range; y++) {
@@ -265,28 +265,28 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
   // fix artifacts
   for(int y = watcher->getY() - originY + 1; y <= endY - originY; y++) {
     for(int x = watcher->getX() - originX + 1; x <= endX - originX; x++) {
-      if(result[y][x]->name == "mist" && map->getTile(y + originY, x + originX)->opaque && !(result[y-1][x]->opaque && result[y][x-1]->opaque)) {
+      if(result[y][x]->name == "TXT_MIST" && map->getTile(y + originY, x + originX)->opaque && !(result[y-1][x]->opaque && result[y][x-1]->opaque)) {
         result[y][x] = map->getTile(y + originY, x + originX);
       }
     }
   }
   for(int y = watcher->getY() - originY + 1; y <= endY - originY; y++) {
     for(int x = watcher->getX() - originX - 1; x >= 0; x--) {
-      if(result[y][x]->name == "mist" && map->getTile(y + originY, x + originX)->opaque && !(result[y-1][x]->opaque && result[y][x+1]->opaque)) {
+      if(result[y][x]->name == "TXT_MIST" && map->getTile(y + originY, x + originX)->opaque && !(result[y-1][x]->opaque && result[y][x+1]->opaque)) {
         result[y][x] = map->getTile(y + originY, x + originX);
       }
     }
   }
   for(int y = watcher->getY() - originY - 1; y >= 0; y--) {
     for(int x = watcher->getX() - originX + 1; x <= endX - originX; x++) {
-      if(result[y][x]->name == "mist" && map->getTile(y + originY, x + originX)->opaque && !(result[y+1][x]->opaque && result[y][x-1]->opaque)) {
+      if(result[y][x]->name == "TXT_MIST" && map->getTile(y + originY, x + originX)->opaque && !(result[y+1][x]->opaque && result[y][x-1]->opaque)) {
         result[y][x] = map->getTile(y + originY, x + originX);
       }
     }
   }
   for(int y = watcher->getY() - originY - 1; y >= 0; y--) {
     for(int x = watcher->getX() - originX - 1; x >= 0; x--) {
-      if(result[y][x]->name == "mist" && map->getTile(y + originY, x + originX)->opaque && !(result[y+1][x]->opaque && result[y][x+1]->opaque)) {
+      if(result[y][x]->name == "TXT_MIST" && map->getTile(y + originY, x + originX)->opaque && !(result[y+1][x]->opaque && result[y][x+1]->opaque)) {
         result[y][x] = map->getTile(y + originY, x + originX);
       }
     }
@@ -520,17 +520,24 @@ void Map::move(Character *c, int orientation, Adventure * adventure) {
 }
 
 bool Map::actProjectile(Projectile * p, Adventure * adventure) {
+  if(getTile(p->getY(), p->getX())->solid) {
+    p->reduceDamageHit();
+    if(p->noDamage()) {
+      return true;
+    }
+  }
   for(int i = 0; i < p->getSpeed(); i++) {
     if(p->isAtDest()) {
       p->setLost(true);
       if(p->getArea() > 1) {
         p->attack_multiple_targets(characters, adventure);
+        p->reduceDamageHit();
         for(Character * c : characters) {
           if(c != nullptr && !c->isAlive()) {
             killCharacter(p->getOwner(), c);
           }
         }
-        p->move();
+        p->move(this);
         continue;
       }
     }
@@ -538,37 +545,39 @@ bool Map::actProjectile(Projectile * p, Adventure * adventure) {
       if(c != nullptr && c->getX() == p->getX() && c->getY() == p->getY() && !c->isEtheral()) {
         if(p->getArea() > 1) {
           p->attack_multiple_targets(characters, adventure);
+          p->reduceDamageHit();
           for(Character * c : characters) {
             if(!c->isAlive()) {
               killCharacter(p->getOwner(), c);
             }
           }
           break;
-        } else {
+        }
+        else {
           p->attack_single_target(c, adventure);
           if(!c->isAlive()) {
             killCharacter(p->getOwner(), c);
           }
         }
-        p->move();
         break;
       }
     }
     if(p->noDamage()) {
       return true;
     }
-    p->move();
+    p->move(this);
   }
   return false;
 }
 
 void Map::actAllProjectiles(Adventure * adventure) {
-  std::list<Projectile *> new_projectiles;
+  std::list<Projectile *> new_projectiles = std::list<Projectile *>();
   for(Projectile * projectile : projectiles) {
     if(projectile != nullptr) {
       if(actProjectile(projectile, adventure)) {
         delete projectile;
-      } else {
+      }
+      else {
         new_projectiles.push_back(projectile);
       }
     }
@@ -590,10 +599,9 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
     for(int x = 0; x < sizeX; x++) {
       String::insert_int(ss, x);
       String::insert_int(ss, y);
-      String::insert(ss, getTile(y, x)->name);
-      String::insert_bool(ss, getTile(y, x)->untraversable);
-      String::insert_bool(ss, getTile(y, x)->opaque);
-      String::insert_int(ss, getLight(y, x));
+      Tile * temp = new Tile(getTile(y, x)->name, getTile(y, x)->untraversable, getTile(y, x)->opaque, getTile(y, x)->solid, getLight(y, x));
+      String::insert(ss, temp->to_string());
+      delete temp;
     }
   }
   std::stringstream * ss_characters = new std::stringstream();
@@ -646,11 +654,7 @@ MapDisplay * Map::from_string(std::string to_read) {
     for(int x = 0; x < display->sizeX; x++) {
       int i = String::extract_int(ss);
       int j = String::extract_int(ss);
-      std::string name = String::extract(ss);
-      bool untraversable = String::extract_bool(ss);
-      bool opaque = String::extract_bool(ss);
-      int light = String::extract_int(ss);
-      display->tiles[j][i] = new Tile(name, untraversable, opaque, light);
+      display->tiles[j][i] = Tile::from_string(String::extract(ss));
     }
   }
   std::stringstream * ss_characters = new std::stringstream(String::extract(ss));

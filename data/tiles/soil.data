@@ -1,4 +1,5 @@
-name = soil
+name = TXT_SOIL
 untraversable = false
 opaque = false
+solid = false
 light = 0

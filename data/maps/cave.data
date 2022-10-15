@@ -2,12 +2,12 @@ name = TXT_CAVE
 width = 25
 height = 25
 outside = false
-0 = wall_stone
-1 = floor_stone
-2 = floor_wood
-3 = torch_ground
-4 = torch_wall
-5 = water
+0 = TXT_WALL_STONE
+1 = TXT_FLOOR_STONE
+2 = TXT_FLOOR_WOOD
+3 = TXT_TORCH_GROUND
+4 = TXT_TORCH_WALL
+5 = TXT_WATER
 !end
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 4 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 4 1 1 1 1 1 1 1 1 1 1 1 0
