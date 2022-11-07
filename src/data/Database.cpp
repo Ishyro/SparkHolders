@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"

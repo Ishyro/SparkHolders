@@ -1,7 +1,8 @@
-#include "clients/Translator.h"
-
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
+
+#include "clients/Translator.h"
 
 Translator::Translator(std::list<std::string> bases, const std::string language) {
   attributesNames = std::map<const std::string, const std::string>();

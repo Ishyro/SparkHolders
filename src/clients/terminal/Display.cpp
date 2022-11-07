@@ -34,20 +34,20 @@
 namespace Display {
 
   void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print) {
-    int lines = 0;
-    int cols = 0;
+    long unsigned int lines = 0;
+    long unsigned int cols = 0;
     getmaxyx(screen, lines, cols);
     std::istringstream stream(to_print);
     std::string line = "";
     std::string word;
-    int currentLength = 0;
+    long unsigned int currentLength = 0;
     while(getline(stream, word, ' ') && word != "") {
       if(line == "") {
         line = word;
         currentLength = word.length();
         continue;
       }
-      int begin = word.find('\n');
+      const long unsigned int begin = word.find('\n');
       if(begin != std::string::npos) {
         if(currentLength == cols) {
           line += word;
@@ -1112,45 +1112,45 @@ namespace Display {
               if(cursorX == 0) {
                 cursorY = cursorY % 3;
               } else if(cursorX == 1) {
-                if(cursorY == numberAttributes && startingAttributes.size() > numberAttributes) {
+                if(cursorY == numberAttributes && (int) startingAttributes.size() > numberAttributes) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == startingAttributes.size()) {
+                } else if(cursorY == (int) startingAttributes.size()) {
                   cursorY--;
                 }
               } else if(cursorX == 2) {
-                if(cursorY == numberWays && availableRaces.size() > numberWays) {
+                if(cursorY == numberWays && (int) availableRaces.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == availableRaces.size()) {
+                } else if(cursorY == (int) availableRaces.size()) {
                   cursorY--;
                 }
               } else if(cursorX == 3) {
-                if(cursorY == numberWays && availableOrigins.size() > numberWays) {
+                if(cursorY == numberWays && (int) availableOrigins.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == availableOrigins.size()) {
+                } else if(cursorY == (int) availableOrigins.size()) {
                   cursorY--;
                 }
               } else if(cursorX == 4) {
-                if(cursorY == numberWays && availableCultures.size() > numberWays) {
+                if(cursorY == numberWays && (int) availableCultures.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == availableCultures.size()) {
+                } else if(cursorY == (int) availableCultures.size()) {
                   cursorY--;
                 }
               } else if(cursorX == 5) {
-                if(cursorY == numberWays && availableReligions.size() > numberWays) {
+                if(cursorY == numberWays && (int) availableReligions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == availableReligions.size()) {
+                } else if(cursorY == (int) availableReligions.size()) {
                   cursorY--;
                 }
               } else if(cursorX == 6) {
-                if(cursorY == numberWays && availableProfessions.size() > numberWays) {
+                if(cursorY == numberWays && (int) availableProfessions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == availableProfessions.size()) {
+                } else if(cursorY == (int) availableProfessions.size()) {
                   cursorY--;
                 }
               }
@@ -1428,7 +1428,6 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(displayScreen, lines, cols);
-    int size = player->getSkills().size();
     while(!done) {
       WINDOW * tempScreen = nullptr;
       wclear(displayScreen);
@@ -1817,7 +1816,6 @@ namespace Display {
       int lines = 0;
       int cols = 0;
       getmaxyx(displayScreen, lines, cols);
-      int size = player->getWeapons().size() + player->getAmmunitions().size() + player->getItems().size();
       while(!done) {
         WINDOW * tempScreen = nullptr;
         wclear(displayScreen);
@@ -1965,7 +1963,6 @@ namespace Display {
     int lines = 0;
     int cols = 0;
     getmaxyx(displayScreen, lines, cols);
-    int size = player->getAmmunitions().size();
     while(!done) {
       WINDOW * tempScreen = nullptr;
       wclear(displayScreen);

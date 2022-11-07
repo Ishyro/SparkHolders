@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "utils/String.h"
 
 #include "data/Database.h"

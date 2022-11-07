@@ -145,7 +145,6 @@ int MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cam
   if(start == dest) {
     return NO_ORIENTATION;
   }
-  int result = 0;
   MapUtil::Pair previous = dest;
   for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y][current.x]) {
     previous = current;

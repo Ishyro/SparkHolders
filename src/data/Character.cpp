@@ -775,7 +775,7 @@ int Character::cloakPower() {
       return e->power;
     }
   }
-  return 0;
+  return max;
 }
 
 bool Character::isInWeakState() {
@@ -972,7 +972,7 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages) {
       trueDamage += damages[damage_type];
     }
     if(damage_type == SOUL_DAMAGE) {
-      trueDamage + damages[damage_type];
+      trueDamage += damages[damage_type];
     }
     else {
       damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
