@@ -153,7 +153,7 @@ class Character {
       skills(from_database->skills),
       sellable_items(std::list<Item *>()),
       sellable_weapons(std::list<Weapon *>()),
-      sellable_ammunition(from_database->sellable_ammunition),
+      sellable_ammunition(std::list<Ammunition *>()),
       sellable_effects(from_database->sellable_effects),
       sellable_skills(from_database->sellable_skills),
       attributes(attributes->name),
@@ -187,6 +187,14 @@ class Character {
       for(Weapon * weapon : from_database->sellable_weapons) {
         sellable_weapons.push_back(new Weapon(weapon));
       }
+      for(Ammunition * ammo : from_database->sellable_ammunition) {
+        Ammunition * toadd = new Ammunition();
+        toadd->projectile = ammo->projectile;
+        toadd->number = ammo->number;
+        toadd->gold_value = ammo->gold_value;
+        toadd->ammo_type = ammo->ammo_type;
+        ammunition.push_back(toadd);
+      }
       applyAttributes(attributes, true);
       setWay(race);
       setWay(origin);
@@ -213,6 +221,8 @@ class Character {
       int currentSoulBurn,
       float stamina,
       float satiety,
+      float savedHpRegen,
+      float savedManaRegen,
       std::string name,
       bool player_character,
       Speech * death_speech,
@@ -265,6 +275,8 @@ class Character {
       currentSoulBurn(currentSoulBurn),
       stamina(stamina),
       satiety(satiety),
+      savedHpRegen(savedHpRegen),
+      savedManaRegen(savedManaRegen),
       name(name),
       player_character(player_character),
       death_speech(death_speech),
@@ -303,7 +315,10 @@ class Character {
       religion(religion),
       profession(profession),
       titles(titles)
-    {}
+    {
+      // should always be 0 at round start
+      currentFlow = 0;
+    }
     void applyAttributes(Attributes * attributes, bool init);
     bool isAlive();
     bool isSoulBurning();
@@ -461,11 +476,14 @@ class Character {
     int maxMana;
     float stamina;
     float satiety;
+    float savedHpRegen;
+    float savedManaRegen;
     int armor;
     int damage_multiplier;
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;
+    int currentFlow;
     int visionRange;
     int visionPower;
     int detectionRange;

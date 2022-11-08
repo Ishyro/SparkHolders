@@ -1,9 +1,9 @@
 name = TXT_SKELETON_ARCHER
-baseHp = 200
+baseHp = 225
 baseMana = 150
-baseArmor = 20
+baseArmor = 15
 baseDamage = 20
-baseSoulBurn = 30
+baseSoulBurn = 20
 baseFlow = 20
 baseVisionRange = 10
 baseVisionPower = 6

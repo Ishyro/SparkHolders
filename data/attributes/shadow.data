@@ -1,10 +1,10 @@
 name = TXT_SHADOW
-baseHp = 175
-baseMana = 125
-baseArmor = 20
-baseDamage = 15
+baseHp = 200
+baseMana = 150
+baseArmor = 10
+baseDamage = 20
 baseSoulBurn = 35
-baseFlow = 10
+baseFlow = 15
 baseVisionRange = 12
 baseVisionPower = 7
 baseDetectionRange = 2

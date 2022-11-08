@@ -1,9 +1,9 @@
 name = TXT_SKELETON_WARDEN
-baseHp = 250
+baseHp = 300
 baseMana = 50
-baseArmor = 30
-baseDamage = 10
-baseSoulBurn = 20
+baseArmor = 25
+baseDamage = 15
+baseSoulBurn = 25
 baseFlow = 15
 baseVisionRange = 10
 baseVisionPower = 6

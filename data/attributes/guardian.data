@@ -1,8 +1,8 @@
 name = TXT_GUARDIAN
-baseHp = 350
+baseHp = 400
 baseMana = 100
-baseArmor = 50
-baseDamage = 10
+baseArmor = 35
+baseDamage = 15
 baseSoulBurn = 30
 baseFlow = 20
 baseVisionRange = 10

@@ -1,8 +1,8 @@
 name = TXT_ELEMENTALIST
-baseHp = 100
-baseMana = 400
-baseArmor = 10
-baseDamage = -10
+baseHp = 150
+baseMana = 350
+baseArmor = 5
+baseDamage = -5
 baseSoulBurn = 50
 baseFlow = 50
 baseVisionRange = 10

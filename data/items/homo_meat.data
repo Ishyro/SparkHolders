@@ -4,5 +4,5 @@ consumable = true
 type = UNEQUIPABLE
 droppable = true
 weight = 0.5
-gold_value = 10
+gold_value = 0
 effects = TXT_SATIETY_10%

@@ -31,8 +31,11 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
+  currentFlow = 0;
   stamina = 75.;
   satiety = 75.;
+  savedHpRegen = 0.;
+  savedManaRegen = 0.;
   if(init) {
     gear = new Gear(attributes->getStartingGear());
     for(Item * item : attributes->getItems()) {
@@ -280,7 +283,14 @@ void Character::incrMaxHp() {
   maxHp += std::max(incr, 0);
 }
 void Character::setHp(int hp) { this->hp = hp; }
-void Character::manaHeal(int mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
+
+void Character::manaHeal(int mana) {
+  int currentManaHeal = std::max(0, std::min(mana, getFlow() - currentFlow));
+  int realManaHeal = std::min(currentManaHeal, getMaxMana() - this->mana);
+  this->mana += realManaHeal;
+  currentFlow += realManaHeal;
+}
+
 void Character::incrMaxMana() {
   if(player_character) {
     setNeedToSend(true);
@@ -395,18 +405,23 @@ void Character::applySoulBurn() {
   if(currentSoulBurn > soulBurnTreshold) {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
-  currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction);
+  currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction) + std::max(0, 2 * (currentFlow - getFlow()));
+  currentFlow = 0;
 }
 
 void Character::applyTiredness() {
   if(need_to_sleep) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
-    int manaValue = (int) std::ceil(Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F);
+    float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
+    int manaValue = (int) std::floor(currentManaRegen + savedManaRegen);
+    savedManaRegen += currentManaRegen - (float) manaValue;
     if(stamina > 0.) {
       removeStamina(step);
       manaHeal(manaValue);
     } else {
-      payMana(Settings::getStaminaOverextendRatio() * manaValue);
+      manaValue = (int) std::floor(currentManaRegen * Settings::getStaminaOverextendRatio() + savedManaRegen);
+      savedManaRegen += currentManaRegen - (float) manaValue;
+      payMana(manaValue);
     }
   }
 }
@@ -414,12 +429,16 @@ void Character::applyTiredness() {
 void Character::applyHunger() {
   if(need_to_eat) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
-    int hpValue = (int) std::ceil(Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F);
+    float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
+    int hpValue = (int) std::floor(currentHpRegen + savedHpRegen);
+    savedHpRegen += currentHpRegen - (float) hpValue;
     if(satiety > 0.) {
       removeSatiety(step);
       hpHeal(hpValue);
     } else {
-      hp -= Settings::getSatietyOverextendRatio() * hpValue;
+      hpValue = (int) std::floor(currentHpRegen * Settings::getSatietyOverextendRatio() + savedHpRegen);
+      savedHpRegen += currentHpRegen - (float) hpValue;
+      hp -= hpValue;
     }
   }
 }
@@ -450,6 +469,7 @@ void Character::loseGold(long gold) { this->gold = (long) std::max(0., (double) 
 void Character::payMana(int cost) {
   mana -= cost;
   currentSoulBurn += cost;
+  currentFlow += std::abs(cost);
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
@@ -1199,6 +1219,8 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, currentSoulBurn);
   String::insert_float(ss, stamina);
   String::insert_float(ss, satiety);
+  String::insert_float(ss, savedHpRegen);
+  String::insert_float(ss, savedManaRegen);
   String::insert(ss, name);
   String::insert_bool(ss, player_character);
   if(death_speech != nullptr) {
@@ -1326,6 +1348,8 @@ Character * Character::full_from_string(std::string to_read) {
   int currentSoulBurn = String::extract_int(ss);
   float stamina = String::extract_float(ss);
   float satiety = String::extract_float(ss);
+  float savedHpRegen = String::extract_float(ss);
+  float savedManaRegen = String::extract_float(ss);
   std::string name = String::extract(ss);
   bool player_character = String::extract_bool(ss);
   std::string death_speech_str = String::extract(ss);
@@ -1447,6 +1471,8 @@ Character * Character::full_from_string(std::string to_read) {
     currentSoulBurn,
     stamina,
     satiety,
+    savedHpRegen,
+    savedManaRegen,
     name,
     player_character,
     death_speech,

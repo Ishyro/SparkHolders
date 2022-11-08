@@ -1,7 +1,7 @@
 name = TXT_SKELETON_MAGUS
 baseHp = 100
-baseMana = 200
-baseArmor = 10
+baseMana = 275
+baseArmor = 5
 baseDamage = -10
 baseSoulBurn = 40
 baseFlow = 40

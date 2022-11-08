@@ -13,8 +13,22 @@ int Weapon::getRawDamage() {
   if(ammo != nullptr) {
     power += ammo->projectile->getRawDamage();
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    power += damages[i];
+  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    if(damage_type == NEUTRAL_DAMAGE) {
+      power += 3 * damages[damage_type];
+    }
+    else if(damage_type == MIND_DAMAGE) {
+      power += 5 * damages[damage_type];
+    }
+    else if(damage_type == TRUE_DAMAGE) {
+      power += 10 * damages[damage_type];
+    }
+    else if(damage_type == SOUL_DAMAGE) {
+      power += 10 * damages[damage_type];
+    }
+    else {
+      power += damages[damage_type];
+    }
   }
   return power;
 }
