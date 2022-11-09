@@ -1,10 +1,11 @@
-name = TXT_BLINK
+name = TXT_DASH
 level = 2
 attributes =
 target_type = TILE
+is_instant = true
 overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = SQUARE
 range = 5
 priority = 10.
-skills = TXT_BLINK%
+skills = TXT_DASH%

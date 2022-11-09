@@ -1,4 +1,4 @@
-name = TXT_BLINK
+name = TXT_DASH
 skill_type = TELEPORT_SKILL
 target_type = TILE
 apparition_type = SOFT

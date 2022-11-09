@@ -123,7 +123,6 @@ Database::Database() {
   // skill_type
 
   macros.insert(std::make_pair("CHANNELED_SKILL", CHANNELED_SKILL));
-  macros.insert(std::make_pair("INSTANT_SKILL", INSTANT_SKILL));
   macros.insert(std::make_pair("MAP_LINKER_SKILL", MAP_LINKER_SKILL));
   macros.insert(std::make_pair("MIND_CONTROL_SKILL", MIND_CONTROL_SKILL));
   macros.insert(std::make_pair("PROJECTILE_SKILL", PROJECTILE_SKILL));

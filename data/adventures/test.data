@@ -39,13 +39,13 @@ data/items/leather_helmet.data
 data/items/wolf_hide.data
 data/items/lamb.data
 # pseudoskills without summoning or projectile
-data/pseudoskills/blink.data
+data/pseudoskills/dash.data
 data/pseudoskills/eat_grass.data
 data/pseudoskills/grow_grass.data
 data/pseudoskills/nourish_with_grass.data
 # skills without summoning or projectile
 data/skills/touch_some_soil.data
-data/skills/blink.data
+data/skills/dash.data
 # projectiles
 data/projectiles/wood_arrow.data
 data/projectiles/fireball.data

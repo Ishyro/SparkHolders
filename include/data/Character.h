@@ -328,6 +328,7 @@ class Character {
     int getHp();
     int getMaxHp();
     int getMana();
+    int getAvaillableMana();
     int getMaxMana();
     float getStamina();
     float getSatiety();

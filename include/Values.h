@@ -129,16 +129,15 @@ class SpeechManager;
 // skill_type
 
 #define CHANNELED_SKILL 1
-#define INSTANT_SKILL 2
-#define MAP_LINKER_SKILL 3
-#define MIND_CONTROL_SKILL 4
-#define PROJECTILE_SKILL 5
-#define RESURRECTION_SKILL 6
-#define SIMPLE_SKILL 7
-#define SUMMON_SKILL 8
-#define TEAM_CHANGER_SKILL 9
-#define TELEPORT_SKILL 10
-#define TILE_SWAP_SKILL 11
+#define MAP_LINKER_SKILL 2
+#define MIND_CONTROL_SKILL 3
+#define PROJECTILE_SKILL 4
+#define RESURRECTION_SKILL 5
+#define SIMPLE_SKILL 6
+#define SUMMON_SKILL 7
+#define TEAM_CHANGER_SKILL 8
+#define TELEPORT_SKILL 9
+#define TILE_SWAP_SKILL 10
 
 // skill_overcharge_type
 

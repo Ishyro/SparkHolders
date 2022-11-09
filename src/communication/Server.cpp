@@ -82,7 +82,21 @@ namespace Server {
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
         delete ss;
-        return new Action(USE_SKILL, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
+        Action * action = new Action(USE_SKILL, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
+        if(!skill->is_instant) {
+          return action;
+        }
+        else {
+          action->execute(adventure);
+          Map * map = new Map(adventure->getWorld()->getMap(user->getCurrentMapId()), user, adventure->getDatabase());
+          try {
+            sendMap(s, map, user, adventure);
+          } catch (const CloseException &e) {
+            throw e;
+          }
+          delete map;
+          return receiveAction(s, user, adventure);
+        }
       }
       case USE_ITEM: {
         std::string object = String::extract(ss);

@@ -2,6 +2,7 @@ name = TXT_TOUCH_SOME_GRASS
 level = 0
 attributes =
 target_type = TILE
+is_instant = false
 overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = NO_OVERCHARGE

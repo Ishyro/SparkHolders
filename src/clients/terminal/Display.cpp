@@ -16,7 +16,6 @@
 #include "data/skills/PseudoSkill.h"
 
 #include "data/skills/ChanneledSkill.h"
-#include "data/skills/InstantSkill.h"
 #include "data/skills/MapLinkerSkill.h"
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"

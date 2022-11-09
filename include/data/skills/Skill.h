@@ -15,6 +15,7 @@ class Skill {
     const int level;
     const std::string attributes;
     const int target_type;
+    const bool is_instant;
     const int overcharge_power_type;
     const int overcharge_duration_type;
     const int overcharge_range_type;
@@ -26,6 +27,7 @@ class Skill {
       int level,
       std::string attributes,
       int target_type,
+      bool is_instant,
       int overcharge_power_type,
       int overcharge_duration_type,
       int overcharge_range_type,
@@ -37,6 +39,7 @@ class Skill {
       level(level),
       attributes(attributes),
       target_type(target_type),
+      is_instant(is_instant),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),
       overcharge_range_type(overcharge_range_type),

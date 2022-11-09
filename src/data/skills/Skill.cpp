@@ -11,6 +11,18 @@ void Skill::activate(Character * owner, Character * target, Adventure * adventur
   }
 }
 bool Skill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
+  // using mana beyond flow is forbidden for instant skills
+  if(is_instant) {
+    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getAvaillableMana()) {
+      return false;
+    }
+  }
+  // simple check for enough mana, responding to mana damage by canceling user spells wouldn't be fun
+  else {
+    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) >= owner->getMana()) {
+      return false;
+    }
+  }
   for(PseudoSkill * skill : skills) {
     if(!skill->canCast(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range)) {
       return false;
@@ -88,6 +100,7 @@ std::string Skill::to_string() {
   String::insert_int(ss, level);
   String::insert(ss, attributes);
   String::insert_int(ss, target_type);
+  String::insert_bool(ss, is_instant);
   String::insert_int(ss, overcharge_power_type);
   String::insert_int(ss, overcharge_duration_type);
   String::insert_int(ss, overcharge_range_type);
@@ -110,6 +123,7 @@ Skill * Skill::from_string(std::string to_read) {
   int level = String::extract_int(ss);
   std::string attributes = String::extract(ss);
   int target_type = String::extract_int(ss);
+  bool is_instant = String::extract_bool(ss);
   int overcharge_power_type = String::extract_int(ss);
   int overcharge_duration_type = String::extract_int(ss);
   int overcharge_range_type = String::extract_int(ss);
@@ -127,6 +141,7 @@ Skill * Skill::from_string(std::string to_read) {
     level,
     attributes,
     target_type,
+    is_instant,
     overcharge_power_type,
     overcharge_duration_type,
     overcharge_range_type,

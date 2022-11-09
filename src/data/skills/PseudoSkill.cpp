@@ -1,7 +1,6 @@
 #include "data/skills/PseudoSkill.h"
 
 #include "data/skills/ChanneledSkill.h"
-#include "data/skills/InstantSkill.h"
 #include "data/skills/MapLinkerSkill.h"
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"
@@ -106,15 +105,6 @@ PseudoSkill * PseudoSkill::from_string(std::string to_read) {
   switch(skill_type) {
     case CHANNELED_SKILL:
       result = new ChanneledSkill(
-        name,
-        skill_type,
-        target_type,
-        mana_cost,
-        *effects
-      );
-      break;
-    case INSTANT_SKILL:
-      result = new InstantSkill(
         name,
         skill_type,
         target_type,

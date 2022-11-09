@@ -87,6 +87,11 @@ int Character::getMaxHp() {
 
 int Character::getMana() { return mana; }
 
+int Character::getAvaillableMana() {
+  // mana - 1 because killing itself is forbidden
+  return std::min(mana - 1, std::max(0, getFlow() - currentFlow));
+}
+
 int Character::getMaxMana() {
   int bonus = 0;
   for(auto e : effects)

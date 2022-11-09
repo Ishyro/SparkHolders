@@ -38,7 +38,6 @@
 #include "data/skills/Skill.h"
 
 #include "data/skills/ChanneledSkill.h"
-#include "data/skills/InstantSkill.h"
 #include "data/skills/MapLinkerSkill.h"
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"
@@ -665,6 +664,9 @@ namespace FileOpener {
     int level = stoi(values.at("level"));
     std::string attributes = values.at("attributes");
     int target_type = database->getTargetFromMacro(values.at("target_type"));
+    std::istringstream is(values.at("is_instant"));
+    bool is_instant;
+    is >> std::boolalpha >> is_instant;
     int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
@@ -676,7 +678,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, is_instant, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
     database->addSkill(skill);
     delete skills;
   }
