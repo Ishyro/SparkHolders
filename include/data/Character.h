@@ -223,6 +223,7 @@ class Character {
       float satiety,
       float savedHpRegen,
       float savedManaRegen,
+      int channeledMana,
       std::string name,
       bool player_character,
       Speech * death_speech,
@@ -277,6 +278,7 @@ class Character {
       satiety(satiety),
       savedHpRegen(savedHpRegen),
       savedManaRegen(savedManaRegen),
+      channeledMana(channeledMana),
       name(name),
       player_character(player_character),
       death_speech(death_speech),
@@ -328,7 +330,7 @@ class Character {
     int getHp();
     int getMaxHp();
     int getMana();
-    int getAvaillableMana();
+    int getAvaillableMana(bool overflow);
     int getMaxMana();
     float getStamina();
     float getSatiety();
@@ -479,6 +481,7 @@ class Character {
     float satiety;
     float savedHpRegen;
     float savedManaRegen;
+    int channeledMana;
     int armor;
     int damage_multiplier;
     int soulBurnTreshold;

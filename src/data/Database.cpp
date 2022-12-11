@@ -114,6 +114,12 @@ Database::Database() {
   macros.insert(std::make_pair("SOFT", SOFT));
   macros.insert(std::make_pair("HARD", HARD));
 
+  // movement_type
+  
+  macros.insert(std::make_pair("FLYING", FLYING));
+  macros.insert(std::make_pair("WALKING", WALKING));
+  macros.insert(std::make_pair("TELEPORT", TELEPORT));
+
   // skill_target
 
   macros.insert(std::make_pair("SELF", SELF));

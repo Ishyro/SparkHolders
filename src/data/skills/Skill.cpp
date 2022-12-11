@@ -13,13 +13,12 @@ void Skill::activate(Character * owner, Character * target, Adventure * adventur
 bool Skill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
   // using mana beyond flow is forbidden for instant skills
   if(is_instant) {
-    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getAvaillableMana()) {
+    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getAvaillableMana(false)) {
       return false;
     }
   }
-  // simple check for enough mana, responding to mana damage by canceling user spells wouldn't be fun
   else {
-    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) >= owner->getMana()) {
+    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) >= owner->getAvaillableMana(true)) {
       return false;
     }
   }

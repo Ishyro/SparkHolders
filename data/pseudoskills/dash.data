@@ -2,5 +2,6 @@ name = TXT_DASH
 skill_type = TELEPORT_SKILL
 target_type = TILE
 apparition_type = SOFT
+movement_type = WALKING
 mana_cost = 25
 effects =

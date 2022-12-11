@@ -708,8 +708,10 @@ namespace FileOpener {
       }
       case TELEPORT_SKILL: {
         int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+        int movement_type = database->getTargetFromMacro(values.at("movement_type"));
         pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects);
         ((TeleportSkill *) pseudoSkill)->setApparitionType(apparition_type);
+        ((TeleportSkill *) pseudoSkill)->setMovementType(movement_type);
         break;
       }
       case TILE_SWAP_SKILL: {

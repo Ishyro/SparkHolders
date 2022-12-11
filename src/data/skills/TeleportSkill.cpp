@@ -34,8 +34,34 @@ void TeleportSkill::activate(Character * owner, Character * target, Adventure * 
   }
 }
 
+// TODO
 bool TeleportSkill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
-  return true;
+  Character * to_move = target == nullptr ? owner : target;
+  switch(movement_type) {
+    case TELEPORT:
+      if(range * overcharge_range >= MapUtil::distance(to_move->getX(), to_move->getY(), x, y)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    case FLYING:
+      if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, true).size()) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    case WALKING:
+      if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, false).size()) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    default:
+      return false;
+  }
 }
 
 int TeleportSkill::getPower() {
@@ -52,3 +78,5 @@ float TeleportSkill::getDamageReductionFromType(int damage_type, int overcharge_
 
 int TeleportSkill::getApparitionType() { return apparition_type; }
 void TeleportSkill::setApparitionType(int apparition_type) { this->apparition_type = apparition_type; }
+int TeleportSkill::getMovementType() { return movement_type; }
+void TeleportSkill::setMovementType(int movement_type) { this->movement_type = movement_type; }

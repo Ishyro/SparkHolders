@@ -120,6 +120,12 @@ class SpeechManager;
 #define SOFT 1
 #define HARD 2
 
+// movement_type
+
+#define FLYING 1
+#define WALKING 2
+#define TELEPORT 3
+
 // skill_target
 
 #define SELF 1

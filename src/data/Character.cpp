@@ -36,6 +36,7 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   satiety = 75.;
   savedHpRegen = 0.;
   savedManaRegen = 0.;
+  channeledMana = 0;
   if(init) {
     gear = new Gear(attributes->getStartingGear());
     for(Item * item : attributes->getItems()) {
@@ -87,9 +88,14 @@ int Character::getMaxHp() {
 
 int Character::getMana() { return mana; }
 
-int Character::getAvaillableMana() {
+int Character::getAvaillableMana(bool overflow) {
   // mana - 1 because killing itself is forbidden
-  return std::min(mana - 1, std::max(0, getFlow() - currentFlow));
+  if(overflow) {
+    return std::min(mana - 1, std::max(0, getFlow())) + channeledMana;
+  }
+  else {
+    return std::min(mana - 1, std::max(0, getFlow() - currentFlow)) + channeledMana;
+  }
 }
 
 int Character::getMaxMana() {
@@ -412,6 +418,7 @@ void Character::applySoulBurn() {
   }
   currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction) + std::max(0, 2 * (currentFlow - getFlow()));
   currentFlow = 0;
+  channeledMana = (int) std::floor( (float) channeledMana * 0.8);
 }
 
 void Character::applyTiredness() {
@@ -472,9 +479,11 @@ void Character::rest() {
 void Character::gainGold(long gold) { this->gold += gold; }
 void Character::loseGold(long gold) { this->gold = (long) std::max(0., (double) this->gold + gold); }
 void Character::payMana(int cost) {
-  mana -= cost;
-  currentSoulBurn += cost;
-  currentFlow += std::abs(cost);
+  int realCost = std::max(0, cost - channeledMana);
+  channeledMana -= cost - realCost;
+  mana -= realCost;
+  currentSoulBurn += realCost;
+  currentFlow += realCost;
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
@@ -486,8 +495,6 @@ void Character::gainLevel() {
     incrDamageMultiplier();
     incrSoulBurnTreshold();
     incrFlow();
-    hpHeal(getMaxHp() / 2);
-    manaHeal(getMaxMana() / 2);
   }
 }
 
@@ -1226,6 +1233,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, satiety);
   String::insert_float(ss, savedHpRegen);
   String::insert_float(ss, savedManaRegen);
+  String::insert_int(ss, channeledMana);
   String::insert(ss, name);
   String::insert_bool(ss, player_character);
   if(death_speech != nullptr) {
@@ -1355,6 +1363,7 @@ Character * Character::full_from_string(std::string to_read) {
   float satiety = String::extract_float(ss);
   float savedHpRegen = String::extract_float(ss);
   float savedManaRegen = String::extract_float(ss);
+  int channeledMana = String::extract_int(ss);
   std::string name = String::extract(ss);
   bool player_character = String::extract_bool(ss);
   std::string death_speech_str = String::extract(ss);
@@ -1478,6 +1487,7 @@ Character * Character::full_from_string(std::string to_read) {
     satiety,
     savedHpRegen,
     savedManaRegen,
+    channeledMana,
     name,
     player_character,
     death_speech,

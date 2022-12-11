@@ -12,9 +12,12 @@ class TeleportSkill : public PseudoSkill {
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
     int getApparitionType();
+    int getMovementType();
     void setApparitionType(int apparition_type);
+    void setMovementType(int movement_type);
   private:
     int apparition_type;
+    int movement_type;
 };
 
 #endif // _TELEPORT_SKILL_H_

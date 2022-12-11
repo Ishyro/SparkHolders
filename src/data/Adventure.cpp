@@ -282,11 +282,14 @@ void Adventure::applyRoundIteration() {
   for(Character * c : getCharacters()) {
     c->gainLevel();
     c->applyEffects();
-    c->applyTiredness();
-    c->applyHunger();
-    c->applySoulBurn();
-    if(!c->isAlive()) {
-      getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
+    // might have been killed by an effect
+    if(c != nullptr) {
+      c->applyTiredness();
+      c->applyHunger();
+      c->applySoulBurn();
+      if(!c->isAlive()) {
+        getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
+      }
     }
   }
 }
