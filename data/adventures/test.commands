@@ -1,5 +1,17 @@
 # Adventure name
 The Main Place
+# settings
+Settings.LIGHT_MAX_POWER%10
+Settings.LIGHT_DURATION%50
+Settings.YEAR_DURATION%500
+Settings.MONTH_DURATION%50
+Settings.WEEK_DURATION%5
+Settings.HOUR_DURATION%50
+Settings.STARTING_YEAR%1
+Settings.STARTING_MONTH%1
+Settings.STARTING_WEEK%1
+Settings.STARTING_DAY%1
+Settings.STARING_HOUR%4
 # traductions files
 Traduction.data/traductions/aytlanta
 # add maps

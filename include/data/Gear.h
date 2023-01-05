@@ -14,6 +14,7 @@ class Gear {
       Item * arms,
       Item * legs,
       Item * body,
+      Item * lantern,
       Item * left_ring,
       Item * right_ring,
       Item * amulet,
@@ -23,6 +24,7 @@ class Gear {
       arms(arms),
       legs(legs),
       body(body),
+      lantern(lantern),
       left_ring(left_ring),
       right_ring(right_ring),
       amulet(amulet),
@@ -33,6 +35,7 @@ class Gear {
       arms(nullptr),
       legs(nullptr),
       body(nullptr),
+      lantern(nullptr),
       left_ring(nullptr),
       right_ring(nullptr),
       amulet(nullptr),
@@ -49,6 +52,9 @@ class Gear {
       }
       if(gear->body != nullptr) {
         body = new Item(gear->body);
+      }
+      if(gear->lantern != nullptr) {
+        lantern = new Item(gear->lantern);
       }
       if(gear->left_ring != nullptr) {
         left_ring = new Item(gear->left_ring);
@@ -68,6 +74,7 @@ class Gear {
       arms(nullptr),
       legs(nullptr),
       body(nullptr),
+      lantern(nullptr),
       left_ring(nullptr),
       right_ring(nullptr),
       amulet(nullptr),
@@ -84,6 +91,7 @@ class Gear {
     Item * getArms();
     Item * getLegs();
     Item * getBody();
+    Item * getLantern();
     Item * getLeft_ring();
     Item * getRight_ring();
     Item * getAmulet();
@@ -96,6 +104,7 @@ class Gear {
     Item * arms;
     Item * legs;
     Item * body;
+    Item * lantern;
     Item * left_ring;
     Item * right_ring;
     Item * amulet;

@@ -22,6 +22,7 @@ namespace FileOpener {
   void ProjectileOpener(std::string fileName, Database * database);
   void AmmunitionOpener(std::string fileName, Database * database);
   void QuestOpener(std::string fileName, Database * database);
+  void SettingsOpener(std::string fileName, Database * database);
   void SkillOpener(std::string fileName, Database * database);
   void PseudoSkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);

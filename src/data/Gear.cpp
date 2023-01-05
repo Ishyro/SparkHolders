@@ -31,6 +31,10 @@ std::list<Item *> Gear::equip(Item * new_item) {
       legs = nullptr;
       body = new_item;
       break;
+    case LANTERN:
+      unequip.push_back(lantern);
+      lantern = new_item;
+      break;
     case RING:
       if(left_ring == nullptr) {
         left_ring = new_item;
@@ -82,6 +86,10 @@ Item * Gear::unequip(int type) {
       old_item = body;
       body = nullptr;
       break;
+    case LANTERN:
+      old_item = lantern;
+      lantern = nullptr;
+      break;
     case LEFT_RING:
       old_item = left_ring;
       left_ring = nullptr;
@@ -118,6 +126,9 @@ float Gear::getDamageReductionFromType(int damage_type) {
   if(legs != nullptr) {
     resistance += legs->getDamageReductionFromType(damage_type);
   }
+  if(lantern != nullptr) {
+    resistance += lantern->getDamageReductionFromType(damage_type);
+  }
   if(left_ring != nullptr) {
     resistance += left_ring->getDamageReductionFromType(damage_type);
   }
@@ -134,6 +145,7 @@ Item * Gear::getHead() { return head; }
 Item * Gear::getArms() { return arms; }
 Item * Gear::getLegs() { return legs; }
 Item * Gear::getBody() { return body; }
+Item * Gear::getLantern() { return lantern; }
 Item * Gear::getLeft_ring() { return left_ring; }
 Item * Gear::getRight_ring() { return right_ring; }
 Item * Gear::getAmulet() { return amulet; }
@@ -152,6 +164,9 @@ float Gear::getWeight() {
   }
   if(legs != nullptr) {
     weight += legs->weight;
+  }
+  if(lantern != nullptr) {
+    weight += lantern->weight;
   }
   if(weapon != nullptr) {
     weight += weapon->weight;
@@ -178,6 +193,11 @@ std::string Gear::to_string() {
   }
   if(body != nullptr) {
     String::insert(ss, body->to_string());
+  } else {
+    String::insert(ss, "none");
+  }
+  if(lantern != nullptr) {
+    String::insert(ss, lantern->to_string());
   } else {
     String::insert(ss, "none");
   }
@@ -212,6 +232,7 @@ Gear * Gear::from_string(std::string to_read) {
   Item * arms = Item::from_string(String::extract(ss));
   Item * legs = Item::from_string(String::extract(ss));
   Item * body = Item::from_string(String::extract(ss));
+  Item * lantern = Item::from_string(String::extract(ss));
   Item * left_ring = Item::from_string(String::extract(ss));
   Item * right_ring = Item::from_string(String::extract(ss));
   Item * amulet = Item::from_string(String::extract(ss));
@@ -222,6 +243,7 @@ Gear * Gear::from_string(std::string to_read) {
     arms,
     legs,
     body,
+    lantern,
     left_ring,
     right_ring,
     amulet,

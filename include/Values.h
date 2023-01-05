@@ -72,10 +72,11 @@ class SpeechManager;
 #define CHANNELING 18
 #define STUNNED 19
 #define SLEEPING 20
-#define CLOAKED 21
-#define INVISIBLE 22
-#define ETHERAL 23
-#define INVULNERABLE 24
+#define LIGHT 21
+#define CLOAKED 22
+#define INVISIBLE 23
+#define ETHERAL 24
+#define INVULNERABLE 25
 
 // weapon_type
 
@@ -103,12 +104,12 @@ class SpeechManager;
 #define ARMS 2
 #define BODY 3
 #define LEGS 4
-#define FULL_BODY 5
-#define RING 6
-#define AMULET 7
-
-#define LEFT_RING 8
-#define RIGHT_RING 9
+#define LANTERN 5
+#define FULL_BODY 6
+#define RING 7
+#define AMULET 8
+#define LEFT_RING 9
+#define RIGHT_RING 10
 
 // event_type
 

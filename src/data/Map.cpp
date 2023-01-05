@@ -34,9 +34,20 @@ void Map::calculateLights() {
       }
     }
   }
+  for(Character * character : characters) {
+    int light = character->getLight();
+    int x = character->getX();
+    int y = character->getY();
+    if(light > lights[y][x]) {
+      lights[y][x] = light;
+      lightX[cpt] = x;
+      lightY[cpt++] = y;
+    }
+  }
   for(int i = 0; i < cpt; i++) {
     propagateLight(lightY[i],lightX[i]);
   }
+  //new_light = false;
 }
 
 void Map::propagateLight(int y, int x) {

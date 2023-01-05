@@ -17,6 +17,7 @@ head = none
 arms = none
 legs = TXT_LEATHER_BOOTS
 body = TXT_LEATHER_CUIRASS
+lantern = none
 left_ring = none
 right_ring = none
 amulet = none

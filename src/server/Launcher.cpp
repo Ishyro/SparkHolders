@@ -75,7 +75,7 @@ void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, Adventure
 int main(int argc, char ** argv) {
 
   if (argc < 2) {
-    std::cout << "Expected: ./Launcher <adventureFile>" << std::endl;
+    std::cout << "Expected: ./Launcher <adventureFile.commands>" << std::endl;
     return EXIT_FAILURE;
   }
 

@@ -319,7 +319,8 @@ class Character {
       titles(titles)
     {
       // should always be 0 at round start
-      currentFlow = 0;
+      currentFlowOut = 0;
+      currentFlowIn = 0;
     }
     void applyAttributes(Attributes * attributes, bool init);
     bool isAlive();
@@ -358,6 +359,7 @@ class Character {
     Speech * getTalkingSpeech();
 
     Gear * getGear();
+    int getLight();
     std::list<Item *> getItems();
     std::list<Item *> getLoot();
     std::list<Weapon *> getWeapons();
@@ -487,7 +489,8 @@ class Character {
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;
-    int currentFlow;
+    int currentFlowOut;
+    int currentFlowIn;
     int visionRange;
     int visionPower;
     int detectionRange;

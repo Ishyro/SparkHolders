@@ -6,6 +6,8 @@
 #include <cctype>
 #include <iostream>
 #include <fstream>
+// time
+#include<ctime>
 
 #include "ai/AI.h"
 #include "ai/PlayerAI.h"
@@ -26,6 +28,7 @@
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
+#include "data/Settings.h"
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
@@ -96,6 +99,7 @@ namespace FileOpener {
     std::string delimiter = ".";
     std::string dataFile = fileName.substr(0, fileName.find(delimiter) + 1) + "data";
     Database * database = DatabaseOpener(dataFile);
+    SettingsOpener("data/settings_server.data", database);
 
     std::fstream file;
     file.open(fileName, std::ios::in);
@@ -242,6 +246,45 @@ namespace FileOpener {
       Quest * quest = new Quest(database->getQuest(command));
       quests->push_back(quest);
     }
+    else if(keyword == "Settings") {
+      std::string setting = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      std::string value_str = command.substr(0, command.find('%'));
+      command = command.substr(command.find('%') + 1, command.length());
+      if(setting == "LIGHT_MAX_POWER") {
+        Settings::setLightMaxPower(stoi(value_str));
+      }
+      else if(setting == "LIGHT_DURATION") {
+        Settings::setLighDuration(stoi(value_str));
+      }
+      else if(setting == "YEAR_DURATION") {
+        Settings::setYearDuration(stoi(value_str));
+      }
+      else if(setting == "MONTH_DURATION") {
+        Settings::setMonthDuration(stoi(value_str));
+      }
+      else if(setting == "WEEK_DURATION") {
+        Settings::setWeekDuration(stoi(value_str));
+      }
+      else if(setting == "HOUR_DURATION") {
+        Settings::setHourDuration(stoi(value_str));
+      }
+      else if(setting == "STARTING_YEAR") {
+        Settings::setStartingYear(stoi(value_str));
+      }
+      else if(setting == "STARTING_MONTH") {
+        Settings::setStartingMonth(stoi(value_str));
+      }
+      else if(setting == "STARTING_WEEK") {
+        Settings::setStartingWeek(stoi(value_str));
+      }
+      else if(setting == "STARTING_DAY") {
+        Settings::setStartingDay(stoi(value_str));
+      }
+      else if(setting == "STARING_HOUR") {
+        Settings::setStartingHour(stoi(value_str));
+      }
+    }
     else if(keyword == "Spawn") {
       Spawn * spawn = new Spawn();
       std::string map_str = command.substr(0, command.find('%'));
@@ -338,6 +381,8 @@ namespace FileOpener {
     Item * legs = legs_str != "none" ? (Item *) database->getItem(legs_str) : nullptr;
     std::string body_str = values.at("body");
     Item * body = body_str != "none" ? (Item *) database->getItem(body_str) : nullptr;
+    std::string lantern_str = values.at("lantern");
+    Item * lantern = lantern_str != "none" ? (Item *) database->getItem(lantern_str) : nullptr;
     std::string left_ring_str = values.at("left_ring");
     Item * left_ring = left_ring_str != "none" ? (Item *) database->getItem(left_ring_str) : nullptr;
     std::string right_ring_str = values.at("right_ring");
@@ -346,7 +391,7 @@ namespace FileOpener {
     Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
     std::string weapon_str = values.at("weapon");
     Weapon * current_weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
-    Gear * gear = new Gear(head, arms, legs, body, left_ring, right_ring, amulet, current_weapon);
+    Gear * gear = new Gear(head, arms, legs, body, lantern, left_ring, right_ring, amulet, current_weapon);
     Attributes * attributes = new Attributes(
       name,
       baseHp,
@@ -657,6 +702,31 @@ namespace FileOpener {
   }
 
   void QuestOpener(std::string fileName, Database * database) {}
+
+  void SettingsOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    Settings::setLightMaxPower(stoi(values.at("LIGHT_MAX_POWER")));
+    Settings::setLighDuration(stoi(values.at("LIGHT_DURATION")));
+    Settings::setYearDuration(stoi(values.at("YEAR_DURATION")));
+    Settings::setMonthDuration(stoi(values.at("MONTH_DURATION")));
+    Settings::setWeekDuration(stoi(values.at("WEEK_DURATION")));
+    Settings::setHourDuration(stoi(values.at("HOUR_DURATION")));
+    Settings::setStartingYear(stoi(values.at("STARTING_YEAR")));
+    Settings::setStartingMonth(stoi(values.at("STARTING_MONTH")));
+    Settings::setStartingWeek(stoi(values.at("STARTING_WEEK")));
+    Settings::setStartingDay(stoi(values.at("STARTING_DAY")));
+    Settings::setStartingHour(stoi(values.at("STARING_HOUR")));
+    Settings::setMaxNumberOfDaysAwake(stoi(values.at("MAX_NUMBER_DAYS_AWAKE")));
+    Settings::setMaxNumberOfDaysFasting(stoi(values.at("MAX_NUMBER_DAYS_FASTING")));
+    Settings::setStaminaRecoveryRatio(stoi(values.at("STAMINA_RECOVERY_RATIO")));
+    Settings::setSatietyRecoveryRatio(stoi(values.at("SATIETY_RECOVERY_RATIO")));
+    Settings::setStaminaOverextendRatio(stoi(values.at("STAMINA_OVEREXTEND_RATIO")));
+    Settings::setSatietyOverextendRatio(stoi(values.at("SATIETY_OVEREXTEND_RATIO")));
+    Settings::setBuyingPriceModifier(stof(values.at("GET_BUYING_PRICE_MODIFIER")));
+    Settings::setPort(stoi(values.at("PORT")));
+    std::string seed = values.at("SEED");
+    seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
+  }
 
   void SkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);

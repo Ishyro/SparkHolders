@@ -66,6 +66,7 @@ Database::Database() {
   macros.insert(std::make_pair("CHANNELING", CHANNELING));
   macros.insert(std::make_pair("STUNNED", STUNNED));
   macros.insert(std::make_pair("SLEEPING", SLEEPING));
+  macros.insert(std::make_pair("LIGHT", LIGHT));
   macros.insert(std::make_pair("CLOAKED", CLOAKED));
   macros.insert(std::make_pair("INVISIBLE", INVISIBLE));
   macros.insert(std::make_pair("ETHERAL", ETHERAL));
@@ -97,6 +98,7 @@ Database::Database() {
   macros.insert(std::make_pair("ARMS", ARMS));
   macros.insert(std::make_pair("BODY", BODY));
   macros.insert(std::make_pair("LEGS", LEGS));
+  macros.insert(std::make_pair("LANTERN", LANTERN));
   macros.insert(std::make_pair("FULL_BODY", FULL_BODY));
   macros.insert(std::make_pair("RING", RING));
   macros.insert(std::make_pair("AMULET", AMULET));
@@ -115,7 +117,7 @@ Database::Database() {
   macros.insert(std::make_pair("HARD", HARD));
 
   // movement_type
-  
+
   macros.insert(std::make_pair("FLYING", FLYING));
   macros.insert(std::make_pair("WALKING", WALKING));
   macros.insert(std::make_pair("TELEPORT", TELEPORT));

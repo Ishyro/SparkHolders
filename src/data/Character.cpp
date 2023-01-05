@@ -31,7 +31,8 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   visionPower=attributes->baseVisionPower;
   detectionRange=attributes->baseDetectionRange;
   currentSoulBurn = 0;
-  currentFlow = 0;
+  currentFlowOut = 0;
+  currentFlowIn = 0;
   stamina = 75.;
   satiety = 75.;
   savedHpRegen = 0.;
@@ -94,7 +95,7 @@ int Character::getAvaillableMana(bool overflow) {
     return std::min(mana - 1, std::max(0, getFlow())) + channeledMana;
   }
   else {
-    return std::min(mana - 1, std::max(0, getFlow() - currentFlow)) + channeledMana;
+    return std::min(mana - 1, std::max(0, getFlow() - currentFlowOut)) + channeledMana;
   }
 }
 
@@ -192,6 +193,15 @@ Speech * Character::getTalkingSpeech() { return talking_speech; }
 int Character::getCurrentMapId() { return current_map_id; }
 
 Gear * Character::getGear() { return gear; }
+int Character::getLight() {
+  int light = 0;
+  for(Effect * effect : effects) {
+    if(effect->type == LIGHT) {
+      light += effect->power;
+    }
+  }
+  return light;
+}
 std::list<Item *> Character::getItems() { return items; }
 std::list<Item *> Character::getLoot() { return loot; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
@@ -296,10 +306,10 @@ void Character::incrMaxHp() {
 void Character::setHp(int hp) { this->hp = hp; }
 
 void Character::manaHeal(int mana) {
-  int currentManaHeal = std::max(0, std::min(mana, getFlow() - currentFlow));
+  int currentManaHeal = std::max(0, std::min(mana, getFlow() - currentFlowIn));
   int realManaHeal = std::min(currentManaHeal, getMaxMana() - this->mana);
   this->mana += realManaHeal;
-  currentFlow += realManaHeal;
+  currentFlowIn += realManaHeal;
 }
 
 void Character::incrMaxMana() {
@@ -416,8 +426,11 @@ void Character::applySoulBurn() {
   if(currentSoulBurn > soulBurnTreshold) {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
-  currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction) + std::max(0, 2 * (currentFlow - getFlow()));
-  currentFlow = 0;
+  // currentFlowOut will damage the character.
+  currentSoulBurn = std::max(0, currentSoulBurn - soulBurnReduction) + std::max(0, 2 * (currentFlowOut - getFlow()));
+  currentFlowOut = 0;
+  // currentFlowIn will not damage the character, because any extra mana in is lost.
+  currentFlowIn = 0;
   channeledMana = (int) std::floor( (float) channeledMana * 0.8);
 }
 
@@ -483,7 +496,7 @@ void Character::payMana(int cost) {
   channeledMana -= cost - realCost;
   mana -= realCost;
   currentSoulBurn += realCost;
-  currentFlow += realCost;
+  currentFlowOut += realCost;
 }
 void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
