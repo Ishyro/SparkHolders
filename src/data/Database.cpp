@@ -66,6 +66,7 @@ Database::Database() {
   macros.insert(std::make_pair("CHANNELING", CHANNELING));
   macros.insert(std::make_pair("STUNNED", STUNNED));
   macros.insert(std::make_pair("SLEEPING", SLEEPING));
+  macros.insert(std::make_pair("FLY", FLY));
   macros.insert(std::make_pair("LIGHT", LIGHT));
   macros.insert(std::make_pair("CLOAKED", CLOAKED));
   macros.insert(std::make_pair("INVISIBLE", INVISIBLE));
@@ -158,7 +159,6 @@ Database::Database() {
   macros.insert(std::make_pair("SOUTH_WEST", SOUTH_WEST));
   macros.insert(std::make_pair("WEST", WEST));
   macros.insert(std::make_pair("NORTH_WEST", NORTH_WEST));
-  macros.insert(std::make_pair("NO_ORIENTATION", NO_ORIENTATION));
 
   // projectile_type
 
@@ -259,7 +259,7 @@ const int Database::getRelation(const std::string team1, const std::string team2
   }
 }
 
-std::list<std::string> Database::getTraductionPaths() { return paths; }
+std::list<std::string> Database::getTranslationPaths() { return paths; }
 
 std::list<std::pair<const std::string, const std::string>> Database::getWaysIncompatibilities() { return waysIncompatibilities; }
 
@@ -294,4 +294,4 @@ void Database::addRelation(const std::string team1, const std::string team2, int
 void Database::addWayImcompatibility(const std::string way1, const std::string way2) {
   waysIncompatibilities.push_back(std::make_pair(way1, way2));
 }
-void Database::addTraductionPath(const std::string path) { paths.push_back(path); };
+void Database::addTranslationPath(const std::string path) { paths.push_back(path); };

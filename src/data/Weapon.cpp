@@ -98,7 +98,7 @@ std::string Weapon::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_bool(ss, melee);
-  String::insert_int(ss, range);
+  String::insert_float(ss, range);
   String::insert_int(ss, type);
   String::insert_bool(ss, droppable);
   String::insert_float(ss, weight);
@@ -128,7 +128,7 @@ Weapon * Weapon::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
   bool melee = String::extract_bool(ss);
-  int range = String::extract_int(ss);
+  float range = String::extract_float(ss);
   int type = String::extract_int(ss);
   bool droppable = String::extract_bool(ss);
   float weight = String::extract_float(ss);

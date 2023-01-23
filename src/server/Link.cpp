@@ -17,7 +17,7 @@ void Link::playerChoices() {
   try {
     Server::sendWaysIncompabilities(s, adventure);
     Server::sendStartingPossibilites(s, adventure);
-    Server::sendTraductionPaths(s, adventure);
+    Server::sendTranslationPaths(s, adventure);
     player = Server::receiveChoices(s, adventure);
   } catch (const CloseException &e) {
     markClosed();

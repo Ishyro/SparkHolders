@@ -22,9 +22,9 @@ void Link::loadChoices() {
   }
 }
 
-std::list<std::string> Link::receiveTraductionPaths() {
+std::list<std::string> Link::receiveTranslationPaths() {
   try {
-    return Client::receiveTraductionPaths(s);
+    return Client::receiveTranslationPaths(s);
   } catch (const CloseException &e) {
     throw e;
   }
@@ -44,7 +44,7 @@ MapDisplay * Link::receiveMap() {
     MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId);
     for(CharacterDisplay * display : map->characters) {
       if(serverCharacterId == display->id) {
-        player->move(display->y + map->offsetY, display->x + map->offsetX, display->orientation);
+        player->move(display->y + map->offsetY, display->x + map->offsetX, display->dy, display->dx, display->orientation);
         player->setHp(display->hp);
         player->setMana(display->mana);
         player->setStamina(display->stamina);
@@ -59,7 +59,7 @@ MapDisplay * Link::receiveMap() {
   }
 }
 
-void Link::sendAction(int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
+void Link::sendAction(int type, float orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
   try {
     Client::sendAction(s, type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
   } catch (const CloseException &e) {

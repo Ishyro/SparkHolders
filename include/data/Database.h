@@ -31,7 +31,7 @@ class Database {
     const Weapon * getWeapon(const std::string weapon);
     const int getRelation(const std::string team1, const std::string team2);
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
-    std::list<std::string> getTraductionPaths();
+    std::list<std::string> getTranslationPaths();
 
     void addAttributes(const Attributes * attributes);
     void addCharacter(const Character * character);
@@ -50,7 +50,7 @@ class Database {
     void addWeapon(const Weapon * weapon);
     void addRelation(const std::string team1, const std::string team2, int relation);
     void addWayImcompatibility(const std::string way1, const std::string way2);
-    void addTraductionPath(const std::string path);
+    void addTranslationPath(const std::string path);
 
   private:
     std::map<const std::string,const int> macros;

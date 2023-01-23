@@ -18,18 +18,46 @@
 
 #include "utils/String.h"
 
-void Character::applyAttributes(Attributes * attributes, bool init) {
-  maxHp=attributes->baseHp;
-  maxMana=attributes->baseMana;
-  hp=maxHp;
-  mana=maxMana;
-  armor=attributes->baseArmor;
-  damage_multiplier=attributes->baseDamage;
-  soulBurnTreshold=attributes->baseSoulBurn;
-  flow=attributes->baseFlow;
-  visionRange=attributes->baseVisionRange;
-  visionPower=attributes->baseVisionPower;
-  detectionRange=attributes->baseDetectionRange;
+void Character::initializeCharacter() {
+  size = race->size;
+  maxHp = attributes->baseHp + race->baseHp + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
+  for(Way * way : titles) {
+    maxHp += way->baseHp;
+  }
+  maxMana = attributes->baseMana + race->baseMana + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
+  for(Way * way : titles) {
+    maxHp += way->baseMana;
+  }
+  hp = maxHp;
+  mana = maxMana;
+  armor = attributes->baseArmor + race->baseArmor + origin->baseArmor + culture->baseArmor + religion->baseArmor + profession->baseArmor;
+  for(Way * way : titles) {
+    maxHp += way->baseArmor;
+  }
+  damage_multiplier = attributes->baseDamage + race->baseDamage + origin->baseDamage + culture->baseDamage + religion->baseDamage + profession->baseDamage;
+  for(Way * way : titles) {
+    maxHp += way->baseDamage;
+  }
+  soulBurnTreshold = attributes->baseSoulBurn + race->baseSoulBurn + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
+  for(Way * way : titles) {
+    maxHp += way->baseSoulBurn;
+  }
+  flow = attributes->baseFlow + race->baseFlow + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
+  for(Way * way : titles) {
+    maxHp += way->baseFlow;
+  }
+  visionRange = attributes->baseVisionRange + race->baseVisionRange + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
+  for(Way * way : titles) {
+    maxHp += way->baseVisionRange;
+  }
+  visionPower = attributes->baseVisionPower + race->baseVisionPower + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
+  for(Way * way : titles) {
+    maxHp += way->baseVisionPower;
+  }
+  detectionRange = attributes->baseDetectionRange + race->baseDetectionRange + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
+  for(Way * way : titles) {
+    maxHp += way->baseDetectionRange;
+  }
   currentSoulBurn = 0;
   currentFlowOut = 0;
   currentFlowIn = 0;
@@ -38,30 +66,128 @@ void Character::applyAttributes(Attributes * attributes, bool init) {
   savedHpRegen = 0.;
   savedManaRegen = 0.;
   channeledMana = 0;
-  if(init) {
-    gear = new Gear(attributes->getStartingGear());
-    for(Item * item : attributes->getItems()) {
-      Item * toadd = new Item(item);
-      items.push_back(toadd);
+  gear = new Gear(attributes->getStartingGear());
+  for(Item * item : attributes->getItems()) {
+    Item * toadd = new Item(item);
+    items.push_back(toadd);
+  }
+  for(Weapon * weapon : attributes->getWeapons()) {
+    Weapon * toadd = new Weapon(weapon);
+    weapons.push_back(toadd);
+  }
+  for(Ammunition * ammo : attributes->getAmmunitions()) {
+    Ammunition * toadd = new Ammunition();
+    toadd->projectile = ammo->projectile;
+    toadd->number = ammo->number;
+    toadd->gold_value = ammo->gold_value;
+    toadd->ammo_type = ammo->ammo_type;
+    ammunition.push_back(toadd);
+  }
+  initSkillsAndEffects();
+}
+
+void Character::initSkillsAndEffects() {
+  for(Skill * skill : attributes->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
     }
-    for(Weapon * weapon : attributes->getWeapons()) {
-      Weapon * toadd = new Weapon(weapon);
-      weapons.push_back(toadd);
-    }
-    for(Ammunition * ammo : attributes->getAmmunitions()) {
-      Ammunition * toadd = new Ammunition();
-      toadd->projectile = ammo->projectile;
-      toadd->number = ammo->number;
-      toadd->gold_value = ammo->gold_value;
-      toadd->ammo_type = ammo->ammo_type;
-      ammunition.push_back(toadd);
-    }
-    for(Effect * effect : attributes->getEffects()) {
+  }
+  for(Effect * effect : attributes->getEffects()) {
+    if(effect->level == 0) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
     }
-    for(Skill * skill : attributes->getSkills()) {
+  }
+  if(attributes->getArchetype() != nullptr) {
+    for(Skill * skill : attributes->getArchetype()->getSkills()) {
+      if(skill->level == 0) {
+        addSkill(skill);
+      }
+    }
+    for(Effect * effect : attributes->getArchetype()->getEffects()) {
+      if(effect->level == 0) {
+        Effect * toadd = new Effect(effect, 1, 1);
+        toadd->activate(this);
+      }
+    }
+  }
+  for(Skill * skill : second_attributes->getSkills()) {
+    if(skill->level == 0) {
       addSkill(skill);
+    }
+  }
+  for(Effect * effect : second_attributes->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : race->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : race->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : origin->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : origin->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : culture->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : culture->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : religion->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : religion->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : profession->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : profession->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Way * way : titles) {
+    for(Skill * skill : way->getSkills()) {
+      if(skill->level == 0) {
+        addSkill(skill);
+      }
+    }
+    for(Effect * effect : way->getEffects()) {
+      if(effect->level == 0) {
+        Effect * toadd = new Effect(effect, 1, 1);
+        toadd->activate(this);
+      }
     }
   }
 }
@@ -77,11 +203,14 @@ bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 int Character::getX() { return x; }
 int Character::getY() { return y; }
-int Character::getOrientation() { return orientation; }
+float Character::getDX() { return dx; }
+float Character::getDY() { return dy; }
+float Character::getSize() { return size; }
+float Character::getOrientation() { return orientation; }
 int Character::getHp() { return hp; }
 int Character::getMaxHp() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == HP_MAX)
       bonus += e->power;
   return maxHp + bonus;
@@ -101,7 +230,7 @@ int Character::getAvaillableMana(bool overflow) {
 
 int Character::getMaxMana() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == MANA_MAX)
       bonus += e->power;
   return std::max(maxMana + bonus, 0);
@@ -112,7 +241,7 @@ float Character::getSatiety() { return satiety; }
 
 int Character::getArmor() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == ARMOR)
       bonus += e->power;
   return std::max(armor + bonus, 0);
@@ -120,7 +249,7 @@ int Character::getArmor() {
 
 int Character::getSoulBurnTreshold() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == SOULBURNTRESHOLD)
       bonus += e->power;
   return std::max(soulBurnTreshold + bonus, 0);
@@ -130,7 +259,7 @@ int Character::getCurrentSoulBurn() { return currentSoulBurn; }
 
 int Character::getFlow() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == FLOW)
       bonus += e->power;
   return std::max(flow + bonus, 0);
@@ -138,7 +267,7 @@ int Character::getFlow() {
 
 int Character::getVisionRange() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == VISION_RANGE)
       bonus += e->power;
   return std::max(visionRange + bonus, 0);
@@ -146,7 +275,7 @@ int Character::getVisionRange() {
 
 int Character::getVisionPower() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == VISION_POWER)
       bonus += e->power;
   return std::max(visionPower + bonus, 0);
@@ -154,7 +283,7 @@ int Character::getVisionPower() {
 
 int Character::getDetectionRange() {
   int bonus = 0;
-  for(auto e : effects)
+  for(Effect * e : effects)
     if(e->type == DETECTION_RANGE)
       bonus += e->power;
   return std::max(detectionRange + bonus, 0);
@@ -240,50 +369,23 @@ std::list<Ammunition *> Character::getSellableAmmunitions() { return sellable_am
 std::list<Effect *> Character::getSellableEffects() { return sellable_effects; }
 std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
 
+Attributes * Character::getAttributes() { return attributes; }
+Attributes * Character::getSecondAttributes() { return second_attributes; }
+Way * Character::getRace() { return race; }
+Way * Character::getOrigin() { return origin; }
+Way * Character::getCulture() { return culture; }
+Way * Character::getReligion() { return religion; }
+Way * Character::getProfession() { return profession; }
+
 std::list<Way *> Character::getTitles() { return titles; }
 
-void Character::setOrientation(int orientation) { this->orientation = orientation; }
-void Character::move(int orientation) {
-  switch(orientation) {
-    case NORTH:
-      y++;
-      break;
-    case NORTH_EAST:
-      y++;
-      x++;
-      break;
-    case EAST:
-      x++;
-      break;
-    case SOUTH_EAST:
-      y--;
-      x++;
-      break;
-    case SOUTH:
-      y--;
-      break;
-    case SOUTH_WEST:
-      y--;
-      x--;
-      break;
-    case WEST:
-      x--;
-      break;
-    case NORTH_WEST:
-      y++;
-      x--;
-      break;
-  }
-  this->orientation = orientation;
-}
-
-void Character::move(int y, int x) {
+void Character::setOrientation(float orientation) { this->orientation = orientation; }
+void Character::setSize(float size) { this->size = size; }
+void Character::move(int y, int x, float dy, float dx, float orientation) {
   this->x = x;
   this->y = y;
-}
-void Character::move(int y, int x, int orientation) {
-  this->x = x;
-  this->y = y;
+  this->dx = dx;
+  this->dy = dy;
   this->orientation = orientation;
 }
 
@@ -293,6 +395,8 @@ void Character::incrMaxHp() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->hpIncr;
+  incr += second_attributes->hpIncr;
   incr += race->hpIncr;
   incr += origin->hpIncr;
   incr += culture->hpIncr;
@@ -306,8 +410,8 @@ void Character::incrMaxHp() {
 void Character::setHp(int hp) { this->hp = hp; }
 
 void Character::manaHeal(int mana) {
-  int currentManaHeal = std::max(0, std::min(mana, getFlow() - currentFlowIn));
-  int realManaHeal = std::min(currentManaHeal, getMaxMana() - this->mana);
+  int maxManaHeal = std::max(0, std::min(mana, getFlow() - currentFlowIn));
+  int realManaHeal = std::min(maxManaHeal, getMaxMana() - this->mana);
   this->mana += realManaHeal;
   currentFlowIn += realManaHeal;
 }
@@ -317,6 +421,8 @@ void Character::incrMaxMana() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->manaIncr;
+  incr += second_attributes->manaIncr;
   incr += race->manaIncr;
   incr += origin->manaIncr;
   incr += culture->manaIncr;
@@ -341,6 +447,8 @@ void Character::incrArmor() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->armorIncr;
+  incr += second_attributes->armorIncr;
   incr += race->armorIncr;
   incr += origin->armorIncr;
   incr += culture->armorIncr;
@@ -356,6 +464,8 @@ void Character::incrDamageMultiplier() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->damageIncr;
+  incr += second_attributes->damageIncr;
   incr += race->damageIncr;
   incr += origin->damageIncr;
   incr += culture->damageIncr;
@@ -371,6 +481,8 @@ void Character::incrSoulBurnTreshold() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->soulBurnIncr;
+  incr += second_attributes->soulBurnIncr;
   incr += race->soulBurnIncr;
   incr += origin->soulBurnIncr;
   incr += culture->soulBurnIncr;
@@ -387,6 +499,8 @@ void Character::incrFlow() {
     setNeedToSend(true);
   }
   int incr = 0;
+  incr += attributes->flowIncr;
+  incr += second_attributes->flowIncr;
   incr += race->flowIncr;
   incr += origin->flowIncr;
   incr += culture->flowIncr;
@@ -502,13 +616,131 @@ void Character::gainXP(long xp) { this->xp += xp; }
 void Character::gainLevel() {
   while(xp >= level * level * 1000) { // INSERT FORMULA HERE
     level++;
+    int old_max_mana = getMaxMana();
+    int old_max_hp = getMaxHp();
     incrMaxHp();
+    hpHeal(getMaxHp() - old_max_hp);
     incrMaxMana();
+    manaHeal(getMaxMana() - old_max_mana);
     incrArmor();
     incrDamageMultiplier();
     incrSoulBurnTreshold();
     incrFlow();
+    newSkillsAndEffects();
+    if(level == 10) {
+      selectSecondAttributes();
+    }
   }
+}
+
+void Character::newSkillsAndEffects() {
+  for(Skill * skill : attributes->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : attributes->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  if(attributes->getArchetype() != nullptr) {
+    for(Skill * skill : attributes->getArchetype()->getSkills()) {
+      if(level == 5 * skill->level) {
+        addSkill(skill);
+      }
+    }
+    for(Effect * effect : attributes->getArchetype()->getEffects()) {
+      if(level == 5 * effect->level) {
+        Effect * toadd = new Effect(effect, 1, 1);
+        toadd->activate(this);
+      }
+    }
+  }
+  for(Skill * skill : second_attributes->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : second_attributes->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : race->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : race->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : origin->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : origin->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : culture->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : culture->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : religion->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : religion->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : profession->getSkills()) {
+    if(level == 5 * skill->level) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : profession->getEffects()) {
+    if(level == 5 * effect->level) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Way * way : titles) {
+    for(Skill * skill : way->getSkills()) {
+      if(level == 5 * skill->level) {
+        addSkill(skill);
+      }
+    }
+    for(Effect * effect : way->getEffects()) {
+      if(level == 5 * effect->level) {
+        Effect * toadd = new Effect(effect, 1, 1);
+        toadd->activate(this);
+      }
+    }
+  }
+}
+
+void Character::selectSecondAttributes() {
+
 }
 
 void Character::setAI(AI * ai) { this->ai = ai; }
@@ -530,13 +762,13 @@ void Character::equip(Item * to_equip) {
   }
   if(to_equip != nullptr) {
     std::list<Item *> items = gear->equip(to_equip);
-    for(auto item : items) {
-      for(auto e : item->effects) {
+    for(Item * item : items) {
+      for(Effect * e : item->effects) {
         removeEffect(e);
       }
       items.push_back(item);
     }
-    for(auto e : to_equip->effects) {
+    for(Effect * e : to_equip->effects) {
       addEffect(e);
     }
   }
@@ -550,12 +782,12 @@ void Character::equip(Weapon * to_equip) {
     Weapon * old_weapon = gear->equip(to_equip);
     removeWeapon(to_equip);
     if(old_weapon != nullptr) {
-      for(auto e : old_weapon->effects) {
+      for(Effect * e : old_weapon->effects) {
         removeEffect(e);
       }
       addWeapon(old_weapon);
     }
-    for(auto e : to_equip->effects) {
+    for(Effect * e : to_equip->effects) {
       addEffect(e);
     }
   }
@@ -567,7 +799,7 @@ void Character::unequip(int type) {
   }
   Item * old_item = gear->unequip(type);
   if(old_item != nullptr) {
-    for(auto e : old_item->effects) {
+    for(Effect * e : old_item->effects) {
       removeEffect(e);
     }
     items.push_back(old_item);
@@ -750,8 +982,17 @@ void Character::useItem(std::string item) {
   }
 }
 
+bool Character::isFlying() {
+  for(Effect * e : effects) {
+    if(e->type == FLY) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Character::isChanneling() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == CHANNELING) {
       return true;
     }
@@ -760,7 +1001,7 @@ bool Character::isChanneling() {
 }
 
 bool Character::isStunned() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == STUNNED) {
       return true;
     }
@@ -769,7 +1010,7 @@ bool Character::isStunned() {
 }
 
 bool Character::isCloaked() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == CLOAKED) {
       return true;
     }
@@ -778,7 +1019,7 @@ bool Character::isCloaked() {
 }
 
 bool Character::isInvisible() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == INVISIBLE) {
       return true;
     }
@@ -787,7 +1028,7 @@ bool Character::isInvisible() {
 }
 
 bool Character::isEtheral() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == ETHERAL) {
       return true;
     }
@@ -796,7 +1037,7 @@ bool Character::isEtheral() {
 }
 
 bool Character::isInvulnerable() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == INVULNERABLE) {
       return true;
     }
@@ -805,7 +1046,7 @@ bool Character::isInvulnerable() {
 }
 
 bool Character::isSleeping() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == SLEEPING) {
       return true;
     }
@@ -815,16 +1056,18 @@ bool Character::isSleeping() {
 
 int Character::cloakPower() {
   int max = 0;
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == CLOAKED) {
-      return e->power;
+      if(e->power > max) {
+        max = e->power;
+      }
     }
   }
   return max;
 }
 
 bool Character::isInWeakState() {
-  for(auto e : effects) {
+  for(Effect * e : effects) {
     if(e->type == STUNNED || e->type == SLEEPING) {
       return true;
     }
@@ -832,7 +1075,6 @@ bool Character::isInWeakState() {
   return false;
 }
 
-// Warning : Dangerous
 void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y) {
   skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range, current_map_id, x, y);
 }
@@ -860,9 +1102,26 @@ float Character::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
-Projectile * Character::shoot(const Character * target, int y, int x) {
-  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, x, y)) {
+Projectile * Character::shoot(const Character * target, int y, int x, float dy, float dx) {
+  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, this->dx, this->dy, x, y, dx, dy)) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
+      int destX;
+      float destDX;
+      int destY;
+      float destDY;
+      if(target != nullptr) {
+        destX = ( (Character *) target)->x;
+        destDX = ( (Character *) target)->dx;
+        destY = ( (Character *) target)->y;
+        destDY = ( (Character *) target)->dy;
+      }
+      else {
+        destX = x;
+        destDX = dx;
+        destY = y;
+        destDY = dy;
+      }
+      orientation = MapUtil::getOrientationToTarget(this->x, this->y, this->dx, this->dy, destX, destY, destDX, destDY);
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type);
@@ -874,8 +1133,7 @@ Projectile * Character::shoot(const Character * target, int y, int x) {
         }
         gear->getWeapon()->useAmmo();
       }
-      MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, this->x, this->y);
-      return new Projectile(base_projectile, realDamages, current_map_id, pair.x, pair.y, x, y, (Character *) target, this, orientation, 1, 1, 1);
+      return new Projectile(base_projectile, realDamages, current_map_id, this->x, this->y, this->dx, this->dy, destX, destY, destDX, destDY, (Character *) target, this, orientation, 1, 1, 1);
     }
   }
   return nullptr;
@@ -934,9 +1192,10 @@ Weapon * Character::swapMelee() {
 
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
   if(!isInvulnerable() && !isEtheral()) {
-    if(orientation != NO_ORIENTATION) {
-      int diff = abs(8 + orientation - this->orientation) % 8;
-      if(diff <= 1 || diff >= 7) {
+    if(orientation != 360.F) {
+      float diff = 360.F + orientation - this->orientation;
+      diff = diff >= 360.F ? diff - 360.F : diff;
+      if(diff <= 30.F || diff >= 330.F) {
         return receiveCriticalAttack(damages);
       }
     }
@@ -1070,7 +1329,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case SKILL:
       for(Skill * skill : sellable_skills) {
-        if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes == skill->attributes)) {
+        if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes->name == skill->attributes)) {
           price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             buyer->addSkill(skill);
@@ -1082,10 +1341,11 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case EFFECT:
       for(Effect * effect : sellable_effects) {
-        if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->attributes == effect->attributes)) {
+        if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->attributes->name == effect->attributes)) {
           price = (int) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
-            effect->activate(buyer);
+            Effect * toadd = new Effect(effect, 1, 1);
+            toadd->activate(buyer);
             buyer->loseGold(price);
             gainGold(price);
           }
@@ -1114,7 +1374,10 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, type);
   String::insert_int(ss, x - offsetX);
   String::insert_int(ss, y - offsetY);
-  String::insert_int(ss, orientation);
+  String::insert_float(ss, dx);
+  String::insert_float(ss, dy);
+  String::insert_float(ss, size);
+  String::insert_float(ss, orientation);
   String::insert(ss, team);
   String::insert_int(ss, getArmor());
   String::insert_int(ss, xp);
@@ -1183,7 +1446,10 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->type = String::extract_int(ss);
   display->x = String::extract_int(ss);
   display->y = String::extract_int(ss);
-  display->orientation = String::extract_int(ss);
+  display->dx = String::extract_float(ss);
+  display->dy = String::extract_float(ss);
+  display->size = String::extract_float(ss);
+  display->orientation = String::extract_float(ss);
   display->team = String::extract(ss);
   display->armor = String::extract_int(ss);
   display->xp = String::extract_int(ss);
@@ -1268,7 +1534,10 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, type);
   String::insert_int(ss, x);
   String::insert_int(ss, y);
-  String::insert_int(ss, orientation);
+  String::insert_float(ss, dx);
+  String::insert_float(ss, dy);
+  String::insert_float(ss, size);
+  String::insert_float(ss, orientation);
   String::insert_int(ss, current_map_id);
   String::insert_bool(ss, has_soulspark);
   String::insert_bool(ss, need_to_eat);
@@ -1341,7 +1610,12 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, ss_sellable_skills->str());
   delete ss_sellable_skills;
 
-  String::insert(ss, attributes);
+  String::insert(ss, attributes->to_string());
+  if(second_attributes != nullptr) {
+    String::insert(ss, ((Attributes *) second_attributes)->to_string());
+  } else {
+    String::insert(ss, "none");
+  }
   String::insert(ss, race->to_string());
   String::insert(ss, origin->to_string());
   String::insert(ss, culture->to_string());
@@ -1398,7 +1672,10 @@ Character * Character::full_from_string(std::string to_read) {
   int type = String::extract_int(ss);
   int x = String::extract_int(ss);
   int y = String::extract_int(ss);
-  int orientation = String::extract_int(ss);
+  float dx = String::extract_float(ss);
+  float dy = String::extract_float(ss);
+  float size = String::extract_float(ss);
+  float orientation = String::extract_float(ss);
   int current_map_id = String::extract_int(ss);
   bool has_soulspark = String::extract_bool(ss);
   bool need_to_eat = String::extract_bool(ss);
@@ -1470,7 +1747,12 @@ Character * Character::full_from_string(std::string to_read) {
     sellable_skills->push_back(Skill::from_string(String::extract(ss_sellable_skills)));
   }
   delete ss_sellable_skills;
-  std::string attributes = String::extract(ss);
+  Attributes * attributes = Attributes::from_string(String::extract(ss));
+  std::string second_attributes_str = String::extract(ss);
+  Attributes * second_attributes = nullptr;
+  if(second_attributes_str != "none") {
+    second_attributes = Attributes::from_string(second_attributes_str);
+  }
   Way * race = Way::from_string(String::extract(ss));
   Way * origin = Way::from_string(String::extract(ss));
   Way * culture = Way::from_string(String::extract(ss));
@@ -1509,6 +1791,9 @@ Character * Character::full_from_string(std::string to_read) {
     type,
     x,
     y,
+    dx,
+    dy,
+    size,
     orientation,
     current_map_id,
     has_soulspark,
@@ -1532,6 +1817,7 @@ Character * Character::full_from_string(std::string to_read) {
     *sellable_effects,
     *sellable_skills,
     attributes,
+    second_attributes,
     race,
     origin,
     culture,

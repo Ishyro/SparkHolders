@@ -13,8 +13,25 @@ void ProjectileSkill::activate(Character * owner, Character * target, Adventure 
       realDamages[damage_type] += effect->getDamageFromType(damage_type) * overcharge_power;
     }
   }
-  MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(owner->getOrientation(), owner->getX(), owner->getY());
-  Projectile * to_add = new Projectile(projectile, realDamages, owner->getCurrentMapId(), pair.x, pair.y, x, y, (Character *) target, owner, owner->getOrientation(), overcharge_power, overcharge_duration, overcharge_range);
+  Projectile * to_add = new Projectile(
+    projectile,
+    realDamages,
+    owner->getCurrentMapId(),
+    owner->getX(),
+    owner->getY(),
+    owner->getDX(),
+    owner->getDY(),
+    x,
+    y,
+    0.5F,
+    0.5F,
+    (Character *) target,
+    owner,
+    owner->getOrientation(),
+    overcharge_power,
+    overcharge_duration,
+    overcharge_range
+  );
   adventure->getWorld()->getMap(owner->getCurrentMapId())->addProjectile(to_add);
 }
 

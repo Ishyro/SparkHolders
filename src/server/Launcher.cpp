@@ -58,7 +58,7 @@ void relinkCommunication(std::vector<Link *> * links, ServerSocket ss, Adventure
         used = true;
         try {
           newSocket.write(std::string("OK"));
-          Server::sendTraductionPaths(newSocket, adventure);
+          Server::sendTranslationPaths(newSocket, adventure);
           break;
         } catch (CloseException &e) {
           used = false;

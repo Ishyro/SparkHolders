@@ -10,18 +10,21 @@ class Tile {
     const bool opaque;
     const bool solid;
     const int light;
+    const float ap_cost;
     Tile(
       std::string name,
       bool untraversable,
       bool opaque,
       bool solid,
-      int light
+      int light,
+      float ap_cost
     ):
       name(name),
       untraversable(untraversable),
       opaque(opaque),
       solid(solid),
-      light(light)
+      light(light),
+      ap_cost(ap_cost)
     {}
     std::string to_string();
     static Tile * from_string(std::string to_read);

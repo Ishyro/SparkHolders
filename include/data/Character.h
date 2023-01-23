@@ -33,7 +33,10 @@ typedef struct CharacterDisplay {
   int type;
   int x;
   int y;
-  int orientation;
+  float dx;
+  float dy;
+  float size;
+  float orientation;
   std::string team;
   int armor;
   int xp;
@@ -55,7 +58,6 @@ class Character {
     const std::string name;
     const bool player_character;
     const int type;
-    const std::string attributes;
     const bool has_soulspark;
     const bool need_to_eat;
     const bool can_eat_food;
@@ -114,11 +116,12 @@ class Character {
       int xp,
       int x,
       int y,
-      int orientation,
+      float orientation,
       int current_map_id,
       std::string team,
       AI * ai,
       Attributes * attributes,
+      Attributes * second_attributes,
       Way * race,
       Way * origin,
       Way * culture,
@@ -137,6 +140,8 @@ class Character {
       level(1),
       x(x),
       y(y),
+      dx(0.5),
+      dy(0.5),
       orientation(orientation),
       current_map_id(current_map_id),
       has_soulspark(from_database->has_soulspark),
@@ -156,12 +161,13 @@ class Character {
       sellable_ammunition(std::list<Ammunition *>()),
       sellable_effects(from_database->sellable_effects),
       sellable_skills(from_database->sellable_skills),
-      attributes(attributes->name),
-      race(nullptr),
-      origin(nullptr),
-      culture(nullptr),
-      religion(nullptr),
-      profession(nullptr),
+      attributes(attributes),
+      second_attributes(second_attributes),
+      race(race),
+      origin(origin),
+      culture(culture),
+      religion(religion),
+      profession(profession),
       titles(std::list<Way *>())
     {
       for(Item * item : from_database->items) {
@@ -195,15 +201,10 @@ class Character {
         toadd->ammo_type = ammo->ammo_type;
         ammunition.push_back(toadd);
       }
-      applyAttributes(attributes, true);
-      setWay(race);
-      setWay(origin);
-      setWay(culture);
-      setWay(religion);
-      setWay(profession);
       for(Way * title : titles) {
         setWay(title);
       }
+      initializeCharacter();
       initEffects(from_database->effects);
     }
     Character(
@@ -232,7 +233,10 @@ class Character {
       int type,
       int x,
       int y,
-      int orientation,
+      float dx,
+      float dy,
+      float size,
+      float orientation,
       int current_map_id,
       bool has_soulspark,
       bool need_to_eat,
@@ -254,7 +258,8 @@ class Character {
       std::list<Ammunition *> sellable_ammunition,
       std::list<Effect *> sellable_effects,
       std::list<Skill *> sellable_skills,
-      std::string attributes,
+      Attributes * attributes,
+      Attributes * second_attributes,
       Way * race,
       Way * origin,
       Way * culture,
@@ -287,6 +292,9 @@ class Character {
       type(type),
       x(x),
       y(y),
+      dx(dx),
+      dy(dy),
+      size(size),
       orientation(orientation),
       current_map_id(current_map_id),
       has_soulspark(has_soulspark),
@@ -311,6 +319,7 @@ class Character {
       sellable_effects(sellable_effects),
       sellable_skills(sellable_skills),
       attributes(attributes),
+      second_attributes(second_attributes),
       race(race),
       origin(origin),
       culture(culture),
@@ -322,12 +331,15 @@ class Character {
       currentFlowOut = 0;
       currentFlowIn = 0;
     }
-    void applyAttributes(Attributes * attributes, bool init);
+    void initializeCharacter();
     bool isAlive();
     bool isSoulBurning();
     int getX();
     int getY();
-    int getOrientation();
+    float getDX();
+    float getDY();
+    float getOrientation();
+    float getSize();
     int getHp();
     int getMaxHp();
     int getMana();
@@ -367,7 +379,6 @@ class Character {
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> getDamageSkills();
-    std::list<Way *> getTitles();
 
     std::list<Item *> getSellableItems();
     std::list<Weapon *> getSellableWeapons();
@@ -376,10 +387,18 @@ class Character {
     std::list<Skill *> getSellableSkills();
     std::list<Way *> getSellableTitles();
 
-    void setOrientation(int orientation);
-    void move(int orientation);
-    void move(int y, int x);
-    void move(int y, int x, int orientation);
+    Attributes * getAttributes();
+    Attributes * getSecondAttributes();
+    Way * getRace();
+    Way * getOrigin();
+    Way * getCulture();
+    Way * getReligion();
+    Way * getProfession();
+    std::list<Way *> getTitles();
+
+    void setOrientation(float orientation);
+    void setSize(float size);
+    void move(int y, int x, float dy, float dx, float orientation);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);
@@ -412,6 +431,8 @@ class Character {
     void payMana(int cost);
     void gainXP(long xp);
     void gainLevel();
+    void newSkillsAndEffects();
+    void selectSecondAttributes();
 
     void setAI(AI * ai);
     void setTeam(std::string team);
@@ -439,6 +460,7 @@ class Character {
     void removeAmmunition(Ammunition * a);
     void useItem(std::string item);
 
+    bool isFlying();
     bool isChanneling();
     bool isStunned();
     bool isCloaked();
@@ -452,7 +474,7 @@ class Character {
     void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
-    Projectile * shoot(const Character * target, int y, int x);
+    Projectile * shoot(const Character * target, int y, int x, float dy, float dx);
     void reload(Ammunition * ammo);
     void attack(Character * target);
     Ammunition * canReload();
@@ -470,10 +492,14 @@ class Character {
     void deepDelete();
 
   private:
+    void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
     int x;
     int y;
-    int orientation;
+    float dx;
+    float dy;
+    float size;
+    float orientation;
     int current_map_id;
     int hp;
     int maxHp;
@@ -520,6 +546,8 @@ class Character {
     std::list<Effect *> sellable_effects;
     std::list<Skill *> sellable_skills;
 
+    Attributes * attributes;
+    Attributes * second_attributes;
     Way * race;
     Way * origin;
     Way * culture;

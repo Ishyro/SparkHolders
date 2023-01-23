@@ -23,7 +23,7 @@ bool Quest::stepDone(Adventure * adventure) {
       result = current_step->goal_weapon != nullptr;
       break;
     case DISCOVER:
-      for(auto c : adventure->getParty()) {
+      for(Character * c : adventure->getParty()) {
         if(c->getCurrentMapId() == current_step->discover_map_id) {
           result = true;
           break;

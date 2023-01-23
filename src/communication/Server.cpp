@@ -27,15 +27,15 @@ namespace Server {
     int type = String::extract_int(ss);
     switch(type) {
       case MOVE: {
-        int orientation = String::extract_int(ss);
+        float orientation = String::extract_float(ss);
         delete ss;
         return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case REST:
         delete ss;
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case SHOOT: {
-        int orientation = String::extract_int(ss);
+        float orientation = String::extract_float(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
@@ -43,7 +43,7 @@ namespace Server {
         return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case FORCE_STRIKE: {
-        int orientation = String::extract_int(ss);
+        float orientation = String::extract_float(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
@@ -53,27 +53,27 @@ namespace Server {
       case RELOAD: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(RELOAD, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(RELOAD, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case SWAP_GEAR: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(SWAP_GEAR, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(SWAP_GEAR, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case CHANGE_MAP: {
         MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
         delete ss;
         if(link != nullptr) {
-          return new Action(CHANGE_MAP, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, link, "", 1, 1, 1);
+          return new Action(CHANGE_MAP, user, 0.F, nullptr, nullptr, 0, 0, link, "", 1, 1, 1);
         }
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case GRAB:
         delete ss;
-        return new Action(GRAB, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(GRAB, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case USE_SKILL: {
         std::string object = String::extract(ss);
-        int orientation = String::extract_int(ss);
+        float orientation = String::extract_float(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         const Skill * skill = adventure->getDatabase()->getSkill(object);
         int target_x = String::extract_int(ss);
@@ -101,13 +101,13 @@ namespace Server {
       case USE_ITEM: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(USE_ITEM, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(USE_ITEM, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case TALKING: {
         std::string object = String::extract(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         delete ss;
-        return new Action(TALKING, user, NO_ORIENTATION, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(TALKING, user, 0.F, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
       }
       case ECONOMICS: {
         std::string object = String::extract(ss);
@@ -118,7 +118,7 @@ namespace Server {
       }
       default:
         delete ss;
-        return new Action(REST, user, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
 
@@ -284,9 +284,9 @@ namespace Server {
     delete ss_ways;
   }
 
-  void sendTraductionPaths(Socket s, Adventure * adventure) {
+  void sendTranslationPaths(Socket s, Adventure * adventure) {
     std::stringstream * ss_trads = new std::stringstream();
-    for(std::string path : adventure->getDatabase()->getTraductionPaths()) {
+    for(std::string path : adventure->getDatabase()->getTranslationPaths()) {
       String::insert(ss_trads, path);
     }
     try {

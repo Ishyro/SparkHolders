@@ -24,7 +24,7 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y,
   int k = NORTH;
   int i;
   int j;
-  while(conflict) {
+  while(conflict && (power <= map->sizeX || power <= map->sizeY)) {
     if(k % 8 == 0) {
       power++;
     }
@@ -63,7 +63,7 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y,
     if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (conflict = map->getTile(j, i)->untraversable)) {
       continue;
     }
-    for(auto c : map->getCharacters()) {
+    for(Character * c : map->getCharacters()) {
       if(c->getX() == i && c->getY() == j) {
         conflict = true;
         break;
@@ -77,19 +77,19 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y,
     }
   }
   map->addCharacter(character);
-  character->move(j, i);
+  character->move(j, i, 0.5F, 0.5F, character->getOrientation());
   character->setCurrentMapId(map_id);
 }
 
 void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y, int x) {
   Map * map = world->getMap(map_id);
-  for(auto c : map->getCharacters()) {
+  for(Character * c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
       map->killCharacter(c, character);
     }
   }
   // TODO TOCHECK will probably break because c should already be nullptr
-  for(auto c : party) {
+  for(Character * c : party) {
     if(c->getX() == x && c->getY() == y) {
       delete c;
       removePlayer(c);
@@ -107,7 +107,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y,
     }
   }
   map->addCharacter(character);
-  character->move(y, x);
+  character->move(y, x, 0.5F, 0.5F, character->getOrientation());
   character->setCurrentMapId(map_id);
 }
 
@@ -128,7 +128,7 @@ void Adventure::resurrect(Character * player, int map_id, int y, int x) {
 }
 
 void Adventure::event() {
-  for(auto e : events) {
+  for(Event * e : events) {
     if(round == e->round) {
       e->activate(this);
     }
@@ -265,6 +265,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
     "party",
     new PlayerAI(),
     attr,
+    (Attributes *) database->getAttributes("TXT_NO_ATTRIBUTES"),
     race,
     origin,
     culture,

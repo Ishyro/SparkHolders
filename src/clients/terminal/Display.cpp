@@ -30,6 +30,8 @@
 
 #include "clients/terminal/Display.h"
 
+#include "utils/MapUtil.h"
+
 namespace Display {
 
   void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print) {
@@ -117,32 +119,32 @@ namespace Display {
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
       std::string to_print = "";
-      switch(projectile->orientation) {
-        case NORTH:
+      switch((int) std::floor(projectile->orientation)) {
+        case 90:
           to_print = "↑";
           break;
-        case NORTH_EAST:
+        case 45:
           to_print = "↗";
           break;
-        case EAST:
+        case 0:
           to_print = "→";
           break;
-        case SOUTH_EAST:
+        case 315:
           to_print = "↘";
           break;
-        case SOUTH:
+        case 270:
           to_print = "↓";
           break;
-        case SOUTH_WEST:
+        case 225:
           to_print = "↙";
           break;
-        case WEST:
+        case 180:
           to_print = "←";
           break;
-        case NORTH_WEST:
+        case 135:
           to_print = "↖";
           break;
-        case NO_ORIENTATION:
+        default:
           to_print = "•";
           break;
       }
@@ -156,36 +158,7 @@ namespace Display {
       mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - loot->y, loot->x + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
-    std::string to_print = "";
-    switch(player->getOrientation()) {
-      case NORTH:
-        to_print = "NORTH";
-        break;
-      case NORTH_EAST:
-        to_print = "NORTH_EAST";
-        break;
-      case EAST:
-        to_print = "EAST";
-        break;
-      case SOUTH_EAST:
-        to_print = "SOUTH_EAST";
-        break;
-      case SOUTH:
-        to_print = "SOUTH";
-        break;
-      case SOUTH_WEST:
-        to_print = "SOUTH_WEST";
-        break;
-      case WEST:
-        to_print = "WEST";
-        break;
-      case NORTH_WEST:
-        to_print = "NORTH_WEST";
-        break;
-      case NO_ORIENTATION:
-        to_print = "NO_ORIENTATION";
-        break;
-    }
+    std::string to_print = std::to_string(player->getOrientation());
     // player position
     mvwprintw(screen, lines - 4, 1, to_print.c_str());
     to_print = std::string("X: ") + std::to_string(player->getX());
@@ -248,7 +221,7 @@ namespace Display {
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    std::string to_print = player->name + ", " + t->getAttributesName(player->attributes);
+    std::string to_print = player->name + ", " + t->getAttributesName(player->getAttributes()->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
     mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());
@@ -286,10 +259,10 @@ namespace Display {
         case PROJECTILE_SKILL: {
           Projectile * projectile = ((ProjectileSkill *) pseudoSkill)->getProjectile();
           mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed() * overcharge_duration)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange() * overcharge_range)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff timer") + std::string(": ") + std::to_string(projectile->getFalloffTimer() * overcharge_range)).c_str());
           mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge_range)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile() / overcharge_duration)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area() / overcharge_range)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tick") + std::string(": ") + std::to_string(projectile->getWastePerTick() / overcharge_duration)).c_str());
+          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerArea() / overcharge_range)).c_str());
           mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
         }
         default:
@@ -397,10 +370,10 @@ namespace Display {
     if(weapon->getAmmo() != nullptr && weapon->getAmmo()->projectile != nullptr) {
       Projectile * projectile = weapon->getAmmo()->projectile;
       mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed())).c_str());
-      mvwprintw(screen, i++, 1, (t->getStandardName("Falloff range") + std::string(": ") + std::to_string(projectile->getFalloffRange())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Falloff timer") + std::string(": ") + std::to_string(projectile->getFalloffTimer())).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea())).c_str());
-      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tile") + std::string(": ") + std::to_string(projectile->getWastePerTile())).c_str());
-      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerTile_area())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tick") + std::string(": ") + std::to_string(projectile->getWastePerTick())).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerArea())).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
     }
     int damage_SLASH = weapon->getDamageFromType(SLASH_DAMAGE);
@@ -1270,7 +1243,7 @@ namespace Display {
       bool done = false;
       int type;
       int object_type = 0;
-      int orientation = link->getPlayer()->getOrientation();
+      float orientation = link->getPlayer()->getOrientation();
       Skill * skill = nullptr;
       int target_id = 0;
       int target_x = link->getPlayer()->getX() - display->offsetX;
@@ -1289,46 +1262,46 @@ namespace Display {
             break;
           case '1':
             type = MOVE;
-            orientation = SOUTH_WEST;
+            orientation = 225.F;
             done = true;
             break;
           case '2':
           case KEY_DOWN:
             type = MOVE;
-            orientation = SOUTH;
+            orientation = 270.F;
             done = true;
             break;
           case '3':
             type = MOVE;
-            orientation = SOUTH_EAST;
+            orientation = 315.F;
             done = true;
             break;
           case '4':
           case KEY_LEFT:
             type = MOVE;
-            orientation = WEST;
+            orientation = 180.F;
             done = true;
             break;
           case '6':
           case KEY_RIGHT:
             type = MOVE;
-            orientation = EAST;
+            orientation = 0.F;
             done = true;
             break;
           case '7':
             type = MOVE;
-            orientation = NORTH_WEST;
+            orientation = 135.F;
             done = true;
             break;
           case '8':
           case KEY_UP:
             type = MOVE;
-            orientation = NORTH;
+            orientation = 90.F;
             done = true;
             break;
           case '9':
             type = MOVE;
-            orientation = NORTH_EAST;
+            orientation = 45.F;
             done = true;
             break;
           case '<':
@@ -1640,7 +1613,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, int & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
     bool done = false;
     int lines = 0;
     int cols = 0;
@@ -1711,63 +1684,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          float x = target_x - player_x;
-          float y = target_y - player_y;
-          if(y > 0.) {
-            if(x == 0.) {
-                orientation = NORTH;
-            } else {
-              orientation = NORTH;
-              float ratio = y / x;
-              if(ratio > -2.) {
-                  orientation = NORTH_WEST;
-              }
-              if(ratio > -0.5) {
-                  orientation = WEST;
-              }
-              if(ratio > 0.) {
-                  orientation = EAST;
-              }
-              if(ratio > 0.5) {
-                  orientation = NORTH_EAST;
-              }
-              if(ratio > 2.) {
-                  orientation = NORTH;
-              }
-            }
-          }
-          else if(y < 0.) {
-            if(x == 0.) {
-                orientation = SOUTH;
-            } else {
-              orientation = SOUTH;
-              float ratio = y / x;
-              if(ratio > -2.) {
-                  orientation = SOUTH_EAST;
-              }
-              if(ratio > -0.5) {
-                  orientation = EAST;
-              }
-              if(ratio > 0.) {
-                  orientation = WEST;
-              }
-              if(ratio > 0.5) {
-                  orientation = SOUTH_WEST;
-              }
-              if(ratio > 2.) {
-                  orientation = SOUTH;
-              }
-            }
-          }
-          // y == 0
-          else {
-            if(x > 0.) {
-              orientation = EAST;
-            }
-            else if(x < 0.) {
-              orientation = WEST;
-            }
-          }
+          orientation = MapUtil::getOrientationToTarget(player_x, player_y, 0.F, 0.F, target_x, target_y, 0.F, 0.F);
           break;
         }
         case ' ': {

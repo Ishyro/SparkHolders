@@ -26,7 +26,7 @@ void SummonSkill::activate(Character * owner, Character * target, Adventure * ad
   else if (ai_str == "EtheralCasterAI") {
     ai = new EtheralCasterAI(x, y);
   }
-  Character * c = new Character(character, character->name, xp, x, y, owner->getOrientation(), map_id, owner->getTeam(), ai, attributes, race, origin, culture, religion, profession, titles);
+  Character * c = new Character(character, character->name, xp, x, y, owner->getOrientation(), map_id, owner->getTeam(), ai, attributes, nullptr, race, origin, culture, religion, profession, titles);
   adventure->getWorld()->getMap(map_id)->addCharacter(c);
   if(apparition_type == SOFT) {
     adventure->softMoveCharacterToMap(c, map_id, y, x);

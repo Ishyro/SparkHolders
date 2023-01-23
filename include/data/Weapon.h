@@ -15,7 +15,7 @@ class Weapon {
     const std::string name;
     const long id = ++weapon::id_cpt;
     const bool melee;
-    const int range;
+    const float range;
     const int type;
     const bool droppable;
     const float weight;
@@ -27,7 +27,7 @@ class Weapon {
     Weapon(
       std::string name,
       bool melee,
-      int range,
+      float range,
       int type,
       bool droppable,
       int weight,

@@ -18,14 +18,13 @@
 void Action::execute(Adventure * adventure) {
   switch(type) {
     case MOVE:
-      adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation, adventure);
+      adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation);
       break;
     case REST:
       user->rest();
       break;
     case SHOOT: {
-      user->setOrientation(orientation);
-      Projectile * projectile = user->shoot(target, target_y, target_x);
+      Projectile * projectile = user->shoot(target, target_y, target_x, 0.5F, 0.5F);
       if(projectile != nullptr) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->addProjectile(projectile);
       }
@@ -78,19 +77,19 @@ void Action::execute(Adventure * adventure) {
     case CHANGE_MAP:
       if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->y2, link->x2);
+        user->move(link->y2, link->x2, 0.5F, 0.5F, user->getOrientation());
         user->setCurrentMapId(link->map2->id);
         adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
       }
       else if(user->getX() == link->x2 && user->getY() == link->y2 && user->getCurrentMapId() == link->map2->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->y1, link->x1);
+        user->move(link->y1, link->x1, 0.5F, 0.5F, user->getOrientation());
         user->setCurrentMapId(link->map1->id);
         adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
       }
       break;
     case GRAB:
-      adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, orientation);
+      adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, (int) orientation);
       break;
     case USE_SKILL: {
       user->setOrientation(orientation);

@@ -9,12 +9,17 @@ Action * AI::getAction(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
-int AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
-  return (MapUtil::getDirectOrientationToTarget(x - self->getX(), y - self->getY()) + 4) % 8;
+float AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
+  return MapUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), x, y, 0.F, 0.F);
 }
 
-int AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getOrientationToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y, false);
+float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
+  float orientation = getFollowOrientation(adventure, self, x, y);
+  if(orientation == 360.F) {
+    return orientation;
+  }
+  orientation += 180.F;
+  return orientation >= 360.F ? orientation - 360.F : orientation;
 }
 
 std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
@@ -40,7 +45,7 @@ void AI::selectTiredness(Character * self) {
 }
 
 Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, int target_y) {
-  int range = MapUtil::distance(self->getX(), self->getY(), target_x, target_y);
+  int range = (int) MapUtil::distance(self->getX(), self->getY(), self->getDX(), self->getDY(), target_x, target_y, 0.F, 0.F);
   if(range == 0) {
     return new Action(REST, self, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
@@ -62,7 +67,7 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
   }
   if(path.size() > 0) {
     MapUtil::Pair next = path[0];
-    return new Action(MOVE, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), next.x, next.y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(MOVE, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), next.x, next.y, 0.F, 0.F), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   return new Action(REST, self, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }
@@ -74,7 +79,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
   if(self->can_eat_food) {
     for(Item * item : self->getItems()) {
       if(item->isFood()) {
-        return new Action(USE_ITEM, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, item->name, 1, 1, 1);
+        return new Action(USE_ITEM, self, 0.F, nullptr, nullptr, 0, 0, nullptr, item->name, 1, 1, 1);
       }
     }
     return trackPrey(adventure, self);
@@ -94,8 +99,9 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     int k = NORTH;
     int i;
     int j;
-    while(!correct_tile) {
-      if(k % 8 == 0) {
+    // TODO // infinite loop
+    while(!correct_tile && (power <= map->sizeX || power <= map->sizeY)) {
+      if(k % 8 == NORTH) {
         power++;
       }
       i = self->getX();
@@ -147,21 +153,21 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   Character * prey = nullptr;
   Loot * corpse = nullptr;
   // a predator can sense prey even if they are far.
-  int max_distance_prey = self->getVisionRange() * 2;
-  int distance_prey = max_distance_prey;
+  float max_distance_prey = (float) self->getVisionRange() * 2.F;
+  float distance_prey = max_distance_prey;
   for(Character * other : map->getCharacters()) {
     if(other->getTeam() == "prey" || (other->getTeam() != self->getTeam() && self->getSatiety() < 15.F)) {
-      int distance = MapUtil::distance(self->getX(), self->getY(), other->getX(), other->getY());
+      float distance = MapUtil::distance(self->getX(), self->getY(), self->getDX(), self->getDY(), other->getX(), other->getY(), other->getDX(), other->getDY());
       if(other != self && distance <= max_distance_prey && distance < distance_prey) {
         prey = other;
         distance_prey = distance;
       }
     }
   }
-  int distance_corpse = max_distance_prey;
+  float distance_corpse = max_distance_prey;
   for(Loot * loot : map->getLoots()) {
     if(loot->type == CORPSE) {
-      int distance = MapUtil::distance(self->getX(), self->getY(), loot->x, loot->y);
+      float distance = MapUtil::distance(self->getX(), self->getY(), self->getDX(), self->getDY(), loot->x, loot->y, 0.F, 0.F);
       if(distance <= max_distance_prey && distance < distance_corpse) {
         bool isFood = false;
         for(Item * item : loot->items) {
@@ -184,7 +190,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   }
   else {
     if(distance_corpse == 0) {
-      return new Action(GRAB, self, FOOD, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+      return new Action(GRAB, self, (float) FOOD, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
     else {
       return new Action(MOVE, self, getFollowOrientation(adventure, self, corpse->x, corpse->y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
@@ -199,7 +205,7 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
     if(adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == ENEMY) {
       threats.push_front(other);
     }
-    else if(MapUtil::distance(self->getX(), self->getY(), other->getX(), other->getY()) <= range
+    else if(MapUtil::distance(self->getX(), self->getY(), self->getDX(), self->getDY(), other->getX(), other->getY(), other->getDX(), other->getDY()) <= range
       && adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == NEUTRAL) {
       threats.push_front(other);
     }
@@ -210,7 +216,7 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
 std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
   std::map<Character *, Skill *> bestDamageSkills = std::map<Character *, Skill *>();
   for(Character * threat : threats) {
-    int range = MapUtil::distance(self->getX(), self->getY(), threat->getX(), threat->getY());
+    float range = MapUtil::distance(self->getX(), self->getY(), self->getDX(), self->getDY(), threat->getX(), threat->getY(), threat->getDX(), threat->getDY());
     Skill * skill = nullptr;
     int maxDamage = 0;
     for(auto pair : skills) {
@@ -251,7 +257,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     }
   }
   if(target != nullptr) {
-    int orientation = MapUtil::getDirectOrientationToTarget(target->getX() - self->getX(), target->getY() - self->getY());
+    float orientation = MapUtil::getOrientationToTarget(target->getX(), target->getY(), target->getDX(), target->getDY(), self->getX(), self->getY(), self->getDX(), self->getDY());
     if(skill != nullptr) {
       return new Action(USE_SKILL, self, orientation, skill, target, target->getX(), target->getY(), nullptr, "", 1, 1, 1);
     }
@@ -264,24 +270,24 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     Ammunition * ammo = nullptr;
     ammo = self->canReload();
     if(ammo != nullptr) {
-      return new Action(RELOAD, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, ammo->projectile->name, 1, 1, 1);
+      return new Action(RELOAD, self, 0.F, nullptr, nullptr, 0, 0, nullptr, ammo->projectile->name, 1, 1, 1);
     }
     Weapon * weapon = nullptr;
     weapon = self->swapMelee();
     if(weapon != nullptr) {
-      return new Action(SWAP_GEAR, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, weapon->name, 1, 1, 1);
+      return new Action(SWAP_GEAR, self, 0.F, nullptr, nullptr, 0, 0, nullptr, weapon->name, 1, 1, 1);
     }
   }
   if(self->getGear()->getWeapon()->use_ammo && self->getGear()->getWeapon()->getCurrentCapacity() == 0) {
     Ammunition * ammo = nullptr;
     ammo = self->canReload();
     if(ammo != nullptr) {
-      return new Action(RELOAD, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, ammo->projectile->name, 1, 1, 1);
+      return new Action(RELOAD, self, 0.F, nullptr, nullptr, 0, 0, nullptr, ammo->projectile->name, 1, 1, 1);
     }
     Weapon * weapon = nullptr;
     weapon = self->swapMelee();
     if(weapon != nullptr) {
-      return new Action(SWAP_GEAR, self, NO_ORIENTATION, nullptr, nullptr, 0, 0, nullptr, weapon->name, 1, 1, 1);
+      return new Action(SWAP_GEAR, self, 0.F, nullptr, nullptr, 0, 0, nullptr, weapon->name, 1, 1, 1);
     }
   }
   max = 0;

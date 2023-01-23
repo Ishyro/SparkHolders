@@ -166,6 +166,10 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       std::string ai_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
+      Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      Attributes * second_attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
@@ -175,8 +179,6 @@ namespace FileOpener {
       Way * religion = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       std::list<Way *> * titles = new std::list<Way *>();
       std::istringstream is_titles(command);
@@ -204,7 +206,7 @@ namespace FileOpener {
       else if (ai_str == "RoamerAI") {
         ai = new RoamerAI(x, y);
       }
-      Character * c = new Character(database->getCharacter(name), name, xp, x, y, orientation, map->id, team, ai, attributes, race, origin, culture, religion, profession, *titles);
+      Character * c = new Character(database->getCharacter(name), name, xp, x, y, orientation, map->id, team, ai, attributes, second_attributes, race, origin, culture, religion, profession, *titles);
       map->addCharacter(c);
       delete titles;
     }
@@ -312,8 +314,8 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       database->addRelation(team1, team2, relation);
     }
-    else if(keyword == "Traduction") {
-      database->addTraductionPath(command);
+    else if(keyword == "Translation") {
+      database->addTranslationPath(command);
     }
     else if(keyword == "WayImcompatibility") {
       std::string way1 = command.substr(0, command.find('%'));
@@ -327,6 +329,11 @@ namespace FileOpener {
   void AttributesOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
+    Attributes * archetype = nullptr;
+    std::string archetype_str = values.at("archetype");
+    if(archetype_str != "none") {
+      archetype = (Attributes *) database->getAttributes(archetype_str);
+    }
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
     int baseArmor = stoi(values.at("baseArmor"));
@@ -336,6 +343,12 @@ namespace FileOpener {
     int baseVisionRange = stoi(values.at("baseVisionRange"));
     int baseVisionPower = stoi(values.at("baseVisionPower"));
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
+    int hpIncr = stoi(values.at("hpIncr"));
+    int manaIncr = stoi(values.at("manaIncr"));
+    int armorIncr = stoi(values.at("armorIncr"));
+    int damageIncr = stoi(values.at("damageIncr"));
+    int soulBurnIncr = stoi(values.at("soulBurnIncr"));
+    int flowIncr = stoi(values.at("flowIncr"));
     std::list<Item *> * items = new std::list<Item *>();
     std::istringstream is_items(values.at("items"));
     std::string item;
@@ -394,6 +407,7 @@ namespace FileOpener {
     Gear * gear = new Gear(head, arms, legs, body, lantern, left_ring, right_ring, amulet, current_weapon);
     Attributes * attributes = new Attributes(
       name,
+      archetype,
       baseHp,
       baseMana,
       baseArmor,
@@ -403,6 +417,12 @@ namespace FileOpener {
       baseVisionRange,
       baseVisionPower,
       baseDetectionRange,
+      hpIncr,
+      manaIncr,
+      armorIncr,
+      damageIncr,
+      soulBurnIncr,
+      flowIncr,
       *items,
       *weapons,
       *ammunition,
@@ -642,6 +662,7 @@ namespace FileOpener {
     if(!file) {
       std::cout << "File not found: " + fileName << std::endl;
     }
+    // skip lines until we reach the map itself
     while(getline(file,line) && line != "!end");
     for(int y = sizeY - 1; y >= 0; y--) {
       getline(file,line);
@@ -649,7 +670,7 @@ namespace FileOpener {
       for(int x = 0; x < sizeX; x++) {
         std::string tile;
         getline(is, tile, ' ');
-        map->setTile(y, x, (Tile *)database->getTile(values.at(tile)));
+        map->setTile(y, x, (Tile *) database->getTile(values.at(tile)));
       }
     }
 
@@ -662,6 +683,7 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
+    float size = stof(values.at("size"));
     std::istringstream is(values.at("homing"));
     bool homing;
     is >> std::boolalpha >> homing;
@@ -670,11 +692,17 @@ namespace FileOpener {
     if(skill_str != "none") {
       skill = (Skill *) database->getSkill(skill_str);
     }
-    int speed = stoi(values.at("speed"));
-    int area = stoi(values.at("area"));
-    int falloff_range = stoi(values.at("falloff_range"));
-    float waste_per_tile = stof(values.at("waste_per_tile"));
-    float waste_per_tile_area = stof(values.at("waste_per_tile_area"));
+    std::list<Effect *> * effects = new std::list<Effect *>();
+    std::istringstream is_effects(values.at("effects"));
+    std::string effect;
+    while(getline(is_effects, effect, '%')) {
+      effects->push_back((Effect *) database->getEffect(effect));
+    }
+    float speed = stof(values.at("speed"));
+    float area = stof(values.at("area"));
+    int falloff_timer = stoi(values.at("falloff_timer"));
+    float waste_per_tick = stof(values.at("waste_per_tick"));
+    float waste_per_area = stof(values.at("waste_per_area"));
     float waste_per_hit = stof(values.at("waste_per_hit"));
     int damages[DAMAGE_TYPE_NUMBER];
     damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
@@ -688,8 +716,9 @@ namespace FileOpener {
     damages[MIND_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Projectile * projectile = new Projectile(name, projectile_type, homing, skill, speed, area, falloff_range, waste_per_tile, waste_per_tile_area, waste_per_hit, damages);
+    Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
+    delete effects;
   }
 
   void AmmunitionOpener(std::string fileName, Database * database) {
@@ -867,7 +896,8 @@ namespace FileOpener {
     bool solid;
     is_solid >> std::boolalpha >> solid;
     int light = stoi(values.at("light"));
-    Tile * tile = new Tile(name, untraversable, opaque, solid, light);
+    float ap_cost = stof(values.at("ap_cost"));
+    Tile * tile = new Tile(name, untraversable, opaque, solid, light, ap_cost);
     database->addTile(tile);
   }
 
@@ -875,12 +905,22 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
+    int baseHp = stoi(values.at("baseHp"));
+    int baseMana = stoi(values.at("baseMana"));
+    int baseArmor = stoi(values.at("baseArmor"));
+    int baseDamage = stoi(values.at("baseDamage"));
+    int baseSoulBurn = stoi(values.at("baseSoulBurn"));
+    int baseFlow = stoi(values.at("baseFlow"));
+    int baseVisionRange = stoi(values.at("baseVisionRange"));
+    int baseVisionPower = stoi(values.at("baseVisionPower"));
+    int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
     int armorIncr = stoi(values.at("armorIncr"));
     int damageIncr = stoi(values.at("damageIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
+    float size = stof(values.at("size"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_1(values.at("effects"));
     std::string effect;
@@ -893,7 +933,28 @@ namespace FileOpener {
     while(getline(is_2, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Way * way = new Way(name, type, hpIncr, manaIncr, armorIncr, damageIncr, soulBurnIncr, flowIncr, *effects, *skills);
+    Way * way = new Way(
+      name,
+      type,
+      baseHp,
+      baseMana,
+      baseArmor,
+      baseDamage,
+      baseSoulBurn,
+      baseFlow,
+      baseVisionRange,
+      baseVisionPower,
+      baseDetectionRange,
+      hpIncr,
+      manaIncr,
+      armorIncr,
+      damageIncr,
+      soulBurnIncr,
+      flowIncr,
+      size,
+      *effects,
+      *skills
+    );
     database->addWay(way);
     delete effects;
     delete skills;

@@ -6,7 +6,11 @@
 
 #include "utils/String.h"
 
+void Attributes::init(Attributes * archetype) {
+  this->archetype = archetype;
+}
 
+Attributes * Attributes::getArchetype() { return archetype; }
 std::list<Item *> Attributes::getItems() { return items; }
 std::list<Weapon *> Attributes::getWeapons() { return weapons; }
 std::list<Ammunition *> Attributes::getAmmunitions() { return ammunition; }
@@ -17,6 +21,12 @@ Gear * Attributes::getStartingGear() { return startingGear; }
 std::string Attributes::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  if(archetype != nullptr) {
+    String::insert(ss, archetype->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
   String::insert_int(ss, baseHp);
   String::insert_int(ss, baseMana);
   String::insert_int(ss, baseArmor);
@@ -26,6 +36,12 @@ std::string Attributes::to_string() {
   String::insert_int(ss, baseVisionRange);
   String::insert_int(ss, baseVisionPower);
   String::insert_int(ss, baseDetectionRange);
+  String::insert_int(ss, hpIncr);
+  String::insert_int(ss, manaIncr);
+  String::insert_int(ss, armorIncr);
+  String::insert_int(ss, damageIncr);
+  String::insert_int(ss, soulBurnIncr);
+  String::insert_int(ss, flowIncr);
   std::stringstream * ss_items = new std::stringstream();
   for(Item * item : items) {
     String::insert(ss_items, item->to_string());
@@ -65,6 +81,11 @@ std::string Attributes::to_string() {
 Attributes * Attributes::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  Attributes * archetype = nullptr;
+  std::string archetype_str = String::extract(ss);
+  if(archetype_str != "none") {
+    archetype = from_string(archetype_str);
+  }
   int baseHp = String::extract_int(ss);
   int baseMana = String::extract_int(ss);
   int baseArmor = String::extract_int(ss);
@@ -74,6 +95,12 @@ Attributes * Attributes::from_string(std::string to_read) {
   int baseVisionRange = String::extract_int(ss);
   int baseVisionPower = String::extract_int(ss);
   int baseDetectionRange = String::extract_int(ss);
+  int hpIncr = String::extract_int(ss);
+  int manaIncr = String::extract_int(ss);
+  int armorIncr = String::extract_int(ss);
+  int damageIncr = String::extract_int(ss);
+  int soulBurnIncr = String::extract_int(ss);
+  int flowIncr = String::extract_int(ss);
   std::stringstream * ss_items = new std::stringstream(String::extract(ss));
   std::list<Item *> * items = new std::list<Item *>();
   while(ss_items->rdbuf()->in_avail() != 0) {
@@ -108,6 +135,7 @@ Attributes * Attributes::from_string(std::string to_read) {
   delete ss;
   Attributes * result = new Attributes(
     name,
+    archetype,
     baseHp,
     baseMana,
     baseArmor,
@@ -117,6 +145,12 @@ Attributes * Attributes::from_string(std::string to_read) {
     baseVisionRange,
     baseVisionPower,
     baseDetectionRange,
+    hpIncr,
+    manaIncr,
+    armorIncr,
+    damageIncr,
+    soulBurnIncr,
+    flowIncr,
     *items,
     *weapons,
     *ammunition,

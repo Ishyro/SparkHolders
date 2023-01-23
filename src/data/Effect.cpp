@@ -46,7 +46,7 @@ void Effect::activate(Character * target) {
         target->incrDetectionRange();
         break;
       case DAMAGE:
-        target->receiveAttack(damages, NO_ORIENTATION);
+        target->receiveAttack(damages, 360.F);
         break;
       case EXPERIENCE:
         target->gainXP(power);
@@ -73,7 +73,7 @@ bool Effect::tick(Character * target) {
       target->addSatiety((float) power);
       break;
     case DAMAGE:
-      target->receiveAttack(damages, NO_ORIENTATION);
+      target->receiveAttack(damages, 360.F);
       break;
     case EXPERIENCE:
       target->gainXP(power);

@@ -110,12 +110,14 @@ data/ways/wolf.data
 data/ways/woodland.data
 data/ways/yargley_follower.data
 data/ways/yllian.data
+# attributes archetype
+data/attributes/elementalist.data
+data/attributes/vanguard.data
+data/attributes/guardian.data
 # attributes without summoning skill
 data/attributes/no_attributes.data
 data/attributes/sheep.data
-data/attributes/vanguard.data
-data/attributes/guardian.data
-data/attributes/elementalist.data
+data/attributes/duelist.data
 data/attributes/shadow.data
 data/attributes/skeleton_archer.data
 data/attributes/skeleton_magus.data

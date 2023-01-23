@@ -59,8 +59,8 @@ Translator::Translator(std::list<std::string> bases, const std::string language)
     loadValuesFromFile(path + "weaponsNames.data", &weaponsNames);
     loadValuesFromFile(path + "weaponsDescs.data", &weaponsDescs);
   }
-  loadValuesFromFile("data/traductions/" + language + "/standardNames.data", &standardNames);
-  loadValuesFromFile("data/traductions/" + language + "/standardDescs.data", &standardDescs);
+  loadValuesFromFile("data/translations/" + language + "/standardNames.data", &standardNames);
+  loadValuesFromFile("data/translations/" + language + "/standardDescs.data", &standardDescs);
 
 }
 const std::string Translator::getAttributesName(std::string to_translate) {

@@ -44,6 +44,16 @@ void Map::calculateLights() {
       lightY[cpt++] = y;
     }
   }
+  for(Projectile * projectile : projectiles) {
+    int light = projectile->getLight();
+    int x = projectile->getX();
+    int y = projectile->getY();
+    if(light > lights[y][x]) {
+      lights[y][x] = light;
+      lightX[cpt] = x;
+      lightY[cpt++] = y;
+    }
+  }
   for(int i = 0; i < cpt; i++) {
     propagateLight(lightY[i],lightX[i]);
   }
@@ -107,7 +117,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   if(target->isInvisible() || target->isEtheral()) {
     return false;
   }
-  int range = MapUtil::distance(watcher->getX(), watcher->getY(), target->getX(), target->getY());
+  float range = MapUtil::distance(watcher->getX(), watcher->getY(), watcher->getDX(), watcher->getDY(), target->getX(), target->getY(), target->getDX(), target->getDY());
   if(range <= watcher->getDetectionRange()) {
     return true;
   }
@@ -308,7 +318,7 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
 void Map::setTile(int y, int x, Tile * tile) { tiles[y][x] = tile; }
 
 void Map::crumble(int y, int x) {
-  for(auto character : characters) {
+  for(Character * character : characters) {
     if(character->getX() == x && character->getY() == y) {
       if(character->type == WALL) {
         removeCharacter(character);
@@ -440,145 +450,370 @@ void Map::takeLoot(Character * c, int mode) {
   to_delete.clear();
 }
 
-void Map::move(Character *c, int orientation, Adventure * adventure) {
-  bool is_legal = false;
-  int destX;
-  int destY;
-  switch(orientation) {
-    case NORTH:
-      if(c->getY() < sizeY - 1 && !tiles[c->getY() + 1][c->getX()]->untraversable) {
-        is_legal = true;
-        destX = c->getX();
-        destY = c->getY() + 1;
-      }
-      break;
-    case NORTH_EAST:
-      if(c->getY() < sizeY - 1 && c->getX() < sizeX - 1 && !tiles[c->getY() + 1][c->getX() + 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() + 1;
-        destY = c->getY() + 1;
-      }
-      break;
-    case EAST:
-      if(c->getX() < sizeX - 1 && !tiles[c->getY()][c->getX() + 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() + 1;
-        destY = c->getY();
-      }
-      break;
-    case SOUTH_EAST:
-      if(c->getY() > 0 && c->getX() < sizeX - 1 && !tiles[c->getY() - 1][c->getX() + 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() + 1;
-        destY = c->getY() - 1;
-      }
-      break;
-    case SOUTH:
-      if(c->getY() > 0 && !tiles[c->getY() - 1][c->getX()]->untraversable) {
-        is_legal = true;
-        destX = c->getX();
-        destY = c->getY() - 1;
-      }
-      break;
-    case SOUTH_WEST:
-      if(c->getY() > 0 && c->getX() > 0 && !tiles[c->getY() - 1][c->getX() - 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() - 1;
-        destY = c->getY() - 1;
-      }
-      break;
-    case WEST:
-      if(c->getX() > 0 && !tiles[c->getY()][c->getX() - 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() - 1;
-        destY = c->getY();
-      }
-      break;
-    case NORTH_WEST:
-      if(c->getY() < sizeY - 1 && c->getX() > 0 && !tiles[c->getY() + 1][c->getX() - 1]->untraversable) {
-        is_legal = true;
-        destX = c->getX() - 1;
-        destY = c->getY() + 1;
-      }
-      break;
+float Map::getMoveCost(Character * c, int y, int x, float dy, float dx, float orientation) {
+  if(c->isFlying()) {
+    return MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy) * 10.F;
   }
-  if(is_legal) {
-    Character * to_kill = nullptr;
-    for(Character * other : characters) {
-      if (other != nullptr && other->getX() == destX && other->getY() == destY && !other->isEtheral()) {
-        if(adventure->getDatabase()->getRelation(c->getTeam(), other->getTeam()) == ENEMY) {
-          c->setOrientation(orientation);
-          c->attack(other);
-          if(!other->isAlive()) {
-            to_kill = other;
-          } else {
-            return;
-          }
-        } else {
-          return; // there is a character, can't move on this position
+  float ap_cost = 0.F;
+  int current_x = c->getX();
+  int current_y = c->getY();
+  float current_dx = c->getDX();
+  float current_dy = c->getDY();
+  int next_x = current_x;
+  int next_y = current_y;
+  float next_dx = current_dx;
+  float next_dy = current_dy;
+  int x_direction = 1;
+  int y_direction = 1;
+  if(orientation > 180.F) {
+    y_direction = -1;
+  }
+  if(orientation > 90.F && orientation < 270.F) {
+    x_direction = -1;
+  }
+  if( (float) c->getY() + c->getDY() == (float) y + dy) {
+    while(current_x !=  x) {
+      next_x = current_x + x_direction;
+      next_dx = 0.F;
+      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      current_x = next_x;
+      current_dx = next_dx;
+    }
+  }
+  else if( (float) c->getX() + c->getDX() == (float) x + dx) {
+    while(current_y !=  y) {
+      next_y = current_y + y_direction;
+      next_dy = 0.F;
+      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      current_y = next_y;
+      current_dy = next_dy;
+    }
+  }
+  else {
+    float tan = std::tan(orientation * 3.141593F / 180.F);
+    while(current_x != x && current_y != y) {
+      next_x = current_x + x_direction;
+      next_dx = 0.F;
+      next_dy = (float) current_y + current_dy + (1.F - current_dy) * tan;
+      next_y = floor(next_dy);
+      next_dy -= (float) next_y;
+      if(next_y != current_y) {
+        next_y = current_y + y_direction;
+        next_dy = 0.F;
+        next_dx = (float) current_x + current_dx + (1.F - current_dx) / tan;
+        next_x = floor(next_dx);
+        next_dx -= (float) next_x;
+      }
+      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      current_x = next_x;
+      current_y = next_y;
+      current_dx = next_dx;
+      current_dy = next_dy;
+    }
+  }
+  ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, x, y, dx, dy);
+  return ap_cost;
+}
+
+float Map::move(Character * c, int destY, int destX, float destDY, float destDX) {
+  int x = destX;
+  int y = destY;
+  float dx = destDX;
+  float dy = destDY;
+  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy);
+  if(orientation == 360.F) {
+    return 0.F;
+  }
+  float range = MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy);
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), c->getDX(), c->getDY(), orientation, range);
+  for(MapUtil::Pair pair : path) {
+    if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
+      break;
+    }
+    x = pair.x;
+    y = pair.y;
+    dx = pair.dx;
+    dy = pair.dy;
+  }
+  x = x > destX ? destX : x;
+  dx = dx > destDX ? destDX : dx;
+  y = y > destY ? destY : y;
+  dy = dy > destDY ? destDY : dy;
+  float ap_cost = getMoveCost(c, y, x, dy, dx, orientation);
+  c->move(y, x, dy, dx, orientation);
+  return ap_cost;
+}
+
+void Map::move(Character * c, float orientation) {
+  int lim_x = c->getX();
+  float lim_dx = c->getDX();
+  int lim_y = c->getY();
+  float lim_dy = c->getDY();
+  float ap_cost = 0.F;
+  float current_cost = 0.F;
+  int current_x = c->getX();
+  int current_y = c->getY();
+  float current_dx = c->getDX();
+  float current_dy = c->getDY();
+  int next_x = current_x;
+  int next_y = current_y;
+  float next_dx = current_dx;
+  float next_dy = current_dy;
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), c->getDX(), c->getDY(), orientation, 1.F);
+  for(MapUtil::Pair pair : path) {
+    if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
+      break;
+    }
+    lim_x = pair.x;
+    lim_y = pair.y;
+    lim_dx = pair.dx;
+    lim_dy = pair.dy;
+  }
+  int x_direction = 1;
+  int y_direction = 1;
+  if(orientation > 180.F) {
+    y_direction = -1;
+  }
+  if(orientation > 90.F && orientation < 270.F) {
+    x_direction = -1;
+  }
+  if(c->isFlying()) {
+    next_dx = std::cos(orientation * 3.141593F / 180.F) * 0.1F + (float) c->getX() + c->getDX();
+    next_x = floor(next_dx);
+    next_dx -= (float) next_x;
+    next_dy = std::sin(orientation * 3.141593F / 180.F) * 0.1F + (float) c->getY() + c->getDY();
+    next_y = floor(next_dy);
+    next_dy -= (float) next_y;
+    if(next_x == lim_x + x_direction || next_y == lim_y + y_direction) {
+      next_x = lim_x;
+      next_dx = lim_dx;
+      next_y = lim_y;
+      next_dy = lim_y;
+    }
+  }
+  else {
+    if(orientation == 0.F || orientation == 180.F) {
+      while(ap_cost < 1.F) {
+        current_cost = ap_cost;
+        current_x = next_x;
+        current_dx = next_dx;
+        next_x = current_x + x_direction;
+        next_dx = 0.F;
+        if(next_x == lim_x + x_direction) {
+          next_x = lim_x;
+          next_dx = lim_dx;
+          ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          break;
         }
+        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      }
+      if(ap_cost > 1.F) {
+        next_dx = (float) current_x + current_dx + (float) x_direction * (1.F - current_cost) / getTile(current_y, current_x)->ap_cost;
+        next_x = floor(next_dx);
+        next_dx -= (float) next_x;
       }
     }
-    if(to_kill != nullptr) {
-      characters.remove(to_kill);
-      killCharacter(c, to_kill);
-      return;
+    else if(orientation == 90.F || orientation == 270.F) {
+      while(ap_cost < 1.F) {
+        current_cost = ap_cost;
+        current_y = next_y;
+        current_dy = next_dy;
+        next_y = current_y + y_direction;
+        next_dy = 0.F;
+        if(next_y == lim_y + y_direction) {
+          next_y = lim_y;
+          next_dy = lim_dy;
+          ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          break;
+        }
+        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      }
+      if(ap_cost > 1.F) {
+        next_dy = (float) current_y + current_dy + (float) y_direction * (1.F - current_cost) / getTile(current_y, current_x)->ap_cost;
+        next_y = floor(next_dy);
+        next_dy -= (float) next_y;
+      }
     }
-    c->move(orientation);
-  } else {
-    c->setOrientation(orientation);
+    else {
+      float tan = std::tan(orientation * 3.141593F / 180.F);
+      while(ap_cost < 1.F) {
+        current_cost = ap_cost;
+        current_x = next_x;
+        current_dx = next_dx;
+        current_y = next_y;
+        current_dy = next_dy;
+        next_x = current_x + x_direction;
+        next_dx = 0.F;
+        next_dy += (float) current_y + current_dy + (1.F - current_dx) * tan;
+        next_y = floor(next_dy);
+        next_dy -= (float) next_y;
+        if(next_y != current_y) {
+          next_y = current_y + y_direction;
+          next_dy = 0.F;
+          next_dx += (float) current_x + current_dx + (1.F - current_dy) / tan;
+          next_x = floor(next_dx);
+          next_dx -= (float) next_x;
+        }
+        if(next_x == lim_x + x_direction || next_y == lim_y + y_direction) {
+          next_x = lim_x;
+          next_dx = lim_dx;
+          next_y = lim_y;
+          next_dy = lim_dy;
+          ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          break;
+        }
+        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+      }
+      if(ap_cost > 1.F) {
+        float cos = std::cos(orientation * 3.141593F / 180.F);
+        float sin = std::sin(orientation * 3.141593F / 180.F);
+        next_dx = (float) current_x + current_dx + ((1.F - current_cost) / getTile(current_y, current_x)->ap_cost) * cos;
+        next_x = floor(next_dx);
+        next_dx -= (float) next_x;
+        next_dy = (float) current_y + current_dy + ((1.F - current_cost) / getTile(current_y, current_x)->ap_cost) * sin;
+        next_y = floor(next_dy);
+        next_dy -= (float) next_y;
+      }
+    }
   }
+  current_cost = getMoveCost(c, next_y, next_x, next_dy, next_dx, orientation);
+  next_dx = MapUtil::round(next_dx);
+  next_dy = MapUtil::round(next_dy);
+  if(current_cost <= 0.33 || next_x < 0 || next_x >= sizeX || next_y < 0 || next_y >= sizeY || getTile(next_y, next_x)->solid || (!c->isFlying() && getTile(next_y, next_x)->untraversable)) {
+    return;
+  }
+  c->move(next_y, next_x, next_dy, next_dx, orientation);
 }
 
 bool Map::actProjectile(Projectile * p, Adventure * adventure) {
-  if(getTile(p->getY(), p->getX())->solid) {
-    p->reduceDamageHit();
-    if(p->noDamage()) {
-      return true;
-    }
+  bool to_destroy = false;
+  if(!p->isLost() && p->getTarget() !=nullptr) {
+    p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getTarget()->getX(), p->getTarget()->getY(), p->getTarget()->getDX(), p->getTarget()->getDY()));
   }
-  for(int i = 0; i < p->getSpeed(); i++) {
-    if(p->isAtDest()) {
-      p->setLost(true);
-      if(p->getArea() > 1) {
-        p->attack_multiple_targets(characters, adventure);
-        p->reduceDamageHit();
-        for(Character * c : characters) {
-          if(c != nullptr && !c->isAlive()) {
-            killCharacter(p->getOwner(), c);
-          }
-        }
-        p->move(this);
-        continue;
-      }
+  float dx = std::cos(p->getOrientation() * 3.141593F / 180.F) * p->getSpeed() + (float) p->getX() + p->getDX();
+  int x = floor(dx);
+  dx = MapUtil::round(dx - (float) x);
+  float dy = std::sin(p->getOrientation() * 3.141593F / 180.F) * p->getSpeed() + (float) p->getY() + p->getDY();
+  int y = floor(dy);
+  dy = MapUtil::round(dy - (float) y);
+  int max_x;
+  float max_dx;
+  int max_y;
+  float max_dy;
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getOrientation(), p->getSpeed());
+  for(MapUtil::Pair pair : path) {
+    if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid) {
+      to_destroy = true;
+      break;
     }
+    max_x = pair.x;
+    max_y = pair.y;
+    max_dx = pair.dx;
+    max_dy = pair.dy;
+  }
+  // use these coordinates if the projectile is destroyed before meeting the target
+  if(to_destroy) {
+    x = max_x;
+    dx = max_dx;
+    y = max_y;
+    dy = max_dy;
+  }
+  std::list<Character *> targets = std::list<Character *>();
+  if( (float) p->getY() + p->getDY() == (float) y + dy) {
     for(Character * c : characters) {
-      if(c != nullptr && c->getX() == p->getX() && c->getY() == p->getY() && !c->isEtheral()) {
-        if(p->getArea() > 1) {
-          p->attack_multiple_targets(characters, adventure);
-          p->reduceDamageHit();
-          for(Character * c : characters) {
-            if(!c->isAlive()) {
-              killCharacter(p->getOwner(), c);
-            }
+      float c_y = (float) c->getY() + c->getDY();
+      if(c_y <= (float) y + dy + c->getSize() + p->getSize() && c_y >= (float) y + dy - c->getSize() - p->getSize()) {
+        float c_x = (float) c->getX() + c->getDX();
+        if((float) x + dx > (float) p->getX() + p->getDX()) {
+          if(c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) p->getX() + p->getDX() - c->getSize() - p->getSize()) {
+            targets.push_back(c);
           }
-          break;
         }
         else {
-          p->attack_single_target(c, adventure);
-          if(!c->isAlive()) {
-            killCharacter(p->getOwner(), c);
+          if(c_x <= (float) p->getX() + p->getDX() + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) {
+            targets.push_back(c);
           }
         }
-        break;
       }
     }
-    if(p->noDamage()) {
-      return true;
-    }
-    p->move(this);
   }
-  return false;
+  else if( (float) p->getX() + p->getDX() == (float) x + dx) {
+    for(Character * c : characters) {
+      float c_x = (float) c->getX() + c->getDX();
+      if(c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) {
+        float c_y = (float) c->getY() + c->getDY();
+        if((float) y + dy > (float) p->getY() + p->getDY()) {
+          if(c_y <= (float) y + dy + c->getSize() + p->getSize() && c_y >= (float) p->getY() + p->getDY() - c->getSize() - p->getSize()) {
+            targets.push_back(c);
+          }
+        }
+        else {
+          if(c_y <= (float) p->getY() + p->getDY() + c->getSize() + p->getSize() && c_y >= (float) y + dy - c->getSize() - p->getSize()) {
+            targets.push_back(c);
+          }
+        }
+      }
+    }
+  }
+  else {
+    float tan = std::tan(p->getOrientation() * 3.141593F / 180.F);
+    for(Character * c : characters) {
+      float c_x = (float) c->getX() + c->getDX();
+      if( (c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) p->getX() + p->getDX() - c->getSize() - p->getSize()) ||
+        (c_x <= (float) p->getX() + p->getDX() + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) ) {
+        float c_y = (float) c->getY() + c->getDY();
+        float p_y = tan * (c_x - (float) p->getX() - p->getDX()) + (float) p->getY() + p->getDY();
+        if( (c_y <= p_y + c->getSize() + p->getSize() && c_y >= p_y - c->getSize() - p->getSize()) ||
+          (c_y <= p_y - c->getSize() - p->getSize() && c_y >= p_y + c->getSize() + p->getSize()) ) {
+          targets.push_back(c);
+        }
+      }
+    }
+  }
+  // attack targets
+  auto rangeSort = [&](Character * a, Character * b) -> bool {
+    return MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), a->getX(), a->getY(), a->getDX(), a->getDY()) <
+      MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), b->getX(), b->getY(), b->getDX(), b->getDY());
+  };
+  targets.sort(rangeSort);
+  for(Character * character : targets) {
+    if(!p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
+      MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), character->getX(), character->getY(), character->getDX(), character->getDY())
+      >= MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getDestX(), p->getDestY(), p->getDestDX(), p->getDestDY()) ) {
+        // exploding on targeted zone when other targets where found
+        p->move(p->getDestY(), p->getDestX(), p->getDestDY(), p->getDestDX());
+        p->attack(nullptr, characters, adventure);
+      }
+    p->attack(character, characters, adventure);
+    if(p->noDamage()) {
+      break;
+    }
+  }
+  if(targets.empty() && !p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
+    MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), x, y, dx, dy)
+    >= MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getDestX(), p->getDestY(), p->getDestDX(), p->getDestDY()) ) {
+      // exploding on targeted zone when no other target where found
+      p->move(p->getDestY(), p->getDestX(), p->getDestDY(), p->getDestDX());
+      p->attack(nullptr, characters, adventure);
+  }
+  std::list<Character *> tokill = std::list<Character *>();
+  for(Character * c : characters) {
+    if(c != nullptr && !c->isAlive()) {
+      tokill.push_back(c);
+    }
+  }
+  for(Character * c : tokill) {
+    killCharacter(p->getOwner(), c);
+  }
+  tokill.clear();
+  // destroy the projectile after dealing damage
+  if(to_destroy) {
+    return true;
+  }
+  p->clearOldTargets();
+  p->move(y, x, dy, dx);
+  p->reduceDamageTick();
+  return p->noDamage();
 }
 
 void Map::actAllProjectiles(Adventure * adventure) {
@@ -610,7 +845,7 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
     for(int x = 0; x < sizeX; x++) {
       String::insert_int(ss, x);
       String::insert_int(ss, y);
-      Tile * temp = new Tile(getTile(y, x)->name, getTile(y, x)->untraversable, getTile(y, x)->opaque, getTile(y, x)->solid, getLight(y, x));
+      Tile * temp = new Tile(getTile(y, x)->name, getTile(y, x)->untraversable, getTile(y, x)->opaque, getTile(y, x)->solid, getTile(y, x)->ap_cost, getLight(y, x));
       String::insert(ss, temp->to_string());
       delete temp;
     }

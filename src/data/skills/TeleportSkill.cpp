@@ -45,15 +45,17 @@ bool TeleportSkill::canCast(Character * owner, Character * target, Adventure * a
       else {
         return false;
       }
+    case WALKING:
+      if(!owner->isFlying()) {
+        if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, false).size()) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
     case FLYING:
       if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, true).size()) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    case WALKING:
-      if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, false).size()) {
         return true;
       }
       else {

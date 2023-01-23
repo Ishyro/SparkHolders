@@ -9,20 +9,20 @@
 #include "data/Event.h"
 
 void Event::activate(Adventure * adventure) {
-  for(auto map : maps) {
+  for(Map * map : maps) {
     adventure->getWorld()->addMap(map);
   }
-  for(auto link : links) {
+  for(MapLink * link : links) {
     adventure->getWorld()->addMapLink(link);
   }
-  switch (character_apparition_type) {
+  switch(character_apparition_type) {
     case SOFT:
-      for(auto c : characters) {
+      for(Character * c : characters) {
         adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
       }
       break;
     case HARD:
-      for(auto c : characters) {
+      for(Character * c : characters) {
         adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
       }
       break;
@@ -30,8 +30,8 @@ void Event::activate(Adventure * adventure) {
   if(hasQuest) {
     adventure->addQuest(quest);
   }
-  for(auto e : effects) {
-    for(auto c : adventure->getParty()) {
+  for(Effect * e : effects) {
+    for(Character * c : adventure->getParty()) {
       c->addEffect(e);
     }
   }

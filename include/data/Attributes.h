@@ -18,8 +18,15 @@ class Attributes {
     const int baseVisionRange;
     const int baseVisionPower;
     const int baseDetectionRange;
+    const int hpIncr;
+    const int manaIncr;
+    const int armorIncr;
+    const int damageIncr;
+    const int soulBurnIncr;
+    const int flowIncr;
     Attributes(
       std::string name,
+      Attributes * archetype,
       int baseHp,
       int baseMana,
       int baseArmor,
@@ -29,6 +36,12 @@ class Attributes {
       int baseVisionRange,
       int baseVisionPower,
       int baseDetectionRange,
+      int hpIncr,
+      int manaIncr,
+      int armorIncr,
+      int damageIncr,
+      int soulBurnIncr,
+      int flowIncr,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
       std::list<Ammunition *> ammunition,
@@ -46,13 +59,22 @@ class Attributes {
       baseVisionRange(baseVisionRange),
       baseVisionPower(baseVisionPower),
       baseDetectionRange(baseDetectionRange),
+      hpIncr(hpIncr),
+      manaIncr(manaIncr),
+      armorIncr(armorIncr),
+      damageIncr(damageIncr),
+      soulBurnIncr(soulBurnIncr),
+      flowIncr(flowIncr),
       items(items),
       weapons(weapons),
       ammunition(ammunition),
       effects(effects),
       skills(skills),
       startingGear(startingGear)
-    {}
+    {
+      init(archetype);
+    }
+    Attributes * getArchetype();
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();
     std::list<Ammunition *> getAmmunitions();
@@ -64,12 +86,14 @@ class Attributes {
     bool operator == (const Attributes& a) const { return name == a.name; }
     bool operator != (const Attributes& a) const { return !operator==(a); }
   private:
+    Attributes * archetype;
     std::list<Item *> items;
     std::list<Weapon *> weapons;
     std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
     Gear * startingGear;
+    void init(Attributes * archetype);
 };
 
 #endif // _ATTRIBUTES_H_

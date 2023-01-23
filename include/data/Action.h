@@ -14,7 +14,7 @@
 class Action {
   public:
     const int type;
-    const int orientation;
+    const float orientation;
     const Skill * skill;
     const Character * target;
     const int target_x;
@@ -27,7 +27,7 @@ class Action {
     Action(
       const int type,
       Character * user,
-      const int orientation,
+      const float orientation,
       const Skill * skill,
       const Character * target,
       const int target_x,

@@ -3,3 +3,4 @@ untraversable = true
 opaque = true
 solid = true
 light = 6
+ap_cost = 10.

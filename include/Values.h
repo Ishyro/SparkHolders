@@ -72,11 +72,12 @@ class SpeechManager;
 #define CHANNELING 18
 #define STUNNED 19
 #define SLEEPING 20
-#define LIGHT 21
-#define CLOAKED 22
-#define INVISIBLE 23
-#define ETHERAL 24
-#define INVULNERABLE 25
+#define FLY 21
+#define LIGHT 22
+#define CLOAKED 23
+#define INVISIBLE 24
+#define ETHERAL 25
+#define INVULNERABLE 26
 
 // weapon_type
 
@@ -163,7 +164,6 @@ class SpeechManager;
 #define SOUTH_WEST 5
 #define WEST 6
 #define NORTH_WEST 7
-#define NO_ORIENTATION 8
 
 // projectile_type
 

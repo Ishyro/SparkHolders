@@ -38,7 +38,7 @@ namespace Client {
     delete ss;
   }
 
-  std::list<std::string> receiveTraductionPaths(Socket s) {
+  std::list<std::string> receiveTranslationPaths(Socket s) {
     std::string msg;
     try {
       msg = s.read();
@@ -91,23 +91,23 @@ namespace Client {
     }
   }
 
-  void sendAction(Socket s, int type, int orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  void sendAction(Socket s, int type, float orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     switch(type) {
       case MOVE:
-        String::insert_int(ss, orientation);
+        String::insert_float(ss, orientation);
         break;
       case REST:
         break;
       case SHOOT:
-        String::insert_int(ss, orientation);
+        String::insert_float(ss, orientation);
         String::insert_int(ss, target_id);
         String::insert_int(ss, target_x);
         String::insert_int(ss, target_y);
         break;
       case FORCE_STRIKE:
-        String::insert_int(ss, orientation);
+        String::insert_float(ss, orientation);
         String::insert_int(ss, target_id);
         String::insert_int(ss, target_x);
         String::insert_int(ss, target_y);
@@ -124,7 +124,7 @@ namespace Client {
         break;
       case USE_SKILL:
         String::insert(ss, object);
-        String::insert_int(ss, orientation);
+        String::insert_float(ss, orientation);
         String::insert_int(ss, target_id);
         String::insert_int(ss, target_x);
         String::insert_int(ss, target_y);
@@ -141,7 +141,7 @@ namespace Client {
         break;
       case ECONOMICS:
         String::insert(ss, object);
-        String::insert_int(ss, orientation);
+        String::insert_float(ss, orientation);
         String::insert_int(ss, target_id);
         break;
       default:
