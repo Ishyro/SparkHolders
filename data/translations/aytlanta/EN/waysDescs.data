@@ -9,8 +9,8 @@ TXT_AKOTA_FOLLOWER = Akota's Follower%
 TXT_ANCIENT_ONE = True Gods walking the Earth, their Power is limitless, their Design beyond comprehension.
 the Ancient One are revered by all the pathetics creatures that call themselves Men.%
 
-TXT_ANGEL = Angels are a pride race. Showing extreme xenophobia, most of them live among themselves in Celestia.
-Since their wings aren't strong enough to let them fly, an Angel who doesn't learn Wind magic to reach this feat will be shuned by the others.%
+TXT_CAELERAN = Caelerans are a pride race. Showing extreme xenophobia, most of them live among themselves in Celestia.
+Since their wings aren't strong enough to let them fly, a Caeleran who doesn't learn Wind magic to reach this feat will be shuned by the others.%
 
 TXT_ARMYTHAS = Capital of Tagr, Armythas is the largest city of Aytlanta. While mostly populated by Humans, all sort of races can be found in her streets.
 A lot of mages are trained in her Academy.%
@@ -26,7 +26,7 @@ TXT_BATTLEMAGE = Using your Soul Spark for a bit of everything on the battlefiel
 TXT_BEASTIONA_FOLLOWER = Beastiona is the Goddess of Nature, Avatar of Tenacity. Her Herald is the Relentless Hunter.
 Mostly revered by Beastmen and Elves, her High Temple is the Sanctuary of Scranem.%
 
-TXT_BEASTMAN = Strong and fierce, Beastmen are children of Scranem. They are feared and hunted by Humans for their savagery and cannibalism.
+TXT_PANTHORID = Strong and fierce, Panthorids are children of Scranem. They are feared and hunted by Humans for their savagery and cannibalism.
 Their Knights consider all living beings as equal, and refuse to submit to the Laws that would hinder their Justice.
 As such, they are highly respected among Bestiona's Followers. Despite the cannibalism part.%
 
@@ -45,9 +45,9 @@ TXT_DARKAY_FOLLOWER = Darkay is the God of Life and Death, the Everlasting Cycle
 Seen as a merciless god, Darkay's dedicated followers aren't as numerous as the other gods, but everyone offers him a prayer from time to time.
 This is especially true for the elderly.%
 
-TXT_DWARF = Small but strong, dwarves are born to mine mountains, and harvest their gems. This is what they do.%
+TXT_MURIDAID = Small but strong, Muridaids are born to mine mountains, and harvest their gems. This is what they do.%
 
-TXT_ELF = Elves are a forest people, and they rarely leave them. Scranem and Aether Forest are their natural territories.%
+TXT_CERVIDAID = Cervidaids are a forest people, and they rarely leave them. Scranem and Aether Forest are their natural territories.%
 
 TXT_ELLINKA = Capital of Birph, Ellinka is a fortified city atop a mountain. The climate of the city is far cooler than the rest of the country.%
 
@@ -61,7 +61,7 @@ As such, Green-Town is on the only trade route between the Old and the New Lands
 
 TXT_HUMAN = Humans are the most prominent race on Aytlanta. They traveled beyond seas and deserts and are found in almost every cities.%
 
-TXT_ORC = Orcs are stronger than the other races, but they weren't able to found a lasting society. They were brought into slavery by the Khonori for centuries, and hunted for sports by the Birphans.
+TXT_TAUROID = Tauroids are stronger than the other races, but they weren't able to found a lasting society. They were brought into slavery by the Khonori for centuries, and hunted for sports by the Birphans.
 Following the revolt of Khorak Gaalk, they were able to found multiple Enclaves in the New Lands where they can live in peace.%
 
 TXT_PHILLA_FOLLOWER = Philla is the Goddess of the Dawn, Avatar of Loyalty. Her Herald is the Winds' Shepherd. Her cult his mostly find in human cities, she is the godess with the highet number of followers.%

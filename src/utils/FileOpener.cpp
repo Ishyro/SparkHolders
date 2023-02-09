@@ -1112,7 +1112,13 @@ namespace FileOpener {
     else if(last_folder == "tiles") {
       TileOpener(fileName, database);
     }
-    else if(last_folder == "ways") {
+    else if((last_folder == "ways") ||
+            (last_folder == "races") ||
+            (last_folder == "origins") ||
+            (last_folder == "cultures") ||
+            (last_folder == "religions") ||
+            (last_folder == "professions") ||
+            (last_folder == "titles")) {
       WayOpener(fileName, database);
     }
     else if(last_folder == "weapons") {
