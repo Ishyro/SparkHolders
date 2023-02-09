@@ -1,0 +1,13 @@
+name = TXT_WOLF
+head = none
+arms = none
+legs = none
+body = none
+lantern = none
+left_ring = none
+right_ring = none
+amulet = none
+weapon = TXT_WOLF_CLAWS
+items =
+weapons =
+ammunition =

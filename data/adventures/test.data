@@ -56,6 +56,14 @@ data/weapons/no_weapon.data
 data/weapons/short_sword.data
 data/weapons/short_bow.data
 data/weapons/wolf_claws.data
+# gear without special items
+data/gears/archer.data
+data/gears/heavy_starting_gear.data
+data/gears/heavy.data
+data/gears/light_starting_gear.data
+data/gears/light.data
+data/gears/no_gear.data
+data/gears/wolf.data
 # speechs
 data/speechs/beh.data
 data/speechs/woof.data
@@ -119,16 +127,13 @@ data/attributes/no_attributes.data
 data/attributes/sheep.data
 data/attributes/duelist.data
 data/attributes/shadow.data
-data/attributes/skeleton_archer.data
-data/attributes/skeleton_magus.data
-data/attributes/skeleton_warden.data
-data/attributes/skeleton_warrior.data
 data/attributes/wolf.data
 # characters
 data/characters/grass_fairy.data
+data/characters/homo.data
+data/characters/homo_magus.data
 data/characters/player.data
 data/characters/sheep.data
-data/characters/skeleton.data
 data/characters/wolf.data
 # pseudoskills with summoning
 data/pseudoskills/summon_grass_fairy.data
@@ -137,3 +142,4 @@ data/skills/touch_some_grass.data
 # ways with summoning skill
 data/ways/ruminant.data
 # attributes with summoning skill
+# gear with special items

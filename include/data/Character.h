@@ -59,9 +59,6 @@ class Character {
     const bool player_character;
     const int type;
     const bool has_soulspark;
-    const bool need_to_eat;
-    const bool can_eat_food;
-    const bool need_to_sleep;
     // not instancied character constructor
     Character(
       std::string name,
@@ -72,9 +69,6 @@ class Character {
       int type,
       long gold,
       bool has_soulspark,
-      bool need_to_eat,
-      bool can_eat_food,
-      bool need_to_sleep,
       bool merchant,
       std::list<Item *> items,
       std::list<Weapon *> weapons,
@@ -95,9 +89,6 @@ class Character {
       type(type),
       gold(gold),
       has_soulspark(has_soulspark),
-      need_to_eat(need_to_eat),
-      can_eat_food(can_eat_food),
-      need_to_sleep(need_to_sleep),
       merchant(merchant),
       items(items),
       weapons(weapons),
@@ -122,6 +113,7 @@ class Character {
       AI * ai,
       Attributes * attributes,
       Attributes * second_attributes,
+      Gear * gear,
       Way * race,
       Way * origin,
       Way * culture,
@@ -145,9 +137,6 @@ class Character {
       orientation(orientation),
       current_map_id(current_map_id),
       has_soulspark(from_database->has_soulspark),
-      need_to_eat(from_database->need_to_eat),
-      can_eat_food(from_database->can_eat_food),
-      need_to_sleep(from_database->need_to_sleep),
       merchant(from_database->merchant),
       team(team),
       ai(ai),
@@ -204,7 +193,7 @@ class Character {
       for(Way * title : titles) {
         setWay(title);
       }
-      initializeCharacter();
+      initializeCharacter(gear);
       initEffects(from_database->effects);
     }
     Character(
@@ -239,9 +228,6 @@ class Character {
       float orientation,
       int current_map_id,
       bool has_soulspark,
-      bool need_to_eat,
-      bool can_eat_food,
-      bool need_to_sleep,
       bool merchant,
       long gold,
       long xp,
@@ -298,9 +284,6 @@ class Character {
       orientation(orientation),
       current_map_id(current_map_id),
       has_soulspark(has_soulspark),
-      need_to_eat(need_to_eat),
-      can_eat_food(can_eat_food),
-      need_to_sleep(need_to_sleep),
       merchant(merchant),
       gold(gold),
       xp(xp),
@@ -331,7 +314,6 @@ class Character {
       currentFlowOut = 0;
       currentFlowIn = 0;
     }
-    void initializeCharacter();
     bool isAlive();
     bool isSoulBurning();
     int getX();
@@ -492,6 +474,7 @@ class Character {
     void deepDelete();
 
   private:
+    void initializeCharacter(Gear * gear);
     void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
     int x;

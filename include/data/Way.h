@@ -27,6 +27,9 @@ class Way {
     const int flowIncr;
     // race only
     const float size;
+    const bool need_to_eat;
+    const bool can_eat_food;
+    const bool need_to_sleep;
     Way(
       std::string name,
       int type,
@@ -46,6 +49,9 @@ class Way {
       int soulBurnIncr,
       int flowIncr,
       float size,
+      bool need_to_eat,
+      bool can_eat_food,
+      bool need_to_sleep,
       std::list<Effect *> effects,
       std::list<Skill *> skills
     ):
@@ -67,6 +73,9 @@ class Way {
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
       size(size),
+      need_to_eat(need_to_eat),
+      can_eat_food(can_eat_food),
+      need_to_sleep(need_to_sleep),
       effects(effects),
       skills(skills)
     {}

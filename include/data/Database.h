@@ -19,6 +19,7 @@ class Database {
     const Effect * getEffect(const std::string effect);
     const Event * getEvent(const std::string event);
     const Item * getItem(const std::string item);
+    const Gear * getGear(const std::string gear);
     const Map * getMap(const std::string map);
     const Projectile * getProjectile(const std::string projectile);
     const Ammunition * getAmmunition(const std::string ammunition);
@@ -38,6 +39,7 @@ class Database {
     void addEffect(const Effect * effect);
     void addEvent(const Event * event);
     void addItem(const Item * item);
+    void addGear(const Gear * gear);
     void addMap(const Map * map);
     void addProjectile(const Projectile * projectile);
     void addAmmunition(const Ammunition * ammo);
@@ -60,6 +62,7 @@ class Database {
     std::map<const std::string, const Effect * > effects;
     std::map<const std::string, const Event * > events;
     std::map<const std::string, const Item * > items;
+    std::map<const std::string, const Gear * > gears;
     std::map<const std::string, const Map * > maps;
     std::map<const std::string, const Projectile * > projectiles;
     std::map<const std::string, const Ammunition * > ammunition;

@@ -170,6 +170,8 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       Attributes * second_attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
+      Gear * gear = (Gear *) database->getGear(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
@@ -206,7 +208,26 @@ namespace FileOpener {
       else if (ai_str == "RoamerAI") {
         ai = new RoamerAI(x, y);
       }
-      Character * c = new Character(database->getCharacter(name), name, xp, x, y, orientation, map->id, team, ai, attributes, second_attributes, race, origin, culture, religion, profession, *titles);
+      Character * c = new Character(
+        database->getCharacter(name),
+        name,
+        xp,
+        x,
+        y,
+        orientation,
+        map->id,
+        team,
+        ai,
+        attributes,
+        second_attributes,
+        gear,
+        race,
+        origin,
+        culture,
+        religion,
+        profession,
+        *titles
+      );
       map->addCharacter(c);
       delete titles;
     }
@@ -349,31 +370,6 @@ namespace FileOpener {
     int damageIncr = stoi(values.at("damageIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
-    std::list<Item *> * items = new std::list<Item *>();
-    std::istringstream is_items(values.at("items"));
-    std::string item;
-    while(getline(is_items, item, '%')) {
-      items->push_back((Item *) database->getItem(item));
-    }
-    std::list<Weapon *> * weapons = new std::list<Weapon *>();
-    std::istringstream is_weapons(values.at("weapons"));
-    std::string weapon;
-    while(getline(is_weapons, weapon, '%')) {
-      weapons->push_back((Weapon *) database->getWeapon(weapon));
-    }
-    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-    std::istringstream is_ammunition(values.at("ammunition"));
-    std::string ammo;
-    while(getline(is_ammunition, ammo, '%')) {
-      std::string ammo_name = ammo.substr(0, ammo.find('|'));
-      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
-      Ammunition * new_ammo = new Ammunition();
-      new_ammo->projectile = base_ammo->projectile;
-      new_ammo->gold_value = base_ammo->gold_value;
-      new_ammo->ammo_type = base_ammo->ammo_type;
-      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
-      ammunition->push_back(new_ammo);
-    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -386,25 +382,6 @@ namespace FileOpener {
     while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    std::string head_str = values.at("head");
-    Item * head = head_str != "none" ? (Item *) database->getItem(head_str) : nullptr;
-    std::string arms_str = values.at("arms");
-    Item * arms = arms_str != "none" ? (Item *) database->getItem(arms_str) : nullptr;
-    std::string legs_str = values.at("legs");
-    Item * legs = legs_str != "none" ? (Item *) database->getItem(legs_str) : nullptr;
-    std::string body_str = values.at("body");
-    Item * body = body_str != "none" ? (Item *) database->getItem(body_str) : nullptr;
-    std::string lantern_str = values.at("lantern");
-    Item * lantern = lantern_str != "none" ? (Item *) database->getItem(lantern_str) : nullptr;
-    std::string left_ring_str = values.at("left_ring");
-    Item * left_ring = left_ring_str != "none" ? (Item *) database->getItem(left_ring_str) : nullptr;
-    std::string right_ring_str = values.at("right_ring");
-    Item * right_ring = right_ring_str != "none" ? (Item *) database->getItem(right_ring_str) : nullptr;
-    std::string amulet_str = values.at("amulet");
-    Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
-    std::string weapon_str = values.at("weapon");
-    Weapon * current_weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
-    Gear * gear = new Gear(head, arms, legs, body, lantern, left_ring, right_ring, amulet, current_weapon);
     Attributes * attributes = new Attributes(
       name,
       archetype,
@@ -423,17 +400,10 @@ namespace FileOpener {
       damageIncr,
       soulBurnIncr,
       flowIncr,
-      *items,
-      *weapons,
-      *ammunition,
       *effects,
-      *skills,
-      gear
+      *skills
     );
     database->addAttributes(attributes);
-    delete items;
-    delete weapons;
-    delete ammunition;
     delete effects;
     delete skills;
   }
@@ -463,15 +433,6 @@ namespace FileOpener {
     std::istringstream is_has_soulspark(values.at("has_soulspark"));
     bool has_soulspark;
     is_has_soulspark >> std::boolalpha >> has_soulspark;
-    std::istringstream is_need_to_eat(values.at("need_to_eat"));
-    bool need_to_eat;
-    is_need_to_eat >> std::boolalpha >> need_to_eat;
-    std::istringstream is_can_eat_food(values.at("can_eat_food"));
-    bool can_eat_food;
-    is_can_eat_food >> std::boolalpha >> can_eat_food;
-    std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
-    bool need_to_sleep;
-    is_need_to_sleep >> std::boolalpha >> need_to_sleep;
     std::istringstream is_merchant(values.at("merchant"));
     bool merchant;
     is_merchant >> std::boolalpha >> merchant;
@@ -544,7 +505,27 @@ namespace FileOpener {
     while(getline(is_sellable_skills, skill, '%')) {
       sellable_skills->push_back((Skill *) database->getSkill(skill));
     }
-    Character * character = new Character(name, player_character, death_speech, talking_speech, *loots, type, gold, has_soulspark, need_to_eat, can_eat_food, need_to_sleep, merchant, *items, *weapons, *ammunition, *effects, *skills, *sellable_items, *sellable_weapons, *sellable_ammunition, *sellable_effects, *sellable_skills);
+    Character * character = new Character(
+      name,
+      player_character,
+      death_speech,
+      talking_speech,
+      *loots,
+      type,
+      gold,
+      has_soulspark,
+      merchant,
+      *items,
+      *weapons,
+      *ammunition,
+      *effects,
+      *skills,
+      *sellable_items,
+      *sellable_weapons,
+      *sellable_ammunition,
+      *sellable_effects,
+      *sellable_skills
+    );
     database->addCharacter(character);
     delete loots;
     delete items;
@@ -604,6 +585,73 @@ namespace FileOpener {
   }
 
   void EventOpener(std::string fileName, Database * database) {}
+
+  void GearOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    std::string head_str = values.at("head");
+    Item * head = head_str != "none" ? (Item *) database->getItem(head_str) : nullptr;
+    std::string arms_str = values.at("arms");
+    Item * arms = arms_str != "none" ? (Item *) database->getItem(arms_str) : nullptr;
+    std::string legs_str = values.at("legs");
+    Item * legs = legs_str != "none" ? (Item *) database->getItem(legs_str) : nullptr;
+    std::string body_str = values.at("body");
+    Item * body = body_str != "none" ? (Item *) database->getItem(body_str) : nullptr;
+    std::string lantern_str = values.at("lantern");
+    Item * lantern = lantern_str != "none" ? (Item *) database->getItem(lantern_str) : nullptr;
+    std::string left_ring_str = values.at("left_ring");
+    Item * left_ring = left_ring_str != "none" ? (Item *) database->getItem(left_ring_str) : nullptr;
+    std::string right_ring_str = values.at("right_ring");
+    Item * right_ring = right_ring_str != "none" ? (Item *) database->getItem(right_ring_str) : nullptr;
+    std::string amulet_str = values.at("amulet");
+    Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
+    std::string weapon_str = values.at("weapon");
+    Weapon * current_weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
+    std::list<Item *> * items = new std::list<Item *>();
+    std::istringstream is_items(values.at("items"));
+    std::string item;
+    while(getline(is_items, item, '%')) {
+      items->push_back((Item *) database->getItem(item));
+    }
+    std::list<Weapon *> * weapons = new std::list<Weapon *>();
+    std::istringstream is_weapons(values.at("weapons"));
+    std::string weapon;
+    while(getline(is_weapons, weapon, '%')) {
+      weapons->push_back((Weapon *) database->getWeapon(weapon));
+    }
+    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
+    std::istringstream is_ammunition(values.at("ammunition"));
+    std::string ammo;
+    while(getline(is_ammunition, ammo, '%')) {
+      std::string ammo_name = ammo.substr(0, ammo.find('|'));
+      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
+      Ammunition * new_ammo = new Ammunition();
+      new_ammo->projectile = base_ammo->projectile;
+      new_ammo->gold_value = base_ammo->gold_value;
+      new_ammo->ammo_type = base_ammo->ammo_type;
+      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
+      ammunition->push_back(new_ammo);
+    }
+    Gear * gear = new Gear(
+      name,
+      head,
+      arms,
+      legs,
+      body,
+      lantern,
+      left_ring,
+      right_ring,
+      amulet,
+      current_weapon,
+      *items,
+      *weapons,
+      *ammunition
+    );
+    database->addGear(gear);
+    delete items;
+    delete weapons;
+    delete ammunition;
+  }
 
   void ItemOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
@@ -921,6 +969,15 @@ namespace FileOpener {
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
     float size = stof(values.at("size"));
+    std::istringstream is_need_to_eat(values.at("need_to_eat"));
+    bool need_to_eat;
+    is_need_to_eat >> std::boolalpha >> need_to_eat;
+    std::istringstream is_can_eat_food(values.at("can_eat_food"));
+    bool can_eat_food;
+    is_can_eat_food >> std::boolalpha >> can_eat_food;
+    std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
+    bool need_to_sleep;
+    is_need_to_sleep >> std::boolalpha >> need_to_sleep;
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_1(values.at("effects"));
     std::string effect;
@@ -952,6 +1009,9 @@ namespace FileOpener {
       soulBurnIncr,
       flowIncr,
       size,
+      need_to_eat,
+      can_eat_food,
+      need_to_sleep,
       *effects,
       *skills
     );
@@ -1021,6 +1081,9 @@ namespace FileOpener {
     }
     else if(last_folder == "events") {
       EventOpener(fileName, database);
+    }
+    else if(last_folder == "gears") {
+      GearOpener(fileName, database);
     }
     else if(last_folder == "items") {
       ItemOpener(fileName, database);

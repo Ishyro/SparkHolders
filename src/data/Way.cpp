@@ -28,6 +28,9 @@ std::string Way::to_string() {
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
   String::insert_float(ss, size);
+  String::insert_bool(ss, need_to_eat);
+  String::insert_bool(ss, can_eat_food);
+  String::insert_bool(ss, need_to_sleep);
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -65,6 +68,9 @@ Way * Way::from_string(std::string to_read) {
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
   float size = String::extract_float(ss);
+  bool need_to_eat = String::extract_bool(ss);
+  bool can_eat_food = String::extract_bool(ss);
+  bool need_to_sleep = String::extract_bool(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -97,6 +103,9 @@ Way * Way::from_string(std::string to_read) {
     soulBurnIncr,
     flowIncr,
     size,
+    need_to_eat,
+    can_eat_food,
+    need_to_sleep,
     *effects,
     *skills
   );

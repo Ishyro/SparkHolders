@@ -17,6 +17,7 @@ namespace FileOpener {
   void CharacterOpener(std::string fileName, Database * database);
   void EffectOpener(std::string fileName, Database * database);
   void EventOpener(std::string fileName, Database * database);
+  void GearOpener(std::string fileName, Database * database);
   void ItemOpener(std::string fileName, Database * database);
   void MapOpener(std::string fileName, Database * database);
   void ProjectileOpener(std::string fileName, Database * database);

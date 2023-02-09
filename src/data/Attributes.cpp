@@ -11,12 +11,8 @@ void Attributes::init(Attributes * archetype) {
 }
 
 Attributes * Attributes::getArchetype() { return archetype; }
-std::list<Item *> Attributes::getItems() { return items; }
-std::list<Weapon *> Attributes::getWeapons() { return weapons; }
-std::list<Ammunition *> Attributes::getAmmunitions() { return ammunition; }
 std::list<Effect *> Attributes::getEffects() { return effects; }
 std::list<Skill *> Attributes::getSkills() { return skills; }
-Gear * Attributes::getStartingGear() { return startingGear; }
 
 std::string Attributes::to_string() {
   std::stringstream * ss = new std::stringstream();
@@ -42,24 +38,6 @@ std::string Attributes::to_string() {
   String::insert_int(ss, damageIncr);
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
-  std::stringstream * ss_items = new std::stringstream();
-  for(Item * item : items) {
-    String::insert(ss_items, item->to_string());
-  }
-  String::insert(ss, ss_items->str());
-  delete ss_items;
-  std::stringstream * ss_weapons = new std::stringstream();
-  for(Weapon * weapon : weapons) {
-    String::insert(ss_weapons, weapon->to_string());
-  }
-  String::insert(ss, ss_weapons->str());
-  delete ss_weapons;
-  std::stringstream * ss_ammunition = new std::stringstream();
-  for(Ammunition * ammo : ammunition) {
-    String::insert(ss_ammunition, Projectile::ammo_to_string(ammo));
-  }
-  String::insert(ss, ss_ammunition->str());
-  delete ss_ammunition;
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -72,7 +50,6 @@ std::string Attributes::to_string() {
   }
   String::insert(ss, ss_skills->str());
   delete ss_skills;
-  String::insert(ss, startingGear->to_string());
   std::string result = ss->str();
   delete ss;
   return result;
@@ -101,24 +78,6 @@ Attributes * Attributes::from_string(std::string to_read) {
   int damageIncr = String::extract_int(ss);
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
-  std::stringstream * ss_items = new std::stringstream(String::extract(ss));
-  std::list<Item *> * items = new std::list<Item *>();
-  while(ss_items->rdbuf()->in_avail() != 0) {
-    items->push_back(Item::from_string(String::extract(ss_items)));
-  }
-  delete ss_items;
-  std::stringstream * ss_weapons = new std::stringstream(String::extract(ss));
-  std::list<Weapon *> * weapons = new std::list<Weapon *>();
-  while(ss_weapons->rdbuf()->in_avail() != 0) {
-    weapons->push_back(Weapon::from_string(String::extract(ss_weapons)));
-  }
-  delete ss_weapons;
-  std::stringstream * ss_ammunition = new std::stringstream(String::extract(ss));
-  std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-  while(ss_ammunition->rdbuf()->in_avail() != 0) {
-    ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_ammunition)));
-  }
-  delete ss_ammunition;
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -131,7 +90,6 @@ Attributes * Attributes::from_string(std::string to_read) {
     skills->push_back(Skill::from_string(String::extract(ss_skills)));
   }
   delete ss_skills;
-  Gear * gear = Gear::from_string(String::extract(ss));
   delete ss;
   Attributes * result = new Attributes(
     name,
@@ -151,16 +109,9 @@ Attributes * Attributes::from_string(std::string to_read) {
     damageIncr,
     soulBurnIncr,
     flowIncr,
-    *items,
-    *weapons,
-    *ammunition,
     *effects,
-    *skills,
-    gear
+    *skills
   );
-  delete items;
-  delete weapons;
-  delete ammunition;
   delete effects;
   delete skills;
   return result;

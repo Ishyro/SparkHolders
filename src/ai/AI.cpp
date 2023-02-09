@@ -1,7 +1,7 @@
 #include "data/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
-
+#include "data/Way.h"
 
 #include "ai/AI.h"
 
@@ -73,10 +73,10 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
 }
 
 Action * AI::eat(Adventure * adventure, Character * self) {
-  if(!self->need_to_eat) {
+  if(!self->getRace()->need_to_eat) {
     return nullptr;
   }
-  if(self->can_eat_food) {
+  if(self->getRace()->can_eat_food) {
     for(Item * item : self->getItems()) {
       if(item->isFood()) {
         return new Action(USE_ITEM, self, 0.F, nullptr, nullptr, 0, 0, nullptr, item->name, 1, 1, 1);

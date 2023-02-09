@@ -1,3 +1,5 @@
+#include "data/Projectile.h"
+
 #include "data/Gear.h"
 
 #include "utils/String.h"
@@ -150,6 +152,9 @@ Item * Gear::getLeft_ring() { return left_ring; }
 Item * Gear::getRight_ring() { return right_ring; }
 Item * Gear::getAmulet() { return amulet; }
 Weapon * Gear::getWeapon() { return weapon; }
+std::list<Item *> Gear::getItems() { return items; }
+std::list<Weapon *> Gear::getWeapons() { return weapons; }
+std::list<Ammunition *> Gear::getAmmunitions() { return ammunition; }
 
 float Gear::getWeight() {
   float weight = 0.F;
@@ -176,6 +181,7 @@ float Gear::getWeight() {
 
 std::string Gear::to_string() {
   std::stringstream * ss = new std::stringstream();
+  String::insert(ss, name);
   if(head != nullptr) {
     String::insert(ss, head->to_string());
   } else {
@@ -221,6 +227,24 @@ std::string Gear::to_string() {
   } else {
     String::insert(ss, "none");
   }
+  std::stringstream * ss_items = new std::stringstream();
+  for(Item * item : items) {
+    String::insert(ss_items, item->to_string());
+  }
+  String::insert(ss, ss_items->str());
+  delete ss_items;
+  std::stringstream * ss_weapons = new std::stringstream();
+  for(Weapon * weapon : weapons) {
+    String::insert(ss_weapons, weapon->to_string());
+  }
+  String::insert(ss, ss_weapons->str());
+  delete ss_weapons;
+  std::stringstream * ss_ammunition = new std::stringstream();
+  for(Ammunition * ammo : ammunition) {
+    String::insert(ss_ammunition, Projectile::ammo_to_string(ammo));
+  }
+  String::insert(ss, ss_ammunition->str());
+  delete ss_ammunition;
   std::string result = ss->str();
   delete ss;
   return result;
@@ -228,6 +252,7 @@ std::string Gear::to_string() {
 
 Gear * Gear::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
+  std::string name = String::extract(ss);
   Item * head = Item::from_string(String::extract(ss));
   Item * arms = Item::from_string(String::extract(ss));
   Item * legs = Item::from_string(String::extract(ss));
@@ -237,8 +262,27 @@ Gear * Gear::from_string(std::string to_read) {
   Item * right_ring = Item::from_string(String::extract(ss));
   Item * amulet = Item::from_string(String::extract(ss));
   Weapon * weapon = Weapon::from_string(String::extract(ss));
+  std::stringstream * ss_items = new std::stringstream(String::extract(ss));
+  std::list<Item *> * items = new std::list<Item *>();
+  while(ss_items->rdbuf()->in_avail() != 0) {
+    items->push_back(Item::from_string(String::extract(ss_items)));
+  }
+  delete ss_items;
+  std::stringstream * ss_weapons = new std::stringstream(String::extract(ss));
+  std::list<Weapon *> * weapons = new std::list<Weapon *>();
+  while(ss_weapons->rdbuf()->in_avail() != 0) {
+    weapons->push_back(Weapon::from_string(String::extract(ss_weapons)));
+  }
+  delete ss_weapons;
+  std::stringstream * ss_ammunition = new std::stringstream(String::extract(ss));
+  std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
+  while(ss_ammunition->rdbuf()->in_avail() != 0) {
+    ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_ammunition)));
+  }
+  delete ss_ammunition;
   delete ss;
-  return new Gear(
+  Gear * result = new Gear(
+    name,
     head,
     arms,
     legs,
@@ -247,6 +291,13 @@ Gear * Gear::from_string(std::string to_read) {
     left_ring,
     right_ring,
     amulet,
-    weapon
+    weapon,
+    *items,
+    *weapons,
+    *ammunition
   );
+  delete items;
+  delete weapons;
+  delete ammunition;
+  return result;
 }

@@ -1,4 +1,4 @@
-name = TXT_PLAYER
+name = TXT_HOMO_MAGUS
 player_character = false
 death_speech = none
 talking_speech = none
@@ -16,7 +16,4 @@ sellable_ammunition =
 sellable_effects =
 sellable_skills =
 has_soulspark = true
-need_to_eat = true
-can_eat_food = true
-need_to_sleep = true
 merchant = false

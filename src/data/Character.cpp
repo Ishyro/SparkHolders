@@ -18,7 +18,7 @@
 
 #include "utils/String.h"
 
-void Character::initializeCharacter() {
+void Character::initializeCharacter(Gear * gear) {
   size = race->size;
   maxHp = attributes->baseHp + race->baseHp + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
@@ -66,16 +66,16 @@ void Character::initializeCharacter() {
   savedHpRegen = 0.;
   savedManaRegen = 0.;
   channeledMana = 0;
-  gear = new Gear(attributes->getStartingGear());
-  for(Item * item : attributes->getItems()) {
+  this->gear = new Gear(gear);
+  for(Item * item : gear->getItems()) {
     Item * toadd = new Item(item);
     items.push_back(toadd);
   }
-  for(Weapon * weapon : attributes->getWeapons()) {
+  for(Weapon * weapon : gear->getWeapons()) {
     Weapon * toadd = new Weapon(weapon);
     weapons.push_back(toadd);
   }
-  for(Ammunition * ammo : attributes->getAmmunitions()) {
+  for(Ammunition * ammo : gear->getAmmunitions()) {
     Ammunition * toadd = new Ammunition();
     toadd->projectile = ammo->projectile;
     toadd->number = ammo->number;
@@ -549,7 +549,7 @@ void Character::applySoulBurn() {
 }
 
 void Character::applyTiredness() {
-  if(need_to_sleep) {
+  if(race->need_to_sleep) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
     float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
     int manaValue = (int) std::floor(currentManaRegen + savedManaRegen);
@@ -566,7 +566,7 @@ void Character::applyTiredness() {
 }
 
 void Character::applyHunger() {
-  if(need_to_eat) {
+  if(race->need_to_eat) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
     float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
     int hpValue = (int) std::floor(currentHpRegen + savedHpRegen);
@@ -597,7 +597,7 @@ void Character::applyEffects() {
 }
 
 void Character::rest() {
-  if(need_to_sleep) {
+  if(race->need_to_sleep) {
     // +1 because the character will still apply his tiredness while sleeping
     addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
   }
@@ -967,7 +967,7 @@ void Character::useItem(std::string item) {
       if(player_character) {
         setNeedToSend(true);
       }
-      if(!i->isFood() || can_eat_food) {
+      if(!i->isFood() || race->can_eat_food) {
         for(Effect * e : i->effects) {
           e->activate(this);
         }
@@ -1540,9 +1540,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, orientation);
   String::insert_int(ss, current_map_id);
   String::insert_bool(ss, has_soulspark);
-  String::insert_bool(ss, need_to_eat);
-  String::insert_bool(ss, can_eat_food);
-  String::insert_bool(ss, need_to_sleep);
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1678,9 +1675,6 @@ Character * Character::full_from_string(std::string to_read) {
   float orientation = String::extract_float(ss);
   int current_map_id = String::extract_int(ss);
   bool has_soulspark = String::extract_bool(ss);
-  bool need_to_eat = String::extract_bool(ss);
-  bool can_eat_food = String::extract_bool(ss);
-  bool need_to_sleep = String::extract_bool(ss);
   bool merchant = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);
@@ -1797,9 +1791,6 @@ Character * Character::full_from_string(std::string to_read) {
     orientation,
     current_map_id,
     has_soulspark,
-    need_to_eat,
-    can_eat_food,
-    need_to_sleep,
     merchant,
     gold,
     xp,

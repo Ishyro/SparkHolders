@@ -24,6 +24,7 @@ Database::Database() {
   effects = std::map<const std::string, const Effect * >();
   events = std::map<const std::string, const Event * >();
   items = std::map<const std::string, const Item * >();
+  gears = std::map<const std::string, const Gear * >();
   maps = std::map<const std::string, const Map * >();
   projectiles = std::map<const std::string, const Projectile * >();
   ammunition = std::map<const std::string, const Ammunition * >();
@@ -238,6 +239,7 @@ const Character * Database::getCharacter(const std::string character) { return c
 const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
 const Event * Database::getEvent(const std::string event) { return events.at(event); }
 const Item * Database::getItem(const std::string item) { return items.at(item); }
+const Gear * Database::getGear(const std::string gear) { return gears.at(gear); }
 const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
 const Ammunition * Database::getAmmunition(const std::string ammo) { return ammunition.at(ammo); }
@@ -268,6 +270,7 @@ void Database::addCharacter(const Character * character) { characters.insert(std
 void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
 void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
 void Database::addItem(const Item * item) { items.insert(std::make_pair(item->name, item)); }
+void Database::addGear(const Gear * gear) { gears.insert(std::make_pair(gear->name, gear)); }
 void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
 void Database::addAmmunition(const Ammunition * ammo) { ammunition.insert(std::make_pair(ammo->projectile->name, ammo)); }

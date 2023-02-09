@@ -9,7 +9,9 @@
 
 class Gear {
   public:
+    const std::string name;
     Gear(
+      std::string name,
       Item * head,
       Item * arms,
       Item * legs,
@@ -18,8 +20,12 @@ class Gear {
       Item * left_ring,
       Item * right_ring,
       Item * amulet,
-      Weapon * weapon
+      Weapon * weapon,
+      std::list<Item *> items,
+      std::list<Weapon *> weapons,
+      std::list<Ammunition *> ammunition
     ):
+      name(name),
       head(head),
       arms(arms),
       legs(legs),
@@ -28,7 +34,10 @@ class Gear {
       left_ring(left_ring),
       right_ring(right_ring),
       amulet(amulet),
-      weapon(weapon)
+      weapon(weapon),
+      items(items),
+      weapons(weapons),
+      ammunition(ammunition)
     {}
     Gear(const Gear * gear):
       head(nullptr),
@@ -39,7 +48,10 @@ class Gear {
       left_ring(nullptr),
       right_ring(nullptr),
       amulet(nullptr),
-      weapon(nullptr)
+      weapon(nullptr),
+      items(std::list<Item *>()),
+      weapons(std::list<Weapon *>()),
+      ammunition(std::list<Ammunition *>())
     {
       if(gear->head != nullptr) {
         head = new Item(gear->head);
@@ -78,7 +90,10 @@ class Gear {
       left_ring(nullptr),
       right_ring(nullptr),
       amulet(nullptr),
-      weapon(nullptr)
+      weapon(nullptr),
+      items(std::list<Item *>()),
+      weapons(std::list<Weapon *>()),
+      ammunition(std::list<Ammunition *>())
     {}
     std::list<Item *> equip(Item * new_item);
     Weapon * equip(Weapon * new_weapon);
@@ -96,9 +111,14 @@ class Gear {
     Item * getRight_ring();
     Item * getAmulet();
     Weapon * getWeapon();
+    std::list<Item *> getItems();
+    std::list<Weapon *> getWeapons();
+    std::list<Ammunition *> getAmmunitions();
     float getWeight();
     std::string to_string();
     static Gear * from_string(std::string to_read);
+    bool operator == (const Gear& g) const { return name == g.name; }
+    bool operator != (const Gear& g) const { return !operator==(g); }
   private:
     Item * head;
     Item * arms;
@@ -109,6 +129,9 @@ class Gear {
     Item * right_ring;
     Item * amulet;
     Weapon * weapon;
+    std::list<Item *> items;
+    std::list<Weapon *> weapons;
+    std::list<Ammunition *> ammunition;
 };
 
 #endif // _GEAR_H_
