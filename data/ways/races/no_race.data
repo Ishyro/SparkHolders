@@ -19,5 +19,6 @@ size = 0.01
 need_to_eat = true
 can_eat_food = true
 need_to_sleep = true
+loot =
 effects =
 skills =

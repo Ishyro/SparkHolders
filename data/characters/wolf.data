@@ -2,7 +2,6 @@ name = TXT_WOLF
 player_character = false
 death_speech = TXT_WOOF
 talking_speech = TXT_WOOF
-loot = TXT_WOLF_HIDE%
 type = NATURE
 gold = 0
 items =

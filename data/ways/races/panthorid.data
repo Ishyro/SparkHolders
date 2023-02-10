@@ -19,5 +19,6 @@ size = 0.3
 need_to_eat = true
 can_eat_food = true
 need_to_sleep = true
+loot = TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%
 effects =
 skills =

@@ -332,7 +332,6 @@ int Character::getLight() {
   return light;
 }
 std::list<Item *> Character::getItems() { return items; }
-std::list<Item *> Character::getLoot() { return loot; }
 std::list<Weapon *> Character::getWeapons() { return weapons; }
 std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
@@ -1525,12 +1524,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   } else {
     String::insert(ss, "none");
   }
-  std::stringstream * ss_loot = new std::stringstream();
-  for(Item * item : loot) {
-    String::insert(ss_loot, item->to_string());
-  }
-  String::insert(ss, ss_loot->str());
-  delete ss_loot;
   String::insert_int(ss, type);
   String::insert_int(ss, x);
   String::insert_int(ss, y);
@@ -1660,12 +1653,6 @@ Character * Character::full_from_string(std::string to_read) {
   if(talking_speech_str != "none") {
     talking_speech = Speech::from_string(talking_speech_str);
   }
-  std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
-  std::list<Item *> * loot = new std::list<Item *>();
-  while(ss_loot->rdbuf()->in_avail() != 0) {
-    loot->push_back(Item::from_string(String::extract(ss_loot)));
-  }
-  delete ss_loot;
   int type = String::extract_int(ss);
   int x = String::extract_int(ss);
   int y = String::extract_int(ss);
@@ -1781,7 +1768,6 @@ Character * Character::full_from_string(std::string to_read) {
     player_character,
     death_speech,
     talking_speech,
-    *loot,
     type,
     x,
     y,
@@ -1816,7 +1802,6 @@ Character * Character::full_from_string(std::string to_read) {
     profession,
     *titles
   );
-  delete loot;
   delete items;
   delete weapons;
   delete ammunition;
@@ -1835,7 +1820,7 @@ void Character::deepDelete() {
   for(Item * item : items) {
     delete item;
   }
-  for(Item * item : loot) {
+  for(Item * item : race->getLoot()) {
     delete item;
   }
   for(Weapon * weapon : weapons) {

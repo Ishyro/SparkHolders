@@ -5,6 +5,7 @@
 
 #include "utils/String.h"
 
+std::list<Item *> Way::getLoot() { return loot; }
 std::list<Effect *> Way::getEffects() { return effects; }
 std::list<Skill *> Way::getSkills() { return skills; }
 
@@ -31,6 +32,12 @@ std::string Way::to_string() {
   String::insert_bool(ss, need_to_eat);
   String::insert_bool(ss, can_eat_food);
   String::insert_bool(ss, need_to_sleep);
+  std::stringstream * ss_loot = new std::stringstream();
+  for(Item * item : loot) {
+    String::insert(ss_loot, item->to_string());
+  }
+  String::insert(ss, ss_loot->str());
+  delete ss_loot;
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -71,6 +78,12 @@ Way * Way::from_string(std::string to_read) {
   bool need_to_eat = String::extract_bool(ss);
   bool can_eat_food = String::extract_bool(ss);
   bool need_to_sleep = String::extract_bool(ss);
+  std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
+  std::list<Item *> * loot = new std::list<Item *>();
+  while(ss_loot->rdbuf()->in_avail() != 0) {
+    loot->push_back(Item::from_string(String::extract(ss_loot)));
+  }
+  delete ss_loot;
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -106,9 +119,11 @@ Way * Way::from_string(std::string to_read) {
     need_to_eat,
     can_eat_food,
     need_to_sleep,
+    *loot,
     *effects,
     *skills
   );
+  delete loot;
   delete effects;
   delete skills;
   return result;

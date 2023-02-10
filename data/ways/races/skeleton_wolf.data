@@ -19,5 +19,6 @@ size = 0.25
 need_to_eat = false
 can_eat_food = false
 need_to_sleep = false
+loot = TXT_BONE%
 effects =
 skills =

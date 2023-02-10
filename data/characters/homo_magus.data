@@ -2,7 +2,6 @@ name = TXT_HOMO_MAGUS
 player_character = false
 death_speech = none
 talking_speech = none
-loot = TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%
 type = HOMO
 gold = 50
 items = TXT_LAMB%

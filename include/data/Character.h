@@ -65,7 +65,6 @@ class Character {
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      std::list<Item *> loot,
       int type,
       long gold,
       bool has_soulspark,
@@ -85,7 +84,6 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
-      loot(loot),
       type(type),
       gold(gold),
       has_soulspark(has_soulspark),
@@ -125,7 +123,6 @@ class Character {
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speech(from_database->talking_speech),
-      loot(std::list<Item *>()),
       type(from_database->type),
       gold(from_database->gold),
       xp(xp),
@@ -161,9 +158,6 @@ class Character {
     {
       for(Item * item : from_database->items) {
         items.push_back(new Item(item));
-      }
-      for(Item * item : from_database->loot) {
-        loot.push_back(new Item(item));
       }
       for(Weapon * weapon : from_database->weapons) {
         weapons.push_back(new Weapon(weapon));
@@ -218,7 +212,6 @@ class Character {
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      std::list<Item *> loot,
       int type,
       int x,
       int y,
@@ -274,7 +267,6 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
-      loot(loot),
       type(type),
       x(x),
       y(y),
@@ -355,7 +347,6 @@ class Character {
     Gear * getGear();
     int getLight();
     std::list<Item *> getItems();
-    std::list<Item *> getLoot();
     std::list<Weapon *> getWeapons();
     std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
@@ -516,7 +507,6 @@ class Character {
 
     Gear * gear;
     std::list<Item *> items;
-    std::list<Item *> loot;
     std::list<Weapon *> weapons;
     std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;

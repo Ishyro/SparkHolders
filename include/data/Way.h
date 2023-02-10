@@ -4,6 +4,8 @@
 #include <list>
 #include <string>
 
+#include "data/Item.h"
+
 #include "Values.h"
 
 class Way {
@@ -52,6 +54,7 @@ class Way {
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      std::list<Item *> loot,
       std::list<Effect *> effects,
       std::list<Skill *> skills
     ):
@@ -76,9 +79,15 @@ class Way {
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      loot(std::list<Item *>()),
       effects(effects),
       skills(skills)
-    {}
+    {
+      for(Item * item : loot) {
+        this->loot.push_back(new Item(item));
+      }
+    }
+    std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::string to_string();
@@ -86,6 +95,7 @@ class Way {
     bool operator == (const Way& w) const { return name == w.name; }
     bool operator != (const Way& w) const { return !operator==(w); }
   private:
+    std::list<Item *> loot;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 };

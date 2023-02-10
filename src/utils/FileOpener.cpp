@@ -422,12 +422,6 @@ namespace FileOpener {
     if(values.at("talking_speech") != "none") {
       talking_speech = (Speech *) database->getSpeech(values.at("talking_speech"));
     }
-    std::list<Item *> * loots = new std::list<Item *>();
-    std::istringstream is_loot(values.at("loot"));
-    std::string loot;
-    while(getline(is_loot, loot, '%')) {
-      loots->push_back((Item *) database->getItem(loot));
-    }
     int type = database->getTargetFromMacro(values.at("type"));
     long gold = stol(values.at("gold"));
     std::istringstream is_has_soulspark(values.at("has_soulspark"));
@@ -510,7 +504,6 @@ namespace FileOpener {
       player_character,
       death_speech,
       talking_speech,
-      *loots,
       type,
       gold,
       has_soulspark,
@@ -527,7 +520,6 @@ namespace FileOpener {
       *sellable_skills
     );
     database->addCharacter(character);
-    delete loots;
     delete items;
     delete weapons;
     delete ammunition;
@@ -978,6 +970,12 @@ namespace FileOpener {
     std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
     bool need_to_sleep;
     is_need_to_sleep >> std::boolalpha >> need_to_sleep;
+    std::list<Item *> * loots = new std::list<Item *>();
+    std::istringstream is_loot(values.at("loot"));
+    std::string loot;
+    while(getline(is_loot, loot, '%')) {
+      loots->push_back((Item *) database->getItem(loot));
+    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_1(values.at("effects"));
     std::string effect;
@@ -1012,10 +1010,12 @@ namespace FileOpener {
       need_to_eat,
       can_eat_food,
       need_to_sleep,
+      *loots,
       *effects,
       *skills
     );
     database->addWay(way);
+    delete loots;
     delete effects;
     delete skills;
   }

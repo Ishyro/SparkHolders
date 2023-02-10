@@ -3,6 +3,7 @@
 #include "data/Adventure.h"
 #include "data/Effect.h"
 #include "data/Item.h"
+#include "data/Way.h"
 #include "data/Weapon.h"
 
 #include "communication/SpeechManager.h"
@@ -363,7 +364,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
   for(Ammunition * a : victim->getAmmunitions()) {
     loot->ammunition.push_back(a);
   }
-  for(Item * i : victim->getLoot()) {
+  for(Item * i : victim->getRace()->getLoot()) {
     if(i->droppable) {
       loot->items.push_back(i);
     }

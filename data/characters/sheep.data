@@ -2,7 +2,6 @@ name = TXT_SHEEP
 player_character = false
 death_speech = TXT_BEH
 talking_speech = TXT_BEH
-loot = TXT_LAMB%TXT_LAMB%TXT_LAMB%TXT_LAMB%TXT_LAMB%
 type = NATURE
 gold = 0
 items =
