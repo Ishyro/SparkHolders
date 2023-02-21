@@ -53,7 +53,6 @@ class Action {
     {
       switch(type) {
         case MOVE:
-        case CHANGE_MAP:
         case SHOOT:
         case FORCE_STRIKE:
           priority = user->getPriorityModifier();

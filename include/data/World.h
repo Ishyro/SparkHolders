@@ -10,6 +10,7 @@ typedef struct MapLink {
     int y1;
     int x2;
     int y2;
+    int type;
     Map * map1;
     Map * map2;
 } MapLink;
@@ -25,7 +26,7 @@ class World {
     void addMapLink(MapLink * link);
     Map * getMap(int map_id);
     Map * getMap(std::string name);
-    std::map<const int, Map *> getMaps();
+    std::list<Map *> getMaps();
     MapLink * getMapLink(int y, int x, int mapId);
   private:
     std::map<const int, Map *> maps;

@@ -44,7 +44,7 @@ MapDisplay * Link::receiveMap() {
     MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId);
     for(CharacterDisplay * display : map->characters) {
       if(serverCharacterId == display->id) {
-        player->move(display->y + map->offsetY, display->x + map->offsetX, display->dy, display->dx, display->orientation);
+        player->move(display->y + map->offsetY, display->x + map->offsetX, display->dy, display->dx, display->orientation, map->id);
         player->setHp(display->hp);
         player->setMana(display->mana);
         player->setStamina(display->stamina);

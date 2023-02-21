@@ -15,6 +15,7 @@ void Projectile::initializeEffects(std::list<Effect *> effects, int overcharge_p
   }
 }
 
+int Projectile::getCurrentMapId() { return current_map_id; }
 int Projectile::getX() { return x; }
 int Projectile::getY() { return y; }
 float Projectile::getDX() { return dx; }
@@ -107,12 +108,19 @@ void Projectile::setWastePerHit(float waste_per_hit) { this->waste_per_hit = was
 void Projectile::setTarget(Character * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
+void Projectile::markDestroyed() {
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    current_damages[i] = 0;
+  }
+}
 
-void::Projectile::move(int y, int x, float dy, float dx) {
+void::Projectile::move(int y, int x, float dy, float dx, float orientation, int map_id) {
   this->x = x;
   this->y = y;
   this->dx = dx;
   this->dy = dy;
+  this->orientation = orientation;
+  this->current_map_id = map_id;
 }
 
 void Projectile::reduceDamageTick() {

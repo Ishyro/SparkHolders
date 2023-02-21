@@ -19,57 +19,6 @@ Save * Adventure::save() {
 
 void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y, int x) {
   Map * map = world->getMap(map_id);
-  bool conflict = true;
-  int power = -1; // power = 0 in first loop turn
-  int k = NORTH;
-  int i;
-  int j;
-  while(conflict && (power <= map->sizeX || power <= map->sizeY)) {
-    if(k % 8 == 0) {
-      power++;
-    }
-    i = x;
-    j = y;
-    switch(k++ % 8 + 1) { // ORIENTATION
-      case NORTH:
-        j = y + power;
-        break;
-      case NORTH_EAST:
-        j = y + power;
-        i = x + power;
-        break;
-      case EAST:
-        i = x + power;
-        break;
-      case SOUTH_EAST:
-        j = y - power;
-        i = x + power;
-        break;
-      case SOUTH:
-        j = y - power;
-        break;
-      case SOUTH_WEST:
-        j = y - power;
-        i = x - power;
-        break;
-      case WEST:
-        i = x - power;
-        break;
-      case NORTH_WEST:
-        j = y + power;
-        i = x - power;
-        break;
-    }
-    if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (conflict = map->getTile(j, i)->untraversable)) {
-      continue;
-    }
-    for(Character * c : map->getCharacters()) {
-      if(c->getX() == i && c->getY() == j) {
-        conflict = true;
-        break;
-      }
-    }
-  }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
     if(p->getTarget() == character && !p->homing) {
@@ -77,8 +26,7 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y,
     }
   }
   map->addCharacter(character);
-  character->move(j, i, 0.5F, 0.5F, character->getOrientation());
-  character->setCurrentMapId(map_id);
+  character->move(y, x, 0.5F, 0.5F, character->getOrientation(), map_id);
 }
 
 void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y, int x) {
@@ -107,8 +55,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y,
     }
   }
   map->addCharacter(character);
-  character->move(y, x, 0.5F, 0.5F, character->getOrientation());
-  character->setCurrentMapId(map_id);
+  character->move(y, x, 0.5F, 0.5F, character->getOrientation(), map_id);
 }
 
 void Adventure::addPlayer(Character * player) { party.push_back(player); }
@@ -146,8 +93,8 @@ void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getCharacters() {
   std::list<Character *> characters = std::list<Character *>();
-  for (auto pair : world->getMaps()) {
-    for (Character * character : pair.second->getCharacters()) {
+  for (Map * map : world->getMaps()) {
+    for (Character * character : map->getCharacters()) {
       // no check on player_character, because we want mind controlled players to act as npc
       // this imply that the player AI needs to send nullptr when asked for an Action
       // otherwise players will have 2 Actions per round
@@ -170,8 +117,8 @@ Character * Adventure::getCharacter(long id) {
 
 std::list<Projectile *> Adventure::getProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();
-  for (auto pair : world->getMaps()) {
-    for (Projectile * projectile : pair.second->getProjectiles()) {
+  for(Map * map : world->getMaps()) {
+    for(Projectile * projectile : map->getProjectiles()) {
       projectiles.push_back(projectile);
     }
   }
@@ -179,9 +126,9 @@ std::list<Projectile *> Adventure::getProjectiles() {
 }
 
 void Adventure::applyDayLight() {
-  for (auto pair : world->getMaps()) {
-    if(pair.second->outside) {
-      pair.second->applyDayLight(light);
+  for(Map * map : world->getMaps()) {
+    if(map->outside) {
+      map->applyDayLight(light);
     }
   }
 }
@@ -245,11 +192,32 @@ void Adventure::executeActions(std::list<Action *> actions) {
   }
 }
 
+#include <iostream>
+
 void Adventure::actAllProjectiles() {
-  for (auto pair : world->getMaps()) {
-    pair.second->actAllProjectiles(this);
+  std::list<Projectile *> projectiles = std::list<Projectile *>();
+  for(Map * map : world->getMaps()) {
+    for(Projectile * p : map->getProjectiles()) {
+      projectiles.push_back(p);
+    }
+    map->clearProjectiles();
+  }
+  for(Projectile * p : projectiles) {
+    bool keep = true;
+    float speed = p->getSpeed();
+    while(keep && speed > 0.F) {
+      speed = world->getMap(p->getCurrentMapId())->actProjectile(p, this, speed);
+      if(p->noDamage()) {
+        keep = false;
+        delete p;
+      }
+    }
+    if(keep) {
+      world->getMap(p->getCurrentMapId())->addProjectile(p);
+    }
   }
 }
+
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   spawns.remove(spawn);
@@ -260,7 +228,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
     0,
     spawn->x,
     spawn->y,
-    spawn->orientation,
+    90.F,
     spawn->map_id,
     "party",
     new PlayerAI(),

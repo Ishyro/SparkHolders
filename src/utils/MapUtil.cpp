@@ -20,6 +20,10 @@ float MapUtil::distance(int x1, int y1, float dx1, float dy1, int x2, int y2, fl
   return round(std::sqrt(( (float) x1 + dx1 - (float) x2 - dx2) * ( (float) x1 + dx1 - (float) x2 - dx2) + ( (float) y1 + dy1 - (float) y2 - dy2) * ( (float) y1 + dy1 - (float) y2 - dy2)));
 }
 
+float MapUtil::distanceSquare(int x1, int y1, float dx1, float dy1, int x2, int y2, float dx2, float dy2) {
+  return round( ((float) x1 + dx1 - (float) x2 - dx2) * ( (float) x1 + dx1 - (float) x2 - dx2) + ( (float) y1 + dy1 - (float) y2 - dy2) * ( (float) y1 + dy1 - (float) y2 - dy2));
+}
+
 float MapUtil::getOrientationToTarget(int x1, int y1, float dx1, float dy1, int x2, int y2, float dx2, float dy2) {
   float startX = (float) x1 + dx1;
   float endX = (float) x2 + dx2;
@@ -355,6 +359,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(int x, int y, float dx,
   pair.dx = x_direction == 1 ? 0.999F : 0.F;
   pair.dy = y_direction == 1 ? 0.999F : 0.F;
   if(orientation == 0.F) {
+    pair.dy = dy;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
       pair.x++;
@@ -362,6 +367,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(int x, int y, float dx,
     }
   }
   else if(orientation == 180.F) {
+    pair.dy = dy;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
       pair.x--;
@@ -369,6 +375,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(int x, int y, float dx,
     }
   }
   else if(orientation == 90.F) {
+    pair.dx = dx;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
       pair.y++;
@@ -376,6 +383,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(int x, int y, float dx,
     }
   }
   else if(orientation == 270.F) {
+    pair.dx = dx;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
       pair.y--;
@@ -383,48 +391,72 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(int x, int y, float dx,
     }
   }
   else {
-    float tan = std::tan(orientation * 3.141593F / 180.F);
-    pair.dx = (float) x + dx + (1.F - dy) / tan;
-    pair.dx = round(pair.dx - std::floor(pair.dx));
-    pair.dy = (float) y + dy + (1.F - dx) * tan;
-    pair.dy = round(pair.dy - std::floor(pair.dy));
-    float current_range = 0.F;
-    float next_x;
-    float next_dx;
-    float next_y;
-    float next_dy;
+    float cos = std::cos(orientation * 3.141593F / 180.F);
+    float sin = std::sin(orientation * 3.141593F / 180.F);
+    float current_range;
+    float range_x = std::abs(-dx / cos);
+    float range_y = std::abs(-dy / sin);
+    float x_x = (float) x + dx + cos * range_x;
+    float x_y = (float) y + dy + sin * range_x;
+    float y_x = (float) x + dx + cos * range_y;
+    float y_y = (float) y + dy + sin * range_y;
+    if(distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y) < distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y)) {
+      pair.x = std::floor(x_x);
+      pair.dx = round(x_x - (float) pair.x);
+      pair.y = std::floor(x_y);
+      pair.dy = round(x_y - (float) pair.y);
+      current_range = range_x;
+    }
+    else {
+      pair.x = std::floor(y_x);
+      pair.dx = y_x - (float) pair.x;
+      pair.y = std::floor(y_y);
+      pair.dy = y_y - (float) pair.y;
+      current_range = range_y;
+    }
+    result.push_back(pair);
     while(current_range < range) {
-      next_x = pair.x + x_direction;
-      next_dx = x_direction == 1 ? 0.F : 0.999F;
-      next_dy = (float) pair.y + pair.dy + (1.F - pair.dx) * tan;
-      next_y = floor(next_dy);
-      next_dy = round(next_dy - (float) next_y);
-
-      if(next_y != pair.y) {
-        next_y = pair.y + y_direction;
-        next_dy = y_direction == 1 ? 0.F : 0.999F;
-        next_dx = (float) pair.x + pair.dx + (1.F - pair.dy) / tan;
-        next_x = floor(next_dx);
-        next_dx = round(next_dx - (float) next_x);
-      }
-      current_range += MapUtil::distance(pair.x, pair.y, pair.dx, pair.dy, next_x, next_y, next_dx, next_dy);
-      if(pair.x == next_x) {
-        pair.dx = next_dx;
+      range_x = std::abs((x_direction - pair.dx) / cos);
+      range_y = std::abs((y_direction - pair.dy) / sin);
+      x_x = (float) pair.x + pair.dx + cos * range_x;
+      x_y = (float) pair.y + pair.dy + sin * range_x;
+      y_x = (float) pair.x + pair.dx + cos * range_y;
+      y_y = (float) pair.y + pair.dy + sin * range_y;
+      if(distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y) < distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y)) {
+        pair.x = std::floor(x_x);
+        pair.dx = round(x_x - (float) pair.x);
+        pair.y = std::floor(x_y);
+        pair.dy = round(x_y - (float) pair.y);
+        current_range += range_x;
       }
       else {
-        pair.dx = x_direction == 1 ? 0.999F : 0.F;
+        pair.x = std::floor(y_x);
+        pair.dx = round(y_x - (float) pair.x);
+        pair.y = std::floor(y_y);
+        pair.dy = round(y_y - (float) pair.y);
+        current_range += range_y;
       }
-      if(pair.y == next_y) {
-        pair.dy = next_dy;
+      bool change_x = false;
+      if(x_direction == 1 && pair.dx == 0.F) {
+        pair.dx = 0.999F;
+        pair.x -= x_direction;
+        change_x = true;
       }
-      else {
-        pair.dy = y_direction == 1 ? 0.999F : 0.F;
+      bool change_y = false;
+      if(y_direction == 1 && pair.dy == 0.F) {
+        pair.dy = 0.999F;
+        pair.y -= y_direction;
+        change_y = true;
       }
       result.push_back(pair);
-      pair.dx = next_dx;
-      pair.dy = next_dy;
-      pair.x = next_x;
-      pair.y = next_y;
+      if(change_x) {
+        pair.dx = 0.F;
+        pair.x += x_direction;
+      }
+      if(change_y) {
+        pair.dy = 0.F;
+        pair.y += y_direction;
+      }
     }
   }
   return result;

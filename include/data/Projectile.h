@@ -218,6 +218,7 @@ class Projectile {
       }
     }
     void initializeEffects(std::list<Effect *> effects, int overcharge_power, int overcharge_duration);
+    int getCurrentMapId();
     int getX();
     int getY();
     float getDX();
@@ -260,7 +261,8 @@ class Projectile {
     void setTarget(Character * target);
     void setOwner(Character * owner);
     void setLost(bool state);
-    void move(int y, int x, float dy, float dx);
+    void markDestroyed();
+    void move(int y, int x, float dy, float dx, float orientation, int map_id);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -305,7 +307,6 @@ class Projectile {
     int current_damages[DAMAGE_TYPE_NUMBER];
     std::list<Character *> previous_targets;
     std::list<Character *> current_targets;
-    void nextOrientation(Map * map);
 };
 
 #endif // _PROJECTILE_H_

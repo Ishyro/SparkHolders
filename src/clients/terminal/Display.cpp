@@ -1304,11 +1304,6 @@ namespace Display {
             orientation = 45.F;
             done = true;
             break;
-          case '<':
-          case '>':
-            type = CHANGE_MAP;
-            done = true;
-            break;
           case ' ':
             type = GRAB;
             done = true;

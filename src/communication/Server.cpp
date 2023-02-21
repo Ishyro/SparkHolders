@@ -60,14 +60,6 @@ namespace Server {
         delete ss;
         return new Action(SWAP_GEAR, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
-      case CHANGE_MAP: {
-        MapLink * link = adventure->getWorld()->getMapLink(user->getY(), user->getX(), user->getCurrentMapId());
-        delete ss;
-        if(link != nullptr) {
-          return new Action(CHANGE_MAP, user, 0.F, nullptr, nullptr, 0, 0, link, "", 1, 1, 1);
-        }
-        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
-      }
       case GRAB:
         delete ss;
         return new Action(GRAB, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);

@@ -371,7 +371,7 @@ class Character {
 
     void setOrientation(float orientation);
     void setSize(float size);
-    void move(int y, int x, float dy, float dx, float orientation);
+    void move(int y, int x, float dy, float dx, float orientation, int map_id);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);

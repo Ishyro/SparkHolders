@@ -150,16 +150,11 @@ Database::Database() {
   macros.insert(std::make_pair("SQUARE", SQUARE));
   macros.insert(std::make_pair("EXPONENTIAL", EXPONENTIAL));
 
-  // orientations
+  // map_link type
 
-  macros.insert(std::make_pair("NORTH", NORTH));
-  macros.insert(std::make_pair("NORTH_EAST", NORTH_EAST));
-  macros.insert(std::make_pair("EAST", EAST));
-  macros.insert(std::make_pair("SOUTH_EAST", SOUTH_EAST));
-  macros.insert(std::make_pair("SOUTH", SOUTH));
-  macros.insert(std::make_pair("SOUTH_WEST", SOUTH_WEST));
-  macros.insert(std::make_pair("WEST", WEST));
-  macros.insert(std::make_pair("NORTH_WEST", NORTH_WEST));
+  macros.insert(std::make_pair("THROUGH", THROUGH));
+  macros.insert(std::make_pair("BOUNCE", BOUNCE));
+  macros.insert(std::make_pair("BACK", BACK));
 
   // projectile_type
 

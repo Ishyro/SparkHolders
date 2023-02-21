@@ -158,8 +158,6 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       int y = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      int orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
       std::string map_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
       std::string team = command.substr(0, command.find('%'));
@@ -214,7 +212,7 @@ namespace FileOpener {
         xp,
         x,
         y,
-        orientation,
+        90.F,
         map->id,
         team,
         ai,
@@ -251,6 +249,9 @@ namespace FileOpener {
       int x2 = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       int y2 = stoi(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
+      int type = database->getTargetFromMacro(command.substr(0, command.find('%')));
+      command = command.substr(command.find('%') + 1, command.length());
       Map * map1 = world->getMap(map1_str);
       Map * map2 = world->getMap(map2_str);
       MapLink * link = new MapLink();
@@ -260,6 +261,7 @@ namespace FileOpener {
       link->y1 = y1;
       link->x2 = x2;
       link->y2 = y2;
+      link->type = type;
       world->addMapLink(link);
     }
     else if(keyword == "Loot") {
@@ -316,7 +318,6 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       spawn->y = stoi(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      spawn->orientation = database->getTargetFromMacro(command.substr(0, command.find('%')));
       spawn->map_id = world->getMap(map_str)->id;
       spawns->push_back(spawn);
     }

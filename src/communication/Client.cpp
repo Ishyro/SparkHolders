@@ -118,8 +118,6 @@ namespace Client {
       case SWAP_GEAR:
         String::insert(ss, object);
         break;
-      case CHANGE_MAP:
-        break;
       case GRAB:
         break;
       case USE_SKILL:

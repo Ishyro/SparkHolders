@@ -380,12 +380,13 @@ std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
-void Character::move(int y, int x, float dy, float dx, float orientation) {
+void Character::move(int y, int x, float dy, float dx, float orientation, int map_id) {
   this->x = x;
   this->y = y;
   this->dx = dx;
   this->dy = dy;
   this->orientation = orientation;
+  this->current_map_id = map_id;
 }
 
 void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }

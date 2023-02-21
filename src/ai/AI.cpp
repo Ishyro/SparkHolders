@@ -96,42 +96,42 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     }
     bool correct_tile = false;
     int power = -1; // power = 0 in first loop turn
-    int k = NORTH;
+    int k = 0;
     int i;
     int j;
     // TODO // infinite loop
     while(!correct_tile && (power <= map->sizeX || power <= map->sizeY)) {
-      if(k % 8 == NORTH) {
+      if(k % 8 == 0) {
         power++;
       }
       i = self->getX();
       j = self->getY();
       switch(k++ % 8 + 1) { // ORIENTATION
-        case NORTH:
+        case 0:
           j += power;
           break;
-        case NORTH_EAST:
+        case 1:
           j += power;
           i += power;
           break;
-        case EAST:
+        case 2:
           i += power;
           break;
-        case SOUTH_EAST:
+        case 3:
           j -= power;
           i += power;
           break;
-        case SOUTH:
+        case 4:
           j -= power;
           break;
-        case SOUTH_WEST:
+        case 5:
           j -= power;
           i -= power;
           break;
-        case WEST:
+        case 6:
           i -= power;
           break;
-        case NORTH_WEST:
+        case 7:
           j += power;
           i -= power;
           break;

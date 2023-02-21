@@ -11,7 +11,6 @@
 typedef struct Spawn {
   int x;
   int y;
-  int orientation;
   int map_id;
 } Spawn;
 

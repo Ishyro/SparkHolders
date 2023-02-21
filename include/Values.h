@@ -154,16 +154,11 @@ class SpeechManager;
 #define SQUARE 2
 #define EXPONENTIAL 3
 
-// orientations
+// map_link type
 
-#define NORTH 0
-#define NORTH_EAST 1
-#define EAST 2
-#define SOUTH_EAST 3
-#define SOUTH 4
-#define SOUTH_WEST 5
-#define WEST 6
-#define NORTH_WEST 7
+#define THROUGH 1
+#define BOUNCE 2
+#define BACK 3
 
 // projectile_type
 
@@ -249,12 +244,11 @@ class SpeechManager;
 #define FORCE_STRIKE 4
 #define RELOAD 5
 #define SWAP_GEAR 6
-#define CHANGE_MAP 7
-#define GRAB 8
-#define USE_SKILL 9
-#define USE_ITEM 10
-#define TALKING 11
-#define ECONOMICS 12
+#define GRAB 7
+#define USE_SKILL 8
+#define USE_ITEM 9
+#define TALKING 10
+#define ECONOMICS 11
 
 // teams relations
 

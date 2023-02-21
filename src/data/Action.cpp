@@ -17,9 +17,14 @@
 
 void Action::execute(Adventure * adventure) {
   switch(type) {
-    case MOVE:
-      adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, orientation);
+    case MOVE: {
+      float ap = 1.F;
+      user->setOrientation(orientation);
+      while(ap > 0.F) {
+        ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), ap, adventure->getWorld());
+      }
       break;
+    }
     case REST:
       user->rest();
       break;
@@ -74,6 +79,7 @@ void Action::execute(Adventure * adventure) {
         }
       }
       break;
+      /*
     case CHANGE_MAP:
       if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
@@ -88,6 +94,7 @@ void Action::execute(Adventure * adventure) {
         adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
       }
       break;
+      */
     case GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, (int) orientation);
       break;

@@ -26,14 +26,20 @@ Map * World::getMap(std::string name) {
     return nullptr;
 }
 
-std::map<const int, Map *> World::getMaps() { return maps; }
+std::list<Map *> World::getMaps() {
+  std::list<Map *> to_return = std::list<Map *>();
+  for(auto pair : maps) {
+    to_return.push_back(pair.second);
+  }
+  return to_return;
+}
 
 MapLink * World::getMapLink(int y, int x, int mapId) {
   for(MapLink * link : links) {
     if((link->map1->id == mapId && link->x1 == x && link->y1 == y) ||
       (link->map2->id == mapId && link->x2 == x && link->y2 == y)) {
         return link;
-      }
+    }
   }
   return nullptr;
 }

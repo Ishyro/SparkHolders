@@ -1,6 +1,6 @@
 name = TXT_CAVE
 width = 25
-height = 25
+height = 26
 outside = false
 0 = TXT_WALL_STONE
 1 = TXT_FLOOR_STONE
@@ -33,4 +33,5 @@ outside = false
 0 0 1 1 0 0 0 0 1 1 0 0 4 0 1 1 1 0 0 0 0 0 0 0 0
 0 0 0 1 0 0 0 1 1 1 1 1 1 1 1 1 4 0 0 0 0 0 0 0 0
 0 0 0 0 1 1 1 1 1 1 4 1 1 1 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0

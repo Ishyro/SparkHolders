@@ -21,6 +21,7 @@ namespace MapUtil {
   float round(float var);
   int distance(int x1, int y1, int x2, int y2);
   float distance(int x1, int y1, float dx1, float dy1, int x2, int y2, float dx2, float dy2);
+  float distanceSquare(int x1, int y1, float dx1, float dy1, int x2, int y2, float dx2, float dy2);
   float getOrientationToTarget(int x1, int y1, float dx1, float dy1, int x2, int y2, float dx2, float dy2);
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);

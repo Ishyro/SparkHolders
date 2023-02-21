@@ -24,6 +24,7 @@ typedef struct Loot {
 typedef struct MapDisplay {
   std::string time;
   std::string name;
+  int id;
   int offsetX;
   int offsetY;
   int sizeX;
@@ -155,11 +156,11 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, int mode);
-    float getMoveCost(Character * c, int y, int x, float dy, float dx, float orientation);
+    float getMoveCost(Character * c, int y, int x, float dy, float dx);
     float move(Character * c, int y, int x, float dy, float dx);
-    void move(Character * c, float orientation);
-    bool actProjectile(Projectile * p, Adventure * adventure);
-    void actAllProjectiles(Adventure * adventure);
+    float move(Character * c, float orientation, float ap, World * world);
+    float actProjectile(Projectile * p, Adventure * adventure, float speed);
+    void clearProjectiles();
     std::string to_string(Character * player, Adventure * adventure);
     static MapDisplay * from_string(std::string to_read);
     static std::vector<std::vector<Tile *>> canSee(Map * map, Character * watcher, Database * database);
