@@ -792,7 +792,7 @@ namespace FileOpener {
     Settings::setSatietyRecoveryRatio(stoi(values.at("SATIETY_RECOVERY_RATIO")));
     Settings::setStaminaOverextendRatio(stoi(values.at("STAMINA_OVEREXTEND_RATIO")));
     Settings::setSatietyOverextendRatio(stoi(values.at("SATIETY_OVEREXTEND_RATIO")));
-    Settings::setBuyingPriceModifier(stof(values.at("GET_BUYING_PRICE_MODIFIER")));
+    Settings::setBuyingPriceModifier(stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
