@@ -9,7 +9,7 @@
 class EtheralCasterAI : public AI {
   using AI::AI;
   public:
-    Action * getAction(Adventure * adventure, Character * c);
+    Action * getActions(Adventure * adventure, Character * c);
   private:
     bool casted = false;
     int current_round = 0;

@@ -7,7 +7,7 @@
 
 class PlayerAI : public AI {
   public:
-    Action * getAction(Adventure * adventure, Character * c);
+    Action * getActions(Adventure * adventure, Character * c);
 };
 
 #endif // _PLAYER_AI_H_

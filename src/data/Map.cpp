@@ -452,8 +452,6 @@ void Map::takeLoot(Character * c, int mode) {
   to_delete.clear();
 }
 
-#include <iostream>
-
 float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
   if(c->isFlying()) {
     return MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy) * 10.F;
@@ -616,9 +614,6 @@ float Map::move(Character * c, int destY, int destX, float destDY, float destDX)
 }
 
 float Map::move(Character * c, float orientation, float ap, World * world) {
-  if(c->name != "test") {
-    return 0.F;
-  }
   int lim_x = c->getX();
   float lim_dx = c->getDX();
   int lim_y = c->getY();

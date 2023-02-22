@@ -15,7 +15,10 @@
 
 #include "data/Action.h"
 
-void Action::execute(Adventure * adventure) {
+Action * Action::execute(Adventure * adventure) {
+  if(next != nullptr && next->time == 0) {
+    next->execute(adventure);
+  }
   switch(type) {
     case MOVE: {
       float ap = 1.F;
@@ -118,6 +121,31 @@ void Action::execute(Adventure * adventure) {
       break;
     default: ;
   }
+  if(previous != nullptr) {
+    previous->next = next;
+    next->previous = previous;
+  }
+  else if(next != nullptr) {
+    next->previous = nullptr;
+    next->computeTick(0);
+  }
+  // true if we need to ask the AI for new actions
+  return next;
 }
 
 Character * Action::getUser() { return user; }
+int Action::getTick() { return tick; }
+void Action::setPrevious(Action * action) { previous = action; }
+void Action::setNext(Action * action) { next = action; }
+
+void Action::computeTick(int tick) {
+    if(previous == nullptr) {
+      this->tick = time - tick;
+    }
+    else {
+      this->tick = time + previous->getTick();
+    }
+    if(next != nullptr) {
+      next->computeTick(tick);
+    }
+}

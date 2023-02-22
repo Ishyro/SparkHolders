@@ -8,7 +8,7 @@
 class DiurnalAgressiveAI : public AI {
   using AI::AI;
   public:
-    Action * getAction(Adventure * adventure, Character * c);
+    Action * getActions(Adventure * adventure, Character * c);
 };
 
 #endif // _DIURNAL_AGRESSIVE_AI_H_

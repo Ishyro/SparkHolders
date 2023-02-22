@@ -338,6 +338,8 @@ class Character {
 
     bool needToSend();
     void setNeedToSend(bool need_to_send);
+    bool getNeedToUpdateActions();
+    void setNeedToUpdateActions(bool need_to_update_actions);
 
     AI * getAI();
     std::string getTeam();
@@ -495,6 +497,7 @@ class Character {
     int visionPower;
     int detectionRange;
     bool need_to_send = false;
+    bool need_to_update_actions = true;
 
     long gold;
     long xp;

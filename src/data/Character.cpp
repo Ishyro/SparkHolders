@@ -313,6 +313,8 @@ int Character::getPowerScore() {
 
 bool Character::needToSend() { return need_to_send; }
 void Character::setNeedToSend(bool need_to_send) { this->need_to_send = need_to_send; }
+bool Character::getNeedToUpdateActions() { return need_to_update_actions; }
+void Character::setNeedToUpdateActions(bool need_to_update_actions) { this->need_to_update_actions = need_to_update_actions; }
 
 AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }

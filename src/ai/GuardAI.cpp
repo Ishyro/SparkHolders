@@ -8,7 +8,7 @@
 
 #include "ai/GuardAI.h"
 
-Action * GuardAI::getAction(Adventure * adventure, Character * c) {
+Action * GuardAI::getActions(Adventure * adventure, Character * c) {
   Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
@@ -27,13 +27,13 @@ Action * GuardAI::getAction(Adventure * adventure, Character * c) {
   }
   if(sleepy && adventure->getLight() < 4) {
     delete visionMap;
-    return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(REST, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
-    return new Action(MOVE, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(MOVE, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   delete visionMap;
-  return new Action(REST, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  return new Action(REST, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }

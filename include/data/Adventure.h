@@ -37,11 +37,13 @@ class Adventure {
       events(events),
       spawns(spawns),
       startingAttributes(startingAttributes),
-      startingWays(startingWays)
+      startingWays(startingWays),
+      party(std::list<Character *>()),
+      preserved_players(std::list<Character *>()),
+      actions(std::list<Action *>())
     {
-      party = std::list<Character *>();
-      preserved_players = std::list<Character *>();
-      round = 0;
+      tick = 0;
+      round = 0L;
       light = Settings::getStartingHour() % Settings::getLightMaxPower();
       if(Settings::getStartingHour() < Settings::getLightMaxPower()) {
         lightUp = true;
@@ -76,8 +78,9 @@ class Adventure {
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
     std::list<Projectile *> getProjectiles();
-    std::list<Action *> getNPCsActions();
-    void executeActions(std::list<Action *> actions);
+    void getNPCsActions();
+    void mergeActions(std::list<Action *> to_add);
+    void executeActions();
     void applyDayLight();
     void incrDayLight();
     std::string getTime();
@@ -87,6 +90,7 @@ class Adventure {
   private:
     World * world;
     Database * database;
+    int tick;
     long round;
     int light;
     bool lightUp;
@@ -97,6 +101,7 @@ class Adventure {
     std::list<Spawn *> spawns;
     std::list<Attributes *> startingAttributes;
     std::list<Way *> startingWays;
+    std::list<Action *> actions;
 };
 
 #endif // _ADVENTURE_H_

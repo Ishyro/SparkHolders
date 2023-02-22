@@ -8,7 +8,7 @@
 class GuardAI : public AI {
   using AI::AI;
   public:
-    Action * getAction(Adventure * adventure, Character * c);
+    Action * getActions(Adventure * adventure, Character * c);
 };
 
 #endif // _GUARD_AI_H_

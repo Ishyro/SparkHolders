@@ -112,20 +112,16 @@ int main(int argc, char ** argv) {
     }
     SpeechManager::clear();
     std::list<Action *> actionsPlayers = std::list<Action *>();
-    std::list<Action *> actions = adventure->getNPCsActions();
-    actions.sort();
+    adventure->getNPCsActions();
     // receive playerActions
     for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->getPlayer()->isInWeakState()) {
         actionsPlayers.push_back(links[i]->receiveAction());
       }
     }
-    actionsPlayers.sort();
-    actions.merge(actionsPlayers);
+    adventure->mergeActions(actionsPlayers);
+    adventure->executeActions();
     adventure->actAllProjectiles();
-    adventure->executeActions(actions);
-    actionsPlayers.clear();
-    actions.clear();
     noPlayers = true;
     for(int i = 0; i < playersNumber; i++) {
       if(!links[i]->isClosed()) {

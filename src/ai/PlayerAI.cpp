@@ -5,6 +5,6 @@
 
 #include "ai/PlayerAI.h"
 
-Action * PlayerAI::getAction(Adventure * adventure, Character * c) {
+Action * PlayerAI::getActions(Adventure * adventure, Character * c) {
   return nullptr;
 }

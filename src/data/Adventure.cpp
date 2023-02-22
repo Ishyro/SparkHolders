@@ -170,29 +170,59 @@ std::string Adventure::getTime() {
   return result;
 }
 
-std::list<Action *> Adventure::getNPCsActions() {
-  std::list<Action *> actions = std::list<Action *>();
+void Adventure::getNPCsActions() {
   for(Character * npc : getCharacters()) {
-    Action * action = npc->getAI()->getAction(this, npc);
-    if(action != nullptr) {
-      actions.push_back(action);
+    if(!npc->player_character && npc->getNeedToUpdateActions()) {
+      Action * action = npc->getAI()->getActions(this, npc);
+      if(action != nullptr) {
+        Action * to_remove = nullptr;
+        for(Action * a : actions) {
+          if(a->getUser() == npc) {
+            to_remove = a;
+            break;
+          }
+        }
+        if(to_remove != nullptr) {
+          actions.remove(to_remove);
+          delete to_remove;
+        }
+        actions.push_back(action);
+        npc->setNeedToUpdateActions(false);
+      }
     }
   }
-  return actions;
 }
 
-void Adventure::executeActions(std::list<Action *> actions) {
+void Adventure::mergeActions(std::list<Action *> to_add) {
+  to_add.sort();
+  actions.merge(to_add);
+}
+
+void Adventure::executeActions() {
+  std::list<Action *> next_actions;
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    if(action != nullptr && action->getUser() != nullptr) {
-      action->execute(this);
+    Action * next;
+    if(action != nullptr && action->getTick() <= 0 && action->getUser() != nullptr) {
+      next = action->execute(this);
+      if(next != nullptr) {
+        next_actions.push_back(next);
+      }
+      else {
+        action->getUser()->setNeedToUpdateActions(true);
+      }
+      delete action;
+      action = nullptr;
     }
-    delete action;
-    action = nullptr;
+    else {
+      action->computeTick(1);
+      next_actions.push_back(action);
+    }
   }
+  actions.clear();
+  actions = next_actions;
+  actions.sort();
 }
-
-#include <iostream>
 
 void Adventure::actAllProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();

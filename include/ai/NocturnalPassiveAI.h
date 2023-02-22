@@ -8,7 +8,7 @@
 class NocturnalPassiveAI : public AI {
   using AI::AI;
   public:
-    Action * getAction(Adventure * adventure, Character * c);
+    Action * getActions(Adventure * adventure, Character * c);
 };
 
 #endif // _NOCTURNAL_PASSIVE_AI_H_

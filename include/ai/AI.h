@@ -11,7 +11,7 @@ class AI {
   public:
     AI(){}
     AI(int x, int y):origin_x(x),origin_y(y){}
-    virtual Action * getAction(Adventure * adventure, Character * c) = 0;
+    virtual Action * getActions(Adventure * adventure, Character * c) = 0;
     static float getFollowOrientation(Adventure * adventure, Character * self, int x, int y);
     static float getFleeOrientation(Adventure * adventure, Character * self, int x, int y);
     std::vector<MapUtil::Pair> getFollowPath(Adventure * adventure, Character * self, int x, int y);

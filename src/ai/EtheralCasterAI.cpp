@@ -8,17 +8,17 @@
 
 #include "ai/EtheralCasterAI.h"
 
-Action * EtheralCasterAI::getAction(Adventure * adventure, Character * c) {
+Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
   if(casted) {
     adventure->getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
-    return new Action(MOVE, c, getFollowOrientation(adventure, c, origin_x, origin_y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(MOVE, nullptr, c, getFollowOrientation(adventure, c, origin_x, origin_y), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   if(++current_round < target_round) {
-    return new Action(REST, c, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new Action(REST, nullptr, c, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   } else {
     casted = true;
-    return new Action(USE_SKILL, c, 0.F, c->getSkills().front(), nullptr, origin_x, origin_y, nullptr, "", 1, 1, 1);
+    return new Action(USE_SKILL, nullptr, c, 0.F, c->getSkills().front(), nullptr, origin_x, origin_y, nullptr, "", 1, 1, 1);
   }
 }

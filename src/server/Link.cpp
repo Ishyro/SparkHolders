@@ -11,8 +11,6 @@
 
 #include "server/Link.h"
 
-#include <iostream>
-
 void Link::playerChoices() {
   try {
     Server::sendWaysIncompabilities(s, adventure);
@@ -47,7 +45,7 @@ Action * Link::receiveAction() {
       markClosed();
     }
   }
-  return new Action(REST, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  return new Action(REST, nullptr, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }
 
 bool Link::isClosed() { return closed; }

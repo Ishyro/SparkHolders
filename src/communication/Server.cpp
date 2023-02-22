@@ -29,18 +29,18 @@ namespace Server {
       case MOVE: {
         float orientation = String::extract_float(ss);
         delete ss;
-        return new Action(MOVE, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(MOVE, nullptr, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       }
       case REST:
         delete ss;
-        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(REST, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case SHOOT: {
         float orientation = String::extract_float(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
         delete ss;
-        return new Action(SHOOT, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
+        return new Action(SHOOT, nullptr, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case FORCE_STRIKE: {
         float orientation = String::extract_float(ss);
@@ -48,21 +48,21 @@ namespace Server {
         int target_x = String::extract_int(ss);
         int target_y = String::extract_int(ss);
         delete ss;
-        return new Action(FORCE_STRIKE, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
+        return new Action(FORCE_STRIKE, nullptr, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
       }
       case RELOAD: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(RELOAD, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(RELOAD, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case SWAP_GEAR: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(SWAP_GEAR, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(SWAP_GEAR, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case GRAB:
         delete ss;
-        return new Action(GRAB, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(GRAB, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
       case USE_SKILL: {
         std::string object = String::extract(ss);
         float orientation = String::extract_float(ss);
@@ -74,7 +74,7 @@ namespace Server {
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
         delete ss;
-        Action * action = new Action(USE_SKILL, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
+        Action * action = new Action(USE_SKILL, nullptr, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
         if(!skill->is_instant) {
           return action;
         }
@@ -93,24 +93,24 @@ namespace Server {
       case USE_ITEM: {
         std::string object = String::extract(ss);
         delete ss;
-        return new Action(USE_ITEM, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(USE_ITEM, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
       }
       case TALKING: {
         std::string object = String::extract(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         delete ss;
-        return new Action(TALKING, user, 0.F, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(TALKING, nullptr, user, 0.F, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
       }
       case ECONOMICS: {
         std::string object = String::extract(ss);
         int object_type = String::extract_int(ss);
         const Character * target = adventure->getCharacter(String::extract_int(ss));
         delete ss;
-        return new Action(ECONOMICS, user, object_type, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
+        return new Action(ECONOMICS, nullptr, user, object_type, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
       }
       default:
         delete ss;
-        return new Action(REST, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        return new Action(REST, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
 

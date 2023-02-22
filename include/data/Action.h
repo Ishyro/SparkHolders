@@ -26,6 +26,7 @@ class Action {
     const int overcharge_range;
     Action(
       const int type,
+      const Action * previous,
       Character * user,
       const float orientation,
       const Skill * skill,
@@ -39,6 +40,8 @@ class Action {
       const int overcharge_range
     ):
       type(type),
+      previous((Action *) previous),
+      next(nullptr),
       user(user),
       orientation(orientation),
       skill(skill),
@@ -53,32 +56,55 @@ class Action {
     {
       switch(type) {
         case MOVE:
+          time = 1;
+          break;
         case SHOOT:
+          time = 1;
+          break;
         case FORCE_STRIKE:
-          priority = user->getPriorityModifier();
+          time = 15;
           break;
         case USE_SKILL:
-          priority = user->getPriorityModifier() * skill->priority;
+          time = 1;
           break;
         case REST:
+          time = 1;
+          break;
         case RELOAD:
+          time = 2;
+          break;
         case SWAP_GEAR:
+          time = 5;
+          break;
         case GRAB:
+          time = 10;
+          break;
         case USE_ITEM:
+          time = 5;
+          break;
         case ECONOMICS:
-          priority = 0.F;
+        case TALKING:
+          time = 0;
           break;
         default:
-          priority = 0.F;
+          time = 0;
       }
     }
-    void execute(Adventure * adventure);
+    Action * execute(Adventure * adventure);
     Character * getUser();
+    int getTick();
+    void setPrevious(Action * action);
+    void setNext(Action * action);
+    void computeTick(int tick);
     // highest priority means first action in the list (so first action resolved)
-    bool operator < (const Action& a) const { return priority > a.priority; }
+    // only matters when both actions resolve at the same tick.
+    bool operator < (const Action& a) const { return user->getPriorityModifier() > a.user->getPriorityModifier(); }
   private:
+    int tick;
+    int time;
     Character * user;
-    float priority;
+    Action * previous;
+    Action * next;
 };
 
 #endif // _ACTION_H_
