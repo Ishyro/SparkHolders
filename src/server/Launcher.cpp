@@ -134,7 +134,7 @@ int main(int argc, char ** argv) {
     adventure->incrTick();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
-    // std::cout << "Round duration: " << elapsed_seconds.count() << "s" << std::endl;
+    std::cout << "Tick duration: " << elapsed_seconds.count() << "s" << std::endl;
   }
   delete adventure;
   ss.close();

@@ -335,10 +335,10 @@ float Character::getActionTimeModifier() {
   return result;
 }
 
-float Character::getStrikeTimeModifier() {
+float Character::getHandActionTimeModifier() {
   float result = race->strike_time_modifier;
   for(Effect * e : effects) {
-    if(e->type == STRIKE_TIME_MODIFIER) {
+    if(e->type == HAND_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
   }
@@ -366,15 +366,16 @@ float Character::getMovementTimeModifier() {
 }
 
 int Character::getStrikeTime() {
-  return (int) std::ceil( (float) gear->getWeapon()->strike_time * getStrikeTimeModifier());
+  return (int) std::ceil( (float) gear->getWeapon()->strike_time / getHandActionTimeModifier());
 }
 
 int Character::getReloadTime() {
-  return (int) std::ceil( (float) gear->getWeapon()->reload_time * getStrikeTimeModifier());
+  return (int) std::ceil( (float) gear->getWeapon()->reload_time / getHandActionTimeModifier());
 }
 
 int Character::getSwapTime(std::string object) {
-  return (int) std::ceil( (float) gear->getWeapon()->swap_time * getStrikeTimeModifier());
+
+  return (int) std::ceil( (float) gear->getWeapon()->swap_time / getHandActionTimeModifier());
 }
 
 int Character::getLight() {

@@ -579,7 +579,7 @@ float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
   else {
     ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, x, y, dx, dy);
   }
-  return ap_cost * c->getMovementTimeModifier();
+  return ap_cost / c->getMovementTimeModifier();
 }
 
 float Map::move(Character * c, int destY, int destX, float destDY, float destDX) {
@@ -652,10 +652,10 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     lim_dy = pair.dy;
   }
   if(c->isFlying()) {
-    next_dx = std::cos(orientation * 3.141593F / 180.F) * (ap / (10.F * c->getMovementTimeModifier())) + (float) c->getX() + c->getDX();
+    next_dx = std::cos(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + (float) c->getX() + c->getDX();
     next_x = floor(next_dx);
     next_dx -= (float) next_x;
-    next_dy = std::sin(orientation * 3.141593F / 180.F) * (ap / (10.F * c->getMovementTimeModifier())) + (float) c->getY() + c->getDY();
+    next_dy = std::sin(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + (float) c->getY() + c->getDY();
     next_y = floor(next_dy);
     next_dy -= (float) next_y;
     if(next_x == lim_x + x_direction || next_y == lim_y + y_direction) {
@@ -670,7 +670,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     if(orientation == 0.F || orientation == 180.F) {
       if(x_direction == -1) {
         next_dx = 0.F;
-        ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         if(ap_cost <= ap) {
           current_dx = next_dx;
         }
@@ -684,21 +684,21 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         if(next_x == lim_x + x_direction) {
           next_x = lim_x;
           next_dx = lim_dx;
-          ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
           break;
         }
         if(x_direction == -1) {
-          ap_cost += getTile(current_y, next_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, next_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         }
         else {
-          ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         }
       }
       if(ap_cost > ap) {
         next_dx = (float) current_x + current_dx + (float) x_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
         next_x = floor(next_dx);
         next_dx -= (float) next_x;
-        current_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
       }
       else {
         current_cost = ap_cost;
@@ -707,7 +707,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     else if(orientation == 90.F || orientation == 270.F) {
       if(y_direction == -1) {
         next_dy = 0.F;
-        ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         if(ap_cost <= ap) {
           current_dy = next_dy;
         }
@@ -721,21 +721,21 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         if(next_y == lim_y + y_direction) {
           next_y = lim_y;
           next_dy = lim_dy;
-          ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
           break;
         }
         if(y_direction == -1) {
-          ap_cost += getTile(next_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(next_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         }
         else {
-          ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
         }
       }
       if(ap_cost > ap) {
         next_dy = (float) current_y + current_dy + (float) y_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
         next_y = floor(next_dy);
         next_dy -= (float) next_y;
-        current_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
       }
       else {
         current_cost = ap_cost;
@@ -765,7 +765,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         next_dy = y_y - (float) current_y;
         range = range_y;
       }
-      ap_cost = getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * range;
+      ap_cost = getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * range;
       while(ap_cost <= ap) {
         current_cost = ap_cost;
         current_x = next_x;
@@ -797,10 +797,10 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           next_dx = lim_dx;
           next_y = lim_y;
           next_dy = lim_dy;
-          ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
           break;
         }
-        ap_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * range;
+        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * range;
       }
       if(ap_cost > ap) {
         next_dx = (float) current_x + current_dx + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * cos;
@@ -809,7 +809,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         next_dy = (float) current_y + current_dy + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * sin;
         next_y = floor(next_dy);
         next_dy -= (float) next_y;
-        current_cost += getTile(current_y, current_x)->ap_cost * c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
       }
       else {
         current_cost = ap_cost;

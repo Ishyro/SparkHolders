@@ -58,6 +58,24 @@ class Action {
       if(previous == nullptr) {
         computeTime(adventure);
       }
+      if(type == STRIKE) {
+        next = new Action(
+          RESPITE,
+          adventure,
+          this,
+          user,
+          0.F,
+          nullptr,
+          nullptr,
+          0,
+          0,
+          nullptr,
+          "",
+          1,
+          1,
+          1
+        );
+      }
     }
     Action * execute(Adventure * adventure);
     Character * getUser();

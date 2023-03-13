@@ -18,8 +18,11 @@
 #include <iostream>
 
 Action * Action::execute(Adventure * adventure) {
-  if(next != nullptr && next->time == 0) {
-    next->execute(adventure);
+  if(next != nullptr) {
+    next->computeTime(adventure);
+    if(next->time == 0) {
+      next->execute(adventure);
+    }
   }
   switch(type) {
     case MOVE: {
@@ -185,7 +188,7 @@ void Action::computeTime(Adventure * adventure) {
       time = 10;
       break;
     case USE_ITEM:
-      time = user->getStrikeTimeModifier() * ( (Item *) adventure->getDatabase()->getItem(object))->use_time;
+      time = user->getHandActionTimeModifier() * ( (Item *) adventure->getDatabase()->getItem(object))->use_time;
       break;
     case ECONOMICS:
     case TALKING:

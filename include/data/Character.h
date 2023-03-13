@@ -348,7 +348,7 @@ class Character {
 
     Gear * getGear();
     float getActionTimeModifier();
-    float getStrikeTimeModifier();
+    float getHandActionTimeModifier();
     float getSkillTimeModifier();
     float getMovementTimeModifier();
     int getStrikeTime();
