@@ -70,7 +70,7 @@ namespace Client {
     delete ss_ways;
   }
 
-  MapDisplay * receiveMap(Socket s, Character ** player, long * id) {
+  MapDisplay * receiveMap(Socket s, Character ** player, long * id, bool * need_action) {
     try {
       std::string msg = s.read();
       std::stringstream * ss = new std::stringstream(msg);
@@ -80,10 +80,9 @@ namespace Client {
         (*player)->deepDelete();
         delete *player;
         *player = Character::full_from_string(String::extract(ss));
-        result = Map::from_string(String::extract(ss));
-      } else {
-        result = Map::from_string(msg);
       }
+      result = Map::from_string(String::extract(ss));
+      *need_action = String::extract_bool(ss);
       delete ss;
       return result;
     } catch (const CloseException &e) {
@@ -106,7 +105,7 @@ namespace Client {
         String::insert_int(ss, target_x);
         String::insert_int(ss, target_y);
         break;
-      case FORCE_STRIKE:
+      case STRIKE:
         String::insert_float(ss, orientation);
         String::insert_int(ss, target_id);
         String::insert_int(ss, target_x);

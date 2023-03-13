@@ -7,5 +7,5 @@ overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = SQUARE
 range = 5
-priority = 10.
+time = 1
 skills = TXT_DASH%

@@ -13,6 +13,8 @@
 
 #include "data/Adventure.h"
 
+#include "utils/String.h"
+
 Save * Adventure::save() {
   return new Save(this);
 }
@@ -83,7 +85,15 @@ void Adventure::event() {
 }
 
 long Adventure::getRound() { return round; }
-void Adventure::incrRound() { round++; }
+int Adventure::getTick() { return tick; }
+void Adventure::incrTick() {
+  if( (++tick) == Settings::getMinuteDuration()) {
+    tick = 0;
+    round++;
+    incrDayLight();
+  }
+}
+
 World * Adventure::getWorld() { return world; }
 int Adventure::getLight() { return light; }
 std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
@@ -155,18 +165,29 @@ std::string Adventure::getTime() {
   int minutes = Settings::getHourDuration() * ((float) (round  % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
   int charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
   int charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  std::string result = std::to_string(year) + std::string("|") + std::to_string(month) + std::string("|")
-  + std::to_string(week) + std::string("|") + std::to_string(day) + std::string("|");
-  std::string hour_str = std::to_string(hour) + std::string("|");
-  while(hour_str.length() - charHoursSize - 1 > 0) {
+  int charSecondsSize = std::to_string(Settings::getMinuteDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  std::string hour_str = std::to_string(hour);
+  while(hour_str.length() - charHoursSize > 0) {
     hour_str = std::to_string(0) + hour_str;
   }
-  result += hour_str;
-  std::string minutes_str = std::to_string(minutes) + std::string("|");
-  while(minutes_str.length() - charMinutesSize - 1 > 0) {
+  std::string minutes_str = std::to_string(minutes);
+  while(minutes_str.length() - charMinutesSize > 0) {
     minutes_str = std::to_string(0) + minutes_str;
   }
-  result += minutes_str;
+  std::string seconds_str = std::to_string(tick);
+  while(seconds_str.length() - charSecondsSize > 0) {
+    seconds_str = std::to_string(0) + seconds_str;
+  }
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, year);
+  String::insert_int(ss, month);
+  String::insert_int(ss, week);
+  String::insert_int(ss, day);
+  String::insert(ss, hour_str);
+  String::insert(ss, minutes_str);
+  String::insert(ss, seconds_str);
+  std::string result = ss->str();
+  delete ss;
   return result;
 }
 
@@ -202,14 +223,10 @@ void Adventure::executeActions() {
   std::list<Action *> next_actions;
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    Action * next;
-    if(action != nullptr && action->getTick() <= 0 && action->getUser() != nullptr) {
-      next = action->execute(this);
+    if(action != nullptr && action->getTick() <= 1 && action->getUser() != nullptr) {
+      Action * next = action->execute(this);
       if(next != nullptr) {
         next_actions.push_back(next);
-      }
-      else {
-        action->getUser()->setNeedToUpdateActions(true);
       }
       delete action;
       action = nullptr;
@@ -278,15 +295,17 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * ra
   return player;
 }
 
-void Adventure::applyRoundIteration() {
+void Adventure::applyIteration() {
   for(Character * c : getCharacters()) {
     c->gainLevel();
     c->applyEffects();
     // might have been killed by an effect
     if(c != nullptr) {
-      c->applyTiredness();
-      c->applyHunger();
       c->applySoulBurn();
+      if(tick == 0) {
+        c->applyTiredness();
+        c->applyHunger();
+      }
       if(!c->isAlive()) {
         getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
       }

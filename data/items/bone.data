@@ -5,4 +5,6 @@ type = UNEQUIPABLE
 droppable = true
 weight = 0.5
 gold_value = 15
+swap_time = 0
+use_time = 0
 effects =

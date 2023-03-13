@@ -5,4 +5,6 @@ type = UNEQUIPABLE
 droppable = true
 weight = 0.5
 gold_value = 10
+swap_time = 0
+use_time = 10
 effects = TXT_SATIETY_10%

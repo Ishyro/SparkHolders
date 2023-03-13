@@ -41,7 +41,7 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
 
 MapDisplay * Link::receiveMap() {
   try {
-    MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId);
+    MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId, &need_to_update_actions);
     for(CharacterDisplay * display : map->characters) {
       if(serverCharacterId == display->id) {
         player->move(display->y + map->offsetY, display->x + map->offsetX, display->dy, display->dx, display->orientation, map->id);
@@ -72,3 +72,5 @@ std::vector<Way *> Link::getStartingWays() { return *ways; }
 std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return *waysIncompatibilities; }
 
 Character * Link::getPlayer() { return player; }
+
+bool Link::getNeedToUpdateActions() { return need_to_update_actions; }

@@ -24,7 +24,7 @@ void Link::playerChoices() {
 }
 
 void Link::sendMap() {
-  if(!isClosed() && ! lastStateSend) {
+  if(!isClosed()) {
     Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
     try {
       Server::sendMap(s, map, player, adventure);
@@ -32,20 +32,18 @@ void Link::sendMap() {
       markClosed();
     }
     delete map;
-    lastStateSend = true;
   }
 }
 
 Action * Link::receiveAction() {
-  if(!isClosed() && lastStateSend) {
+  if(!isClosed()) {
     try {
-      lastStateSend = false;
       return Server::receiveAction(s, player, adventure);
     } catch (const CloseException &e) {
       markClosed();
     }
   }
-  return new Action(REST, nullptr, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  return new Action(REST, adventure, nullptr, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
 }
 
 bool Link::isClosed() { return closed; }

@@ -32,6 +32,10 @@ class Way {
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
+    const float action_time_modifier;
+    const float strike_time_modifier;
+    const float skill_time_modifier;
+    const float movement_time_modifier;
     Way(
       std::string name,
       int type,
@@ -54,6 +58,10 @@ class Way {
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      float action_time_modifier,
+      float strike_time_modifier,
+      float skill_time_modifier,
+      float movement_time_modifier,
       std::list<Item *> loot,
       std::list<Effect *> effects,
       std::list<Skill *> skills
@@ -79,6 +87,10 @@ class Way {
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      action_time_modifier(action_time_modifier),
+      strike_time_modifier(strike_time_modifier),
+      skill_time_modifier(skill_time_modifier),
+      movement_time_modifier(movement_time_modifier),
       loot(std::list<Item *>()),
       effects(effects),
       skills(skills)
@@ -87,6 +99,56 @@ class Way {
         this->loot.push_back(new Item(item));
       }
     }
+    Way(
+      std::string name,
+      int type,
+      int baseHp,
+      int baseMana,
+      int baseArmor,
+      int baseDamage,
+      int baseSoulBurn,
+      int baseFlow,
+      int baseVisionRange,
+      int baseVisionPower,
+      int baseDetectionRange,
+      int hpIncr,
+      int manaIncr,
+      int armorIncr,
+      int damageIncr,
+      int soulBurnIncr,
+      int flowIncr,
+      std::list<Effect *> effects,
+      std::list<Skill *> skills
+    ):
+      name(name),
+      type(type),
+      baseHp(baseHp),
+      baseMana(baseMana),
+      baseArmor(baseArmor),
+      baseDamage(baseDamage),
+      baseSoulBurn(baseSoulBurn),
+      baseFlow(baseFlow),
+      baseVisionRange(baseVisionRange),
+      baseVisionPower(baseVisionPower),
+      baseDetectionRange(baseDetectionRange),
+      hpIncr(hpIncr),
+      manaIncr(manaIncr),
+      armorIncr(armorIncr),
+      damageIncr(damageIncr),
+      soulBurnIncr(soulBurnIncr),
+      flowIncr(flowIncr),
+      size(0.F),
+      need_to_eat(true),
+      can_eat_food(true),
+      need_to_sleep(true),
+      action_time_modifier(0.F),
+      strike_time_modifier(0.F),
+      skill_time_modifier(0.F),
+      movement_time_modifier(0.F),
+      loot(std::list<Item *>()),
+      effects(effects),
+      skills(skills)
+    {}
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
@@ -95,9 +157,10 @@ class Way {
     bool operator == (const Way& w) const { return name == w.name; }
     bool operator != (const Way& w) const { return !operator==(w); }
   private:
-    std::list<Item *> loot;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
+    // race only
+    std::list<Item *> loot;
 };
 
 #endif // _WAY_H_

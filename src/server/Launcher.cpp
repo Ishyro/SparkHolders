@@ -106,20 +106,22 @@ int main(int argc, char ** argv) {
   std::thread thread = std::thread(relinkCommunication, &links, ss, adventure, playersNumber);
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
-    adventure->applyRoundIteration();
+    adventure->applyIteration();
     for(int i = 0; i < playersNumber; i++) {
       links[i]->sendMap();
     }
     SpeechManager::clear();
-    std::list<Action *> actionsPlayers = std::list<Action *>();
     adventure->getNPCsActions();
     // receive playerActions
+    std::list<Action *> actionsPlayers = std::list<Action *>();
     for(int i = 0; i < playersNumber; i++) {
-      if(!links[i]->getPlayer()->isInWeakState()) {
+      if(links[i]->getPlayer()->getNeedToUpdateActions() && !links[i]->getPlayer()->isInWeakState()) {
         actionsPlayers.push_back(links[i]->receiveAction());
+        links[i]->getPlayer()->setNeedToUpdateActions(false);
       }
     }
     adventure->mergeActions(actionsPlayers);
+    actionsPlayers.clear();
     adventure->executeActions();
     adventure->actAllProjectiles();
     noPlayers = true;
@@ -129,8 +131,7 @@ int main(int argc, char ** argv) {
         break;
       }
     }
-    adventure->incrRound();
-    adventure->incrDayLight();
+    adventure->incrTick();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     // std::cout << "Round duration: " << elapsed_seconds.count() << "s" << std::endl;

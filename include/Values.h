@@ -78,6 +78,10 @@ class SpeechManager;
 #define INVISIBLE 24
 #define ETHERAL 25
 #define INVULNERABLE 26
+#define ACTION_TIME_MODIFIER 27
+#define STRIKE_TIME_MODIFIER 28
+#define SKILL_TIME_MODIFIER 29
+#define MOVEMENT_TIME_MODIFIER 30
 
 // weapon_type
 
@@ -241,14 +245,16 @@ class SpeechManager;
 #define MOVE 1
 #define REST 2
 #define SHOOT 3
-#define FORCE_STRIKE 4
-#define RELOAD 5
-#define SWAP_GEAR 6
-#define GRAB 7
-#define USE_SKILL 8
-#define USE_ITEM 9
-#define TALKING 10
-#define ECONOMICS 11
+#define STRIKE 4
+#define HEAVY_STRIKE 5
+#define RESPITE 6
+#define RELOAD 7
+#define SWAP_GEAR 8
+#define GRAB 9
+#define USE_SKILL 10
+#define USE_ITEM 11
+#define TALKING 12
+#define ECONOMICS 13
 
 // teams relations
 

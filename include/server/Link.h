@@ -7,7 +7,6 @@ class Link {
   public:
     Link(Socket s, Adventure * adventure):s(s),adventure(adventure) {
       closed = false;
-      lastStateSend = false;
       playerChoices();
     }
     void playerChoices();
@@ -22,7 +21,6 @@ class Link {
     Character * player;
     Socket s;
     bool closed;
-    bool lastStateSend;
 };
 
 #endif // _LINK_SERVER_H_

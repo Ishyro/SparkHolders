@@ -106,6 +106,9 @@ std::string Weapon::to_string() {
   String::insert_bool(ss, use_ammo);
   String::insert_int(ss, ammo_type);
   String::insert_int(ss, capacity);
+  String::insert_int(ss, strike_time);
+  String::insert_int(ss, reload_time);
+  String::insert_int(ss, swap_time);
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -136,6 +139,9 @@ Weapon * Weapon::from_string(std::string to_read) {
   bool use_ammo = String::extract_bool(ss);
   int ammo_type = String::extract_int(ss);
   int capacity = String::extract_int(ss);
+  int strike_time = String::extract_int(ss);
+  int reload_time = String::extract_int(ss);
+  int swap_time = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -159,6 +165,9 @@ Weapon * Weapon::from_string(std::string to_read) {
     use_ammo,
     ammo_type,
     capacity,
+    strike_time,
+    reload_time,
+    swap_time,
     *effects,
     damages,
     ammo

@@ -31,6 +31,7 @@
 #include "clients/terminal/Display.h"
 
 #include "utils/MapUtil.h"
+#include "utils/String.h"
 
 namespace Display {
 
@@ -166,14 +167,15 @@ namespace Display {
     to_print = std::string("Y: ") + std::to_string(player->getY());
     mvwprintw(screen, lines - 2, 1, to_print.c_str());
     // time
-    std::string msg = display->time;
-    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip years
-    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip months
-    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip weeks
-    msg = msg.substr(msg.find('|') + 1, msg.length()); // skip days
-    to_print = msg.substr(0, msg.find('|')) + ":"; // hours
-    msg = msg.substr(msg.find('|') + 1, msg.length());
-    to_print += msg.substr(0, msg.find('|')); // minutes
+    std::stringstream * ss = new std::stringstream(display->time);
+    std::string skip = String::extract(ss); // skip years
+    skip = String::extract(ss); // skip months
+    skip = String::extract(ss); // skip weeks
+    skip = String::extract(ss); // skip days
+    to_print = String::extract(ss) + ":"; // hours
+    to_print += String::extract(ss) + ":"; // minutes
+    to_print += String::extract(ss); // seconds
+    delete ss;
     mvwprintw(screen, lines - 2, cols - 2 - to_print.length(), to_print.c_str());
 
     wrefresh(screen);
@@ -252,7 +254,7 @@ namespace Display {
     mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range * overcharge_range)).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge_power)).c_str());
     mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range))).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("Priority") + std::string(": ") + std::to_string(skill->priority)).c_str());
+    mvwprintw(screen, 7, 1, (t->getStandardName("Time") + std::string(": ") + std::to_string(skill->time)).c_str());
     int i = 8;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
@@ -1236,151 +1238,153 @@ namespace Display {
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t) {
     while(true) {
       MapDisplay * display = link->receiveMap();
-      displayMap(display, link->getPlayer(), mapScreen, t);
-      displayStats(link->getPlayer(), statsScreen, t);
-      displayCommands(targetScreen, t);
-      wrefresh(targetScreen);
-      bool done = false;
-      int type;
-      int object_type = 0;
-      float orientation = link->getPlayer()->getOrientation();
-      Skill * skill = nullptr;
-      int target_id = 0;
-      int target_x = link->getPlayer()->getX() - display->offsetX;
-      int target_y = link->getPlayer()->getY() - display->offsetY;
-      int overcharge_power = 1;
-      int overcharge_duration = 1;
-      int overcharge_range = 1;
-      std::string object = "";
-      while(!done) {
-        flushinp();
-        int keyPressed = getch();
-        switch(keyPressed) {
-          case '5':
-            type = REST;
-            done = true;
-            break;
-          case '1':
-            type = MOVE;
-            orientation = 225.F;
-            done = true;
-            break;
-          case '2':
-          case KEY_DOWN:
-            type = MOVE;
-            orientation = 270.F;
-            done = true;
-            break;
-          case '3':
-            type = MOVE;
-            orientation = 315.F;
-            done = true;
-            break;
-          case '4':
-          case KEY_LEFT:
-            type = MOVE;
-            orientation = 180.F;
-            done = true;
-            break;
-          case '6':
-          case KEY_RIGHT:
-            type = MOVE;
-            orientation = 0.F;
-            done = true;
-            break;
-          case '7':
-            type = MOVE;
-            orientation = 135.F;
-            done = true;
-            break;
-          case '8':
-          case KEY_UP:
-            type = MOVE;
-            orientation = 90.F;
-            done = true;
-            break;
-          case '9':
-            type = MOVE;
-            orientation = 45.F;
-            done = true;
-            break;
-          case ' ':
-            type = GRAB;
-            done = true;
-            break;
-          case 'x':
-          case 'X':
-            type = USE_SKILL;
-            skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
-            if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
+      if(link->getNeedToUpdateActions()) {
+        displayMap(display, link->getPlayer(), mapScreen, t);
+        displayStats(link->getPlayer(), statsScreen, t);
+        displayCommands(targetScreen, t);
+        wrefresh(targetScreen);
+        bool done = false;
+        int type;
+        int object_type = 0;
+        float orientation = link->getPlayer()->getOrientation();
+        Skill * skill = nullptr;
+        int target_id = 0;
+        int target_x = link->getPlayer()->getX() - display->offsetX;
+        int target_y = link->getPlayer()->getY() - display->offsetY;
+        int overcharge_power = 1;
+        int overcharge_duration = 1;
+        int overcharge_range = 1;
+        std::string object = "";
+        while(!done) {
+          flushinp();
+          int keyPressed = getch();
+          switch(keyPressed) {
+            case '5':
+              type = REST;
               done = true;
-              object = skill->name;
-            }
-            break;
-          case 'c':
-          case 'C':
-            type = REST;
-            if(link->getPlayer()->getGear()->getWeapon()->melee) {
-              type = FORCE_STRIKE;
-            } else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
-              type = SHOOT;
-            }
-            if(type == SHOOT || type == FORCE_STRIKE) {
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
-                if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-                  link->getPlayer()->getGear()->getWeapon()->useAmmo();
+              break;
+            case '1':
+              type = MOVE;
+              orientation = 225.F;
+              done = true;
+              break;
+            case '2':
+            case KEY_DOWN:
+              type = MOVE;
+              orientation = 270.F;
+              done = true;
+              break;
+            case '3':
+              type = MOVE;
+              orientation = 315.F;
+              done = true;
+              break;
+            case '4':
+            case KEY_LEFT:
+              type = MOVE;
+              orientation = 180.F;
+              done = true;
+              break;
+            case '6':
+            case KEY_RIGHT:
+              type = MOVE;
+              orientation = 0.F;
+              done = true;
+              break;
+            case '7':
+              type = MOVE;
+              orientation = 135.F;
+              done = true;
+              break;
+            case '8':
+            case KEY_UP:
+              type = MOVE;
+              orientation = 90.F;
+              done = true;
+              break;
+            case '9':
+              type = MOVE;
+              orientation = 45.F;
+              done = true;
+              break;
+            case ' ':
+              type = GRAB;
+              done = true;
+              break;
+            case 'x':
+            case 'X':
+              type = USE_SKILL;
+              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
+              if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
+                done = true;
+                object = skill->name;
+              }
+              break;
+            case 'c':
+            case 'C':
+              type = REST;
+              if(link->getPlayer()->getGear()->getWeapon()->melee) {
+                type = STRIKE;
+              } else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+                type = SHOOT;
+              }
+              if(type == SHOOT || type == STRIKE) {
+                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
+                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+                    link->getPlayer()->getGear()->getWeapon()->useAmmo();
+                  }
+                  done = true;
+                }
+              }
+              break;
+            case 'i':
+            case 'I':
+              type = SWAP_GEAR;
+              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, t);
+              if(object != "") {
+                switch(object_type) {
+                  case 2:
+                    for(Item * item : link->getPlayer()->getItems()) {
+                      if(item->name == object) {
+                        if(item->consumable) {
+                          type = USE_ITEM;
+                        }
+                      }
+                    }
+                    break;
+                  default:
+                    ;
                 }
                 done = true;
               }
-            }
-            break;
-          case 'i':
-          case 'I':
-            type = SWAP_GEAR;
-            object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, t);
-            if(object != "") {
-              switch(object_type) {
-                case 2:
-                  for(Item * item : link->getPlayer()->getItems()) {
-                    if(item->name == object) {
-                      if(item->consumable) {
-                        type = USE_ITEM;
-                      }
-                    }
-                  }
-                  break;
-                default:
-                  ;
+              break;
+            case 'r':
+            case 'R':
+              type = RELOAD;
+              if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
+                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
+                if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
+                || link->getPlayer()->getGear()->getWeapon()->getAmmo()->projectile->name != object
+                || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon()->capacity)) {
+                  done = true;
+                }
               }
-              done = true;
-            }
-            break;
-          case 'r':
-          case 'R':
-            type = RELOAD;
-            if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-              object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
-              if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
-              || link->getPlayer()->getGear()->getWeapon()->getAmmo()->projectile->name != object
-              || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon()->capacity)) {
-                done = true;
-              }
-            }
-            break;
-          default:
-            ;
+              break;
+            default:
+              ;
+          }
         }
-      }
-      link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
-      for(CharacterDisplay * character : display->characters) {
-        delete character;
-      }
-      for(ProjectileDisplay * projectile : display->projectiles) {
-        delete projectile;
-      }
-      for(std::vector<Tile *> tiles : display->tiles) {
-        for(Tile * tile : tiles) {
-          delete tile;
+        link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
+        for(CharacterDisplay * character : display->characters) {
+          delete character;
+        }
+        for(ProjectileDisplay * projectile : display->projectiles) {
+          delete projectile;
+        }
+        for(std::vector<Tile *> tiles : display->tiles) {
+          for(Tile * tile : tiles) {
+            delete tile;
+          }
         }
       }
       delete display;

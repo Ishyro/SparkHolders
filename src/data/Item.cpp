@@ -34,6 +34,8 @@ std::string Item::to_string() {
   String::insert_bool(ss, droppable);
   String::insert_float(ss, weight);
   String::insert_int(ss, gold_value);
+  String::insert_int(ss, swap_time);
+  String::insert_int(ss, use_time);
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -60,6 +62,8 @@ Item * Item::from_string(std::string to_read) {
   bool droppable = String::extract_bool(ss);
   float weight = String::extract_float(ss);
   int gold_value = String::extract_int(ss);
+  float swap_time = String::extract_int(ss);
+  float use_time = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -79,6 +83,8 @@ Item * Item::from_string(std::string to_read) {
     droppable,
     weight,
     gold_value,
+    swap_time,
+    use_time,
     *effects,
     damage_reductions
   );

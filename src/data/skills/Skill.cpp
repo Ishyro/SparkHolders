@@ -104,7 +104,7 @@ std::string Skill::to_string() {
   String::insert_int(ss, overcharge_duration_type);
   String::insert_int(ss, overcharge_range_type);
   String::insert_int(ss, range);
-  String::insert_float(ss, priority);
+  String::insert_int(ss, time);
   std::stringstream * ss_skills = new std::stringstream();
   for(PseudoSkill * skill : skills) {
     String::insert(ss_skills, skill->to_string());
@@ -127,7 +127,7 @@ Skill * Skill::from_string(std::string to_read) {
   int overcharge_duration_type = String::extract_int(ss);
   int overcharge_range_type = String::extract_int(ss);
   int range = String::extract_int(ss);
-  float priority = String::extract_float(ss);
+  int time = String::extract_int(ss);
   std::stringstream * ss_skills = new std::stringstream(String::extract(ss));
   std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
   while(ss_skills->rdbuf()->in_avail() != 0) {
@@ -145,7 +145,7 @@ Skill * Skill::from_string(std::string to_read) {
     overcharge_duration_type,
     overcharge_range_type,
     range,
-    priority,
+    time,
     *skills
   );
   delete skills;

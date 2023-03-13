@@ -10,6 +10,7 @@ namespace Settings {
   int monthDuration;
   int weekDuration;
   int hourDuration;
+  int minuteDuration;
   int startingYear;
   int startingMonth;
   int startingWeek;
@@ -32,6 +33,7 @@ namespace Settings {
   int getWeekDuration() { return weekDuration; } // in days
   int getDayDuration() { return 2 * getLightMaxPower(); } // in hours
   int getHourDuration() { return hourDuration; } // in minutes
+  int getMinuteDuration() { return minuteDuration; } // in seconds/tick
   int getYearDurationInRound() { return getYearDuration() * getDayDurationInRound(); } // in rounds
   int getMonthDurationInRound() { return getMonthDuration() * getDayDurationInRound(); } // in rounds
   int getWeekDurationInRound() { return getWeekDuration() * getDayDurationInRound(); } // in rounds
@@ -58,6 +60,7 @@ namespace Settings {
   void setMonthDuration(int data) { monthDuration = data; } // in days
   void setWeekDuration(int data) { weekDuration = data; } // in days
   void setHourDuration(int data) { hourDuration = data; } // in minutes
+  void setMinuteDuration(int data) { minuteDuration = data; } // in seconds/minutes
   void setStartingYear(int data) { startingYear = data; }
   void setStartingMonth(int data) { startingMonth = data; }
   void setStartingWeek(int data) { startingWeek = data; }

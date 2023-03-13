@@ -347,6 +347,13 @@ class Character {
     Speech * getTalkingSpeech();
 
     Gear * getGear();
+    float getActionTimeModifier();
+    float getStrikeTimeModifier();
+    float getSkillTimeModifier();
+    float getMovementTimeModifier();
+    int getStrikeTime();
+    int getReloadTime();
+    int getSwapTime(std::string object);
     int getLight();
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();

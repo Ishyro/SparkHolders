@@ -294,6 +294,9 @@ namespace FileOpener {
       else if(setting == "HOUR_DURATION") {
         Settings::setHourDuration(stoi(value_str));
       }
+      else if(setting == "MINUTE_DURATION") {
+        Settings::setMinuteDuration(stoi(value_str));
+      }
       else if(setting == "STARTING_YEAR") {
         Settings::setStartingYear(stoi(value_str));
       }
@@ -661,6 +664,8 @@ namespace FileOpener {
     is_droppable >> std::boolalpha >> droppable;
     float weight = stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
+    int swap_time = stoi(values.at("swap_time"));
+    int use_time = stoi(values.at("use_time"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
     std::string effect;
@@ -681,7 +686,19 @@ namespace FileOpener {
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
-    Item * item = new Item(name, equipable, consumable, type, droppable, weight, gold_value, *effects, damage_reductions);
+    Item * item = new Item(
+      name,
+      equipable,
+      consumable,
+      type,
+      droppable,
+      weight,
+      gold_value,
+      swap_time,
+      use_time,
+      *effects,
+      damage_reductions
+    );
     database->addItem(item);
     delete effects;
   }
@@ -781,6 +798,7 @@ namespace FileOpener {
     Settings::setMonthDuration(stoi(values.at("MONTH_DURATION")));
     Settings::setWeekDuration(stoi(values.at("WEEK_DURATION")));
     Settings::setHourDuration(stoi(values.at("HOUR_DURATION")));
+    Settings::setMinuteDuration(stoi(values.at("MINUTE_DURATION")));
     Settings::setStartingYear(stoi(values.at("STARTING_YEAR")));
     Settings::setStartingMonth(stoi(values.at("STARTING_MONTH")));
     Settings::setStartingWeek(stoi(values.at("STARTING_WEEK")));
@@ -811,14 +829,14 @@ namespace FileOpener {
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
     int range = stoi(values.at("range"));
-    float priority = stof(values.at("priority"));
+    int time = stoi(values.at("time"));
     std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
     std::istringstream is_skills(values.at("skills"));
     std::string pseudoSkill;
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, is_instant, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, priority, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, is_instant, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
     database->addSkill(skill);
     delete skills;
   }
@@ -961,22 +979,6 @@ namespace FileOpener {
     int damageIncr = stoi(values.at("damageIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
-    float size = stof(values.at("size"));
-    std::istringstream is_need_to_eat(values.at("need_to_eat"));
-    bool need_to_eat;
-    is_need_to_eat >> std::boolalpha >> need_to_eat;
-    std::istringstream is_can_eat_food(values.at("can_eat_food"));
-    bool can_eat_food;
-    is_can_eat_food >> std::boolalpha >> can_eat_food;
-    std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
-    bool need_to_sleep;
-    is_need_to_sleep >> std::boolalpha >> need_to_sleep;
-    std::list<Item *> * loots = new std::list<Item *>();
-    std::istringstream is_loot(values.at("loot"));
-    std::string loot;
-    while(getline(is_loot, loot, '%')) {
-      loots->push_back((Item *) database->getItem(loot));
-    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_1(values.at("effects"));
     std::string effect;
@@ -989,36 +991,88 @@ namespace FileOpener {
     while(getline(is_2, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    Way * way = new Way(
-      name,
-      type,
-      baseHp,
-      baseMana,
-      baseArmor,
-      baseDamage,
-      baseSoulBurn,
-      baseFlow,
-      baseVisionRange,
-      baseVisionPower,
-      baseDetectionRange,
-      hpIncr,
-      manaIncr,
-      armorIncr,
-      damageIncr,
-      soulBurnIncr,
-      flowIncr,
-      size,
-      need_to_eat,
-      can_eat_food,
-      need_to_sleep,
-      *loots,
-      *effects,
-      *skills
-    );
-    database->addWay(way);
-    delete loots;
-    delete effects;
-    delete skills;
+    if(type == RACE) {
+      float size = stof(values.at("size"));
+      std::istringstream is_need_to_eat(values.at("need_to_eat"));
+      bool need_to_eat;
+      is_need_to_eat >> std::boolalpha >> need_to_eat;
+      std::istringstream is_can_eat_food(values.at("can_eat_food"));
+      bool can_eat_food;
+      is_can_eat_food >> std::boolalpha >> can_eat_food;
+      std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
+      bool need_to_sleep;
+      is_need_to_sleep >> std::boolalpha >> need_to_sleep;
+      float action_time_modifier = stof(values.at("action_time_modifier"));
+      float strike_time_modifier = stof(values.at("strike_time_modifier"));
+      float skill_time_modifier = stof(values.at("skill_time_modifier"));
+      float movement_time_modifier = stof(values.at("movement_time_modifier"));
+      std::list<Item *> * loots = new std::list<Item *>();
+      std::istringstream is_loot(values.at("loot"));
+      std::string loot;
+      while(getline(is_loot, loot, '%')) {
+        loots->push_back((Item *) database->getItem(loot));
+      }
+      Way * way = new Way(
+        name,
+        type,
+        baseHp,
+        baseMana,
+        baseArmor,
+        baseDamage,
+        baseSoulBurn,
+        baseFlow,
+        baseVisionRange,
+        baseVisionPower,
+        baseDetectionRange,
+        hpIncr,
+        manaIncr,
+        armorIncr,
+        damageIncr,
+        soulBurnIncr,
+        flowIncr,
+        size,
+        need_to_eat,
+        can_eat_food,
+        need_to_sleep,
+        action_time_modifier,
+        strike_time_modifier,
+        skill_time_modifier,
+        movement_time_modifier,
+        *loots,
+        *effects,
+        *skills
+      );
+      database->addWay(way);
+      delete loots;
+      delete effects;
+      delete skills;
+    }
+    else {
+      Way * way = new Way(
+        name,
+        type,
+        baseHp,
+        baseMana,
+        baseArmor,
+        baseDamage,
+        baseSoulBurn,
+        baseFlow,
+        baseVisionRange,
+        baseVisionPower,
+        baseDetectionRange,
+        hpIncr,
+        manaIncr,
+        armorIncr,
+        damageIncr,
+        soulBurnIncr,
+        flowIncr,
+        *effects,
+        *skills
+      );
+      database->addWay(way);
+      delete effects;
+      delete skills;
+    }
   }
 
   void WeaponOpener(std::string fileName, Database * database) {
@@ -1039,6 +1093,9 @@ namespace FileOpener {
     is_use_ammo >> std::boolalpha >> use_ammo;
     int ammo_type = 0;
     int capacity = 0;
+    int strike_time = stoi(values.at("strike_time"));
+    int reload_time = stoi(values.at("reload_time"));
+    int swap_time = stoi(values.at("swap_time"));
     if(use_ammo) {
       ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
       capacity = database->getTargetFromMacro(values.at("capacity"));
@@ -1061,7 +1118,24 @@ namespace FileOpener {
     damages[MIND_DAMAGE] = stoi(values.at("NEUTRAL_DAMAGE"));
     damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Weapon * weapon = new Weapon(name, melee, range, type, droppable, weight, gold_value, use_ammo, ammo_type, capacity, *effects, damages, nullptr);
+    Weapon * weapon = new Weapon(
+      name,
+      melee,
+      range,
+      type,
+      droppable,
+      weight,
+      gold_value,
+      use_ammo,
+      ammo_type,
+      capacity,
+      strike_time,
+      reload_time,
+      swap_time,
+      *effects,
+      damages,
+      nullptr
+    );
     database->addWeapon(weapon);
     delete effects;
   }

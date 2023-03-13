@@ -19,12 +19,14 @@ class Link {
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
     Character * getPlayer();
+    bool getNeedToUpdateActions();
   private:
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
     std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities;
     Character * player;
     long serverCharacterId;
+    bool need_to_update_actions = true;
     Socket s;
 };
 

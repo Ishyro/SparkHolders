@@ -324,6 +324,59 @@ Speech * Character::getTalkingSpeech() { return talking_speech; }
 int Character::getCurrentMapId() { return current_map_id; }
 
 Gear * Character::getGear() { return gear; }
+
+float Character::getActionTimeModifier() {
+  float result = race->action_time_modifier;
+  for(Effect * e : effects) {
+    if(e->type == ACTION_TIME_MODIFIER) {
+      result += (float) e->power / 100.F;
+    }
+  }
+  return result;
+}
+
+float Character::getStrikeTimeModifier() {
+  float result = race->strike_time_modifier;
+  for(Effect * e : effects) {
+    if(e->type == STRIKE_TIME_MODIFIER) {
+      result += (float) e->power / 100.F;
+    }
+  }
+  return result * getActionTimeModifier();
+}
+
+float Character::getSkillTimeModifier() {
+  float result = race->skill_time_modifier;
+  for(Effect * e : effects) {
+    if(e->type == SKILL_TIME_MODIFIER) {
+      result += (float) e->power / 100.F;
+    }
+  }
+  return result * getActionTimeModifier();
+}
+
+float Character::getMovementTimeModifier() {
+  float result = race->movement_time_modifier;
+  for(Effect * e : effects) {
+    if(e->type == MOVEMENT_TIME_MODIFIER) {
+      result += (float) e->power / 100.F;
+    }
+  }
+  return result * getActionTimeModifier();
+}
+
+int Character::getStrikeTime() {
+  return (int) std::ceil( (float) gear->getWeapon()->strike_time * getStrikeTimeModifier());
+}
+
+int Character::getReloadTime() {
+  return (int) std::ceil( (float) gear->getWeapon()->reload_time * getStrikeTimeModifier());
+}
+
+int Character::getSwapTime(std::string object) {
+  return (int) std::ceil( (float) gear->getWeapon()->swap_time * getStrikeTimeModifier());
+}
+
 int Character::getLight() {
   int light = 0;
   for(Effect * effect : effects) {

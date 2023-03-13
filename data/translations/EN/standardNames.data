@@ -19,6 +19,7 @@ Power = Power%
 Power overcharge = Power overcharge%
 Duration overcharge = Duration overcharge%
 Area overcharge = Area overcharge%
+Time = Time%
 Effects = Effects%
 CLASS = CLASS%
 RACE = RACE%

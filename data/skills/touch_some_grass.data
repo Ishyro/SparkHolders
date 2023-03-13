@@ -7,5 +7,5 @@ overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = NO_OVERCHARGE
 range = 0
-priority = 0.
+time = 10
 skills = TXT_EAT_GRASS%TXT_NOURISH_WITH_GRASS%TXT_SUMMON_GRASS_FAIRY%

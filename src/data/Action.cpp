@@ -15,6 +15,8 @@
 
 #include "data/Action.h"
 
+#include <iostream>
+
 Action * Action::execute(Adventure * adventure) {
   if(next != nullptr && next->time == 0) {
     next->execute(adventure);
@@ -38,7 +40,27 @@ Action * Action::execute(Adventure * adventure) {
       }
       break;
     }
-    case FORCE_STRIKE: {
+    case STRIKE: {
+      user->setOrientation(orientation);
+      if(target != nullptr) {
+        user->attack( (Character *) target);
+        if(!( (Character *) target)->isAlive()) {
+          adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, (Character *) target);
+        }
+      } else {
+        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
+          if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
+            user->attack(c);
+            if(!c->isAlive()) {
+              adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, c);
+            }
+            break;
+          }
+        }
+      }
+      break;
+    }
+    case HEAVY_STRIKE: {
       user->setOrientation(orientation);
       if(target != nullptr) {
         user->attack( (Character *) target);
@@ -82,22 +104,6 @@ Action * Action::execute(Adventure * adventure) {
         }
       }
       break;
-      /*
-    case CHANGE_MAP:
-      if(user->getX() == link->x1 && user->getY() == link->y1 && user->getCurrentMapId() == link->map1->id) {
-        adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->y2, link->x2, 0.5F, 0.5F, user->getOrientation());
-        user->setCurrentMapId(link->map2->id);
-        adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
-      }
-      else if(user->getX() == link->x2 && user->getY() == link->y2 && user->getCurrentMapId() == link->map2->id) {
-        adventure->getWorld()->getMap(user->getCurrentMapId())->removeCharacter(user);
-        user->move(link->y1, link->x1, 0.5F, 0.5F, user->getOrientation());
-        user->setCurrentMapId(link->map1->id);
-        adventure->getWorld()->getMap(user->getCurrentMapId())->addCharacter(user);
-      }
-      break;
-      */
     case GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, (int) orientation);
       break;
@@ -129,7 +135,9 @@ Action * Action::execute(Adventure * adventure) {
     next->previous = nullptr;
     next->computeTick(0);
   }
-  // true if we need to ask the AI for new actions
+  else {
+    user->setNeedToUpdateActions(true);
+  }
   return next;
 }
 
@@ -139,13 +147,52 @@ void Action::setPrevious(Action * action) { previous = action; }
 void Action::setNext(Action * action) { next = action; }
 
 void Action::computeTick(int tick) {
-    if(previous == nullptr) {
-      this->tick = time - tick;
-    }
-    else {
-      this->tick = time + previous->getTick();
-    }
-    if(next != nullptr) {
-      next->computeTick(tick);
-    }
+  if(previous == nullptr) {
+    this->tick -= tick;
+  }
+}
+
+void Action::computeTime(Adventure * adventure) {
+  switch(type) {
+    case MOVE:
+      time = 1;
+      break;
+    case SHOOT:
+      time = user->getStrikeTime();
+      break;
+    case STRIKE:
+      time = user->getStrikeTime();
+      break;
+    case HEAVY_STRIKE:
+      time = user->getStrikeTime() * 5;
+      break;
+    case RESPITE:
+      time = user->getStrikeTime() * 2;
+      break;
+    case USE_SKILL:
+      time = user->getSkillTimeModifier() * skill->time;
+      break;
+    case REST:
+      time = 1;
+      break;
+    case RELOAD:
+      time = user->getReloadTime();
+      break;
+    case SWAP_GEAR:
+      time = user->getSwapTime(object);
+      break;
+    case GRAB:
+      time = 10;
+      break;
+    case USE_ITEM:
+      time = user->getStrikeTimeModifier() * ( (Item *) adventure->getDatabase()->getItem(object))->use_time;
+      break;
+    case ECONOMICS:
+    case TALKING:
+      time = 0;
+      break;
+    default:
+      time = 0;
+  }
+  tick = time;
 }

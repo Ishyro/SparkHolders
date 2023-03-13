@@ -66,7 +66,8 @@ class Adventure {
     std::list<Character *> getPreservedPlayers();
     void resurrect(Character * player, int map_id, int y, int x);
     long getRound();
-    void incrRound();
+    int getTick();
+    void incrTick();
     void event();
     World * getWorld();
     int getLight();
@@ -86,7 +87,7 @@ class Adventure {
     std::string getTime();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
-    void applyRoundIteration();
+    void applyIteration();
   private:
     World * world;
     Database * database;

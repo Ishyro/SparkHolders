@@ -9,6 +9,7 @@ namespace Settings {
   int getWeekDuration(); // in days
   int getDayDuration(); // in hours
   int getHourDuration(); // in minutes
+  int getMinuteDuration(); // in seconds/tick
   int getYearDurationInRound(); // in rounds
   int getMonthDurationInRound(); // in rounds
   int getWeekDurationInRound(); // in rounds
@@ -35,6 +36,7 @@ namespace Settings {
   void setMonthDuration(int data); // in days
   void setWeekDuration(int data); // in days
   void setHourDuration(int data); // in minutes
+  void setMinuteDuration(int data); // in seconds/ticks
   void setStartingYear(int data);
   void setStartingMonth(int data);
   void setStartingWeek(int data);

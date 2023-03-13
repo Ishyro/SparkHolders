@@ -73,6 +73,10 @@ Database::Database() {
   macros.insert(std::make_pair("INVISIBLE", INVISIBLE));
   macros.insert(std::make_pair("ETHERAL", ETHERAL));
   macros.insert(std::make_pair("INVULNERABLE", INVULNERABLE));
+  macros.insert(std::make_pair("ACTION_TIME_MODIFIER", ACTION_TIME_MODIFIER));
+  macros.insert(std::make_pair("STRIKE_TIME_MODIFIER", STRIKE_TIME_MODIFIER));
+  macros.insert(std::make_pair("SKILL_TIME_MODIFIER", SKILL_TIME_MODIFIER));
+  macros.insert(std::make_pair("MOVEMENT_TIME_MODIFIER", MOVEMENT_TIME_MODIFIER));
 
   // weapon_type
 

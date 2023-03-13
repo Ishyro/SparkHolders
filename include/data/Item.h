@@ -20,6 +20,8 @@ class Item {
     const bool droppable;
     const float weight;
     const int gold_value;
+    const int swap_time;
+    const int use_time;
     const std::list<Effect *> effects;
     Item(
       std::string name,
@@ -29,6 +31,8 @@ class Item {
       bool droppable,
       float weight,
       int gold_value,
+      int swap_time,
+      int use_time,
       std::list<Effect *> effects,
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
@@ -39,6 +43,8 @@ class Item {
       droppable(droppable),
       weight(weight),
       gold_value(gold_value),
+      swap_time(swap_time),
+      use_time(use_time),
       effects(effects)
     {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
@@ -53,6 +59,8 @@ class Item {
       droppable(item->droppable),
       weight(item->weight),
       gold_value(item->gold_value),
+      swap_time(item->swap_time),
+      use_time(item->use_time),
       effects(item->effects)
     {
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

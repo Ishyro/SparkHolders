@@ -28,16 +28,6 @@ std::string Way::to_string() {
   String::insert_int(ss, damageIncr);
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
-  String::insert_float(ss, size);
-  String::insert_bool(ss, need_to_eat);
-  String::insert_bool(ss, can_eat_food);
-  String::insert_bool(ss, need_to_sleep);
-  std::stringstream * ss_loot = new std::stringstream();
-  for(Item * item : loot) {
-    String::insert(ss_loot, item->to_string());
-  }
-  String::insert(ss, ss_loot->str());
-  delete ss_loot;
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -50,6 +40,22 @@ std::string Way::to_string() {
   }
   String::insert(ss, ss_skills->str());
   delete ss_skills;
+  if(type == RACE) {
+    String::insert_float(ss, size);
+    String::insert_bool(ss, need_to_eat);
+    String::insert_bool(ss, can_eat_food);
+    String::insert_bool(ss, need_to_sleep);
+    String::insert_float(ss, action_time_modifier);
+    String::insert_float(ss, strike_time_modifier);
+    String::insert_float(ss, skill_time_modifier);
+    String::insert_float(ss, movement_time_modifier);
+    std::stringstream * ss_loot = new std::stringstream();
+    for(Item * item : loot) {
+      String::insert(ss_loot, item->to_string());
+    }
+    String::insert(ss, ss_loot->str());
+    delete ss_loot;
+  }
   std::string result = ss->str();
   delete ss;
   return result;
@@ -74,16 +80,6 @@ Way * Way::from_string(std::string to_read) {
   int damageIncr = String::extract_int(ss);
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
-  float size = String::extract_float(ss);
-  bool need_to_eat = String::extract_bool(ss);
-  bool can_eat_food = String::extract_bool(ss);
-  bool need_to_sleep = String::extract_bool(ss);
-  std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
-  std::list<Item *> * loot = new std::list<Item *>();
-  while(ss_loot->rdbuf()->in_avail() != 0) {
-    loot->push_back(Item::from_string(String::extract(ss_loot)));
-  }
-  delete ss_loot;
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -96,35 +92,82 @@ Way * Way::from_string(std::string to_read) {
     skills->push_back(Skill::from_string(String::extract(ss_skills)));
   }
   delete ss_skills;
-  delete ss;
-  Way * result = new Way(
-    name,
-    type,
-    baseHp,
-    baseMana,
-    baseArmor,
-    baseDamage,
-    baseSoulBurn,
-    baseFlow,
-    baseVisionRange,
-    baseVisionPower,
-    baseDetectionRange,
-    hpIncr,
-    manaIncr,
-    armorIncr,
-    damageIncr,
-    soulBurnIncr,
-    flowIncr,
-    size,
-    need_to_eat,
-    can_eat_food,
-    need_to_sleep,
-    *loot,
-    *effects,
-    *skills
-  );
-  delete loot;
-  delete effects;
-  delete skills;
-  return result;
+  if(type == RACE) {
+    float size = String::extract_float(ss);
+    bool need_to_eat = String::extract_bool(ss);
+    bool can_eat_food = String::extract_bool(ss);
+    bool need_to_sleep = String::extract_bool(ss);
+    float action_time_modifier = String::extract_float(ss);
+    float strike_time_modifier = String::extract_float(ss);
+    float skill_time_modifier = String::extract_float(ss);
+    float movement_time_modifier = String::extract_float(ss);
+    std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
+    std::list<Item *> * loot = new std::list<Item *>();
+    while(ss_loot->rdbuf()->in_avail() != 0) {
+      loot->push_back(Item::from_string(String::extract(ss_loot)));
+    }
+    delete ss_loot;
+    delete ss;
+    Way * result = new Way(
+      name,
+      type,
+      baseHp,
+      baseMana,
+      baseArmor,
+      baseDamage,
+      baseSoulBurn,
+      baseFlow,
+      baseVisionRange,
+      baseVisionPower,
+      baseDetectionRange,
+      hpIncr,
+      manaIncr,
+      armorIncr,
+      damageIncr,
+      soulBurnIncr,
+      flowIncr,
+      size,
+      need_to_eat,
+      can_eat_food,
+      need_to_sleep,
+      action_time_modifier,
+      strike_time_modifier,
+      skill_time_modifier,
+      movement_time_modifier,
+      *loot,
+      *effects,
+      *skills
+    );
+    delete loot;
+    delete effects;
+    delete skills;
+    return result;
+  }
+  else {
+    delete ss;
+    Way * result = new Way(
+      name,
+      type,
+      baseHp,
+      baseMana,
+      baseArmor,
+      baseDamage,
+      baseSoulBurn,
+      baseFlow,
+      baseVisionRange,
+      baseVisionPower,
+      baseDetectionRange,
+      hpIncr,
+      manaIncr,
+      armorIncr,
+      damageIncr,
+      soulBurnIncr,
+      flowIncr,
+      *effects,
+      *skills
+    );
+    delete effects;
+    delete skills;
+    return result;
+  }
 }

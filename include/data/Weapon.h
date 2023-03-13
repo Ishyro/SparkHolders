@@ -23,6 +23,9 @@ class Weapon {
     const bool use_ammo;
     const int ammo_type;
     const int capacity;
+    const int strike_time;
+    const int reload_time;
+    const int swap_time;
     const std::list<Effect *> effects;
     Weapon(
       std::string name,
@@ -35,6 +38,9 @@ class Weapon {
       bool use_ammo,
       int ammo_type,
       int capacity,
+      int strike_time,
+      int reload_time,
+      int swap_time,
       std::list<Effect *> effects,
       int damages[DAMAGE_TYPE_NUMBER],
       Ammunition * ammo
@@ -49,6 +55,9 @@ class Weapon {
       use_ammo(use_ammo),
       ammo_type(ammo_type),
       capacity(capacity),
+      strike_time(strike_time),
+      reload_time(reload_time),
+      swap_time(swap_time),
       effects(effects),
       ammo(ammo)
     {
@@ -67,6 +76,9 @@ class Weapon {
       use_ammo(weapon->use_ammo),
       ammo_type(weapon->ammo_type),
       capacity(weapon->capacity),
+      strike_time(weapon->strike_time),
+      reload_time(weapon->reload_time),
+      swap_time(weapon->swap_time),
       effects(weapon->effects),
       ammo(weapon->ammo)
     {

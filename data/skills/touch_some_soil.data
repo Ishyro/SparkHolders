@@ -7,5 +7,5 @@ overcharge_power_type = NO_OVERCHARGE
 overcharge_duration_type = NO_OVERCHARGE
 overcharge_range_type = NO_OVERCHARGE
 range = 0
-priority = 0.
+time = 0
 skills = TXT_GROW_GRASS%

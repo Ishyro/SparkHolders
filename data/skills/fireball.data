@@ -7,5 +7,5 @@ overcharge_power_type = LINEAR
 overcharge_duration_type = LINEAR
 overcharge_range_type = SQUARE
 range = 15
-priority = 0.5
+time = 25
 skills = TXT_FIREBALL%
