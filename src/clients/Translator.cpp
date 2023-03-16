@@ -297,12 +297,12 @@ const std::string Translator::getStandardDesc(std::string to_translate) {
     }
     if(line != "" && line.at(0) != '#') {
       std::string key = line.substr(0, line.find(delimiter));
-      while(std::isspace(key.at(key.length() - 1))) {
+      while(key.length() > 0 && std::isspace(key.at(key.length() - 1))) {
         key = key.substr(0, key.length() - 1);
       }
       if(line.length() - 1 > line.find(delimiter)) {
         std::string value = line.substr(line.find(delimiter) + 1, line.length() - 1);
-        while(std::isspace(value.at(0))) {
+        while(value.length() > 0 && std::isspace(value.at(0))) {
           value = value.substr(1, value.length() - 1);
         }
         map->insert(std::make_pair(key,value));
