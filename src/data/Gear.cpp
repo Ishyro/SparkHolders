@@ -184,47 +184,56 @@ std::string Gear::to_string() {
   String::insert(ss, name);
   if(head != nullptr) {
     String::insert(ss, head->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(arms != nullptr) {
     String::insert(ss, arms->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(legs != nullptr) {
     String::insert(ss, legs->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(body != nullptr) {
     String::insert(ss, body->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(lantern != nullptr) {
     String::insert(ss, lantern->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(left_ring != nullptr) {
     String::insert(ss, left_ring->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(right_ring != nullptr) {
     String::insert(ss, right_ring->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(amulet != nullptr) {
     String::insert(ss, amulet->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(weapon != nullptr) {
     String::insert(ss, weapon->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   std::stringstream * ss_items = new std::stringstream();

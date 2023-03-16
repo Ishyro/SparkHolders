@@ -38,13 +38,15 @@ std::string Socket::read() {
     char * msg = new char [1024];
     if(::read(fd, (void *) msg, (ssize_t) 1024) != 0) {
       std::string part = std::string(msg);
-      free(msg);
+      delete msg;
       if(part.find(delimiter) != std::string::npos) {
         result += part.substr(0, part.find(delimiter));
-      } else {
+      }
+      else {
         return result += part.substr(0, part.find(final_delimiter));
       }
-    } else {
+    }
+    else {
       delete msg;
       close();
       throw CloseException();
@@ -60,7 +62,8 @@ void Socket::write(std::string msg) {
     if(msg.length() > 1023) {
       tosend = msg.substr(0, 1023) + delimiter;
       msg = msg.substr(1023, msg.length());
-    } else {
+    }
+    else {
       tosend = msg + final_delimiter;
       msg = "";
     }

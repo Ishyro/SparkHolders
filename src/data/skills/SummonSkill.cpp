@@ -49,7 +49,8 @@ void SummonSkill::activate(Character * owner, Character * target, Adventure * ad
   adventure->getWorld()->getMap(map_id)->addCharacter(c);
   if(apparition_type == SOFT) {
     adventure->softMoveCharacterToMap(c, map_id, y, x);
-  } else {
+  }
+  else {
     adventure->hardMoveCharacterToMap(c, map_id, y, x);
   }
 }

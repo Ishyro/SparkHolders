@@ -293,10 +293,6 @@ long Character::getGold() { return gold; }
 long Character::getXP() { return xp; }
 int Character::getLevel() { return level; }
 
-float Character::getPriorityModifier() {
-  return std::max(0.F, (std::min(75.F, stamina) - std::abs(50.F - satiety)) / gear->getWeight());
-}
-
 float Character::getDamageMultiplier() {
   int result = damage_multiplier;
   for(Effect * e : effects) {
@@ -365,17 +361,17 @@ float Character::getMovementTimeModifier() {
   return result * getActionTimeModifier();
 }
 
-int Character::getStrikeTime() {
-  return (int) std::ceil( (float) gear->getWeapon()->strike_time / getHandActionTimeModifier());
+float Character::getStrikeTime() {
+  return (float) gear->getWeapon()->strike_time / getHandActionTimeModifier();
 }
 
-int Character::getReloadTime() {
-  return (int) std::ceil( (float) gear->getWeapon()->reload_time / getHandActionTimeModifier());
+float Character::getReloadTime() {
+  return (float) gear->getWeapon()->reload_time / getHandActionTimeModifier();
 }
 
-int Character::getSwapTime(std::string object) {
+float Character::getSwapTime(std::string object) {
 
-  return (int) std::ceil( (float) gear->getWeapon()->swap_time / getHandActionTimeModifier());
+  return (float) gear->getWeapon()->swap_time / getHandActionTimeModifier();
 }
 
 int Character::getLight() {
@@ -613,7 +609,8 @@ void Character::applyTiredness() {
     if(stamina > 0.) {
       removeStamina(step);
       manaHeal(manaValue);
-    } else {
+    }
+    else {
       manaValue = (int) std::floor(currentManaRegen * Settings::getStaminaOverextendRatio() + savedManaRegen);
       savedManaRegen += currentManaRegen - (float) manaValue;
       payMana(manaValue);
@@ -630,7 +627,8 @@ void Character::applyHunger() {
     if(satiety > 0.) {
       removeSatiety(step);
       hpHeal(hpValue);
-    } else {
+    }
+    else {
       hpValue = (int) std::floor(currentHpRegen * Settings::getSatietyOverextendRatio() + savedHpRegen);
       savedHpRegen += currentHpRegen - (float) hpValue;
       hp -= hpValue;
@@ -1291,7 +1289,8 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
         float damage_reduction = getDamageReductionFromType(damage_type);
         if(damage_reduction > 0.F) {
           hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
-        } else {
+        }
+        else {
           hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
         }
       }
@@ -1306,7 +1305,8 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
         float damage_reduction = getDamageReductionFromType(damage_type);
         if(damage_reduction > 0.F) {
           damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
-        } else {
+        }
+        else {
           damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
         }
       }
@@ -1440,7 +1440,8 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, level);
   if(talking_speech != nullptr) {
     String::insert(ss, ((Speech *) talking_speech)->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
@@ -1573,12 +1574,14 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_bool(ss, player_character);
   if(death_speech != nullptr) {
     String::insert(ss, ((Speech *) death_speech)->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   if(talking_speech != nullptr) {
     String::insert(ss, ((Speech *) talking_speech)->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   String::insert_int(ss, type);
@@ -1660,7 +1663,8 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, attributes->to_string());
   if(second_attributes != nullptr) {
     String::insert(ss, ((Attributes *) second_attributes)->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   String::insert(ss, race->to_string());

@@ -53,9 +53,11 @@ namespace Display {
       if(begin != std::string::npos) {
         if(currentLength == cols) {
           line += word;
-        } else if(currentLength + 1 + begin <= cols) {
+        }
+        else if(currentLength + 1 + begin <= cols) {
           line += " " + word;
-        } else {
+        }
+        else {
           line += "\n" + word;
         }
         currentLength = word.length() - begin - 1;
@@ -63,10 +65,12 @@ namespace Display {
       else if(currentLength == cols) {
         line += word;
         currentLength = word.length();
-      } else if(currentLength + 1 + word.length() <= cols) {
+      }
+      else if(currentLength + 1 + word.length() <= cols) {
         line += " " + word;
         currentLength += 1 + word.length();
-      } else {
+      }
+      else {
         line += "\n" + word;
         currentLength = word.length();
       }
@@ -232,12 +236,11 @@ namespace Display {
     mvwprintw(screen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnTreshold())).c_str());
     mvwprintw(screen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
     mvwprintw(screen, 9, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(player->getArmor())).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("Priority") + std::string(": ") + std::to_string(player->getPriorityModifier())).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
-    mvwprintw(screen, 15, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
     wrefresh(screen);
   }
 
@@ -988,17 +991,23 @@ namespace Display {
               cursorX = (cursorX - 1 + 7) % 7;
               if(cursorX == 0) {
                 cursorY = std::min(cursorY, 2);
-              } else if(cursorX == 1) {
+              }
+              else if(cursorX == 1) {
                 cursorY = std::min(cursorY, (int) startingAttributes.size() - 1 - currentPannel * numberAttributes);
-              } else if(cursorX == 2) {
+              }
+              else if(cursorX == 2) {
                 cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
-              } else if(cursorX == 3) {
+              }
+              else if(cursorX == 3) {
                 cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
-              } else if(cursorX == 4) {
+              }
+              else if(cursorX == 4) {
                 cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
-              } else if(cursorX == 5) {
+              }
+              else if(cursorX == 5) {
                 cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
-              } else if(cursorX == 6) {
+              }
+              else if(cursorX == 6) {
                 cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
               }
               if(cursorY < 0) {
@@ -1011,46 +1020,58 @@ namespace Display {
               cursorY--;
               if(cursorX == 0) {
                 cursorY = (cursorY + 3) % 3;
-              } else if(cursorX == 1) {
+              }
+              else if(cursorX == 1) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberAttributes -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
-              } else if(cursorX == 2) {
+              }
+              else if(cursorX == 2) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberWays -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
-              } else if(cursorX == 3) {
+              }
+              else if(cursorX == 3) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberWays -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
-              } else if(cursorX == 4) {
+              }
+              else if(cursorX == 4) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberWays -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
-              } else if(cursorX == 5) {
+              }
+              else if(cursorX == 5) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberWays -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
-              } else if(cursorX == 6) {
+              }
+              else if(cursorX == 6) {
                 if(cursorY == -1 && currentPannel > 0) {
                   cursorY = numberWays -1;
                   currentPannel--;
-                } else if(cursorY == -1) {
+                }
+                else if(cursorY == -1) {
                   cursorY++;
                 }
               }
@@ -1062,17 +1083,23 @@ namespace Display {
               cursorX = (cursorX + 1) % 7;
               if(cursorX == 0) {
                 cursorY = std::min(cursorY, 2);
-              } else if(cursorX == 1) {
+              }
+              else if(cursorX == 1) {
                 cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
-              } else if(cursorX == 2) {
+              }
+              else if(cursorX == 2) {
                 cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
-              } else if(cursorX == 3) {
+              }
+              else if(cursorX == 3) {
                 cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
-              } else if(cursorX == 4) {
+              }
+              else if(cursorX == 4) {
                 cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
-              } else if(cursorX == 5) {
+              }
+              else if(cursorX == 5) {
                 cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
-              } else if(cursorX == 6) {
+              }
+              else if(cursorX == 6) {
                 cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
               }
               if(cursorY < 0) {
@@ -1085,46 +1112,58 @@ namespace Display {
               cursorY++;
               if(cursorX == 0) {
                 cursorY = cursorY % 3;
-              } else if(cursorX == 1) {
+              }
+              else if(cursorX == 1) {
                 if(cursorY == numberAttributes && (int) startingAttributes.size() > numberAttributes) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) startingAttributes.size()) {
+                }
+                else if(cursorY == (int) startingAttributes.size()) {
                   cursorY--;
                 }
-              } else if(cursorX == 2) {
+              }
+              else if(cursorX == 2) {
                 if(cursorY == numberWays && (int) availableRaces.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) availableRaces.size()) {
+                }
+                else if(cursorY == (int) availableRaces.size()) {
                   cursorY--;
                 }
-              } else if(cursorX == 3) {
+              }
+              else if(cursorX == 3) {
                 if(cursorY == numberWays && (int) availableOrigins.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) availableOrigins.size()) {
+                }
+                else if(cursorY == (int) availableOrigins.size()) {
                   cursorY--;
                 }
-              } else if(cursorX == 4) {
+              }
+              else if(cursorX == 4) {
                 if(cursorY == numberWays && (int) availableCultures.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) availableCultures.size()) {
+                }
+                else if(cursorY == (int) availableCultures.size()) {
                   cursorY--;
                 }
-              } else if(cursorX == 5) {
+              }
+              else if(cursorX == 5) {
                 if(cursorY == numberWays && (int) availableReligions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) availableReligions.size()) {
+                }
+                else if(cursorY == (int) availableReligions.size()) {
                   cursorY--;
                 }
-              } else if(cursorX == 6) {
+              }
+              else if(cursorX == 6) {
                 if(cursorY == numberWays && (int) availableProfessions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
-                } else if(cursorY == (int) availableProfessions.size()) {
+                }
+                else if(cursorY == (int) availableProfessions.size()) {
                   cursorY--;
                 }
               }
@@ -1137,47 +1176,60 @@ namespace Display {
                   nameMode = true;
                   move(3, 2 + (t->getStandardName("Name") + characterName).length() + 2);
                   curs_set(1);
-                } else if(cursorY == 2) {
+                }
+                else if(cursorY == 2) {
                   if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
                     && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos && !nameMode && selectedAttributes != nullptr
                     && selectedRace != nullptr && selectedOrigin != nullptr && selectedCulture != nullptr && selectedReligion != nullptr && selectedProfession != nullptr) {
                     done = true;
                   }
                 }
-              } else if(cursorX == 1) {
+              }
+              else if(cursorX == 1) {
                 if(selectedAttributes == startingAttributes[cursorY + currentPannel * numberAttributes]) {
                   selectedAttributes = nullptr;
-                } else {
+                }
+                else {
                   selectedAttributes = startingAttributes[cursorY + currentPannel * numberAttributes];
                 }
-              } else if(cursorX == 2 && availableRaces.size() > 0) {
+              }
+              else if(cursorX == 2 && availableRaces.size() > 0) {
                 if(selectedRace == availableRaces[cursorY]) {
                   selectedRace = nullptr;
-                } else {
+                }
+                else {
                   selectedRace = availableRaces[cursorY];
                 }
-              } else if(cursorX == 3 && availableOrigins.size() > 0) {
+              }
+              else if(cursorX == 3 && availableOrigins.size() > 0) {
                 if(selectedOrigin == availableOrigins[cursorY]) {
                   selectedOrigin = nullptr;
-                } else {
+                }
+                else {
                   selectedOrigin = availableOrigins[cursorY];
                 }
-              } else if(cursorX == 4 && availableCultures.size() > 0) {
+              }
+              else if(cursorX == 4 && availableCultures.size() > 0) {
                 if(selectedCulture == availableCultures[cursorY]) {
                   selectedCulture = nullptr;
-                } else {
+                }
+                else {
                   selectedCulture = availableCultures[cursorY];
                 }
-              } else if(cursorX == 5 && availableReligions.size() > 0) {
+              }
+              else if(cursorX == 5 && availableReligions.size() > 0) {
                 if(selectedReligion == availableReligions[cursorY]) {
                   selectedReligion = nullptr;
-                } else {
+                }
+                else {
                   selectedReligion = availableReligions[cursorY];
                 }
-              } else if(cursorX == 6 && availableProfessions.size() > 0) {
+              }
+              else if(cursorX == 6 && availableProfessions.size() > 0) {
                 if(selectedProfession == availableProfessions[cursorY]) {
                   selectedProfession = nullptr;
-                } else {
+                }
+                else {
                   selectedProfession = availableProfessions[cursorY];
                 }
               }
@@ -1187,7 +1239,8 @@ namespace Display {
             default:
               ;
           }
-        } else { // nameMode is true
+        }
+        else { // nameMode is true
           switch(keyPressed) {
             case '\n':
               nameMode = false;
@@ -1325,7 +1378,8 @@ namespace Display {
               type = REST;
               if(link->getPlayer()->getGear()->getWeapon()->melee) {
                 type = STRIKE;
-              } else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+              }
+              else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
                 type = SHOOT;
               }
               if(type == SHOOT || type == STRIKE) {
@@ -1422,7 +1476,8 @@ namespace Display {
         }
         if(cursorX == currentX && cursorY == currentY) {
           color = BLUE;
-        } else {
+        }
+        else {
           color = WHITE;
         }
         std::string to_print = t->getSkillName(skill->name);
@@ -1505,7 +1560,8 @@ namespace Display {
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       if(overcharge_type == 1) {
         color = BLUE;
-      } else {
+      }
+      else {
         color = WHITE;
       }
       to_print = t->getStandardName("Power Overcharging") + std::string(": ") + std::to_string(overcharge_power) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_power_type));
@@ -1514,7 +1570,8 @@ namespace Display {
       wattroff(displayScreen, COLOR_PAIR(color));
       if(overcharge_type == 2) {
         color = BLUE;
-      } else {
+      }
+      else {
         color = WHITE;
       }
       to_print = t->getStandardName("Duration Overcharging") + std::string(": ") + std::to_string(overcharge_duration) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_duration_type));
@@ -1523,7 +1580,8 @@ namespace Display {
       wattroff(displayScreen, COLOR_PAIR(color));
       if(overcharge_type == 3) {
         color = BLUE;
-      } else {
+      }
+      else {
         color = WHITE;
       }
       to_print = t->getStandardName("Range Overcharging") + std::string(": ") + std::to_string(overcharge_range) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_range_type));
@@ -1754,7 +1812,8 @@ namespace Display {
           }
           if(cursorX == currentX && cursorY == currentY) {
             color = BLUE;
-          } else {
+          }
+          else {
             color = WHITE;
           }
           std::string to_print = t->getWeaponName(weapon->name);
@@ -1777,7 +1836,8 @@ namespace Display {
           }
           if(cursorX == currentX && cursorY == currentY) {
             color = BLUE;
-          } else {
+          }
+          else {
             color = WHITE;
           }
           std::string to_print = t->getProjectileName(ammo->projectile->name);
@@ -1800,7 +1860,8 @@ namespace Display {
           }
           if(cursorX == currentX && cursorY == currentY) {
             color = BLUE;
-          } else {
+          }
+          else {
             color = WHITE;
           }
           std::string to_print = t->getItemName(item->name);
@@ -1901,7 +1962,8 @@ namespace Display {
         }
         if(cursorX == currentX && cursorY == currentY) {
           color = BLUE;
-        } else {
+        }
+        else {
           color = WHITE;
         }
         std::string to_print = t->getProjectileName(ammo->projectile->name);

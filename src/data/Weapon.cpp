@@ -49,7 +49,8 @@ int Weapon::getDamageFromType(int damage_type) {
 int Weapon::getCurrentCapacity() {
   if(this->ammo != nullptr) {
     return ammo->number;
-  } else {
+  }
+  else {
     return 0;
   }
 }
@@ -73,11 +74,13 @@ Ammunition * Weapon::reload(Ammunition * ammo) {
     int to_load = std::min(capacity, ammo->number);
     ammo->number -= to_load;
     this->ammo->number = to_load;
-  } else if(this->ammo != nullptr && this->ammo->projectile->name == ammo->projectile->name) {
+  }
+  else if(this->ammo != nullptr && this->ammo->projectile->name == ammo->projectile->name) {
     int to_load = std::min(capacity - this->ammo->number, ammo->number);
     ammo->number -= to_load;
     this->ammo->number += to_load;
-  } else if(this->ammo != nullptr && this->ammo->ammo_type == ammo->ammo_type) {
+  }
+  else if(this->ammo != nullptr && this->ammo->ammo_type == ammo->ammo_type) {
     to_return = new Ammunition();
     to_return->projectile = this->ammo->projectile;
     to_return->gold_value = this->ammo->gold_value;

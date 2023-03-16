@@ -243,7 +243,8 @@ std::string Projectile::full_to_string() {
   String::insert_float(ss, dest_dy);
   if(skill != nullptr) {
     String::insert(ss, skill->to_string());
-  } else {
+  }
+  else {
     String::insert(ss, "none");
   }
   std::stringstream * ss_effects = new std::stringstream();

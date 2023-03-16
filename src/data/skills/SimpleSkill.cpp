@@ -5,7 +5,8 @@ void SimpleSkill::activate(Character * owner, Character * target, Adventure * ad
     Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration);
     if(target_type != SELF) {
       to_add->activate(target);
-    } else {
+    }
+    else {
       to_add->activate(owner);
     }
   }
@@ -20,7 +21,8 @@ int SimpleSkill::getPower() {
   for(Effect * effect : effects) {
     if(effect->power != 0) {
       power += effect->power;
-    } else {
+    }
+    else {
       power += effect->getRawDamage();
     }
   }

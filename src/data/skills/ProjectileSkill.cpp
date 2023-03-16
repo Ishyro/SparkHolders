@@ -44,7 +44,8 @@ int ProjectileSkill::getPower() {
   for(Effect * effect : effects) {
     if(effect->power != 0) {
       power += effect->power;
-    } else {
+    }
+    else {
       power += effect->getRawDamage();
     }
   }

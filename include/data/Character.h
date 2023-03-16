@@ -332,7 +332,6 @@ class Character {
     long getGold();
     long getXP();
     int getLevel();
-    float getPriorityModifier();
     float getDamageMultiplier();
     int getPowerScore();
 
@@ -351,9 +350,9 @@ class Character {
     float getHandActionTimeModifier();
     float getSkillTimeModifier();
     float getMovementTimeModifier();
-    int getStrikeTime();
-    int getReloadTime();
-    int getSwapTime(std::string object);
+    float getStrikeTime();
+    float getReloadTime();
+    float getSwapTime(std::string object);
     int getLight();
     std::list<Item *> getItems();
     std::list<Weapon *> getWeapons();

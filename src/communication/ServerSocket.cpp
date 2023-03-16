@@ -8,7 +8,8 @@ ServerSocket::ServerSocket(int port, int maxPlayers, bool local) {
   }
   if(local) {
     sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-  } else {
+  }
+  else {
     sin.sin_addr.s_addr = htonl(INADDR_ANY);
   }
   sin.sin_port = htons(port);

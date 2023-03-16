@@ -131,7 +131,8 @@ const std::string Translator::getMapName(std::string to_translate) {
   try {
     if(to_translate.find('#') != std::string::npos) {
       return mapsNames.at(to_translate.substr(0, to_translate.find('#'))) + to_translate.substr(to_translate.find('#'), to_translate.length());
-    } else {
+    }
+    else {
       return mapsNames.at(to_translate);
     }
   } catch (const std::out_of_range &e) {
@@ -143,7 +144,8 @@ const std::string Translator::getMapDesc(std::string to_translate) {
   try {
     if(to_translate.find('#') != std::string::npos) {
       return mapsDescs.at(to_translate.substr(0, to_translate.find('#')));
-    } else {
+    }
+    else {
       return mapsDescs.at(to_translate);
     }
   } catch (const std::out_of_range &e) {

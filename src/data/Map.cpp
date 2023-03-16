@@ -373,7 +373,8 @@ void Map::killCharacter(Character * killer, Character * victim) {
   loot->type = CORPSE;
   if(killer != victim) {
     killer->gainXP(victim->getXP() / 2);
-  } else {
+  }
+  else {
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
     int xp = victim->getXP();
@@ -385,7 +386,8 @@ void Map::killCharacter(Character * killer, Character * victim) {
   }
   if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {
     delete loot;
-  } else {
+  }
+  else {
     loots.push_back(loot);
   }
   delete victim;

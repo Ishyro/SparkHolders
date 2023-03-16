@@ -223,7 +223,7 @@ void Adventure::executeActions() {
   std::list<Action *> next_actions;
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    if(action != nullptr && action->getTick() <= 1 && action->getUser() != nullptr) {
+    if(action != nullptr && action->getTick() <= 1.F && action->getUser() != nullptr) {
       Action * next = action->execute(this);
       if(next != nullptr) {
         next_actions.push_back(next);

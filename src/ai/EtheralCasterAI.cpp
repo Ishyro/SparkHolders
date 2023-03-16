@@ -17,7 +17,8 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
   }
   if(++current_round < target_round) {
     return new Action(REST, adventure, nullptr, c, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
-  } else {
+  }
+  else {
     casted = true;
     return new Action(USE_SKILL, adventure, nullptr, c, 0.F, c->getSkills().front(), nullptr, origin_x, origin_y, nullptr, "", 1, 1, 1);
   }

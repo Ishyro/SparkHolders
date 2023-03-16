@@ -57,7 +57,8 @@ int main(int argc, char ** argv) {
       delete link;
       return EXIT_FAILURE;
     }
-  } else if (argc == 3) {
+  }
+  else if (argc == 3) {
     // reconnect mode
     try {
       if(s.read() != "RECONNECT") {

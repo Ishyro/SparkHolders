@@ -50,7 +50,8 @@ Action * Action::execute(Adventure * adventure) {
         if(!( (Character *) target)->isAlive()) {
           adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, (Character *) target);
         }
-      } else {
+      }
+      else {
         for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
           if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
             user->attack(c);
@@ -70,7 +71,8 @@ Action * Action::execute(Adventure * adventure) {
         if(!( (Character *) target)->isAlive()) {
           adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, (Character *) target);
         }
-      } else {
+      }
+      else {
         for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
           if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
             user->attack(c);
@@ -151,14 +153,14 @@ void Action::setNext(Action * action) { next = action; }
 
 void Action::computeTick(int tick) {
   if(previous == nullptr) {
-    this->tick -= tick;
+    this->tick -= (float) tick;
   }
 }
 
 void Action::computeTime(Adventure * adventure) {
   switch(type) {
     case MOVE:
-      time = 1;
+      time = 1.F;
       break;
     case SHOOT:
       time = user->getStrikeTime();
@@ -173,10 +175,10 @@ void Action::computeTime(Adventure * adventure) {
       time = user->getStrikeTime() * 2;
       break;
     case USE_SKILL:
-      time = user->getSkillTimeModifier() * skill->time;
+      time = (float) skill->time / user->getSkillTimeModifier();
       break;
     case REST:
-      time = 1;
+      time = 1.F;
       break;
     case RELOAD:
       time = user->getReloadTime();
@@ -185,17 +187,17 @@ void Action::computeTime(Adventure * adventure) {
       time = user->getSwapTime(object);
       break;
     case GRAB:
-      time = 10;
+      time = 10.F / user->getHandActionTimeModifier();
       break;
     case USE_ITEM:
-      time = user->getHandActionTimeModifier() * ( (Item *) adventure->getDatabase()->getItem(object))->use_time;
+      time = (float) ( (Item *) adventure->getDatabase()->getItem(object))->use_time / user->getHandActionTimeModifier();
       break;
     case ECONOMICS:
     case TALKING:
-      time = 0;
+      time = 0.F;
       break;
     default:
-      time = 0;
+      time = 0.F;
   }
   tick = time;
 }

@@ -84,12 +84,10 @@ class Action {
     void setNext(Action * action);
     void computeTick(int tick);
     void computeTime(Adventure * adventure);
-    // highest priority means first action in the list (so first action resolved)
-    // only matters when both actions resolve at the same tick.
-    bool operator < (const Action& a) const { return user->getPriorityModifier() > a.user->getPriorityModifier(); }
+    bool operator < (const Action& a) const { return tick < a.tick; }
   private:
-    int tick;
-    int time;
+    float tick;
+    float time;
     Character * user;
     Action * previous;
     Action * next;

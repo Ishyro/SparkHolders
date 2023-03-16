@@ -84,7 +84,8 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     }
     return trackPrey(adventure, self);
   // herbivorous creature dependent on a skill to eat
-  } else {
+  }
+  else {
     Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
     Tile * target = nullptr;
     Skill * skill = nullptr;
@@ -142,7 +143,8 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     }
     if(i == self->getX() && j == self->getY()) {
       return new Action(USE_SKILL, adventure, nullptr, self, self->getOrientation(), skill, nullptr, i, j, nullptr, "", 1, 1, 1);
-    } else {
+    }
+    else {
       return new Action(MOVE, adventure, nullptr, self, getFollowOrientation(adventure, self, i, j), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     }
   }
