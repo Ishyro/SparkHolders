@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "utils/String.h"
+#include "util/String.h"
 
 std::string String::extract(std::stringstream * ss) {
   std::string to_return = "";

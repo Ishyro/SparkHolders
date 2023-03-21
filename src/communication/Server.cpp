@@ -13,7 +13,7 @@
 
 #include "communication/Server.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 namespace Server {
   Action * receiveAction(Socket s, Character * user, Adventure * adventure) {

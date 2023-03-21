@@ -7,7 +7,7 @@
 
 #include "data/Character.h"
 
-#include "utils/FileOpener.h"
+#include "util/FileOpener.h"
 
 namespace effect {
   static long id_cpt = 0;

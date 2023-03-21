@@ -4,7 +4,7 @@
 
 #include "data/Item.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 float Item::getDamageReductionFromType(int damage_type) {
   float reduction = damage_reductions[damage_type];
@@ -33,6 +33,7 @@ std::string Item::to_string() {
   String::insert_int(ss, type);
   String::insert_bool(ss, droppable);
   String::insert_float(ss, weight);
+  String::insert_int(ss, armor);
   String::insert_int(ss, gold_value);
   String::insert_int(ss, swap_time);
   String::insert_int(ss, use_time);
@@ -61,6 +62,7 @@ Item * Item::from_string(std::string to_read) {
   int type = String::extract_int(ss);
   bool droppable = String::extract_bool(ss);
   float weight = String::extract_float(ss);
+  int armor = String::extract_int(ss);
   int gold_value = String::extract_int(ss);
   float swap_time = String::extract_int(ss);
   float use_time = String::extract_int(ss);
@@ -82,6 +84,7 @@ Item * Item::from_string(std::string to_read) {
     type,
     droppable,
     weight,
+    armor,
     gold_value,
     swap_time,
     use_time,

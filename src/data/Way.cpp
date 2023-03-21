@@ -3,7 +3,7 @@
 #include "data/Effect.h"
 #include "data/skills/Skill.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 std::list<Item *> Way::getLoot() { return loot; }
 std::list<Effect *> Way::getEffects() { return effects; }
@@ -15,8 +15,8 @@ std::string Way::to_string() {
   String::insert_int(ss, type);
   String::insert_int(ss, baseHp);
   String::insert_int(ss, baseMana);
-  String::insert_int(ss, baseArmor);
-  String::insert_int(ss, baseDamage);
+  String::insert_int(ss, baseArmorMult);
+  String::insert_int(ss, baseDamageMult);
   String::insert_int(ss, baseSoulBurn);
   String::insert_int(ss, baseFlow);
   String::insert_int(ss, baseVisionRange);
@@ -24,8 +24,8 @@ std::string Way::to_string() {
   String::insert_int(ss, baseDetectionRange);
   String::insert_int(ss, hpIncr);
   String::insert_int(ss, manaIncr);
-  String::insert_int(ss, armorIncr);
-  String::insert_int(ss, damageIncr);
+  String::insert_int(ss, armorMultIncr);
+  String::insert_int(ss, damageMultIncr);
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
   std::stringstream * ss_effects = new std::stringstream();
@@ -41,6 +41,7 @@ std::string Way::to_string() {
   String::insert(ss, ss_skills->str());
   delete ss_skills;
   if(type == RACE) {
+    String::insert_int(ss, baseArmor);
     String::insert_float(ss, size);
     String::insert_bool(ss, need_to_eat);
     String::insert_bool(ss, can_eat_food);
@@ -67,8 +68,8 @@ Way * Way::from_string(std::string to_read) {
   int type = String::extract_int(ss);
   int baseHp = String::extract_int(ss);
   int baseMana = String::extract_int(ss);
-  int baseArmor = String::extract_int(ss);
-  int baseDamage = String::extract_int(ss);
+  int baseArmorMult = String::extract_int(ss);
+  int baseDamageMult = String::extract_int(ss);
   int baseSoulBurn = String::extract_int(ss);
   int baseFlow = String::extract_int(ss);
   int baseVisionRange = String::extract_int(ss);
@@ -76,8 +77,8 @@ Way * Way::from_string(std::string to_read) {
   int baseDetectionRange = String::extract_int(ss);
   int hpIncr = String::extract_int(ss);
   int manaIncr = String::extract_int(ss);
-  int armorIncr = String::extract_int(ss);
-  int damageIncr = String::extract_int(ss);
+  int armorMultIncr = String::extract_int(ss);
+  int damageMultIncr = String::extract_int(ss);
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
@@ -93,6 +94,7 @@ Way * Way::from_string(std::string to_read) {
   }
   delete ss_skills;
   if(type == RACE) {
+    int baseArmor = String::extract_int(ss);
     float size = String::extract_float(ss);
     bool need_to_eat = String::extract_bool(ss);
     bool can_eat_food = String::extract_bool(ss);
@@ -114,7 +116,8 @@ Way * Way::from_string(std::string to_read) {
       baseHp,
       baseMana,
       baseArmor,
-      baseDamage,
+      baseArmorMult,
+      baseDamageMult,
       baseSoulBurn,
       baseFlow,
       baseVisionRange,
@@ -122,8 +125,8 @@ Way * Way::from_string(std::string to_read) {
       baseDetectionRange,
       hpIncr,
       manaIncr,
-      armorIncr,
-      damageIncr,
+      armorMultIncr,
+      damageMultIncr,
       soulBurnIncr,
       flowIncr,
       size,
@@ -150,8 +153,8 @@ Way * Way::from_string(std::string to_read) {
       type,
       baseHp,
       baseMana,
-      baseArmor,
-      baseDamage,
+      baseArmorMult,
+      baseDamageMult,
       baseSoulBurn,
       baseFlow,
       baseVisionRange,
@@ -159,8 +162,8 @@ Way * Way::from_string(std::string to_read) {
       baseDetectionRange,
       hpIncr,
       manaIncr,
-      armorIncr,
-      damageIncr,
+      armorMultIncr,
+      damageMultIncr,
       soulBurnIncr,
       flowIncr,
       *effects,

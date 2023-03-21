@@ -13,7 +13,7 @@
 
 #include "data/Adventure.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 Save * Adventure::save() {
   return new Save(this);

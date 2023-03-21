@@ -4,6 +4,7 @@ range = 1
 type = FIST
 droppable = false
 weight = 0.
+armor = 0
 gold_value = 0
 use_ammo = false
 strike_time = 0

@@ -11,7 +11,7 @@
 
 #include "data/Settings.h"
 
-#include "utils/FileOpener.h"
+#include "util/FileOpener.h"
 
 #include "communication/Socket.h"
 #include "communication/ServerSocket.h"

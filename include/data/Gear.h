@@ -115,6 +115,7 @@ class Gear {
     std::list<Weapon *> getWeapons();
     std::list<Ammunition *> getAmmunitions();
     float getWeight();
+    int getArmor();
     std::string to_string();
     static Gear * from_string(std::string to_read);
     bool operator == (const Gear& g) const { return name == g.name; }

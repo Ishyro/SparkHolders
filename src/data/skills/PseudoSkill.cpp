@@ -11,7 +11,7 @@
 #include "data/skills/TeleportSkill.h"
 #include "data/skills/TileSwapSkill.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range) {
   int cost = 0;

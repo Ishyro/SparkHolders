@@ -54,6 +54,7 @@ Database::Database() {
   macros.insert(std::make_pair("STAMINA", STAMINA));
   macros.insert(std::make_pair("SATIETY", SATIETY));
   macros.insert(std::make_pair("ARMOR", ARMOR));
+  macros.insert(std::make_pair("ARMOR_MULTIPLIER", ARMOR_MULTIPLIER));
   macros.insert(std::make_pair("SOULBURNTRESHOLD", SOULBURNTRESHOLD));
   macros.insert(std::make_pair("FLOW", FLOW));
   macros.insert(std::make_pair("VISION_RANGE", VISION_RANGE));

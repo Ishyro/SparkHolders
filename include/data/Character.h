@@ -196,6 +196,7 @@ class Character {
       int hp,
       int mana,
       int armor,
+      int armor_multiplier,
       int damage_multiplier,
       int soulBurnTreshold,
       int flow,
@@ -251,6 +252,7 @@ class Character {
       hp(hp),
       mana(mana),
       armor(armor),
+      armor_multiplier(armor_multiplier),
       damage_multiplier(damage_multiplier),
       soulBurnTreshold(soulBurnTreshold),
       flow(flow),
@@ -322,6 +324,7 @@ class Character {
     float getStamina();
     float getSatiety();
     int getArmor();
+    float getArmorMultiplier();
     int getSoulBurnTreshold();
     int getCurrentSoulBurn();
     int getFlow();
@@ -392,7 +395,7 @@ class Character {
     void removeSatiety(float satiety);
     void setStamina(float stamina);
     void setSatiety(float satiety);
-    void incrArmor();
+    void incrArmorMultiplier();
     void incrDamageMultiplier();
     void incrSoulBurnTreshold();
     void setCurrentSoulBurn(int soulBurn);
@@ -493,6 +496,7 @@ class Character {
     float savedManaRegen;
     int channeledMana;
     int armor;
+    int armor_multiplier;
     int damage_multiplier;
     int soulBurnTreshold;
     int currentSoulBurn;

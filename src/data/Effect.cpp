@@ -1,6 +1,6 @@
 #include "data/Effect.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 void Effect::activate(Character * target) {
   if(duration != 0) {
@@ -27,8 +27,8 @@ void Effect::activate(Character * target) {
       case SATIETY:
         target->addSatiety((float) power);
         break;
-      case ARMOR:
-        target->incrArmor();
+      case ARMOR_MULTIPLIER:
+        target->incrArmorMultiplier();
         break;
       case SOULBURNTRESHOLD:
         target->incrSoulBurnTreshold();

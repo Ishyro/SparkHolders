@@ -10,7 +10,7 @@
 #include "communication/Socket.h"
 #include "communication/Client.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 namespace Client {
 

@@ -2,7 +2,7 @@
 
 #include "data/skills/TileSwapSkill.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
   owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_range));

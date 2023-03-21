@@ -15,7 +15,8 @@ class Way {
     const int baseHp;
     const int baseMana;
     const int baseArmor;
-    const int baseDamage;
+    const int baseArmorMult;
+    const int baseDamageMult;
     const int baseSoulBurn;
     const int baseFlow;
     const int baseVisionRange;
@@ -23,8 +24,8 @@ class Way {
     const int baseDetectionRange;
     const int hpIncr;
     const int manaIncr;
-    const int armorIncr;
-    const int damageIncr;
+    const int armorMultIncr;
+    const int damageMultIncr;
     const int soulBurnIncr;
     const int flowIncr;
     // race only
@@ -42,7 +43,8 @@ class Way {
       int baseHp,
       int baseMana,
       int baseArmor,
-      int baseDamage,
+      int baseArmorMult,
+      int baseDamageMult,
       int baseSoulBurn,
       int baseFlow,
       int baseVisionRange,
@@ -50,8 +52,8 @@ class Way {
       int baseDetectionRange,
       int hpIncr,
       int manaIncr,
-      int armorIncr,
-      int damageIncr,
+      int armorMultIncr,
+      int damageMultIncr,
       int soulBurnIncr,
       int flowIncr,
       float size,
@@ -71,7 +73,8 @@ class Way {
       baseHp(baseHp),
       baseMana(baseMana),
       baseArmor(baseArmor),
-      baseDamage(baseDamage),
+      baseArmorMult(baseArmorMult),
+      baseDamageMult(baseDamageMult),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
       baseVisionRange(baseVisionRange),
@@ -79,8 +82,8 @@ class Way {
       baseDetectionRange(baseDetectionRange),
       hpIncr(hpIncr),
       manaIncr(manaIncr),
-      armorIncr(armorIncr),
-      damageIncr(damageIncr),
+      armorMultIncr(armorMultIncr),
+      damageMultIncr(damageMultIncr),
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
       size(size),
@@ -104,8 +107,8 @@ class Way {
       int type,
       int baseHp,
       int baseMana,
-      int baseArmor,
-      int baseDamage,
+      int baseArmorMult,
+      int baseDamageMult,
       int baseSoulBurn,
       int baseFlow,
       int baseVisionRange,
@@ -113,8 +116,8 @@ class Way {
       int baseDetectionRange,
       int hpIncr,
       int manaIncr,
-      int armorIncr,
-      int damageIncr,
+      int armorMultIncr,
+      int damageMultIncr,
       int soulBurnIncr,
       int flowIncr,
       std::list<Effect *> effects,
@@ -124,8 +127,8 @@ class Way {
       type(type),
       baseHp(baseHp),
       baseMana(baseMana),
-      baseArmor(baseArmor),
-      baseDamage(baseDamage),
+      baseArmorMult(baseArmorMult),
+      baseDamageMult(baseDamageMult),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
       baseVisionRange(baseVisionRange),
@@ -133,10 +136,11 @@ class Way {
       baseDetectionRange(baseDetectionRange),
       hpIncr(hpIncr),
       manaIncr(manaIncr),
-      armorIncr(armorIncr),
-      damageIncr(damageIncr),
+      armorMultIncr(armorMultIncr),
+      damageMultIncr(damageMultIncr),
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
+      baseArmor(0),
       size(0.F),
       need_to_eat(true),
       can_eat_food(true),

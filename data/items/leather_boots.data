@@ -4,6 +4,7 @@ consumable = false
 type = LEGS
 droppable = true
 weight = 2.5
+armor = 1
 gold_value = 10
 swap_time = 5
 use_time = 0

@@ -30,8 +30,8 @@
 
 #include "clients/terminal/Display.h"
 
-#include "utils/MapUtil.h"
-#include "utils/String.h"
+#include "util/MapUtil.h"
+#include "util/String.h"
 
 namespace Display {
 
@@ -564,8 +564,8 @@ namespace Display {
     mvwprintw(attributesScreen, 1, ATTRIBUTES_WIDTH / 2 - t->getAttributesName(attributes->name).length() / 2, t->getAttributesName(attributes->name).c_str());
     mvwprintw(attributesScreen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
     mvwprintw(attributesScreen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
-    mvwprintw(attributesScreen, 5, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
-    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamage) + std::string("%")).c_str());
+    mvwprintw(attributesScreen, 5, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmorMult)).c_str());
+    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
     mvwprintw(attributesScreen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
     mvwprintw(attributesScreen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
     mvwprintw(attributesScreen, 9, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
@@ -582,8 +582,8 @@ namespace Display {
     mvwprintw(wayScreen, 1, WAY_WIDTH / 2 - t->getWayName(way->name).length() / 2, t->getWayName(way->name).c_str());
     mvwprintw(wayScreen, 3, 1, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(way->hpIncr)).c_str());
     mvwprintw(wayScreen, 4, 1, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(way->manaIncr)).c_str());
-    mvwprintw(wayScreen, 5, 1, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(way->armorIncr)).c_str());
-    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(way->damageIncr) + std::string("%")).c_str());
+    mvwprintw(wayScreen, 5, 1, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(way->armorMultIncr)).c_str());
+    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(way->damageMultIncr) + std::string("%")).c_str());
     mvwprintw(wayScreen, 7, 1, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
     mvwprintw(wayScreen, 8, 1, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
     wattroff(wayScreen, COLOR_PAIR(color));
@@ -597,47 +597,47 @@ namespace Display {
     WINDOW * characterScreen = subwin(screen, ATTRIBUTES_HEIGHT - 2, sizeX, offsetY, offsetX);
     int hpIncr = 0;
     int manaIncr = 0;
-    int armorIncr = 0;
-    int damageIncr = 0;
+    int armorMultIncr = 0;
+    int damageMultIncr = 0;
     int soulBurnIncr = 0;
     int flowIncr = 0;
     if(race != nullptr) {
       hpIncr += race->hpIncr;
       manaIncr += race->manaIncr;
-      armorIncr += race->armorIncr;
-      damageIncr += race->damageIncr;
+      armorMultIncr += race->armorMultIncr;
+      damageMultIncr += race->damageMultIncr;
       soulBurnIncr += race->soulBurnIncr;
       flowIncr += race->flowIncr;
     }
     if(origin != nullptr) {
       hpIncr += origin->hpIncr;
       manaIncr += origin->manaIncr;
-      armorIncr += origin->armorIncr;
-      damageIncr += origin->damageIncr;
+      armorMultIncr += origin->armorMultIncr;
+      damageMultIncr += origin->damageMultIncr;
       soulBurnIncr += origin->soulBurnIncr;
       flowIncr += origin->flowIncr;
     }
     if(culture != nullptr) {
       hpIncr += culture->hpIncr;
       manaIncr += culture->manaIncr;
-      armorIncr += culture->armorIncr;
-      damageIncr += culture->damageIncr;
+      armorMultIncr += culture->armorMultIncr;
+      damageMultIncr += culture->damageMultIncr;
       soulBurnIncr += culture->soulBurnIncr;
       flowIncr += culture->flowIncr;
     }
     if(religion != nullptr) {
       hpIncr += religion->hpIncr;
       manaIncr += religion->manaIncr;
-      armorIncr += religion->armorIncr;
-      damageIncr += religion->damageIncr;
+      armorMultIncr += religion->armorMultIncr;
+      damageMultIncr += religion->damageMultIncr;
       soulBurnIncr += religion->soulBurnIncr;
       flowIncr += religion->flowIncr;
     }
     if(profession != nullptr) {
       hpIncr += profession->hpIncr;
       manaIncr += profession->manaIncr;
-      armorIncr += profession->armorIncr;
-      damageIncr += profession->damageIncr;
+      armorMultIncr += profession->armorMultIncr;
+      damageMultIncr += profession->damageMultIncr;
       soulBurnIncr += profession->soulBurnIncr;
       flowIncr += profession->flowIncr;
     }
@@ -647,8 +647,8 @@ namespace Display {
     if(attributes != nullptr) {
       mvwprintw(characterScreen, 1, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
       mvwprintw(characterScreen, 2, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
-      mvwprintw(characterScreen, 3, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->baseArmor)).c_str());
-      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamage) + std::string("%")).c_str());
+      mvwprintw(characterScreen, 3, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(attributes->armorMultIncr)).c_str());
+      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
       mvwprintw(characterScreen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
       mvwprintw(characterScreen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
       mvwprintw(characterScreen, 7, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
@@ -657,8 +657,8 @@ namespace Display {
     }
     mvwprintw(characterScreen, 1, space, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(hpIncr)).c_str());
     mvwprintw(characterScreen, 2, space, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(manaIncr)).c_str());
-    mvwprintw(characterScreen, 3, space, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(armorIncr)).c_str());
-    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(damageIncr)).c_str());
+    mvwprintw(characterScreen, 3, space, (std::string("+") + t->getStandardName("Armor") + std::string(": ") + std::to_string(armorMultIncr)).c_str());
+    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(damageMultIncr)).c_str());
     mvwprintw(characterScreen, 5, space, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
     mvwprintw(characterScreen, 6, space, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
     wattroff(characterScreen, COLOR_PAIR(color));

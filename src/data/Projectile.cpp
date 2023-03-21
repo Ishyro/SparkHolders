@@ -5,8 +5,8 @@
 
 #include "data/Projectile.h"
 
-#include "utils/String.h"
-#include "utils/MapUtil.h"
+#include "util/String.h"
+#include "util/MapUtil.h"
 
 void Projectile::initializeEffects(std::list<Effect *> effects, int overcharge_power, int overcharge_duration) {
   for(Effect * effect : effects) {

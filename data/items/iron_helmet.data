@@ -4,6 +4,7 @@ consumable = false
 type = HEAD
 droppable = true
 weight = 5.
+armor = 3
 gold_value = 10
 swap_time = 5
 use_time = 0

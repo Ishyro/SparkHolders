@@ -19,6 +19,7 @@ class Item {
     const int type;
     const bool droppable;
     const float weight;
+    const int armor;
     const int gold_value;
     const int swap_time;
     const int use_time;
@@ -30,6 +31,7 @@ class Item {
       int type,
       bool droppable,
       float weight,
+      int armor,
       int gold_value,
       int swap_time,
       int use_time,
@@ -42,6 +44,7 @@ class Item {
       type(type),
       droppable(droppable),
       weight(weight),
+      armor(armor),
       gold_value(gold_value),
       swap_time(swap_time),
       use_time(use_time),
@@ -58,6 +61,7 @@ class Item {
       type(item->type),
       droppable(item->droppable),
       weight(item->weight),
+      armor(item->armor),
       gold_value(item->gold_value),
       swap_time(item->swap_time),
       use_time(item->use_time),

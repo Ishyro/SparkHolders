@@ -1,6 +1,6 @@
 #include "data/skills/TeleportSkill.h"
 
-#include "utils/MapUtil.h"
+#include "util/MapUtil.h"
 
 void TeleportSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
   if(target != nullptr && MapUtil::distance(owner->getX(), owner->getY(), x, y) <= range * overcharge_range) {

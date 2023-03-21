@@ -1,4 +1,4 @@
-#include "utils/FileOpener.h"
+#include "util/FileOpener.h"
 
 #include <sstream>
 #include <iomanip>
@@ -361,8 +361,8 @@ namespace FileOpener {
     }
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
-    int baseArmor = stoi(values.at("baseArmor"));
-    int baseDamage = stoi(values.at("baseDamage"));
+    int baseArmorMult = stoi(values.at("baseArmorMult"));
+    int baseDamageMult = stoi(values.at("baseDamageMult"));
     int baseSoulBurn = stoi(values.at("baseSoulBurn"));
     int baseFlow = stoi(values.at("baseFlow"));
     int baseVisionRange = stoi(values.at("baseVisionRange"));
@@ -370,8 +370,8 @@ namespace FileOpener {
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
-    int armorIncr = stoi(values.at("armorIncr"));
-    int damageIncr = stoi(values.at("damageIncr"));
+    int armorMultIncr = stoi(values.at("armorMultIncr"));
+    int damageMultIncr = stoi(values.at("damageMultIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
@@ -391,8 +391,8 @@ namespace FileOpener {
       archetype,
       baseHp,
       baseMana,
-      baseArmor,
-      baseDamage,
+      baseArmorMult,
+      baseDamageMult,
       baseSoulBurn,
       baseFlow,
       baseVisionRange,
@@ -400,8 +400,8 @@ namespace FileOpener {
       baseDetectionRange,
       hpIncr,
       manaIncr,
-      armorIncr,
-      damageIncr,
+      armorMultIncr,
+      damageMultIncr,
       soulBurnIncr,
       flowIncr,
       *effects,
@@ -673,7 +673,9 @@ namespace FileOpener {
       effects->push_back((Effect *) database->getEffect(effect));
     }
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
+    int armor = 0;
     if(type != UNEQUIPABLE) {
+      armor = stoi(values.at("armor"));
       damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
       damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
       damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
@@ -693,6 +695,7 @@ namespace FileOpener {
       type,
       droppable,
       weight,
+      armor,
       gold_value,
       swap_time,
       use_time,
@@ -966,8 +969,8 @@ namespace FileOpener {
     int type = database->getTargetFromMacro(values.at("type"));
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
-    int baseArmor = stoi(values.at("baseArmor"));
-    int baseDamage = stoi(values.at("baseDamage"));
+    int baseArmorMult = stoi(values.at("baseArmorMult"));
+    int baseDamageMult = stoi(values.at("baseDamageMult"));
     int baseSoulBurn = stoi(values.at("baseSoulBurn"));
     int baseFlow = stoi(values.at("baseFlow"));
     int baseVisionRange = stoi(values.at("baseVisionRange"));
@@ -975,8 +978,8 @@ namespace FileOpener {
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
-    int armorIncr = stoi(values.at("armorIncr"));
-    int damageIncr = stoi(values.at("damageIncr"));
+    int armorMultIncr = stoi(values.at("armorMultIncr"));
+    int damageMultIncr = stoi(values.at("damageMultIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
@@ -992,6 +995,7 @@ namespace FileOpener {
       skills->push_back((Skill *) database->getSkill(skill));
     }
     if(type == RACE) {
+      int baseArmor = stoi(values.at("baseArmor"));
       float size = stof(values.at("size"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
       bool need_to_eat;
@@ -1018,7 +1022,8 @@ namespace FileOpener {
         baseHp,
         baseMana,
         baseArmor,
-        baseDamage,
+        baseArmorMult,
+        baseDamageMult,
         baseSoulBurn,
         baseFlow,
         baseVisionRange,
@@ -1026,8 +1031,8 @@ namespace FileOpener {
         baseDetectionRange,
         hpIncr,
         manaIncr,
-        armorIncr,
-        damageIncr,
+        armorMultIncr,
+        damageMultIncr,
         soulBurnIncr,
         flowIncr,
         size,
@@ -1053,8 +1058,8 @@ namespace FileOpener {
         type,
         baseHp,
         baseMana,
-        baseArmor,
-        baseDamage,
+        baseArmorMult,
+        baseDamageMult,
         baseSoulBurn,
         baseFlow,
         baseVisionRange,
@@ -1062,8 +1067,8 @@ namespace FileOpener {
         baseDetectionRange,
         hpIncr,
         manaIncr,
-        armorIncr,
-        damageIncr,
+        armorMultIncr,
+        damageMultIncr,
         soulBurnIncr,
         flowIncr,
         *effects,
@@ -1087,6 +1092,7 @@ namespace FileOpener {
     bool droppable;
     is_droppable >> std::boolalpha >> droppable;
     float weight = stof(values.at("weight"));
+    int armor = stoi(values.at("armor"));
     int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_use_ammo(values.at("use_ammo"));
     bool use_ammo;
@@ -1125,6 +1131,7 @@ namespace FileOpener {
       type,
       droppable,
       weight,
+      armor,
       gold_value,
       use_ammo,
       ammo_type,

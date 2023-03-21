@@ -4,7 +4,7 @@
 #include "data/Gear.h"
 #include "data/skills/Skill.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 void Attributes::init(Attributes * archetype) {
   this->archetype = archetype;
@@ -25,8 +25,8 @@ std::string Attributes::to_string() {
   }
   String::insert_int(ss, baseHp);
   String::insert_int(ss, baseMana);
-  String::insert_int(ss, baseArmor);
-  String::insert_int(ss, baseDamage);
+  String::insert_int(ss, baseArmorMult);
+  String::insert_int(ss, baseDamageMult);
   String::insert_int(ss, baseSoulBurn);
   String::insert_int(ss, baseFlow);
   String::insert_int(ss, baseVisionRange);
@@ -34,8 +34,8 @@ std::string Attributes::to_string() {
   String::insert_int(ss, baseDetectionRange);
   String::insert_int(ss, hpIncr);
   String::insert_int(ss, manaIncr);
-  String::insert_int(ss, armorIncr);
-  String::insert_int(ss, damageIncr);
+  String::insert_int(ss, armorMultIncr);
+  String::insert_int(ss, damageMultIncr);
   String::insert_int(ss, soulBurnIncr);
   String::insert_int(ss, flowIncr);
   std::stringstream * ss_effects = new std::stringstream();
@@ -66,7 +66,7 @@ Attributes * Attributes::from_string(std::string to_read) {
   int baseHp = String::extract_int(ss);
   int baseMana = String::extract_int(ss);
   int baseArmor = String::extract_int(ss);
-  int baseDamage = String::extract_int(ss);
+  int baseDamageMult = String::extract_int(ss);
   int baseSoulBurn = String::extract_int(ss);
   int baseFlow = String::extract_int(ss);
   int baseVisionRange = String::extract_int(ss);
@@ -75,7 +75,7 @@ Attributes * Attributes::from_string(std::string to_read) {
   int hpIncr = String::extract_int(ss);
   int manaIncr = String::extract_int(ss);
   int armorIncr = String::extract_int(ss);
-  int damageIncr = String::extract_int(ss);
+  int damageMultIncr = String::extract_int(ss);
   int soulBurnIncr = String::extract_int(ss);
   int flowIncr = String::extract_int(ss);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
@@ -97,7 +97,7 @@ Attributes * Attributes::from_string(std::string to_read) {
     baseHp,
     baseMana,
     baseArmor,
-    baseDamage,
+    baseDamageMult,
     baseSoulBurn,
     baseFlow,
     baseVisionRange,
@@ -106,7 +106,7 @@ Attributes * Attributes::from_string(std::string to_read) {
     hpIncr,
     manaIncr,
     armorIncr,
-    damageIncr,
+    damageMultIncr,
     soulBurnIncr,
     flowIncr,
     *effects,

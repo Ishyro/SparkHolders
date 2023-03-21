@@ -15,6 +15,8 @@
 
 #include "data/Action.h"
 
+#include "util/MapUtil.h"
+
 #include <iostream>
 
 Action * Action::execute(Adventure * adventure) {
@@ -138,7 +140,8 @@ Action * Action::execute(Adventure * adventure) {
   }
   else if(next != nullptr) {
     next->previous = nullptr;
-    next->computeTick(0);
+    // tick is in range [0;1]
+    next->computeTick(1 - tick);
   }
   else {
     user->setNeedToUpdateActions(true);
@@ -151,9 +154,9 @@ int Action::getTick() { return tick; }
 void Action::setPrevious(Action * action) { previous = action; }
 void Action::setNext(Action * action) { next = action; }
 
-void Action::computeTick(int tick) {
+void Action::computeTick(float tick) {
   if(previous == nullptr) {
-    this->tick -= (float) tick;
+    this->tick = MapUtil::round(this->tick - (float) tick);
   }
 }
 

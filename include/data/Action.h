@@ -82,7 +82,7 @@ class Action {
     int getTick();
     void setPrevious(Action * action);
     void setNext(Action * action);
-    void computeTick(int tick);
+    void computeTick(float tick);
     void computeTime(Adventure * adventure);
     bool operator < (const Action& a) const { return tick < a.tick; }
   private:

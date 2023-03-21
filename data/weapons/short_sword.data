@@ -4,6 +4,7 @@ range = 1
 type = SHORT_SWORD
 droppable = true
 weight = 5.
+armor = 2
 gold_value = 50
 use_ammo = false
 strike_time = 5

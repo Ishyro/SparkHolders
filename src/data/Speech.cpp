@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "utils/String.h"
+#include "util/String.h"
 
 #include "data/Database.h"
 #include "data/Speech.h"

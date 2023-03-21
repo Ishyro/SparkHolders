@@ -11,8 +11,8 @@
 
 #include "data/Map.h"
 
-#include "utils/String.h"
-#include "utils/MapUtil.h"
+#include "util/String.h"
+#include "util/MapUtil.h"
 
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
@@ -381,7 +381,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     Effect * effect = new Effect("TXT_GAIN_XP", victim->getLevel(), "", EXPERIENCE, INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, xp * 10, 0, 5, *effects, damage_reductions));
+    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, 0, xp * 10, 0, 5, *effects, damage_reductions));
     delete effects;
   }
   if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {

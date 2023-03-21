@@ -16,7 +16,7 @@
 
 #include "data/Character.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 void Character::initializeCharacter(Gear * gear) {
   size = race->size;
@@ -30,13 +30,14 @@ void Character::initializeCharacter(Gear * gear) {
   }
   hp = maxHp;
   mana = maxMana;
-  armor = attributes->baseArmor + race->baseArmor + origin->baseArmor + culture->baseArmor + religion->baseArmor + profession->baseArmor;
+  armor = race->baseArmor;
+  armor_multiplier = attributes->baseArmorMult + race->baseArmorMult + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
   for(Way * way : titles) {
-    maxHp += way->baseArmor;
+    maxHp += way->baseArmorMult;
   }
-  damage_multiplier = attributes->baseDamage + race->baseDamage + origin->baseDamage + culture->baseDamage + religion->baseDamage + profession->baseDamage;
+  damage_multiplier = attributes->baseDamageMult + race->baseDamageMult + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
   for(Way * way : titles) {
-    maxHp += way->baseDamage;
+    maxHp += way->baseDamageMult;
   }
   soulBurnTreshold = attributes->baseSoulBurn + race->baseSoulBurn + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
   for(Way * way : titles) {
@@ -240,11 +241,19 @@ float Character::getStamina() { return stamina; }
 float Character::getSatiety() { return satiety; }
 
 int Character::getArmor() {
-  int bonus = 0;
+  int result = (int) std::ceil( (float) (armor + gear->getArmor()) * getArmorMultiplier());
   for(Effect * e : effects)
     if(e->type == ARMOR)
-      bonus += e->power;
-  return std::max(armor + bonus, 0);
+      result += e->power;
+  return std::max(result, 0);
+}
+
+float Character::getArmorMultiplier() {
+  int result = armor_multiplier;
+  for(Effect * e : effects)
+    if(e->type == ARMOR_MULTIPLIER)
+      result += e->power;
+  return std::max(0.F, 1.F + ((float) result) / 100.F);
 }
 
 int Character::getSoulBurnTreshold() {
@@ -494,20 +503,20 @@ void Character::removeSatiety(float satiety) { this->satiety = std::max(0.F, thi
 void Character::setStamina(float stamina) { this->stamina = stamina; }
 void Character::setSatiety(float satiety) { this->satiety = satiety; }
 
-void Character::incrArmor() {
+void Character::incrArmorMultiplier() {
   if(player_character) {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->armorIncr;
-  incr += second_attributes->armorIncr;
-  incr += race->armorIncr;
-  incr += origin->armorIncr;
-  incr += culture->armorIncr;
-  incr += religion->armorIncr;
-  incr += profession->armorIncr;
+  incr += attributes->armorMultIncr;
+  incr += second_attributes->armorMultIncr;
+  incr += race->armorMultIncr;
+  incr += origin->armorMultIncr;
+  incr += culture->armorMultIncr;
+  incr += religion->armorMultIncr;
+  incr += profession->armorMultIncr;
   for(Way * title : titles) {
-    incr += title->armorIncr;
+    incr += title->armorMultIncr;
   }
   armor += std::max(incr, 0);
 }
@@ -516,15 +525,15 @@ void Character::incrDamageMultiplier() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->damageIncr;
-  incr += second_attributes->damageIncr;
-  incr += race->damageIncr;
-  incr += origin->damageIncr;
-  incr += culture->damageIncr;
-  incr += religion->damageIncr;
-  incr += profession->damageIncr;
+  incr += attributes->damageMultIncr;
+  incr += second_attributes->damageMultIncr;
+  incr += race->damageMultIncr;
+  incr += origin->damageMultIncr;
+  incr += culture->damageMultIncr;
+  incr += religion->damageMultIncr;
+  incr += profession->damageMultIncr;
   for(Way * title : titles) {
-    incr += title->damageIncr;
+    incr += title->damageMultIncr;
   }
   damage_multiplier += std::max(incr, 0);
 }
@@ -676,7 +685,7 @@ void Character::gainLevel() {
     hpHeal(getMaxHp() - old_max_hp);
     incrMaxMana();
     manaHeal(getMaxMana() - old_max_mana);
-    incrArmor();
+    incrArmorMultiplier();
     incrDamageMultiplier();
     incrSoulBurnTreshold();
     incrFlow();
@@ -1558,6 +1567,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, hp);
   String::insert_int(ss, mana);
   String::insert_int(ss, armor);
+  String::insert_int(ss, armor_multiplier);
   String::insert_int(ss, damage_multiplier);
   String::insert_int(ss, soulBurnTreshold);
   String::insert_int(ss, flow);
@@ -1690,6 +1700,7 @@ Character * Character::full_from_string(std::string to_read) {
   int hp = String::extract_int(ss);
   int mana = String::extract_int(ss);
   int armor = String::extract_int(ss);
+  int armor_multiplier = String::extract_int(ss);
   int damage_multiplier = String::extract_int(ss);
   int soulBurnTreshold = String::extract_int(ss);
   int flow = String::extract_int(ss);
@@ -1813,6 +1824,7 @@ Character * Character::full_from_string(std::string to_read) {
     hp,
     mana,
     armor,
+    armor_multiplier,
     damage_multiplier,
     soulBurnTreshold,
     flow,

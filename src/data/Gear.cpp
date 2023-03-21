@@ -2,7 +2,7 @@
 
 #include "data/Gear.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 std::list<Item *> Gear::equip(Item * new_item) {
   std::list<Item *> unequip;
@@ -177,6 +177,29 @@ float Gear::getWeight() {
     weight += weapon->weight;
   }
   return std::max(1.F, weight);
+}
+
+int Gear::getArmor() {
+  int armor = 0.F;
+  if(head != nullptr) {
+    armor += head->armor;
+  }
+  if(arms != nullptr) {
+    armor += arms->armor;
+  }
+  if(body != nullptr) {
+    armor += body->armor;
+  }
+  if(legs != nullptr) {
+    armor += legs->armor;
+  }
+  if(lantern != nullptr) {
+    armor += lantern->armor;
+  }
+  if(weapon != nullptr) {
+    armor += weapon->armor;
+  }
+  return std::max(0, armor);
 }
 
 std::string Gear::to_string() {

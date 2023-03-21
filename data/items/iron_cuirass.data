@@ -4,6 +4,7 @@ consumable = false
 type = BODY
 droppable = true
 weight = 10.
+armor = 5
 gold_value = 10
 swap_time = 10
 use_time = 0

@@ -1,6 +1,6 @@
 #include "data/Tile.h"
 
-#include "utils/String.h"
+#include "util/String.h"
 
 std::string Tile::to_string() {
   std::stringstream * ss = new std::stringstream();
