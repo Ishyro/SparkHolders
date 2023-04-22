@@ -7,6 +7,4 @@
 #include <iostream>
 #include <fstream>
 
-#include "Values.h"
-
 #endif // _LAUNCHER_H_

@@ -41,9 +41,9 @@ Database::Database() {
 
   // effect_duration_type
 
-  macros.insert(std::make_pair("INSTANT", INSTANT));
-  macros.insert(std::make_pair("INFINITE", INFINITE));
-  macros.insert(std::make_pair("TEMPORARY", TEMPORARY));
+  macros.insert(std::make_pair("INSTANT_DURATION", INSTANT_DURATION));
+  macros.insert(std::make_pair("INFINITE_DURATION", INFINITE_DURATION));
+  macros.insert(std::make_pair("TEMPORARY_DURATION", TEMPORARY_DURATION));
 
   // effect_type
 

@@ -96,6 +96,14 @@ CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 GRAPHICS_LIBRARIES=
 
+# Windows
+ifdef WINDOWS
+# _D_WIN32_WINNT must be greater than 0x0600 for sockets (inet_pton)
+CC=x86_64-w64-mingw32-g++
+CC_FLAGS=-D_WIN32_WINNT=0x0800 -O0 -pipe -static-libstdc++ -static-libgcc -fpermissive -g -Wall -Wno-reorder
+CC_LIBRARIES+=-lws2_32
+endif
+
 # Rules
 
 all: bin $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \

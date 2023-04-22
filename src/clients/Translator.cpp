@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <regex>
 
 #include "clients/Translator.h"
 
@@ -284,7 +285,8 @@ const std::string Translator::getStandardDesc(std::string to_translate) {
 
  void Translator::loadValuesFromFile(const std::string fileName, std::map<const std::string, const std::string> * map) {
   std::fstream file;
-  file.open(fileName, std::ios::in);
+  std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+  file.open(os_fileName, std::ios::in);
   if(!file) {
     return;
   }

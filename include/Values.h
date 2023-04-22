@@ -46,9 +46,9 @@ class SpeechManager;
 
 // effect_duration_type
 
-#define INSTANT 1
-#define INFINITE 2
-#define TEMPORARY 3
+#define INSTANT_DURATION 1
+#define INFINITE_DURATION 2
+#define TEMPORARY_DURATION 3
 
 // effect_type
 

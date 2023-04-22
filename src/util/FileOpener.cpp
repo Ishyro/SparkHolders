@@ -6,6 +6,8 @@
 #include <cctype>
 #include <iostream>
 #include <fstream>
+#include <regex>
+
 // time
 #include<ctime>
 
@@ -55,10 +57,17 @@
 
 namespace FileOpener {
 
+  #ifdef _WIN32_WINNT
+    static std::string PATH_DELIMITER = "\\";
+  #else
+    static std::string PATH_DELIMITER = "/";
+  #endif
+
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
     std::map<const std::string, std::string> result = std::map<const std::string,std::string>();
     std::fstream file;
-    file.open(fileName, std::ios::in);
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    file.open(os_fileName, std::ios::in);
     if(!file) {
       std::cout << "File not found: " + fileName << std::endl;
     }
@@ -99,10 +108,11 @@ namespace FileOpener {
     std::string delimiter = ".";
     std::string dataFile = fileName.substr(0, fileName.find(delimiter) + 1) + "data";
     Database * database = DatabaseOpener(dataFile);
-    SettingsOpener("data/settings_server.data", database);
+    SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
 
     std::fstream file;
-    file.open(fileName, std::ios::in);
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    file.open(os_fileName, std::ios::in);
     if(!file) {
       std::cout << "File not found: " + fileName << std::endl;
     }
@@ -544,7 +554,7 @@ namespace FileOpener {
     int type = database->getTargetFromMacro(values.at("type"));
     int duration_type = database->getTargetFromMacro(values.at("duration_type"));
     int duration = 0;
-    if(duration_type == TEMPORARY) {
+    if(duration_type == TEMPORARY_DURATION) {
       duration = stoi(values.at("duration"));
     }
     int power = stoi(values.at("power"));
@@ -719,7 +729,8 @@ namespace FileOpener {
 
     std::fstream file;
     std::string line;
-    file.open(fileName, std::ios::in);
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    file.open(os_fileName, std::ios::in);
     if(!file) {
       std::cout << "File not found: " + fileName << std::endl;
     }
@@ -826,8 +837,8 @@ namespace FileOpener {
     std::string attributes = values.at("attributes");
     int target_type = database->getTargetFromMacro(values.at("target_type"));
     std::istringstream is(values.at("is_instant"));
-    bool is_instant;
-    is >> std::boolalpha >> is_instant;
+    bool is_INSTANT_DURATION;
+    is >> std::boolalpha >> is_INSTANT_DURATION;
     int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
@@ -839,7 +850,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, is_instant, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, is_INSTANT_DURATION, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
     database->addSkill(skill);
     delete skills;
   }
@@ -1211,7 +1222,8 @@ namespace FileOpener {
   Database * DatabaseOpener(std::string fileName) {
     Database * database = new Database();
     std::fstream file;
-    file.open(fileName, std::ios::in);
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    file.open(os_fileName, std::ios::in);
     if(!file) {
       std::cout << "File not found: " + fileName << std::endl;
     }

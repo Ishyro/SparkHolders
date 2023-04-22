@@ -62,6 +62,11 @@ class Translator {
     std::map<const std::string, const std::string> weaponsDescs;
     std::map<const std::string, const std::string> standardNames;
     std::map<const std::string, const std::string> standardDescs;
+    #ifdef _WIN32_WINNT
+      const std::string PATH_DELIMITER = "\\";
+    #else
+      const std::string PATH_DELIMITER = "/";
+    #endif
 };
 
 #endif // _TRANSLATOR_H_

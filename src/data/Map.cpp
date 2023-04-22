@@ -378,7 +378,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
     int xp = victim->getXP();
-    Effect * effect = new Effect("TXT_GAIN_XP", victim->getLevel(), "", EXPERIENCE, INSTANT, xp, 0, damages, damage_reductions);
+    Effect * effect = new Effect("TXT_GAIN_XP", victim->getLevel(), "", EXPERIENCE, INSTANT_DURATION, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
     loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, 0, xp * 10, 0, 5, *effects, damage_reductions));

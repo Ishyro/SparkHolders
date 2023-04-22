@@ -647,7 +647,7 @@ void Character::applyHunger() {
 
 void Character::applyEffects() {
   for(Effect * e : effects) {
-    if(e->duration_type == TEMPORARY) {
+    if(e->duration_type == TEMPORARY_DURATION) {
       if(player_character) {
         setNeedToSend(true);
       }

@@ -8,7 +8,7 @@ void Effect::activate(Character * target) {
   }
   else {
     switch (type) {
-      // no duration means INSTANT for these effects
+      // no duration means INSTANT_DURATION for these effects
       case HP:
         target->hpHeal(power);
         break;
@@ -81,11 +81,11 @@ bool Effect::tick(Character * target) {
     default:
       ;
   }
-  return duration_type == TEMPORARY && --tick_left == 0;
+  return duration_type == TEMPORARY_DURATION && --tick_left == 0;
 }
 
 void Effect::desactivate(Character * target) {
-  if(duration_type == INFINITE || duration_type == TEMPORARY) {
+  if(duration_type == INFINITE_DURATION || duration_type == TEMPORARY_DURATION) {
     target->removeEffect(this);
   }
 }

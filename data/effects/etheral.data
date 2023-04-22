@@ -2,6 +2,6 @@ name = TXT_ETHERAL
 level = 0
 attributes =
 type = ETHERAL
-duration_type = INFINITE
+duration_type = INFINITE_DURATION
 duration = 0
 power = 0
