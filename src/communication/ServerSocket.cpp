@@ -12,7 +12,7 @@ ServerSocket::ServerSocket(int port, int maxPlayers, bool local) {
 		}
 	#endif
   struct sockaddr_in sin;
-  if((socketfd = socket(AF_INET,SOCK_STREAM,0)) < 0) {
+  if((socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
     #ifndef _WIN32_WINNT
       perror("socket");
     #else

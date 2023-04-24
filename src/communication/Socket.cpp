@@ -5,18 +5,18 @@
 #endif
 
 Socket::Socket(){
-  if((fd = socket(AF_INET,SOCK_STREAM,0)) == -1) {
+  if((fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
     #ifndef _WIN32_WINNT
       perror("socket");
     #else
-      std::cout << "accept: " << WSAGetLastError() << std::endl;
+      std::cerr << "accept: " << WSAGetLastError() << std::endl;
     #endif
     exit(1);
   }
   #ifdef _WIN32_WINNT
 		WSADATA d;
 		if (WSAStartup(MAKEWORD(2, 2), &d)) {
-	  	fprintf(stderr, "Failed to initialize.\n");
+	  	std::cerr << "Failed to initialize." << std::endl;
 		}
 	#endif
 }
@@ -52,43 +52,109 @@ void Socket::connect(in_addr ipv4, int port) {
   }
 }
 
-std::string Socket::read() {
-  std::string result = std::string("");
-  while(true) {
-    char * msg = new char [1024];
-    if(recv(fd, (void *) msg, (ssize_t) 1024, 0) == 1) {
-      close();
-      throw CloseException();
-    }
-    else {
-      std::string part = std::string(msg);
-      delete msg;
-      if(part.find(delimiter) != std::string::npos) {
-        result += part.substr(0, part.find(delimiter));
-      }
-      else {
-        return result += part.substr(0, part.find(final_delimiter));
-      }
-    }
-  }
-}
-
 void Socket::write(std::string msg) {
+  std::string length = std::to_string(msg.length());
   do {
-    std::string tosend;
-    if(msg.length() > 1023) {
-      tosend = msg.substr(0, 1023) + delimiter;
-      msg = msg.substr(1023, msg.length());
+    #ifndef _WIN32_WINNT
+      int sent = send(fd, (void *) length.c_str(), (ssize_t) length.length() + 1, 0);
+    #else
+      int sent = send(fd, length.c_str(), (ssize_t) length.length() + 1, 0);
+    #endif
+    if (sent == -1) {
+        close();
+        throw CloseException();
+      }
+    // always unsigned or -1
+    if(length.length() > (unsigned int) sent) {
+      length = length.substr(sent - 1, length.length());
     }
     else {
-      tosend = msg + final_delimiter;
+      length = "";
+    }
+  } while(length != "");
+  char * end_number = new char [1];
+  end_number[0] = '$';
+  #ifndef _WIN32_WINNT
+    if(send(fd, (void *) end_number, (ssize_t) 1, 0) == -1)
+  #else
+    if(send(fd, end_number, (ssize_t) 1, 0) == -1)
+  #endif
+  {
+    close();
+    throw CloseException();
+  }
+  delete end_number;
+  do {
+    std::string part;
+    if(msg.length() > SOCKET_MESSAGE_SIZE - 1) {
+      part = msg.substr(0, SOCKET_MESSAGE_SIZE - 1);
+    }
+    else {
+      part = msg;
       msg = "";
     }
-    if(send(fd, (void *) tosend.c_str(), (ssize_t) 1024, 0) == -1) {
+    int size = std::min(SOCKET_MESSAGE_SIZE, (int) part.length() + 1);
+    #ifndef _WIN32_WINNT
+      int sent = send(fd, (void *) part.c_str(), (ssize_t) size, 0);
+    #else
+      int sent = send(fd, part.c_str(), (ssize_t) size, 0);
+    #endif
+    // it just works
+    usleep(1);
+    if (sent == -1) {
       close();
       throw CloseException();
     }
+    // Send may have not sent all the data
+    if(msg.length() > (long unsigned int) sent - 1) {
+      msg = msg.substr(sent - 1, msg.length());
+    }
   } while(msg != "");
+}
+
+std::string Socket::read() {
+  std::string result = std::string("");
+  char * msg = new char [SOCKET_MESSAGE_SIZE];
+  char * number = new char [2];
+  std::string len = std::string("");
+  do {
+    #ifndef _WIN32_WINNT
+      if(recv(fd, (void *) number, (ssize_t) 1, 0) == -1)
+    #else
+      if(recv(fd, number, (ssize_t) 1, 0) == -1)
+    #endif
+    {
+      close();
+      delete msg;
+      throw CloseException();
+    }
+    number[1] = '\0';
+    len += std::string(number);
+  } while(number[0] != '$');
+  delete number;
+  int length = stoi(len.substr(0, len.length() - 1));
+  int left = length;
+  do {
+    int size = std::min(SOCKET_MESSAGE_SIZE, left + 1);
+    std::fill(msg, msg+SOCKET_MESSAGE_SIZE, '\0');
+    #ifndef _WIN32_WINNT
+      int received = (int) recv(fd, (void *) msg, (ssize_t) size, 0) == -1;
+    #else
+      int received = recv(fd, msg, (ssize_t) size, 0) == -1;
+    #endif
+    if(received == -1) {
+      close();
+      delete msg;
+      throw CloseException();
+    }
+    // it just works
+    usleep(1);
+    std::string part = std::string(msg);
+    left -= part.length();
+    result += part;
+  } while(left > 0);
+  delete msg;
+  return result;
 }
 
 int Socket::getFD() { return fd; }

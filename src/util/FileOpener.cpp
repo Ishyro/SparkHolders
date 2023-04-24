@@ -106,7 +106,7 @@ namespace FileOpener {
 
   Adventure * AdventureOpener(std::string fileName) {
     std::string delimiter = ".";
-    std::string dataFile = fileName.substr(0, fileName.find(delimiter) + 1) + "data";
+    std::string dataFile = std::regex_replace(fileName, std::regex(".commands"), ".data");
     Database * database = DatabaseOpener(dataFile);
     SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
 

@@ -89,6 +89,7 @@ class Map {
     // use this only for players, too much work for every characters
     Map(Map * map, Character * player, Database * database):
       name(map->name),
+      id(map->id),
       offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
       offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
       sizeX(std::min(map->sizeX, player->getX() + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetX),
@@ -157,6 +158,7 @@ class Map {
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, int mode);
     float getMoveCost(Character * c, int y, int x, float dy, float dx);
+    bool tryMove(Character * c, int destY, int destX, float destDY, float destDX);
     float move(Character * c, int y, int x, float dy, float dx);
     float move(Character * c, float orientation, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);

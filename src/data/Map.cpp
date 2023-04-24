@@ -584,6 +584,18 @@ float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
   return ap_cost / c->getMovementTimeModifier();
 }
 
+bool Map::tryMove(Character * c, int destY, int destX, float destDY, float destDX) {
+  if(c->isEtheral()) {
+    return true;
+  }
+  for(Character * other : characters) {
+    if(c != other && !other->isEtheral() && MapUtil::distance(destX, destY, destDX, destDY, other->getX(), other->getY(), other->getDX(), other->getDY()) <= c->getSize() + other->getSize()) {
+      return false;
+    } 
+  }
+  return true;
+}
+
 float Map::move(Character * c, int destY, int destX, float destDY, float destDX) {
   int x = destX;
   int y = destY;
@@ -611,8 +623,13 @@ float Map::move(Character * c, int destY, int destX, float destDY, float destDX)
     dy = destDY;
   }
   float ap_cost = getMoveCost(c, y, x, dy, dx);
-  c->move(y, x, dy, dx, orientation, id);
-  return ap_cost;
+  if(tryMove(c, y, x, dy, dx)) {
+    c->move(y, x, dy, dx, orientation, id);
+    return ap_cost;
+  }
+  else {
+    return -1;
+  }
 }
 
 float Map::move(Character * c, float orientation, float ap, World * world) {
@@ -880,11 +897,21 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           next_dy = (next_dy == 0.F ? 0.999F : 0.F);
         }
         if(next_x < 0 || next_x >= next_map->sizeX || next_y < 0 || next_y >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
-          c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
-          return 0.F;
+          if(tryMove(c, lim_y, lim_x, lim_dy, lim_dx)) {
+            c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
+            return 0.F;
+          }
+          else {
+            return -1;
+          }
         }
         else {
-          c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          if(next_map->tryMove(c, next_y, next_x, next_dy, next_dx)) {
+            c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          }
+          else {
+            return -1;
+          }
         }
         break;
       case BOUNCE:
@@ -949,19 +976,34 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           dest_orientation -= 360.F;
         }
         if(next_x < 0 || next_x >= next_map->sizeX || next_y < 0 || next_y >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
-          c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
-          return 0.F;
+          if(tryMove(c, lim_y, lim_x, lim_dy, lim_dx)) {
+            c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
+            return 0.F;
+          }
+          else {
+            return -1;
+          }
         }
         else {
-          c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          if(next_map->tryMove(c, next_y, next_x, next_dy, next_dx)) {
+            c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          }
+          else {
+            return -1;
+          }
         }
         break;
     }
     return ap - current_cost;
   }
   else {
-    c->move(next_y, next_x, next_dy, next_dx, orientation, id);
-    return 0.F;
+    if(tryMove(c, next_y, next_x, next_dy, next_dx)) {
+      c->move(next_y, next_x, next_dy, next_dx, orientation, id);
+      return 0.F;
+    }
+    else {
+      return -1;
+    }
   }
 }
 

@@ -32,6 +32,10 @@ Action * Action::execute(Adventure * adventure) {
       user->setOrientation(orientation);
       while(ap > 0.F) {
         ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), ap, adventure->getWorld());
+        // collision with other character
+        if(ap == -1) {
+          break;
+        }
       }
       break;
     }

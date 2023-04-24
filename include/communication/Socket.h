@@ -19,6 +19,8 @@
 
 #include "Values.h"
 
+#define SOCKET_MESSAGE_SIZE 256
+
 class CloseException : public std::exception {
 
 };
@@ -30,21 +32,19 @@ class Socket {
 			#ifdef _WIN32_WINNT
 				WSADATA d;
 				if (WSAStartup(MAKEWORD(2, 2), &d)) {
-					fprintf(stderr, "Failed to initialize.\n");
+	  				std::cerr << "Failed to initialize." << std::endl;
 				}
 			#endif
 		}
 		void connect(const std::string & host, int port);
 		void connect(in_addr ipv4, int port);
-		std::string read();
 		void write(std::string msg);
+		std::string read();
 		int getFD();
 		bool isOpen() const;
 		void close();
 	private:
 		int fd;
-  		static const char final_delimiter = '%';
-  		static const char delimiter = '&';
 };
 
 #endif /* _SOCKET_H_ */
