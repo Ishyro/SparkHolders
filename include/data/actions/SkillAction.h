@@ -1,5 +1,43 @@
-#ifndef _ACTION_H_
-#define _ACTION_H_
+#ifndef _SKILL_ACTION_H_
+#define _SKILL_ACTION_H_
+
+#include "data/actions/TargetedAction.h"
+
+#include "Values.h"
+
+class SkillAction : public TargetedAction {
+    using TargetedAction::TargetedAction;
+  public:
+    Action * execute(Adventure * adventure);
+    void computeTime(Adventure * adventure);
+    Skill * getSkill();
+    int getOverchargePower();
+    int getOverchargeDuration();
+    int getOverchargeRange();
+    void setSkill(Skill * skill);
+    void setOverchargePower(int overcharge);
+    void setOverchargeDuration(int overcharge);
+    void setOverchargeRange(int overcharge);
+  private:
+    Skill * skill;
+    int overcharge_power;
+    int overcharge_duration;
+    int overcharge_range;
+};
+
+#endif // _SKILL_ACTION_H_
+
+
+
+
+
+
+
+
+
+
+#ifndef _SKILL_ACTION_H_
+#define _SKILL_ACTION_H_
 
 #include <list>
 #include <string>
@@ -11,19 +49,23 @@
 
 #include "Values.h"
 
+typedef struct Target {
+  int type;
+  int id;
+  float x;
+  float y;
+} Target;
+
 class Action {
   public:
     const int type;
     const float orientation;
-    const Skill * skill;
+    const 
     const Character * target;
     const int target_x;
     const int target_y;
     const MapLink * link;
     const std::string object;
-    const int overcharge_power;
-    const int overcharge_duration;
-    const int overcharge_range;
     Action(
       const int type,
       Adventure * adventure,
@@ -84,6 +126,8 @@ class Action {
     void setNext(Action * action);
     void computeTick(float tick);
     void computeTime(Adventure * adventure);
+    static std::string target_to_string(Target * target);
+    static Target * target_from_string(std::string to_read);
     bool operator < (const Action& a) const { return tick < a.tick; }
   private:
     float tick;
@@ -93,4 +137,4 @@ class Action {
     Action * next;
 };
 
-#endif // _ACTION_H_
+#endif // _SKILL_ACTION_H_

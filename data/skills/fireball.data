@@ -1,7 +1,7 @@
 name = TXT_FIREBALL
 level = 2
 attributes =
-target_type = TARGET
+target_type = PERMISSIVE_TARGET
 is_instant = false
 overcharge_power_type = LINEAR
 overcharge_duration_type = LINEAR

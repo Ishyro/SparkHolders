@@ -19,10 +19,8 @@ typedef struct ProjectileDisplay {
   long id;
   int projectile_type;
   float size;
-  int x;
-  int y;
-  float dx;
-  float dy;
+  float x;
+  float y;
   float orientation;
   int damages[DAMAGE_TYPE_NUMBER];
   float speed;
@@ -38,7 +36,7 @@ namespace projectile {
 
 class Projectile {
   public:
-    const long id = ++projectile::id_cpt;
+    const long id;
     const float size;
     const std::string name;
     const int projectile_type;
@@ -59,6 +57,7 @@ class Projectile {
       int damages[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      id(0),
       projectile_type(projectile_type),
       size(size),
       homing(homing),
@@ -75,12 +74,8 @@ class Projectile {
     {
       lost = false;
       current_map_id = 0;
-      x = 0;
-      y = 0;
-      dx = 0.F;
-      dy = 0.F;
-      dest_x = 0;
-      dest_y = 0;
+      x = 0.F;
+      y = 0.F;
       target = nullptr;
       owner = nullptr;
       orientation = 0.F;
@@ -96,40 +91,25 @@ class Projectile {
     Projectile(
       const Projectile * projectile,
       int realDamages[DAMAGE_TYPE_NUMBER],
+      World * world,
       int current_map_id,
-      int x,
-      int y,
-      float dx,
-      float dy,
-      int dest_x,
-      int dest_y,
-      float dest_dx,
-      float dest_dy,
-      Character * target,
+      Target * target,
       Character * owner,
-      float orientation,
       int overcharge_power,
       int overcharge_duration,
-      int overcharge_range
+      int overcharge_range,
+      bool change_owner_orientation
     ):
       name(projectile->name),
+      id(++projectile::id_cpt),
       projectile_type(projectile->projectile_type),
       size(projectile->size),
       homing(projectile->homing),
       current_map_id(current_map_id),
-      x(x),
-      y(y),
-      dx(dx),
-      dy(dy),
-      dest_x(dest_x),
-      dest_y(dest_y),
-      dest_dx(dest_dx),
-      dest_dy(dest_dy),
       skill(projectile->skill),
       effects(std::list<Effect *>()),
       target(target),
       owner(owner),
-      orientation(orientation),
       speed(projectile->speed * overcharge_range),
       area(projectile->area * overcharge_range),
       overcharge_power(overcharge_power),
@@ -143,30 +123,69 @@ class Projectile {
       previous_targets(std::list<Character *>()),
       current_targets(std::list<Character *>())
     {
-      lost = false;
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = realDamages[i];
         this->current_damages[i] = realDamages[i];
       }
-      initializeEffects(projectile->effects, overcharge_power, overcharge_duration);
+      init(projectile->effects, overcharge_power, overcharge_duration, world, false, change_owner_orientation);
+    }
+    Projectile(
+      const Projectile * projectile,
+      int realDamages[DAMAGE_TYPE_NUMBER],
+      World * world,
+      int current_map_id,
+      float x,
+      float y,
+      Target * target,
+      Character * owner,
+      int overcharge_power,
+      int overcharge_duration,
+      int overcharge_range,
+      bool change_owner_orientation
+    ):
+      name(projectile->name),
+      id(++projectile::id_cpt),
+      projectile_type(projectile->projectile_type),
+      size(projectile->size),
+      homing(projectile->homing),
+      current_map_id(current_map_id),
+      x(x),
+      y(y),
+      skill(projectile->skill),
+      effects(std::list<Effect *>()),
+      target(target),
+      owner(owner),
+      speed(projectile->speed * overcharge_range),
+      area(projectile->area * overcharge_range),
+      overcharge_power(overcharge_power),
+      overcharge_duration(overcharge_duration),
+      overcharge_range(overcharge_range),
+      falloff_timer(projectile->falloff_timer),
+      current_timer(projectile->current_timer),
+      waste_per_tick(projectile->waste_per_tick / overcharge_duration),
+      waste_per_area(projectile->waste_per_area / overcharge_range),
+      waste_per_hit(projectile->waste_per_hit),
+      previous_targets(std::list<Character *>()),
+      current_targets(std::list<Character *>())
+    {
+      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damages[i] = realDamages[i];
+        this->current_damages[i] = realDamages[i];
+      }
+      init(projectile->effects, overcharge_power, overcharge_duration, world, true, change_owner_orientation);
     }
     Projectile(
       const std::string name,
+      long id,
       int projectile_type,
       float size,
       bool homing,
       int current_map_id,
-      int x,
-      int y,
-      float dx,
-      float dy,
-      int dest_x,
-      int dest_y,
-      float dest_dx,
-      float dest_dy,
+      float x,
+      float y,
       Skill * skill,
       std::list<Effect *> effects,
-      Character * target,
+      Target * target,
       Character * owner,
       float orientation,
       float speed,
@@ -181,18 +200,13 @@ class Projectile {
       int damages[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      id(id),
       projectile_type(projectile_type),
       size(size),
       homing(homing),
       current_map_id(current_map_id),
       x(x),
       y(y),
-      dx(dx),
-      dy(dy),
-      dest_x(dest_x),
-      dest_y(dest_y),
-      dest_dx(dest_dx),
-      dest_dy(dest_dy),
       skill(skill),
       effects(effects),
       target(target),
@@ -217,16 +231,12 @@ class Projectile {
         this->current_damages[i] = damages[i];
       }
     }
-    void initializeEffects(std::list<Effect *> effects, int overcharge_power, int overcharge_duration);
+    void init(std::list<Effect *> effects, int overcharge_power, int overcharge_duration, World * world, bool teleport, bool change_owner_orientation);
     int getCurrentMapId();
-    int getX();
-    int getY();
-    float getDX();
-    float getDY();
-    int getDestX();
-    int getDestY();
-    float getDestDX();
-    float getDestDY();
+    float getX();
+    float getY();
+    float getDestX();
+    float getDestY();
     float getOrientation();
     bool isLost();
     int getRawDamage();
@@ -241,16 +251,12 @@ class Projectile {
     int getLight();
     Skill * getSkill();
     std::list<Effect *> getEffects();
-    Character * getTarget();
+    Target * getTarget();
     Character * getOwner();
     bool isAtDest();
     bool noDamage();
-    void setX(int setX);
-    void setY(int setY);
-    void setDX(float setDX);
-    void setDY(float setDY);
-    void setDestX(int destX);
-    void setDestY(int destY);
+    void setX(float setX);
+    void setY(float setY);
     void setOrientation(float orientation);
     void setSpeed(float speed);
     void setArea(float area);
@@ -258,11 +264,11 @@ class Projectile {
     void setWastePerTick(float waste_per_tick);
     void setWastePerArea(float waste_per_area);
     void setWastePerHit(float waste_per_hit);
-    void setTarget(Character * target);
+    void setTarget(Target * target);
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(int y, int x, float dy, float dx, float orientation, int map_id);
+    void move(float y, float x, float orientation, int map_id);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -278,19 +284,13 @@ class Projectile {
     bool operator != (const Projectile& p) const { return !operator==(p); }
   private:
     int current_map_id;
-    int x;
-    int y;
-    float dx;
-    float dy;
+    float x;
+    float y;
     int target_type;
-    int dest_x;
-    int dest_y;
-    float dest_dx;
-    float dest_dy;
     bool lost;
     Skill * skill;
     std::list<Effect *> effects;
-    Character * target;
+    Target * target;
     Character * owner;
     float orientation;
     float speed;

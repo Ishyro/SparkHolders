@@ -46,7 +46,7 @@ void Effect::activate(Character * target) {
         target->incrDetectionRange();
         break;
       case DAMAGE:
-        target->receiveAttack(damages, 360.F);
+        target->receiveAttack(damages, 360.F, STRIKE);
         break;
       case EXPERIENCE:
         target->gainXP(power);
@@ -73,7 +73,7 @@ bool Effect::tick(Character * target) {
       target->addSatiety((float) power);
       break;
     case DAMAGE:
-      target->receiveAttack(damages, 360.F);
+      target->receiveAttack(damages, 360.F, STRIKE);
       break;
     case EXPERIENCE:
       target->gainXP(power);
@@ -106,6 +106,7 @@ float Effect::getDamageReductionFromType(int damage_type) { return damage_reduct
 std::string Effect::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_long(ss, id);
   String::insert_int(ss, level);
   String::insert(ss, attributes);
   String::insert_int(ss, type);
@@ -127,6 +128,7 @@ std::string Effect::to_string() {
 Effect * Effect::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  long id = String::extract_long(ss);
   int level = String::extract_int(ss);
   std::string attributes = String::extract(ss);
   int type = String::extract_int(ss);
@@ -143,5 +145,5 @@ Effect * Effect::from_string(std::string to_read) {
     damage_reductions[i] = String::extract_float(ss);
   }
   delete ss;
-  return new Effect(name, level, attributes, type, duration_type, power, duration, tick_left, damages, damage_reductions);
+  return new Effect(name, id, level, attributes, type, duration_type, power, duration, tick_left, damages, damage_reductions);
  }

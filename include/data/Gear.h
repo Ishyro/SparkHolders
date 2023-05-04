@@ -7,6 +7,12 @@
 #include "data/Weapon.h"
 #include "Values.h"
 
+typedef struct GearPiece {
+  int type;
+  long id;
+  std::string name;
+} GearPiece;
+
 class Gear {
   public:
     const std::string name;
@@ -116,6 +122,8 @@ class Gear {
     std::list<Ammunition *> getAmmunitions();
     float getWeight();
     int getArmor();
+    static std::string piece_to_string(GearPiece * piece);
+    static GearPiece * piece_from_string(std::string to_read);
     std::string to_string();
     static Gear * from_string(std::string to_read);
     bool operator == (const Gear& g) const { return name == g.name; }

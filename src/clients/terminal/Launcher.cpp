@@ -34,8 +34,8 @@ int main(int argc, char ** argv) {
   delete default_background;
   delete default_foreground;
   Socket s = Socket();
-  std::string IP = "84.97.162.152";
-  // std::string IP = "192.168.168.164";
+  // std::string IP = "84.97.162.152";
+  std::string IP = "192.168.168.164";
   // std::string IP = "192.168.1.83";
   // std::string IP = "127.0.0.1";
   s.connect(IP, 45678);

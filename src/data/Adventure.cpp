@@ -1,7 +1,7 @@
 #include "ai/AI.h"
 #include "ai/PlayerAI.h"
 
-#include "data/Action.h"
+#include "data/actions/Action.h"
 #include "data/Map.h"
 #include "data/World.h"
 #include "data/Tile.h"
@@ -19,19 +19,23 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, int map_id, int y, int x) {
+void Adventure::softMoveCharacterToMap(Character * character, int map_id, float y, float x) {
   Map * map = world->getMap(map_id);
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
-    if(p->getTarget() == character && !p->homing) {
+    if(p->getTarget()->type == CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
+    }
+    // recalculate path since the homing projectile always knows where is its target 
+    else if(p->homing) {
+      p->setOrientation(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
     }
   }
   map->addCharacter(character);
-  character->move(y, x, 0.5F, 0.5F, character->getOrientation(), map_id);
+  character->move(y, x, character->getOrientation(), map_id);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y, int x) {
+void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float y, float x) {
   Map * map = world->getMap(map_id);
   for(Character * c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
@@ -52,12 +56,16 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, int y,
   }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
-    if(p->getTarget() == character && !p->homing) {
+    if(p->getTarget()->type == CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
+    }
+    // recalculate path since the homing projectile always knows where is its target 
+    else if(p->homing) {
+      p->setOrientation(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
     }
   }
   map->addCharacter(character);
-  character->move(y, x, 0.5F, 0.5F, character->getOrientation(), map_id);
+  character->move(y, x, character->getOrientation(), map_id);
 }
 
 void Adventure::addPlayer(Character * player) { party.push_back(player); }
@@ -102,27 +110,11 @@ Database * Adventure::getDatabase() { return database; }
 void Adventure::addQuest(Quest * quest) { quests.push_back(quest); }
 void Adventure::removeQuest(Quest * quest) { quests.remove(quest); }
 std::list<Character *> Adventure::getCharacters() {
-  std::list<Character *> characters = std::list<Character *>();
-  for (Map * map : world->getMaps()) {
-    for (Character * character : map->getCharacters()) {
-      // no check on player_character, because we want mind controlled players to act as npc
-      // this imply that the player AI needs to send nullptr when asked for an Action
-      // otherwise players will have 2 Actions per round
-      characters.push_back(character);
-    }
-  }
-  return characters;
+  return world->getCharacters();
 }
 
 Character * Adventure::getCharacter(long id) {
-  if(id != 0) {
-    for(Character * c : getCharacters()) {
-      if(id == c->id) {
-        return c;
-      }
-    }
-  }
-  return nullptr;
+  return world->getCharacter(id);
 }
 
 std::list<Projectile *> Adventure::getProjectiles() {
@@ -195,6 +187,7 @@ void Adventure::getNPCsActions() {
   for(Character * npc : getCharacters()) {
     if(!npc->player_character && npc->getNeedToUpdateActions()) {
       Action * action = npc->getAI()->getActions(this, npc);
+      action->computeTime(this);
       if(action != nullptr) {
         Action * to_remove = nullptr;
         for(Action * a : actions) {

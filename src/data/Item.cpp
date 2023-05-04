@@ -28,6 +28,7 @@ bool Item::isFood() {
 std::string Item::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_long(ss, id);
   String::insert_bool(ss, equipable);
   String::insert_bool(ss, consumable);
   String::insert_int(ss, type);
@@ -57,6 +58,7 @@ Item * Item::from_string(std::string to_read) {
   }
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  long id = String::extract_long(ss);
   bool equipable = String::extract_bool(ss);
   bool consumable = String::extract_bool(ss);
   int type = String::extract_int(ss);
@@ -79,6 +81,7 @@ Item * Item::from_string(std::string to_read) {
   delete ss;
   Item * result = new Item(
     name,
+    id,
     equipable,
     consumable,
     type,

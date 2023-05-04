@@ -57,8 +57,8 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, int mapId, int y, int x);
-    void hardMoveCharacterToMap(Character * character, int mapId, int y, int x);
+    void softMoveCharacterToMap(Character * character, int mapId, float y, float x);
+    void hardMoveCharacterToMap(Character * character, int mapId, float y, float x);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();

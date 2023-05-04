@@ -1,10 +1,15 @@
 #include "data/skills/SimpleSkill.h"
 
-void SimpleSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
+void SimpleSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
   for(Effect * effect : effects) {
     Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration);
     if(target_type != SELF) {
-      to_add->activate(target);
+      if(target->type == CHARACTER) {
+        to_add->activate(adventure->getCharacter(target->id));
+      }
+      else {
+        // TODO
+      }
     }
     else {
       to_add->activate(owner);
@@ -12,7 +17,7 @@ void SimpleSkill::activate(Character * owner, Character * target, Adventure * ad
   }
 }
 
-bool SimpleSkill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
+bool SimpleSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
   return true;
 }
 

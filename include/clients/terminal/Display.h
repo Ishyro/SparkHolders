@@ -46,7 +46,7 @@ namespace Display {
   Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
   bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
   bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t);
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, Translator * t);
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, int & object_id, Translator * t);
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t);
 };
 

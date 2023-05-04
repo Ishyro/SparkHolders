@@ -1,16 +1,18 @@
+#include "data/Map.h"
+
 #include "data/skills/Skill.h"
 
 #include "data/skills/TileSwapSkill.h"
 
 #include "util/String.h"
 
-void Skill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
+void Skill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
   owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_range));
   for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range);
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range);
   }
 }
-bool Skill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y) {
+bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
   // using mana beyond flow is forbidden for instant skills
   if(is_instant) {
     if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getAvaillableMana(false)) {
@@ -23,7 +25,7 @@ bool Skill::canCast(Character * owner, Character * target, Adventure * adventure
     }
   }
   for(PseudoSkill * skill : skills) {
-    if(!skill->canCast(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, map_id, x, y, range)) {
+    if(!skill->canCast(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range)) {
       return false;
     }
   }

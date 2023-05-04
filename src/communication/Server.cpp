@@ -3,11 +3,18 @@
 #include "data/Adventure.h"
 #include "data/Attributes.h"
 #include "data/Character.h"
-#include "data/Action.h"
 #include "data/Map.h"
 #include "data/Tile.h"
 #include "data/Way.h"
 #include "data/World.h"
+
+#include "data/actions/Action.h"
+#include "data/actions/BaseAction.h"
+#include "data/actions/EconomicsAction.h"
+#include "data/actions/GearAction.h"
+#include "data/actions/SkillAction.h"
+#include "data/actions/TalkingAction.h"
+#include "data/actions/TargetedAction.h"
 
 #include "communication/Socket.h"
 
@@ -25,93 +32,59 @@ namespace Server {
     }
     std::stringstream * ss = new std::stringstream(msg);
     int type = String::extract_int(ss);
+    Action * action;
     switch(type) {
-      case MOVE: {
-        float orientation = String::extract_float(ss);
-        delete ss;
-        return new Action(MOVE, adventure, nullptr, user, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
-      }
+      case IDLE:
+      case RESPITE:
       case REST:
-        delete ss;
-        return new Action(REST, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+      case BREAKPOINT:
+        action = new BaseAction(type, adventure, nullptr, user);
+        break;
+      case MOVE:
+      case STRIKE:
+      case HEAVY_STRIKE:
       case SHOOT: {
-        float orientation = String::extract_float(ss);
-        const Character * target = adventure->getCharacter(String::extract_int(ss));
-        int target_x = String::extract_int(ss);
-        int target_y = String::extract_int(ss);
-        delete ss;
-        return new Action(SHOOT, adventure, nullptr, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
+        Target * target = Map::target_from_string(String::extract(ss));
+        std::cout << Map::target_to_string(target) << std::endl;
+        action = new TargetedAction(type, adventure, nullptr, user);
+        ((TargetedAction *) action)->setTarget(target);
+        break;
       }
-      case STRIKE: {
-        float orientation = String::extract_float(ss);
-        const Character * target = adventure->getCharacter(String::extract_int(ss));
-        int target_x = String::extract_int(ss);
-        int target_y = String::extract_int(ss);
-        delete ss;
-        return new Action(STRIKE, adventure, nullptr, user, orientation, nullptr, target, target_x, target_y, nullptr, "", 1, 1, 1);
-      }
-      case RELOAD: {
-        std::string object = String::extract(ss);
-        delete ss;
-        return new Action(RELOAD, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
-      }
-      case SWAP_GEAR: {
-        std::string object = String::extract(ss);
-        delete ss;
-        return new Action(SWAP_GEAR, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
-      }
+      case RELOAD:
+      case SWAP_GEAR:
       case GRAB:
-        delete ss;
-        return new Action(GRAB, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+      case USE_ITEM: {
+        GearPiece * piece = Gear::piece_from_string(String::extract(ss));
+        action = new GearAction(type, adventure, nullptr, user);
+        ((GearAction *) action)->setGearPiece(piece);
+        break;
+      }
       case USE_SKILL: {
-        std::string object = String::extract(ss);
-        float orientation = String::extract_float(ss);
-        const Character * target = adventure->getCharacter(String::extract_int(ss));
-        const Skill * skill = adventure->getDatabase()->getSkill(object);
-        int target_x = String::extract_int(ss);
-        int target_y = String::extract_int(ss);
+        Target * target = Map::target_from_string(String::extract(ss));
+        Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
-        delete ss;
-        Action * action = new Action(USE_SKILL, adventure, nullptr, user, orientation, skill, target, target_x, target_y, nullptr, object, overcharge_power, overcharge_duration, overcharge_range);
-        if(!skill->is_instant) {
-          return action;
-        }
-        else {
-          action->execute(adventure);
-          Map * map = new Map(adventure->getWorld()->getMap(user->getCurrentMapId()), user, adventure->getDatabase());
-          try {
-            sendMap(s, map, user, adventure);
-          } catch (const CloseException &e) {
-            throw e;
-          }
-          delete map;
-          return receiveAction(s, user, adventure);
-        }
-      }
-      case USE_ITEM: {
-        std::string object = String::extract(ss);
-        delete ss;
-        return new Action(USE_ITEM, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, object, 1, 1, 1);
+        action = new SkillAction(type, adventure, nullptr, user);
+        ((SkillAction *) action)->setTarget(target);
+        ((SkillAction *) action)->setSkill(skill);
+        ((SkillAction *) action)->setOverchargePower(overcharge_power);
+        ((SkillAction *) action)->setOverchargeRange(overcharge_duration);
+        ((SkillAction *) action)->setOverchargeDuration(overcharge_range);
+        break;
       }
       case TALKING: {
-        std::string object = String::extract(ss);
-        const Character * target = adventure->getCharacter(String::extract_int(ss));
-        delete ss;
-        return new Action(TALKING, adventure, nullptr, user, 0.F, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
+        action = new BaseAction(IDLE, adventure, nullptr, user);
       }
       case ECONOMICS: {
-        std::string object = String::extract(ss);
-        int object_type = String::extract_int(ss);
-        const Character * target = adventure->getCharacter(String::extract_int(ss));
-        delete ss;
-        return new Action(ECONOMICS, adventure, nullptr, user, object_type, nullptr, target, 0, 0, nullptr, object, 1, 1, 1);
+        action = new BaseAction(IDLE, adventure, nullptr, user);
       }
       default:
         delete ss;
-        return new Action(REST, adventure, nullptr, user, 0.F, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+        action = new BaseAction(IDLE, adventure, nullptr, user);
     }
+    action->computeTime(adventure);
+    return action;
   }
 
   Character * receiveChoices(Socket s, Adventure * adventure) {

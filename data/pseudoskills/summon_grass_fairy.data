@@ -1,6 +1,6 @@
 name = TXT_SUMMON_GRASS_FAIRY
 skill_type = SUMMON_SKILL
-target_type = TILE
+target_type = COORDINATES
 character = TXT_GRASS_FAIRY
 team = world
 ai = EtheralCasterAI

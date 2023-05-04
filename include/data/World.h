@@ -28,6 +28,10 @@ class World {
     Map * getMap(std::string name);
     std::list<Map *> getMaps();
     MapLink * getMapLink(int y, int x, int mapId);
+    std::list<Character *> getCharacters();
+    Character * getCharacter(long id);
+    float setPathToTarget(int map_id, float x, float y, Target * target);
+    float distance(int map_id, float x, float y, Target * target);
   private:
     std::map<const int, Map *> maps;
     std::list<MapLink *> links;

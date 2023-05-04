@@ -8,49 +8,30 @@
 #include "util/String.h"
 #include "util/MapUtil.h"
 
-void Projectile::initializeEffects(std::list<Effect *> effects, int overcharge_power, int overcharge_duration) {
+void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int overcharge_duration, World * world, bool teleport, bool change_owner_orientation) {
   for(Effect * effect : effects) {
     Effect * toadd = new Effect(effect, overcharge_power, overcharge_duration);
     this->effects.push_back(toadd);
   }
+  lost = false;
+  orientation = world->setPathToTarget(current_map_id, x, y, target);
+  if(change_owner_orientation) {
+    owner->setOrientation(orientation);
+  }
+  if(!teleport) {
+    x = owner->getX() + (owner->getSize() + size) * std::cos(orientation * 3.141593F / 180.F);
+    y = owner->getY() + (owner->getSize() + size) * std::sin(orientation * 3.141593F / 180.F);
+  }
 }
 
 int Projectile::getCurrentMapId() { return current_map_id; }
-int Projectile::getX() { return x; }
-int Projectile::getY() { return y; }
-float Projectile::getDX() { return dx; }
-float Projectile::getDY() { return dy; }
-int Projectile::getDestX() {
-  if(target != nullptr) {
-    return target->getX();
-  }
-  else {
-    return dest_x;
-  }
+float Projectile::getX() { return x; }
+float Projectile::getY() { return y; }
+float Projectile::getDestX() {
+  return target->x;
 }
-int Projectile::getDestY() {
-  if(target != nullptr) {
-    return target->getY();
-  }
-  else {
-    return dest_y;
-  }
-}
-float Projectile::getDestDX() {
-  if(target != nullptr) {
-    return target->getDX();
-  }
-  else {
-    return dest_dx;
-  }
-}
-float Projectile::getDestDY() {
-  if(target != nullptr) {
-    return target->getDY();
-  }
-  else {
-    return dest_dy;
-  }
+float Projectile::getDestY() {
+  return target->y;
 }
 
 float Projectile::getOrientation() { return orientation; }
@@ -70,7 +51,7 @@ int Projectile::getFalloffTimer() { return falloff_timer; }
 float Projectile::getWastePerTick() { return waste_per_tick; }
 float Projectile::getWastePerArea() { return waste_per_area; }
 float Projectile::getWastePerHit() { return waste_per_hit; }
-Character * Projectile::getTarget() { return target; }
+Target * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
 bool Projectile::isAtDest() {
@@ -92,12 +73,8 @@ std::list<Effect *> Projectile::getEffects() { return effects; }
 
 bool Projectile::noDamage() { return getRawDamage() <= 0; }
 
-void Projectile::setX(int x) { this->x = x; }
-void Projectile::setY(int y) { this->y = y; }
-void Projectile::setDX(float dx) { this->dx = dx; }
-void Projectile::setDY(float dy) { this->dy = dy; }
-void Projectile::setDestX(int dest_x) { this->dest_x = dest_x; }
-void Projectile::setDestY(int dest_y) { this->dest_y = dest_y; }
+void Projectile::setX(float x) { this->x = x; }
+void Projectile::setY(float y) { this->y = y; }
 void Projectile::setOrientation(float orientation) { this->orientation = orientation; }
 void Projectile::setSpeed(float speed) { this->speed = speed; }
 void Projectile::setArea(float area) { this->area = area; }
@@ -105,7 +82,7 @@ void Projectile::setFalloffTimer(int falloff_timer) { this->falloff_timer = fall
 void Projectile::setWastePerTick(float waste_per_tick) { this->waste_per_tick = waste_per_tick; }
 void Projectile::setWastePerArea(float waste_per_area) { this->waste_per_area = waste_per_area; }
 void Projectile::setWastePerHit(float waste_per_hit) { this->waste_per_hit = waste_per_hit; }
-void Projectile::setTarget(Character * target) { this->target = target; }
+void Projectile::setTarget(Target * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
 void Projectile::markDestroyed() {
@@ -114,11 +91,9 @@ void Projectile::markDestroyed() {
   }
 }
 
-void::Projectile::move(int y, int x, float dy, float dx, float orientation, int map_id) {
+void::Projectile::move(float y, float x, float orientation, int map_id) {
   this->x = x;
   this->y = y;
-  this->dx = dx;
-  this->dy = dy;
   this->orientation = orientation;
   this->current_map_id = map_id;
 }
@@ -141,13 +116,16 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
   if(target != nullptr && (target->getTeam() == owner->getTeam() || alreadyHit(target))) {
     return;
   }
-  if(target == this->target) {
+  if(target->type == CHARACTER && target->id == this->target->id) {
     setLost(true);
   }
   if(area == 0.F) {
-    target->receiveAttack(current_damages, orientation);
+    target->receiveAttack(current_damages, orientation, STRIKE);
     if(skill != nullptr) {
-      skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+      Target * t = new Target();
+      t->type = CHARACTER;
+      t->id = target->id;
+      skill->activate(owner, t, adventure, overcharge_power, overcharge_duration, overcharge_range);
     }
   }
   else {
@@ -156,19 +134,22 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
         float range;
         if(target == nullptr) {
           // exploding on targeted zone
-          range = MapUtil::distance(x, y, dx, dy, c->getX(), c->getY(), c->getDX(), c->getDY());
+          range = MapUtil::distance(x, y, c->getX(), c->getY());
         }
         else {
-          range = MapUtil::distance(target->getX(), target->getY(), target->getDX(), target->getDY(), c->getX(), c->getY(), c->getDX(), c->getDY());
+          range = MapUtil::distance(target->getX(), target->getY(), c->getX(), c->getY());
         }
         if(range <= area - c->getSize()) {
           int reducedDamages[DAMAGE_TYPE_NUMBER];
           for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
             reducedDamages[i] = (int) ceil( ((float) current_damages[i]) * pow(1 - waste_per_area, range));
           }
-          target->receiveAttack(reducedDamages, 360.F);
+          target->receiveAttack(reducedDamages, 360.F, STRIKE);
           if(skill != nullptr) {
-            skill->activate(owner, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+            Target * t = new Target();
+            t->type = CHARACTER;
+            t->id = target->id;
+            skill->activate(owner, t, adventure, overcharge_power, overcharge_duration, overcharge_range);
           }
         }
       }
@@ -208,10 +189,8 @@ std::string Projectile::to_string(int offsetY, int offsetX) {
   String::insert_long(ss, id);
   String::insert_int(ss, projectile_type);
   String::insert_float(ss, size);
-  String::insert_int(ss, x - offsetX);
-  String::insert_int(ss, y - offsetY);
-  String::insert_float(ss, dx);
-  String::insert_float(ss, dy);
+  String::insert_float(ss, x - (float) offsetX);
+  String::insert_float(ss, y - (float) offsetY);
   String::insert_float(ss, orientation);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, current_damages[i]);
@@ -229,18 +208,13 @@ std::string Projectile::to_string(int offsetY, int offsetX) {
 std::string Projectile::full_to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_long(ss, id);
   String::insert_int(ss, projectile_type);
   String::insert_float(ss, size);
   String::insert_bool(ss, homing);
   String::insert_int(ss, current_map_id);
-  String::insert_int(ss, x);
-  String::insert_int(ss, y);
-  String::insert_float(ss, dx);
-  String::insert_float(ss, dy);
-  String::insert_int(ss, dest_x);
-  String::insert_int(ss, dest_y);
-  String::insert_float(ss, dest_dx);
-  String::insert_float(ss, dest_dy);
+  String::insert_float(ss, x);
+  String::insert_float(ss, y);
   if(skill != nullptr) {
     String::insert(ss, skill->to_string());
   }
@@ -294,10 +268,8 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   display->id = String::extract_long(ss);
   display->projectile_type = String::extract_int(ss);
   display->size = String::extract_float(ss);
-  display->x = String::extract_int(ss);
-  display->y = String::extract_int(ss);
-  display->dx = String::extract_float(ss);
-  display->dy = String::extract_float(ss);
+  display->x = String::extract_float(ss);
+  display->y = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
@@ -314,18 +286,13 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
 Projectile * Projectile::full_from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  long id = String::extract_long(ss);
   int projectile_type = String::extract_int(ss);
   float size = String::extract_float(ss);
   bool homing = String::extract_bool(ss);
   int current_map_id = String::extract_int(ss);
-  int x = String::extract_int(ss);
-  int y = String::extract_int(ss);
-  float dx = String::extract_float(ss);
-  float dy = String::extract_float(ss);
-  int dest_x = String::extract_int(ss);
-  int dest_y = String::extract_int(ss);
-  float dest_dx = String::extract_float(ss);
-  float dest_dy = String::extract_float(ss);
+  float x = String::extract_float(ss);
+  float y = String::extract_float(ss);
   std::string skill_str = String::extract(ss);
   Skill * skill = nullptr;
   if(skill_str != "none") {
@@ -337,7 +304,7 @@ Projectile * Projectile::full_from_string(std::string to_read) {
     effects->push_back(Effect::from_string(String::extract(ss_effects)));
   }
   delete ss_effects;
-  Character * target = nullptr;
+  Target * target = nullptr;
   Character * owner = nullptr;
   float orientation = String::extract_float(ss);
   float speed = String::extract_float(ss);
@@ -356,18 +323,13 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   delete ss;
   return new Projectile(
     name,
+    id,
     projectile_type,
     size,
     homing,
     current_map_id,
     x,
     y,
-    dx,
-    dy,
-    dest_x,
-    dest_y,
-    dest_dx,
-    dest_dy,
     skill,
     *effects,
     target,

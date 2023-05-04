@@ -13,7 +13,7 @@ namespace weapon {
 class Weapon {
   public:
     const std::string name;
-    const long id = ++weapon::id_cpt;
+    const long id;
     const bool melee;
     const float range;
     const int type;
@@ -30,6 +30,7 @@ class Weapon {
     const std::list<Effect *> effects;
     Weapon(
       std::string name,
+      long id,
       bool melee,
       float range,
       int type,
@@ -48,6 +49,7 @@ class Weapon {
       Ammunition * ammo
     ):
       name(name),
+      id(id),
       melee(melee),
       range(range),
       type(type),
@@ -70,6 +72,7 @@ class Weapon {
     }
     Weapon(const Weapon * weapon):
       name(weapon->name),
+      id(++weapon::id_cpt),
       melee(weapon->melee),
       range(weapon->range),
       type(weapon->type),

@@ -202,6 +202,26 @@ int Gear::getArmor() {
   return std::max(0, armor);
 }
 
+std::string Gear::piece_to_string(GearPiece * piece) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, piece->type);
+  String::insert_long(ss, piece->id);
+  String::insert(ss, piece->name);
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+GearPiece * Gear::piece_from_string(std::string to_read) {
+  std::stringstream * ss = new std::stringstream(to_read);
+  GearPiece * piece = new GearPiece();
+  piece->type = String::extract_int(ss);
+  piece->id = String::extract_long(ss);
+  piece->name = String::extract(ss);
+  delete ss;
+  return piece;
+}
+
 std::string Gear::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);

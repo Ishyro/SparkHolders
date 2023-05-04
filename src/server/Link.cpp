@@ -1,9 +1,10 @@
-
-#include "data/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Map.h"
 #include "data/World.h"
+
+#include "data/actions/Action.h"
+#include "data/actions/BaseAction.h"
 
 #include "communication/Socket.h"
 #include "communication/ServerSocket.h"
@@ -43,7 +44,7 @@ Action * Link::receiveAction() {
       markClosed();
     }
   }
-  return new Action(REST, adventure, nullptr, player, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+  return new BaseAction(IDLE, adventure, nullptr, player);
 }
 
 bool Link::isClosed() { return closed; }

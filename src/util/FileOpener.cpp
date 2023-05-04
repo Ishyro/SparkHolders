@@ -586,7 +586,7 @@ namespace FileOpener {
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
     }
-    Effect * effect = new Effect(name, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
+    Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
     database->addEffect(effect);
   }
 
@@ -700,6 +700,7 @@ namespace FileOpener {
     }
     Item * item = new Item(
       name,
+      0,
       equipable,
       consumable,
       type,
@@ -1137,6 +1138,7 @@ namespace FileOpener {
     damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
     Weapon * weapon = new Weapon(
       name,
+      0,
       melee,
       range,
       type,

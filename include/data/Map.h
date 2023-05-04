@@ -13,13 +13,22 @@
 
 typedef struct Loot {
   int type;
-  int x;
-  int y;
+  float x;
+  float y;
+  float size;
   long gold;
   std::list<Weapon *> weapons;
   std::list<Item *> items;
   std::list<Ammunition *> ammunition;
 } Loot;
+
+typedef struct Target {
+  int type;
+  long id;
+  float x;
+  float y;
+  Target * next;
+} Target;
 
 typedef struct MapDisplay {
   std::string time;
@@ -44,7 +53,7 @@ namespace map {
 class Map {
   public:
     const std::string name;
-    const long id = ++map::id_cpt;
+    const long id;
     const int offsetX;
     const int offsetY;
     const int sizeX;
@@ -57,6 +66,7 @@ class Map {
       const bool outside
     ):
       name(name),
+      id(0),
       offsetX(0),
       offsetY(0),
       sizeX(sizeX),
@@ -76,6 +86,7 @@ class Map {
     }
     Map(const Map * map, std::string name):
       name(name),
+      id(++map::id_cpt),
       offsetX(0),
       offsetY(0),
       sizeX(map->sizeX),
@@ -90,10 +101,10 @@ class Map {
     Map(Map * map, Character * player, Database * database):
       name(map->name),
       id(map->id),
-      offsetX(std::max(0, player->getX() - std::max(player->getVisionRange(), player->getDetectionRange()))),
-      offsetY(std::max(0, player->getY() - std::max(player->getVisionRange(), player->getDetectionRange()))),
-      sizeX(std::min(map->sizeX, player->getX() + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetX),
-      sizeY(std::min(map->sizeY, player->getY() + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetY),
+      offsetX(std::max(0, (int) std::floor(player->getX()) - std::max(player->getVisionRange(), player->getDetectionRange()))),
+      offsetY(std::max(0, (int) std::floor(player->getY()) - std::max(player->getVisionRange(), player->getDetectionRange()))),
+      sizeX(std::min(map->sizeX, (int) std::floor(player->getX()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetX),
+      sizeY(std::min(map->sizeY, (int) std::floor(player->getY()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1) - offsetY),
       outside(map->outside),
       lights(sizeY),
       light(map->light)
@@ -140,12 +151,15 @@ class Map {
     std::list<Projectile *> getProjectiles();
     std::list<Loot *> getLoots();
     Tile * getTile(int y, int x);
-    void setTile(int y, int x, Tile * tile);
+    Tile * getTile(float y, float x);
     int getLight(int y, int x);
+    int getLight(float y, float x);
     void calculateLights();
     void propagateLight(int y, int x);
     void applyDayLight(int light);
     bool canSee(Character * watcher, Character * target);
+    void setTile(int y, int x, Tile * tile);
+    void setTile(float y, float x, Tile * tile);
     void crumble(int y, int x);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
@@ -157,12 +171,14 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, int mode);
-    float getMoveCost(Character * c, int y, int x, float dy, float dx);
-    bool tryMove(Character * c, int destY, int destX, float destDY, float destDX);
-    float move(Character * c, int y, int x, float dy, float dx);
+    float getMoveCost(Character * c, float y, float x);
+    bool tryMove(Character * c, float destY, float destX);
+    float move(Character * c, float y, float x);
     float move(Character * c, float orientation, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
+    static std::string target_to_string(Target * target);
+    static Target * target_from_string(std::string to_read);
     std::string to_string(Character * player, Adventure * adventure);
     static MapDisplay * from_string(std::string to_read);
     static std::vector<std::vector<Tile *>> canSee(Map * map, Character * watcher, Database * database);

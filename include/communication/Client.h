@@ -15,7 +15,10 @@ namespace Client {
   std::list<std::string> receiveTranslationPaths(Socket s);
   MapDisplay * receiveMap(Socket s, Character ** player, long * id, bool * need_action);
   void receiveWaysIncompabilities(Socket s, std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities);
-  void sendAction(Socket s, int type, float orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range);
+  void sendBaseAction(Socket s, int type);
+  void sendGearAction(Socket s, int type, GearPiece * piece);
+  void sendTargetedAction(Socket s, int type, Target * target);
+  void sendSkillAction(Socket s, int type, Target * target, Skill * skill, int overcharge_power, int overcharge_duration, int overcharge_range);
   Character * sendChoices(Socket s, std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
 }
 

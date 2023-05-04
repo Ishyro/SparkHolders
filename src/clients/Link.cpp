@@ -1,4 +1,4 @@
-#include "data/Action.h"
+#include "data/actions/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Map.h"
@@ -44,7 +44,7 @@ MapDisplay * Link::receiveMap() {
     MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId, &need_to_update_actions);
     for(CharacterDisplay * display : map->characters) {
       if(serverCharacterId == display->id) {
-        player->move(display->y + map->offsetY, display->x + map->offsetX, display->dy, display->dx, display->orientation, map->id);
+        player->move(display->y + (float) map->offsetY, display->x + (float) map->offsetX, display->orientation, map->id);
         player->setHp(display->hp);
         player->setMana(display->mana);
         player->setStamina(display->stamina);
@@ -59,9 +59,36 @@ MapDisplay * Link::receiveMap() {
   }
 }
 
-void Link::sendAction(int type, float orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
+void Link::sendAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, int overcharge_power = 1, int overcharge_duration = 1, int overcharge_range = 1) {
   try {
-    Client::sendAction(s, type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
+    switch(type) {
+      case IDLE:
+      case RESPITE:
+      case REST:
+      case BREAKPOINT:
+        Client::sendBaseAction(s, type);
+        break;
+      case MOVE:
+      case STRIKE:
+      case HEAVY_STRIKE:
+      case SHOOT:
+        Client::sendTargetedAction(s, type, (Target *) arg1);
+        break;
+      case RELOAD:
+      case SWAP_GEAR:
+      case GRAB:
+      case USE_ITEM:
+        Client::sendGearAction(s, type, (GearPiece *) arg1);
+        break;
+      case USE_SKILL:
+        Client::sendSkillAction(s, type, (Target *) arg1, (Skill *) arg2, overcharge_power, overcharge_duration, overcharge_range);
+        break;
+      case TALKING:
+      case ECONOMICS:
+        // TODO
+        break;
+      default: ;
+    }
   } catch (const CloseException &e) {
     throw e;
   }

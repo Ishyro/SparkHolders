@@ -13,7 +13,7 @@ namespace item {
 class Item {
   public:
     const std::string name;
-    const long id = ++item::id_cpt;
+    const long id;
     const bool equipable;
     const bool consumable;
     const int type;
@@ -26,6 +26,7 @@ class Item {
     const std::list<Effect *> effects;
     Item(
       std::string name,
+      long id,
       bool equipable,
       bool consumable,
       int type,
@@ -39,6 +40,7 @@ class Item {
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      id(id),
       equipable(equipable),
       consumable(consumable),
       type(type),
@@ -56,6 +58,7 @@ class Item {
     }
     Item(const Item * item):
       name(item->name),
+      id(++item::id_cpt),
       equipable(item->equipable),
       consumable(item->consumable),
       type(item->type),

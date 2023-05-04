@@ -100,6 +100,7 @@ Ammunition * Weapon::reload(Ammunition * ammo) {
 std::string Weapon::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
+  String::insert_long(ss, id);
   String::insert_bool(ss, melee);
   String::insert_float(ss, range);
   String::insert_int(ss, type);
@@ -134,6 +135,7 @@ Weapon * Weapon::from_string(std::string to_read) {
   }
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
+  long id = String::extract_long(ss);
   bool melee = String::extract_bool(ss);
   float range = String::extract_float(ss);
   int type = String::extract_int(ss);
@@ -161,6 +163,7 @@ Weapon * Weapon::from_string(std::string to_read) {
   delete ss;
   Weapon * result = new Weapon(
     name,
+    id,
     melee,
     range,
     type,

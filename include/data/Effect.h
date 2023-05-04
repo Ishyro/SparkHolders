@@ -15,7 +15,7 @@ namespace effect {
 
 class Effect {
   public:
-    const long id = ++effect::id_cpt;
+    const long id;
     const std::string name;
     const int level;
     const std::string attributes;
@@ -25,6 +25,7 @@ class Effect {
     const int duration;
     Effect(
       std::string name,
+      long id,
       int level,
       std::string attributes,
       int type,
@@ -35,6 +36,7 @@ class Effect {
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      id(id),
       level(level),
       attributes(attributes),
       type(type),
@@ -50,6 +52,7 @@ class Effect {
     }
     Effect(
       std::string name,
+      long id,
       int level,
       std::string attributes,
       int type,
@@ -61,6 +64,7 @@ class Effect {
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
+      id(id),
       level(level),
       attributes(attributes),
       type(type),
@@ -80,6 +84,7 @@ class Effect {
       int overcharge_duration
     ):
       name(base->name),
+      id(++effect::id_cpt),
       level(base->level),
       attributes(base->attributes),
       type(base->type),

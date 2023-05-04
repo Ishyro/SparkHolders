@@ -1,8 +1,15 @@
-#include "data/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Map.h"
 #include "data/World.h"
+
+#include "data/actions/Action.h"
+#include "data/actions/BaseAction.h"
+#include "data/actions/EconomicsAction.h"
+#include "data/actions/GearAction.h"
+#include "data/actions/SkillAction.h"
+#include "data/actions/TalkingAction.h"
+#include "data/actions/TargetedAction.h"
 
 #include "ai/AI.h"
 
@@ -29,16 +36,23 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   }
   if(sleepy && adventure->getLight() < 4) {
     delete visionMap;
-    return new Action(REST, adventure, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new BaseAction(IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
-    return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
+    Target * t = new Target();
+    t->type = TILE;
+    t->id = c->getCurrentMapId();
+    t->x = origin_x;
+    t->y = origin_y;
+    ((TargetedAction *) action)->setTarget(t);
+    return action;
   }
   // we are at destination
   origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeX;
   origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeY;
   delete visionMap;
-  return new Action(REST, adventure, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new BaseAction(IDLE, adventure, nullptr, c);
 }

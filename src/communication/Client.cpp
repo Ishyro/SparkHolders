@@ -2,10 +2,12 @@
 
 #include "data/Adventure.h"
 #include "data/Attributes.h"
-#include "data/Action.h"
 #include "data/Character.h"
+#include "data/Gear.h"
 #include "data/Map.h"
 #include "data/Way.h"
+
+#include "data/skills/Skill.h"
 
 #include "communication/Socket.h"
 #include "communication/Client.h"
@@ -90,60 +92,50 @@ namespace Client {
     }
   }
 
-  void sendAction(Socket s, int type, float orientation, Skill * skill, int target_id, int target_x, int target_y, std::string object, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  
+  void sendBaseAction(Socket s, int type) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    switch(type) {
-      case MOVE:
-        String::insert_float(ss, orientation);
-        break;
-      case REST:
-        break;
-      case SHOOT:
-        String::insert_float(ss, orientation);
-        String::insert_int(ss, target_id);
-        String::insert_int(ss, target_x);
-        String::insert_int(ss, target_y);
-        break;
-      case STRIKE:
-        String::insert_float(ss, orientation);
-        String::insert_int(ss, target_id);
-        String::insert_int(ss, target_x);
-        String::insert_int(ss, target_y);
-        break;
-      case RELOAD:
-        String::insert(ss, object);
-        break;
-      case SWAP_GEAR:
-        String::insert(ss, object);
-        break;
-      case GRAB:
-        break;
-      case USE_SKILL:
-        String::insert(ss, object);
-        String::insert_float(ss, orientation);
-        String::insert_int(ss, target_id);
-        String::insert_int(ss, target_x);
-        String::insert_int(ss, target_y);
-        String::insert_int(ss, overcharge_power);
-        String::insert_int(ss, overcharge_duration);
-        String::insert_int(ss, overcharge_range);
-        break;
-      case USE_ITEM:
-        String::insert(ss, object);
-        break;
-      case TALKING:
-        String::insert(ss, object);
-        String::insert_int(ss, target_id);
-        break;
-      case ECONOMICS:
-        String::insert(ss, object);
-        String::insert_float(ss, orientation);
-        String::insert_int(ss, target_id);
-        break;
-      default:
-        ;
+    try {
+      s.write(ss->str());
+    } catch (const CloseException &e) {
+      throw e;
     }
+    delete ss;
+  }
+
+  void sendGearAction(Socket s, int type, GearPiece * piece) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert_int(ss, type);
+    String::insert(ss, Gear::piece_to_string(piece));
+    try {
+      s.write(ss->str());
+    } catch (const CloseException &e) {
+      throw e;
+    }
+    delete ss;
+  }
+
+  void sendTargetedAction(Socket s, int type, Target * target) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert_int(ss, type);
+    String::insert(ss, Map::target_to_string(target));
+    try {
+      s.write(ss->str());
+    } catch (const CloseException &e) {
+      throw e;
+    }
+    delete ss;
+  }
+
+  void sendSkillAction(Socket s, int type, Target * target, Skill * skill, int overcharge_power, int overcharge_duration, int overcharge_range) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert_int(ss, type);
+    String::insert(ss, Map::target_to_string(target));
+    String::insert(ss, skill->name);
+    String::insert_int(ss, overcharge_power);
+    String::insert_int(ss, overcharge_duration);
+    String::insert_int(ss, overcharge_range);
     try {
       s.write(ss->str());
     } catch (const CloseException &e) {

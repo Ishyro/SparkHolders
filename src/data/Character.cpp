@@ -202,10 +202,8 @@ void Character::initEffects(std::list<Effect *> effects) {
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
-int Character::getX() { return x; }
-int Character::getY() { return y; }
-float Character::getDX() { return dx; }
-float Character::getDY() { return dy; }
+float Character::getX() { return x; }
+float Character::getY() { return y; }
 float Character::getSize() { return size; }
 float Character::getOrientation() { return orientation; }
 int Character::getHp() { return hp; }
@@ -441,11 +439,9 @@ std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
-void Character::move(int y, int x, float dy, float dx, float orientation, int map_id) {
+void Character::move(float y, float x, float orientation, int map_id) {
   this->x = x;
   this->y = y;
-  this->dx = dx;
-  this->dy = dy;
   this->orientation = orientation;
   this->current_map_id = map_id;
 }
@@ -1023,10 +1019,10 @@ void Character::removeAmmunition(Ammunition * a) {
   ammunition.remove(a);
 }
 
-void Character::useItem(std::string item) {
+void Character::useItem(long item_id) {
   Item * to_remove = nullptr;
   for(Item * i : items) {
-    if(i->name == item && i->consumable) {
+    if(i->id == item_id && i->consumable) {
       if(player_character) {
         setNeedToSend(true);
       }
@@ -1138,8 +1134,8 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y) {
-  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range, current_map_id, x, y);
+void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
 }
 
 int Character::getDamageFromType(int damage_type) {
@@ -1165,26 +1161,9 @@ float Character::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
-Projectile * Character::shoot(const Character * target, int y, int x, float dy, float dx) {
-  if(!gear->getWeapon()->melee && gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, this->dx, this->dy, x, y, dx, dy)) {
+Projectile * Character::shoot(Target * target, Adventure * adventure) {
+  if(!gear->getWeapon()->melee) { //&& gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, this->dx, this->dy, x, y, dx, dy)) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
-      int destX;
-      float destDX;
-      int destY;
-      float destDY;
-      if(target != nullptr) {
-        destX = ( (Character *) target)->x;
-        destDX = ( (Character *) target)->dx;
-        destY = ( (Character *) target)->y;
-        destDY = ( (Character *) target)->dy;
-      }
-      else {
-        destX = x;
-        destDX = dx;
-        destY = y;
-        destDY = dy;
-      }
-      orientation = MapUtil::getOrientationToTarget(this->x, this->y, this->dx, this->dy, destX, destY, destDX, destDY);
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type);
@@ -1196,19 +1175,19 @@ Projectile * Character::shoot(const Character * target, int y, int x, float dy, 
         }
         gear->getWeapon()->useAmmo();
       }
-      return new Projectile(base_projectile, realDamages, current_map_id, this->x, this->y, this->dx, this->dy, destX, destY, destDX, destDY, (Character *) target, this, orientation, 1, 1, 1);
+      return new Projectile(base_projectile, realDamages, adventure->getWorld(), current_map_id, target, this, 1, 1, 1, true);
     }
   }
   return nullptr;
 }
 
-void Character::attack(Character * target) {
+void Character::attack(Character * target, int type) {
   if(gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
     int realDamages[DAMAGE_TYPE_NUMBER];
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
       realDamages[damage_type] = getDamageFromType(damage_type);
     }
-    target->receiveAttack(realDamages, orientation);
+    target->receiveAttack(realDamages, orientation, type);
   }
 }
 
@@ -1253,17 +1232,17 @@ Weapon * Character::swapMelee() {
   return weapon;
 }
 
-void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) {
+void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type) {
   if(!isInvulnerable() && !isEtheral()) {
     if(orientation != 360.F) {
       float diff = 360.F + orientation - this->orientation;
       diff = diff >= 360.F ? diff - 360.F : diff;
       if(diff <= 30.F || diff >= 330.F) {
-        return receiveCriticalAttack(damages);
+        return receiveCriticalAttack(damages, type);
       }
     }
     if(isInWeakState()) {
-      return receiveCriticalAttack(damages);
+      return receiveCriticalAttack(damages, type);
     }
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
@@ -1283,11 +1262,16 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation) 
         damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
     }
-    hp -= std::max(0, damage - getArmor());
+    if(type == HEAVY_STRIKE) {
+      hp -= (std::max(0, damage - getArmor())) * 1.5;
+    }
+    else {
+      hp -= std::max(0, damage - getArmor());
+    }
   }
 }
 
-void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
+void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type) {
   if(!isInvulnerable() && !isEtheral()) {
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
@@ -1320,11 +1304,16 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]) {
         }
       }
     }
-    hp -= std::max(0, damage - getArmor());
+    if(type == HEAVY_STRIKE) {
+      hp -= (std::max(0, damage - getArmor())) * 1.5;
+    }
+    else {
+      hp -= std::max(0, damage - getArmor());
+    }
   }
 }
 
-int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages) {
+int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) {
   if(isInvulnerable() || isEtheral()) {
     return 0;
   }
@@ -1347,7 +1336,12 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages) {
       damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
   }
-  return trueDamage + std::max(0, damage - getArmor());
+  if(type == HEAVY_STRIKE) {
+    return (trueDamage + std::max(0, damage - getArmor())) * 1.5;
+  }
+  else {
+    return trueDamage + std::max(0, damage - getArmor());
+  }
 }
 
 void Character::trade(Character * buyer, int object_type, std::string object_name, float price_modifier) {
@@ -1437,10 +1431,8 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, getFlow());
   String::insert_bool(ss, player_character);
   String::insert_int(ss, type);
-  String::insert_int(ss, x - offsetX);
-  String::insert_int(ss, y - offsetY);
-  String::insert_float(ss, dx);
-  String::insert_float(ss, dy);
+  String::insert_float(ss, x - (float) offsetX);
+  String::insert_float(ss, y - (float) offsetY);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
   String::insert(ss, team);
@@ -1510,10 +1502,8 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->flow = String::extract_int(ss);
   display->player_character = String::extract_bool(ss);
   display->type = String::extract_int(ss);
-  display->x = String::extract_int(ss);
-  display->y = String::extract_int(ss);
-  display->dx = String::extract_float(ss);
-  display->dy = String::extract_float(ss);
+  display->x = String::extract_float(ss);
+  display->y = String::extract_float(ss);
   display->size = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
   display->team = String::extract(ss);
@@ -1581,6 +1571,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, savedManaRegen);
   String::insert_int(ss, channeledMana);
   String::insert(ss, name);
+  String::insert_long(ss, id);
   String::insert_bool(ss, player_character);
   if(death_speech != nullptr) {
     String::insert(ss, ((Speech *) death_speech)->to_string());
@@ -1595,10 +1586,8 @@ std::string Character::full_to_string(Adventure * adventure) {
     String::insert(ss, "none");
   }
   String::insert_int(ss, type);
-  String::insert_int(ss, x);
-  String::insert_int(ss, y);
-  String::insert_float(ss, dx);
-  String::insert_float(ss, dy);
+  String::insert_float(ss, x);
+  String::insert_float(ss, y);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
   String::insert_int(ss, current_map_id);
@@ -1714,6 +1703,7 @@ Character * Character::full_from_string(std::string to_read) {
   float savedManaRegen = String::extract_float(ss);
   int channeledMana = String::extract_int(ss);
   std::string name = String::extract(ss);
+  long id = String::extract_long(ss);
   bool player_character = String::extract_bool(ss);
   std::string death_speech_str = String::extract(ss);
   Speech * death_speech = nullptr;
@@ -1726,10 +1716,8 @@ Character * Character::full_from_string(std::string to_read) {
     talking_speech = Speech::from_string(talking_speech_str);
   }
   int type = String::extract_int(ss);
-  int x = String::extract_int(ss);
-  int y = String::extract_int(ss);
-  float dx = String::extract_float(ss);
-  float dy = String::extract_float(ss);
+  float x = String::extract_float(ss);
+  float y = String::extract_float(ss);
   float size = String::extract_float(ss);
   float orientation = String::extract_float(ss);
   int current_map_id = String::extract_int(ss);
@@ -1838,14 +1826,13 @@ Character * Character::full_from_string(std::string to_read) {
     savedManaRegen,
     channeledMana,
     name,
+    id,
     player_character,
     death_speech,
     talking_speech,
     type,
     x,
     y,
-    dx,
-    dy,
     size,
     orientation,
     current_map_id,

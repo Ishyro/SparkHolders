@@ -1,8 +1,15 @@
-#include "data/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Map.h"
 #include "data/World.h"
+
+#include "data/actions/Action.h"
+#include "data/actions/BaseAction.h"
+#include "data/actions/EconomicsAction.h"
+#include "data/actions/GearAction.h"
+#include "data/actions/SkillAction.h"
+#include "data/actions/TalkingAction.h"
+#include "data/actions/TargetedAction.h"
 
 #include "ai/AI.h"
 
@@ -14,9 +21,16 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   float orientation = 0.F;
   if(!threats.empty()) {
     Character * target = threats.front();
-    orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
+    // orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
     delete visionMap;
-    return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
+    Target * t = new Target();
+    t->type = CHARACTER;
+    t->id = c->getCurrentMapId();
+    t->x = target->getX();
+    t->y = target->getY();
+    ((TargetedAction *) action)->setTarget(t);
+    return action;
   }
   selectHungriness(c);
   selectTiredness(c);
@@ -29,13 +43,20 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   }
   if(sleepy && adventure->getLight() > 6) {
     delete visionMap;
-    return new Action(REST, adventure, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new BaseAction(IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
-    return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
+    Target * t = new Target();
+    t->type = TILE;
+    t->id = c->getCurrentMapId();
+    t->x = origin_x;
+    t->y = origin_y;
+    ((TargetedAction *) action)->setTarget(t);
+    return action;
   }
   delete visionMap;
-  return new Action(REST, adventure, nullptr, c, 0, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    return new BaseAction(IDLE, adventure, nullptr, c);
 }

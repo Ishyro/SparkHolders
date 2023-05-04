@@ -1,6 +1,6 @@
 name = TXT_FIREBALL
 skill_type = PROJECTILE_SKILL
-target_type = TARGET
+target_type = PERMISSIVE_TARGET
 projectile = TXT_FIREBALL
 mana_cost = 10
 effects =

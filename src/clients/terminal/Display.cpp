@@ -119,7 +119,7 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - character->y, character->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(character->y), (int) std::floor(character->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
@@ -154,13 +154,13 @@ namespace Display {
           break;
       }
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - projectile->y, projectile->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(projectile->y), (int) std::floor(projectile->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
       std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - loot->y, loot->x + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(loot->y), (int) std::floor(loot->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
     std::string to_print = std::to_string(player->getOrientation());
@@ -1298,67 +1298,51 @@ namespace Display {
         wrefresh(targetScreen);
         bool done = false;
         int type;
-        int object_type = 0;
-        float orientation = link->getPlayer()->getOrientation();
-        Skill * skill = nullptr;
-        int target_id = 0;
-        int target_x = link->getPlayer()->getX() - display->offsetX;
-        int target_y = link->getPlayer()->getY() - display->offsetY;
-        int overcharge_power = 1;
-        int overcharge_duration = 1;
-        int overcharge_range = 1;
-        std::string object = "";
+        int object_type;
+        std::string object;
+        int object_id;
+        float orientation;
+        Skill * skill;
+        int target_id;
+        int target_x;
+        int target_y;
+        int overcharge_power;
+        int overcharge_duration;
+        int overcharge_range;
         while(!done) {
+          object_type = 0;
+          object = "";
+          object_id = 0;
+          orientation = link->getPlayer()->getOrientation();
+          skill = nullptr;
+          target_id = 0;
+          target_x = (int) std::floor(link->getPlayer()->getX()) - display->offsetX;
+          target_y = (int) std::floor(link->getPlayer()->getY()) - display->offsetY;
+          overcharge_power = 1;
+          overcharge_duration = 1;
+          overcharge_range = 1;
           flushinp();
           int keyPressed = getch();
           switch(keyPressed) {
             case '5':
-              type = REST;
+              type = IDLE;
               done = true;
               break;
             case '1':
-              type = MOVE;
-              orientation = 225.F;
-              done = true;
-              break;
             case '2':
             case KEY_DOWN:
-              type = MOVE;
-              orientation = 270.F;
-              done = true;
-              break;
             case '3':
-              type = MOVE;
-              orientation = 315.F;
-              done = true;
-              break;
             case '4':
             case KEY_LEFT:
-              type = MOVE;
-              orientation = 180.F;
-              done = true;
-              break;
             case '6':
             case KEY_RIGHT:
-              type = MOVE;
-              orientation = 0.F;
-              done = true;
-              break;
             case '7':
-              type = MOVE;
-              orientation = 135.F;
-              done = true;
-              break;
             case '8':
             case KEY_UP:
-              type = MOVE;
-              orientation = 90.F;
-              done = true;
-              break;
             case '9':
-              type = MOVE;
-              orientation = 45.F;
-              done = true;
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
+                done = true;
+              }
               break;
             case ' ':
               type = GRAB;
@@ -1394,10 +1378,10 @@ namespace Display {
             case 'i':
             case 'I':
               type = SWAP_GEAR;
-              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, t);
+              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, t);
               if(object != "") {
                 switch(object_type) {
-                  case 2:
+                  case ITEM:
                     for(Item * item : link->getPlayer()->getItems()) {
                       if(item->name == object) {
                         if(item->consumable) {
@@ -1428,7 +1412,42 @@ namespace Display {
               ;
           }
         }
-        link->sendAction(type, orientation, skill, target_id, target_x, target_y, object, overcharge_power, overcharge_duration, overcharge_range);
+        switch(type) {
+          case IDLE:
+          case RESPITE:
+          case REST:
+          case BREAKPOINT:
+            link->sendAction(type, nullptr, nullptr, 0, 0, 0);
+            break;
+          case MOVE:
+          case STRIKE:
+          case HEAVY_STRIKE:
+          case SHOOT:
+          case USE_SKILL: {
+            Target * target = new Target();
+            ((Target *) target)->type = (target_id == 0 ? COORDINATES : CHARACTER);
+            ((Target *) target)->id = (target_id == 0 ? display->id : target_id);
+            ((Target *) target)->x = target_x + 0.5;
+            ((Target *) target)->y = target_y + 0.5;
+            link->sendAction(type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
+            break;
+          }
+          case RELOAD:
+          case SWAP_GEAR:
+          case GRAB:
+          case USE_ITEM: {
+            GearPiece * piece = new GearPiece();
+            ((GearPiece *) piece)->type = object_type;
+            ((GearPiece *) piece)->id = object_id;
+            ((GearPiece *) piece)->name = object;
+            link->sendAction(type, (void *) piece, nullptr, 0, 0, 0);
+            break;
+          }
+          case TALKING:
+          case ECONOMICS:
+            break;
+          default: ;
+        }
         for(CharacterDisplay * character : display->characters) {
           delete character;
         }
@@ -1741,7 +1760,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MapUtil::getOrientationToTarget(player_x, player_y, 0.F, 0.F, target_x, target_y, 0.F, 0.F);
+          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x, target_y);
           break;
         }
         case ' ': {
@@ -1781,7 +1800,7 @@ namespace Display {
     return true;
   }
 
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, Translator * t) {
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, int & object_id, Translator * t) {
       std::string result = "";
       bool done = false;
       int cursorX = 0;
@@ -1819,7 +1838,8 @@ namespace Display {
           std::string to_print = t->getWeaponName(weapon->name);
           if(color == BLUE) {
             result = weapon->name;
-            object_type = 0;
+            object_id = weapon->id;
+            object_type = WEAPON;
             tempScreen = displayWeapon(weapon, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
@@ -1843,7 +1863,7 @@ namespace Display {
           std::string to_print = t->getProjectileName(ammo->projectile->name);
           if(color == BLUE) {
             result = ammo->projectile->name;
-            object_type = 1;
+            object_type = AMMUNITION;
             tempScreen = displayAmmo(ammo, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
@@ -1867,7 +1887,8 @@ namespace Display {
           std::string to_print = t->getItemName(item->name);
           if(color == BLUE) {
             result = item->name;
-            object_type = 2;
+            object_id = item->id;
+            object_type = ITEM;
             tempScreen = displayItem(item, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());

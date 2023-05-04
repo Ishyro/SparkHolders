@@ -8,32 +8,32 @@
 #include "ai/NocturnalAgressiveAI.h"
 #include "ai/EtheralCasterAI.h"
 
-void SummonSkill::activate(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
-  // copied from FileOpener.cpp
+void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+  // Target will be a Tile
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
-    ai = new DiurnalPassiveAI(x, y);
+    ai = new DiurnalPassiveAI(target->x, target->y);
   }
   else if (ai_str == "NocturnalPassiveAI") {
-    ai = new NocturnalPassiveAI(x, y);
+    ai = new NocturnalPassiveAI(target->x, target->y);
   }
   else if (ai_str == "DiurnalAgressiveAI") {
-    ai = new DiurnalAgressiveAI(x, y);
+    ai = new DiurnalAgressiveAI(target->x, target->y);
   }
   else if (ai_str == "NocturnalAgressiveAI") {
-    ai = new NocturnalAgressiveAI(x, y);
+    ai = new NocturnalAgressiveAI(target->x, target->y);
   }
   else if (ai_str == "EtheralCasterAI") {
-    ai = new EtheralCasterAI(x, y);
+    ai = new EtheralCasterAI(target->x, target->y);
   }
   Character * c = new Character(
     character,
     character->name,
     xp,
-    x,
-    y,
+    (int) target->x,
+    (int) target->y,
     owner->getOrientation(),
-    map_id,
+    target->id,
     owner->getTeam(),
     ai,
     attributes,
@@ -46,16 +46,16 @@ void SummonSkill::activate(Character * owner, Character * target, Adventure * ad
     profession,
     titles
   );
-  adventure->getWorld()->getMap(map_id)->addCharacter(c);
+  adventure->getWorld()->getMap(target->id)->addCharacter(c);
   if(apparition_type == SOFT) {
-    adventure->softMoveCharacterToMap(c, map_id, y, x);
+    adventure->softMoveCharacterToMap(c, target->id, target->y, target->x);
   }
   else {
-    adventure->hardMoveCharacterToMap(c, map_id, y, x);
+    adventure->hardMoveCharacterToMap(c, target->id, target->y, target->x);
   }
 }
 
-bool SummonSkill::canCast(Character * owner, Character * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int map_id, int x, int y, int range) {
+bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
   return true;
 }
 

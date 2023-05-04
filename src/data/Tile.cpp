@@ -13,7 +13,6 @@ std::string Tile::to_string() {
   std::string result = ss->str();
   delete ss;
   return result;
-
 }
 
 Tile * Tile::from_string(std::string to_read) {

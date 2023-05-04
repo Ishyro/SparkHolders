@@ -31,10 +31,8 @@ typedef struct CharacterDisplay {
   int flow;
   bool player_character;
   int type;
-  int x;
-  int y;
-  float dx;
-  float dy;
+  float x;
+  float y;
   float size;
   float orientation;
   std::string team;
@@ -54,7 +52,7 @@ typedef struct CharacterDisplay {
 
 class Character {
   public:
-    const long id = ++character::id_cpt;
+    const long id;
     const std::string name;
     const bool player_character;
     const int type;
@@ -81,6 +79,7 @@ class Character {
       std::list<Skill *> sellable_skills
     ):
       name(name),
+      id(0),
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
@@ -120,6 +119,7 @@ class Character {
       std::list<Way *> titles
     ):
       name(name),
+      id(++character::id_cpt),
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speech(from_database->talking_speech),
@@ -127,10 +127,8 @@ class Character {
       gold(from_database->gold),
       xp(xp),
       level(1),
-      x(x),
-      y(y),
-      dx(0.5),
-      dy(0.5),
+      x(x + 0.5F),
+      y(y + 0.5F),
       orientation(orientation),
       current_map_id(current_map_id),
       has_soulspark(from_database->has_soulspark),
@@ -210,14 +208,13 @@ class Character {
       float savedManaRegen,
       int channeledMana,
       std::string name,
+      long id,
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
       int type,
-      int x,
-      int y,
-      float dx,
-      float dy,
+      float x,
+      float y,
       float size,
       float orientation,
       int current_map_id,
@@ -266,14 +263,13 @@ class Character {
       savedManaRegen(savedManaRegen),
       channeledMana(channeledMana),
       name(name),
+      id(id),
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
       type(type),
       x(x),
       y(y),
-      dx(dx),
-      dy(dy),
       size(size),
       orientation(orientation),
       current_map_id(current_map_id),
@@ -310,10 +306,8 @@ class Character {
     }
     bool isAlive();
     bool isSoulBurning();
-    int getX();
-    int getY();
-    float getDX();
-    float getDY();
+    float getX();
+    float getY();
     float getOrientation();
     float getSize();
     int getHp();
@@ -382,7 +376,7 @@ class Character {
 
     void setOrientation(float orientation);
     void setSize(float size);
-    void move(int y, int x, float dy, float dx, float orientation, int map_id);
+    void move(float y, float x, float orientation, int map_id);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);
@@ -442,7 +436,7 @@ class Character {
     void removeItem(Item * i);
     void removeWeapon(Weapon * w);
     void removeAmmunition(Ammunition * a);
-    void useItem(std::string item);
+    void useItem(long item_id);
 
     bool isFlying();
     bool isChanneling();
@@ -455,17 +449,17 @@ class Character {
     int cloakPower();
     bool isInWeakState();
 
-    void useSkill(Skill * skill, Character * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range, int x, int y);
+    void useSkill(Skill * skill, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range);
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
-    Projectile * shoot(const Character * target, int y, int x, float dy, float dx);
+    Projectile * shoot(Target * target, Adventure * adventure);
     void reload(Ammunition * ammo);
-    void attack(Character * target);
+    void attack(Character * target, int type);
     Ammunition * canReload();
     Weapon * swapMelee();
-    void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], int orientation);
-    void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER]);
-    int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages);
+    void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type);
+    void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
+    int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
     void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
     std::string to_string(int offsetY, int offsetX);
     std::string full_to_string(Adventure * adventure);
@@ -479,10 +473,8 @@ class Character {
     void initializeCharacter(Gear * gear);
     void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
-    int x;
-    int y;
-    float dx;
-    float dy;
+    float x;
+    float y;
     float size;
     float orientation;
     int current_map_id;

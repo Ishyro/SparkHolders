@@ -19,7 +19,9 @@ std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Loot *> Map::getLoots() { return loots; }
 // TODO : return right tile
 Tile * Map::getTile(int y, int x) { return tiles[y][x]; }
+Tile * Map::getTile(float y, float x) { return tiles[(int) std::floor(y)][(int) std::floor(x)]; }
 int Map::getLight(int y, int x) { return std::max(lights[y][x], light); }
+int Map::getLight(float y, float x) { return std::max(lights[(int) std::floor(y)][(int) std::floor(x)], light); }
 void Map::applyDayLight(int light) { this->light = light; }
 
 void Map::calculateLights() {
@@ -119,7 +121,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   if(target->isInvisible() || target->isEtheral()) {
     return false;
   }
-  float range = MapUtil::distance(watcher->getX(), watcher->getY(), watcher->getDX(), watcher->getDY(), target->getX(), target->getY(), target->getDX(), target->getDY());
+  float range = MapUtil::distance(watcher->getX(), watcher->getY(), target->getX(), target->getY());
   if(range <= watcher->getDetectionRange()) {
     return true;
   }
@@ -131,10 +133,10 @@ bool Map::canSee(Character * watcher, Character * target) {
 
 std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Database * database) {
   int range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
-  int originX = std::max(0, watcher->getX() - range);
-  int endX = std::min(map->sizeX - 1, watcher->getX() + range);
-  int originY = std::max(0, watcher->getY() - range);
-  int endY = std::min(map->sizeY - 1, watcher->getY() + range);
+  int originX = std::max(0, (int) std::floor(watcher->getX()) - range);
+  int endX = std::min(map->sizeX - 1, (int) std::floor(watcher->getX()) + range);
+  int originY = std::max(0, (int) std::floor(watcher->getY()) - range);
+  int endY = std::min(map->sizeY - 1, (int) std::floor(watcher->getY()) + range);
   std::vector<std::vector<Tile *>> result = std::vector<std::vector<Tile *>>(endY - originY + 1);
   for(int index = 0; index <= endY - originY; index++) {
     result[index] = std::vector<Tile *>(endX - originX + 1);
@@ -149,8 +151,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
     std::list<MapUtil::Pair> path = MapUtil::getPathFromCartesianEquation(a, range);
     // 8 times the same action with inverted coordinates
     for(MapUtil::Pair pair : path) {
-      int i = pair.x + watcher->getX() - originX;
-      int j = pair.y + watcher->getY() - originY;
+      int i = std::floor(pair.x) + std::floor(watcher->getX()) - originX;
+      int j = std::floor(pair.y) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -166,8 +168,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = pair.x + watcher->getX() - originX;
-      int j = -pair.y + watcher->getY() - originY;
+      int i = std::floor(pair.x) + std::floor(watcher->getX()) - originX;
+      int j = -std::floor(pair.y) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -183,8 +185,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = -pair.x + watcher->getX() - originX;
-      int j = pair.y + watcher->getY() - originY;
+      int i = -std::floor(pair.x) + std::floor(watcher->getX()) - originX;
+      int j = std::floor(pair.y) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -200,8 +202,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = -pair.x + watcher->getX() - originX;
-      int j = -pair.y + watcher->getY() - originY;
+      int i = -std::floor(pair.x) + std::floor(watcher->getX()) - originX;
+      int j = -std::floor(pair.y) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -217,8 +219,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = pair.y + watcher->getX() - originX;
-      int j = pair.x + watcher->getY() - originY;
+      int i = std::floor(pair.y) + std::floor(watcher->getX()) - originX;
+      int j = std::floor(pair.x) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -234,8 +236,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = -pair.y + watcher->getX() - originX;
-      int j = pair.x + watcher->getY() - originY;
+      int i = -std::floor(pair.y) + std::floor(watcher->getX()) - originX;
+      int j = std::floor(pair.x) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -251,8 +253,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = pair.y + watcher->getX() - originX;
-      int j = -pair.x + watcher->getY() - originY;
+      int i = std::floor(pair.y) + std::floor(watcher->getX()) - originX;
+      int j = -std::floor(pair.x) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -268,8 +270,8 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
       }
     }
     for(MapUtil::Pair pair : path) {
-      int i = -pair.y + watcher->getX() - originX;
-      int j = -pair.x + watcher->getY() - originY;
+      int i = -std::floor(pair.y) + std::floor(watcher->getX()) - originX;
+      int j = -std::floor(pair.x) + std::floor(watcher->getY()) - originY;
       if(i < 0 || i > endX - originX || j < 0 || j > endY - originY) {
         break;
       }
@@ -318,6 +320,7 @@ std::vector<std::vector<Tile *>> Map::canSee(Map * map, Character * watcher, Dat
 }
 
 void Map::setTile(int y, int x, Tile * tile) { tiles[y][x] = tile; }
+void Map::setTile(float y, float x, Tile * tile) { tiles[(int) std::floor(y)][(int) std::floor(x)] = tile; }
 
 void Map::crumble(int y, int x) {
   for(Character * character : characters) {
@@ -378,10 +381,10 @@ void Map::killCharacter(Character * killer, Character * victim) {
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
     int xp = victim->getXP();
-    Effect * effect = new Effect("TXT_GAIN_XP", victim->getLevel(), "", EXPERIENCE, INSTANT_DURATION, xp, 0, damages, damage_reductions);
+    Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EXPERIENCE, INSTANT_DURATION, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", false, true, UNEQUIPABLE, true, 0.F, 0, xp * 10, 0, 5, *effects, damage_reductions));
+    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", ++item::id_cpt, false, true, UNEQUIPABLE, true, 0.F, 0, xp * 10, 0, 5, *effects, damage_reductions));
     delete effects;
   }
   if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {
@@ -454,20 +457,16 @@ void Map::takeLoot(Character * c, int mode) {
   to_delete.clear();
 }
 
-float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
+float Map::getMoveCost(Character * c, float y, float x) {
   if(c->isFlying()) {
-    return MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy) * 10.F;
+    return MapUtil::distance(c->getX(), c->getY(), x, y) * 10.F;
   }
-  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy);
+  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
   float ap_cost = 0.F;
   int current_x = c->getX();
   int current_y = c->getY();
-  float current_dx = c->getDX();
-  float current_dy = c->getDY();
   int next_x = current_x;
   int next_y = current_y;
-  float next_dx = current_dx;
-  float next_dy = current_dy;
   int x_direction = 1;
   int y_direction = 1;
   if(orientation > 180.F) {
@@ -476,72 +475,72 @@ float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
   if(orientation > 90.F && orientation < 270.F) {
     x_direction = -1;
   }
-  if( (float) c->getY() + c->getDY() == (float) y + dy) {
+  if(c->getY() == y) {
     if(current_x !=  x && x_direction == -1) {
-      next_dx = 0.F;
-      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
-      current_dx = next_dx;
+      next_x = std::floor(next_x);
+      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+      current_x = next_x;
     }
     while(current_x !=  x) {
-      next_x = current_x + x_direction;
-      next_dx = 0.F;
+      next_x = std::floor(current_x + x_direction);
       if(x_direction == -1) {
-        ap_cost += getTile(current_y, next_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(current_y, next_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
-        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_x = next_x;
-      current_dx = next_dx;
     }
   }
-  else if( (float) c->getX() + c->getDX() == (float) x + dx) {
+  else if(c->getX() == x) {
     if(current_y !=  y && y_direction == -1) {
-      next_dy = 0.F;
-      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
-      current_dy = next_dy;
+      next_y = std::floor(next_y);
+      ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+      current_y = next_y;
     }
     while(current_y !=  y) {
-      next_y = current_y + y_direction;
-      next_dy = 0.F;
+      next_y = std::floor(current_y + y_direction);
       if(y_direction == -1) {
-        ap_cost += getTile(next_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(next_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
-        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_y = next_y;
-      current_dy = next_dy;
     }
   }
   else {
     float cos = std::cos(orientation * 3.141593F / 180.F);
     float sin = std::sin(orientation * 3.141593F / 180.F);
+    float current_dx = current_x - std::floor(current_x);
+    float current_dy = current_y - std::floor(current_y);
     float range_x = std::abs(-current_dx / cos);
     float range_y = std::abs(-current_dy / sin);
     float range;
+    float next_dx;
+    float next_dy;
     float x_x = (float) current_x + current_dx + cos * range_x;
     float x_y = (float) current_y + current_dy + sin * range_x;
     float y_x = (float) current_x + current_dx + cos * range_y;
     float y_y = (float) current_y + current_dy + sin * range_y;
-    if(MapUtil::distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y) < MapUtil::distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y)) {
-      next_x = std::floor(x_x);
-      next_dx = x_x - (float) current_x;
-      next_y = std::floor(x_y);
-      next_dy = x_y - (float) current_y;
+    if(MapUtil::distanceSquare(x, y, x_x, x_y) < MapUtil::distanceSquare(x, y, x_x, x_y)) {
+      next_x = x_x;
+      next_dx = x_x - std::floor(current_x);
+      next_y = x_y;
+      next_dy = x_y - std::floor(current_y);
       range = range_x;
     }
     else {
-      next_x = std::floor(y_x);
-      next_dx = y_x - (float) current_x;
-      next_y = std::floor(y_y);
-      next_dy = y_y - (float) current_y;
+      next_x = y_x;
+      next_dx = y_x - std::floor(current_x);
+      next_y = y_y;
+      next_dy = y_y - std::floor(current_y);
       range = range_y;
     }
     ap_cost = getTile(current_y, current_x)->ap_cost * range;
     current_dx = next_dx;
     current_dy = next_dy;
-    while(MapUtil::distanceSquare(x, y, dx, dy, current_x, current_y, current_dx, current_dy) > 2) {
+    while(MapUtil::distanceSquare(x, y, current_x, current_y) > 2) {
     //while(current_x != x || current_y != y) {
       range_x = std::abs((x_direction - current_dx) / cos);
       range_y = std::abs((y_direction - current_dy) / sin);
@@ -549,7 +548,7 @@ float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
       x_y = (float) current_y + current_dy + sin * range_x;
       y_x = (float) current_x + current_dx + cos * range_y;
       y_y = (float) current_y + current_dy + sin * range_y;
-      if(MapUtil::distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y) < MapUtil::distanceSquare(x, y, dx, dy, 0, 0, x_x, x_y)) {
+      if(MapUtil::distanceSquare(x, y, x_x, x_y) < MapUtil::distanceSquare(x, y, x_x, x_y)) {
         next_x = std::floor(x_x);
         next_dx = x_x - (float) next_x;
         next_y = std::floor(x_y);
@@ -576,55 +575,51 @@ float Map::getMoveCost(Character * c, int y, int x, float dy, float dx) {
     }
   }
   if(x_direction == -1 || y_direction == -1) {
-    ap_cost -= getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, x, y, dx, dy);
+    ap_cost -= getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
   }
   else {
-    ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, current_dx, current_dy, x, y, dx, dy);
+    ap_cost += getTile(current_y, current_x)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
   }
   return ap_cost / c->getMovementTimeModifier();
 }
 
-bool Map::tryMove(Character * c, int destY, int destX, float destDY, float destDX) {
+bool Map::tryMove(Character * c, float destY, float destX) {
   if(c->isEtheral()) {
     return true;
   }
   for(Character * other : characters) {
-    if(c != other && !other->isEtheral() && MapUtil::distance(destX, destY, destDX, destDY, other->getX(), other->getY(), other->getDX(), other->getDY()) <= c->getSize() + other->getSize()) {
+    if(c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
       return false;
     } 
   }
   return true;
 }
 
-float Map::move(Character * c, int destY, int destX, float destDY, float destDX) {
+#include <iostream>
+
+float Map::move(Character * c, float destY, float destX) {
   int x = destX;
   int y = destY;
-  float dx = destDX;
-  float dy = destDY;
-  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy);
+  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
   if(orientation == 360.F) {
     return 0.F;
   }
-  float range = MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy);
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), c->getDX(), c->getDY(), orientation, range);
+  float range = MapUtil::distance(c->getX(), c->getY(), x, y);
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), range);
   for(MapUtil::Pair pair : path) {
-    if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
+    if(pair.x < 0 || std::floor(pair.x) >= sizeX || pair.y < 0 || std::floor(pair.y) >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
       break;
     }
     x = pair.x;
     y = pair.y;
-    dx = pair.dx;
-    dy = pair.dy;
   }
-  if(MapUtil::distance(c->getX(), c->getY(), c->getDX(), c->getDY(), x, y, dx, dy) > range) {
+  if(MapUtil::distance(c->getX(), c->getY(), x, y) > range) {
     x = destX;
     y = destY;
-    dx = destDX;
-    dy = destDY;
   }
-  float ap_cost = getMoveCost(c, y, x, dy, dx);
-  if(tryMove(c, y, x, dy, dx)) {
-    c->move(y, x, dy, dx, orientation, id);
+  float ap_cost = getMoveCost(c, y, x);
+  if(tryMove(c, y, x)) {
+    c->move(y, x, orientation, id);
     return ap_cost;
   }
   else {
@@ -634,19 +629,13 @@ float Map::move(Character * c, int destY, int destX, float destDY, float destDX)
 
 float Map::move(Character * c, float orientation, float ap, World * world) {
   int lim_x = c->getX();
-  float lim_dx = c->getDX();
   int lim_y = c->getY();
-  float lim_dy = c->getDY();
   float ap_cost = 0.F;
   float current_cost = 0.F;
   int current_x = c->getX();
   int current_y = c->getY();
-  float current_dx = c->getDX();
-  float current_dy = c->getDY();
   int next_x = current_x;
   int next_y = current_y;
-  float next_dx = current_dx;
-  float next_dy = current_dy;
   int x_direction = 1;
   int y_direction = 1;
   if(orientation > 180.F) {
@@ -656,9 +645,12 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     x_direction = -1;
   }
   MapLink * link = nullptr;
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), c->getDX(), c->getDY(), orientation, std::max(3.F, ap / 10.F));
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
   for(MapUtil::Pair pair : path) {
-    if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
+    if(c->name == "test") {
+      std::cout << "x=" << pair.x << " y=" << pair.y << std::endl;
+    }
+    if(pair.x < 0 || std::floor(pair.x) >= sizeX || pair.y < 0 || std::floor(pair.y) >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
       break;
     }
     link = world->getMapLink(pair.y, pair.x, id);
@@ -667,57 +659,44 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     }
     lim_x = pair.x;
     lim_y = pair.y;
-    lim_dx = pair.dx;
-    lim_dy = pair.dy;
   }
   if(c->isFlying()) {
-    next_dx = std::cos(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + (float) c->getX() + c->getDX();
-    next_x = floor(next_dx);
-    next_dx -= (float) next_x;
-    next_dy = std::sin(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + (float) c->getY() + c->getDY();
-    next_y = floor(next_dy);
-    next_dy -= (float) next_y;
-    if(next_x == lim_x + x_direction || next_y == lim_y + y_direction) {
+    next_x = std::cos(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getX();
+    next_y = std::sin(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getY();
+    if(std::floor(next_x) == std::floor(lim_x) + x_direction || std::floor(next_y) == std::floor(lim_y) + y_direction) {
       next_x = lim_x;
-      next_dx = lim_dx;
       next_y = lim_y;
-      next_dy = lim_y;
     }
-    current_cost = getMoveCost(c, next_y, next_x, next_dy, next_dx);
+    current_cost = getMoveCost(c, next_y, next_x);
   }
   else {
     if(orientation == 0.F || orientation == 180.F) {
       if(x_direction == -1) {
-        next_dx = 0.F;
-        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        next_x = std::floor(next_x);
+        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         if(ap_cost <= ap) {
-          current_dx = next_dx;
+          current_x = next_x;
         }
       }
       while(ap_cost <= ap) {
         current_cost = ap_cost;
         current_x = next_x;
-        current_dx = next_dx;
-        next_x = current_x + x_direction;
-        next_dx = 0.F;
-        if(next_x == lim_x + x_direction) {
+        next_x = std::floor(current_x + x_direction);
+        if(next_x == std::floor(lim_x + x_direction)) {
           next_x = lim_x;
-          next_dx = lim_dx;
-          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         if(x_direction == -1) {
-          ap_cost += getTile(current_y, next_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, next_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         }
         else {
-          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       if(ap_cost > ap) {
-        next_dx = (float) current_x + current_dx + (float) x_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
-        next_x = floor(next_dx);
-        next_dx -= (float) next_x;
-        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        next_x = current_x + (float) x_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
@@ -725,36 +704,31 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     }
     else if(orientation == 90.F || orientation == 270.F) {
       if(y_direction == -1) {
-        next_dy = 0.F;
-        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        next_y = std::floor(next_y);
+        ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         if(ap_cost <= ap) {
-          current_dy = next_dy;
+          current_y = next_y;
         }
       }
       while(ap_cost <= ap) {
         current_cost = ap_cost;
         current_y = next_y;
-        current_dy = next_dy;
-        next_y = current_y + y_direction;
-        next_dy = 0.F;
-        if(next_y == lim_y + y_direction) {
+        next_y = std::floor(current_y + y_direction);
+        if(next_y == std::floor(lim_y + y_direction)) {
           next_y = lim_y;
-          next_dy = lim_dy;
-          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         if(y_direction == -1) {
-          ap_cost += getTile(next_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(next_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         }
         else {
-          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       if(ap_cost > ap) {
-        next_dy = (float) current_y + current_dy + (float) y_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
-        next_y = floor(next_dy);
-        next_dy -= (float) next_y;
-        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        next_y = current_y + (float) y_direction * (ap - current_cost) / getTile(current_y, current_x)->ap_cost;
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
@@ -763,142 +737,132 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     else {
       float cos = std::cos(orientation * 3.141593F / 180.F);
       float sin = std::sin(orientation * 3.141593F / 180.F);
-      float range_x = std::abs(-current_dx / cos);
-      float range_y = std::abs(-current_dy / sin);
+      float range_x = std::abs(-(current_x - std::floor(current_x)) / cos);
+      float range_y = std::abs(-(current_y - std::floor(current_y)) / sin);
       float range;
-      float x_x = (float) current_x + current_dx + cos * range_x;
-      float x_y = (float) current_y + current_dy + sin * range_x;
-      float y_x = (float) current_x + current_dx + cos * range_y;
-      float y_y = (float) current_y + current_dy + sin * range_y;
-      if(MapUtil::distanceSquare(lim_x, lim_y, lim_dx, lim_dy, 0, 0, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, lim_dx, lim_dy, 0, 0, x_x, x_y)) {
-        next_x = std::floor(x_x);
-        next_dx = x_x - (float) current_x;
-        next_y = std::floor(x_y);
-        next_dy = x_y - (float) current_y;
+      float x_x = current_x + cos * range_x;
+      float x_y = current_y + sin * range_x;
+      float y_x = current_x + cos * range_y;
+      float y_y = current_y + sin * range_y;
+      if(MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
+        next_x = x_x;
+        next_y = x_y;
         range = range_x;
       }
       else {
-        next_x = std::floor(y_x);
-        next_dx = y_x - (float) current_x;
-        next_y = std::floor(y_y);
-        next_dy = y_y - (float) current_y;
+        next_x = y_x;
+        next_y = y_y;
         range = range_y;
       }
       ap_cost = getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * range;
       while(ap_cost <= ap) {
         current_cost = ap_cost;
         current_x = next_x;
-        current_dx = next_dx;
         current_y = next_y;
-        current_dy = next_dy;
-        range_x = std::abs((x_direction - current_dx) / cos);
-        range_y = std::abs((y_direction - current_dy) / sin);
-        x_x = (float) current_x + current_dx + cos * range_x;
-        x_y = (float) current_y + current_dy + sin * range_x;
-        y_x = (float) current_x + current_dx + cos * range_y;
-        y_y = (float) current_y + current_dy + sin * range_y;
-        if(MapUtil::distanceSquare(lim_x, lim_y, lim_dx, lim_dy, 0, 0, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, lim_dx, lim_dy, 0, 0, x_x, x_y)) {
-          next_x = std::floor(x_x);
-          next_dx = x_x - (float) next_x;
-          next_y = std::floor(x_y);
-          next_dy = x_y - (float) next_y;
+        range_x = std::abs((x_direction - (current_x - std::floor(current_x))) / cos);
+        range_y = std::abs((y_direction - (current_y - std::floor(current_y))) / sin);
+        x_x = current_x + cos * range_x;
+        x_y = current_y + sin * range_x;
+        y_x = current_x + cos * range_y;
+        y_y = current_y + sin * range_y;
+        if(MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
+          next_x = x_x;
+          next_y = x_y;
           range = range_x;
         }
         else {
-          next_x = std::floor(y_x);
-          next_dx = y_x - (float) next_x;
-          next_y = std::floor(y_y);
-          next_dy = y_y - (float) next_y;
+          next_x = y_x;
+          next_y = y_y;
           range = range_y;
         }
-        if(MapUtil::distanceSquare(lim_x, lim_y, lim_dx, lim_dy, current_x, current_y, current_dx, current_dy) <= 2) {
+        if(MapUtil::distanceSquare(lim_x, lim_y, current_x, current_y) <= 2) {
           next_x = lim_x;
-          next_dx = lim_dx;
           next_y = lim_y;
-          next_dy = lim_dy;
-          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+          ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * range;
       }
       if(ap_cost > ap) {
-        next_dx = (float) current_x + current_dx + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * cos;
-        next_x = floor(next_dx);
-        next_dx -= (float) next_x;
-        next_dy = (float) current_y + current_dy + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * sin;
-        next_y = floor(next_dy);
-        next_dy -= (float) next_y;
-        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, current_dx, current_dy, next_x, next_y, next_dx, next_dy);
+        next_x = current_x + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * cos;
+        next_y = current_y + ((ap - current_cost) / getTile(current_y, current_x)->ap_cost) * sin;
+        current_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
       }
     }
   }
-  next_dx = MapUtil::round(next_dx);
-  next_dy = MapUtil::round(next_dy);
-  if(next_x < 0 || next_x >= sizeX || next_y < 0 || next_y >= sizeY || getTile(next_y, next_x)->solid || (!c->isFlying() && getTile(next_y, next_x)->untraversable)) {
+  next_x = MapUtil::round(next_x);
+  next_y = MapUtil::round(next_y);
+  if(next_x < 0 || std::floor(next_x) >= sizeX || next_y < 0 || std::floor(next_y) >= sizeY || getTile(next_y, next_x)->solid || (!c->isFlying() && getTile(next_y, next_x)->untraversable)) {
     return 0.F;
   }
-  if(link != nullptr && next_x == lim_x && next_dx == lim_dx && next_y == lim_y && next_dy == lim_dy) {
+  if(link != nullptr && next_x == lim_x && next_y == lim_y) {
     Map * next_map;
     float dest_orientation = orientation;
     float diff = 0.F;
+    float next_dx = next_x - std::floor(next_x);
+    float next_dy = next_y - std::floor(next_y);
+    next_x = std::floor(next_x);
+    next_y = std::floor(next_y);
+    float high_limit = 0.999F - c->getSize();
+    float low_limit = c->getSize();
     switch(link->type) {
       case THROUGH:
-        if((next_dx == 0.F || next_dx == 0.999F) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
+        if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
           next_x = link->x2 + x_direction;
           next_y = link->y2;
-          next_dx = (next_dx == 0.F ? 0.999F : 0.F);
+          next_dx = (next_dx == low_limit ? high_limit : low_limit);
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y) {
+        else if((next_dx == low_limit || next_dx == high_limit) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
           next_x = link->x1 + x_direction;
           next_y = link->y1;
-          next_dx = (next_dx == 0.F ? 0.999F : 0.F);
+          next_dx = (next_dx == low_limit ? high_limit : low_limit);
         }
-        else if((next_dy == 0.F || next_dy == 0.999F) && link->map1 == this && link->y1 == next_y + y_direction && link->x1 == next_x) {
+        else if((next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->y1 == next_y + y_direction && link->x1 == next_x) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
           next_x = link->x2;
           next_y = link->y2 + y_direction;
-          next_dy = (next_dy == 0.F ? 0.999F : 0.F);
+          next_dy = (next_dy == low_limit ? high_limit : low_limit);
         }
-        else if((next_dy == 0.F || next_dy == 0.999F) && link->map2 == this && link->y2 == next_y + y_direction && link->x2 == next_x) {
+        else if((next_dy == low_limit || next_dy == high_limit) && link->map2 == this && link->y2 == next_y + y_direction && link->x2 == next_x) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
           next_x = link->x1;
           next_y = link->y1 + y_direction;
-          next_dy = (next_dy == 0.F ? 0.999F : 0.F);
+          next_dy = (next_dy == low_limit ? high_limit : low_limit);
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && (next_dy == 0.F || next_dy == 0.999F) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y + y_direction) {
+        else if((next_dx == low_limit || next_dx == high_limit) && (next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y + y_direction) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
           next_x = link->x2 + x_direction;
           next_y = link->y2 + y_direction;
-          next_dx = (next_dx == 0.F ? 0.999F : 0.F);
-          next_dy = (next_dy == 0.F ? 0.999F : 0.F);
+          next_dx = (next_dx == low_limit ? high_limit : low_limit);
+          next_dy = (next_dy == low_limit ? high_limit : low_limit);
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && (next_dy == 0.F || next_dy == 0.999F) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y + y_direction) {
+        else if((next_dx == low_limit || next_dx == high_limit) && (next_dy == low_limit || next_dy == high_limit) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y + y_direction) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
           next_x = link->x1 + x_direction;
           next_y = link->y1 + y_direction;
-          next_dx = (next_dx == 0.F ? 0.999F : 0.F);
-          next_dy = (next_dy == 0.F ? 0.999F : 0.F);
+          next_dx = (next_dx == low_limit ? high_limit : low_limit);
+          next_dy = (next_dy == low_limit ? high_limit : low_limit);
         }
-        if(next_x < 0 || next_x >= next_map->sizeX || next_y < 0 || next_y >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
-          if(tryMove(c, lim_y, lim_x, lim_dy, lim_dx)) {
-            c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
+        if(next_x < 0 || std::floor(next_x) >= next_map->sizeX || next_y < 0 || std::floor(next_y) >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
+          if(tryMove(c, lim_y, lim_x)) {
+            c->move(lim_y, lim_x, orientation, id);
             return 0.F;
           }
           else {
@@ -906,8 +870,8 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           }
         }
         else {
-          if(next_map->tryMove(c, next_y, next_x, next_dy, next_dx)) {
-            c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          if(next_map->tryMove(c, next_y, next_x)) {
+            c->move(next_y, next_x, dest_orientation, next_map->id);
           }
           else {
             return -1;
@@ -916,7 +880,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         break;
       case BOUNCE:
       case BACK:
-        if((next_dx == 0.F || next_dx == 0.999F) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
+        if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
@@ -925,7 +889,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           // BOUNCE orientation
           diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y) {
+        else if((next_dx == low_limit || next_dx == high_limit) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
@@ -934,7 +898,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           // BOUNCE orientation
           diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
         }
-        else if((next_dy == 0.F || next_dy == 0.999F) && link->map1 == this && link->y1 == next_y + y_direction && link->x1 == next_x) {
+        else if((next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->y1 == next_y + y_direction && link->x1 == next_x) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
@@ -943,7 +907,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           // BOUNCE orientation
           diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
         }
-        else if((next_dy == 0.F || next_dy == 0.999F) && link->map2 == this && link->y2 == next_y + y_direction && link->x2 == next_x) {
+        else if((next_dy == low_limit || next_dy == high_limit) && link->map2 == this && link->y2 == next_y + y_direction && link->x2 == next_x) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
@@ -952,14 +916,14 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
           // BOUNCE orientation
           diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && (next_dy == 0.F || next_dy == 0.999F) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y + y_direction) {
+        else if((next_dx == low_limit || next_dx == high_limit) && (next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y + y_direction) {
           next_map = link->map2;
           removeCharacter(c);
           link->map2->addCharacter(c);
           next_x = link->x2 - x_direction;
           next_y = link->y2 - y_direction;
         }
-        else if((next_dx == 0.F || next_dx == 0.999F) && (next_dy == 0.F || next_dy == 0.999F) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y + y_direction) {
+        else if((next_dx == low_limit || next_dx == high_limit) && (next_dy == low_limit || next_dy == high_limit) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y + y_direction) {
           next_map = link->map1;
           removeCharacter(c);
           link->map1->addCharacter(c);
@@ -975,18 +939,18 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         while(dest_orientation >= 360.F) {
           dest_orientation -= 360.F;
         }
-        if(next_x < 0 || next_x >= next_map->sizeX || next_y < 0 || next_y >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
-          if(tryMove(c, lim_y, lim_x, lim_dy, lim_dx)) {
-            c->move(lim_y, lim_x, lim_dy, lim_dx, orientation, id);
-            return 0.F;
+        if(next_x < 0 || std::floor(next_x) >= next_map->sizeX || next_y < 0 || std::floor(next_y) >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
+          if(tryMove(c, lim_y, lim_x)) {
+            c->move(lim_y, lim_x, orientation, id);
+            return low_limit;
           }
           else {
             return -1;
           }
         }
         else {
-          if(next_map->tryMove(c, next_y, next_x, next_dy, next_dx)) {
-            c->move(next_y, next_x, next_dy, next_dx, dest_orientation, next_map->id);
+          if(next_map->tryMove(c, next_y, next_x)) {
+            c->move(next_y, next_x, dest_orientation, next_map->id);
           }
           else {
             return -1;
@@ -997,8 +961,8 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     return ap - current_cost;
   }
   else {
-    if(tryMove(c, next_y, next_x, next_dy, next_dx)) {
-      c->move(next_y, next_x, next_dy, next_dx, orientation, id);
+    if(tryMove(c, next_y, next_x)) {
+      c->move(next_y, next_x, orientation, id);
       return 0.F;
     }
     else {
@@ -1009,21 +973,15 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
 
 float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   bool to_destroy = false;
-  if(!p->isLost() && p->getTarget() !=nullptr && p->getTarget()->getCurrentMapId() == id) {
-    p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getTarget()->getX(), p->getTarget()->getY(), p->getTarget()->getDX(), p->getTarget()->getDY()));
+  if(!p->isLost() && p->getTarget()->type == CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMapId() == id) {
+    p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
-  float dx = std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + (float) p->getX() + p->getDX();
-  int x = floor(dx);
-  dx = MapUtil::round(dx - (float) x);
-  float dy = std::sin(p->getOrientation() * 3.141593F / 180.F) * speed+ (float) p->getY() + p->getDY();
-  int y = floor(dy);
-  dy = MapUtil::round(dy - (float) y);
+  float x = std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX();
+  float y = std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY();
   int max_x;
-  float max_dx;
   int max_y;
-  float max_dy;
   MapLink * link = nullptr;
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getOrientation(), speed);
+  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation(), p->size , speed);
   for(MapUtil::Pair pair : path) {
     if(pair.x < 0 || pair.x >= sizeX || pair.y < 0 || pair.y >= sizeY || getTile(pair.y, pair.x)->solid) {
       to_destroy = true;
@@ -1035,47 +993,39 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
     max_x = pair.x;
     max_y = pair.y;
-    max_dx = pair.dx;
-    max_dy = pair.dy;
   }
   // use these coordinates if the projectile is destroyed before meeting the target
   if(to_destroy || link != nullptr) {
     x = max_x;
-    dx = max_dx;
     y = max_y;
-    dy = max_dy;
   }
   std::list<Character *> targets = std::list<Character *>();
-  if( (float) p->getY() + p->getDY() == (float) y + dy) {
+  if(p->getY() == y) {
     for(Character * c : characters) {
-      float c_y = (float) c->getY() + c->getDY();
-      if(c_y <= (float) y + dy + c->getSize() + p->getSize() && c_y >= (float) y + dy - c->getSize() - p->getSize()) {
-        float c_x = (float) c->getX() + c->getDX();
-        if((float) x + dx > (float) p->getX() + p->getDX()) {
-          if(c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) p->getX() + p->getDX() - c->getSize() - p->getSize()) {
+      if(c->getY() <=  y + c->getSize() + p->getSize() && c->getY() >= y - c->getSize() - p->getSize()) {
+        if( x > p->getX()) {
+          if(c->getX() <= x + c->getSize() + p->getSize() && c->getX()>= p->getX() - c->getSize() - p->getSize()) {
             targets.push_back(c);
           }
         }
         else {
-          if(c_x <= (float) p->getX() + p->getDX() + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) {
+          if(c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) {
             targets.push_back(c);
           }
         }
       }
     }
   }
-  else if( (float) p->getX() + p->getDX() == (float) x + dx) {
+  else if(p->getX() == x) {
     for(Character * c : characters) {
-      float c_x = (float) c->getX() + c->getDX();
-      if(c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) {
-        float c_y = (float) c->getY() + c->getDY();
-        if((float) y + dy > (float) p->getY() + p->getDY()) {
-          if(c_y <= (float) y + dy + c->getSize() + p->getSize() && c_y >= (float) p->getY() + p->getDY() - c->getSize() - p->getSize()) {
+      if(c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) {
+        if(y > p->getY()) {
+          if(c->getY() <= y + c->getSize() + p->getSize() && c->getY() >= p->getY() - c->getSize() - p->getSize()) {
             targets.push_back(c);
           }
         }
         else {
-          if(c_y <= (float) p->getY() + p->getDY() + c->getSize() + p->getSize() && c_y >= (float) y + dy - c->getSize() - p->getSize()) {
+          if(c->getY() <= p->getY() + c->getSize() + p->getSize() && c->getY() >= y - c->getSize() - p->getSize()) {
             targets.push_back(c);
           }
         }
@@ -1085,13 +1035,11 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   else {
     float tan = std::tan(p->getOrientation() * 3.141593F / 180.F);
     for(Character * c : characters) {
-      float c_x = (float) c->getX() + c->getDX();
-      if( (c_x <= (float) x + dx + c->getSize() + p->getSize() && c_x >= (float) p->getX() + p->getDX() - c->getSize() - p->getSize()) ||
-        (c_x <= (float) p->getX() + p->getDX() + c->getSize() + p->getSize() && c_x >= (float) x + dx - c->getSize() - p->getSize()) ) {
-        float c_y = (float) c->getY() + c->getDY();
-        float p_y = tan * (c_x - (float) p->getX() - p->getDX()) + (float) p->getY() + p->getDY();
-        if( (c_y <= p_y + c->getSize() + p->getSize() && c_y >= p_y - c->getSize() - p->getSize()) ||
-          (c_y <= p_y - c->getSize() - p->getSize() && c_y >= p_y + c->getSize() + p->getSize()) ) {
+      if( (c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= p->getX() - c->getSize() - p->getSize()) ||
+        (c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) ) {
+        float p_y = tan * c->getX() + p->getY();
+        if( (c->getY() <= p_y + c->getSize() + p->getSize() && c->getY() >= p_y - c->getSize() - p->getSize()) ||
+          (c->getY() <= p_y - c->getSize() - p->getSize() && c->getY() >= p_y + c->getSize() + p->getSize()) ) {
           targets.push_back(c);
         }
       }
@@ -1099,16 +1047,16 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   }
   // attack targets
   auto rangeSort = [&](Character * a, Character * b) -> bool {
-    return MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), a->getX(), a->getY(), a->getDX(), a->getDY()) <
-      MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), b->getX(), b->getY(), b->getDX(), b->getDY());
+    return MapUtil::distance(p->getX(), p->getY(), a->getX(), a->getY()) <
+      MapUtil::distance(p->getX(), p->getY(), b->getX(), b->getY());
   };
   targets.sort(rangeSort);
   for(Character * character : targets) {
     if(!p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
-      MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), character->getX(), character->getY(), character->getDX(), character->getDY())
-      >= MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getDestX(), p->getDestY(), p->getDestDX(), p->getDestDY()) ) {
+      MapUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
+      >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
-        p->move(p->getDestY(), p->getDestX(), p->getDestDY(), p->getDestDX(), p->getOrientation(), id);
+        p->move(p->getDestY(), p->getDestX(), p->getOrientation(), id);
         p->attack(nullptr, characters, adventure);
       }
     p->attack(character, characters, adventure);
@@ -1117,10 +1065,10 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
   }
   if(targets.empty() && !p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
-    MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), x, y, dx, dy)
-    >= MapUtil::distance(p->getX(), p->getY(), p->getDX(), p->getDY(), p->getDestX(), p->getDestY(), p->getDestDX(), p->getDestDY()) ) {
+    MapUtil::distance(p->getX(), p->getY(), x, y)
+    >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
       // exploding on targeted zone when no other target where found
-      p->move(p->getDestY(), p->getDestX(), p->getDestDY(), p->getDestDX(), p->getOrientation(), id);
+      p->move(p->getDestY(), p->getDestX(), p->getOrientation(), id);
       p->attack(nullptr, characters, adventure);
   }
   std::list<Character *> tokill = std::list<Character *>();
@@ -1144,10 +1092,8 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   }
   else {
     int old_x = x;
-    float old_dx = dx;
     int old_y = y;
-    float old_dy = dy;
-    float range = MapUtil::distance(x, y, dx, dy, p->getX(), p->getY(), p->getDX(), p->getDY());
+    float range = MapUtil::distance(x, y, p->getX(), p->getY());
     Map * next_map;
     float orientation = p->getOrientation();
     float dest_orientation = orientation;
@@ -1160,90 +1106,96 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     if(orientation > 90.F && orientation < 270.F) {
       x_direction = -1;
     }
+    float dx = x - std::floor(x);
+    float dy = y - std::floor(y);
+    x = std::floor(x);
+    y = std::floor(y);
+    float high_limit = 0.999F - p->getSize();
+    float low_limit = p->getSize();
     switch(link->type) {
       case THROUGH:
-        if((dx == 0.F || dx == 0.999F) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
+        if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
           next_map = link->map2;
           x = link->x2 + x_direction;
           y = link->y2;
-          dx = (dx == 0.F ? 0.999F : 0.F);
+          dx = (dx == low_limit ? high_limit : low_limit);
         }
-        else if((dx == 0.F || dx == 0.999F) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y) {
+        else if((dx == low_limit || dx == high_limit) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y) {
           next_map = link->map1;
           x = link->x1 + x_direction;
           y = link->y1;
-          dx = (dx == 0.F ? 0.999F : 0.F);
+          dx = (dx == low_limit ? high_limit : low_limit);
         }
-        else if((dy == 0.F || dy == 0.999F) && link->map1 == this && link->y1 == y + y_direction && link->x1 == x) {
+        else if((dy == low_limit || dy == high_limit) && link->map1 == this && link->y1 == y + y_direction && link->x1 == x) {
           next_map = link->map2;
           x = link->x2;
           y = link->y2 + y_direction;
-          dy = (dy == 0.F ? 0.999F : 0.F);
+          dy = (dy == low_limit ? high_limit : low_limit);
         }
-        else if((dy == 0.F || dy == 0.999F) && link->map2 == this && link->y2 == y + y_direction && link->x2 == x) {
+        else if((dy == low_limit || dy == high_limit) && link->map2 == this && link->y2 == y + y_direction && link->x2 == x) {
           next_map = link->map1;
           x = link->x1;
           y = link->y1 + y_direction;
-          dy = (dy == 0.F ? 0.999F : 0.F);
+          dy = (dy == low_limit ? high_limit : low_limit);
         }
-        else if((dx == 0.F || dx == 0.999F) && (dy == 0.F || dy == 0.999F) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y + y_direction) {
+        else if((dx == low_limit || dx == high_limit) && (dy == low_limit || dy == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y + y_direction) {
           next_map = link->map2;
           x = link->x2 + x_direction;
           y = link->y2 + y_direction;
-          dx = (dx == 0.F ? 0.999F : 0.F);
-          dy = (dy == 0.F ? 0.999F : 0.F);
+          dx = (dx == low_limit ? high_limit : low_limit);
+          dy = (dy == low_limit ? high_limit : low_limit);
         }
-        else if((dx == 0.F || dx == 0.999F) && (dy == 0.F || dy == 0.999F) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y + y_direction) {
+        else if((dx == low_limit || dx == high_limit) && (dy == low_limit || dy == high_limit) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y + y_direction) {
           next_map = link->map1;
           x = link->x1 + x_direction;
           y = link->y1 + y_direction;
-          dx = (dx == 0.F ? 0.999F : 0.F);
-          dy = (dy == 0.F ? 0.999F : 0.F);
+          dx = (dx == low_limit ? high_limit : low_limit);
+          dy = (dy == low_limit ? high_limit : low_limit);
         }
-        if(x < 0 || x >= next_map->sizeX || y < 0 || y >= next_map->sizeY || next_map->getTile(y, x)->solid) {
-          p->move(old_y, old_x, old_dy, old_dx, orientation, id);
-          return 0.F;
+        if(x < 0 || std::floor(x) >= next_map->sizeX || y < 0 || std::floor(y) >= next_map->sizeY || next_map->getTile(y, x)->solid) {
+          p->move(old_y, old_x, orientation, id);
+          return low_limit;
         }
         else {
-          p->move(y, x, dy, dx, dest_orientation, next_map->id);
+          p->move(y, x, dest_orientation, next_map->id);
         }
         break;
       case BOUNCE:
       case BACK:
-        if((dx == 0.F || dx == 0.999F) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
+        if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
           next_map = link->map2;
           x = link->x2 - x_direction;
           y = link->y2;
           // BOUNCE orientation
           diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
         }
-        else if((dx == 0.F || dx == 0.999F) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y) {
+        else if((dx == low_limit || dx == high_limit) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y) {
           next_map = link->map1;
           x = link->x1 - x_direction;
           y = link->y1;
           // BOUNCE orientation
           diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
         }
-        else if((dy == 0.F || dy == 0.999F) && link->map1 == this && link->y1 == y + y_direction && link->x1 == x) {
+        else if((dy == low_limit || dy == high_limit) && link->map1 == this && link->y1 == y + y_direction && link->x1 == x) {
           next_map = link->map2;
           x = link->x2;
           y = link->y2 - y_direction;
           // BOUNCE orientation
           diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
         }
-        else if((dy == 0.F || dy == 0.999F) && link->map2 == this && link->y2 == y + y_direction && link->x2 == x) {
+        else if((dy == low_limit || dy == high_limit) && link->map2 == this && link->y2 == y + y_direction && link->x2 == x) {
           next_map = link->map1;
           x = link->x1;
           y = link->y1 - y_direction;
           // BOUNCE orientation
           diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
         }
-        else if((dx == 0.F || dx == 0.999F) && (dy == 0.F || dy == 0.999F) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y + y_direction) {
+        else if((dx == low_limit || dx == high_limit) && (dy == low_limit || dy == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y + y_direction) {
           next_map = link->map2;
           x = link->x2 - x_direction;
           y = link->y2 - y_direction;
         }
-        else if((dx == 0.F || dx == 0.999F) && (dy == 0.F || dy == 0.999F) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y + y_direction) {
+        else if((dx == low_limit || dx == high_limit) && (dy == low_limit || dy == high_limit) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y + y_direction) {
           next_map = link->map1;
           x = link->x1 - x_direction;
           y = link->y1 - y_direction;
@@ -1257,23 +1209,65 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
         while(dest_orientation >= 360.F) {
           dest_orientation -= 360.F;
         }
-        if(x < 0 || x >= next_map->sizeX || y < 0 || y >= next_map->sizeY || next_map->getTile(y, x)->solid) {
-          p->move(old_y, old_x, old_dy, old_dx, orientation, id);
+        if(x < 0 || std::floor(x) >= next_map->sizeX || y < 0 || std::floor(y) >= next_map->sizeY || next_map->getTile(y, x)->solid) {
+          p->move(old_y, old_x, orientation, id);
           return 0.F;
         }
         else {
-          p->move(y, x, dy, dx, dest_orientation, next_map->id);
+          p->move(y + dy, x + dx, dest_orientation, next_map->id);
         }
         break;
     }
     return speed - range;
   }
-  p->move(y, x, dy, dx, p->getOrientation(), id);
+  p->move(y, x, p->getOrientation(), id);
   return 0.F;
 }
 
 void Map::clearProjectiles() {
   projectiles.clear();
+}
+
+std::string Map::target_to_string(Target * target) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, target->type);
+  if(target->type != NO_TARGET && target->type != SELF) {
+    String::insert_long(ss, target->id);
+    if(target->type != CHARACTER) {
+      String::insert_float(ss, target->x);
+      String::insert_float(ss, target->y);
+    }
+  }
+  if(target->next != nullptr) {
+    String::insert(ss, target_to_string(target->next));
+  }
+  else if(target->type != NO_TARGET) {
+    String::insert(ss, "END");
+  }
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+Target * Map::target_from_string(std::string to_read) {
+  std::stringstream * ss = new std::stringstream(to_read);
+  Target * target = new Target();
+  target->type = String::extract_int(ss);
+  if(target->type != NO_TARGET && target->type != SELF) {
+    target->id = String::extract_long(ss);
+    if(target->type != CHARACTER) {
+      target->x = String::extract_float(ss);
+      target->y = String::extract_float(ss);
+    }
+  }
+  if(target->type != NO_TARGET) {
+    std::string next = String::extract(ss);
+    if(next != "END") {
+      target->next = target_from_string(next);
+    }
+  }
+  delete ss;
+  return target;
 }
 
 std::string Map::to_string(Character * player, Adventure * adventure) {
@@ -1311,8 +1305,9 @@ std::string Map::to_string(Character * player, Adventure * adventure) {
   std::stringstream * ss_loots = new std::stringstream();
   for(Loot * loot : loots) {
     String::insert_int(ss_loots, loot->type);
-    String::insert_int(ss_loots, loot->x - offsetX);
-    String::insert_int(ss_loots, loot->y - offsetY);
+    String::insert_float(ss_loots, loot->x - (float) offsetX);
+    String::insert_float(ss_loots, loot->y - (float) offsetY);
+    String::insert_float(ss_loots, loot->size);
   }
   String::insert(ss, ss_loots->str());
   delete ss_loots;
@@ -1365,8 +1360,9 @@ MapDisplay * Map::from_string(std::string to_read) {
   while(ss_loots->rdbuf()->in_avail() != 0) {
     Loot * loot = new Loot();
     loot->type = String::extract_int(ss_loots);
-    loot->x = String::extract_int(ss_loots);
-    loot->y = String::extract_int(ss_loots);
+    loot->x = String::extract_float(ss_loots);
+    loot->y = String::extract_float(ss_loots);
+    loot->size = String::extract_float(ss_loots);
     display->loots.push_back(loot);
   }
   delete ss_loots;

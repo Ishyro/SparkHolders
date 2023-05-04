@@ -34,11 +34,13 @@ class World;
 typedef struct Ammunition Ammunition;
 typedef struct CharacterDisplay CharacterDisplay;
 typedef struct Loot Loot;
+typedef struct GearPiece GearPiece;
 typedef struct MapDisplay MapDisplay;
 typedef struct MapLink MapLink;
 typedef struct ProjectileDisplay ProjectileDisplay;
 typedef struct Spawn Spawn;
 typedef struct Step Step;
+typedef struct Target Target;
 
 // communication
 
@@ -133,11 +135,15 @@ class SpeechManager;
 #define WALKING 2
 #define TELEPORT 3
 
-// skill_target
+// target_type
 
+#define NO_TARGET 0
 #define SELF 1
-#define TARGET 2
-#define TILE 3
+#define CHARACTER 2
+#define COORDINATES 3
+#define TILE 4
+#define PERMISSIVE_TARGET 5
+#define MULTIPLE_TARGETS 6
 
 // skill_type
 
@@ -243,19 +249,21 @@ class SpeechManager;
 
 // action_type
 
+#define IDLE 0
 #define MOVE 1
-#define REST 2
-#define SHOOT 3
-#define STRIKE 4
-#define HEAVY_STRIKE 5
-#define RESPITE 6
-#define RELOAD 7
+#define STRIKE 2
+#define HEAVY_STRIKE 3
+#define RESPITE 4
+#define SHOOT 5
+#define RELOAD 6
+#define GRAB 7
 #define SWAP_GEAR 8
-#define GRAB 9
+#define USE_ITEM 9
 #define USE_SKILL 10
-#define USE_ITEM 11
+#define REST 11
 #define TALKING 12
 #define ECONOMICS 13
+#define BREAKPOINT 14
 
 // teams relations
 
