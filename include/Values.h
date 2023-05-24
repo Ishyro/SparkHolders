@@ -197,9 +197,9 @@ class SpeechManager;
 #define IMPACT_DAMAGE 2
 #define FIRE_DAMAGE 3
 #define LIGHTNING_DAMAGE 4
-#define COLD_DAMAGE 5
+#define FROST_DAMAGE 5
 #define POISON_DAMAGE 6
-#define NEUTRAL_DAMAGE 7 // unaffected by damage reductions, but still by armor
+#define ACID_DAMAGE 7 // unaffected by damage reductions, but still by armor
 #define MIND_DAMAGE 8 // unaffected by armor, but still by damage reductions
 #define TRUE_DAMAGE 9 // health damage
 #define SOUL_DAMAGE 10 // mana damage

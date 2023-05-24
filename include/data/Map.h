@@ -174,7 +174,7 @@ class Map {
     float getMoveCost(Character * c, float y, float x);
     bool tryMove(Character * c, float destY, float destX);
     float move(Character * c, float y, float x);
-    float move(Character * c, float orientation, float ap, World * world);
+    float move(Character * c, float orientation, float destY, float destX, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
     static std::string target_to_string(Target * target);

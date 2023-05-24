@@ -17,12 +17,18 @@ Action * TargetedAction::execute(Adventure * adventure) {
     }
   }
   user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMapId(), user->getX(), user->getY(), target));
+  if(user->name == "test") {
+    std::cout << Map::target_to_string(target) << std::endl;
+  }
   switch(type) {
     case MOVE: {
       float ap = 1.F;
       while(ap > 0.F) {
-        ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), ap, adventure->getWorld());
-        // collision with other character
+        ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), target->y, target->x, ap, adventure->getWorld());
+        // collision with other character or right position
+        if(user->name == "test") {
+          std::cout << "ap=" << ap << " destX= " << user->getX() << " destY= " << user->getY() << std::endl;
+        }
         if(ap == -1) {
           break;
         }
@@ -34,7 +40,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
           setUserOrientationToTarget(adventure);
         }
       }
-      if(target->next == nullptr && rangeFromTarget(adventure) < 0.1 && (next == nullptr || next->type != MOVE)) {
+      if(target->next == nullptr && rangeFromTarget(adventure) > 0.01F && (next == nullptr || next->type != MOVE)) {
         Action * temp = next;
         next = new TargetedAction(MOVE, adventure, nullptr, user);
         ((TargetedAction *) next)->setTarget(target);
@@ -102,15 +108,19 @@ Action * TargetedAction::execute(Adventure * adventure) {
   }
   if(previous != nullptr) {
     previous->setNext(next);
-    next->setPrevious(previous);
-  }
-  else if(next != nullptr) {
-    next->setPrevious(nullptr);
-    // tick is in range [0;1]
-    next->computeTick(1 - tick);
+    if(next != nullptr) {
+      next->setPrevious(previous);
+    }
   }
   else {
-    user->setNeedToUpdateActions(true);
+    if(next != nullptr) {
+      next->setPrevious(nullptr);
+      // tick is in range [0;1]
+      next->computeTick(1 - tick);
+    }
+    else {
+      user->setNeedToUpdateActions(true);
+    }
   }
   return next;
 }

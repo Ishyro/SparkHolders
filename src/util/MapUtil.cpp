@@ -349,13 +349,13 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   if(orientation > 90.F && orientation < 270.F) {
     x_direction = -1;
   }
-  pair.x = std::floor(x) + x_direction == 1 ? high_limit : low_limit;
-  pair.y = std::floor(y) + y_direction == 1 ? high_limit : low_limit;
-  if(orientation == low_limit) {
+  pair.x = std::floor(x) + (x_direction == 1 ? high_limit : low_limit);
+  pair.y = std::floor(y) + (y_direction == 1 ? high_limit : low_limit);
+  if(orientation == 0.F) {
     pair.y = y;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
-      pair.x++;
+      pair.x = pair.x + 1.F;
       result.push_back(pair);
     }
   }
@@ -363,7 +363,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
     pair.y = y;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
-      pair.x--;
+      pair.x = pair.x - 1.F;
       result.push_back(pair);
     }
   }
@@ -371,7 +371,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
     pair.x = x;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
-      pair.y++;
+      pair.y = pair.y + 1.F;
       result.push_back(pair);
     }
   }
@@ -379,7 +379,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
     pair.x = x;
     result.push_back(pair);
     for(int i = 0; i < std::ceil(range); i++) {
-      pair.y--;
+      pair.y = pair.y - 1.F;
       result.push_back(pair);
     }
   }

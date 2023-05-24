@@ -294,7 +294,7 @@ namespace Display {
     if(damage_LIGHTNING != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int damage_COLD = skill->getDamageFromType(COLD_DAMAGE, overcharge_power);
+    int damage_COLD = skill->getDamageFromType(FROST_DAMAGE, overcharge_power);
     if(damage_COLD != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
@@ -302,7 +302,7 @@ namespace Display {
     if(damage_POISON != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int damage_NEUTRAL = skill->getDamageFromType(NEUTRAL_DAMAGE, overcharge_power);
+    int damage_NEUTRAL = skill->getDamageFromType(ACID_DAMAGE, overcharge_power);
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
@@ -348,9 +348,9 @@ namespace Display {
     mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[IMPACT_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[IMPACT_DAMAGE])).c_str());
     mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[FIRE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FIRE_DAMAGE])).c_str());
     mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[LIGHTNING_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[LIGHTNING_DAMAGE])).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[COLD_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[COLD_DAMAGE])).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[FROST_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FROST_DAMAGE])).c_str());
     mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[POISON_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[POISON_DAMAGE])).c_str());
-    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[NEUTRAL_DAMAGE])).c_str());
+    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[ACID_DAMAGE])).c_str());
     mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[TRUE_DAMAGE])).c_str());
     mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[SOUL_DAMAGE])).c_str());
     wrefresh(screen);
@@ -401,7 +401,7 @@ namespace Display {
     if(damage_LIGHTNING != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int damage_COLD = weapon->getDamageFromType(COLD_DAMAGE);
+    int damage_COLD = weapon->getDamageFromType(FROST_DAMAGE);
     if(damage_COLD != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
@@ -409,7 +409,7 @@ namespace Display {
     if(damage_POISON != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int damage_NEUTRAL = weapon->getDamageFromType(NEUTRAL_DAMAGE);
+    int damage_NEUTRAL = weapon->getDamageFromType(ACID_DAMAGE);
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
@@ -466,7 +466,7 @@ namespace Display {
     if(damage_LIGHTNING != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int damage_COLD = ammo->projectile->getDamageFromType(COLD_DAMAGE);
+    int damage_COLD = ammo->projectile->getDamageFromType(FROST_DAMAGE);
     if(damage_COLD != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
@@ -474,7 +474,7 @@ namespace Display {
     if(damage_POISON != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int damage_NEUTRAL = ammo->projectile->getDamageFromType(NEUTRAL_DAMAGE);
+    int damage_NEUTRAL = ammo->projectile->getDamageFromType(ACID_DAMAGE);
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
@@ -522,7 +522,7 @@ namespace Display {
       mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(item->getDamageReductionFromType(IMPACT_DAMAGE))).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(item->getDamageReductionFromType(FIRE_DAMAGE))).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(item->getDamageReductionFromType(LIGHTNING_DAMAGE))).c_str());
-      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(item->getDamageReductionFromType(COLD_DAMAGE))).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(item->getDamageReductionFromType(FROST_DAMAGE))).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(item->getDamageReductionFromType(POISON_DAMAGE))).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
@@ -1341,6 +1341,7 @@ namespace Display {
             case KEY_UP:
             case '9':
               if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
+                type = MOVE;
                 done = true;
               }
               break;
@@ -1429,6 +1430,7 @@ namespace Display {
             ((Target *) target)->id = (target_id == 0 ? display->id : target_id);
             ((Target *) target)->x = target_x + 0.5;
             ((Target *) target)->y = target_y + 0.5;
+            ((Target *) target)->next = nullptr;
             link->sendAction(type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
             break;
           }

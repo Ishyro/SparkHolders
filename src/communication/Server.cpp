@@ -45,7 +45,6 @@ namespace Server {
       case HEAVY_STRIKE:
       case SHOOT: {
         Target * target = Map::target_from_string(String::extract(ss));
-        std::cout << Map::target_to_string(target) << std::endl;
         action = new TargetedAction(type, adventure, nullptr, user);
         ((TargetedAction *) action)->setTarget(target);
         break;

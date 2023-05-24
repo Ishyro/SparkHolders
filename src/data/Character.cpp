@@ -1246,7 +1246,7 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation
     }
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == NEUTRAL_DAMAGE) {
+      if(damage_type == ACID_DAMAGE) {
         damage += damages[damage_type];
       }
       if(damage_type == MIND_DAMAGE) {
@@ -1275,7 +1275,7 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
   if(!isInvulnerable() && !isEtheral()) {
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == NEUTRAL_DAMAGE) {
+      if(damage_type == ACID_DAMAGE) {
         damage += damages[damage_type] * 2;
       }
       if(damage_type == MIND_DAMAGE) {
@@ -1320,7 +1320,7 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) 
   int damage = 0;
   int trueDamage = 0;
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == NEUTRAL_DAMAGE) {
+    if(damage_type == ACID_DAMAGE) {
       damage += damages[damage_type];
     }
     if(damage_type == MIND_DAMAGE) {

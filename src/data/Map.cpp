@@ -627,15 +627,15 @@ float Map::move(Character * c, float destY, float destX) {
   }
 }
 
-float Map::move(Character * c, float orientation, float ap, World * world) {
+float Map::move(Character * c, float orientation, float destY, float destX, float ap, World * world) {
   int lim_x = c->getX();
   int lim_y = c->getY();
   float ap_cost = 0.F;
   float current_cost = 0.F;
-  int current_x = c->getX();
-  int current_y = c->getY();
-  int next_x = current_x;
-  int next_y = current_y;
+  float current_x = c->getX();
+  float current_y = c->getY();
+  float next_x = current_x;
+  float next_y = current_y;
   int x_direction = 1;
   int y_direction = 1;
   if(orientation > 180.F) {
@@ -645,6 +645,9 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
     x_direction = -1;
   }
   MapLink * link = nullptr;
+  if(c->name == "test") {
+    std::cout << "angle=" << orientation << " x=" << c->getX() << " y=" << c->getY() << std::endl;
+  }
   std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
   for(MapUtil::Pair pair : path) {
     if(c->name == "test") {
@@ -706,6 +709,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
       if(y_direction == -1) {
         next_y = std::floor(next_y);
         ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        std::cout << "ap_cost=" << ap_cost << std::endl;
         if(ap_cost <= ap) {
           current_y = next_y;
         }
@@ -862,11 +866,15 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         }
         if(next_x < 0 || std::floor(next_x) >= next_map->sizeX || next_y < 0 || std::floor(next_y) >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
           if(tryMove(c, lim_y, lim_x)) {
+            if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+              c->move(destY, destX, orientation, id);
+              return -1.F;
+            }
             c->move(lim_y, lim_x, orientation, id);
             return 0.F;
           }
           else {
-            return -1;
+            return -1.F;
           }
         }
         else {
@@ -874,7 +882,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
             c->move(next_y, next_x, dest_orientation, next_map->id);
           }
           else {
-            return -1;
+            return -1.F;
           }
         }
         break;
@@ -941,11 +949,15 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
         }
         if(next_x < 0 || std::floor(next_x) >= next_map->sizeX || next_y < 0 || std::floor(next_y) >= next_map->sizeY || next_map->getTile(next_y, next_x)->solid || (!c->isFlying() && next_map->getTile(next_y, next_x)->untraversable)) {
           if(tryMove(c, lim_y, lim_x)) {
+            if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+              c->move(destY, destX, orientation, id);
+              return -1.F;
+            }
             c->move(lim_y, lim_x, orientation, id);
             return low_limit;
           }
           else {
-            return -1;
+            return -1.F;
           }
         }
         else {
@@ -953,7 +965,7 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
             c->move(next_y, next_x, dest_orientation, next_map->id);
           }
           else {
-            return -1;
+            return -1.F;
           }
         }
         break;
@@ -962,11 +974,16 @@ float Map::move(Character * c, float orientation, float ap, World * world) {
   }
   else {
     if(tryMove(c, next_y, next_x)) {
+      if(MapUtil::distance(c->getX(), c->getY(), next_x, next_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+        std::cout << "next_x=" << next_x << " next_y=" << next_y << std::endl;
+        c->move(destY, destX, orientation, id);
+        return -1.F;
+      }
       c->move(next_y, next_x, orientation, id);
       return 0.F;
     }
     else {
-      return -1;
+      return -1.F;
     }
   }
 }
@@ -1264,6 +1281,9 @@ Target * Map::target_from_string(std::string to_read) {
     std::string next = String::extract(ss);
     if(next != "END") {
       target->next = target_from_string(next);
+    }
+    else {
+      target->next = nullptr;
     }
   }
   delete ss;

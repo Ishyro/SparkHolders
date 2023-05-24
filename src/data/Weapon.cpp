@@ -14,7 +14,7 @@ int Weapon::getRawDamage() {
     power += ammo->projectile->getRawDamage();
   }
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == NEUTRAL_DAMAGE) {
+    if(damage_type == ACID_DAMAGE) {
       power += 3 * damages[damage_type];
     }
     else if(damage_type == MIND_DAMAGE) {
