@@ -21,8 +21,6 @@
 #include "util/MapUtil.h"
 #include "util/String.h"
 
-#include <iostream>
-
 Action * SkillAction::execute(Adventure * adventure) {
   if(next != nullptr) {
     next->computeTime(adventure);

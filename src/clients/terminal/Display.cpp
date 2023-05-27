@@ -78,23 +78,23 @@ namespace Display {
     mvwprintw(screen, offsetY, offsetX, line.c_str());
   }
 
-  void displayMap(MapDisplay * display, Character * player, WINDOW * screen, Translator * t) {
+  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
-    for(int y = display->sizeY - 1; y >= 0; y--) {
-      for(int x = 0; x < display->sizeX; x++) {
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
+    for(int y = display->map->sizeY - 1; y >= 0; y--) {
+      for(int x = 0; x < display->map->sizeX; x++) {
         std::string to_print = "·";
-        if(display->tiles[y][x]->untraversable) {
+        if(display->map->getTile(y, x)->untraversable) {
           to_print = "#";
         }
-        if(display->tiles[y][x]->name == "TXT_MIST") { // unseen
+        if(display->map->getTile(y, x)->name == "TXT_MIST") { // unseen
           to_print = "~";
         }
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
     }
     for(CharacterDisplay * character : display->characters) {
@@ -119,7 +119,7 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(character->y), (int) std::floor(character->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(character->y - display->map->offsetY), (int) std::floor(character->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
@@ -154,13 +154,13 @@ namespace Display {
           break;
       }
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(projectile->y), (int) std::floor(projectile->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(projectile->y - display->map->offsetY), (int) std::floor(projectile->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
       std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
-      mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - (int) std::floor(loot->y), (int) std::floor(loot->x) + cols / 2 - display->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(loot->y - display->map->offsetY), (int) std::floor(loot->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
     std::string to_print = std::to_string(player->getOrientation());
@@ -171,7 +171,7 @@ namespace Display {
     to_print = std::string("Y: ") + std::to_string(player->getY());
     mvwprintw(screen, lines - 2, 1, to_print.c_str());
     // time
-    std::stringstream * ss = new std::stringstream(display->time);
+    std::stringstream * ss = new std::stringstream(adventure->getTime());
     std::string skip = String::extract(ss); // skip years
     skip = String::extract(ss); // skip months
     skip = String::extract(ss); // skip weeks
@@ -185,37 +185,37 @@ namespace Display {
     wrefresh(screen);
   }
 
-  void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t) {
+  void displayTileMap(StateDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
-    for(int y = display->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->sizeX; x++) {
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
+    for(int y = display->map->sizeY - 1; y >= 0 ; y--) {
+      for(int x = 0; x < display->map->sizeX; x++) {
         std::string to_print;
-        char ch = t->getTileName(display->tiles[y][x]->name).at(0);
+        char ch = t->getTileName(display->map->getTile(y, x)->name).at(0);
         to_print = ch;
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY -1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
   }
 
-  void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t) {
+  void displayLightMap(StateDisplay * display, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->name).length() / 2, t->getMapName(display->name).c_str());
-    for(int y = display->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->sizeX; x++) {
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
+    for(int y = display->map->sizeY - 1; y >= 0 ; y--) {
+      for(int x = 0; x < display->map->sizeX; x++) {
         std::string to_print;
-        char ch = std::to_string(display->tiles[y][x]->light).at(0);
+        char ch = std::to_string(display->map->getLight(y, x)).at(0);
         to_print = ch;
-        mvwprintw(screen, lines / 2 - display->sizeY / 2 + display->sizeY -1 - y, x + cols / 2 - display->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY -1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
@@ -1290,9 +1290,9 @@ namespace Display {
 
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t) {
     while(true) {
-      MapDisplay * display = link->receiveMap();
+      StateDisplay * display = link->receiveState();
       if(link->getNeedToUpdateActions()) {
-        displayMap(display, link->getPlayer(), mapScreen, t);
+        displayMap(display, link->getAdventure(), link->getPlayer(), mapScreen, t);
         displayStats(link->getPlayer(), statsScreen, t);
         displayCommands(targetScreen, t);
         wrefresh(targetScreen);
@@ -1316,8 +1316,8 @@ namespace Display {
           orientation = link->getPlayer()->getOrientation();
           skill = nullptr;
           target_id = 0;
-          target_x = (int) std::floor(link->getPlayer()->getX()) - display->offsetX;
-          target_y = (int) std::floor(link->getPlayer()->getY()) - display->offsetY;
+          target_x = (int) std::floor(link->getPlayer()->getX()) - display->map->offsetX;
+          target_y = (int) std::floor(link->getPlayer()->getY()) - display->map->offsetY;
           overcharge_power = 1;
           overcharge_duration = 1;
           overcharge_range = 1;
@@ -1427,7 +1427,7 @@ namespace Display {
           case USE_SKILL: {
             Target * target = new Target();
             ((Target *) target)->type = (target_id == 0 ? COORDINATES : CHARACTER);
-            ((Target *) target)->id = (target_id == 0 ? display->id : target_id);
+            ((Target *) target)->id = (target_id == 0 ? display->map->id : target_id);
             ((Target *) target)->x = target_x + 0.5;
             ((Target *) target)->y = target_y + 0.5;
             ((Target *) target)->next = nullptr;
@@ -1450,18 +1450,17 @@ namespace Display {
             break;
           default: ;
         }
-        for(CharacterDisplay * character : display->characters) {
-          delete character;
-        }
-        for(ProjectileDisplay * projectile : display->projectiles) {
-          delete projectile;
-        }
-        for(std::vector<Tile *> tiles : display->tiles) {
-          for(Tile * tile : tiles) {
-            delete tile;
-          }
-        }
       }
+      for(CharacterDisplay * character : display->characters) {
+        delete character;
+      }
+      for(ProjectileDisplay * projectile : display->projectiles) {
+        delete projectile;
+      }
+      for(Loot * loot : display->loots) {
+        delete loot;
+      }
+      delete display->map;
       delete display;
     }
   }
@@ -1691,7 +1690,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
     bool done = false;
     int lines = 0;
     int cols = 0;
@@ -1699,14 +1698,14 @@ namespace Display {
     int player_y = target_y;
     getmaxyx(mapScreen, lines, cols);
     cchar_t *wch_old = new cchar_t();
-    mvwin_wch(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2, wch_old);
+    mvwin_wch(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2, wch_old);
     while(!done) {
       flushinp();
       int keyPressed = getch();
       target_id = 0;
       int previous_x = target_x;
       int previous_y = target_y;
-      wmove(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2);
+      wmove(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2);
       wecho_wchar(mapScreen, wch_old);
       switch(keyPressed) {
         case '4':
@@ -1716,20 +1715,20 @@ namespace Display {
           }
           break;
         case '7':
-          if(target_x > 0 && target_y < display->sizeY - 1) {
+          if(target_x > 0 && target_y < display->map->sizeY - 1) {
             target_x--;
             target_y++;
           }
           break;
         case '8':
         case KEY_UP: {
-          if(target_y < display->sizeY - 1) {
+          if(target_y < display->map->sizeY - 1) {
             target_y++;
           }
           break;
         }
         case '9': {
-          if(target_x < display->sizeX - 1 && target_y < display->sizeY - 1) {
+          if(target_x < display->map->sizeX - 1 && target_y < display->map->sizeY - 1) {
             target_x++;
             target_y++;
           }
@@ -1737,12 +1736,12 @@ namespace Display {
         }
         case '6':
         case KEY_RIGHT:
-          if(target_x < display->sizeX - 1) {
+          if(target_x < display->map->sizeX - 1) {
             target_x++;
           }
           break;
         case '3':
-          if(target_x < display->sizeX - 1 && target_y > 0) {
+          if(target_x < display->map->sizeX - 1 && target_y > 0) {
             target_x++;
             target_y--;
           }
@@ -1789,15 +1788,15 @@ namespace Display {
           break;
         }
       }
-      wmove(mapScreen, lines / 2 - display->sizeY / 2 + display->sizeY - 1 - target_y, target_x + cols / 2 - display->sizeX / 2);
+      wmove(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2);
       win_wch(mapScreen, wch_old);
       wattron(mapScreen, COLOR_PAIR(BACK_RED));
       wprintw(mapScreen, "X");
       wattroff(mapScreen, COLOR_PAIR(BACK_RED));
       wrefresh(mapScreen);
     }
-    target_x += display->offsetX;
-    target_y += display->offsetY;
+    target_x += display->map->offsetX;
+    target_y += display->map->offsetY;
     delete wch_old;
     return true;
   }

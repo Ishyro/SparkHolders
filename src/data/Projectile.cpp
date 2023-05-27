@@ -14,7 +14,7 @@ void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int ov
     this->effects.push_back(toadd);
   }
   lost = false;
-  orientation = world->setPathToTarget(current_map_id, x, y, target);
+  orientation = world->setPathToTarget(current_map_id, owner->getX(), owner->getY(), target);
   if(change_owner_orientation) {
     owner->setOrientation(orientation);
   }
@@ -183,14 +183,14 @@ void Projectile::clearOldTargets() {
   current_targets.clear();
 }
 
-std::string Projectile::to_string(int offsetY, int offsetX) {
+std::string Projectile::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_int(ss, projectile_type);
   String::insert_float(ss, size);
-  String::insert_float(ss, x - (float) offsetX);
-  String::insert_float(ss, y - (float) offsetY);
+  String::insert_float(ss, x);
+  String::insert_float(ss, y);
   String::insert_float(ss, orientation);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, current_damages[i]);

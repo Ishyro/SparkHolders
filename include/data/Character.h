@@ -461,10 +461,10 @@ class Character {
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
     int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
     void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
-    std::string to_string(int offsetY, int offsetX);
+    std::string to_string();
     std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
-    static Character * full_from_string(std::string to_read);
+    static Character * full_from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Character& c) const { return id == c.id; }
     bool operator != (const Character& c) const { return !operator==(c); }
     void deepDelete();

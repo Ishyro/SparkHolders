@@ -12,11 +12,9 @@
 
 #include "server/Link.h"
 
-void Link::playerChoices() {
+void Link::initialize() {
   try {
-    Server::sendWaysIncompabilities(s, adventure);
-    Server::sendStartingPossibilites(s, adventure);
-    Server::sendTranslationPaths(s, adventure);
+    Server::sendAdventure(s, adventure);
     player = Server::receiveChoices(s, adventure);
   } catch (const CloseException &e) {
     markClosed();
@@ -24,15 +22,13 @@ void Link::playerChoices() {
   }
 }
 
-void Link::sendMap() {
+void Link::sendState() {
   if(!isClosed()) {
-    Map * map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
     try {
-      Server::sendMap(s, map, player, adventure);
+      Server::sendState(s, player, adventure);
     } catch (const CloseException &e) {
       markClosed();
     }
-    delete map;
   }
 }
 

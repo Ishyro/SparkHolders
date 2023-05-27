@@ -104,12 +104,13 @@ namespace FileOpener {
     return result;
   }
 
-  Adventure * AdventureOpener(std::string fileName) {
+  Adventure * AdventureOpener(std::string fileName, bool isServer) {
     std::string delimiter = ".";
     std::string dataFile = std::regex_replace(fileName, std::regex(".commands"), ".data");
     Database * database = DatabaseOpener(dataFile);
-    SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
-
+    if(isServer) {
+      SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
+    }
     std::fstream file;
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
@@ -145,11 +146,12 @@ namespace FileOpener {
         while(std::isspace(command.at(command.length() - 1))) {
           command = command.substr(0, command.length() - 1);
         }
-        executeCommand(keyword, command, world, quests, events, spawns, startingAttributes, startingWays, database);
+        executeCommand(keyword, command, world, quests, events, spawns, startingAttributes, startingWays, database, isServer);
       }
     }
     file.close();
-    Adventure * adventure = new Adventure(name, spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
+    // regex the path to / if it was on Windows.
+    Adventure * adventure = new Adventure(name, std::regex_replace(fileName, std::regex(PATH_DELIMITER), "/"), spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
     delete quests;
     delete events;
     delete spawns;
@@ -158,8 +160,8 @@ namespace FileOpener {
     return adventure;
   }
 
-  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database) {
-    if(keyword == "Character") {
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer) {
+    if(keyword == "Character" && isServer) {
       std::string name = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
       int xp = stoi(command.substr(0, command.find('%')));
@@ -239,7 +241,7 @@ namespace FileOpener {
       map->addCharacter(c);
       delete titles;
     }
-    else if(keyword == "Event") {
+    else if(keyword == "Event" && isServer) {
       Event * event = new Event(database->getEvent(command));
       events->push_back(event);
     }
@@ -274,7 +276,7 @@ namespace FileOpener {
       link->type = type;
       world->addMapLink(link);
     }
-    else if(keyword == "Loot") {
+    else if(keyword == "Loot" && isServer) {
 
     }
     else if(keyword == "Quest") {
@@ -323,7 +325,7 @@ namespace FileOpener {
         Settings::setStartingHour(stoi(value_str));
       }
     }
-    else if(keyword == "Spawn") {
+    else if(keyword == "Spawn" && isServer) {
       Spawn * spawn = new Spawn();
       std::string map_str = command.substr(0, command.find('%'));
       command = command.substr(command.find('%') + 1, command.length());
@@ -349,7 +351,7 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       database->addRelation(team1, team2, relation);
     }
-    else if(keyword == "Translation") {
+    else if(keyword == "Translation" && !isServer) {
       database->addTranslationPath(command);
     }
     else if(keyword == "WayImcompatibility") {

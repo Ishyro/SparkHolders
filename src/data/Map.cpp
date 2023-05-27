@@ -595,8 +595,6 @@ bool Map::tryMove(Character * c, float destY, float destX) {
   return true;
 }
 
-#include <iostream>
-
 float Map::move(Character * c, float destY, float destX) {
   int x = destX;
   int y = destY;
@@ -645,14 +643,8 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
     x_direction = -1;
   }
   MapLink * link = nullptr;
-  if(c->name == "test") {
-    std::cout << "angle=" << orientation << " x=" << c->getX() << " y=" << c->getY() << std::endl;
-  }
   std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
   for(MapUtil::Pair pair : path) {
-    if(c->name == "test") {
-      std::cout << "x=" << pair.x << " y=" << pair.y << std::endl;
-    }
     if(pair.x < 0 || std::floor(pair.x) >= sizeX || pair.y < 0 || std::floor(pair.y) >= sizeY || getTile(pair.y, pair.x)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
       break;
     }
@@ -709,7 +701,6 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
       if(y_direction == -1) {
         next_y = std::floor(next_y);
         ap_cost += getTile(current_y, current_x)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
-        std::cout << "ap_cost=" << ap_cost << std::endl;
         if(ap_cost <= ap) {
           current_y = next_y;
         }
@@ -806,12 +797,12 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
     Map * next_map;
     float dest_orientation = orientation;
     float diff = 0.F;
-    float next_dx = next_x - std::floor(next_x);
-    float next_dy = next_y - std::floor(next_y);
+    float next_dx = MapUtil::round(next_x - std::floor(next_x));
+    float next_dy = MapUtil::round(next_y - std::floor(next_y));
     next_x = std::floor(next_x);
     next_y = std::floor(next_y);
-    float high_limit = 0.999F - c->getSize();
-    float low_limit = c->getSize();
+    float high_limit = MapUtil::round(0.999F - c->getSize());
+    float low_limit = MapUtil::round(c->getSize());
     switch(link->type) {
       case THROUGH:
         if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
@@ -975,7 +966,6 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
   else {
     if(tryMove(c, next_y, next_x)) {
       if(MapUtil::distance(c->getX(), c->getY(), next_x, next_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
-        std::cout << "next_x=" << next_x << " next_y=" << next_y << std::endl;
         c->move(destY, destX, orientation, id);
         return -1.F;
       }
@@ -993,10 +983,10 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   if(!p->isLost() && p->getTarget()->type == CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMapId() == id) {
     p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
-  float x = std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX();
-  float y = std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY();
-  int max_x;
-  int max_y;
+  float x = MapUtil::round(std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX());
+  float y = MapUtil::round(std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY());
+  float max_x;
+  float max_y;
   MapLink * link = nullptr;
   std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation(), p->size , speed);
   for(MapUtil::Pair pair : path) {
@@ -1108,8 +1098,8 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     p->reduceDamageTick();
   }
   else {
-    int old_x = x;
-    int old_y = y;
+    float old_x = x;
+    float old_y = y;
     float range = MapUtil::distance(x, y, p->getX(), p->getY());
     Map * next_map;
     float orientation = p->getOrientation();
@@ -1123,12 +1113,12 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     if(orientation > 90.F && orientation < 270.F) {
       x_direction = -1;
     }
-    float dx = x - std::floor(x);
-    float dy = y - std::floor(y);
+    float dx = MapUtil::round(x - std::floor(x));
+    float dy = MapUtil::round(y - std::floor(y));
     x = std::floor(x);
     y = std::floor(y);
-    float high_limit = 0.999F - p->getSize();
-    float low_limit = p->getSize();
+    float high_limit = MapUtil::round(0.999F - p->getSize());
+    float low_limit = MapUtil::round(p->getSize());
     switch(link->type) {
       case THROUGH:
         if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
@@ -1171,7 +1161,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
         }
         if(x < 0 || std::floor(x) >= next_map->sizeX || y < 0 || std::floor(y) >= next_map->sizeY || next_map->getTile(y, x)->solid) {
           p->move(old_y, old_x, orientation, id);
-          return low_limit;
+          return 0.F;
         }
         else {
           p->move(y, x, dest_orientation, next_map->id);
@@ -1245,6 +1235,17 @@ void Map::clearProjectiles() {
   projectiles.clear();
 }
 
+std::string Map::tile_to_string(int y, int x) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_long(ss, id);
+  String::insert_int(ss, y);
+  String::insert_int(ss, x);
+  String::insert(ss, getTile(y, x)->name);
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
 std::string Map::target_to_string(Target * target) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, target->type);
@@ -1288,109 +1289,4 @@ Target * Map::target_from_string(std::string to_read) {
   }
   delete ss;
   return target;
-}
-
-std::string Map::to_string(Character * player, Adventure * adventure) {
-  std::stringstream * ss = new std::stringstream();
-  String::insert(ss, adventure->getTime());
-  String::insert(ss, name);
-  String::insert_int(ss, id);
-  String::insert_int(ss, offsetX);
-  String::insert_int(ss, offsetY);
-  String::insert_int(ss, sizeX);
-  String::insert_int(ss, sizeY);
-  String::insert_bool(ss, outside);
-  for(int y = 0; y < sizeY; y++) {
-    for(int x = 0; x < sizeX; x++) {
-      String::insert_int(ss, x);
-      String::insert_int(ss, y);
-      Tile * temp = new Tile(getTile(y, x)->name, getTile(y, x)->untraversable, getTile(y, x)->opaque, getTile(y, x)->solid, getTile(y, x)->ap_cost, getLight(y, x));
-      String::insert(ss, temp->to_string());
-      delete temp;
-    }
-  }
-  std::stringstream * ss_characters = new std::stringstream();
-  for(Character * character : characters) {
-    String::insert(ss_characters, character->to_string(offsetY, offsetX));
-    String::insert_int(ss_characters, adventure->getDatabase()->getRelation(character->getTeam(), player->getTeam()));
-  }
-  String::insert(ss, ss_characters->str());
-  delete ss_characters;
-  std::stringstream * ss_projectiles = new std::stringstream();
-  for(Projectile * projectile : projectiles) {
-    String::insert(ss_projectiles, projectile->to_string(offsetY, offsetX));
-  }
-  String::insert(ss, ss_projectiles->str());
-  delete ss_projectiles;
-  std::stringstream * ss_loots = new std::stringstream();
-  for(Loot * loot : loots) {
-    String::insert_int(ss_loots, loot->type);
-    String::insert_float(ss_loots, loot->x - (float) offsetX);
-    String::insert_float(ss_loots, loot->y - (float) offsetY);
-    String::insert_float(ss_loots, loot->size);
-  }
-  String::insert(ss, ss_loots->str());
-  delete ss_loots;
-  std::stringstream * ss_speeches = new std::stringstream();
-  for(Speech * speech : SpeechManager::get()) {
-    String::insert(ss_speeches, speech->to_string());
-  }
-  String::insert(ss, ss_speeches->str());
-  delete ss_speeches;
-  std::string result = ss->str();
-  delete ss;
-  return result;
-}
-
-MapDisplay * Map::from_string(std::string to_read) {
-  MapDisplay * display = new MapDisplay();
-  std::stringstream * ss = new std::stringstream(to_read);
-  display->time = String::extract(ss);
-  display->name = String::extract(ss);
-  display->id = String::extract_int(ss);
-  display->offsetX = String::extract_int(ss);
-  display->offsetY = String::extract_int(ss);
-  display->sizeX = String::extract_int(ss);
-  display->sizeY = String::extract_int(ss);
-  display->outside = String::extract_bool(ss);
-  display->tiles = std::vector<std::vector<Tile *>>(display->sizeY);
-  for(int i = 0; i < display->sizeY; i++) {
-    display->tiles[i] = std::vector<Tile *>(display->sizeX);
-  }
-  for(int y = 0; y < display->sizeY; y++) {
-    for(int x = 0; x < display->sizeX; x++) {
-      int i = String::extract_int(ss);
-      int j = String::extract_int(ss);
-      display->tiles[j][i] = Tile::from_string(String::extract(ss));
-    }
-  }
-  std::stringstream * ss_characters = new std::stringstream(String::extract(ss));
-  while(ss_characters->rdbuf()->in_avail() != 0) {
-    CharacterDisplay * characterDisplay = Character::from_string(String::extract(ss_characters));
-    characterDisplay->teamRelation = String::extract_int(ss_characters);
-    display->characters.push_back(characterDisplay);
-  }
-  delete ss_characters;
-  std::stringstream * ss_projectiles = new std::stringstream(String::extract(ss));
-  while(ss_projectiles->rdbuf()->in_avail() != 0) {
-    display->projectiles.push_back(Projectile::from_string(String::extract(ss_projectiles)));
-  }
-  delete ss_projectiles;
-  std::stringstream * ss_loots = new std::stringstream(String::extract(ss));
-  while(ss_loots->rdbuf()->in_avail() != 0) {
-    Loot * loot = new Loot();
-    loot->type = String::extract_int(ss_loots);
-    loot->x = String::extract_float(ss_loots);
-    loot->y = String::extract_float(ss_loots);
-    loot->size = String::extract_float(ss_loots);
-    display->loots.push_back(loot);
-  }
-  delete ss_loots;
-  std::stringstream * ss_speeches = new std::stringstream(String::extract(ss));
-  while(ss_speeches->rdbuf()->in_avail() != 0) {
-    display->speeches.push_back(Speech::from_string(String::extract(ss_speeches)));
-  }
-  delete ss_speeches;
-  delete ss;
-  return display;
 }

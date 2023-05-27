@@ -10,41 +10,31 @@
 
 #include "communication/Client.h"
 
-void Link::loadChoices() {
-  attributes = new std::vector<Attributes *>();
-  ways = new std::vector<Way *>();
-  waysIncompatibilities = new std::list<std::pair<const std::string, const std::string>>();
-  try {
-    Client::receiveWaysIncompabilities(s, waysIncompatibilities);
-    Client::receiveStartingPossibilites(s, attributes, ways);
-  } catch (const CloseException &e) {
-    throw e;
-  }
-}
 
-std::list<std::string> Link::receiveTranslationPaths() {
+Translator * Link::initialize(std::string language) {
   try {
-    return Client::receiveTranslationPaths(s);
+    adventure = Client::receiveAdventure(s);
   } catch (const CloseException &e) {
     throw e;
   }
+  return new Translator(adventure->getDatabase()->getTranslationPaths(), language);
 }
 
 void Link::sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
   try {
-    player = Client::sendChoices(s, name, attributes, race, origin, culture, religion, profession);
-    serverCharacterId = 0;
+    player = Client::sendChoices(s, adventure, name, attributes, race, origin, culture, religion, profession);
   } catch (const CloseException &e) {
     throw e;
   }
 }
 
-MapDisplay * Link::receiveMap() {
+StateDisplay * Link::receiveState() {
   try {
-    MapDisplay * map = Client::receiveMap(s, &player, &serverCharacterId, &need_to_update_actions);
-    for(CharacterDisplay * display : map->characters) {
-      if(serverCharacterId == display->id) {
-        player->move(display->y + (float) map->offsetY, display->x + (float) map->offsetX, display->orientation, map->id);
+    StateDisplay * game_state = Client::receiveState(s, adventure, &player, &need_to_update_actions);
+    game_state->map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
+    for(CharacterDisplay * display : game_state->characters) {
+      if(player->id == display->id) {
+        player->move(display->y, display->x, display->orientation, game_state->map_id);
         player->setHp(display->hp);
         player->setMana(display->mana);
         player->setStamina(display->stamina);
@@ -53,7 +43,7 @@ MapDisplay * Link::receiveMap() {
         player->gainXP(display->xp - player->getXP());
       }
     }
-    return map;
+    return game_state;
   } catch (const CloseException &e) {
     throw e;
   }
@@ -94,10 +84,20 @@ void Link::sendAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, in
   }
 }
 
-std::vector<Attributes *> Link::getStartingAttributes() { return *attributes; }
-std::vector<Way *> Link::getStartingWays() { return *ways; }
-std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return *waysIncompatibilities; }
+std::vector<Attributes *> Link::getStartingAttributes() {
+  std::list<Attributes *> l = adventure->getStartingAttributes();
+  std::vector<Attributes *> v{ std::begin(l), std::end(l) };  
+  return v;
+}
+
+std::vector<Way *> Link::getStartingWays() { 
+  std::list<Way *> l = adventure->getStartingWays();
+  std::vector<Way *> v{ std::begin(l), std::end(l) };  
+  return v;
+}
+std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return adventure->getDatabase()->getWaysIncompatibilities(); }
 
 Character * Link::getPlayer() { return player; }
+Adventure * Link::getAdventure() { return adventure; }
 
 bool Link::getNeedToUpdateActions() { return need_to_update_actions; }

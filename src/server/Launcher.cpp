@@ -87,7 +87,6 @@ void relinkCommunication(void * param) {
         used = true;
         try {
           newSocket.write(std::string("OK"));
-          Server::sendTranslationPaths(newSocket, adventure);
           break;
         } catch (CloseException &e) {
           used = false;
@@ -112,7 +111,7 @@ int main(int argc, char ** argv) {
   std::string adventureFile = argv[1];
   srand(Settings::getSeed());
 
-  Adventure * adventure = FileOpener::AdventureOpener(adventureFile);
+  Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
   adventure->applyDayLight();
 
   int playersNumber = adventure->maxPlayers;
@@ -163,7 +162,7 @@ int main(int argc, char ** argv) {
     auto start = std::chrono::system_clock::now();
     adventure->applyIteration();
     for(int i = 0; i < playersNumber; i++) {
-      links[i]->sendMap();
+      links[i]->sendState();
     }
     SpeechManager::clear();
     adventure->getNPCsActions();

@@ -35,10 +35,10 @@ typedef struct Ammunition Ammunition;
 typedef struct CharacterDisplay CharacterDisplay;
 typedef struct Loot Loot;
 typedef struct GearPiece GearPiece;
-typedef struct MapDisplay MapDisplay;
 typedef struct MapLink MapLink;
 typedef struct ProjectileDisplay ProjectileDisplay;
 typedef struct Spawn Spawn;
+typedef struct StateDisplay StateDisplay;
 typedef struct Step Step;
 typedef struct Target Target;
 

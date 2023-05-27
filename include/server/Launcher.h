@@ -4,7 +4,6 @@
 #include <string>
 #include <list>
 #include <algorithm>
-#include <iostream>
 #include <fstream>
 
 #endif // _LAUNCHER_H_

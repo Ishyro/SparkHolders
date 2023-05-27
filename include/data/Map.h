@@ -30,22 +30,6 @@ typedef struct Target {
   Target * next;
 } Target;
 
-typedef struct MapDisplay {
-  std::string time;
-  std::string name;
-  int id;
-  int offsetX;
-  int offsetY;
-  int sizeX;
-  int sizeY;
-  bool outside;
-  std::list<CharacterDisplay *> characters;
-  std::list<ProjectileDisplay *> projectiles;
-  std::list<Loot *> loots;
-  std::vector<std::vector<Tile *>> tiles;
-  std::list<Speech *> speeches;
-} MapDisplay;
-
 namespace map {
   static long id_cpt = 0;
 }
@@ -53,6 +37,7 @@ namespace map {
 class Map {
   public:
     const std::string name;
+    const std::string baseName;
     const long id;
     const int offsetX;
     const int offsetY;
@@ -66,6 +51,7 @@ class Map {
       const bool outside
     ):
       name(name),
+      baseName(name),
       id(0),
       offsetX(0),
       offsetY(0),
@@ -86,6 +72,7 @@ class Map {
     }
     Map(const Map * map, std::string name):
       name(name),
+      baseName(map->name),
       id(++map::id_cpt),
       offsetX(0),
       offsetY(0),
@@ -97,9 +84,9 @@ class Map {
       light(map->light)
     {}
 
-    // use this only for players, too much work for every characters
     Map(Map * map, Character * player, Database * database):
       name(map->name),
+      baseName(map->name),
       id(map->id),
       offsetX(std::max(0, (int) std::floor(player->getX()) - std::max(player->getVisionRange(), player->getDetectionRange()))),
       offsetY(std::max(0, (int) std::floor(player->getY()) - std::max(player->getVisionRange(), player->getDetectionRange()))),
@@ -177,10 +164,9 @@ class Map {
     float move(Character * c, float orientation, float destY, float destX, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
+    std::string tile_to_string(int y, int x);
     static std::string target_to_string(Target * target);
     static Target * target_from_string(std::string to_read);
-    std::string to_string(Character * player, Adventure * adventure);
-    static MapDisplay * from_string(std::string to_read);
     static std::vector<std::vector<Tile *>> canSee(Map * map, Character * watcher, Database * database);
     bool operator == (const Map& m) const { return id == m.id; }
     bool operator != (const Map& m) const { return !operator==(m); }

@@ -337,8 +337,8 @@ std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquation(float a, int rang
 std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float orientation, float size, float range) {
   MapUtil::Pair pair;
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
-  float high_limit = 0.999F - size;
-  float low_limit = size;
+  float high_limit = round(0.999F - size);
+  float low_limit = round(size);
   pair.x = x;
   pair.y = y;
   int x_direction = 1;

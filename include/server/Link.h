@@ -7,10 +7,10 @@ class Link {
   public:
     Link(Socket s, Adventure * adventure):s(s),adventure(adventure) {
       closed = false;
-      playerChoices();
+      initialize();
     }
-    void playerChoices();
-    void sendMap();
+    void initialize();
+    void sendState();
     Action * receiveAction();
     bool isClosed();
     void markClosed();

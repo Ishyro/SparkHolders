@@ -192,15 +192,17 @@ namespace Server {
     return player;
   }
 
-  void sendMap(Socket s, Map * map, Character * player, Adventure * adventure) {
+  void sendState(Socket s, Character * player, Adventure * adventure) {
     try {
       std::stringstream * ss = new std::stringstream();
       if(player->needToSend()) {
         player->setNeedToSend(false);
-        *ss << std::to_string(player->id);
         String::insert(ss, player->full_to_string(adventure));
       }
-      String::insert(ss, map->to_string(player, adventure));
+      else {
+        String::insert(ss, "0");
+      }
+      String::insert(ss, adventure->state_to_string(player));
       String::insert_bool(ss, player->getNeedToUpdateActions());
       s.write(ss->str());
       delete ss;
@@ -208,55 +210,12 @@ namespace Server {
       throw e;
     }
   }
-
-  void sendStartingPossibilites(Socket s, Adventure * adventure) {
-    std::list<Attributes *> attributes = adventure->getStartingAttributes();
-    std::list<Way *> ways = adventure->getStartingWays();
-    std::stringstream * ss = new std::stringstream();
-    std::stringstream * ss_attributes = new std::stringstream();
-    for(Attributes * attr : attributes) {
-      String::insert(ss_attributes, attr->to_string());
-    }
-    String::insert(ss, ss_attributes->str());
-    delete ss_attributes;
-    std::stringstream * ss_ways = new std::stringstream();
-    for(Way * way : ways) {
-      String::insert(ss_ways, way->to_string());
-    }
-    String::insert(ss, ss_ways->str());
-    delete ss_ways;
+  
+  void sendAdventure(Socket s, Adventure * adventure) {
     try {
-      s.write(ss->str());
+      s.write(adventure->filePath);
     } catch (const CloseException &e) {
       throw e;
     }
-    delete ss;
-  }
-
-  void sendWaysIncompabilities(Socket s, Adventure * adventure) {
-    std::stringstream * ss_ways = new std::stringstream();
-    for(std::pair<const std::string, const std::string> pair : adventure->getDatabase()->getWaysIncompatibilities()) {
-      String::insert(ss_ways, pair.first);
-      String::insert(ss_ways, pair.second);
-    }
-    try {
-      s.write(ss_ways->str());
-    } catch (const CloseException &e) {
-      throw e;
-    }
-    delete ss_ways;
-  }
-
-  void sendTranslationPaths(Socket s, Adventure * adventure) {
-    std::stringstream * ss_trads = new std::stringstream();
-    for(std::string path : adventure->getDatabase()->getTranslationPaths()) {
-      String::insert(ss_trads, path);
-    }
-    try {
-      s.write(ss_trads->str());
-    } catch (const CloseException &e) {
-      throw e;
-    }
-    delete ss_trads;
   }
 }

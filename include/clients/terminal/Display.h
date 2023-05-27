@@ -27,9 +27,9 @@
 namespace Display {
 
   void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print);
-  void displayMap(MapDisplay * display, Character * player, WINDOW * screen, Translator * t);
-  void displayTileMap(MapDisplay * display, WINDOW * screen, Translator * t);
-  void displayLightMap(MapDisplay * display, WINDOW * screen, Translator * t);
+  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Translator * t);
+  void displayTileMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t);
+  void displayLightMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t);
   void displayStats(Character * player, WINDOW * screen, Translator * t);
   WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t);
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t);
@@ -45,7 +45,7 @@ namespace Display {
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t);
   Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
   bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t);
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, MapDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t);
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t);
   std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, int & object_id, Translator * t);
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t);
 };

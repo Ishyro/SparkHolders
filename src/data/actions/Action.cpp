@@ -18,8 +18,6 @@
 #include "util/MapUtil.h"
 #include "util/String.h"
 
-#include <iostream>
-
 /*
     case TALKING:
       if(object != "") {

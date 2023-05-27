@@ -1416,7 +1416,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
   }
 }
 
-std::string Character::to_string(int offsetY, int offsetX) {
+std::string Character::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_long(ss, id);
@@ -1431,8 +1431,8 @@ std::string Character::to_string(int offsetY, int offsetX) {
   String::insert_int(ss, getFlow());
   String::insert_bool(ss, player_character);
   String::insert_int(ss, type);
-  String::insert_float(ss, x - (float) offsetX);
-  String::insert_float(ss, y - (float) offsetY);
+  String::insert_float(ss, x);
+  String::insert_float(ss, y);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
   String::insert(ss, team);
@@ -1624,7 +1624,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   delete ss_effects;
   std::stringstream * ss_skills = new std::stringstream();
   for(Skill * skill : skills) {
-    String::insert(ss_skills, skill->to_string());
+    String::insert(ss_skills, skill->name);
   }
   String::insert(ss, ss_skills->str());
   delete ss_skills;
@@ -1648,32 +1648,32 @@ std::string Character::full_to_string(Adventure * adventure) {
   delete ss_sellable_ammunition;
   std::stringstream * ss_sellable_effects = new std::stringstream();
   for(Effect * effect : sellable_effects) {
-    String::insert(ss_sellable_effects, effect->to_string());
+    String::insert(ss_sellable_effects, effect->name);
   }
   String::insert(ss, ss_sellable_effects->str());
   delete ss_sellable_effects;
   std::stringstream * ss_sellable_skills = new std::stringstream();
   for(Skill * skill : sellable_skills) {
-    String::insert(ss_sellable_skills, skill->to_string());
+    String::insert(ss_sellable_skills, skill->name);
   }
   String::insert(ss, ss_sellable_skills->str());
   delete ss_sellable_skills;
 
-  String::insert(ss, attributes->to_string());
+  String::insert(ss, attributes->name);
   if(second_attributes != nullptr) {
-    String::insert(ss, ((Attributes *) second_attributes)->to_string());
+    String::insert(ss, ((Attributes *) second_attributes)->name);
   }
   else {
     String::insert(ss, "none");
   }
-  String::insert(ss, race->to_string());
-  String::insert(ss, origin->to_string());
-  String::insert(ss, culture->to_string());
-  String::insert(ss, religion->to_string());
-  String::insert(ss, profession->to_string());
+  String::insert(ss, race->name);
+  String::insert(ss, origin->name);
+  String::insert(ss, culture->name);
+  String::insert(ss, religion->name);
+  String::insert(ss, profession->name);
   std::stringstream * ss_titles = new std::stringstream();
   for(Way * title : titles) {
-    String::insert(ss_titles, title->to_string());
+    String::insert(ss_titles, title->name);
   }
   String::insert(ss, ss_titles->str());
   delete ss_titles;
@@ -1682,7 +1682,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   return result;
 }
 
-Character * Character::full_from_string(std::string to_read) {
+Character * Character::full_from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   int maxHp = String::extract_int(ss);
   int maxMana = String::extract_int(ss);
@@ -1755,7 +1755,7 @@ Character * Character::full_from_string(std::string to_read) {
   std::stringstream * ss_skills = new std::stringstream(String::extract(ss));
   std::list<Skill *> * skills = new std::list<Skill *>();
   while(ss_skills->rdbuf()->in_avail() != 0) {
-    skills->push_back(Skill::from_string(String::extract(ss_skills)));
+    skills->push_back( (Skill *) adventure->getDatabase()->getSkill((String::extract(ss_skills))));
   }
   delete ss_skills;
   std::stringstream * ss_sellable_items = new std::stringstream(String::extract(ss));
@@ -1779,30 +1779,30 @@ Character * Character::full_from_string(std::string to_read) {
   std::stringstream * ss_sellable_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * sellable_effects = new std::list<Effect *>();
   while(ss_sellable_effects->rdbuf()->in_avail() != 0) {
-    sellable_effects->push_back(Effect::from_string(String::extract(ss_sellable_effects)));
+    sellable_effects->push_back( (Effect *) adventure->getDatabase()->getEffect(String::extract(ss_sellable_effects)));
   }
   delete ss_sellable_effects;
   std::stringstream * ss_sellable_skills = new std::stringstream(String::extract(ss));
   std::list<Skill *> * sellable_skills = new std::list<Skill *>();
   while(ss_sellable_skills->rdbuf()->in_avail() != 0) {
-    sellable_skills->push_back(Skill::from_string(String::extract(ss_sellable_skills)));
+    sellable_skills->push_back( (Skill *) adventure->getDatabase()->getSkill(String::extract(ss_sellable_skills)));
   }
   delete ss_sellable_skills;
-  Attributes * attributes = Attributes::from_string(String::extract(ss));
+  Attributes * attributes = (Attributes *) adventure->getDatabase()->getAttributes(String::extract(ss));
   std::string second_attributes_str = String::extract(ss);
   Attributes * second_attributes = nullptr;
   if(second_attributes_str != "none") {
-    second_attributes = Attributes::from_string(second_attributes_str);
+    second_attributes = (Attributes *) adventure->getDatabase()->getAttributes(second_attributes_str);
   }
-  Way * race = Way::from_string(String::extract(ss));
-  Way * origin = Way::from_string(String::extract(ss));
-  Way * culture = Way::from_string(String::extract(ss));
-  Way * religion = Way::from_string(String::extract(ss));
-  Way * profession = Way::from_string(String::extract(ss));
+  Way * race = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
+  Way * origin = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
+  Way * culture = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
+  Way * religion = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
+  Way * profession = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
   std::stringstream * ss_titles = new std::stringstream(String::extract(ss));
   std::list<Way *> * titles = new std::list<Way *>();
   while(ss_titles->rdbuf()->in_avail() != 0) {
-    titles->push_back(Way::from_string(String::extract(ss_titles)));
+    titles->push_back((Way *) adventure->getDatabase()->getWay(String::extract(ss_titles)));
   }
   delete ss_titles;
   delete ss;

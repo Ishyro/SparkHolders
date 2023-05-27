@@ -274,7 +274,7 @@ class Projectile {
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
     bool alreadyHit(Character * c);
     void clearOldTargets();
-    std::string to_string(int offsetY, int offsetX);
+    std::string to_string();
     std::string full_to_string();
     static std::string ammo_to_string(Ammunition * ammo);
     static ProjectileDisplay * from_string(std::string to_read);

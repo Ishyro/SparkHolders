@@ -43,8 +43,7 @@ int main(int argc, char ** argv) {
   Translator * t;
   if (argc == 2) {
     try {
-      link->loadChoices();
-      t = new Translator(link->receiveTranslationPaths(), std::string(argv[1]));
+      t = link->initialize(std::string(argv[1]));
     } catch (CloseException &e) {
       endwin();
       s.close();
@@ -78,7 +77,7 @@ int main(int argc, char ** argv) {
         delete link;
         return EXIT_FAILURE;
       }
-      t = new Translator(link->receiveTranslationPaths(), std::string(argv[1]));
+      t = link->initialize(std::string(argv[1]));
     } catch (CloseException &e) {
       endwin();
       s.close();

@@ -10,8 +10,8 @@
 namespace FileOpener {
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName);
 
-  Adventure * AdventureOpener(std::string fileName);
-  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database);
+  Adventure * AdventureOpener(std::string fileName, bool isServer);
+  void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer);
 
   void AttributesOpener(std::string fileName, Database * database);
   void CharacterOpener(std::string fileName, Database * database);

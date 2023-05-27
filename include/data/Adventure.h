@@ -14,12 +14,23 @@ typedef struct Spawn {
   int map_id;
 } Spawn;
 
+typedef struct StateDisplay {
+  long map_id;
+  Map * map;
+  std::list<CharacterDisplay *> characters;
+  std::list<ProjectileDisplay *> projectiles;
+  std::list<Loot *> loots;
+  std::list<Speech *> speeches;
+} StateDisplay;
+
 class Adventure {
   public:
     const std::string name;
+    const std::string filePath;
     const int maxPlayers;
     Adventure(
       std::string name,
+      std::string filePath,
       int maxPlayers,
       Database * database,
       World * world,
@@ -30,6 +41,7 @@ class Adventure {
       std::list<Way *> startingWays
     ):
       name(name),
+      filePath(filePath),
       maxPlayers(maxPlayers),
       database(database),
       world(world),
@@ -84,10 +96,12 @@ class Adventure {
     void executeActions();
     void applyDayLight();
     void incrDayLight();
-    std::string getTime();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
+    std::string getTime();
+    std::string state_to_string(Character * c);
+    StateDisplay * update_state(std::string to_read);
   private:
     World * world;
     Database * database;

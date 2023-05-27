@@ -16,74 +16,25 @@
 
 namespace Client {
 
-  void receiveStartingPossibilites(Socket s, std::vector<Attributes *> * attributes, std::vector<Way *> * ways) {
-    std::string msg;
+  Adventure * receiveAdventure(Socket s) {
     try {
-      msg = s.read();
+      return FileOpener::AdventureOpener(s.read(), false);
     } catch (const CloseException &e) {
       throw e;
     }
-    if(msg.find("RECONNECT") != std::string::npos) {
-      throw CloseException();
-    }
-    std::stringstream * ss = new std::stringstream(msg);
-    std::stringstream * ss_attributes = new std::stringstream(String::extract(ss));
-    while(ss_attributes->rdbuf()->in_avail() != 0) {
-      attributes->push_back(Attributes::from_string(String::extract(ss_attributes)));
-    }
-    delete ss_attributes;
-    std::stringstream * ss_ways = new std::stringstream(String::extract(ss));
-    while(ss_ways->rdbuf()->in_avail() != 0) {
-      ways->push_back(Way::from_string(String::extract(ss_ways)));
-    }
-    delete ss_ways;
-    delete ss;
   }
 
-  std::list<std::string> receiveTranslationPaths(Socket s) {
-    std::string msg;
-    try {
-      msg = s.read();
-    } catch (const CloseException &e) {
-      throw e;
-    }
-    std::list<std::string> result = std::list<std::string>();
-    std::stringstream * ss_trads = new std::stringstream(msg);
-    while(ss_trads->rdbuf()->in_avail() != 0) {
-      result.push_back(String::extract(ss_trads));
-    }
-    delete ss_trads;
-    return result;
-  }
-
-  void receiveWaysIncompabilities(Socket s, std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities) {
-    std::string msg;
-    try {
-      msg = s.read();
-    } catch (const CloseException &e) {
-      throw e;
-    }
-    std::stringstream * ss_ways = new std::stringstream(msg);
-    while(ss_ways->rdbuf()->in_avail() != 0) {
-      std::string way1 = String::extract(ss_ways);
-      std::string way2 = String::extract(ss_ways);
-      waysIncompatibilities->push_back(std::make_pair(way1, way2));
-    }
-    delete ss_ways;
-  }
-
-  MapDisplay * receiveMap(Socket s, Character ** player, long * id, bool * need_action) {
+  StateDisplay * receiveState(Socket s, Adventure * adventure, Character ** player, bool * need_action) {
     try {
       std::string msg = s.read();
       std::stringstream * ss = new std::stringstream(msg);
-      MapDisplay * result = nullptr;
-      if(msg.at(0) != '{') {
-        *ss >> *id;
+      std::string player_str = String::extract(ss);
+      if(player_str != "0") {
         (*player)->deepDelete();
         delete *player;
-        *player = Character::full_from_string(String::extract(ss));
+        *player = Character::full_from_string(player_str, adventure);
       }
-      result = Map::from_string(String::extract(ss));
+      StateDisplay * result = adventure->update_state(String::extract(ss));
       *need_action = String::extract_bool(ss);
       delete ss;
       return result;
@@ -144,7 +95,7 @@ namespace Client {
     delete ss;
   }
 
-  Character * sendChoices(Socket s, std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
+  Character * sendChoices(Socket s, Adventure * adventure, std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
     std::stringstream * ss = new std::stringstream();
     String::insert(ss, name);
     String::insert(ss, attributes);
@@ -156,7 +107,7 @@ namespace Client {
     try {
       s.write(ss->str());
       delete ss;
-      return Character::full_from_string(s.read());
+      return Character::full_from_string(s.read(), adventure);
     } catch (const CloseException &e) {
       throw e;
     }
