@@ -216,7 +216,7 @@ std::string Projectile::full_to_string() {
   String::insert_float(ss, x);
   String::insert_float(ss, y);
   if(skill != nullptr) {
-    String::insert(ss, skill->to_string());
+    String::insert(ss, skill->name);
   }
   else {
     String::insert(ss, "none");
@@ -267,7 +267,7 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   return display;
 }
 
-Projectile * Projectile::full_from_string(std::string to_read) {
+Projectile * Projectile::full_from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
   long id = String::extract_long(ss);
@@ -280,7 +280,7 @@ Projectile * Projectile::full_from_string(std::string to_read) {
   std::string skill_str = String::extract(ss);
   Skill * skill = nullptr;
   if(skill_str != "none") {
-    skill = Skill::from_string(skill_str);
+    skill = (Skill *) adventure->getDatabase()->getSkill(skill_str);
   }
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();

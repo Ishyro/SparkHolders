@@ -80,17 +80,3 @@ Way * SummonSkill::getReligion() { return religion; }
 Way * SummonSkill::getProfession() { return profession; }
 Attributes * SummonSkill::getAttributes() { return attributes; }
 std::list<Way *> SummonSkill::getTitles() { return titles; }
-int SummonSkill::getApparitionType() { return apparition_type; }
-int SummonSkill::getXp() { return xp; }
-
-void SummonSkill::setCharacter(Character * character) { this->character = character; }
-void SummonSkill::setAI(std::string ai_str) { this->ai_str = ai_str; }
-void SummonSkill::setRace(Way * race) { this->race = race; }
-void SummonSkill::setOrigin(Way * origin) { this->origin = origin; }
-void SummonSkill::setCulture(Way * culture) { this->culture = culture; }
-void SummonSkill::setReligion(Way * religion) { this->religion = religion; }
-void SummonSkill::setProfession(Way * profession) { this->profession = profession; }
-void SummonSkill::setAttributes(Attributes * attributes) { this->attributes = attributes; }
-void SummonSkill::setTitles(std::list<Way *> titles) { this->titles = titles; }
-void SummonSkill::setApparitionType(int apparition_type) { this->apparition_type = apparition_type; }
-void SummonSkill::setXp(int xp) { this->xp = xp; }

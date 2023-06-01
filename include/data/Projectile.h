@@ -270,7 +270,7 @@ class Projectile {
     std::string to_string();
     std::string full_to_string();
     static ProjectileDisplay * from_string(std::string to_read);
-    static Projectile * full_from_string(std::string to_read);
+    static Projectile * full_from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Projectile& p) const { return id == p.id; }
     bool operator != (const Projectile& p) const { return !operator==(p); }
   private:

@@ -4,8 +4,41 @@
 #include "data/skills/PseudoSkill.h"
 
 class SummonSkill : public PseudoSkill {
-  using PseudoSkill::PseudoSkill;
   public:
+    const std::string ai_str;
+    const int apparition_type;
+    const int xp;
+    SummonSkill(
+      std::string name,
+      int skill_type,
+      int target_type,
+      int mana_cost,
+      std::list<Effect *> effects,
+      Character * character,
+      std::string ai_str,
+      Way * race,
+      Way * origin,
+      Way * culture,
+      Way * religion,
+      Way * profession,
+      Attributes * attributes,
+      std::list<Way *> titles,
+      int apparition_type,
+      int xp
+    ):
+      PseudoSkill(name, skill_type, target_type, mana_cost, effects),
+      character(character),
+      ai_str(ai_str),
+      race(race),
+      origin(origin),
+      culture(culture),
+      religion(religion),
+      profession(profession),
+      attributes(attributes),
+      titles(titles),
+      apparition_type(apparition_type),
+      xp(xp)
+    {}
     void activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range);
     bool canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range);
     int getPower();
@@ -20,23 +53,8 @@ class SummonSkill : public PseudoSkill {
     Way * getProfession();
     Attributes * getAttributes();
     std::list<Way *> getTitles();
-    int getApparitionType();
-    int getXp();
-    void setCharacter(Character * character);
-    void setAI(std::string ai_str);
-    void setRace(Way * race);
-    void setOrigin(Way * origin);
-    void setCulture(Way * culture);
-    void setReligion(Way * religion);
-    void setProfession(Way * profession);
-    void setAttributes(Attributes * attributes);
-    void setTitles(std::list<Way *> titles);
-    void setApparitionType(int apparition_type);
-    void setXp(int xp);
   private:
     Character * character;
-    std::string team;
-    std::string ai_str;
     Way * race;
     Way * origin;
     Way * culture;
@@ -44,8 +62,6 @@ class SummonSkill : public PseudoSkill {
     Way * profession;
     Attributes * attributes;
     std::list<Way *> titles;
-    int apparition_type;
-    int xp;
 };
 
 #endif // _SUMMON_SKILL_H_

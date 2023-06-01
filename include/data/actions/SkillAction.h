@@ -6,23 +6,38 @@
 #include "Values.h"
 
 class SkillAction : public TargetedAction {
-    using TargetedAction::TargetedAction;
   public:
+    const int overcharge_power;
+    const int overcharge_duration;
+    const int overcharge_range;
+    SkillAction(
+      const int type,
+      Adventure * adventure,
+      const Action * previous,
+      Character * user,
+      Target * target,
+      Skill * skill,
+      const int overcharge_power,
+      const int overcharge_duration,
+      const int overcharge_range
+    ):
+      TargetedAction(
+        type,
+        adventure,
+        previous,
+        user,
+        target
+      ),
+      skill(skill),
+      overcharge_power(overcharge_power),
+      overcharge_duration(overcharge_duration),
+      overcharge_range(overcharge_range)
+    {}
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
     Skill * getSkill();
-    int getOverchargePower();
-    int getOverchargeDuration();
-    int getOverchargeRange();
-    void setSkill(Skill * skill);
-    void setOverchargePower(int overcharge);
-    void setOverchargeDuration(int overcharge);
-    void setOverchargeRange(int overcharge);
   private:
     Skill * skill;
-    int overcharge_power;
-    int overcharge_duration;
-    int overcharge_range;
 };
 
 #endif // _SKILL_ACTION_H_

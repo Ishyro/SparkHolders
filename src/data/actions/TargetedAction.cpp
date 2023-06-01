@@ -32,8 +32,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       }
       if(ap == 0.F && target->next == nullptr && rangeFromTarget(adventure) > 0.01F && (next == nullptr || next->type != MOVE)) {
         Action * temp = next;
-        next = new TargetedAction(MOVE, adventure, nullptr, user);
-        ((TargetedAction *) next)->setTarget(target);
+        next = new TargetedAction(MOVE, adventure, nullptr, user, target);
         next->setNext(temp);
       }
       break;
@@ -136,7 +135,6 @@ void TargetedAction::computeTime(Adventure * adventure) {
 }
 
 Target * TargetedAction::getTarget() { return target; }
-void TargetedAction::setTarget(Target * target) { this->target = target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
   if(target->type == COORDINATES || target->type == TILE) {

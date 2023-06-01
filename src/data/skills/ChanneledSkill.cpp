@@ -29,3 +29,5 @@ float ChanneledSkill::getDamageReductionFromType(int damage_type, int overcharge
   }
   return reduction;
 }
+
+PseudoSkill * ChanneledSkill::getRealSkill() { return real_skill; }

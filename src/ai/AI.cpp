@@ -78,30 +78,22 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
     if(skill != nullptr) {
       int tp_index = std::min(tp_range, range) - 1; // path[0] is at range 1
       MapUtil::Pair tp_target = path[tp_index];
-      Action * action = new SkillAction(USE_SKILL, adventure, nullptr, self);
       Target * target = new Target();
       target->type = TILE;
       target->id = self->getCurrentMapId();
       target->x = tp_target.x;
       target->y = tp_target.y;
-      ((SkillAction *) action)->setTarget(target);
-      ((SkillAction *) action)->setSkill(skill);
-      ((SkillAction *) action)->setOverchargePower(1);
-      ((SkillAction *) action)->setOverchargeRange(1);
-      ((SkillAction *) action)->setOverchargeDuration(1);
-      return action;
+      return new SkillAction(USE_SKILL, adventure, nullptr, self, target, skill, 1, 1, 1);
     }
   }
   if(path.size() > 0) {
     MapUtil::Pair next = path[0];
-    Action * action = new TargetedAction(MOVE, adventure, nullptr, self);
     Target * target = new Target();
     target->type = TILE;
     target->id = self->getCurrentMapId();
     target->x = next.x;
     target->y = next.y;
-    ((TargetedAction *) action)->setTarget(target);
-    return action;
+    return new TargetedAction(MOVE, adventure, nullptr, self, target);
     //return new Action(MOVE, adventure, nullptr, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), next.x, next.y, 0.F, 0.F), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   Action * action = new BaseAction(IDLE, adventure, nullptr, self);
@@ -182,19 +174,12 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     t->id = self->getCurrentMapId();
     t->x = i;
     t->y = j;
-    Action * action;
     if(i == self->getX() && j == self->getY()) {
-      action = new SkillAction(USE_SKILL, adventure, nullptr, self);
-      ((SkillAction *) action)->setSkill(skill);
-      ((SkillAction *) action)->setOverchargePower(1);
-      ((SkillAction *) action)->setOverchargeRange(1);
-      ((SkillAction *) action)->setOverchargeDuration(1);
+      return new SkillAction(USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
     else {
-      action = new TargetedAction(MOVE, adventure, nullptr, self);
+      return new TargetedAction(MOVE, adventure, nullptr, self, t);
     }
-    ((TargetedAction *) action)->setTarget(t);
-    return action;
   }
 }
 
@@ -248,9 +233,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
       target->id = self->getCurrentMapId();
       target->x = corpse->x;
       target->y = corpse->y;
-      Action * action = new TargetedAction(MOVE, adventure, nullptr, self);
-      ((TargetedAction *) action)->setTarget(target);
-      return action;
+      return new TargetedAction(MOVE, adventure, nullptr, self, target);
     }
   }
   return new BaseAction(IDLE, adventure, nullptr, self);
@@ -305,7 +288,6 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
   int max = 0;
   Skill * skill = nullptr;
   Character * target = nullptr;
-  Action * action;
   for(auto pair : bestDamageSkills) {
     int rawDamage = pair.first->tryAttack(skills.at(pair.second), STRIKE);
     if(rawDamage > max) {
@@ -320,22 +302,13 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     t->id = target->id;
     // float orientation = MapUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
     if(skill != nullptr) {
-      action = new SkillAction(USE_SKILL, adventure, nullptr, self);
-      ((SkillAction *) action)->setSkill(skill);
-      ((SkillAction *) action)->setOverchargePower(1);
-      ((SkillAction *) action)->setOverchargeRange(1);
-      ((SkillAction *) action)->setOverchargeDuration(1);
-      return action;
+      return new SkillAction(USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
     if(!self->getGear()->getWeapon()->use_projectile) {
-      action = new TargetedAction(STRIKE, adventure, nullptr, self);
-      ((TargetedAction *) action)->setTarget(t);
-      return action;
+      return new TargetedAction(STRIKE, adventure, nullptr, self, t);
     }
     if(!self->getGear()->getWeapon()->use_ammo || self->getGear()->getWeapon()->getCurrentCapacity() > 0) {
-      action = new TargetedAction(SHOOT, adventure, nullptr, self);
-      ((TargetedAction *) action)->setTarget(t);
-      return action;
+      return new TargetedAction(SHOOT, adventure, nullptr, self, t);
     }
     AmmunitionItem * ammo = nullptr;
     ammo = self->canReload();

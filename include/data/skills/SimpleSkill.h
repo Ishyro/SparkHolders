@@ -11,7 +11,6 @@ class SimpleSkill : public PseudoSkill {
     int getPower();
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
-  private:
 };
 
 #endif // _SIMPLE_SKILL_H_

@@ -39,8 +39,6 @@ class PseudoSkill {
     virtual int getDamageFromType(int dammage_type, int overcharge_power) = 0;
     virtual float getDamageReductionFromType(int dammage_type, int overcharge_power) = 0;
     int getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range);
-    std::string to_string();
-    static PseudoSkill * from_string(std::string to_read);
 };
 
 #endif // _PSEUDO_SKILL_H_

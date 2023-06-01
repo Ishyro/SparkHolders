@@ -71,8 +71,3 @@ int TeleportSkill::getDamageFromType(int damage_type, int overcharge_power) {
 float TeleportSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
   return 0.;
 }
-
-int TeleportSkill::getApparitionType() { return apparition_type; }
-void TeleportSkill::setApparitionType(int apparition_type) { this->apparition_type = apparition_type; }
-int TeleportSkill::getMovementType() { return movement_type; }
-void TeleportSkill::setMovementType(int movement_type) { this->movement_type = movement_type; }

@@ -69,8 +69,6 @@ class Attributes {
     Attributes * getArchetype();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
-    std::string to_string();
-    static Attributes * from_string(std::string to_read);
     bool operator == (const Attributes& a) const { return name == a.name; }
     bool operator != (const Attributes& a) const { return !operator==(a); }
   private:

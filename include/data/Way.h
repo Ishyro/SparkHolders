@@ -156,8 +156,6 @@ class Way {
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
-    std::string to_string();
-    static Way * from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Way& w) const { return name == w.name; }
     bool operator != (const Way& w) const { return !operator==(w); }
   private:

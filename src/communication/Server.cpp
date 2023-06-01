@@ -45,8 +45,7 @@ namespace Server {
       case HEAVY_STRIKE:
       case SHOOT: {
         Target * target = Map::target_from_string(String::extract(ss));
-        action = new TargetedAction(type, adventure, nullptr, user);
-        ((TargetedAction *) action)->setTarget(target);
+        action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
       case RELOAD:
@@ -63,12 +62,7 @@ namespace Server {
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);
         int overcharge_range = String::extract_int(ss);
-        action = new SkillAction(type, adventure, nullptr, user);
-        ((SkillAction *) action)->setTarget(target);
-        ((SkillAction *) action)->setSkill(skill);
-        ((SkillAction *) action)->setOverchargePower(overcharge_power);
-        ((SkillAction *) action)->setOverchargeRange(overcharge_duration);
-        ((SkillAction *) action)->setOverchargeDuration(overcharge_range);
+        action = new SkillAction(type, adventure, nullptr, user, target, skill, overcharge_power, overcharge_duration, overcharge_range);
         break;
       }
       case TALKING: {

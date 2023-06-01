@@ -51,10 +51,3 @@ void SkillAction::computeTime(Adventure * adventure) {
 }
 
 Skill * SkillAction::getSkill() { return skill; }
-int SkillAction::getOverchargePower() { return overcharge_power; }
-int SkillAction::getOverchargeDuration() { return overcharge_duration; }
-int SkillAction::getOverchargeRange() { return overcharge_range; }
-void SkillAction::setSkill(Skill * skill) { this->skill = skill; }
-void SkillAction::setOverchargePower(int overcharge) { overcharge_power = overcharge ;}
-void SkillAction::setOverchargeDuration(int overcharge) { overcharge_duration = overcharge ;}
-void SkillAction::setOverchargeRange(int overcharge) { overcharge_range = overcharge ;}

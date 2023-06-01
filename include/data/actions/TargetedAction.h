@@ -6,12 +6,25 @@
 #include "Values.h"
 
 class TargetedAction : public Action {
-    using Action::Action;
   public:
+    TargetedAction(
+      const int type,
+      Adventure * adventure,
+      const Action * previous,
+      Character * user,
+      Target * target
+    ):
+      Action(
+        type,
+        adventure,
+        previous,
+        user
+      ),
+      target(target)
+    {}
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
     Target * getTarget();
-    void setTarget(Target * target);
     void setUserOrientationToTarget(Adventure * adventure);
     float rangeFromTarget(Adventure * adventure);
   protected:

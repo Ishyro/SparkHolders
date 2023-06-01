@@ -41,14 +41,12 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
-    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
     Target * t = new Target();
     t->type = TILE;
     t->id = c->getCurrentMapId();
     t->x = origin_x;
     t->y = origin_y;
-    ((TargetedAction *) action)->setTarget(t);
-    return action;
+    return new TargetedAction(MOVE, adventure, nullptr, c, t);
   }
   // we are at destination
   origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeX;

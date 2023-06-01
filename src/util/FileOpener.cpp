@@ -927,24 +927,19 @@ namespace FileOpener {
         break;
       case PROJECTILE_SKILL: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, *effects);
-        ((ProjectileSkill *) pseudoSkill)->setProjectile(projectile);
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, *effects, projectile);
         break;
       }
       case TELEPORT_SKILL: {
         int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
         int movement_type = database->getTargetFromMacro(values.at("movement_type"));
-        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects);
-        ((TeleportSkill *) pseudoSkill)->setApparitionType(apparition_type);
-        ((TeleportSkill *) pseudoSkill)->setMovementType(movement_type);
+        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects, apparition_type, movement_type);
         break;
       }
       case TILE_SWAP_SKILL: {
         Tile * current_tile = (Tile *) database->getTile(values.at("current_tile"));
         Tile * new_tile = (Tile *) database->getTile(values.at("new_tile"));
-        pseudoSkill = new TileSwapSkill(name, skill_type, target_type, mana_cost, *effects);
-        ((TileSwapSkill *) pseudoSkill)->setCurrentTile(current_tile);
-        ((TileSwapSkill *) pseudoSkill)->setNewTile(new_tile);
+        pseudoSkill = new TileSwapSkill(name, skill_type, target_type, mana_cost, *effects, current_tile, new_tile);
         break;
       }
       case SUMMON_SKILL: {
@@ -964,18 +959,24 @@ namespace FileOpener {
         }
         int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
         int xp = stoi(values.at("xp"));
-        pseudoSkill = new SummonSkill(name, skill_type, target_type, mana_cost, *effects);
-        ((SummonSkill *) pseudoSkill)->setCharacter(character);
-        ((SummonSkill *) pseudoSkill)->setAI(ai_str);
-        ((SummonSkill *) pseudoSkill)->setRace(race);
-        ((SummonSkill *) pseudoSkill)->setOrigin(origin);
-        ((SummonSkill *) pseudoSkill)->setCulture(culture);
-        ((SummonSkill *) pseudoSkill)->setReligion(religion);
-        ((SummonSkill *) pseudoSkill)->setProfession(profession);
-        ((SummonSkill *) pseudoSkill)->setAttributes(attributes);
-        ((SummonSkill *) pseudoSkill)->setTitles(*titles);
-        ((SummonSkill *) pseudoSkill)->setApparitionType(apparition_type);
-        ((SummonSkill *) pseudoSkill)->setXp(xp);
+        pseudoSkill = new SummonSkill(
+          name,
+          skill_type,
+          target_type,
+          mana_cost,
+          *effects,
+          character,
+          ai_str,
+          race,
+          origin,
+          culture,
+          religion,
+          profession,
+          attributes,
+          *titles,
+          apparition_type,
+          xp
+        );
         delete titles;
         break;
       }

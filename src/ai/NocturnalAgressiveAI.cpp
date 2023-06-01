@@ -23,14 +23,12 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
     Character * target = threats.front();
     // orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
     delete visionMap;
-    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
     Target * t = new Target();
     t->type = CHARACTER;
     t->id = c->getCurrentMapId();
     t->x = target->getX();
     t->y = target->getY();
-    ((TargetedAction *) action)->setTarget(t);
-    return action;
+    return new TargetedAction(MOVE, adventure, nullptr, c, t);
   }
   selectHungriness(c);
   selectTiredness(c);
@@ -48,14 +46,12 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
-    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
     Target * t = new Target();
     t->type = TILE;
     t->id = c->getCurrentMapId();
     t->x = origin_x;
     t->y = origin_y;
-    ((TargetedAction *) action)->setTarget(t);
-    return action;
+    return new TargetedAction(MOVE, adventure, nullptr, c, t);
   }
   delete visionMap;
     return new BaseAction(IDLE, adventure, nullptr, c);

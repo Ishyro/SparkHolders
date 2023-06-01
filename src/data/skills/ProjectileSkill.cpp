@@ -59,5 +59,4 @@ float ProjectileSkill::getDamageReductionFromType(int damage_type, int overcharg
   return 0.;
 }
 
-void ProjectileSkill::setProjectile(Projectile * projectile) { this->projectile = projectile; }
 Projectile * ProjectileSkill::getProjectile() { return projectile; }

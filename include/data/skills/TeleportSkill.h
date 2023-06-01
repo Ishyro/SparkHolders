@@ -4,20 +4,27 @@
 #include "data/skills/PseudoSkill.h"
 
 class TeleportSkill : public PseudoSkill {
-  using PseudoSkill::PseudoSkill;
   public:
+    const int apparition_type;
+    const int movement_type;
+    TeleportSkill(
+      std::string name,
+      int skill_type,
+      int target_type,
+      int mana_cost,
+      std::list<Effect *> effects,
+      int apparition_type,
+      int movement_type
+    ):
+      PseudoSkill(name, skill_type, target_type, mana_cost, effects),
+      apparition_type(apparition_type),
+      movement_type(movement_type)
+    {}
     void activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range);
     bool canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range);
     int getPower();
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
-    int getApparitionType();
-    int getMovementType();
-    void setApparitionType(int apparition_type);
-    void setMovementType(int movement_type);
-  private:
-    int apparition_type;
-    int movement_type;
 };
 
 #endif // _TELEPORT_SKILL_H_

@@ -22,6 +22,3 @@ float TileSwapSkill::getDamageReductionFromType(int damage_type, int overcharge_
 
 Tile * TileSwapSkill::getCurrentTile() { return current_tile; }
 Tile * TileSwapSkill::getNewTile() { return new_tile; }
-
-void TileSwapSkill::setCurrentTile(Tile * current_tile) { this->current_tile = current_tile; }
-void TileSwapSkill::setNewTile(Tile * new_tile) { this->new_tile = new_tile; }

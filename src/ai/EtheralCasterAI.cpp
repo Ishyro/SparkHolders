@@ -20,32 +20,24 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     adventure->getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
-    Action * action = new TargetedAction(MOVE, adventure, nullptr, c);
     Target * t = new Target();
     t->type = TILE;
     t->id = c->getCurrentMapId();
     t->x = origin_x;
     t->y = origin_y;
-    ((TargetedAction *) action)->setTarget(t);
-    return action;
+    return new TargetedAction(MOVE, adventure, nullptr, c, t);
   }
   if(++current_round < target_round) {
     return new BaseAction(IDLE, adventure, nullptr, c);
   }
   else {
     casted = true;
-    Action * action = new SkillAction(USE_SKILL, adventure, nullptr, c);
     Target * target = new Target();
     target->type = TILE;
     target->id = c->getCurrentMapId();
     target->x = origin_x;
     target->y = origin_y;
-    ((SkillAction *) action)->setTarget(target);
     // EhteralCasters should have only one skill
-    ((SkillAction *) action)->setSkill(c->getSkills().front());
-    ((SkillAction *) action)->setOverchargePower(1);
-    ((SkillAction *) action)->setOverchargeRange(1);
-    ((SkillAction *) action)->setOverchargeDuration(1);
-    return action;
+    return new SkillAction(USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
   }
 }
