@@ -33,8 +33,6 @@ namespace Display {
   void displayStats(Character * player, WINDOW * screen, Translator * t);
   WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t);
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t);
-  WINDOW * displayWeapon(Weapon * weapon, WINDOW * screen, Translator * t);
-  WINDOW * displayAmmo(Ammunition * ammo, WINDOW * screen, Translator * t);
   WINDOW * displayItem(Item * item, WINDOW * screen, Translator * t);
   void displayCommands(WINDOW * screen, Translator * t);
   WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t);

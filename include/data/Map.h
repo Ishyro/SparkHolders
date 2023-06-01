@@ -17,9 +17,7 @@ typedef struct Loot {
   float y;
   float size;
   long gold;
-  std::list<Weapon *> weapons;
   std::list<Item *> items;
-  std::list<Ammunition *> ammunition;
 } Loot;
 
 typedef struct Target {

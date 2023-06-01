@@ -1,13 +1,11 @@
 name = TXT_HEAVY
 head = none
 arms = none
-legs = TXT_IRON_BOOTS
-body = TXT_IRON_CUIRASS
+legs = TXT_IRON_BOOTS|1
+body = TXT_IRON_CUIRASS|1
 lantern = none
 left_ring = none
 right_ring = none
 amulet = none
-weapon = TXT_SHORT_SWORD
+weapon = TXT_SHORT_SWORD|1
 items =
-weapons =
-ammunition =

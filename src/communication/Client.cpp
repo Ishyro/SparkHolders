@@ -3,7 +3,6 @@
 #include "data/Adventure.h"
 #include "data/Attributes.h"
 #include "data/Character.h"
-#include "data/Gear.h"
 #include "data/Map.h"
 #include "data/Way.h"
 
@@ -30,7 +29,6 @@ namespace Client {
       std::stringstream * ss = new std::stringstream(msg);
       std::string player_str = String::extract(ss);
       if(player_str != "0") {
-        (*player)->deepDelete();
         delete *player;
         *player = Character::full_from_string(player_str, adventure);
       }
@@ -55,10 +53,10 @@ namespace Client {
     delete ss;
   }
 
-  void sendGearAction(Socket s, int type, GearPiece * piece) {
+  void sendGearAction(Socket s, int type, long item_id) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert(ss, Gear::piece_to_string(piece));
+    String::insert_long(ss, item_id);
     try {
       s.write(ss->str());
     } catch (const CloseException &e) {

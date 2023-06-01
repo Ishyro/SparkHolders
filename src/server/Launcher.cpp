@@ -103,7 +103,7 @@ void relinkCommunication(void * param) {
 int main(int argc, char ** argv) {
 
   if (argc < 2) {
-    std::cout << "Expected: ./Launcher <adventureFile.commands>" << std::endl;
+    std::cerr << "Expected: ./Launcher <adventureFile.commands>" << std::endl;
     return EXIT_FAILURE;
   }
   

@@ -3,14 +3,18 @@
 #include "ai/AI.h"
 #include "data/Database.h"
 #include "data/Effect.h"
-#include "data/Gear.h"
-#include "data/Item.h"
 #include "data/skills/Skill.h"
 #include "data/Settings.h"
 #include "data/Speech.h"
 #include "data/Way.h"
-#include "data/Weapon.h"
 #include "data/World.h"
+
+#include "data/items/Gear.h"
+#include "data/items/WeaponItem.h"
+#include "data/items/ArmorItem.h"
+#include "data/items/SerialItem.h"
+#include "data/items/AmmunitionItem.h"
+#include "data/items/Item.h"
 
 #include "communication/SpeechManager.h"
 
@@ -69,24 +73,17 @@ void Character::initializeCharacter(Gear * gear) {
   channeledMana = 0;
   this->gear = new Gear(gear);
   for(Item * item : gear->getItems()) {
-    Item * toadd = new Item(item);
+    Item * toadd;
+    if(item->type == ITEM_MISCELLANEOUS || item->type == ITEM_CONSUMABLE || item->type == ITEM_AMMUNITION) {
+      toadd = Item::init(item, item->tier, ((SerialItem *) item)->getNumber());
+    }
+    else {
+      toadd = Item::init(item, item->tier, 1);
+    }
     items.push_back(toadd);
-  }
-  for(Weapon * weapon : gear->getWeapons()) {
-    Weapon * toadd = new Weapon(weapon);
-    weapons.push_back(toadd);
-  }
-  for(Ammunition * ammo : gear->getAmmunitions()) {
-    Ammunition * toadd = new Ammunition();
-    toadd->projectile = ammo->projectile;
-    toadd->number = ammo->number;
-    toadd->gold_value = ammo->gold_value;
-    toadd->ammo_type = ammo->ammo_type;
-    ammunition.push_back(toadd);
   }
   initSkillsAndEffects();
 }
-
 void Character::initSkillsAndEffects() {
   for(Skill * skill : attributes->getSkills()) {
     if(skill->level == 0) {
@@ -376,9 +373,16 @@ float Character::getReloadTime() {
   return (float) gear->getWeapon()->reload_time / getHandActionTimeModifier();
 }
 
-float Character::getSwapTime(std::string object) {
-
+float Character::getSwapTime(long item_id) {
   return (float) gear->getWeapon()->swap_time / getHandActionTimeModifier();
+}
+
+float Character::getUseTime(long item_id) {
+  for(Item * item : items) {
+    if(item->id == item_id) {
+      return (float) item->use_time / getHandActionTimeModifier();
+    }
+  }
 }
 
 int Character::getLight() {
@@ -391,8 +395,6 @@ int Character::getLight() {
   return light;
 }
 std::list<Item *> Character::getItems() { return items; }
-std::list<Weapon *> Character::getWeapons() { return weapons; }
-std::list<Ammunition *> Character::getAmmunitions() { return ammunition; }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
@@ -422,8 +424,6 @@ std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> Character::getDamageSkill
 }
 
 std::list<Item *> Character::getSellableItems() { return sellable_items; }
-std::list<Weapon *> Character::getSellableWeapons() { return sellable_weapons; }
-std::list<Ammunition *> Character::getSellableAmmunitions() { return sellable_ammunition; }
 std::list<Effect *> Character::getSellableEffects() { return sellable_effects; }
 std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
 
@@ -815,17 +815,18 @@ void Character::setTalkingSpeech(std::string option, Database * database) {
   SpeechManager::add(talking_speech);
 }
 
-void Character::equip(Item * to_equip) {
+void Character::equip(GearItem * to_equip) {
   if(player_character) {
     setNeedToSend(true);
   }
   if(to_equip != nullptr) {
-    std::list<Item *> items = gear->equip(to_equip);
-    for(Item * item : items) {
+    this->items.remove(to_equip);
+    std::list<GearItem *> items = gear->equip(to_equip);
+    for(GearItem * item : items) {
       for(Effect * e : item->effects) {
         removeEffect(e);
       }
-      items.push_back(item);
+      this->items.push_back(item);
     }
     for(Effect * e : to_equip->effects) {
       addEffect(e);
@@ -833,48 +834,16 @@ void Character::equip(Item * to_equip) {
   }
 }
 
-void Character::equip(Weapon * to_equip) {
+void Character::unequip(int type, int type2) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(to_equip != nullptr) {
-    Weapon * old_weapon = gear->equip(to_equip);
-    removeWeapon(to_equip);
-    if(old_weapon != nullptr) {
-      for(Effect * e : old_weapon->effects) {
-        removeEffect(e);
-      }
-      addWeapon(old_weapon);
-    }
-    for(Effect * e : to_equip->effects) {
-      addEffect(e);
-    }
-  }
-}
-
-void Character::unequip(int type) {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  Item * old_item = gear->unequip(type);
+  Item * old_item = gear->unequip(type, type2);
   if(old_item != nullptr) {
     for(Effect * e : old_item->effects) {
       removeEffect(e);
     }
     items.push_back(old_item);
-  }
-}
-
-void Character::unequipWeapon() {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  Weapon * old_weapon = gear->unequipWeapon();
-  if(old_weapon != nullptr) {
-    for(Effect * e : old_weapon->effects) {
-      removeEffect(e);
-    }
-    weapons.push_back(old_weapon);
   }
 }
 
@@ -984,20 +953,6 @@ void Character::addItem(Item * i) {
   items.push_back(i);
 }
 
-void Character::addWeapon(Weapon * w) {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  weapons.push_back(w);
-}
-
-void Character::addAmmunition(Ammunition * a) {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  ammunition.push_back(a);
-}
-
 void Character::removeItem(Item * i) {
   if(player_character) {
     setNeedToSend(true);
@@ -1005,32 +960,20 @@ void Character::removeItem(Item * i) {
   items.remove(i);
 }
 
-void Character::removeWeapon(Weapon * w) {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  weapons.remove(w);
-}
-
-void Character::removeAmmunition(Ammunition * a) {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  ammunition.remove(a);
-}
-
 void Character::useItem(long item_id) {
   Item * to_remove = nullptr;
   for(Item * i : items) {
-    if(i->id == item_id && i->consumable) {
+    if(i->id == item_id && i->usable) {
       if(player_character) {
         setNeedToSend(true);
       }
-      if(!i->isFood() || race->can_eat_food) {
+      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->can_eat_food) {
         for(Effect * e : i->effects) {
           e->activate(this);
         }
-        to_remove = i;
+        if(((SerialItem *) i)->reduce(1) == 0) {
+          to_remove = i;
+        }
         break;
       }
     }
@@ -1162,13 +1105,13 @@ float Character::getDamageReductionFromType(int damage_type) {
 }
 
 Projectile * Character::shoot(Target * target, Adventure * adventure) {
-  if(!gear->getWeapon()->melee) { //&& gear->getWeapon()->range >= MapUtil::distance(this->x, this->y, this->dx, this->dy, x, y, dx, dy)) {
+  if(gear->getWeapon()->use_projectile && gear->getWeapon()->range >= std::max(abs(x - target->x), abs(y - target->y))) {
     if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type);
       }
-      Projectile * base_projectile = gear->getWeapon()->getAmmo()->projectile;
+      Projectile * base_projectile = (Projectile *) gear->getWeapon()->getAmmo()->getProjectile();
       if(gear->getWeapon()->use_ammo) {
         if(player_character) {
           setNeedToSend(true);
@@ -1182,7 +1125,7 @@ Projectile * Character::shoot(Target * target, Adventure * adventure) {
 }
 
 void Character::attack(Character * target, int type) {
-  if(gear->getWeapon()->melee && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
+  if(!gear->getWeapon()->use_projectile && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
     int realDamages[DAMAGE_TYPE_NUMBER];
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
       realDamages[damage_type] = getDamageFromType(damage_type);
@@ -1191,42 +1134,44 @@ void Character::attack(Character * target, int type) {
   }
 }
 
-void Character::reload(Ammunition * ammo) {
+void Character::reload(AmmunitionItem * ammo) {
   if(player_character) {
     setNeedToSend(true);
   }
-  Ammunition * oldAmmo = gear->getWeapon()->reload(ammo);
-  if(ammo->number == 0) {
-    ammunition.remove(ammo);
+  AmmunitionItem * oldAmmo = gear->getWeapon()->reload(ammo);
+  if(ammo->getNumber() == 0) {
+    items.remove(ammo);
     delete ammo;
     ammo = nullptr;
   }
   if(oldAmmo != nullptr) {
-    ammunition.push_back(oldAmmo);
+    items.push_back(oldAmmo);
   }
 }
 
 
-Ammunition * Character::canReload() {
-  Ammunition * ammo = nullptr;
+AmmunitionItem * Character::canReload() {
+  AmmunitionItem * ammo = nullptr;
   int number = 0;
-  for(Ammunition * current : ammunition) {
-    if(gear->getWeapon()->ammo_type == current->ammo_type && current->number > number) {
-      ammo = current;
-      number = current->number;
+  for(Item * current : items) {
+    if(current->type == ITEM_AMMUNITION && gear->getWeapon()->ammo_type == current->type2 && ( (AmmunitionItem *) current)->getNumber() > number) {
+      ammo = (AmmunitionItem *) current;
+      number = ((AmmunitionItem *) current)->getNumber();
     }
   }
   return ammo;
 }
 
-Weapon * Character::swapMelee() {
-  Weapon * weapon = nullptr;
+WeaponItem * Character::swapMelee() {
+  WeaponItem * weapon = nullptr;
   int rawDamage = 0;
-  for(Weapon * current : weapons) {
-    int currentRawDamage = current->getRawDamage();
-    if(currentRawDamage > rawDamage) {
-      weapon = current;
-      rawDamage = currentRawDamage;
+  for(Item * current : items) {
+    if(current->type == ITEM_WEAPON) {
+      int currentRawDamage = ( (WeaponItem *) current)->getRawDamage();
+      if(currentRawDamage > rawDamage) {
+        weapon = (WeaponItem *) current;
+        rawDamage = currentRawDamage;
+      }
     }
   }
   return weapon;
@@ -1360,32 +1305,6 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
         }
       }
       break;
-    case WEAPON:
-      for(Weapon * weapon : sellable_weapons) {
-        if(weapon->name == object_name) {
-          price = (int) std::ceil((float) weapon->gold_value * price_modifier);
-          if(buyer->getGold() >= price) {
-            buyer->addWeapon(weapon);
-            buyer->loseGold(price);
-            sellable_weapons.remove(weapon);
-            gainGold(price);
-          }
-        }
-      }
-      break;
-    case AMMUNITION:
-      for(Ammunition * ammo : sellable_ammunition) {
-        if(ammo->projectile->name == object_name) {
-          price = (int) std::ceil((float) ammo->gold_value * price_modifier);
-          if(buyer->getGold() >= price) {
-            buyer->addAmmunition(ammo);
-            buyer->loseGold(price);
-            sellable_ammunition.remove(ammo);
-            gainGold(price);
-          }
-        }
-      }
-      break;
     case SKILL:
       for(Skill * skill : sellable_skills) {
         if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes->name == skill->attributes)) {
@@ -1451,36 +1370,6 @@ std::string Character::to_string() {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, getDamageFromType(i));
   }
-  std::stringstream * ss_sellable_items = new std::stringstream();
-  for(Item * item : sellable_items) {
-    String::insert(ss_sellable_items, item->to_string());
-  }
-  String::insert(ss, ss_sellable_items->str());
-  delete ss_sellable_items;
-  std::stringstream * ss_sellable_weapons = new std::stringstream();
-  for(Weapon * weapon : sellable_weapons) {
-    String::insert(ss_sellable_weapons, weapon->to_string());
-  }
-  String::insert(ss, ss_sellable_weapons->str());
-  delete ss_sellable_weapons;
-  std::stringstream * ss_sellable_ammunition = new std::stringstream();
-  for(Ammunition * ammo : sellable_ammunition) {
-    String::insert(ss_sellable_ammunition, Projectile::ammo_to_string(ammo));
-  }
-  String::insert(ss, ss_sellable_ammunition->str());
-  delete ss_sellable_ammunition;
-  std::stringstream * ss_sellable_effects = new std::stringstream();
-  for(Effect * effect : sellable_effects) {
-    String::insert(ss_sellable_effects, effect->to_string());
-  }
-  String::insert(ss, ss_sellable_effects->str());
-  delete ss_sellable_effects;
-  std::stringstream * ss_sellable_skills = new std::stringstream();
-  for(Skill * skill : sellable_skills) {
-    String::insert(ss_sellable_skills, skill->to_string());
-  }
-  String::insert(ss, ss_sellable_skills->str());
-  delete ss_sellable_skills;
   std::string result = ss->str();
   delete ss;
   return result;
@@ -1521,31 +1410,6 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
   }
-  std::stringstream * ss_sellable_items = new std::stringstream(String::extract(ss));
-  while(ss_sellable_items->rdbuf()->in_avail() != 0) {
-    display->sellable_items.push_back(Item::from_string(String::extract(ss_sellable_items)));
-  }
-  delete ss_sellable_items;
-  std::stringstream * ss_sellable_weapons = new std::stringstream(String::extract(ss));
-  while(ss_sellable_weapons->rdbuf()->in_avail() != 0) {
-    display->sellable_weapons.push_back(Weapon::from_string(String::extract(ss_sellable_weapons)));
-  }
-  delete ss_sellable_weapons;
-  std::stringstream * ss_sellable_ammunition = new std::stringstream(String::extract(ss));
-  while(ss_sellable_ammunition->rdbuf()->in_avail() != 0) {
-    display->sellable_ammunition.push_back(Projectile::ammo_from_string(String::extract(ss_sellable_ammunition)));
-  }
-  delete ss_sellable_ammunition;
-  std::stringstream * ss_sellable_effects = new std::stringstream(String::extract(ss));
-  while(ss_sellable_effects->rdbuf()->in_avail() != 0) {
-    display->sellable_effects.push_back(Effect::from_string(String::extract(ss_sellable_effects)));
-  }
-  delete ss_sellable_effects;
-  std::stringstream * ss_sellable_skills = new std::stringstream(String::extract(ss));
-  while(ss_sellable_skills->rdbuf()->in_avail() != 0) {
-    display->sellable_skills.push_back(Skill::from_string(String::extract(ss_sellable_skills)));
-  }
-  delete ss_sellable_skills;
   delete ss;
   return display;
 }
@@ -1604,18 +1468,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   }
   String::insert(ss, ss_items->str());
   delete ss_items;
-  std::stringstream * ss_weapons = new std::stringstream();
-  for(Weapon * weapon : weapons) {
-    String::insert(ss_weapons, weapon->to_string());
-  }
-  String::insert(ss, ss_weapons->str());
-  delete ss_weapons;
-  std::stringstream * ss_ammunition = new std::stringstream();
-  for(Ammunition * ammo : ammunition) {
-    String::insert(ss_ammunition, Projectile::ammo_to_string(ammo));
-  }
-  String::insert(ss, ss_ammunition->str());
-  delete ss_ammunition;
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -1634,18 +1486,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   }
   String::insert(ss, ss_sellable_items->str());
   delete ss_sellable_items;
-  std::stringstream * ss_sellable_weapons = new std::stringstream();
-  for(Weapon * weapon : sellable_weapons) {
-    String::insert(ss_sellable_weapons, weapon->to_string());
-  }
-  String::insert(ss, ss_sellable_weapons->str());
-  delete ss_sellable_weapons;
-  std::stringstream * ss_sellable_ammunition = new std::stringstream();
-  for(Ammunition * ammo : sellable_ammunition) {
-    String::insert(ss_sellable_ammunition, Projectile::ammo_to_string(ammo));
-  }
-  String::insert(ss, ss_sellable_ammunition->str());
-  delete ss_sellable_ammunition;
   std::stringstream * ss_sellable_effects = new std::stringstream();
   for(Effect * effect : sellable_effects) {
     String::insert(ss_sellable_effects, effect->name);
@@ -1727,25 +1567,13 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   int xp = String::extract_long(ss);
   int level = String::extract_int(ss);
   std::string team = String::extract(ss);
-  Gear * gear = Gear::from_string(String::extract(ss));
+  Gear * gear = Gear::from_string(String::extract(ss), adventure);
   std::stringstream * ss_items = new std::stringstream(String::extract(ss));
   std::list<Item *> * items = new std::list<Item *>();
   while(ss_items->rdbuf()->in_avail() != 0) {
-    items->push_back(Item::from_string(String::extract(ss_items)));
+    items->push_back(Item::from_string(String::extract(ss_items), adventure));
   }
   delete ss_items;
-  std::stringstream * ss_weapons = new std::stringstream(String::extract(ss));
-  std::list<Weapon *> * weapons = new std::list<Weapon *>();
-  while(ss_weapons->rdbuf()->in_avail() != 0) {
-    weapons->push_back(Weapon::from_string(String::extract(ss_weapons)));
-  }
-  delete ss_weapons;
-  std::stringstream * ss_ammunition = new std::stringstream(String::extract(ss));
-  std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-  while(ss_ammunition->rdbuf()->in_avail() != 0) {
-    ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_ammunition)));
-  }
-  delete ss_ammunition;
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -1761,21 +1589,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   std::stringstream * ss_sellable_items = new std::stringstream(String::extract(ss));
   std::list<Item *> * sellable_items = new std::list<Item *>();
   while(ss_sellable_items->rdbuf()->in_avail() != 0) {
-    sellable_items->push_back(Item::from_string(String::extract(ss_sellable_items)));
+    sellable_items->push_back(Item::from_string(String::extract(ss_sellable_items), adventure));
   }
   delete ss_sellable_items;
-  std::stringstream * ss_sellable_weapons = new std::stringstream(String::extract(ss));
-  std::list<Weapon *> * sellable_weapons = new std::list<Weapon *>();
-  while(ss_sellable_weapons->rdbuf()->in_avail() != 0) {
-    sellable_weapons->push_back(Weapon::from_string(String::extract(ss_sellable_weapons)));
-  }
-  delete ss_sellable_weapons;
-  std::stringstream * ss_sellable_ammunition = new std::stringstream(String::extract(ss));
-  std::list<Ammunition *> * sellable_ammunition = new std::list<Ammunition *>();
-  while(ss_sellable_ammunition->rdbuf()->in_avail() != 0) {
-    sellable_ammunition->push_back(Projectile::ammo_from_string(String::extract(ss_sellable_ammunition)));
-  }
-  delete ss_sellable_ammunition;
   std::stringstream * ss_sellable_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * sellable_effects = new std::list<Effect *>();
   while(ss_sellable_effects->rdbuf()->in_avail() != 0) {
@@ -1844,13 +1660,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     team,
     gear,
     *items,
-    *weapons,
-    *ammunition,
     *effects,
     *skills,
     *sellable_items,
-    *sellable_weapons,
-    *sellable_ammunition,
     *sellable_effects,
     *sellable_skills,
     attributes,
@@ -1863,13 +1675,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     *titles
   );
   delete items;
-  delete weapons;
-  delete ammunition;
   delete effects;
   delete skills;
   delete sellable_items;
-  delete sellable_weapons;
-  delete sellable_ammunition;
   delete sellable_effects;
   delete sellable_skills;
   delete titles;
@@ -1882,12 +1690,6 @@ void Character::deepDelete() {
   }
   for(Item * item : race->getLoot()) {
     delete item;
-  }
-  for(Weapon * weapon : weapons) {
-    delete weapon;
-  }
-  for(Ammunition * ammo : ammunition) {
-    delete ammo;
   }
   for(Skill * skill : skills) {
     delete skill;

@@ -26,7 +26,6 @@
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Item.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
@@ -35,9 +34,15 @@
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
-#include "data/Weapon.h"
 #include "data/World.h"
 #include "data/Database.h"
+
+#include "data/items/Item.h"
+#include "data/items/ArmorItem.h"
+#include "data/items/WeaponItem.h"
+#include "data/items/SerialItem.h"
+#include "data/items/AmmunitionItem.h"
+#include "data/items/Gear.h"
 
 #include "data/skills/PseudoSkill.h"
 #include "data/skills/Skill.h"
@@ -446,31 +451,6 @@ namespace FileOpener {
     std::istringstream is_merchant(values.at("merchant"));
     bool merchant;
     is_merchant >> std::boolalpha >> merchant;
-    std::list<Item *> * items = new std::list<Item *>();
-    std::istringstream is_items(values.at("items"));
-    std::string item;
-    while(getline(is_items, item, '%')) {
-      items->push_back((Item *) database->getItem(item));
-    }
-    std::list<Weapon *> * weapons = new std::list<Weapon *>();
-    std::istringstream is_weapons(values.at("weapons"));
-    std::string weapon;
-    while(getline(is_weapons, weapon, '%')) {
-      weapons->push_back((Weapon *) database->getWeapon(weapon));
-    }
-    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-    std::istringstream is_ammunition(values.at("ammunition"));
-    std::string ammo;
-    while(getline(is_ammunition, ammo, '%')) {
-      std::string ammo_name = ammo.substr(0, ammo.find('|'));
-      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
-      Ammunition * new_ammo = new Ammunition();
-      new_ammo->projectile = base_ammo->projectile;
-      new_ammo->gold_value = base_ammo->gold_value;
-      new_ammo->ammo_type = base_ammo->ammo_type;
-      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
-      ammunition->push_back(new_ammo);
-    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -484,26 +464,10 @@ namespace FileOpener {
       skills->push_back((Skill *) database->getSkill(skill));
     }
     std::list<Item *> * sellable_items = new std::list<Item *>();
+    std::string item;
     std::istringstream is_sellable_items(values.at("sellable_items"));
     while(getline(is_sellable_items, item, '%')) {
       sellable_items->push_back((Item *) database->getItem(item));
-    }
-    std::list<Weapon *> * sellable_weapons = new std::list<Weapon *>();
-    std::istringstream is_sellable_weapons(values.at("sellable_weapons"));
-    while(getline(is_sellable_weapons, weapon, '%')) {
-      sellable_weapons->push_back((Weapon *) database->getWeapon(weapon));
-    }
-    std::list<Ammunition *> * sellable_ammunition = new std::list<Ammunition *>();
-    std::istringstream is_sellable_ammunition(values.at("sellable_ammunition"));
-    while(getline(is_sellable_ammunition, ammo, '%')) {
-      std::string ammo_name = ammo.substr(0, ammo.find('|'));
-      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
-      Ammunition * new_ammo = new Ammunition();
-      new_ammo->projectile = base_ammo->projectile;
-      new_ammo->gold_value = base_ammo->gold_value;
-      new_ammo->ammo_type = base_ammo->ammo_type;
-      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
-      sellable_ammunition->push_back(new_ammo);
     }
     std::list<Effect *> * sellable_effects = new std::list<Effect *>();
     std::istringstream is_sellable_effects(values.at("sellable_effects"));
@@ -524,26 +488,16 @@ namespace FileOpener {
       gold,
       has_soulspark,
       merchant,
-      *items,
-      *weapons,
-      *ammunition,
       *effects,
       *skills,
       *sellable_items,
-      *sellable_weapons,
-      *sellable_ammunition,
       *sellable_effects,
       *sellable_skills
     );
     database->addCharacter(character);
-    delete items;
-    delete weapons;
-    delete ammunition;
     delete effects;
     delete skills;
     delete sellable_items;
-    delete sellable_weapons;
-    delete sellable_ammunition;
     delete sellable_effects;
     delete sellable_skills;
   }
@@ -598,47 +552,50 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::string head_str = values.at("head");
-    Item * head = head_str != "none" ? (Item *) database->getItem(head_str) : nullptr;
+    ArmorItem * head = head_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(head_str.substr(0, head_str.find('|'))), stoi(head_str.substr(head_str.find('|') + 1, head_str.length())), 1
+    ) : nullptr;
     std::string arms_str = values.at("arms");
-    Item * arms = arms_str != "none" ? (Item *) database->getItem(arms_str) : nullptr;
+    ArmorItem * arms = arms_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(arms_str.substr(0, arms_str.find('|'))), stoi(arms_str.substr(arms_str.find('|') + 1, arms_str.length())), 1
+    ) : nullptr;
     std::string legs_str = values.at("legs");
-    Item * legs = legs_str != "none" ? (Item *) database->getItem(legs_str) : nullptr;
+    ArmorItem * legs = legs_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(legs_str.substr(0, legs_str.find('|'))), stoi(legs_str.substr(legs_str.find('|') + 1, legs_str.length())), 1
+    ) : nullptr;
     std::string body_str = values.at("body");
-    Item * body = body_str != "none" ? (Item *) database->getItem(body_str) : nullptr;
+    ArmorItem * body = body_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(body_str.substr(0, body_str.find('|'))), stoi(body_str.substr(body_str.find('|') + 1, body_str.length())), 1
+    ) : nullptr;
     std::string lantern_str = values.at("lantern");
-    Item * lantern = lantern_str != "none" ? (Item *) database->getItem(lantern_str) : nullptr;
+    ArmorItem * lantern = lantern_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(lantern_str.substr(0, lantern_str.find('|'))), stoi(lantern_str.substr(lantern_str.find('|') + 1, lantern_str.length())), 1
+    ) : nullptr;
     std::string left_ring_str = values.at("left_ring");
-    Item * left_ring = left_ring_str != "none" ? (Item *) database->getItem(left_ring_str) : nullptr;
+    ArmorItem * left_ring = left_ring_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(left_ring_str.substr(0, left_ring_str.find('|'))), stoi(left_ring_str.substr(left_ring_str.find('|') + 1, left_ring_str.length())), 1
+    ) : nullptr;
     std::string right_ring_str = values.at("right_ring");
-    Item * right_ring = right_ring_str != "none" ? (Item *) database->getItem(right_ring_str) : nullptr;
+    ArmorItem * right_ring = right_ring_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(right_ring_str.substr(0, right_ring_str.find('|'))), stoi(right_ring_str.substr(right_ring_str.find('|') + 1, right_ring_str.length())), 1
+    ) : nullptr;
     std::string amulet_str = values.at("amulet");
-    Item * amulet = amulet_str != "none" ? (Item *) database->getItem(amulet_str) : nullptr;
+    ArmorItem * amulet = amulet_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(amulet_str.substr(0, amulet_str.find('|'))), stoi(amulet_str.substr(amulet_str.find('|') + 1, amulet_str.length())), 1
+    ) : nullptr;
     std::string weapon_str = values.at("weapon");
-    Weapon * current_weapon = weapon_str != "none" ? (Weapon *) database->getWeapon(weapon_str) : nullptr;
+    WeaponItem * current_weapon = weapon_str != "none" ? (WeaponItem *) Item::init(
+      database->getItem(weapon_str.substr(0, weapon_str.find('|'))), stoi(weapon_str.substr(weapon_str.find('|') + 1, weapon_str.length())), 1
+    ) : nullptr;
     std::list<Item *> * items = new std::list<Item *>();
     std::istringstream is_items(values.at("items"));
     std::string item;
     while(getline(is_items, item, '%')) {
-      items->push_back((Item *) database->getItem(item));
-    }
-    std::list<Weapon *> * weapons = new std::list<Weapon *>();
-    std::istringstream is_weapons(values.at("weapons"));
-    std::string weapon;
-    while(getline(is_weapons, weapon, '%')) {
-      weapons->push_back((Weapon *) database->getWeapon(weapon));
-    }
-    std::list<Ammunition *> * ammunition = new std::list<Ammunition *>();
-    std::istringstream is_ammunition(values.at("ammunition"));
-    std::string ammo;
-    while(getline(is_ammunition, ammo, '%')) {
-      std::string ammo_name = ammo.substr(0, ammo.find('|'));
-      const Ammunition * base_ammo = database->getAmmunition(ammo_name);
-      Ammunition * new_ammo = new Ammunition();
-      new_ammo->projectile = base_ammo->projectile;
-      new_ammo->gold_value = base_ammo->gold_value;
-      new_ammo->ammo_type = base_ammo->ammo_type;
-      new_ammo->number = stoi(ammo.substr(ammo.find('|') + 1, ammo.length()));
-      ammunition->push_back(new_ammo);
+      std::string item_name = item.substr(0, item.find('|'));
+      item = item.substr(item.find('|') + 1, item.length());
+      int tier = stoi(item.substr(0, item.find('|')));
+      int number = stoi(item.substr(item.find('|') + 1, item.length()));
+      items->push_back(Item::init(database->getItem(item_name), tier, number));
     }
     Gear * gear = new Gear(
       name,
@@ -651,70 +608,172 @@ namespace FileOpener {
       right_ring,
       amulet,
       current_weapon,
-      *items,
-      *weapons,
-      *ammunition
+      *items
     );
     database->addGear(gear);
     delete items;
-    delete weapons;
-    delete ammunition;
   }
 
   void ItemOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is_equipable(values.at("equipable"));
-    bool equipable;
-    is_equipable >> std::boolalpha >> equipable;
-    std::istringstream is_consumable(values.at("consumable"));
-    bool consumable;
-    is_consumable >> std::boolalpha >> consumable;
     int type = database->getTargetFromMacro(values.at("type"));
+    int type2 = database->getTargetFromMacro(values.at("type2"));
+    int max_tier = stoi(values.at("tier"));
+    float weight = stof(values.at("weight"));
+    int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_droppable(values.at("droppable"));
     bool droppable;
     is_droppable >> std::boolalpha >> droppable;
-    float weight = stof(values.at("weight"));
-    int gold_value = stoi(values.at("gold_value"));
-    int swap_time = stoi(values.at("swap_time"));
-    int use_time = stoi(values.at("use_time"));
+    std::istringstream is_usable(values.at("usable"));
+    bool usable;
+    is_usable >> std::boolalpha >> usable;
+    std::istringstream is_consumable(values.at("consumable"));
+    bool consumable;
+    is_consumable >> std::boolalpha >> consumable;
+    int use_time = 0;
+    if(usable) {
+      use_time = stoi(values.at("use_time"));
+    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_3(values.at("effects"));
     std::string effect;
     while(getline(is_3, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
-    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
-    int armor = 0;
-    if(type != UNEQUIPABLE) {
-      armor = stoi(values.at("armor"));
+    Item * item;
+    if(type == ITEM_ARMOR) {
+      int armor = stoi(values.at("armor"));
+      int swap_time = stoi(values.at("swap_time"));
+      float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
       damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
       damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
       damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
       damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
       damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[FROST_DAMAGE] = stof(values.at("COLD_REDUCTION"));
+      damage_reductions[FROST_DAMAGE] = stof(values.at("FROST_REDUCTION"));
       damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
       damage_reductions[ACID_DAMAGE] = 0.;
       damage_reductions[MIND_DAMAGE] = stof(values.at("MIND_REDUCTION"));
       damage_reductions[TRUE_DAMAGE] = 0.;
       damage_reductions[SOUL_DAMAGE] = 0.;
+      item = new ArmorItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        armor,
+        swap_time,
+        damage_reductions
+      );
     }
-    Item * item = new Item(
-      name,
-      0,
-      equipable,
-      consumable,
-      type,
-      droppable,
-      weight,
-      armor,
-      gold_value,
-      swap_time,
-      use_time,
-      *effects,
-      damage_reductions
-    );
+    if(type == ITEM_WEAPON) {
+      int armor = stoi(values.at("armor"));
+      int swap_time = stoi(values.at("swap_time"));
+      float range = stof(values.at("range"));
+      int strike_time = stoi(values.at("strike_time"));
+      std::istringstream is_use_projectile(values.at("use_projectile"));
+      bool use_projectile;
+      is_use_projectile >> std::boolalpha >> use_projectile;
+      bool use_ammo = false;
+      int ammo_type = 0;
+      int capacity = 0;
+      int reload_time = 0;
+      if(use_projectile) {
+        ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
+        std::istringstream is_use_ammo(values.at("use_ammo"));
+        is_use_ammo >> std::boolalpha >> use_ammo;
+        if(use_ammo) {
+          capacity = stoi(values.at("capacity"));
+          reload_time = stoi(values.at("reload_time"));
+        }
+      }
+      int damages[DAMAGE_TYPE_NUMBER] = {0};
+      damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
+      damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
+      damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
+      damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
+      damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
+      damages[FROST_DAMAGE] = stoi(values.at("FROST_DAMAGE"));
+      damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
+      damages[ACID_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
+      damages[MIND_DAMAGE] = stoi(values.at("MIND_DAMAGE"));
+      damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
+      damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+      item = new WeaponItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        armor,
+        swap_time,
+        range,
+        strike_time,
+        use_projectile,
+        use_ammo,
+        ammo_type,
+        capacity,
+        reload_time,
+        nullptr,
+        damages
+      );
+    }
+    if(type == ITEM_MISCELLANEOUS || type == ITEM_CONSUMABLE) {
+      item = new SerialItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        0
+      );
+    }
+    if(type == ITEM_AMMUNITION) {
+      Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
+      item = new AmmunitionItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        0,
+        projectile
+      );
+    }
     database->addItem(item);
     delete effects;
   }
@@ -794,15 +853,6 @@ namespace FileOpener {
     Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
     delete effects;
-  }
-
-  void AmmunitionOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    Ammunition * ammo = new Ammunition();
-    ammo->projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-    ammo->gold_value = stoi(values.at("gold_value"));
-    ammo->ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
-    database->addAmmunition(ammo);
   }
 
   void QuestOpener(std::string fileName, Database * database) {}
@@ -1094,74 +1144,6 @@ namespace FileOpener {
     }
   }
 
-  void WeaponOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    std::string name = values.at("name");
-    std::istringstream is_melee(values.at("melee"));
-    bool melee;
-    is_melee >> std::boolalpha >> melee;
-    int range = stoi(values.at("range"));
-    int type = database->getTargetFromMacro(values.at("type"));
-    std::istringstream is_droppable(values.at("droppable"));
-    bool droppable;
-    is_droppable >> std::boolalpha >> droppable;
-    float weight = stof(values.at("weight"));
-    int armor = stoi(values.at("armor"));
-    int gold_value = stoi(values.at("gold_value"));
-    std::istringstream is_use_ammo(values.at("use_ammo"));
-    bool use_ammo;
-    is_use_ammo >> std::boolalpha >> use_ammo;
-    int ammo_type = 0;
-    int capacity = 0;
-    int strike_time = stoi(values.at("strike_time"));
-    int reload_time = stoi(values.at("reload_time"));
-    int swap_time = stoi(values.at("swap_time"));
-    if(use_ammo) {
-      ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
-      capacity = database->getTargetFromMacro(values.at("capacity"));
-    }
-    std::list<Effect *> * effects = new std::list<Effect *>();
-    std::istringstream is_3(values.at("effects"));
-    std::string effect;
-    while(getline(is_3, effect, '%')) {
-      effects->push_back((Effect *) database->getEffect(effect));
-    }
-    int damages[DAMAGE_TYPE_NUMBER];
-    damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
-    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
-    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
-    damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-    damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
-    damages[FROST_DAMAGE] = stoi(values.at("FROST_DAMAGE"));
-    damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
-    damages[ACID_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-    damages[MIND_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-    damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
-    damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
-    Weapon * weapon = new Weapon(
-      name,
-      0,
-      melee,
-      range,
-      type,
-      droppable,
-      weight,
-      armor,
-      gold_value,
-      use_ammo,
-      ammo_type,
-      capacity,
-      strike_time,
-      reload_time,
-      swap_time,
-      *effects,
-      damages,
-      nullptr
-    );
-    database->addWeapon(weapon);
-    delete effects;
-  }
-
   void FileOpener(std::string fileName, Database * database) {
     std::fstream file;
     char delimiter = '/';
@@ -1191,9 +1173,6 @@ namespace FileOpener {
     else if(last_folder == "projectiles") {
       ProjectileOpener(fileName, database);
     }
-    else if(last_folder == "ammunition") {
-      AmmunitionOpener(fileName, database);
-    }
     else if(last_folder == "quests") {
       QuestOpener(fileName, database);
     }
@@ -1217,9 +1196,6 @@ namespace FileOpener {
             (last_folder == "professions") ||
             (last_folder == "titles")) {
       WayOpener(fileName, database);
-    }
-    else if(last_folder == "weapons") {
-      WeaponOpener(fileName, database);
     }
   }
 

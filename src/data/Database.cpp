@@ -4,7 +4,6 @@
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Item.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
@@ -12,7 +11,8 @@
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
-#include "data/Weapon.h"
+
+#include "data/items/Item.h"
 
 #include "data/Database.h"
 
@@ -27,14 +27,12 @@ Database::Database() {
   gears = std::map<const std::string, const Gear * >();
   maps = std::map<const std::string, const Map * >();
   projectiles = std::map<const std::string, const Projectile * >();
-  ammunition = std::map<const std::string, const Ammunition * >();
   quests = std::map<const std::string, const Quest * >();
   skills = std::map<const std::string, const Skill * >();
   pseudoSkills = std::map<const std::string, const PseudoSkill * >();
   speechs = std::map<const std::string, const Speech * >();
   tiles = std::map<const std::string, const Tile * >();
   ways = std::map<const std::string, const Way * >();
-  weapons = std::map<const std::string, const Weapon * >();
   relations = std::map<const std::string, std::map<const std::string, int>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
   paths = std::list<std::string>();
@@ -77,37 +75,48 @@ Database::Database() {
   macros.insert(std::make_pair("SKILL_TIME_MODIFIER", SKILL_TIME_MODIFIER));
   macros.insert(std::make_pair("MOVEMENT_TIME_MODIFIER", MOVEMENT_TIME_MODIFIER));
 
-  // weapon_type
-  macros.insert(std::make_pair("LONG_SWORD", LONG_SWORD));
-  macros.insert(std::make_pair("SHORT_SWORD", SHORT_SWORD));
-  macros.insert(std::make_pair("CURVED_SWORD", CURVED_SWORD));
-  macros.insert(std::make_pair("RAPIER", RAPIER));
-  macros.insert(std::make_pair("SPEAR", SPEAR));
-  macros.insert(std::make_pair("GLAIVE", GLAIVE));
-  macros.insert(std::make_pair("AXE", AXE));
-  macros.insert(std::make_pair("WARHAMMER", WARHAMMER));
-  macros.insert(std::make_pair("DAGGER", DAGGER));
-  macros.insert(std::make_pair("FIST", FIST));
-  macros.insert(std::make_pair("BOW", BOW));
-  macros.insert(std::make_pair("CROSSBOW", CROSSBOW));
-  macros.insert(std::make_pair("MAGIC_STAFF", MAGIC_STAFF));
-  macros.insert(std::make_pair("RIFLE", RIFLE));
-  macros.insert(std::make_pair("PISTOL", PISTOL));
-  macros.insert(std::make_pair("SLING", SLING));
-
   // item_type
-  macros.insert(std::make_pair("UNEQUIPABLE", UNEQUIPABLE));
-  macros.insert(std::make_pair("HEAD", HEAD));
-  macros.insert(std::make_pair("ARMS", ARMS));
-  macros.insert(std::make_pair("BODY", BODY));
-  macros.insert(std::make_pair("LEGS", LEGS));
-  macros.insert(std::make_pair("LANTERN", LANTERN));
-  macros.insert(std::make_pair("FULL_BODY", FULL_BODY));
-  macros.insert(std::make_pair("RING", RING));
-  macros.insert(std::make_pair("AMULET", AMULET));
+  macros.insert(std::make_pair("ITEM_WEAPON", ITEM_WEAPON));
+  macros.insert(std::make_pair("ITEM_ARMOR", ITEM_ARMOR));
+  macros.insert(std::make_pair("ITEM_MISCELLANEOUS", ITEM_MISCELLANEOUS));
+  macros.insert(std::make_pair("ITEM_CONSUMABLE", ITEM_CONSUMABLE));
+  macros.insert(std::make_pair("ITEM_AMMUNITION", ITEM_AMMUNITION));
 
-  macros.insert(std::make_pair("LEFT_RING", LEFT_RING));
-  macros.insert(std::make_pair("RIGHT_RING", RIGHT_RING));
+  // weapon_type
+  macros.insert(std::make_pair("ITEM_LONG_SWORD", ITEM_LONG_SWORD));
+  macros.insert(std::make_pair("ITEM_SHORT_SWORD", ITEM_SHORT_SWORD));
+  macros.insert(std::make_pair("ITEM_CURVED_SWORD", ITEM_CURVED_SWORD));
+  macros.insert(std::make_pair("ITEM_RAPIER", ITEM_RAPIER));
+  macros.insert(std::make_pair("ITEM_SPEAR", ITEM_SPEAR));
+  macros.insert(std::make_pair("ITEM_GLAIVE", ITEM_GLAIVE));
+  macros.insert(std::make_pair("ITEM_AXE", ITEM_AXE));
+  macros.insert(std::make_pair("ITEM_WARHAMMER", ITEM_WARHAMMER));
+  macros.insert(std::make_pair("ITEM_DAGGER", ITEM_DAGGER));
+  macros.insert(std::make_pair("ITEM_FIST", ITEM_FIST));
+  macros.insert(std::make_pair("ITEM_BOW", ITEM_BOW));
+  macros.insert(std::make_pair("ITEM_CROSSBOW", ITEM_CROSSBOW));
+  macros.insert(std::make_pair("ITEM_MAGIC_STAFF", ITEM_MAGIC_STAFF));
+  macros.insert(std::make_pair("ITEM_RIFLE", ITEM_RIFLE));
+  macros.insert(std::make_pair("ITEM_PISTOL", ITEM_PISTOL));
+  macros.insert(std::make_pair("ITEM_SLING", ITEM_SLING));
+
+  // armor_type
+  macros.insert(std::make_pair("ITEM_HEAD", ITEM_HEAD));
+  macros.insert(std::make_pair("ITEM_ARMS", ITEM_ARMS));
+  macros.insert(std::make_pair("ITEM_BODY", ITEM_BODY));
+  macros.insert(std::make_pair("ITEM_LEGS", ITEM_LEGS));
+  macros.insert(std::make_pair("ITEM_LANTERN", ITEM_LANTERN));
+  macros.insert(std::make_pair("ITEM_FULL_BODY", ITEM_FULL_BODY));
+  macros.insert(std::make_pair("ITEM_RING", ITEM_RING));
+  macros.insert(std::make_pair("ITEM_AMULET", ITEM_AMULET));
+
+  macros.insert(std::make_pair("ITEM_LEFT_RING", ITEM_LEFT_RING));
+  macros.insert(std::make_pair("ITEM_RIGHT_RING", ITEM_RIGHT_RING));
+
+  // other_items_type
+  macros.insert(std::make_pair("ITEM_FOOD", ITEM_FOOD));
+  macros.insert(std::make_pair("ITEM_MATERIAL", ITEM_MATERIAL));
+  macros.insert(std::make_pair("ITEM_POTION", ITEM_POTION));
 
   // event_type
   macros.insert(std::make_pair("CALAMITY", CALAMITY));
@@ -155,12 +164,12 @@ Database::Database() {
   macros.insert(std::make_pair("BACK", BACK));
 
   // projectile_type
-  macros.insert(std::make_pair("FIRE_FORM", FIRE_FORM));
-  macros.insert(std::make_pair("LIGHTNING_FORM", LIGHTNING_FORM));
-  macros.insert(std::make_pair("AIR", AIR));
-  macros.insert(std::make_pair("ARROW", ARROW));
-  macros.insert(std::make_pair("BULLET", BULLET));
-  macros.insert(std::make_pair("SPECIAL", SPECIAL));
+  macros.insert(std::make_pair("PROJECTILE_FIRE_FORM", PROJECTILE_FIRE_FORM));
+  macros.insert(std::make_pair("PROJECTILE_LIGHTNING_FORM", PROJECTILE_LIGHTNING_FORM));
+  macros.insert(std::make_pair("PROJECTILE_AIR", PROJECTILE_AIR));
+  macros.insert(std::make_pair("PROJECTILE_ARROW", PROJECTILE_ARROW));
+  macros.insert(std::make_pair("PROJECTILE_BULLET", PROJECTILE_BULLET));
+  macros.insert(std::make_pair("PROJECTILE_SPECIAL", PROJECTILE_SPECIAL));
 
   // character_type
   macros.insert(std::make_pair("HOMO", HOMO));
@@ -191,7 +200,6 @@ Database::Database() {
   // quest_step_type
   macros.insert(std::make_pair("SLAY", SLAY));
   macros.insert(std::make_pair("OBTAIN_ITEM", OBTAIN_ITEM));
-  macros.insert(std::make_pair("OBTAIN_WEAPON", OBTAIN_WEAPON));
   macros.insert(std::make_pair("DISCOVER", DISCOVER));
   macros.insert(std::make_pair("TALK", TALK));
 
@@ -227,14 +235,12 @@ const Item * Database::getItem(const std::string item) { return items.at(item); 
 const Gear * Database::getGear(const std::string gear) { return gears.at(gear); }
 const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
-const Ammunition * Database::getAmmunition(const std::string ammo) { return ammunition.at(ammo); }
 const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
-const Weapon * Database::getWeapon(const std::string weapon) { return weapons.at(weapon); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
   if(team1 == team2) {
     return SAME;
@@ -258,14 +264,12 @@ void Database::addItem(const Item * item) { items.insert(std::make_pair(item->na
 void Database::addGear(const Gear * gear) { gears.insert(std::make_pair(gear->name, gear)); }
 void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
-void Database::addAmmunition(const Ammunition * ammo) { ammunition.insert(std::make_pair(ammo->projectile->name, ammo)); }
 void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
-void Database::addWeapon(const Weapon * weapon) { weapons.insert(std::make_pair(weapon->name, weapon)); }
 void Database::addRelation(const std::string team1, const std::string team2, int relation) {
   if(relations.find(team1) == relations.end()) {
     std::map<const std::string, int> map = std::map<const std::string, int>();

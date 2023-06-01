@@ -62,7 +62,7 @@ std::string Way::to_string() {
   return result;
 }
 
-Way * Way::from_string(std::string to_read) {
+Way * Way::from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
   int type = String::extract_int(ss);
@@ -106,7 +106,7 @@ Way * Way::from_string(std::string to_read) {
     std::stringstream * ss_loot = new std::stringstream(String::extract(ss));
     std::list<Item *> * loot = new std::list<Item *>();
     while(ss_loot->rdbuf()->in_avail() != 0) {
-      loot->push_back(Item::from_string(String::extract(ss_loot)));
+      loot->push_back(Item::from_string(String::extract(ss_loot), adventure));
     }
     delete ss_loot;
     delete ss;

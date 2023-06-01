@@ -43,11 +43,6 @@ typedef struct CharacterDisplay {
   float damage_reductions[DAMAGE_TYPE_NUMBER];
   int damages[DAMAGE_TYPE_NUMBER];
   int teamRelation;
-  std::list<Item *> sellable_items;
-  std::list<Weapon *> sellable_weapons;
-  std::list<Ammunition *> sellable_ammunition;
-  std::list<Effect *> sellable_effects;
-  std::list<Skill *> sellable_skills;
 } CharacterDisplay;
 
 class Character {
@@ -67,14 +62,9 @@ class Character {
       long gold,
       bool has_soulspark,
       bool merchant,
-      std::list<Item *> items,
-      std::list<Weapon *> weapons,
-      std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       std::list<Item *> sellable_items,
-      std::list<Weapon *> sellable_weapons,
-      std::list<Ammunition *> sellable_ammunition,
       std::list<Effect *> sellable_effects,
       std::list<Skill *> sellable_skills
     ):
@@ -87,14 +77,9 @@ class Character {
       gold(gold),
       has_soulspark(has_soulspark),
       merchant(merchant),
-      items(items),
-      weapons(weapons),
-      ammunition(ammunition),
       effects(effects),
       skills(skills),
       sellable_items(sellable_items),
-      sellable_weapons(sellable_weapons),
-      sellable_ammunition(sellable_ammunition),
       sellable_effects(sellable_effects),
       sellable_skills(sellable_skills)
     {}
@@ -136,13 +121,9 @@ class Character {
       team(team),
       ai(ai),
       items(std::list<Item *>()),
-      weapons(std::list<Weapon *>()),
-      ammunition(std::list<Ammunition *>()),
       effects(std::list<Effect *>()),
       skills(from_database->skills),
       sellable_items(std::list<Item *>()),
-      sellable_weapons(std::list<Weapon *>()),
-      sellable_ammunition(std::list<Ammunition *>()),
       sellable_effects(from_database->sellable_effects),
       sellable_skills(from_database->sellable_skills),
       attributes(attributes),
@@ -154,33 +135,8 @@ class Character {
       profession(profession),
       titles(std::list<Way *>())
     {
-      for(Item * item : from_database->items) {
-        items.push_back(new Item(item));
-      }
-      for(Weapon * weapon : from_database->weapons) {
-        weapons.push_back(new Weapon(weapon));
-      }
-      for(Ammunition * ammo : from_database->ammunition) {
-        Ammunition * toadd = new Ammunition();
-        toadd->projectile = ammo->projectile;
-        toadd->number = ammo->number;
-        toadd->gold_value = ammo->gold_value;
-        toadd->ammo_type = ammo->ammo_type;
-        ammunition.push_back(toadd);
-      }
       for(Item * item : from_database->sellable_items) {
-        sellable_items.push_back(new Item(item));
-      }
-      for(Weapon * weapon : from_database->sellable_weapons) {
-        sellable_weapons.push_back(new Weapon(weapon));
-      }
-      for(Ammunition * ammo : from_database->sellable_ammunition) {
-        Ammunition * toadd = new Ammunition();
-        toadd->projectile = ammo->projectile;
-        toadd->number = ammo->number;
-        toadd->gold_value = ammo->gold_value;
-        toadd->ammo_type = ammo->ammo_type;
-        ammunition.push_back(toadd);
+        sellable_items.push_back(Item::init(item, 1, 1));
       }
       for(Way * title : titles) {
         setWay(title);
@@ -226,13 +182,9 @@ class Character {
       std::string team,
       Gear * gear,
       std::list<Item *> items,
-      std::list<Weapon *> weapons,
-      std::list<Ammunition *> ammunition,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       std::list<Item *> sellable_items,
-      std::list<Weapon *> sellable_weapons,
-      std::list<Ammunition *> sellable_ammunition,
       std::list<Effect *> sellable_effects,
       std::list<Skill *> sellable_skills,
       Attributes * attributes,
@@ -282,13 +234,9 @@ class Character {
       team(team),
       gear(gear),
       items(items),
-      weapons(weapons),
-      ammunition(ammunition),
       effects(effects),
       skills(skills),
       sellable_items(sellable_items),
-      sellable_weapons(sellable_weapons),
-      sellable_ammunition(sellable_ammunition),
       sellable_effects(sellable_effects),
       sellable_skills(sellable_skills),
       attributes(attributes),
@@ -349,18 +297,15 @@ class Character {
     float getMovementTimeModifier();
     float getStrikeTime();
     float getReloadTime();
-    float getSwapTime(std::string object);
+    float getSwapTime(long item_id);
+    float getUseTime(long item_id);
     int getLight();
     std::list<Item *> getItems();
-    std::list<Weapon *> getWeapons();
-    std::list<Ammunition *> getAmmunitions();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> getDamageSkills();
 
     std::list<Item *> getSellableItems();
-    std::list<Weapon *> getSellableWeapons();
-    std::list<Ammunition *> getSellableAmmunitions();
     std::list<Effect *> getSellableEffects();
     std::list<Skill *> getSellableSkills();
     std::list<Way *> getSellableTitles();
@@ -417,10 +362,8 @@ class Character {
     void setDeathSpeech(std::string option, Database * database);
     void setTalkingSpeech(std::string option, Database * database);
 
-    void equip(Item * to_equip);
-    void equip(Weapon * to_equip);
-    void unequip(int type);
-    void unequipWeapon();
+    void equip(GearItem * to_equip);
+    void unequip(int type, int type2);
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
@@ -431,11 +374,7 @@ class Character {
     void setWay(Way * way);
 
     void addItem(Item * i);
-    void addWeapon(Weapon * w);
-    void addAmmunition(Ammunition * a);
     void removeItem(Item * i);
-    void removeWeapon(Weapon * w);
-    void removeAmmunition(Ammunition * a);
     void useItem(long item_id);
 
     bool isFlying();
@@ -453,10 +392,10 @@ class Character {
     int getDamageFromType(int damage_type);
     float getDamageReductionFromType(int damage_type);
     Projectile * shoot(Target * target, Adventure * adventure);
-    void reload(Ammunition * ammo);
+    void reload(AmmunitionItem * ammo);
     void attack(Character * target, int type);
-    Ammunition * canReload();
-    Weapon * swapMelee();
+    AmmunitionItem * canReload();
+    WeaponItem * swapMelee();
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
     int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
@@ -512,15 +451,11 @@ class Character {
 
     Gear * gear;
     std::list<Item *> items;
-    std::list<Weapon *> weapons;
-    std::list<Ammunition *> ammunition;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
     bool merchant;
     std::list<Item *> sellable_items;
-    std::list<Weapon *> sellable_weapons;
-    std::list<Ammunition *> sellable_ammunition;
     std::list<Effect *> sellable_effects;
     std::list<Skill *> sellable_skills;
 

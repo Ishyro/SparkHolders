@@ -8,7 +8,6 @@ typedef struct Step {
   const int type;
   const Character * target;
   const Item * goal_item;
-  const Weapon * goal_weapon;
   const int discover_map_id;
   Speech * todo;
   Speech * when_done;
@@ -24,19 +23,16 @@ class Quest {
     const std::string name;
     const bool holdEvent;
     std::list<Item *> items_rewards;
-    std::list<Weapon *> weapons_rewards;
     Quest(
       std::string name,
       bool holdEvent,
       std::list<Item *> items_rewards,
-      std::list<Weapon *> weapons_rewards,
       std::list<Step *> steps,
       Event * event
     ):
       name(name),
       holdEvent(holdEvent),
       items_rewards(items_rewards),
-      weapons_rewards(weapons_rewards),
       steps(steps),
       event(event)
     {}
@@ -44,7 +40,6 @@ class Quest {
       name(quest->name),
       holdEvent(quest->holdEvent),
       items_rewards(quest->items_rewards),
-      weapons_rewards(quest->weapons_rewards),
       steps(quest->steps),
       event(quest->event)
     {}

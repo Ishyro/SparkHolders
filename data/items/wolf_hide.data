@@ -1,10 +1,10 @@
 name = TXT_WOLF_HIDE
-equipable = false
-consumable = false
-type = UNEQUIPABLE
-droppable = true
+type = ITEM_MISCELLANEOUS
+type2 = ITEM_MATERIAL
+tier = 0
 weight = 0.5
 gold_value = 25
-swap_time = 0
-use_time = 0
+droppable = true
+usable = false
+consumable = false
 effects =

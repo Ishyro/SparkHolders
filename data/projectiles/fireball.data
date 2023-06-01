@@ -1,5 +1,5 @@
 name = TXT_FIREBALL
-projectile_type = FIRE_FORM
+projectile_type = PROJECTILE_FIRE_FORM
 size = 0.1
 homing = false
 skill = none

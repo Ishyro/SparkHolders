@@ -1,10 +1,11 @@
 name = TXT_HOMO_MEAT
-equipable = false
-consumable = true
-type = UNEQUIPABLE
-droppable = true
+type = ITEM_CONSUMABLE
+type2 = ITEM_FOOD
+tier = 0
 weight = 0.5
 gold_value = 0
-swap_time = 0
+droppable = true
+usable = true
+consumable = true
 use_time = 10
 effects = TXT_SATIETY_10%

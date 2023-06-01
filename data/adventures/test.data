@@ -49,13 +49,13 @@ data/skills/dash.data
 # projectiles
 data/projectiles/wood_arrow.data
 data/projectiles/fireball.data
-# ammunition
-data/ammunition/wood_arrow.data
-# weapons
-data/weapons/no_weapon.data
-data/weapons/short_sword.data
-data/weapons/short_bow.data
-data/weapons/wolf_claws.data
+# ammunition items
+data/items/wood_arrow.data
+# weapon items
+data/items/no_weapon.data
+data/items/short_sword.data
+data/items/short_bow.data
+data/items/wolf_claws.data
 # gear without special items
 data/gears/archer.data
 data/gears/heavy_starting_gear.data

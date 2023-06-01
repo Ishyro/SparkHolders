@@ -19,7 +19,6 @@ class Database;
 class Effect;
 class Event;
 class Gear;
-class Item;
 class Map;
 class Projectile;
 class PseudoSkill;
@@ -29,12 +28,15 @@ class Skill;
 class Speech;
 class Tile;
 class Way;
-class Weapon;
 class World;
-typedef struct Ammunition Ammunition;
+class Item;
+class GearItem;
+class ArmorItem;
+class WeaponItem;
+class SerialItem;
+class AmmunitionItem;
 typedef struct CharacterDisplay CharacterDisplay;
 typedef struct Loot Loot;
-typedef struct GearPiece GearPiece;
 typedef struct MapLink MapLink;
 typedef struct ProjectileDisplay ProjectileDisplay;
 typedef struct Spawn Spawn;
@@ -86,38 +88,52 @@ class SpeechManager;
 #define SKILL_TIME_MODIFIER 30
 #define MOVEMENT_TIME_MODIFIER 31
 
-// weapon_type
-
-#define LONG_SWORD 1
-#define SHORT_SWORD 2
-#define CURVED_SWORD 3
-#define RAPIER 4
-#define SPEAR 5
-#define GLAIVE 6
-#define AXE 7
-#define WARHAMMER 8
-#define DAGGER 9
-#define FIST 10
-#define BOW 11
-#define CROSSBOW 12
-#define MAGIC_STAFF 13
-#define RIFLE 14
-#define PISTOL 15
-#define SLING 16
 
 // item_type
 
-#define UNEQUIPABLE 0
-#define HEAD 1
-#define ARMS 2
-#define BODY 3
-#define LEGS 4
-#define LANTERN 5
-#define FULL_BODY 6
-#define RING 7
-#define AMULET 8
-#define LEFT_RING 9
-#define RIGHT_RING 10
+#define ITEM_WEAPON 1
+#define ITEM_ARMOR 2
+#define ITEM_MISCELLANEOUS 3
+#define ITEM_CONSUMABLE 4
+#define ITEM_AMMUNITION 5
+
+// weapon_type
+
+#define ITEM_LONG_SWORD 1
+#define ITEM_SHORT_SWORD 2
+#define ITEM_CURVED_SWORD 3
+#define ITEM_RAPIER 4
+#define ITEM_SPEAR 5
+#define ITEM_GLAIVE 6
+#define ITEM_AXE 7
+#define ITEM_WARHAMMER 8
+#define ITEM_DAGGER 9
+#define ITEM_FIST 10
+#define ITEM_BOW 11
+#define ITEM_CROSSBOW 12
+#define ITEM_MAGIC_STAFF 13
+#define ITEM_RIFLE 14
+#define ITEM_PISTOL 15
+#define ITEM_SLING 16
+
+// armor_type
+
+#define ITEM_HEAD 1
+#define ITEM_ARMS 2
+#define ITEM_BODY 3
+#define ITEM_LEGS 4
+#define ITEM_LANTERN 5
+#define ITEM_FULL_BODY 6
+#define ITEM_RING 7
+#define ITEM_AMULET 8
+#define ITEM_LEFT_RING 9
+#define ITEM_RIGHT_RING 10
+
+// other_items_type
+
+#define ITEM_FOOD 1
+#define ITEM_MATERIAL 2
+#define ITEM_POTION 3
 
 // event_type
 
@@ -173,12 +189,12 @@ class SpeechManager;
 
 // projectile_type
 
-#define FIRE_FORM 1
-#define LIGHTNING_FORM 2
-#define AIR 3
-#define ARROW 4
-#define BULLET 5
-#define SPECIAL 6
+#define PROJECTILE_FIRE_FORM 1
+#define PROJECTILE_LIGHTNING_FORM 2
+#define PROJECTILE_AIR 3
+#define PROJECTILE_ARROW 4
+#define PROJECTILE_BULLET 5
+#define PROJECTILE_SPECIAL 6
 
 // character_type
 
@@ -218,9 +234,8 @@ class SpeechManager;
 
 #define SLAY 1
 #define OBTAIN_ITEM 2
-#define OBTAIN_WEAPON 3
-#define DISCOVER 4
-#define TALK 5
+#define DISCOVER 3
+#define TALK 4
 
 // way_type
 

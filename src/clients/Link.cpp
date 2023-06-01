@@ -68,7 +68,7 @@ void Link::sendAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, in
       case SWAP_GEAR:
       case GRAB:
       case USE_ITEM:
-        Client::sendGearAction(s, type, (GearPiece *) arg1);
+        Client::sendGearAction(s, type, (long) arg1);
         break;
       case USE_SKILL:
         Client::sendSkillAction(s, type, (Target *) arg1, (Skill *) arg2, overcharge_power, overcharge_duration, overcharge_range);

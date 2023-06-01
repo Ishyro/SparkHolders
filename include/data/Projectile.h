@@ -7,13 +7,6 @@
 
 #include "Values.h"
 
-typedef struct Ammunition {
-  Projectile * projectile;
-  int number;
-  int gold_value;
-  int ammo_type;
-} Ammunition;
-
 typedef struct ProjectileDisplay {
   std::string name;
   long id;
@@ -276,10 +269,8 @@ class Projectile {
     void clearOldTargets();
     std::string to_string();
     std::string full_to_string();
-    static std::string ammo_to_string(Ammunition * ammo);
     static ProjectileDisplay * from_string(std::string to_read);
     static Projectile * full_from_string(std::string to_read);
-    static Ammunition * ammo_from_string(std::string to_read);
     bool operator == (const Projectile& p) const { return id == p.id; }
     bool operator != (const Projectile& p) const { return !operator==(p); }
   private:

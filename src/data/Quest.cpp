@@ -1,8 +1,8 @@
 #include "data/Character.h"
 #include "data/Map.h"
-#include "data/Item.h"
-#include "data/Weapon.h"
 #include "data/Adventure.h"
+
+#include "data/items/Item.h"
 
 #include "communication/SpeechManager.h"
 
@@ -18,9 +18,6 @@ bool Quest::stepDone(Adventure * adventure) {
       break;
     case OBTAIN_ITEM:
       result = current_step->goal_item != nullptr;
-      break;
-    case OBTAIN_WEAPON:
-      result = current_step->goal_weapon != nullptr;
       break;
     case DISCOVER:
       for(Character * c : adventure->getParty()) {

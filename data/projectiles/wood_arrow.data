@@ -1,5 +1,5 @@
 name = TXT_WOOD_ARROW
-projectile_type = ARROW
+projectile_type = PROJECTILE_ARROW
 size = 0.025
 homing = false
 skill = none

@@ -2,10 +2,12 @@
 
 #include "data/Adventure.h"
 #include "data/Effect.h"
-#include "data/Item.h"
 #include "data/Way.h"
-#include "data/Weapon.h"
 #include "data/World.h"
+
+#include "data/items/Item.h"
+#include "data/items/WeaponItem.h"
+#include "data/items/SerialItem.h"
 
 #include "communication/SpeechManager.h"
 
@@ -349,24 +351,14 @@ void Map::killCharacter(Character * killer, Character * victim) {
     }
   }
   Loot * loot = new Loot();
-  loot->weapons = std::list<Weapon *>();
   loot->items = std::list<Item *>();
-  loot->ammunition = std::list<Ammunition *>();
   loot->x = victim->getX();
   loot->y = victim->getY();
   loot->gold = victim->getGold();
-  for(Weapon * w : victim->getWeapons()) {
-    if(w->droppable) {
-      loot->weapons.push_back(w);
-    }
-  }
   for(Item * i : victim->getItems()) {
     if(i->droppable) {
       loot->items.push_back(i);
     }
-  }
-  for(Ammunition * a : victim->getAmmunitions()) {
-    loot->ammunition.push_back(a);
   }
   for(Item * i : victim->getRace()->getLoot()) {
     if(i->droppable) {
@@ -384,10 +376,10 @@ void Map::killCharacter(Character * killer, Character * victim) {
     Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EXPERIENCE, INSTANT_DURATION, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new Item("TXT_PERL_OF_WISDOM", ++item::id_cpt, false, true, UNEQUIPABLE, true, 0.F, 0, xp * 10, 0, 5, *effects, damage_reductions));
+    loot->items.push_back(new SerialItem("TXT_PERL_OF_WISDOM", ++item::id_cpt, ITEM_CONSUMABLE, ITEM_POTION, xp, xp, 1.F, xp * 10, true, true, true, 5, *effects, 1));
     delete effects;
   }
-  if(loot->gold == 0 && loot->weapons.empty() && loot->items.empty() && loot->ammunition.empty()) {
+  if(loot->gold == 0 && loot->items.empty()) {
     delete loot;
   }
   else {
@@ -419,13 +411,13 @@ void Map::takeLoot(Character * c, int mode) {
       for(Loot * l : loots) {
         if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
           for(Item * i : l->items) {
-            if(i->isFood()) {
+            if(i->type == ITEM_CONSUMABLE && ( (SerialItem *) i)->isFood()) {
               c->addItem(i);
               l->items.remove(i);
               break;
             }
           }
-          if(l->items.size() == 0 && l->weapons.size() == 0 && l->ammunition.size() == 0 && l->gold == 0) {
+          if(l->items.size() == 0 && l->gold == 0) {
             to_delete.push_back(l);
           }
         }
@@ -438,12 +430,6 @@ void Map::takeLoot(Character * c, int mode) {
         if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
           for(Item * i : l->items) {
             c->addItem(i);
-          }
-          for(Weapon * w : l->weapons) {
-            c->addWeapon(w);
-          }
-          for(Ammunition * a : l->ammunition) {
-            c->addAmmunition(a);
           }
           c->gainGold(l->gold);
           to_delete.push_back(l);
@@ -791,7 +777,8 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
   next_x = MapUtil::round(next_x);
   next_y = MapUtil::round(next_y);
   if(next_x < 0 || std::floor(next_x) >= sizeX || next_y < 0 || std::floor(next_y) >= sizeY || getTile(next_y, next_x)->solid || (!c->isFlying() && getTile(next_y, next_x)->untraversable)) {
-    return 0.F;
+    c->move(lim_y, lim_x, orientation, id);
+    return -1;
   }
   if(link != nullptr && next_x == lim_x && next_y == lim_y) {
     Map * next_map;
@@ -967,6 +954,9 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
     if(tryMove(c, next_y, next_x)) {
       if(MapUtil::distance(c->getX(), c->getY(), next_x, next_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
         c->move(destY, destX, orientation, id);
+        return -1.F;
+      }
+      if(next_x == c->getX() && next_y == c->getY()) {
         return -1.F;
       }
       c->move(next_y, next_x, orientation, id);

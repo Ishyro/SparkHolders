@@ -17,30 +17,20 @@ Action * TargetedAction::execute(Adventure * adventure) {
     }
   }
   user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMapId(), user->getX(), user->getY(), target));
-  if(user->name == "test") {
-    std::cout << Map::target_to_string(target) << std::endl;
-  }
   switch(type) {
     case MOVE: {
       float ap = 1.F;
       while(ap > 0.F) {
         ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), target->y, target->x, ap, adventure->getWorld());
-        // collision with other character or right position
-        if(user->name == "test") {
-          std::cout << "ap=" << ap << " destX= " << user->getX() << " destY= " << user->getY() << std::endl;
-        }
-        if(ap == -1) {
-          break;
-        }
         // we took a MapLink, or maybe got stuck on a wall that wasn't here before, but that would update our Actions anyway
-        else if(ap > 0.F && target->next != nullptr) {
+        if(ap > 0.F && target->next != nullptr) {
           Target * temp = target;
           target = target->next;
           delete temp;
           setUserOrientationToTarget(adventure);
         }
       }
-      if(target->next == nullptr && rangeFromTarget(adventure) > 0.01F && (next == nullptr || next->type != MOVE)) {
+      if(ap == 0.F && target->next == nullptr && rangeFromTarget(adventure) > 0.01F && (next == nullptr || next->type != MOVE)) {
         Action * temp = next;
         next = new TargetedAction(MOVE, adventure, nullptr, user);
         ((TargetedAction *) next)->setTarget(target);

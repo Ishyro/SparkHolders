@@ -2,16 +2,16 @@
 #include "data/Attributes.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Item.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
-#include "data/Weapon.h"
 #include "data/World.h"
 #include "data/Database.h"
+
+#include "data/items/Item.h"
 
 #include "data/actions/Action.h"
 

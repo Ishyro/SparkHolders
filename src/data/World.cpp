@@ -1,9 +1,9 @@
 #include "data/Character.h"
 #include "data/Projectile.h"
-#include "data/Item.h"
-#include "data/Weapon.h"
 #include "data/Tile.h"
 #include "data/Map.h"
+
+#include "data/items/Item.h"
 
 #include "util/MapUtil.h"
 

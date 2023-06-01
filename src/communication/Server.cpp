@@ -53,9 +53,8 @@ namespace Server {
       case SWAP_GEAR:
       case GRAB:
       case USE_ITEM: {
-        GearPiece * piece = Gear::piece_from_string(String::extract(ss));
-        action = new GearAction(type, adventure, nullptr, user);
-        ((GearAction *) action)->setGearPiece(piece);
+        long item_id = String::extract_long(ss);
+        action = new GearAction(type, adventure, nullptr, user, item_id);
         break;
       }
       case USE_SKILL: {

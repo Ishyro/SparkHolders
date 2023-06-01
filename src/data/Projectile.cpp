@@ -245,22 +245,6 @@ std::string Projectile::full_to_string() {
   return result;
 }
 
-std::string Projectile::ammo_to_string(Ammunition * ammo) {
-  std::stringstream * ss = new std::stringstream();
-  if(ammo != nullptr) {
-    String::insert(ss, ammo->projectile->full_to_string());
-    String::insert_int(ss, ammo->number);
-    String::insert_int(ss, ammo->gold_value);
-    String::insert_int(ss, ammo->ammo_type);
-  }
-  else {
-    String::insert(ss, "none");
-  }
-  std::string result = ss->str();
-  delete ss;
-  return result;
-}
-
 ProjectileDisplay * Projectile::from_string(std::string to_read) {
   ProjectileDisplay * display = new ProjectileDisplay();
   std::stringstream * ss = new std::stringstream(to_read);
@@ -346,19 +330,4 @@ Projectile * Projectile::full_from_string(std::string to_read) {
     waste_per_hit,
     damages
   );
-}
-
-Ammunition * Projectile::ammo_from_string(std::string to_read) {
-  Ammunition * ammo = nullptr;
-  std::stringstream * ss = new std::stringstream(to_read);
-  std::string first_message = String::extract(ss);
-  if(first_message != "none") {
-    ammo = new Ammunition();
-    ammo->projectile = Projectile::full_from_string(first_message);
-    ammo->number = String::extract_int(ss);
-    ammo->gold_value = String::extract_int(ss);
-    ammo->ammo_type = String::extract_int(ss);
-  }
-  delete ss;
-  return ammo;
 }

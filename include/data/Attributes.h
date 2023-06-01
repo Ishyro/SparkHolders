@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "data/Gear.h"
+#include "data/items/Gear.h"
 
 class Attributes {
   public:

@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "data/Item.h"
+#include "data/items/Item.h"
 
 #include "Values.h"
 
@@ -99,7 +99,7 @@ class Way {
       skills(skills)
     {
       for(Item * item : loot) {
-        this->loot.push_back(new Item(item));
+        this->loot.push_back(Item::init(item, 1, 1));
       }
     }
     Way(
@@ -157,7 +157,7 @@ class Way {
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::string to_string();
-    static Way * from_string(std::string to_read);
+    static Way * from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Way& w) const { return name == w.name; }
     bool operator != (const Way& w) const { return !operator==(w); }
   private:

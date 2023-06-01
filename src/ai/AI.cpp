@@ -3,6 +3,12 @@
 #include "data/Way.h"
 #include "data/World.h"
 
+#include "data/items/Item.h"
+#include "data/items/SerialItem.h"
+#include "data/items/AmmunitionItem.h"
+#include "data/items/ArmorItem.h"
+#include "data/items/WeaponItem.h"
+
 #include "data/skills/Skill.h"
 
 #include "data/actions/Action.h"
@@ -108,14 +114,8 @@ Action * AI::eat(Adventure * adventure, Character * self) {
   }
   if(self->getRace()->can_eat_food) {
     for(Item * item : self->getItems()) {
-      if(item->isFood()) {
-        Action * action = new GearAction(USE_ITEM, adventure, nullptr, self);
-        GearPiece * piece = new GearPiece();
-        piece->type = ITEM;
-        piece->name = item->name;
-        piece->id = item->id;
-        ((GearAction *) action)->setGearPiece(piece);
-        return action;
+      if(item->type == ITEM_CONSUMABLE && ((SerialItem *) item)->isFood()) {
+        return new GearAction(USE_ITEM, adventure, nullptr, self, item->id);
       }
     }
     return trackPrey(adventure, self);
@@ -221,7 +221,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
       if(distance <= max_distance_prey && distance < distance_corpse) {
         bool isFood = false;
         for(Item * item : loot->items) {
-          if(item->isFood()) {
+          if(item->type == ITEM_CONSUMABLE && ((SerialItem *) item)->isFood()) {
             isFood = true;
             break;
           }
@@ -240,11 +240,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   }
   else {
     if(distance_corpse == 0) {
-      GearPiece * piece = new GearPiece();
-      piece->id = FOOD;
-      Action * action = new GearAction(GRAB, adventure, nullptr, self);
-      ((GearAction *) action)->setGearPiece(piece);
-      return action;
+      return new GearAction(GRAB, adventure, nullptr, self, FOOD);
     }
     else {
       Target * target = new Target();
@@ -331,7 +327,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       ((SkillAction *) action)->setOverchargeDuration(1);
       return action;
     }
-    if(self->getGear()->getWeapon()->melee) {
+    if(!self->getGear()->getWeapon()->use_projectile) {
       action = new TargetedAction(STRIKE, adventure, nullptr, self);
       ((TargetedAction *) action)->setTarget(t);
       return action;
@@ -341,50 +337,28 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       ((TargetedAction *) action)->setTarget(t);
       return action;
     }
-    GearPiece * piece = new GearPiece();
-    Ammunition * ammo = nullptr;
+    AmmunitionItem * ammo = nullptr;
     ammo = self->canReload();
     if(ammo != nullptr) {
-      piece->type = AMMUNITION;
-      piece->name = ammo->projectile->name;
-      piece->id = ammo->projectile->id;
-      action = new GearAction(RELOAD, adventure, nullptr, self);
-      ((GearAction *) action)->setGearPiece(piece);
-      return action;
+      return new GearAction(RELOAD, adventure, nullptr, self, ammo->id);
     }
-    Weapon * weapon = nullptr;
+    WeaponItem * weapon = nullptr;
     weapon = self->swapMelee();
     if(weapon != nullptr) {
-      piece->type = WEAPON;
-      piece->name = weapon->name;
-      piece->id = weapon->id;
-      action = new GearAction(SWAP_GEAR, adventure, nullptr, self);
-      ((GearAction *) action)->setGearPiece(piece);
-      return action;
+      return new GearAction(RELOAD, adventure, nullptr, self, weapon->id);
     }
   }
 
-  GearPiece * piece = new GearPiece();
   if(self->getGear()->getWeapon()->use_ammo && self->getGear()->getWeapon()->getCurrentCapacity() == 0) {
-    Ammunition * ammo = nullptr;
+    AmmunitionItem * ammo = nullptr;
     ammo = self->canReload();
     if(ammo != nullptr) {
-      piece->type = AMMUNITION;
-      piece->name = ammo->projectile->name;
-      piece->id = ammo->projectile->id;
-      action = new GearAction(RELOAD, adventure, nullptr, self);
-      ((GearAction *) action)->setGearPiece(piece);
-      return action;
+      return new GearAction(RELOAD, adventure, nullptr, self, ammo->id);
     }
-    Weapon * weapon = nullptr;
+    WeaponItem * weapon = nullptr;
     weapon = self->swapMelee();
     if(weapon != nullptr) {
-      piece->type = WEAPON;
-      piece->name = weapon->name;
-      piece->id = weapon->id;
-      action = new GearAction(SWAP_GEAR, adventure, nullptr, self);
-      ((GearAction *) action)->setGearPiece(piece);
-      return action;
+      return new GearAction(SWAP_GEAR, adventure, nullptr, self, weapon->id);
     }
   }
   max = 0;

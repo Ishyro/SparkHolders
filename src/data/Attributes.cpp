@@ -1,7 +1,7 @@
 #include "data/Attributes.h"
 
 #include "data/Effect.h"
-#include "data/Gear.h"
+#include "data/items/Gear.h"
 #include "data/skills/Skill.h"
 
 #include "util/String.h"
