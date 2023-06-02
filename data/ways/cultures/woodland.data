@@ -1,5 +1,5 @@
 name = TXT_WOODLAND
-type = CULTURE
+type = WAY_CULTURE
 baseHp = 0
 baseMana = 0
 baseArmorMult = 0

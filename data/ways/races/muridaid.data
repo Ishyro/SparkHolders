@@ -1,5 +1,5 @@
 name = TXT_MURIDAID
-type = RACE
+type = WAY_RACE
 baseHp = 0
 baseMana = 0
 baseArmor = 8

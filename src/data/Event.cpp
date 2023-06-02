@@ -16,12 +16,12 @@ void Event::activate(Adventure * adventure) {
     adventure->getWorld()->addMapLink(link);
   }
   switch(character_apparition_type) {
-    case SOFT:
+    case APPARITION_SOFT:
       for(Character * c : characters) {
         adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
       }
       break;
-    case HARD:
+    case APPARITION_HARD:
       for(Character * c : characters) {
         adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
       }

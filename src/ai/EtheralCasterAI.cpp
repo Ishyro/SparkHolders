@@ -21,23 +21,23 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
     Target * t = new Target();
-    t->type = TILE;
+    t->type = TARGET_TILE;
     t->id = c->getCurrentMapId();
     t->x = origin_x;
     t->y = origin_y;
-    return new TargetedAction(MOVE, adventure, nullptr, c, t);
+    return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
   if(++current_round < target_round) {
-    return new BaseAction(IDLE, adventure, nullptr, c);
+    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
   }
   else {
     casted = true;
     Target * target = new Target();
-    target->type = TILE;
+    target->type = TARGET_TILE;
     target->id = c->getCurrentMapId();
     target->x = origin_x;
     target->y = origin_y;
     // EhteralCasters should have only one skill
-    return new SkillAction(USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
+    return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
   }
 }

@@ -1,5 +1,5 @@
 name = TXT_BRIDGE_TOWN
-type = ORIGIN
+type = WAY_ORIGIN
 baseHp = 0
 baseMana = 0
 baseArmorMult = 0

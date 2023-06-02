@@ -16,16 +16,16 @@ int WeaponItem::getRawDamage() {
     power += ammo->getProjectile()->getRawDamage();
   }
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == ACID_DAMAGE) {
+    if(damage_type == DAMAGE_ACID) {
       power += 3 * damages[damage_type];
     }
-    else if(damage_type == MIND_DAMAGE) {
+    else if(damage_type == DAMAGE_MIND) {
       power += 5 * damages[damage_type];
     }
-    else if(damage_type == TRUE_DAMAGE) {
+    else if(damage_type == DAMAGE_TRUE) {
       power += 10 * damages[damage_type];
     }
-    else if(damage_type == SOUL_DAMAGE) {
+    else if(damage_type == DAMAGE_SOUL) {
       power += 10 * damages[damage_type];
     }
     else {
@@ -41,7 +41,7 @@ int WeaponItem::getDamageFromType(int damage_type) {
     damage += ammo->getProjectile()->getDamageFromType(damage_type);
   }
   for(Effect * e : effects) {
-    if(e->type == DAMAGE_BUFF) {
+    if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type);
     }
   }

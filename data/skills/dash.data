@@ -1,11 +1,11 @@
 name = TXT_DASH
 level = 2
 attributes =
-target_type = TILE
+target_type = TARGET_TILE
 is_instant = true
-overcharge_power_type = NO_OVERCHARGE
-overcharge_duration_type = NO_OVERCHARGE
-overcharge_range_type = SQUARE
+overcharge_power_type = OVERCHARGE_NONE
+overcharge_duration_type = OVERCHARGE_NONE
+overcharge_range_type = OVERCHARGE_SQUARE
 range = 5
 time = 1
 skills = TXT_DASH%

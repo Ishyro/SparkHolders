@@ -48,7 +48,7 @@ int ProjectileSkill::getPower() {
 int ProjectileSkill::getDamageFromType(int damage_type, int overcharge_power) {
   int damage = projectile->getDamageFromType(damage_type) * overcharge_power;
   for(Effect * e : effects) {
-    if(e->type == DAMAGE_BUFF) {
+    if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type) * overcharge_power;
     }
   }

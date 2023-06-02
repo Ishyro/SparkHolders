@@ -34,29 +34,29 @@ namespace Server {
     int type = String::extract_int(ss);
     Action * action;
     switch(type) {
-      case IDLE:
-      case RESPITE:
-      case REST:
-      case BREAKPOINT:
+      case ACTION_IDLE:
+      case ACTION_RESPITE:
+      case ACTION_REST:
+      case ACTION_BREAKPOINT:
         action = new BaseAction(type, adventure, nullptr, user);
         break;
-      case MOVE:
-      case STRIKE:
-      case HEAVY_STRIKE:
-      case SHOOT: {
+      case ACTION_MOVE:
+      case ACTION_STRIKE:
+      case ACTION_HEAVY_STRIKE:
+      case ACTION_SHOOT: {
         Target * target = Map::target_from_string(String::extract(ss));
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
-      case RELOAD:
-      case SWAP_GEAR:
-      case GRAB:
-      case USE_ITEM: {
+      case ACTION_RELOAD:
+      case ACTION_SWAP_GEAR:
+      case ACTION_GRAB:
+      case ACTION_USE_ITEM: {
         long item_id = String::extract_long(ss);
         action = new GearAction(type, adventure, nullptr, user, item_id);
         break;
       }
-      case USE_SKILL: {
+      case ACTION_USE_SKILL: {
         Target * target = Map::target_from_string(String::extract(ss));
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
         int overcharge_power = String::extract_int(ss);
@@ -65,15 +65,15 @@ namespace Server {
         action = new SkillAction(type, adventure, nullptr, user, target, skill, overcharge_power, overcharge_duration, overcharge_range);
         break;
       }
-      case TALKING: {
-        action = new BaseAction(IDLE, adventure, nullptr, user);
+      case ACTION_TALKING: {
+        action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
       }
-      case ECONOMICS: {
-        action = new BaseAction(IDLE, adventure, nullptr, user);
+      case ACTION_ECONOMICS: {
+        action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
       }
       default:
         delete ss;
-        action = new BaseAction(IDLE, adventure, nullptr, user);
+        action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
     }
     action->computeTime(adventure);
     return action;
@@ -103,7 +103,7 @@ namespace Server {
     Way * race = nullptr;
     std::string race_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
-      if(way->name == race_name && way->type == RACE) {
+      if(way->name == race_name && way->type == WAY_RACE) {
         race = way;
         break;
       }
@@ -114,7 +114,7 @@ namespace Server {
     Way * origin = nullptr;
     std::string origin_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
-      if(way->name == origin_name && way->type == ORIGIN) {
+      if(way->name == origin_name && way->type == WAY_ORIGIN) {
         origin = way;
         break;
       }
@@ -125,7 +125,7 @@ namespace Server {
     Way * culture = nullptr;
     std::string culture_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
-      if(way->name == culture_name && way->type == CULTURE) {
+      if(way->name == culture_name && way->type == WAY_CULTURE) {
         culture = way;
         break;
       }
@@ -136,7 +136,7 @@ namespace Server {
     Way * religion = nullptr;
     std::string religion_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
-      if(way->name == religion_name && way->type == RELIGION) {
+      if(way->name == religion_name && way->type == WAY_RELIGION) {
         religion = way;
         break;
       }
@@ -147,7 +147,7 @@ namespace Server {
     Way * profession = nullptr;
     std::string profession_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
-      if(way->name == profession_name && way->type == PROFESSION) {
+      if(way->name == profession_name && way->type == WAY_PROFESSION) {
         profession = way;
         break;
       }

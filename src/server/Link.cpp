@@ -40,7 +40,7 @@ Action * Link::receiveAction() {
       markClosed();
     }
   }
-  return new BaseAction(IDLE, adventure, nullptr, player);
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, player);
 }
 
 bool Link::isClosed() { return closed; }

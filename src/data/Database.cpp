@@ -38,42 +38,42 @@ Database::Database() {
   paths = std::list<std::string>();
 
   // effect_duration_type
-  macros.insert(std::make_pair("INSTANT_DURATION", INSTANT_DURATION));
-  macros.insert(std::make_pair("INFINITE_DURATION", INFINITE_DURATION));
-  macros.insert(std::make_pair("TEMPORARY_DURATION", TEMPORARY_DURATION));
+  macros.insert(std::make_pair("DURATION_INSTANT", DURATION_INSTANT));
+  macros.insert(std::make_pair("DURATION_INFINITE", DURATION_INFINITE));
+  macros.insert(std::make_pair("DURATION_TEMPORARY", DURATION_TEMPORARY));
 
   // effect_type
-  macros.insert(std::make_pair("HP", HP));
-  macros.insert(std::make_pair("MANA", MANA));
-  macros.insert(std::make_pair("HP_MAX", HP_MAX));
-  macros.insert(std::make_pair("MANA_MAX", MANA_MAX));
-  macros.insert(std::make_pair("STAMINA", STAMINA));
-  macros.insert(std::make_pair("SATIETY", SATIETY));
-  macros.insert(std::make_pair("ARMOR", ARMOR));
-  macros.insert(std::make_pair("ARMOR_MULTIPLIER", ARMOR_MULTIPLIER));
-  macros.insert(std::make_pair("SOULBURNTRESHOLD", SOULBURNTRESHOLD));
-  macros.insert(std::make_pair("FLOW", FLOW));
-  macros.insert(std::make_pair("VISION_RANGE", VISION_RANGE));
-  macros.insert(std::make_pair("VISION_POWER", VISION_POWER));
-  macros.insert(std::make_pair("DETECTION_RANGE", DETECTION_RANGE));
-  macros.insert(std::make_pair("EXPERIENCE", EXPERIENCE));
-  macros.insert(std::make_pair("DAMAGE", DAMAGE));
-  macros.insert(std::make_pair("DAMAGE_BUFF", DAMAGE_BUFF));
-  macros.insert(std::make_pair("DAMAGE_REDUCTION", DAMAGE_REDUCTION));
-  macros.insert(std::make_pair("DAMAGE_MULTIPLIER", DAMAGE_MULTIPLIER));
-  macros.insert(std::make_pair("CHANNELING", CHANNELING));
-  macros.insert(std::make_pair("STUNNED", STUNNED));
-  macros.insert(std::make_pair("SLEEPING", SLEEPING));
-  macros.insert(std::make_pair("FLY", FLY));
-  macros.insert(std::make_pair("LIGHT", LIGHT));
-  macros.insert(std::make_pair("CLOAKED", CLOAKED));
-  macros.insert(std::make_pair("INVISIBLE", INVISIBLE));
-  macros.insert(std::make_pair("ETHERAL", ETHERAL));
-  macros.insert(std::make_pair("INVULNERABLE", INVULNERABLE));
-  macros.insert(std::make_pair("ACTION_TIME_MODIFIER", ACTION_TIME_MODIFIER));
-  macros.insert(std::make_pair("HAND_ACTION_TIME_MODIFIER", HAND_ACTION_TIME_MODIFIER));
-  macros.insert(std::make_pair("SKILL_TIME_MODIFIER", SKILL_TIME_MODIFIER));
-  macros.insert(std::make_pair("MOVEMENT_TIME_MODIFIER", MOVEMENT_TIME_MODIFIER));
+  macros.insert(std::make_pair("EFFECT_HP", EFFECT_HP));
+  macros.insert(std::make_pair("EFFECT_MANA", EFFECT_MANA));
+  macros.insert(std::make_pair("EFFECT_HP_MAX", EFFECT_HP_MAX));
+  macros.insert(std::make_pair("EFFECT_MANA_MAX", EFFECT_MANA_MAX));
+  macros.insert(std::make_pair("EFFECT_STAMINA", EFFECT_STAMINA));
+  macros.insert(std::make_pair("EFFECT_SATIETY", EFFECT_SATIETY));
+  macros.insert(std::make_pair("EFFECT_ARMOR", EFFECT_ARMOR));
+  macros.insert(std::make_pair("EFFECT_ARMOR_MULTIPLIER", EFFECT_ARMOR_MULTIPLIER));
+  macros.insert(std::make_pair("EFFECT_SOULBURNTRESHOLD", EFFECT_SOULBURNTRESHOLD));
+  macros.insert(std::make_pair("EFFECT_FLOW", EFFECT_FLOW));
+  macros.insert(std::make_pair("EFFECT_VISION_RANGE", EFFECT_VISION_RANGE));
+  macros.insert(std::make_pair("EFFECT_VISION_POWER", EFFECT_VISION_POWER));
+  macros.insert(std::make_pair("EFFECT_DETECTION_RANGE", EFFECT_DETECTION_RANGE));
+  macros.insert(std::make_pair("EFFECT_EXPERIENCE", EFFECT_EXPERIENCE));
+  macros.insert(std::make_pair("EFFECT_DAMAGE", EFFECT_DAMAGE));
+  macros.insert(std::make_pair("EFFECT_DAMAGE_BUFF", EFFECT_DAMAGE_BUFF));
+  macros.insert(std::make_pair("EFFECT_DAMAGE_REDUCTION", EFFECT_DAMAGE_REDUCTION));
+  macros.insert(std::make_pair("EFFECT_DAMAGE_MULTIPLIER", EFFECT_DAMAGE_MULTIPLIER));
+  macros.insert(std::make_pair("EFFECT_CHANNELING", EFFECT_CHANNELING));
+  macros.insert(std::make_pair("EFFECT_STUNNED", EFFECT_STUNNED));
+  macros.insert(std::make_pair("EFFECT_SLEEPING", EFFECT_SLEEPING));
+  macros.insert(std::make_pair("EFFECT_FLY", EFFECT_FLY));
+  macros.insert(std::make_pair("EFFECT_LIGHT", EFFECT_LIGHT));
+  macros.insert(std::make_pair("EFFECT_CLOAKED", EFFECT_CLOAKED));
+  macros.insert(std::make_pair("EFFECT_INVISIBLE", EFFECT_INVISIBLE));
+  macros.insert(std::make_pair("EFFECT_ETHERAL", EFFECT_ETHERAL));
+  macros.insert(std::make_pair("EFFECT_INVULNERABLE", EFFECT_INVULNERABLE));
+  macros.insert(std::make_pair("EFFECT_ACTION_TIME_MODIFIER", EFFECT_ACTION_TIME_MODIFIER));
+  macros.insert(std::make_pair("EFFECT_HAND_ACTION_TIME_MODIFIER", EFFECT_HAND_ACTION_TIME_MODIFIER));
+  macros.insert(std::make_pair("EFFECT_SKILL_TIME_MODIFIER", EFFECT_SKILL_TIME_MODIFIER));
+  macros.insert(std::make_pair("EFFECT_MOVEMENT_TIME_MODIFIER", EFFECT_MOVEMENT_TIME_MODIFIER));
 
   // item_type
   macros.insert(std::make_pair("ITEM_WEAPON", ITEM_WEAPON));
@@ -119,49 +119,49 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_POTION", ITEM_POTION));
 
   // event_type
-  macros.insert(std::make_pair("CALAMITY", CALAMITY));
-  macros.insert(std::make_pair("BLESSING", BLESSING));
+  macros.insert(std::make_pair("EVENT_CALAMITY", EVENT_CALAMITY));
+  macros.insert(std::make_pair("EVENT_BLESSING", EVENT_BLESSING));
 
   // character_apparition_type
-  macros.insert(std::make_pair("SOFT", SOFT));
-  macros.insert(std::make_pair("HARD", HARD));
+  macros.insert(std::make_pair("APPARITION_SOFT", APPARITION_SOFT));
+  macros.insert(std::make_pair("APPARITION_HARD", APPARITION_HARD));
 
   // movement_type
-  macros.insert(std::make_pair("FLYING", FLYING));
-  macros.insert(std::make_pair("WALKING", WALKING));
-  macros.insert(std::make_pair("TELEPORT", TELEPORT));
+  macros.insert(std::make_pair("MOVEMENT_FLYING", MOVEMENT_FLYING));
+  macros.insert(std::make_pair("MOVEMENT_WALKING", MOVEMENT_WALKING));
+  macros.insert(std::make_pair("MOVEMENT_TELEPORT", MOVEMENT_TELEPORT));
 
   // target_type
-  macros.insert(std::make_pair("NO_TARGET", NO_TARGET));
-  macros.insert(std::make_pair("SELF", SELF));
-  macros.insert(std::make_pair("CHARACTER", CHARACTER));
-  macros.insert(std::make_pair("COORDINATES", COORDINATES));
-  macros.insert(std::make_pair("TILE", TILE));
-  macros.insert(std::make_pair("PERMISSIVE_TARGET", PERMISSIVE_TARGET));
-  macros.insert(std::make_pair("MULTIPLE_TARGETS", MULTIPLE_TARGETS));
+  macros.insert(std::make_pair("TARGET_NONE", TARGET_NONE));
+  macros.insert(std::make_pair("TARGET_SELF", TARGET_SELF));
+  macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
+  macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
+  macros.insert(std::make_pair("TARGET_TILE", TARGET_TILE));
+  macros.insert(std::make_pair("TARGET_PERMISSIVE", TARGET_PERMISSIVE));
+  macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
 
   // skill_type
-  macros.insert(std::make_pair("CHANNELED_SKILL", CHANNELED_SKILL));
-  macros.insert(std::make_pair("MAP_LINKER_SKILL", MAP_LINKER_SKILL));
-  macros.insert(std::make_pair("MIND_CONTROL_SKILL", MIND_CONTROL_SKILL));
-  macros.insert(std::make_pair("PROJECTILE_SKILL", PROJECTILE_SKILL));
-  macros.insert(std::make_pair("RESURRECTION_SKILL", RESURRECTION_SKILL));
-  macros.insert(std::make_pair("SIMPLE_SKILL", SIMPLE_SKILL));
-  macros.insert(std::make_pair("SUMMON_SKILL", SUMMON_SKILL));
-  macros.insert(std::make_pair("TEAM_CHANGER_SKILL", TEAM_CHANGER_SKILL));
-  macros.insert(std::make_pair("TELEPORT_SKILL", TELEPORT_SKILL));
-  macros.insert(std::make_pair("TILE_SWAP_SKILL", TILE_SWAP_SKILL));
+  macros.insert(std::make_pair("SKILL_CHANNELED", SKILL_CHANNELED));
+  macros.insert(std::make_pair("SKILL_MAP_LINKER", SKILL_MAP_LINKER));
+  macros.insert(std::make_pair("SKILL_MIND_CONTROL", SKILL_MIND_CONTROL));
+  macros.insert(std::make_pair("SKILL_PROJECTILE", SKILL_PROJECTILE));
+  macros.insert(std::make_pair("SKILL_RESURRECTION", SKILL_RESURRECTION));
+  macros.insert(std::make_pair("SKILL_SIMPLE", SKILL_SIMPLE));
+  macros.insert(std::make_pair("SKILL_SUMMON", SKILL_SUMMON));
+  macros.insert(std::make_pair("SKILL_TEAM_CHANGER", SKILL_TEAM_CHANGER));
+  macros.insert(std::make_pair("SKILL_TELEPORT", SKILL_TELEPORT));
+  macros.insert(std::make_pair("SKILL_TILE_SWAP", SKILL_TILE_SWAP));
 
   // skill_overcharge_type
-  macros.insert(std::make_pair("NO_OVERCHARGE", NO_OVERCHARGE));
-  macros.insert(std::make_pair("LINEAR", LINEAR));
-  macros.insert(std::make_pair("SQUARE", SQUARE));
-  macros.insert(std::make_pair("EXPONENTIAL", EXPONENTIAL));
+  macros.insert(std::make_pair("OVERCHARGE_NONE", OVERCHARGE_NONE));
+  macros.insert(std::make_pair("OVERCHARGE_LINEAR", OVERCHARGE_LINEAR));
+  macros.insert(std::make_pair("OVERCHARGE_SQUARE", OVERCHARGE_SQUARE));
+  macros.insert(std::make_pair("OVERCHARGE_EXPONENTIAL", OVERCHARGE_EXPONENTIAL));
 
   // map_link type
-  macros.insert(std::make_pair("THROUGH", THROUGH));
-  macros.insert(std::make_pair("BOUNCE", BOUNCE));
-  macros.insert(std::make_pair("BACK", BACK));
+  macros.insert(std::make_pair("MAPLINK_THROUGH", MAPLINK_THROUGH));
+  macros.insert(std::make_pair("MAPLINK_BOUNCE", MAPLINK_BOUNCE));
+  macros.insert(std::make_pair("MAPLINK_BACK", MAPLINK_BACK));
 
   // projectile_type
   macros.insert(std::make_pair("PROJECTILE_FIRE_FORM", PROJECTILE_FIRE_FORM));
@@ -172,57 +172,57 @@ Database::Database() {
   macros.insert(std::make_pair("PROJECTILE_SPECIAL", PROJECTILE_SPECIAL));
 
   // character_type
-  macros.insert(std::make_pair("HOMO", HOMO));
-  macros.insert(std::make_pair("UNDEAD", UNDEAD));
-  macros.insert(std::make_pair("NATURE", NATURE));
-  macros.insert(std::make_pair("OMONCULUS", OMONCULUS));
-  macros.insert(std::make_pair("WALL", WALL));
+  macros.insert(std::make_pair("CHARACTER_HOMO", CHARACTER_HOMO));
+  macros.insert(std::make_pair("CHARACTER_UNDEAD", CHARACTER_UNDEAD));
+  macros.insert(std::make_pair("CHARACTER_NATURE", CHARACTER_NATURE));
+  macros.insert(std::make_pair("CHARACTER_OMONCULUS", CHARACTER_OMONCULUS));
+  macros.insert(std::make_pair("CHARACTER_WALL", CHARACTER_WALL));
 
   // damage_type
   macros.insert(std::make_pair("DAMAGE_TYPE_NUMBER", DAMAGE_TYPE_NUMBER));
 
-  macros.insert(std::make_pair("SLASH_DAMAGE", SLASH_DAMAGE));
-  macros.insert(std::make_pair("PUNCTURE_DAMAGE", PUNCTURE_DAMAGE));
-  macros.insert(std::make_pair("IMPACT_DAMAGE", IMPACT_DAMAGE));
-  macros.insert(std::make_pair("FIRE_DAMAGE", FIRE_DAMAGE));
-  macros.insert(std::make_pair("LIGHTNING_DAMAGE", LIGHTNING_DAMAGE));
-  macros.insert(std::make_pair("FROST_DAMAGE", FROST_DAMAGE));
-  macros.insert(std::make_pair("POISON_DAMAGE", POISON_DAMAGE));
-  macros.insert(std::make_pair("ACID_DAMAGE", ACID_DAMAGE));
-  macros.insert(std::make_pair("MIND_DAMAGE", MIND_DAMAGE));
-  macros.insert(std::make_pair("TRUE_DAMAGE", TRUE_DAMAGE));
-  macros.insert(std::make_pair("SOUL_DAMAGE", SOUL_DAMAGE));
+  macros.insert(std::make_pair("DAMAGE_SLASH", DAMAGE_SLASH));
+  macros.insert(std::make_pair("DAMAGE_PUNCTURE", DAMAGE_PUNCTURE));
+  macros.insert(std::make_pair("DAMAGE_IMPACT", DAMAGE_IMPACT));
+  macros.insert(std::make_pair("DAMAGE_FIRE", DAMAGE_FIRE));
+  macros.insert(std::make_pair("DAMAGE_LIGHTNING", DAMAGE_LIGHTNING));
+  macros.insert(std::make_pair("DAMAGE_FROST", DAMAGE_FROST));
+  macros.insert(std::make_pair("DAMAGE_POISON", DAMAGE_POISON));
+  macros.insert(std::make_pair("DAMAGE_ACID", DAMAGE_ACID));
+  macros.insert(std::make_pair("DAMAGE_MIND", DAMAGE_MIND));
+  macros.insert(std::make_pair("DAMAGE_TRUE", DAMAGE_TRUE));
+  macros.insert(std::make_pair("DAMAGE_SOUL", DAMAGE_SOUL));
 
   // loot_type
-  macros.insert(std::make_pair("CORPSE", CORPSE));
-  macros.insert(std::make_pair("TREASURE", TREASURE));
+  macros.insert(std::make_pair("LOOT_CORPSE", LOOT_CORPSE));
+  macros.insert(std::make_pair("LOOT_TREASURE", LOOT_TREASURE));
 
   // quest_step_type
-  macros.insert(std::make_pair("SLAY", SLAY));
-  macros.insert(std::make_pair("OBTAIN_ITEM", OBTAIN_ITEM));
-  macros.insert(std::make_pair("DISCOVER", DISCOVER));
-  macros.insert(std::make_pair("TALK", TALK));
+  macros.insert(std::make_pair("QUEST_SLAY", QUEST_SLAY));
+  macros.insert(std::make_pair("QUEST_OBTAIN", QUEST_OBTAIN));
+  macros.insert(std::make_pair("QUEST_DISCOVER", QUEST_DISCOVER));
+  macros.insert(std::make_pair("QUEST_TALK", QUEST_TALK));
 
   // way_type
-  macros.insert(std::make_pair("RACE", RACE));
-  macros.insert(std::make_pair("ORIGIN", ORIGIN));
-  macros.insert(std::make_pair("CULTURE", CULTURE));
-  macros.insert(std::make_pair("RELIGION", RELIGION));
-  macros.insert(std::make_pair("PROFESSION", PROFESSION));
-  macros.insert(std::make_pair("TITLE", TITLE));
+  macros.insert(std::make_pair("WAY_RACE", WAY_RACE));
+  macros.insert(std::make_pair("WAY_ORIGIN", WAY_ORIGIN));
+  macros.insert(std::make_pair("WAY_CULTURE", WAY_CULTURE));
+  macros.insert(std::make_pair("WAY_RELIGION", WAY_RELIGION));
+  macros.insert(std::make_pair("WAY_PROFESSION", WAY_PROFESSION));
+  macros.insert(std::make_pair("WAY_TITLE", WAY_TITLE));
 
   // speech_type
-  macros.insert(std::make_pair("MSG_TEXT", MSG_TEXT));
-  macros.insert(std::make_pair("MSG_VOCAL", MSG_VOCAL));
-  macros.insert(std::make_pair("MSG_LOG", MSG_LOG));
-  macros.insert(std::make_pair("MSG_WARNING", MSG_WARNING));
-  macros.insert(std::make_pair("MSG_ERROR", MSG_ERROR));
+  macros.insert(std::make_pair("SPEECH_TEXT", SPEECH_TEXT));
+  macros.insert(std::make_pair("SPEECH_VOCAL", SPEECH_VOCAL));
+  macros.insert(std::make_pair("SPEECH_LOG", SPEECH_LOG));
+  macros.insert(std::make_pair("SPEECH_WARNING", SPEECH_WARNING));
+  macros.insert(std::make_pair("SPEECH_ERROR", SPEECH_ERROR));
 
   // teams relations
-  macros.insert(std::make_pair("SAME", SAME));
-  macros.insert(std::make_pair("ALLY", ALLY));
-  macros.insert(std::make_pair("NEUTRAL", NEUTRAL));
-  macros.insert(std::make_pair("ENEMY", ENEMY));
+  macros.insert(std::make_pair("TEAM_SAME", TEAM_SAME));
+  macros.insert(std::make_pair("TEAM_ALLY", TEAM_ALLY));
+  macros.insert(std::make_pair("TEAM_NEUTRAL", TEAM_NEUTRAL));
+  macros.insert(std::make_pair("TEAM_ENEMY", TEAM_ENEMY));
 }
 
 const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
@@ -243,12 +243,12 @@ const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); 
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
   if(team1 == team2) {
-    return SAME;
+    return TEAM_SAME;
   }
   try {
     return relations.at(team1).at(team2);
   } catch (const std::out_of_range &e) {
-    return NEUTRAL;
+    return TEAM_NEUTRAL;
   }
 }
 

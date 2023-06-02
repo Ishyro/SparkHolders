@@ -1,5 +1,5 @@
 name = TXT_CAELIA_FOLLOWER
-type = RELIGION
+type = WAY_RELIGION
 baseHp = 0
 baseMana = 0
 baseArmorMult = 0

@@ -206,9 +206,11 @@ float Character::getOrientation() { return orientation; }
 int Character::getHp() { return hp; }
 int Character::getMaxHp() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == HP_MAX)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_HP_MAX) {
       bonus += e->power;
+    }
+  }
   return maxHp + bonus;
 }
 
@@ -226,9 +228,11 @@ int Character::getAvaillableMana(bool overflow) {
 
 int Character::getMaxMana() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == MANA_MAX)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_MANA_MAX) {
       bonus += e->power;
+    }
+  }
   return std::max(maxMana + bonus, 0);
 }
 
@@ -237,25 +241,31 @@ float Character::getSatiety() { return satiety; }
 
 int Character::getArmor() {
   int result = (int) std::ceil( (float) (armor + gear->getArmor()) * getArmorMultiplier());
-  for(Effect * e : effects)
-    if(e->type == ARMOR)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_ARMOR) {
       result += e->power;
+    }
+  }
   return std::max(result, 0);
 }
 
 float Character::getArmorMultiplier() {
   int result = armor_multiplier;
-  for(Effect * e : effects)
-    if(e->type == ARMOR_MULTIPLIER)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_ARMOR_MULTIPLIER) {
       result += e->power;
+    }
+  }
   return std::max(0.F, 1.F + ((float) result) / 100.F);
 }
 
 int Character::getSoulBurnTreshold() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == SOULBURNTRESHOLD)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_SOULBURNTRESHOLD) {
       bonus += e->power;
+    }
+  }
   return std::max(soulBurnTreshold + bonus, 0);
 }
 
@@ -263,33 +273,41 @@ int Character::getCurrentSoulBurn() { return currentSoulBurn; }
 
 int Character::getFlow() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == FLOW)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_FLOW) {
       bonus += e->power;
+    }
+  }
   return std::max(flow + bonus, 0);
 }
 
 int Character::getVisionRange() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == VISION_RANGE)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_VISION_RANGE) {
       bonus += e->power;
+    }
+  }
   return std::max(visionRange + bonus, 0);
 }
 
 int Character::getVisionPower() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == VISION_POWER)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_VISION_POWER) {
       bonus += e->power;
+    }
+  }
   return std::max(visionPower + bonus, 0);
 }
 
 int Character::getDetectionRange() {
   int bonus = 0;
-  for(Effect * e : effects)
-    if(e->type == DETECTION_RANGE)
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_DETECTION_RANGE) {
       bonus += e->power;
+    }
+  }
   return std::max(detectionRange + bonus, 0);
 }
 
@@ -300,7 +318,7 @@ int Character::getLevel() { return level; }
 float Character::getDamageMultiplier() {
   int result = damage_multiplier;
   for(Effect * e : effects) {
-    if(e->type == DAMAGE_MULTIPLIER) {
+    if(e->type == EFFECT_DAMAGE_MULTIPLIER) {
       result += e->power;
     }
   }
@@ -328,7 +346,7 @@ Gear * Character::getGear() { return gear; }
 float Character::getActionTimeModifier() {
   float result = race->action_time_modifier;
   for(Effect * e : effects) {
-    if(e->type == ACTION_TIME_MODIFIER) {
+    if(e->type == EFFECT_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
   }
@@ -338,7 +356,7 @@ float Character::getActionTimeModifier() {
 float Character::getHandActionTimeModifier() {
   float result = race->strike_time_modifier;
   for(Effect * e : effects) {
-    if(e->type == HAND_ACTION_TIME_MODIFIER) {
+    if(e->type == EFFECT_HAND_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
   }
@@ -348,7 +366,7 @@ float Character::getHandActionTimeModifier() {
 float Character::getSkillTimeModifier() {
   float result = race->skill_time_modifier;
   for(Effect * e : effects) {
-    if(e->type == SKILL_TIME_MODIFIER) {
+    if(e->type == EFFECT_SKILL_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
   }
@@ -358,7 +376,7 @@ float Character::getSkillTimeModifier() {
 float Character::getMovementTimeModifier() {
   float result = race->movement_time_modifier;
   for(Effect * e : effects) {
-    if(e->type == MOVEMENT_TIME_MODIFIER) {
+    if(e->type == EFFECT_MOVEMENT_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
   }
@@ -388,7 +406,7 @@ float Character::getUseTime(long item_id) {
 int Character::getLight() {
   int light = 0;
   for(Effect * effect : effects) {
-    if(effect->type == LIGHT) {
+    if(effect->type == EFFECT_LIGHT) {
       light += effect->power;
     }
   }
@@ -643,7 +661,7 @@ void Character::applyHunger() {
 
 void Character::applyEffects() {
   for(Effect * e : effects) {
-    if(e->duration_type == TEMPORARY_DURATION) {
+    if(e->duration_type == DURATION_TEMPORARY) {
       if(player_character) {
         setNeedToSend(true);
       }
@@ -890,27 +908,27 @@ void Character::setWay(Way * way) {
   }
   Way * to_remove = nullptr;
   switch(way->type) {
-    case RACE:
+    case WAY_RACE:
       to_remove = race;
       race = way;
       break;
-    case ORIGIN:
+    case WAY_ORIGIN:
       to_remove = origin;
       origin = way;
       break;
-    case CULTURE:
+    case WAY_CULTURE:
       to_remove = culture;
       culture = way;
       break;
-    case RELIGION:
+    case WAY_RELIGION:
       to_remove = religion;
       religion = way;
       break;
-    case PROFESSION:
+    case WAY_PROFESSION:
       to_remove = profession;
       profession = way;
       break;
-    case TITLE:
+    case WAY_TITLE:
       for(Way * title : titles) {
         if(title == way) {
           return;
@@ -950,7 +968,19 @@ void Character::addItem(Item * i) {
   if(player_character) {
     setNeedToSend(true);
   }
-  items.push_back(i);
+  if(i->type == ITEM_MISCELLANEOUS || i->type == ITEM_CONSUMABLE || i->type == ITEM_AMMUNITION) {
+    for(Item * item : items) {
+      if(i->name == item->name && i->tier == item->tier) {
+        ( (SerialItem *) item)->add(( (SerialItem *) i)->getNumber());
+        delete i;
+        break;
+      }
+    }
+    items.push_back(i);
+  }
+  else {
+    items.push_back(i);
+  }
 }
 
 void Character::removeItem(Item * i) {
@@ -986,7 +1016,7 @@ void Character::useItem(long item_id) {
 
 bool Character::isFlying() {
   for(Effect * e : effects) {
-    if(e->type == FLY) {
+    if(e->type == EFFECT_FLY) {
       return true;
     }
   }
@@ -995,7 +1025,7 @@ bool Character::isFlying() {
 
 bool Character::isChanneling() {
   for(Effect * e : effects) {
-    if(e->type == CHANNELING) {
+    if(e->type == EFFECT_CHANNELING) {
       return true;
     }
   }
@@ -1004,7 +1034,7 @@ bool Character::isChanneling() {
 
 bool Character::isStunned() {
   for(Effect * e : effects) {
-    if(e->type == STUNNED) {
+    if(e->type == EFFECT_STUNNED) {
       return true;
     }
   }
@@ -1013,7 +1043,7 @@ bool Character::isStunned() {
 
 bool Character::isCloaked() {
   for(Effect * e : effects) {
-    if(e->type == CLOAKED) {
+    if(e->type == EFFECT_CLOAKED) {
       return true;
     }
   }
@@ -1022,7 +1052,7 @@ bool Character::isCloaked() {
 
 bool Character::isInvisible() {
   for(Effect * e : effects) {
-    if(e->type == INVISIBLE) {
+    if(e->type == EFFECT_INVISIBLE) {
       return true;
     }
   }
@@ -1031,7 +1061,7 @@ bool Character::isInvisible() {
 
 bool Character::isEtheral() {
   for(Effect * e : effects) {
-    if(e->type == ETHERAL) {
+    if(e->type == EFFECT_ETHERAL) {
       return true;
     }
   }
@@ -1040,7 +1070,7 @@ bool Character::isEtheral() {
 
 bool Character::isInvulnerable() {
   for(Effect * e : effects) {
-    if(e->type == INVULNERABLE) {
+    if(e->type == EFFECT_INVULNERABLE) {
       return true;
     }
   }
@@ -1049,7 +1079,7 @@ bool Character::isInvulnerable() {
 
 bool Character::isSleeping() {
   for(Effect * e : effects) {
-    if(e->type == SLEEPING) {
+    if(e->type == EFFECT_SLEEPING) {
       return true;
     }
   }
@@ -1059,7 +1089,7 @@ bool Character::isSleeping() {
 int Character::cloakPower() {
   int max = 0;
   for(Effect * e : effects) {
-    if(e->type == CLOAKED) {
+    if(e->type == EFFECT_CLOAKED) {
       if(e->power > max) {
         max = e->power;
       }
@@ -1070,7 +1100,7 @@ int Character::cloakPower() {
 
 bool Character::isInWeakState() {
   for(Effect * e : effects) {
-    if(e->type == STUNNED || e->type == SLEEPING) {
+    if(e->type == EFFECT_STUNNED || e->type == EFFECT_SLEEPING) {
       return true;
     }
   }
@@ -1087,7 +1117,7 @@ int Character::getDamageFromType(int damage_type) {
     damage = gear->getWeapon()->getDamageFromType(damage_type);
   }
   for(Effect * e : effects) {
-    if(e->type == DAMAGE_BUFF) {
+    if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type);
     }
   }
@@ -1097,7 +1127,7 @@ int Character::getDamageFromType(int damage_type) {
 float Character::getDamageReductionFromType(int damage_type) {
   float reduction = gear->getDamageReductionFromType(damage_type);
   for(Effect * e : effects) {
-    if(e->type == DAMAGE_REDUCTION) {
+    if(e->type == EFFECT_DAMAGE_REDUCTION) {
       reduction += e->getDamageReductionFromType(damage_type);
     }
   }
@@ -1191,23 +1221,23 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation
     }
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == ACID_DAMAGE) {
+      if(damage_type == DAMAGE_ACID) {
         damage += damages[damage_type];
       }
-      if(damage_type == MIND_DAMAGE) {
+      if(damage_type == DAMAGE_MIND) {
         hp -= std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
-      if(damage_type == TRUE_DAMAGE) {
+      if(damage_type == DAMAGE_TRUE) {
         hp -= damages[damage_type];
       }
-      if(damage_type == SOUL_DAMAGE) {
+      if(damage_type == DAMAGE_SOUL) {
         payMana(damages[damage_type]);
       }
       else {
         damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
     }
-    if(type == HEAVY_STRIKE) {
+    if(type == ACTION_HEAVY_STRIKE) {
       hp -= (std::max(0, damage - getArmor())) * 1.5;
     }
     else {
@@ -1220,10 +1250,10 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
   if(!isInvulnerable() && !isEtheral()) {
     int damage = 0;
     for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == ACID_DAMAGE) {
+      if(damage_type == DAMAGE_ACID) {
         damage += damages[damage_type] * 2;
       }
-      if(damage_type == MIND_DAMAGE) {
+      if(damage_type == DAMAGE_MIND) {
         float damage_reduction = getDamageReductionFromType(damage_type);
         if(damage_reduction > 0.F) {
           hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
@@ -1232,10 +1262,10 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
           hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
         }
       }
-      if(damage_type == TRUE_DAMAGE) {
+      if(damage_type == DAMAGE_TRUE) {
         hp -= damages[damage_type] * 2;
       }
-      if(damage_type == SOUL_DAMAGE) {
+      if(damage_type == DAMAGE_SOUL) {
         hp -= damages[damage_type] * 2;
         payMana(damages[damage_type] * 2);
       }
@@ -1249,7 +1279,7 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
         }
       }
     }
-    if(type == HEAVY_STRIKE) {
+    if(type == ACTION_HEAVY_STRIKE) {
       hp -= (std::max(0, damage - getArmor())) * 1.5;
     }
     else {
@@ -1265,23 +1295,23 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) 
   int damage = 0;
   int trueDamage = 0;
   for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    if(damage_type == ACID_DAMAGE) {
+    if(damage_type == DAMAGE_ACID) {
       damage += damages[damage_type];
     }
-    if(damage_type == MIND_DAMAGE) {
+    if(damage_type == DAMAGE_MIND) {
       trueDamage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
-    if(damage_type == TRUE_DAMAGE) {
+    if(damage_type == DAMAGE_TRUE) {
       trueDamage += damages[damage_type];
     }
-    if(damage_type == SOUL_DAMAGE) {
+    if(damage_type == DAMAGE_SOUL) {
       trueDamage += damages[damage_type];
     }
     else {
       damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
   }
-  if(type == HEAVY_STRIKE) {
+  if(type == ACTION_HEAVY_STRIKE) {
     return (trueDamage + std::max(0, damage - getArmor())) * 1.5;
   }
   else {
@@ -1292,7 +1322,7 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) 
 void Character::trade(Character * buyer, int object_type, std::string object_name, float price_modifier) {
   int price = 0;
   switch (object_type) {
-    case ITEM:
+    case OBJECT_ITEM:
       for(Item * item : sellable_items) {
         if(item->name == object_name) {
           price = (int) std::ceil((float) item->gold_value * price_modifier);
@@ -1305,7 +1335,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
         }
       }
       break;
-    case SKILL:
+    case OBJECT_SKILL:
       for(Skill * skill : sellable_skills) {
         if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes->name == skill->attributes)) {
           price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
@@ -1317,7 +1347,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
         }
       }
       break;
-    case EFFECT:
+    case OBJECT_EFFECT:
       for(Effect * effect : sellable_effects) {
         if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->attributes->name == effect->attributes)) {
           price = (int) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);

@@ -61,7 +61,7 @@ bool Projectile::isAtDest() {
 int Projectile::getLight() {
   int light = 0;
   for(Effect * effect : effects) {
-    if(effect->type == LIGHT) {
+    if(effect->type == EFFECT_LIGHT) {
       light += effect->power;
     }
   }
@@ -116,14 +116,14 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
   if(target != nullptr && (target->getTeam() == owner->getTeam() || alreadyHit(target))) {
     return;
   }
-  if(target->type == CHARACTER && target->id == this->target->id) {
+  if(target->type == TARGET_CHARACTER && target->id == this->target->id) {
     setLost(true);
   }
   if(area == 0.F) {
-    target->receiveAttack(current_damages, orientation, STRIKE);
+    target->receiveAttack(current_damages, orientation, ACTION_STRIKE);
     if(skill != nullptr) {
       Target * t = new Target();
-      t->type = CHARACTER;
+      t->type = TARGET_CHARACTER;
       t->id = target->id;
       skill->activate(owner, t, adventure, overcharge_power, overcharge_duration, overcharge_range);
     }
@@ -144,10 +144,10 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
           for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
             reducedDamages[i] = (int) ceil( ((float) current_damages[i]) * pow(1 - waste_per_area, range));
           }
-          target->receiveAttack(reducedDamages, 360.F, STRIKE);
+          target->receiveAttack(reducedDamages, 360.F, ACTION_STRIKE);
           if(skill != nullptr) {
             Target * t = new Target();
-            t->type = CHARACTER;
+            t->type = TARGET_CHARACTER;
             t->id = target->id;
             skill->activate(owner, t, adventure, overcharge_power, overcharge_duration, overcharge_range);
           }

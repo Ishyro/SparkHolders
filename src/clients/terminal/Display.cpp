@@ -109,16 +109,16 @@ namespace Display {
       to_print = ch;
       int color;
       switch(character->teamRelation) {
-        case SAME:
+        case TEAM_SAME:
           color = BLUE;
           break;
-        case ALLY:
+        case TEAM_ALLY:
           color = GREEN;
           break;
-        case NEUTRAL:
+        case TEAM_NEUTRAL:
           color = YELLOW;
           break;
-        case ENEMY:
+        case TEAM_ENEMY:
           color = RED;
           break;
         default:
@@ -267,7 +267,7 @@ namespace Display {
     int i = 8;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
-        case PROJECTILE_SKILL: {
+        case SKILL_PROJECTILE: {
           Projectile * projectile = ((ProjectileSkill *) pseudoSkill)->getProjectile();
           mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed() * overcharge_duration)).c_str());
           mvwprintw(screen, i++, 1, (t->getStandardName("Falloff timer") + std::string(": ") + std::to_string(projectile->getFalloffTimer() * overcharge_range)).c_str());
@@ -280,43 +280,43 @@ namespace Display {
           ;
       }
     }
-    int damage_SLASH = skill->getDamageFromType(SLASH_DAMAGE, overcharge_power);
+    int damage_SLASH = skill->getDamageFromType(DAMAGE_SLASH, overcharge_power);
     if(damage_SLASH != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
     }
-    int damage_PUNCTURE = skill->getDamageFromType(PUNCTURE_DAMAGE, overcharge_power);
+    int damage_PUNCTURE = skill->getDamageFromType(DAMAGE_PUNCTURE, overcharge_power);
     if(damage_PUNCTURE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
     }
-    int damage_IMPACT = skill->getDamageFromType(IMPACT_DAMAGE, overcharge_power);
+    int damage_IMPACT = skill->getDamageFromType(DAMAGE_IMPACT, overcharge_power);
     if(damage_IMPACT != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(damage_IMPACT)).c_str());
     }
-    int damage_FIRE = skill->getDamageFromType(FIRE_DAMAGE, overcharge_power);
+    int damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, overcharge_power);
     if(damage_FIRE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
     }
-    int damage_LIGHTNING = skill->getDamageFromType(LIGHTNING_DAMAGE, overcharge_power);
+    int damage_LIGHTNING = skill->getDamageFromType(DAMAGE_LIGHTNING, overcharge_power);
     if(damage_LIGHTNING != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("DAMAGE_LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int damage_COLD = skill->getDamageFromType(FROST_DAMAGE, overcharge_power);
+    int damage_COLD = skill->getDamageFromType(DAMAGE_FROST, overcharge_power);
     if(damage_COLD != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(damage_COLD)).c_str());
+      mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
-    int damage_POISON = skill->getDamageFromType(POISON_DAMAGE, overcharge_power);
+    int damage_POISON = skill->getDamageFromType(DAMAGE_POISON, overcharge_power);
     if(damage_POISON != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int damage_NEUTRAL = skill->getDamageFromType(ACID_DAMAGE, overcharge_power);
+    int damage_NEUTRAL = skill->getDamageFromType(DAMAGE_ACID, overcharge_power);
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
-    int damage_TRUE = skill->getDamageFromType(TRUE_DAMAGE, overcharge_power);
+    int damage_TRUE = skill->getDamageFromType(DAMAGE_TRUE, overcharge_power);
     if(damage_TRUE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
     }
-    int damage_SOUL = skill->getDamageFromType(SOUL_DAMAGE, overcharge_power);
+    int damage_SOUL = skill->getDamageFromType(DAMAGE_SOUL, overcharge_power);
     if(damage_SOUL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
     }
@@ -349,16 +349,16 @@ namespace Display {
 
     mvwprintw(screen, 7, 1, t->getStandardName("Damages and Reductions").c_str());
     mvwprintw(screen, 8, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(target->armor)).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(target->damages[SLASH_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[SLASH_DAMAGE])).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[PUNCTURE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[PUNCTURE_DAMAGE])).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[IMPACT_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[IMPACT_DAMAGE])).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[FIRE_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FIRE_DAMAGE])).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[LIGHTNING_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[LIGHTNING_DAMAGE])).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[FROST_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[FROST_DAMAGE])).c_str());
-    mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[POISON_DAMAGE]) + std::string(" / ") + std::to_string(target->damage_reductions[POISON_DAMAGE])).c_str());
-    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[ACID_DAMAGE])).c_str());
-    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[TRUE_DAMAGE])).c_str());
-    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[SOUL_DAMAGE])).c_str());
+    mvwprintw(screen, 9, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(target->damages[DAMAGE_SLASH]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_SLASH])).c_str());
+    mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[DAMAGE_PUNCTURE]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_PUNCTURE])).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[DAMAGE_IMPACT]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_IMPACT])).c_str());
+    mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[DAMAGE_FIRE]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_FIRE])).c_str());
+    mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[DAMAGE_LIGHTNING]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_LIGHTNING])).c_str());
+    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[DAMAGE_FROST]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_FROST])).c_str());
+    mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[DAMAGE_POISON]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_POISON])).c_str());
+    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[DAMAGE_ACID])).c_str());
+    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[DAMAGE_TRUE])).c_str());
+    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[DAMAGE_SOUL])).c_str());
     wrefresh(screen);
   }
 
@@ -385,49 +385,49 @@ namespace Display {
     if(item->type == ITEM_ARMOR) {
       ArmorItem * armor = (ArmorItem *) item;
       mvwprintw(screen, i++, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(armor->armor)).c_str());
-      if(armor->getDamageReductionFromType(SLASH_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(SLASH_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(PUNCTURE_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(PUNCTURE_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(IMPACT_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(IMPACT_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(FIRE_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(FIRE_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(LIGHTNING_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(LIGHTNING_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(FROST_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(FROST_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(POISON_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(POISON_DAMAGE))).c_str());
-      if(armor->getDamageReductionFromType(MIND_DAMAGE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(MIND_DAMAGE))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_SLASH) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_SLASH))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_PUNCTURE) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_PUNCTURE))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_IMPACT) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_IMPACT))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_FIRE) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FIRE))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_LIGHTNING) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_LIGHTNING))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_FROST) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FROST))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_POISON) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_POISON))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_MIND) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_MIND))).c_str());
     }
     if(item->type == ITEM_WEAPON) {
       WeaponItem * weapon = (WeaponItem *) item;
       mvwprintw(screen, i++, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(weapon->armor)).c_str());
       mvwprintw(screen, i++, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
-      if(weapon->getDamageFromType(SLASH_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(SLASH_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(PUNCTURE_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(PUNCTURE_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(IMPACT_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(weapon->getDamageFromType(IMPACT_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(FIRE_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(FIRE_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(LIGHTNING_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(LIGHTNING_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(FROST_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(weapon->getDamageFromType(FROST_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(POISON_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(POISON_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(ACID_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("ACID") + std::string(": ") + std::to_string(weapon->getDamageFromType(ACID_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(MIND_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(weapon->getDamageFromType(MIND_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(TRUE_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(TRUE_DAMAGE))).c_str());
-      if(weapon->getDamageFromType(SOUL_DAMAGE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(SOUL_DAMAGE))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_SLASH) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SLASH))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_PUNCTURE) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_PUNCTURE))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_IMPACT) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_IMPACT))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_FIRE) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FIRE))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_LIGHTNING) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_LIGHTNING))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_FROST) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FROST))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_POISON) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_POISON))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_ACID) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("ACID") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_ACID))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_MIND) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_MIND))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_TRUE) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_TRUE))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_SOUL) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SOUL))).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -639,19 +639,19 @@ namespace Display {
     std::vector<std::string> result = std::vector<std::string>(7);
     for(Way * way : startingWays) {
       switch(way->type) {
-        case RACE:
+        case WAY_RACE:
           races.push_back(way);
           break;
-        case ORIGIN:
+        case WAY_ORIGIN:
           origins.push_back(way);
           break;
-        case CULTURE:
+        case WAY_CULTURE:
           cultures.push_back(way);
           break;
-        case RELIGION:
+        case WAY_RELIGION:
           religions.push_back(way);
           break;
-        case PROFESSION:
+        case WAY_PROFESSION:
           professions.push_back(way);
           break;
         default:
@@ -1229,7 +1229,7 @@ namespace Display {
           int keyPressed = getch();
           switch(keyPressed) {
             case '5':
-              type = IDLE;
+              type = ACTION_IDLE;
               done = true;
               break;
             case '1':
@@ -1245,33 +1245,33 @@ namespace Display {
             case KEY_UP:
             case '9':
               if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
-                type = MOVE;
+                type = ACTION_MOVE;
                 done = true;
               }
               break;
             case ' ':
-              type = GRAB;
+              type = ACTION_GRAB;
               done = true;
               break;
             case 'x':
             case 'X':
-              type = USE_SKILL;
+              type = ACTION_USE_SKILL;
               skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
-              if(skill != nullptr && (skill->target_type == SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
+              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
                 done = true;
                 object = skill->name;
               }
               break;
             case 'c':
             case 'C':
-              type = REST;
+              type = ACTION_REST;
               if(!link->getPlayer()->getGear()->getWeapon()->use_projectile) {
-                type = STRIKE;
+                type = ACTION_STRIKE;
               }
               else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
-                type = SHOOT;
+                type = ACTION_SHOOT;
               }
-              if(type == SHOOT || type == STRIKE) {
+              if(type == ACTION_SHOOT || type == ACTION_STRIKE) {
                 if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
                   if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
                     link->getPlayer()->getGear()->getWeapon()->useAmmo();
@@ -1282,16 +1282,16 @@ namespace Display {
               break;
             case 'i':
             case 'I':
-              type = SWAP_GEAR;
+              type = ACTION_SWAP_GEAR;
               object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, t);
               if(object != "") {
                 for(Item * item : link->getPlayer()->getItems()) {
                   if(item->id == object_id) {
                     if(item->usable) {
-                      type = USE_ITEM;
+                      type = ACTION_USE_ITEM;
                     }
                     if(item->type == ITEM_AMMUNITION) {
-                      type = RELOAD;
+                      type = ACTION_RELOAD;
                     }
                   }
                 }
@@ -1300,7 +1300,7 @@ namespace Display {
               break;
             case 'r':
             case 'R':
-              type = RELOAD;
+              type = ACTION_RELOAD;
               if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
                 object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
                 if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
@@ -1315,19 +1315,19 @@ namespace Display {
           }
         }
         switch(type) {
-          case IDLE:
-          case RESPITE:
-          case REST:
-          case BREAKPOINT:
+          case ACTION_IDLE:
+          case ACTION_RESPITE:
+          case ACTION_REST:
+          case ACTION_BREAKPOINT:
             link->sendAction(type, nullptr, nullptr, 0, 0, 0);
             break;
-          case MOVE:
-          case STRIKE:
-          case HEAVY_STRIKE:
-          case SHOOT:
-          case USE_SKILL: {
+          case ACTION_MOVE:
+          case ACTION_STRIKE:
+          case ACTION_HEAVY_STRIKE:
+          case ACTION_SHOOT:
+          case ACTION_USE_SKILL: {
             Target * target = new Target();
-            ((Target *) target)->type = (target_id == 0 ? COORDINATES : CHARACTER);
+            ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
             ((Target *) target)->id = (target_id == 0 ? display->map->id : target_id);
             ((Target *) target)->x = target_x + 0.5;
             ((Target *) target)->y = target_y + 0.5;
@@ -1335,14 +1335,14 @@ namespace Display {
             link->sendAction(type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
             break;
           }
-          case RELOAD:
-          case SWAP_GEAR:
-          case GRAB:
-          case USE_ITEM:
+          case ACTION_RELOAD:
+          case ACTION_SWAP_GEAR:
+          case ACTION_GRAB:
+          case ACTION_USE_ITEM:
             link->sendAction(type, (void *) object_id, nullptr, 0, 0, 0);
             break;
-          case TALKING:
-          case ECONOMICS:
+          case ACTION_TALKING:
+          case ACTION_ECONOMICS:
             break;
           default: ;
         }
@@ -1546,19 +1546,19 @@ namespace Display {
           switch(overcharge_type) {
             case 1:
               mana_cost = skill->getManaCost(overcharge_power + 1, overcharge_duration, overcharge_range);
-              if(skill->overcharge_power_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
+              if(skill->overcharge_power_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge_power++;
               }
               break;
             case 2:
               mana_cost = skill->getManaCost(overcharge_power, overcharge_duration + 1, overcharge_range);
-              if(skill->overcharge_duration_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
+              if(skill->overcharge_duration_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge_duration++;
               }
               break;
             case 3:
               mana_cost = skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range + 1);
-              if(skill->overcharge_range_type != NO_OVERCHARGE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
+              if(skill->overcharge_range_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge_range++;
               }
               break;
@@ -1736,7 +1736,7 @@ namespace Display {
           if(color == BLUE) {
             result = item->name;
             object_id = item->id;
-            object_type = ITEM;
+            object_type = OBJECT_ITEM;
             tempScreen = displayItem(item, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());

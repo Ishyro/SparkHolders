@@ -68,12 +68,12 @@ Tile * Skill::isEatingSkill() {
   bool is_eating_skill = false;
   Tile * target = nullptr;
   for(PseudoSkill * s : skills) {
-    if(s->skill_type == TILE_SWAP_SKILL) {
+    if(s->skill_type == SKILL_TILE_SWAP) {
       target = ( (TileSwapSkill *) s)->getCurrentTile();
     }
-    if(s->skill_type == SIMPLE_SKILL) {
+    if(s->skill_type == SKILL_SIMPLE) {
       for(Effect * effect : s->effects) {
-        if(effect->type == SATIETY) {
+        if(effect->type == EFFECT_SATIETY) {
           is_eating_skill = true;
         }
       }
@@ -88,7 +88,7 @@ Tile * Skill::isEatingSkill() {
 
 int Skill::isTeleportSkill() {
   for(PseudoSkill * s : skills) {
-    if(s->skill_type == TELEPORT_SKILL) {
+    if(s->skill_type == SKILL_TELEPORT) {
       return range;
     }
   }

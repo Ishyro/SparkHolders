@@ -24,11 +24,11 @@ Action * DiurnalAgressiveAI::getActions(Adventure * adventure, Character * c) {
     // orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
     delete visionMap;
     Target * t = new Target();
-    t->type = CHARACTER;
+    t->type = TARGET_CHARACTER;
     t->id = c->getCurrentMapId();
     t->x = target->getX();
     t->y = target->getY();
-    return new TargetedAction(MOVE, adventure, nullptr, c, t);
+    return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
   selectHungriness(c);
   selectTiredness(c);
@@ -41,18 +41,18 @@ Action * DiurnalAgressiveAI::getActions(Adventure * adventure, Character * c) {
   }
   if(sleepy && adventure->getLight() < 4) {
     delete visionMap;
-    return new BaseAction(IDLE, adventure, nullptr, c);
+    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     delete visionMap;
     Target * t = new Target();
-    t->type = TILE;
+    t->type = TARGET_TILE;
     t->id = c->getCurrentMapId();
     t->x = origin_x;
     t->y = origin_y;
-    return  new TargetedAction(MOVE, adventure, nullptr, c, t);
+    return  new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
   delete visionMap;
-    return new BaseAction(IDLE, adventure, nullptr, c);
+    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
 }

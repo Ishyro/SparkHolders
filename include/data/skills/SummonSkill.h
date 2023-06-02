@@ -6,6 +6,7 @@
 class SummonSkill : public PseudoSkill {
   public:
     const std::string ai_str;
+    const std::string team;
     const int apparition_type;
     const int xp;
     SummonSkill(
@@ -16,6 +17,7 @@ class SummonSkill : public PseudoSkill {
       std::list<Effect *> effects,
       Character * character,
       std::string ai_str,
+      std::string team,
       Way * race,
       Way * origin,
       Way * culture,
@@ -29,6 +31,7 @@ class SummonSkill : public PseudoSkill {
       PseudoSkill(name, skill_type, target_type, mana_cost, effects),
       character(character),
       ai_str(ai_str),
+      team(team),
       race(race),
       origin(origin),
       culture(culture),

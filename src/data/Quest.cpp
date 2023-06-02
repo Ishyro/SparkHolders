@@ -13,13 +13,13 @@ bool Quest::stepDone(Adventure * adventure) {
   Step * current_step = steps.front();
   bool result = false;
   switch(current_step->type) {
-    case SLAY:
+    case QUEST_SLAY:
       result = current_step->target != nullptr;
       break;
-    case OBTAIN_ITEM:
+    case QUEST_OBTAIN:
       result = current_step->goal_item != nullptr;
       break;
-    case DISCOVER:
+    case QUEST_DISCOVER:
       for(Character * c : adventure->getParty()) {
         if(c->getCurrentMapId() == current_step->discover_map_id) {
           result = true;
@@ -27,7 +27,7 @@ bool Quest::stepDone(Adventure * adventure) {
         }
       }
       break;
-    case TALK:
+    case QUEST_TALK:
       // TODO
       break;
   }

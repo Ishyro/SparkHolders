@@ -52,29 +52,29 @@ StateDisplay * Link::receiveState() {
 void Link::sendAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, int overcharge_power = 1, int overcharge_duration = 1, int overcharge_range = 1) {
   try {
     switch(type) {
-      case IDLE:
-      case RESPITE:
-      case REST:
-      case BREAKPOINT:
+      case ACTION_IDLE:
+      case ACTION_RESPITE:
+      case ACTION_REST:
+      case ACTION_BREAKPOINT:
         Client::sendBaseAction(s, type);
         break;
-      case MOVE:
-      case STRIKE:
-      case HEAVY_STRIKE:
-      case SHOOT:
+      case ACTION_MOVE:
+      case ACTION_STRIKE:
+      case ACTION_HEAVY_STRIKE:
+      case ACTION_SHOOT:
         Client::sendTargetedAction(s, type, (Target *) arg1);
         break;
-      case RELOAD:
-      case SWAP_GEAR:
-      case GRAB:
-      case USE_ITEM:
+      case ACTION_RELOAD:
+      case ACTION_SWAP_GEAR:
+      case ACTION_GRAB:
+      case ACTION_USE_ITEM:
         Client::sendGearAction(s, type, (long) arg1);
         break;
-      case USE_SKILL:
+      case ACTION_USE_SKILL:
         Client::sendSkillAction(s, type, (Target *) arg1, (Skill *) arg2, overcharge_power, overcharge_duration, overcharge_range);
         break;
-      case TALKING:
-      case ECONOMICS:
+      case ACTION_TALKING:
+      case ACTION_ECONOMICS:
         // TODO
         break;
       default: ;

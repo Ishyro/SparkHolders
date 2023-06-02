@@ -327,7 +327,7 @@ void Map::setTile(float y, float x, Tile * tile) { tiles[(int) std::floor(y)][(i
 void Map::crumble(int y, int x) {
   for(Character * character : characters) {
     if(character->getX() == x && character->getY() == y) {
-      if(character->type == WALL) {
+      if(character->type == CHARACTER_WALL) {
         removeCharacter(character);
         delete character;
         character = nullptr;
@@ -365,7 +365,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
       loot->items.push_back(i);
     }
   }
-  loot->type = CORPSE;
+  loot->type = LOOT_CORPSE;
   if(killer != victim) {
     killer->gainXP(victim->getXP() / 2);
   }
@@ -373,7 +373,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
     int xp = victim->getXP();
-    Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EXPERIENCE, INSTANT_DURATION, xp, 0, damages, damage_reductions);
+    Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
     loot->items.push_back(new SerialItem("TXT_PERL_OF_WISDOM", ++item::id_cpt, ITEM_CONSUMABLE, ITEM_POTION, xp, xp, 1.F, xp * 10, true, true, true, 5, *effects, 1));
@@ -407,7 +407,7 @@ void Map::destroyLoot(Loot * l) {
 void Map::takeLoot(Character * c, int mode) {
   std::list<Loot *> to_delete = std::list<Loot *>();
   switch(mode) {
-    case FOOD: {
+    case GRAB_FOOD: {
       for(Loot * l : loots) {
         if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
           for(Item * i : l->items) {
@@ -424,7 +424,7 @@ void Map::takeLoot(Character * c, int mode) {
       }
       break;
     }
-    case ALL: // 0
+    case GRAB_ALL: // 0
     default: {
       for(Loot * l : loots) {
         if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
@@ -791,7 +791,7 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
     float high_limit = MapUtil::round(0.999F - c->getSize());
     float low_limit = MapUtil::round(c->getSize());
     switch(link->type) {
-      case THROUGH:
+      case MAPLINK_THROUGH:
         if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
           next_map = link->map2;
           removeCharacter(c);
@@ -864,8 +864,8 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
           }
         }
         break;
-      case BOUNCE:
-      case BACK:
+      case MAPLINK_BOUNCE:
+      case MAPLINK_BACK:
         if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
           next_map = link->map2;
           removeCharacter(c);
@@ -916,10 +916,10 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
           next_x = link->x1 - x_direction;
           next_y = link->y1 - y_direction;
         }
-        if(link->type == BOUNCE) {
+        if(link->type == MAPLINK_BOUNCE) {
           dest_orientation = 180 + orientation + 2.F * diff;
         }
-        else if(link->type == BACK) {
+        else if(link->type == MAPLINK_BACK) {
           dest_orientation = orientation + 180.F;
         }
         while(dest_orientation >= 360.F) {
@@ -970,7 +970,7 @@ float Map::move(Character * c, float orientation, float destY, float destX, floa
 
 float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   bool to_destroy = false;
-  if(!p->isLost() && p->getTarget()->type == CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMapId() == id) {
+  if(!p->isLost() && p->getTarget()->type == TARGET_CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMapId() == id) {
     p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
   float x = MapUtil::round(std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX());
@@ -1110,7 +1110,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     float high_limit = MapUtil::round(0.999F - p->getSize());
     float low_limit = MapUtil::round(p->getSize());
     switch(link->type) {
-      case THROUGH:
+      case MAPLINK_THROUGH:
         if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
           next_map = link->map2;
           x = link->x2 + x_direction;
@@ -1157,8 +1157,8 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           p->move(y, x, dest_orientation, next_map->id);
         }
         break;
-      case BOUNCE:
-      case BACK:
+      case MAPLINK_BOUNCE:
+      case MAPLINK_BACK:
         if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
           next_map = link->map2;
           x = link->x2 - x_direction;
@@ -1197,10 +1197,10 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           x = link->x1 - x_direction;
           y = link->y1 - y_direction;
         }
-        if(link->type == BOUNCE) {
+        if(link->type == MAPLINK_BOUNCE) {
           dest_orientation = 180 + orientation + 2.F * diff;
         }
-        else if(link->type == BACK) {
+        else if(link->type == MAPLINK_BACK) {
           dest_orientation = orientation + 180.F;
         }
         while(dest_orientation >= 360.F) {
@@ -1239,9 +1239,9 @@ std::string Map::tile_to_string(int y, int x) {
 std::string Map::target_to_string(Target * target) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, target->type);
-  if(target->type != NO_TARGET && target->type != SELF) {
+  if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
     String::insert_long(ss, target->id);
-    if(target->type != CHARACTER) {
+    if(target->type != TARGET_CHARACTER) {
       String::insert_float(ss, target->x);
       String::insert_float(ss, target->y);
     }
@@ -1249,7 +1249,7 @@ std::string Map::target_to_string(Target * target) {
   if(target->next != nullptr) {
     String::insert(ss, target_to_string(target->next));
   }
-  else if(target->type != NO_TARGET) {
+  else if(target->type != TARGET_NONE) {
     String::insert(ss, "END");
   }
   std::string result = ss->str();
@@ -1261,14 +1261,14 @@ Target * Map::target_from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   Target * target = new Target();
   target->type = String::extract_int(ss);
-  if(target->type != NO_TARGET && target->type != SELF) {
+  if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
     target->id = String::extract_long(ss);
-    if(target->type != CHARACTER) {
+    if(target->type != TARGET_CHARACTER) {
       target->x = String::extract_float(ss);
       target->y = String::extract_float(ss);
     }
   }
-  if(target->type != NO_TARGET) {
+  if(target->type != TARGET_NONE) {
     std::string next = String::extract(ss);
     if(next != "END") {
       target->next = target_from_string(next);

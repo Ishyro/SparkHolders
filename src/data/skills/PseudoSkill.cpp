@@ -16,47 +16,47 @@
 int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range) {
   int cost = 0;
   switch(overcharge_power_type) {
-    case NO_OVERCHARGE:
+    case OVERCHARGE_NONE:
       cost += mana_cost;
       break;
-    case LINEAR:
+    case OVERCHARGE_LINEAR:
       cost += mana_cost * overcharge_power;
       break;
-    case SQUARE:
+    case OVERCHARGE_SQUARE:
       cost += mana_cost * overcharge_power * overcharge_power;
       break;
-    case EXPONENTIAL:
+    case OVERCHARGE_EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge_power - 1);
       break;
     default:
       ;
   }
   switch(overcharge_duration_type) {
-    case NO_OVERCHARGE:
+    case OVERCHARGE_NONE:
       cost += mana_cost;
       break;
-    case LINEAR:
+    case OVERCHARGE_LINEAR:
       cost += mana_cost * overcharge_duration;
       break;
-    case SQUARE:
+    case OVERCHARGE_SQUARE:
       cost += mana_cost * overcharge_duration * overcharge_duration;
       break;
-    case EXPONENTIAL:
+    case OVERCHARGE_EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge_duration - 1);
     default:
       ;
   }
   switch(overcharge_range_type) {
-    case NO_OVERCHARGE:
+    case OVERCHARGE_NONE:
       cost += mana_cost;
       break;
-    case LINEAR:
+    case OVERCHARGE_LINEAR:
       cost += mana_cost * overcharge_range;
       break;
-    case SQUARE:
+    case OVERCHARGE_SQUARE:
       cost += mana_cost * overcharge_range * overcharge_range;
       break;
-    case EXPONENTIAL:
+    case OVERCHARGE_EXPONENTIAL:
       cost += mana_cost * (int) std::pow(2. , (double) overcharge_range - 1);
       break;
     default:

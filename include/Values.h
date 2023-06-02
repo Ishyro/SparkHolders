@@ -50,43 +50,43 @@ class SpeechManager;
 
 // effect_duration_type
 
-#define INSTANT_DURATION 1
-#define INFINITE_DURATION 2
-#define TEMPORARY_DURATION 3
+#define DURATION_INSTANT 1
+#define DURATION_INFINITE 2
+#define DURATION_TEMPORARY 3
 
 // effect_type
 
-#define HP 1
-#define MANA 2
-#define HP_MAX 3
-#define MANA_MAX 4
-#define STAMINA 5
-#define SATIETY 6
-#define ARMOR 7
-#define ARMOR_MULTIPLIER 8
-#define SOULBURNTRESHOLD 9
-#define FLOW 10
-#define VISION_RANGE 11
-#define VISION_POWER 12
-#define DETECTION_RANGE 13
-#define EXPERIENCE 14
-#define DAMAGE 15
-#define DAMAGE_BUFF 16
-#define DAMAGE_REDUCTION 17
-#define DAMAGE_MULTIPLIER 18
-#define CHANNELING 19
-#define STUNNED 20
-#define SLEEPING 21
-#define FLY 22
-#define LIGHT 23
-#define CLOAKED 24
-#define INVISIBLE 25
-#define ETHERAL 26
-#define INVULNERABLE 27
-#define ACTION_TIME_MODIFIER 28
-#define HAND_ACTION_TIME_MODIFIER 29
-#define SKILL_TIME_MODIFIER 30
-#define MOVEMENT_TIME_MODIFIER 31
+#define EFFECT_HP 1
+#define EFFECT_MANA 2
+#define EFFECT_HP_MAX 3
+#define EFFECT_MANA_MAX 4
+#define EFFECT_STAMINA 5
+#define EFFECT_SATIETY 6
+#define EFFECT_ARMOR 7
+#define EFFECT_ARMOR_MULTIPLIER 8
+#define EFFECT_SOULBURNTRESHOLD 9
+#define EFFECT_FLOW 10
+#define EFFECT_VISION_RANGE 11
+#define EFFECT_VISION_POWER 12
+#define EFFECT_DETECTION_RANGE 13
+#define EFFECT_EXPERIENCE 14
+#define EFFECT_DAMAGE 15
+#define EFFECT_DAMAGE_BUFF 16
+#define EFFECT_DAMAGE_REDUCTION 17
+#define EFFECT_DAMAGE_MULTIPLIER 18
+#define EFFECT_CHANNELING 19
+#define EFFECT_STUNNED 20
+#define EFFECT_SLEEPING 21
+#define EFFECT_FLY 22
+#define EFFECT_LIGHT 23
+#define EFFECT_CLOAKED 24
+#define EFFECT_INVISIBLE 25
+#define EFFECT_ETHERAL 26
+#define EFFECT_INVULNERABLE 27
+#define EFFECT_ACTION_TIME_MODIFIER 28
+#define EFFECT_HAND_ACTION_TIME_MODIFIER 29
+#define EFFECT_SKILL_TIME_MODIFIER 30
+#define EFFECT_MOVEMENT_TIME_MODIFIER 31
 
 
 // item_type
@@ -137,55 +137,55 @@ class SpeechManager;
 
 // event_type
 
-#define CALAMITY 1
-#define BLESSING 2
+#define EVENT_CALAMITY 1
+#define EVENT_BLESSING 2
 
 // character_apparition_type
 
-#define SOFT 1
-#define HARD 2
+#define APPARITION_SOFT 1
+#define APPARITION_HARD 2
 
 // movement_type
 
-#define FLYING 1
-#define WALKING 2
-#define TELEPORT 3
+#define MOVEMENT_FLYING 1
+#define MOVEMENT_WALKING 2
+#define MOVEMENT_TELEPORT 3
 
 // target_type
 
-#define NO_TARGET 0
-#define SELF 1
-#define CHARACTER 2
-#define COORDINATES 3
-#define TILE 4
-#define PERMISSIVE_TARGET 5
-#define MULTIPLE_TARGETS 6
+#define TARGET_NONE 0
+#define TARGET_SELF 1
+#define TARGET_CHARACTER 2
+#define TARGET_COORDINATES 3
+#define TARGET_TILE 4
+#define TARGET_PERMISSIVE 5
+#define TARGET_MULTIPLE 6
 
 // skill_type
 
-#define CHANNELED_SKILL 1
-#define MAP_LINKER_SKILL 2
-#define MIND_CONTROL_SKILL 3
-#define PROJECTILE_SKILL 4
-#define RESURRECTION_SKILL 5
-#define SIMPLE_SKILL 6
-#define SUMMON_SKILL 7
-#define TEAM_CHANGER_SKILL 8
-#define TELEPORT_SKILL 9
-#define TILE_SWAP_SKILL 10
+#define SKILL_CHANNELED 1
+#define SKILL_MAP_LINKER 2
+#define SKILL_MIND_CONTROL 3
+#define SKILL_PROJECTILE 4
+#define SKILL_RESURRECTION 5
+#define SKILL_SIMPLE 6
+#define SKILL_SUMMON 7
+#define SKILL_TEAM_CHANGER 8
+#define SKILL_TELEPORT 9
+#define SKILL_TILE_SWAP 10
 
 // skill_overcharge_type
 
-#define NO_OVERCHARGE 0
-#define LINEAR 1
-#define SQUARE 2
-#define EXPONENTIAL 3
+#define OVERCHARGE_NONE 0
+#define OVERCHARGE_LINEAR 1
+#define OVERCHARGE_SQUARE 2
+#define OVERCHARGE_EXPONENTIAL 3
 
 // map_link type
 
-#define THROUGH 1
-#define BOUNCE 2
-#define BACK 3
+#define MAPLINK_THROUGH 1
+#define MAPLINK_BOUNCE 2
+#define MAPLINK_BACK 3
 
 // projectile_type
 
@@ -198,93 +198,91 @@ class SpeechManager;
 
 // character_type
 
-#define HOMO 1
-#define UNDEAD 2
-#define NATURE 3
-#define OMONCULUS 4
-#define WALL 5
+#define CHARACTER_HOMO 1
+#define CHARACTER_UNDEAD 2
+#define CHARACTER_NATURE 3
+#define CHARACTER_OMONCULUS 4
+#define CHARACTER_WALL 5
 
 // damage_type
 
 #define DAMAGE_TYPE_NUMBER 11
 
-#define SLASH_DAMAGE 0
-#define PUNCTURE_DAMAGE 1
-#define IMPACT_DAMAGE 2
-#define FIRE_DAMAGE 3
-#define LIGHTNING_DAMAGE 4
-#define FROST_DAMAGE 5
-#define POISON_DAMAGE 6
-#define ACID_DAMAGE 7 // unaffected by damage reductions, but still by armor
-#define MIND_DAMAGE 8 // unaffected by armor, but still by damage reductions
-#define TRUE_DAMAGE 9 // health damage
-#define SOUL_DAMAGE 10 // mana damage
+#define DAMAGE_SLASH 0
+#define DAMAGE_PUNCTURE 1
+#define DAMAGE_IMPACT 2
+#define DAMAGE_FIRE 3
+#define DAMAGE_LIGHTNING 4
+#define DAMAGE_FROST 5
+#define DAMAGE_POISON 6
+#define DAMAGE_ACID 7 // unaffected by damage reductions, but still by armor
+#define DAMAGE_MIND 8 // unaffected by armor, but still by damage reductions
+#define DAMAGE_TRUE 9 // health damage
+#define DAMAGE_SOUL 10 // mana damage
 
 // loot_type
 
-#define CORPSE 1
-#define TREASURE 2
+#define LOOT_CORPSE 1
+#define LOOT_TREASURE 2
 
 // grab_mode
 
-#define ALL 0
-#define FOOD 1
+#define GRAB_ALL 0
+#define GRAB_FOOD 1
 
 // quest_step_type
 
-#define SLAY 1
-#define OBTAIN_ITEM 2
-#define DISCOVER 3
-#define TALK 4
+#define QUEST_SLAY 1
+#define QUEST_OBTAIN 2
+#define QUEST_DISCOVER 3
+#define QUEST_TALK 4
 
 // way_type
 
-#define RACE 1
-#define ORIGIN 2
-#define CULTURE 3
-#define RELIGION 4
-#define PROFESSION 5
-#define TITLE 6
+#define WAY_RACE 1
+#define WAY_ORIGIN 2
+#define WAY_CULTURE 3
+#define WAY_RELIGION 4
+#define WAY_PROFESSION 5
+#define WAY_TITLE 6
 
 // speech_type
 
-#define MSG_TEXT 1
-#define MSG_VOCAL 2
-#define MSG_LOG 3
-#define MSG_WARNING 4
-#define MSG_ERROR 5
+#define SPEECH_TEXT 1
+#define SPEECH_VOCAL 2
+#define SPEECH_LOG 3
+#define SPEECH_WARNING 4
+#define SPEECH_ERROR 5
 
 // object_type
 
-#define ITEM 1
-#define WEAPON 2
-#define AMMUNITION 3
-#define SKILL 4
-#define EFFECT 5
+#define OBJECT_ITEM 1
+#define OBJECT_SKILL 2
+#define OBJECT_EFFECT 3
 
 // action_type
 
-#define IDLE 0
-#define MOVE 1
-#define STRIKE 2
-#define HEAVY_STRIKE 3
-#define RESPITE 4
-#define SHOOT 5
-#define RELOAD 6
-#define GRAB 7
-#define SWAP_GEAR 8
-#define USE_ITEM 9
-#define USE_SKILL 10
-#define REST 11
-#define TALKING 12
-#define ECONOMICS 13
-#define BREAKPOINT 14
+#define ACTION_IDLE 0
+#define ACTION_MOVE 1
+#define ACTION_STRIKE 2
+#define ACTION_HEAVY_STRIKE 3
+#define ACTION_RESPITE 4
+#define ACTION_SHOOT 5
+#define ACTION_RELOAD 6
+#define ACTION_GRAB 7
+#define ACTION_SWAP_GEAR 8
+#define ACTION_USE_ITEM 9
+#define ACTION_USE_SKILL 10
+#define ACTION_REST 11
+#define ACTION_TALKING 12
+#define ACTION_ECONOMICS 13
+#define ACTION_BREAKPOINT 14
 
 // teams relations
 
-#define SAME 1
-#define ALLY 2
-#define NEUTRAL 3
-#define ENEMY 4
+#define TEAM_SAME 1
+#define TEAM_ALLY 2
+#define TEAM_NEUTRAL 3
+#define TEAM_ENEMY 4
 
 #endif // _VALUES_H_

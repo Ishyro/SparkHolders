@@ -1,6 +1,6 @@
 name = TXT_SUMMON_GRASS_FAIRY
-skill_type = SUMMON_SKILL
-target_type = COORDINATES
+skill_type = SKILL_SUMMON
+target_type = TARGET_COORDINATES
 character = TXT_GRASS_FAIRY
 team = world
 ai = EtheralCasterAI
@@ -11,7 +11,7 @@ religion = TXT_NO_RELIGION
 profession = TXT_NO_PROFESSION
 attributes = TXT_NO_ATTRIBUTES
 titles =
-apparition_type = SOFT
+apparition_type = APPARITION_SOFT
 mana_cost = 0
 xp = 0
 effects =

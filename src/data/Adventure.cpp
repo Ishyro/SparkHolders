@@ -26,7 +26,7 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, float 
   Map * map = world->getMap(map_id);
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
-    if(p->getTarget()->type == CHARACTER && p->getTarget()->id == character->id && !p->homing) {
+    if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
     }
     // recalculate path since the homing projectile always knows where is its target 
@@ -59,7 +59,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
   }
   world->getMap(character->getCurrentMapId())->removeCharacter(character);
   for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
-    if(p->getTarget()->type == CHARACTER && p->getTarget()->id == character->id && !p->homing) {
+    if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
     }
     // recalculate path since the homing projectile always knows where is its target 

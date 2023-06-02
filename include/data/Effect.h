@@ -44,7 +44,7 @@ class Effect {
       power(power),
       duration(duration)
     {
-      tick_left=(duration_type != INFINITE_DURATION ? duration : -1);
+      tick_left=(duration_type != DURATION_INFINITE ? duration : -1);
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->damage_reductions[i] = damage_reductions[i];

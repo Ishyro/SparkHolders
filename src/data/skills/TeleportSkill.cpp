@@ -9,10 +9,10 @@ void TeleportSkill::activate(Character * owner, Target * target, Adventure * adv
   // Target 2 will always be a Coordinate
   // maybe swap character teleport in the future ?
   switch(apparition_type) {
-    case SOFT:
+    case APPARITION_SOFT:
       adventure->softMoveCharacterToMap(other, target->next->id, target->next->y, target->next->x);
       break;
-    case HARD:
+    case APPARITION_HARD:
       adventure->hardMoveCharacterToMap(other, target->next->id, target->next->y, target->next->x);
       break;
     default:
@@ -29,7 +29,7 @@ bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adve
     return false;
   }
   switch(movement_type) {
-    case TELEPORT:
+    case MOVEMENT_TELEPORT:
       if(range * overcharge_range >= adventure->getWorld()->distance(other->getCurrentMapId(), other->getX(), other->getY(), target->next)) {
         return true;
       }

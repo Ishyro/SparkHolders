@@ -5,17 +5,17 @@
 Action * BaseAction::execute(Adventure * adventure) {
   if(next != nullptr) {
     next->computeTime(adventure);
-    if(next->getTime() == 0 && next->type != BREAKPOINT) {
+    if(next->getTime() == 0 && next->type != ACTION_BREAKPOINT) {
       next->execute(adventure);
     }
   }
   switch(type) {
-    case IDLE:
-    case RESPITE:
-    case REST:
+    case ACTION_IDLE:
+    case ACTION_RESPITE:
+    case ACTION_REST:
       user->rest();
       break;
-    case BREAKPOINT:
+    case ACTION_BREAKPOINT:
         break;
     default: ;
   }
@@ -36,16 +36,16 @@ Action * BaseAction::execute(Adventure * adventure) {
 
 void BaseAction::computeTime(Adventure * adventure) {
   switch(type) {
-    case IDLE:
+    case ACTION_IDLE:
       time = 1.F;
       break;
-    case RESPITE:
+    case ACTION_RESPITE:
       time = user->getStrikeTime() * 2;
       break;
-    case REST:
+    case ACTION_REST:
       time = 1.F;
       break;
-    case BREAKPOINT:
+    case ACTION_BREAKPOINT:
       time = 0.F;
       break;
     default:

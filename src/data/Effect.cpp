@@ -9,46 +9,46 @@ void Effect::activate(Character * target) {
   else {
     switch (type) {
       // no duration means INSTANT_DURATION for these effects
-      case HP:
+      case EFFECT_HP:
         target->hpHeal(power);
         break;
-      case MANA:
+      case EFFECT_MANA:
         target->manaHeal(power);
         break;
-      case HP_MAX:
+      case EFFECT_HP_MAX:
         target->incrMaxHp();
         break;
-      case MANA_MAX:
+      case EFFECT_MANA_MAX:
         target->incrMaxMana();
         break;
-      case STAMINA:
+      case EFFECT_STAMINA:
         target->addStamina((float) power);
         break;
-      case SATIETY:
+      case EFFECT_SATIETY:
         target->addSatiety((float) power);
         break;
-      case ARMOR_MULTIPLIER:
+      case EFFECT_ARMOR_MULTIPLIER:
         target->incrArmorMultiplier();
         break;
-      case SOULBURNTRESHOLD:
+      case EFFECT_SOULBURNTRESHOLD:
         target->incrSoulBurnTreshold();
         break;
-      case FLOW:
+      case EFFECT_FLOW:
         target->incrFlow();
         break;
-      case VISION_RANGE:
+      case EFFECT_VISION_RANGE:
         target->incrVisionRange();
         break;
-      case VISION_POWER:
+      case EFFECT_VISION_POWER:
         target->incrVisionPower();
         break;
-      case DETECTION_RANGE:
+      case EFFECT_DETECTION_RANGE:
         target->incrDetectionRange();
         break;
-      case DAMAGE:
-        target->receiveAttack(damages, 360.F, STRIKE);
+      case EFFECT_DAMAGE:
+        target->receiveAttack(damages, 360.F, ACTION_STRIKE);
         break;
-      case EXPERIENCE:
+      case EFFECT_EXPERIENCE:
         target->gainXP(power);
         break;
       // no duration means INFINITE for next effects (can be cancelled)
@@ -60,32 +60,32 @@ void Effect::activate(Character * target) {
 
 bool Effect::tick(Character * target) {
   switch (type) {
-    case HP:
+    case EFFECT_HP:
       target->hpHeal(power);
       break;
-    case MANA:
+    case EFFECT_MANA:
       target->manaHeal(power);
       break;
-    case STAMINA:
+    case EFFECT_STAMINA:
       target->addStamina((float) power);
       break;
-    case SATIETY:
+    case EFFECT_SATIETY:
       target->addSatiety((float) power);
       break;
-    case DAMAGE:
-      target->receiveAttack(damages, 360.F, STRIKE);
+    case EFFECT_DAMAGE:
+      target->receiveAttack(damages, 360.F, ACTION_STRIKE);
       break;
-    case EXPERIENCE:
+    case EFFECT_EXPERIENCE:
       target->gainXP(power);
       break;
     default:
       ;
   }
-  return duration_type == TEMPORARY_DURATION && --tick_left == 0;
+  return duration_type == DURATION_TEMPORARY && --tick_left == 0;
 }
 
 void Effect::desactivate(Character * target) {
-  if(duration_type == INFINITE_DURATION || duration_type == TEMPORARY_DURATION) {
+  if(duration_type == DURATION_INFINITE || duration_type == DURATION_TEMPORARY) {
     target->removeEffect(this);
   }
 }

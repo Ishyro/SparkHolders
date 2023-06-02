@@ -1,11 +1,11 @@
 name = TXT_TOUCH_SOME_GRASS
 level = 0
 attributes =
-target_type = TILE
+target_type = TARGET_TILE
 is_instant = false
-overcharge_power_type = NO_OVERCHARGE
-overcharge_duration_type = NO_OVERCHARGE
-overcharge_range_type = NO_OVERCHARGE
+overcharge_power_type = OVERCHARGE_NONE
+overcharge_duration_type = OVERCHARGE_NONE
+overcharge_range_type = OVERCHARGE_NONE
 range = 0
 time = 10
 skills = TXT_EAT_GRASS%TXT_NOURISH_WITH_GRASS%TXT_SUMMON_GRASS_FAIRY%

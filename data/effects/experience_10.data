@@ -1,7 +1,7 @@
 name = TXT_EXPERIENCE_10
 level = 0
 attributes =
-type = EXPERIENCE
-duration_type = INSTANT_DURATION
+type = EFFECT_EXPERIENCE
+duration_type = DURATION_INSTANT
 duration = 0
 power = 10

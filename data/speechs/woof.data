@@ -1,5 +1,5 @@
 name = TXT_WOOF
-type = MSG_VOCAL
+type = SPEECH_VOCAL
 empty = false
 constant = true
 options =

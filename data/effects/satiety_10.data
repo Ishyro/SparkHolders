@@ -1,7 +1,7 @@
 name = TXT_SATIETY_10
 level = 0
 attributes =
-type = SATIETY
-duration_type = INSTANT_DURATION
+type = EFFECT_SATIETY
+duration_type = DURATION_INSTANT
 duration = 0
 power = 10

@@ -76,17 +76,17 @@ float World::setPathToTarget(int map_id, float x, float y, Target * target) {
   float target_x;
   float target_y;
   switch(target->type) {
-    case TILE:
+    case TARGET_TILE:
       target_map_id = target->id;
       target_x = target->x + 0.5F;
       target_y = target->y + 0.5F;
       break;
-    case COORDINATES:
+    case TARGET_COORDINATES:
       target_map_id = target->id;
       target_x = target->x;
       target_y = target->y;
       break;
-    case CHARACTER: {
+    case TARGET_CHARACTER: {
       Character * other = getCharacter(target->id);
       target_map_id = other->getCurrentMapId();
       target_x = other->getX();

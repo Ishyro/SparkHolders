@@ -8,7 +8,7 @@
 
 bool SerialItem::isFood() {
   for(Effect * effect : effects) {
-    if(effect->type == SATIETY) {
+    if(effect->type == EFFECT_SATIETY) {
       return true;
     }
   }

@@ -510,37 +510,37 @@ namespace FileOpener {
     int type = database->getTargetFromMacro(values.at("type"));
     int duration_type = database->getTargetFromMacro(values.at("duration_type"));
     int duration = 0;
-    if(duration_type == TEMPORARY_DURATION) {
+    if(duration_type == DURATION_TEMPORARY) {
       duration = stoi(values.at("duration"));
     }
     int power = stoi(values.at("power"));
     int damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
-    if(type == DAMAGE || type == DAMAGE_BUFF) {
-      damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
-      damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
-      damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
-      damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-      damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
-      damages[FROST_DAMAGE] = stoi(values.at("FROST_DAMAGE"));
-      damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
-      damages[ACID_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-      damages[MIND_DAMAGE] = stoi(values.at("MIND_DAMAGE"));
-      damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
-      damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+    if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
+      damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
+      damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
+      damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+      damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
+      damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
+      damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
+      damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
+      damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
+      damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
+      damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
+      damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
     }
-    if(type == DAMAGE_REDUCTION) {
-      damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
-      damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[FROST_DAMAGE] = stof(values.at("COLD_REDUCTION"));
-      damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
-      damage_reductions[ACID_DAMAGE] = 0.;
-      damage_reductions[MIND_DAMAGE] = stof(values.at("MIND_REDUCTION"));
-      damage_reductions[TRUE_DAMAGE] = 0.;
-      damage_reductions[SOUL_DAMAGE] = 0.;
+    if(type == EFFECT_DAMAGE_REDUCTION) {
+      damage_reductions[DAMAGE_SLASH] = stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[DAMAGE_PUNCTURE] = stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[DAMAGE_IMPACT] = stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_FIRE] = stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[DAMAGE_LIGHTNING] = stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[DAMAGE_FROST] = stof(values.at("COLD_REDUCTION"));
+      damage_reductions[DAMAGE_POISON] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[DAMAGE_ACID] = 0.;
+      damage_reductions[DAMAGE_MIND] = stof(values.at("MIND_REDUCTION"));
+      damage_reductions[DAMAGE_TRUE] = 0.;
+      damage_reductions[DAMAGE_SOUL] = 0.;
     }
     Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
     database->addEffect(effect);
@@ -646,17 +646,17 @@ namespace FileOpener {
       int armor = stoi(values.at("armor"));
       int swap_time = stoi(values.at("swap_time"));
       float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
-      damage_reductions[SLASH_DAMAGE] = stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[PUNCTURE_DAMAGE] = stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[IMPACT_DAMAGE] = stof(values.at("IMPACT_REDUCTION"));
-      damage_reductions[FIRE_DAMAGE] = stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[LIGHTNING_DAMAGE] = stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[FROST_DAMAGE] = stof(values.at("FROST_REDUCTION"));
-      damage_reductions[POISON_DAMAGE] = stof(values.at("POISON_REDUCTION"));
-      damage_reductions[ACID_DAMAGE] = 0.;
-      damage_reductions[MIND_DAMAGE] = stof(values.at("MIND_REDUCTION"));
-      damage_reductions[TRUE_DAMAGE] = 0.;
-      damage_reductions[SOUL_DAMAGE] = 0.;
+      damage_reductions[DAMAGE_SLASH] = stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[DAMAGE_PUNCTURE] = stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[DAMAGE_IMPACT] = stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_FIRE] = stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[DAMAGE_LIGHTNING] = stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[DAMAGE_FROST] = stof(values.at("FROST_REDUCTION"));
+      damage_reductions[DAMAGE_POISON] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[DAMAGE_ACID] = 0.;
+      damage_reductions[DAMAGE_MIND] = stof(values.at("MIND_REDUCTION"));
+      damage_reductions[DAMAGE_TRUE] = 0.;
+      damage_reductions[DAMAGE_SOUL] = 0.;
       item = new ArmorItem(
         name,
         0,
@@ -698,17 +698,17 @@ namespace FileOpener {
         }
       }
       int damages[DAMAGE_TYPE_NUMBER] = {0};
-      damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
-      damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
-      damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
-      damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-      damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
-      damages[FROST_DAMAGE] = stoi(values.at("FROST_DAMAGE"));
-      damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
-      damages[ACID_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-      damages[MIND_DAMAGE] = stoi(values.at("MIND_DAMAGE"));
-      damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
-      damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+      damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
+      damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
+      damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+      damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
+      damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
+      damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
+      damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
+      damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
+      damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
+      damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
+      damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
       item = new WeaponItem(
         name,
         0,
@@ -839,17 +839,17 @@ namespace FileOpener {
     float waste_per_area = stof(values.at("waste_per_area"));
     float waste_per_hit = stof(values.at("waste_per_hit"));
     int damages[DAMAGE_TYPE_NUMBER];
-    damages[SLASH_DAMAGE] = stoi(values.at("SLASH_DAMAGE"));
-    damages[PUNCTURE_DAMAGE] = stoi(values.at("PUNCTURE_DAMAGE"));
-    damages[IMPACT_DAMAGE] = stoi(values.at("IMPACT_DAMAGE"));
-    damages[FIRE_DAMAGE] = stoi(values.at("FIRE_DAMAGE"));
-    damages[LIGHTNING_DAMAGE] = stoi(values.at("LIGHTNING_DAMAGE"));
-    damages[FROST_DAMAGE] = stoi(values.at("FROST_DAMAGE"));
-    damages[POISON_DAMAGE] = stoi(values.at("POISON_DAMAGE"));
-    damages[ACID_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-    damages[MIND_DAMAGE] = stoi(values.at("ACID_DAMAGE"));
-    damages[TRUE_DAMAGE] = stoi(values.at("TRUE_DAMAGE"));
-    damages[SOUL_DAMAGE] = stoi(values.at("SOUL_DAMAGE"));
+    damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
+    damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
+    damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+    damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
+    damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
+    damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
+    damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
+    damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
+    damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_ACID"));
+    damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
+    damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
     Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
     delete effects;
@@ -922,29 +922,33 @@ namespace FileOpener {
       effects->push_back((Effect *) database->getEffect(effect));
     }
     switch(skill_type) {
-      case SIMPLE_SKILL:
+      case SKILL_SIMPLE:
         pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
         break;
-      case PROJECTILE_SKILL: {
+      case SKILL_PROJECTILE: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
         pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, *effects, projectile);
         break;
       }
-      case TELEPORT_SKILL: {
+      case SKILL_TELEPORT: {
         int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
         int movement_type = database->getTargetFromMacro(values.at("movement_type"));
         pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects, apparition_type, movement_type);
         break;
       }
-      case TILE_SWAP_SKILL: {
+      case SKILL_TILE_SWAP: {
         Tile * current_tile = (Tile *) database->getTile(values.at("current_tile"));
         Tile * new_tile = (Tile *) database->getTile(values.at("new_tile"));
         pseudoSkill = new TileSwapSkill(name, skill_type, target_type, mana_cost, *effects, current_tile, new_tile);
         break;
       }
-      case SUMMON_SKILL: {
+      case SKILL_SUMMON: {
         Character * character = (Character *) database->getCharacter(values.at("character"));
         std::string ai_str = values.at("ai");
+        std::string team = values.at("team");
+        if(team == "same") {
+          team = "";
+        }
         Way * race = (Way *) database->getWay(values.at("race"));
         Way * origin = (Way *) database->getWay(values.at("origin"));
         Way * culture = (Way *) database->getWay(values.at("culture"));
@@ -967,6 +971,7 @@ namespace FileOpener {
           *effects,
           character,
           ai_str,
+          team,
           race,
           origin,
           culture,
@@ -1059,7 +1064,7 @@ namespace FileOpener {
     while(getline(is_2, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
-    if(type == RACE) {
+    if(type == WAY_RACE) {
       int baseArmor = stoi(values.at("baseArmor"));
       float size = stof(values.at("size"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));

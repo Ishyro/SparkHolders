@@ -1,11 +1,11 @@
 name = TXT_FIREBALL
 level = 2
 attributes =
-target_type = PERMISSIVE_TARGET
+target_type = TARGET_PERMISSIVE
 is_instant = false
-overcharge_power_type = LINEAR
-overcharge_duration_type = LINEAR
-overcharge_range_type = SQUARE
+overcharge_power_type = OVERCHARGE_LINEAR
+overcharge_duration_type = OVERCHARGE_LINEAR
+overcharge_range_type = OVERCHARGE_SQUARE
 range = 15
 time = 25
 skills = TXT_FIREBALL%

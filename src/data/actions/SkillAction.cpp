@@ -22,7 +22,7 @@
 Action * SkillAction::execute(Adventure * adventure) {
   if(next != nullptr) {
     next->computeTime(adventure);
-    if(next->getTime() == 0 && next->type != BREAKPOINT) {
+    if(next->getTime() == 0 && next->type != ACTION_BREAKPOINT) {
       next->execute(adventure);
     }
   }

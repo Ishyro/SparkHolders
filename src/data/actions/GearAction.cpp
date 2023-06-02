@@ -14,12 +14,12 @@
 Action * GearAction::execute(Adventure * adventure) {
   if(next != nullptr) {
     next->computeTime(adventure);
-    if(next->getTime() == 0 && next->type != BREAKPOINT) {
+    if(next->getTime() == 0 && next->type != ACTION_BREAKPOINT) {
       next->execute(adventure);
     }
   }
   switch(type) {
-    case RELOAD:
+    case ACTION_RELOAD:
       for(Item * ammo : user->getItems()) {
         if(ammo->type == ITEM_AMMUNITION && ((AmmunitionItem *) ammo)->id == item_id) {
           user->reload((AmmunitionItem *) ammo);
@@ -27,7 +27,7 @@ Action * GearAction::execute(Adventure * adventure) {
         }
       }
       break;
-    case SWAP_GEAR:
+    case ACTION_SWAP_GEAR:
       for(Item * item : user->getItems()) {
         if(item->id == item_id) {
           user->equip((GearItem *) item);
@@ -35,10 +35,10 @@ Action * GearAction::execute(Adventure * adventure) {
         }
       }
       break;
-    case GRAB:
+    case ACTION_GRAB:
       adventure->getWorld()->getMap(user->getCurrentMapId())->takeLoot(user, item_id);
       break;
-    case USE_ITEM:
+    case ACTION_USE_ITEM:
       user->useItem(item_id);
       break;
     default: ;
@@ -60,16 +60,16 @@ Action * GearAction::execute(Adventure * adventure) {
 
 void GearAction::computeTime(Adventure * adventure) {
   switch(type) {
-    case RELOAD:
+    case ACTION_RELOAD:
       time = user->getReloadTime();
       break;
-    case SWAP_GEAR:
+    case ACTION_SWAP_GEAR:
       time = user->getSwapTime(item_id);
       break;
-    case USE_ITEM:
+    case ACTION_USE_ITEM:
       time = user->getUseTime(item_id); //(float) ( (Item *) adventure->getDatabase()->getItem(piece->name))->use_time / user->getHandActionTimeModifier();
       break;
-    case GRAB:
+    case ACTION_GRAB:
       time = 10.F / user->getHandActionTimeModifier();
       break;
     default:
