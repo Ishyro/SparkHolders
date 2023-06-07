@@ -28,6 +28,7 @@ class Skill;
 class Speech;
 class Tile;
 class Way;
+class Race;
 class World;
 class Item;
 class GearItem;

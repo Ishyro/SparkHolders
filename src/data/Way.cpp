@@ -5,6 +5,5 @@
 
 #include "util/String.h"
 
-std::list<Item *> Way::getLoot() { return loot; }
 std::list<Effect *> Way::getEffects() { return effects; }
 std::list<Skill *> Way::getSkills() { return skills; }

@@ -3,6 +3,7 @@
 #include "data/Adventure.h"
 #include "data/Effect.h"
 #include "data/Way.h"
+#include "data/Race.h"
 #include "data/World.h"
 
 #include "data/items/Item.h"

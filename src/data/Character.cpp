@@ -7,6 +7,7 @@
 #include "data/Settings.h"
 #include "data/Speech.h"
 #include "data/Way.h"
+#include "data/Race.h"
 #include "data/World.h"
 
 #include "data/items/Gear.h"
@@ -23,43 +24,43 @@
 #include "util/String.h"
 
 void Character::initializeCharacter(Gear * gear) {
-  size = race->size;
-  maxHp = attributes->baseHp + race->baseHp + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
+  size = race->getSize();
+  maxHp = attributes->baseHp + race->getBaseHp() + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
     maxHp += way->baseHp;
   }
-  maxMana = attributes->baseMana + race->baseMana + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
+  maxMana = attributes->baseMana + race->getBaseMana() + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
   for(Way * way : titles) {
     maxHp += way->baseMana;
   }
   hp = maxHp;
   mana = maxMana;
-  armor = race->baseArmor;
-  armor_multiplier = attributes->baseArmorMult + race->baseArmorMult + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
+  armor = race->getBaseArmor();
+  armor_multiplier = attributes->baseArmorMult + race->getBaseArmorMult() + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
   for(Way * way : titles) {
     maxHp += way->baseArmorMult;
   }
-  damage_multiplier = attributes->baseDamageMult + race->baseDamageMult + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
+  damage_multiplier = attributes->baseDamageMult + race->getBaseDamageMult() + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
   for(Way * way : titles) {
     maxHp += way->baseDamageMult;
   }
-  soulBurnTreshold = attributes->baseSoulBurn + race->baseSoulBurn + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
+  soulBurnTreshold = attributes->baseSoulBurn + race->getBaseSoulBurn() + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
   for(Way * way : titles) {
     maxHp += way->baseSoulBurn;
   }
-  flow = attributes->baseFlow + race->baseFlow + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
+  flow = attributes->baseFlow + race->getBaseFlow() + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
   for(Way * way : titles) {
     maxHp += way->baseFlow;
   }
-  visionRange = attributes->baseVisionRange + race->baseVisionRange + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
+  visionRange = attributes->baseVisionRange + race->getBaseVisionRange() + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
   for(Way * way : titles) {
     maxHp += way->baseVisionRange;
   }
-  visionPower = attributes->baseVisionPower + race->baseVisionPower + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
+  visionPower = attributes->baseVisionPower + race->getBaseVisionPower() + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
   for(Way * way : titles) {
     maxHp += way->baseVisionPower;
   }
-  detectionRange = attributes->baseDetectionRange + race->baseDetectionRange + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
+  detectionRange = attributes->baseDetectionRange + race->getBaseDetectionRange() + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
   for(Way * way : titles) {
     maxHp += way->baseDetectionRange;
   }
@@ -344,7 +345,7 @@ int Character::getCurrentMapId() { return current_map_id; }
 Gear * Character::getGear() { return gear; }
 
 float Character::getActionTimeModifier() {
-  float result = race->action_time_modifier;
+  float result = race->getActionTimeModifier();
   for(Effect * e : effects) {
     if(e->type == EFFECT_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -354,7 +355,7 @@ float Character::getActionTimeModifier() {
 }
 
 float Character::getHandActionTimeModifier() {
-  float result = race->strike_time_modifier;
+  float result = race->getStrikeTimeModifier();
   for(Effect * e : effects) {
     if(e->type == EFFECT_HAND_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -364,7 +365,7 @@ float Character::getHandActionTimeModifier() {
 }
 
 float Character::getSkillTimeModifier() {
-  float result = race->skill_time_modifier;
+  float result = race->getSkillTimeModifier();
   for(Effect * e : effects) {
     if(e->type == EFFECT_SKILL_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -374,7 +375,7 @@ float Character::getSkillTimeModifier() {
 }
 
 float Character::getMovementTimeModifier() {
-  float result = race->movement_time_modifier;
+  float result = race->getMovementTimeModifier();
   for(Effect * e : effects) {
     if(e->type == EFFECT_MOVEMENT_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -447,7 +448,7 @@ std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
 
 Attributes * Character::getAttributes() { return attributes; }
 Attributes * Character::getSecondAttributes() { return second_attributes; }
-Way * Character::getRace() { return race; }
+Race * Character::getRace() { return race; }
 Way * Character::getOrigin() { return origin; }
 Way * Character::getCulture() { return culture; }
 Way * Character::getReligion() { return religion; }
@@ -472,7 +473,7 @@ void Character::incrMaxHp() {
   int incr = 0;
   incr += attributes->hpIncr;
   incr += second_attributes->hpIncr;
-  incr += race->hpIncr;
+  incr += race->getHpIncr();
   incr += origin->hpIncr;
   incr += culture->hpIncr;
   incr += religion->hpIncr;
@@ -498,7 +499,7 @@ void Character::incrMaxMana() {
   int incr = 0;
   incr += attributes->manaIncr;
   incr += second_attributes->manaIncr;
-  incr += race->manaIncr;
+  incr += race->getManaIncr();
   incr += origin->manaIncr;
   incr += culture->manaIncr;
   incr += religion->manaIncr;
@@ -524,7 +525,7 @@ void Character::incrArmorMultiplier() {
   int incr = 0;
   incr += attributes->armorMultIncr;
   incr += second_attributes->armorMultIncr;
-  incr += race->armorMultIncr;
+  incr += race->getArmorMultIncr();
   incr += origin->armorMultIncr;
   incr += culture->armorMultIncr;
   incr += religion->armorMultIncr;
@@ -541,7 +542,7 @@ void Character::incrDamageMultiplier() {
   int incr = 0;
   incr += attributes->damageMultIncr;
   incr += second_attributes->damageMultIncr;
-  incr += race->damageMultIncr;
+  incr += race->getDamageMultIncr();
   incr += origin->damageMultIncr;
   incr += culture->damageMultIncr;
   incr += religion->damageMultIncr;
@@ -558,7 +559,7 @@ void Character::incrSoulBurnTreshold() {
   int incr = 0;
   incr += attributes->soulBurnIncr;
   incr += second_attributes->soulBurnIncr;
-  incr += race->soulBurnIncr;
+  incr += race->getSoulBurnIncr();
   incr += origin->soulBurnIncr;
   incr += culture->soulBurnIncr;
   incr += religion->soulBurnIncr;
@@ -576,7 +577,7 @@ void Character::incrFlow() {
   int incr = 0;
   incr += attributes->flowIncr;
   incr += second_attributes->flowIncr;
-  incr += race->flowIncr;
+  incr += race->getFlowIncr();
   incr += origin->flowIncr;
   incr += culture->flowIncr;
   incr += religion->flowIncr;
@@ -624,7 +625,7 @@ void Character::applySoulBurn() {
 }
 
 void Character::applyTiredness() {
-  if(race->need_to_sleep) {
+  if(race->getNeedToSleep()) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
     float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
     int manaValue = (int) std::floor(currentManaRegen + savedManaRegen);
@@ -642,7 +643,7 @@ void Character::applyTiredness() {
 }
 
 void Character::applyHunger() {
-  if(race->need_to_eat) {
+  if(race->getNeedToEat()) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
     float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
     int hpValue = (int) std::floor(currentHpRegen + savedHpRegen);
@@ -674,7 +675,7 @@ void Character::applyEffects() {
 }
 
 void Character::rest() {
-  if(race->need_to_sleep) {
+  if(race->getNeedToSleep()) {
     // +1 because the character will still apply his tiredness while sleeping
     addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
   }
@@ -910,7 +911,7 @@ void Character::setWay(Way * way) {
   switch(way->type) {
     case WAY_RACE:
       to_remove = race;
-      race = way;
+      race = (Race *) way;
       break;
     case WAY_ORIGIN:
       to_remove = origin;
@@ -997,7 +998,7 @@ void Character::useItem(long item_id) {
       if(player_character) {
         setNeedToSend(true);
       }
-      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->can_eat_food) {
+      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->getCanEatFood()) {
         for(Effect * e : i->effects) {
           e->activate(this);
         }
@@ -1640,7 +1641,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   if(second_attributes_str != "none") {
     second_attributes = (Attributes *) adventure->getDatabase()->getAttributes(second_attributes_str);
   }
-  Way * race = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
+  Race * race = (Race *) adventure->getDatabase()->getWay(String::extract(ss));
   Way * origin = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
   Way * culture = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
   Way * religion = (Way *) adventure->getDatabase()->getWay(String::extract(ss));

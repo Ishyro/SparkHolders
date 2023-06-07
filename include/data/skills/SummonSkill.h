@@ -18,7 +18,7 @@ class SummonSkill : public PseudoSkill {
       Character * character,
       std::string ai_str,
       std::string team,
-      Way * race,
+      Race * race,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -49,7 +49,7 @@ class SummonSkill : public PseudoSkill {
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
     Character * getCharacter();
     std::string getAI();
-    Way * getRace();
+    Race * getRace();
     Way * getOrigin();
     Way * getCulture();
     Way * getReligion();
@@ -58,7 +58,7 @@ class SummonSkill : public PseudoSkill {
     std::list<Way *> getTitles();
   private:
     Character * character;
-    Way * race;
+    Race * race;
     Way * origin;
     Way * culture;
     Way * religion;

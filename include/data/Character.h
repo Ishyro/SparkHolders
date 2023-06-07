@@ -96,7 +96,7 @@ class Character {
       Attributes * attributes,
       Attributes * second_attributes,
       Gear * gear,
-      Way * race,
+      Race * race,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -189,7 +189,7 @@ class Character {
       std::list<Skill *> sellable_skills,
       Attributes * attributes,
       Attributes * second_attributes,
-      Way * race,
+      Race * race,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -312,7 +312,7 @@ class Character {
 
     Attributes * getAttributes();
     Attributes * getSecondAttributes();
-    Way * getRace();
+    Race * getRace();
     Way * getOrigin();
     Way * getCulture();
     Way * getReligion();
@@ -461,7 +461,7 @@ class Character {
 
     Attributes * attributes;
     Attributes * second_attributes;
-    Way * race;
+    Race * race;
     Way * origin;
     Way * culture;
     Way * religion;

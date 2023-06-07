@@ -226,7 +226,7 @@ void Adventure::actAllProjectiles() {
   }
 }
 
-Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession) {
+Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   spawns.remove(spawn);
   std::list<Way *> * titles = new std::list<Way *>();

@@ -97,7 +97,7 @@ class Adventure {
     void applyDayLight();
     void incrDayLight();
     void actAllProjectiles();
-    Character * spawnPlayer(std::string name, Attributes * attr, Way * race, Way * origin, Way * culture, Way * religion, Way * profession);
+    Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
     std::string getTime();
     std::string state_to_string(Character * c);

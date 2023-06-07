@@ -73,7 +73,7 @@ float SummonSkill::getDamageReductionFromType(int damage_type, int overcharge_po
 
 Character * SummonSkill::getCharacter() { return character; }
 std::string SummonSkill::getAI() { return ai_str; }
-Way * SummonSkill::getRace() { return race; }
+Race * SummonSkill::getRace() { return race; }
 Way * SummonSkill::getOrigin() { return origin; }
 Way * SummonSkill::getCulture() { return culture; }
 Way * SummonSkill::getReligion() { return religion; }

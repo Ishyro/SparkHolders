@@ -34,6 +34,7 @@
 #include "data/Speech.h"
 #include "data/Tile.h"
 #include "data/Way.h"
+#include "data/Race.h"
 #include "data/World.h"
 #include "data/Database.h"
 
@@ -187,7 +188,7 @@ namespace FileOpener {
       command = command.substr(command.find('%') + 1, command.length());
       Gear * gear = (Gear *) database->getGear(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
-      Way * race = (Way *) database->getWay(command.substr(0, command.find('%')));
+      Race * race = (Race *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
       Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
       command = command.substr(command.find('%') + 1, command.length());
@@ -949,7 +950,7 @@ namespace FileOpener {
         if(team == "same") {
           team = "";
         }
-        Way * race = (Way *) database->getWay(values.at("race"));
+        Race * race = (Race *) database->getWay(values.at("race"));
         Way * origin = (Way *) database->getWay(values.at("origin"));
         Way * culture = (Way *) database->getWay(values.at("culture"));
         Way * religion = (Way *) database->getWay(values.at("religion"));
@@ -1086,12 +1087,11 @@ namespace FileOpener {
       while(getline(is_loot, loot, '%')) {
         loots->push_back((Item *) database->getItem(loot));
       }
-      Way * way = new Way(
+      Way * way = new Race(
         name,
         type,
         baseHp,
         baseMana,
-        baseArmor,
         baseArmorMult,
         baseDamageMult,
         baseSoulBurn,
@@ -1105,7 +1105,10 @@ namespace FileOpener {
         damageMultIncr,
         soulBurnIncr,
         flowIncr,
+        *effects,
+        *skills,
         size,
+        baseArmor,
         need_to_eat,
         can_eat_food,
         need_to_sleep,
@@ -1113,9 +1116,7 @@ namespace FileOpener {
         strike_time_modifier,
         skill_time_modifier,
         movement_time_modifier,
-        *loots,
-        *effects,
-        *skills
+        *loots
       );
       database->addWay(way);
       delete loots;

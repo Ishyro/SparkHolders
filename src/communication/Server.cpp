@@ -6,6 +6,7 @@
 #include "data/Map.h"
 #include "data/Tile.h"
 #include "data/Way.h"
+#include "data/Race.h"
 #include "data/World.h"
 
 #include "data/actions/Action.h"
@@ -100,11 +101,11 @@ namespace Server {
     if(attr == nullptr) {
       return nullptr;
     }
-    Way * race = nullptr;
+    Race * race = nullptr;
     std::string race_name = String::extract(ss);
     for(Way * way : adventure->getStartingWays()) {
       if(way->name == race_name && way->type == WAY_RACE) {
-        race = way;
+        race = (Race *) way;
         break;
       }
     }
