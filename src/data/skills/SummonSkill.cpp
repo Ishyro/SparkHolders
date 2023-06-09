@@ -30,6 +30,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     character,
     character->name,
     xp,
+    0,
     (int) target->x,
     (int) target->y,
     owner->getOrientation(),

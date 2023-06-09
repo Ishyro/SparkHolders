@@ -235,6 +235,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     database->getCharacter("TXT_PLAYER"),
     name,
     0,
+    50,
     spawn->x,
     spawn->y,
     90.F,
