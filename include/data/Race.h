@@ -12,11 +12,13 @@
 
 class Race : public Way {
   public:
+    const int race_type;
     const float size;
     const int baseArmor;
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
+    const bool has_soulspark;
     const float action_time_modifier;
     const float strike_time_modifier;
     const float skill_time_modifier;
@@ -41,11 +43,13 @@ class Race : public Way {
       int flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      int race_type,
       float size,
       int baseArmor,
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      bool has_soulspark,
       float action_time_modifier,
       float strike_time_modifier,
       float skill_time_modifier,
@@ -73,11 +77,13 @@ class Race : public Way {
         effects,
         skills
       ),
+      race_type(race_type),
       size(size),
       baseArmor(baseArmor),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      has_soulspark(has_soulspark),
       action_time_modifier(action_time_modifier),
       strike_time_modifier(strike_time_modifier),
       skill_time_modifier(skill_time_modifier),
@@ -88,37 +94,36 @@ class Race : public Way {
         this->loot.push_back(Item::init(item, 1, 1));
       }
     }
-    int getBaseHp();
-    int getBaseMana();
-    int getBaseArmor();
-    int getBaseArmorMult();
-    int getBaseDamageMult();
-    int getBaseSoulBurn();
-    int getBaseFlow();
-    int getBaseVisionRange();
-    int getBaseVisionPower();
-    int getBaseDetectionRange();
-    int getHpIncr();
-    int getManaIncr();
-    int getArmorMultIncr();
-    int getDamageMultIncr();
-    int getSoulBurnIncr();
-    int getFlowIncr();
-    float getSize();
-    bool getNeedToEat();
-    bool getCanEatFood();
-    bool getNeedToSleep();
-    float getActionTimeModifier();
-    float getStrikeTimeModifier();
-    float getSkillTimeModifier();
-    float getMovementTimeModifier();
-    std::list<Effect *> getEffects();
-    std::list<Skill *> getSkills();
-    std::list<Item *> getLoot();
-    std::list<Race *> getModifiers();
-    void addModifier(Race * modifier);
+    int getType(std::list<Race *> race_modifiers);
+    int getBaseHp(std::list<Race *> race_modifiers);
+    int getBaseMana(std::list<Race *> race_modifiers);
+    int getBaseArmor(std::list<Race *> race_modifiers);
+    int getBaseArmorMult(std::list<Race *> race_modifiers);
+    int getBaseDamageMult(std::list<Race *> race_modifiers);
+    int getBaseSoulBurn(std::list<Race *> race_modifiers);
+    int getBaseFlow(std::list<Race *> race_modifiers);
+    int getBaseVisionRange(std::list<Race *> race_modifiers);
+    int getBaseVisionPower(std::list<Race *> race_modifiers);
+    int getBaseDetectionRange(std::list<Race *> race_modifiers);
+    int getHpIncr(std::list<Race *> race_modifiers);
+    int getManaIncr(std::list<Race *> race_modifiers);
+    int getArmorMultIncr(std::list<Race *> race_modifiers);
+    int getDamageMultIncr(std::list<Race *> race_modifiers);
+    int getSoulBurnIncr(std::list<Race *> race_modifiers);
+    int getFlowIncr(std::list<Race *> race_modifiers);
+    float getSize(std::list<Race *> race_modifiers);
+    bool getNeedToEat(std::list<Race *> race_modifiers);
+    bool getCanEatFood(std::list<Race *> race_modifiers);
+    bool getNeedToSleep(std::list<Race *> race_modifiers);
+    bool getHasSoulSpark(std::list<Race *> race_modifiers);
+    float getActionTimeModifier(std::list<Race *> race_modifiers);
+    float getStrikeTimeModifier(std::list<Race *> race_modifiers);
+    float getSkillTimeModifier(std::list<Race *> race_modifiers);
+    float getMovementTimeModifier(std::list<Race *> race_modifiers);
+    std::list<Effect *> getEffects(std::list<Race *> race_modifiers);
+    std::list<Skill *> getSkills(std::list<Race *> race_modifiers);
+    std::list<Item *> getLoot(std::list<Race *> race_modifiers);
   private:
-    Race * modifier;
     std::list<Item *> loot;
 };
 

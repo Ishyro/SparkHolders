@@ -171,12 +171,15 @@ Database::Database() {
   macros.insert(std::make_pair("PROJECTILE_BULLET", PROJECTILE_BULLET));
   macros.insert(std::make_pair("PROJECTILE_SPECIAL", PROJECTILE_SPECIAL));
 
-  // character_type
-  macros.insert(std::make_pair("CHARACTER_HOMO", CHARACTER_HOMO));
-  macros.insert(std::make_pair("CHARACTER_UNDEAD", CHARACTER_UNDEAD));
-  macros.insert(std::make_pair("CHARACTER_NATURE", CHARACTER_NATURE));
-  macros.insert(std::make_pair("CHARACTER_OMONCULUS", CHARACTER_OMONCULUS));
-  macros.insert(std::make_pair("CHARACTER_WALL", CHARACTER_WALL));
+  // race_type
+  macros.insert(std::make_pair("RACE_NONE", RACE_NONE));
+  macros.insert(std::make_pair("RACE_NATURE", RACE_NATURE));
+  macros.insert(std::make_pair("RACE_HOMO", RACE_HOMO));
+  macros.insert(std::make_pair("RACE_OMONCULUS", RACE_OMONCULUS));
+  macros.insert(std::make_pair("RACE_MECANICUS", RACE_MECANICUS));
+  macros.insert(std::make_pair("RACE_UNDEAD", RACE_UNDEAD));
+  macros.insert(std::make_pair("RACE_WALL", RACE_WALL));
+  macros.insert(std::make_pair("RACE_GOD", RACE_GOD));
 
   // damage_type
   macros.insert(std::make_pair("DAMAGE_TYPE_NUMBER", DAMAGE_TYPE_NUMBER));
@@ -209,6 +212,7 @@ Database::Database() {
   macros.insert(std::make_pair("WAY_CULTURE", WAY_CULTURE));
   macros.insert(std::make_pair("WAY_RELIGION", WAY_RELIGION));
   macros.insert(std::make_pair("WAY_PROFESSION", WAY_PROFESSION));
+  macros.insert(std::make_pair("WAY_RACE_MODIFIER", WAY_RACE_MODIFIER));
   macros.insert(std::make_pair("WAY_TITLE", WAY_TITLE));
 
   // speech_type

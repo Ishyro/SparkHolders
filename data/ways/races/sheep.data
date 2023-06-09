@@ -1,5 +1,6 @@
 name = TXT_SHEEP
 type = WAY_RACE
+race_type = RACE_NATURE
 baseHp = 0
 baseMana = 0
 baseArmor = 5
@@ -20,6 +21,7 @@ size = 0.25
 need_to_eat = true
 can_eat_food = false
 need_to_sleep = true
+has_soulspark = false
 action_time_modifier = 1.F
 strike_time_modifier = 1.F
 skill_time_modifier = 1.F

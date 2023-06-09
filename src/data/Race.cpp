@@ -1,280 +1,239 @@
 #include "data/Race.h"
 
-std::list<Effect *> effects;
-std::list<Skill *> skills;
-
-int Race::getBaseHp() {
-  if(modifier != nullptr) {
-    return baseHp + modifier->getBaseHp();
+int Race::getType(std::list<Race *> race_modifiers) {
+  int result = race_type;
+  for(Race * modifier : race_modifiers) {
+    result = std::max(result, modifier->type);
   }
-  else {
-    return baseHp;
-  }
+  return result;
 }
 
-int Race::getBaseMana() {
-  if(modifier != nullptr) {
-    return baseMana + modifier->getBaseMana();
+int Race::getBaseHp(std::list<Race *> race_modifiers) {
+  int result = baseHp;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseHp;
   }
-  else {
-    return baseMana;
-  }
+  return result;
 }
 
-int Race::getBaseArmor() {
-  if(modifier != nullptr) {
-    return baseArmor + modifier->getBaseArmor();
+int Race::getBaseMana(std::list<Race *> race_modifiers) {
+  int result = baseMana;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseMana;
   }
-  else {
-    return baseArmor;
-  }
+  return result;
 }
 
-int Race::getBaseArmorMult() {
-  if(modifier != nullptr) {
-    return baseArmorMult + modifier->getBaseArmorMult();
+int Race::getBaseArmor(std::list<Race *> race_modifiers) {
+  int result = baseArmor;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseArmor;
   }
-  else {
-    return baseArmorMult;
-  }
+  return result;
 }
 
-int Race::getBaseDamageMult() {
-  if(modifier != nullptr) {
-    return baseDamageMult + modifier->getBaseDamageMult();
+int Race::getBaseArmorMult(std::list<Race *> race_modifiers) {
+  int result = baseArmorMult;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseArmorMult;
   }
-  else {
-    return baseDamageMult;
-  }
+  return result;
 }
 
-int Race::getBaseSoulBurn() {
-  if(modifier != nullptr) {
-    return baseSoulBurn + modifier->getBaseSoulBurn();
+int Race::getBaseDamageMult(std::list<Race *> race_modifiers) {
+  int result = baseDamageMult;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseDamageMult;
   }
-  else {
-    return baseSoulBurn;
-  }
+  return result;
 }
 
-int Race::getBaseFlow() {
-  if(modifier != nullptr) {
-    return baseFlow + modifier->getBaseFlow();
+int Race::getBaseSoulBurn(std::list<Race *> race_modifiers) {
+  int result = baseSoulBurn;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseSoulBurn;
   }
-  else {
-    return baseFlow;
-  }
+  return result;
 }
 
-int Race::getBaseVisionRange() {
-  if(modifier != nullptr) {
-    return baseVisionRange + modifier->getBaseVisionRange();
+int Race::getBaseFlow(std::list<Race *> race_modifiers) {
+  int result = baseFlow;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseFlow;
   }
-  else {
-    return baseVisionRange;
-  }
+  return result;
 }
 
-int Race::getBaseVisionPower() {
-  if(modifier != nullptr) {
-    return baseVisionPower + modifier->getBaseVisionPower();
+int Race::getBaseVisionRange(std::list<Race *> race_modifiers) {
+  int result = baseVisionRange;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseVisionRange;
   }
-  else {
-    return baseVisionPower;
-  }
+  return result;
 }
 
-int Race::getBaseDetectionRange() {
-  if(modifier != nullptr) {
-    return baseDetectionRange + modifier->getBaseDetectionRange();
+int Race::getBaseVisionPower(std::list<Race *> race_modifiers) {
+  int result = baseVisionPower;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseVisionPower;
   }
-  else {
-    return baseDetectionRange;
-  }
+  return result;
 }
 
-int Race::getHpIncr() {
-  if(modifier != nullptr) {
-    return hpIncr + modifier->getHpIncr();
+int Race::getBaseDetectionRange(std::list<Race *> race_modifiers) {
+  int result = baseDetectionRange;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->baseDetectionRange;
   }
-  else {
-    return hpIncr;
-  }
+  return result;
 }
 
-int Race::getManaIncr() {
-  if(modifier != nullptr) {
-    return manaIncr + modifier->getManaIncr();
+int Race::getHpIncr(std::list<Race *> race_modifiers) {
+  int result = hpIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->hpIncr;
   }
-  else {
-    return manaIncr;
-  }
+  return result;
 }
 
-int Race::getArmorMultIncr() {
-  if(modifier != nullptr) {
-    return armorMultIncr + modifier->getArmorMultIncr();
+int Race::getManaIncr(std::list<Race *> race_modifiers) {
+  int result = manaIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->manaIncr;
   }
-  else {
-    return armorMultIncr;
-  }
+  return result;
 }
 
-int Race::getDamageMultIncr() {
-  if(modifier != nullptr) {
-    return damageMultIncr + modifier->getDamageMultIncr();
+int Race::getArmorMultIncr(std::list<Race *> race_modifiers) {
+  int result = armorMultIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->armorMultIncr;
   }
-  else {
-    return damageMultIncr;
-  }
+  return result;
 }
 
-int Race::getSoulBurnIncr() {
-  if(modifier != nullptr) {
-    return soulBurnIncr + modifier->getSoulBurnIncr();
+int Race::getDamageMultIncr(std::list<Race *> race_modifiers) {
+  int result = damageMultIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->damageMultIncr;
   }
-  else {
-    return soulBurnIncr;
-  }
+  return result;
 }
 
-int Race::getFlowIncr() {
-  if(modifier != nullptr) {
-    return flowIncr + modifier->getFlowIncr();
+int Race::getSoulBurnIncr(std::list<Race *> race_modifiers) {
+  int result = soulBurnIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->soulBurnIncr;
   }
-  else {
-    return flowIncr;
-  }
+  return result;
 }
 
-float Race::getSize() {
-  if(modifier != nullptr) {
-    return std::max(size, modifier->getSize());
+int Race::getFlowIncr(std::list<Race *> race_modifiers) {
+  int result = flowIncr;
+  for(Race * modifier : race_modifiers) {
+    result += modifier->flowIncr;
   }
-  else {
-    return size;
-  }
+  return result;
 }
 
-bool Race::getNeedToEat() {
-  if(modifier != nullptr) {
-    return need_to_eat && modifier->getNeedToEat();
+float Race::getSize(std::list<Race *> race_modifiers) {
+  float result = size;
+  for(Race * modifier : race_modifiers) {
+    result = std::max(result, modifier->size);
   }
-  else {
-    return need_to_eat;
-  }
+  return result;
 }
 
-bool Race::getCanEatFood() {
-  if(modifier != nullptr) {
-    return can_eat_food && modifier->getCanEatFood();
+bool Race::getNeedToEat(std::list<Race *> race_modifiers) {
+  bool result = need_to_eat;
+  for(Race * modifier : race_modifiers) {
+    result = result && modifier->need_to_eat;
   }
-  else {
-    return can_eat_food;
-  }
+  return result;
 }
 
-bool Race::getNeedToSleep() {
-  if(modifier != nullptr) {
-    return need_to_sleep && modifier->getNeedToSleep();
+bool Race::getCanEatFood(std::list<Race *> race_modifiers) {
+  bool result = can_eat_food;
+  for(Race * modifier : race_modifiers) {
+    result = result && modifier->can_eat_food;
   }
-  else {
-    return need_to_sleep;
-  }
+  return result;
 }
 
-float Race::getActionTimeModifier() {
-  if(modifier != nullptr) {
-    return action_time_modifier * modifier->getActionTimeModifier();
+bool Race::getNeedToSleep(std::list<Race *> race_modifiers) {
+  bool result = need_to_sleep;
+  for(Race * modifier : race_modifiers) {
+    result = result && modifier->need_to_sleep;
   }
-  else {
-    return action_time_modifier;
-  }
+  return result;
 }
 
-float Race::getStrikeTimeModifier() {
-  if(modifier != nullptr) {
-    return strike_time_modifier * modifier->getStrikeTimeModifier();
+bool Race::getHasSoulSpark(std::list<Race *> race_modifiers) {
+  bool result = has_soulspark;
+  for(Race * modifier : race_modifiers) {
+    result = result || modifier->has_soulspark;
   }
-  else {
-    return strike_time_modifier;
-  }
+  return result;
 }
 
-float Race::getSkillTimeModifier() {
-  if(modifier != nullptr) {
-    return skill_time_modifier * modifier->getSkillTimeModifier();
+float Race::getActionTimeModifier(std::list<Race *> race_modifiers) {
+  float result = action_time_modifier;
+  for(Race * modifier : race_modifiers) {
+    result *= modifier->action_time_modifier;
   }
-  else {
-    return skill_time_modifier;
-  }
+  return result;
 }
 
-float Race::getMovementTimeModifier() {
-  if(modifier != nullptr) {
-    return movement_time_modifier * modifier->getMovementTimeModifier();
+float Race::getStrikeTimeModifier(std::list<Race *> race_modifiers) {
+  float result = strike_time_modifier;
+  for(Race * modifier : race_modifiers) {
+    result *= modifier->strike_time_modifier;
   }
-  else {
-    return movement_time_modifier;
-  }
+  return result;
 }
 
-std::list<Effect *> Race::getEffects() {
-  if(modifier != nullptr) {
-    std::list<Effect *> result = modifier->getEffects();
-    for(Effect * effect : effects) {
-      result.push_front(effect);
+float Race::getSkillTimeModifier(std::list<Race *> race_modifiers) {
+  float result = skill_time_modifier;
+  for(Race * modifier : race_modifiers) {
+    result *= modifier->skill_time_modifier;
+  }
+  return result;
+}
+
+float Race::getMovementTimeModifier(std::list<Race *> race_modifiers) {
+  float result = movement_time_modifier;
+  for(Race * modifier : race_modifiers) {
+    result *= modifier->movement_time_modifier;
+  }
+  return result;
+}
+
+std::list<Effect *> Race::getEffects(std::list<Race *> race_modifiers) {
+  std::list<Effect *> result = std::list<Effect *>(effects);
+  for(Race * modifier : race_modifiers) {
+    for(Effect * effect : modifier->effects) {
+      result.push_back(effect);
     }
-    return result;
   }
-  else {
-    return effects;
-  }
+  return result;
 }
 
-std::list<Skill *> Race::getSkills() {
-  if(modifier != nullptr) {
-    std::list<Skill *> result = modifier->getSkills();
-    for(Skill * skill : skills) {
-      result.push_front(skill);
+std::list<Skill *> Race::getSkills(std::list<Race *> race_modifiers) {
+  std::list<Skill *> result = std::list<Skill *>(skills);
+  for(Race * modifier : race_modifiers) {
+    for(Skill * skill : modifier->skills) {
+      result.push_back(skill);
     }
-    return result;
   }
-  else {
-    return skills;
-  }
+  return result;
 }
 
-std::list<Item *> Race::getLoot() {
-  if(modifier != nullptr) {
-    std::list<Item *> result = modifier->getLoot();
-    for(Item * item : loot) {
-      result.push_front(item);
+std::list<Item *> Race::getLoot(std::list<Race *> race_modifiers) {
+  std::list<Item *> result = std::list<Item *>(loot);
+  for(Race * modifier : race_modifiers) {
+    for(Item * item : modifier->loot) {
+      result.push_back(item);
     }
-    return result;
   }
-  else {
-    return loot;
-  }
-}
-
-std::list<Race *> Race::getModifiers() {
-  std::list<Race *> result;
-  if(modifier != nullptr) {
-    result = modifier->getModifiers();
-    result.push_front(modifier);
-    return result;
-  }
-  else {
-    return std::list<Race *>();
-  }
-}
-
-void Race::addModifier(Race * modifier) {
-  if(modifier == nullptr) {
-    this->modifier = modifier;
-  }
-  else {
-    this->modifier->addModifier(modifier);
-  }
+  return result;
 }

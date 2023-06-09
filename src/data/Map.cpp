@@ -328,7 +328,7 @@ void Map::setTile(float y, float x, Tile * tile) { tiles[(int) std::floor(y)][(i
 void Map::crumble(int y, int x) {
   for(Character * character : characters) {
     if(character->getX() == x && character->getY() == y) {
-      if(character->type == CHARACTER_WALL) {
+      if(character->getType() == RACE_WALL) {
         removeCharacter(character);
         delete character;
         character = nullptr;
@@ -361,7 +361,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
       loot->items.push_back(i);
     }
   }
-  for(Item * i : victim->getRace()->getLoot()) {
+  for(Item * i : victim->getLoot()) {
     if(i->droppable) {
       loot->items.push_back(i);
     }

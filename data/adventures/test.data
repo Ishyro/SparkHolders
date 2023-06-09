@@ -81,15 +81,8 @@ data/ways/races/muridaid.data
 data/ways/races/no_race.data
 data/ways/races/panthorid.data
 data/ways/races/sheep.data
-data/ways/races/skeleton_caeleran.data
-data/ways/races/skeleton_capraid.data
-data/ways/races/skeleton_cervidaid.data
-data/ways/races/skeleton_human.data
-data/ways/races/skeleton_muridaid.data
-data/ways/races/skeleton_panthorid.data
-data/ways/races/skeleton_sheep.data
-data/ways/races/skeleton_tauroid.data
-data/ways/races/skeleton_wolf.data
+data/ways/races/skeleton.data
+data/ways/races/spark_holder.data
 data/ways/races/tauroid.data
 data/ways/races/wolf.data
 data/ways/origins/armythas.data
@@ -141,7 +134,6 @@ data/attributes/wolf.data
 # characters
 data/characters/grass_fairy.data
 data/characters/homo.data
-data/characters/homo_magus.data
 data/characters/player.data
 data/characters/sheep.data
 data/characters/wolf.data

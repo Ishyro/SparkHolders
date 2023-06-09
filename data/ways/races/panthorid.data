@@ -1,5 +1,6 @@
 name = TXT_PANTHORID
 type = WAY_RACE
+race_type = RACE_HOMO
 baseHp = 0
 baseMana = 0
 baseArmor = 12
@@ -20,6 +21,7 @@ size = 0.3
 need_to_eat = true
 can_eat_food = true
 need_to_sleep = true
+has_soulspark = false
 action_time_modifier = 1.F
 strike_time_modifier = 1.F
 skill_time_modifier = 1.F

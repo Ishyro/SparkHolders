@@ -197,13 +197,16 @@ class SpeechManager;
 #define PROJECTILE_BULLET 5
 #define PROJECTILE_SPECIAL 6
 
-// character_type
+// race_type
 
-#define CHARACTER_HOMO 1
-#define CHARACTER_UNDEAD 2
-#define CHARACTER_NATURE 3
-#define CHARACTER_OMONCULUS 4
-#define CHARACTER_WALL 5
+#define RACE_NONE 0
+#define RACE_NATURE 1
+#define RACE_HOMO 2
+#define RACE_OMONCULUS 3
+#define RACE_MECANICUS 4
+#define RACE_UNDEAD 5
+#define RACE_WALL 6
+#define RACE_GOD 7
 
 // damage_type
 
@@ -245,7 +248,8 @@ class SpeechManager;
 #define WAY_CULTURE 3
 #define WAY_RELIGION 4
 #define WAY_PROFESSION 5
-#define WAY_TITLE 6
+#define WAY_RACE_MODIFIER 6
+#define WAY_TITLE 7
 
 // speech_type
 

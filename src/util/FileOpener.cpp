@@ -61,6 +61,8 @@
 
 #include "data/Settings.h"
 
+#include "util/String.h"
+
 namespace FileOpener {
 
   #ifdef _WIN32_WINNT
@@ -108,6 +110,14 @@ namespace FileOpener {
     }
     file.close();
     return result;
+  }
+
+  void getCoordinates(std::string to_read, long & map_id, int & y, int & x, World * world) {
+    std::stringstream * ss = new std::stringstream(to_read);
+    map_id = world->getMap(String::extract(ss))->id;
+    x = String::extract_int(ss);
+    y = String::extract_int(ss);
+    delete ss;
   }
 
   Adventure * AdventureOpener(std::string fileName, bool isServer) {
@@ -167,44 +177,38 @@ namespace FileOpener {
   }
 
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer) {
+    std::stringstream * ss = new std::stringstream(command);
     if(keyword == "Character" && isServer) {
-      std::string name = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      int xp = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int x = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int y = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string map_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string team = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string ai_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      Attributes * attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Attributes * second_attributes = (Attributes *) database->getAttributes(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Gear * gear = (Gear *) database->getGear(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Race * race = (Race *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Way * origin = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Way * culture = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Way * religion = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Way * profession = (Way *) database->getWay(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::list<Way *> * titles = new std::list<Way *>();
-      std::istringstream is_titles(command);
-      std::string title;
-      while(getline(is_titles, title, '%') && title != "none") {
-        titles->push_back((Way *) database->getWay(title));
+      std::string name = String::extract(ss);
+      std::string coord = String::extract(ss);
+      int x, y;
+      long map_id;
+      getCoordinates(coord, map_id, y, x, world);
+      std::string team = String::extract(ss);
+      std::string ai_str = String::extract(ss);
+      Attributes * attributes = (Attributes *) database->getAttributes(String::extract(ss));
+      Attributes * second_attributes = (Attributes *) database->getAttributes(String::extract(ss));
+      Gear * gear = (Gear *) database->getGear(String::extract(ss));
+      
+      Race * race = (Race *) database->getWay(String::extract(ss));
+      std::stringstream * ss_race_modifiers = new std::stringstream(String::extract(ss));
+      std::list<Race *> * race_modifiers = new std::list<Race *>();
+      while(ss_race_modifiers->rdbuf()->in_avail() != 0) {
+        race_modifiers->push_back((Race *) database->getWay(String::extract(ss_race_modifiers)));
       }
-      Map * map = world->getMap(map_str);
+      delete ss_race_modifiers;
+      Way * origin = (Way *) database->getWay(String::extract(ss));
+      Way * culture = (Way *) database->getWay(String::extract(ss));
+      Way * religion = (Way *) database->getWay(String::extract(ss));
+      Way * profession = (Way *) database->getWay(String::extract(ss));
+      std::stringstream * ss_titles = new std::stringstream(String::extract(ss));
+      std::list<Way *> * titles = new std::list<Way *>();
+      while(ss_titles->rdbuf()->in_avail() != 0) {
+        titles->push_back((Way *) database->getWay(String::extract(ss_titles)));
+      }
+      delete ss_titles;
+      long xp = String::extract_long(ss);
+      int gold = String::extract_int(ss);
       AI * ai;
       if (ai_str == "DiurnalPassiveAI") {
         ai = new DiurnalPassiveAI(x, y);
@@ -228,72 +232,62 @@ namespace FileOpener {
         database->getCharacter(name),
         name,
         xp,
+        gold,
         x,
         y,
         90.F,
-        map->id,
+        map_id,
         team,
         ai,
         attributes,
         second_attributes,
         gear,
         race,
+        *race_modifiers,
         origin,
         culture,
         religion,
         profession,
         *titles
       );
-      map->addCharacter(c);
+      world->getMap(map_id)->addCharacter(c);
+      delete race_modifiers;
       delete titles;
     }
     else if(keyword == "Event" && isServer) {
-      Event * event = new Event(database->getEvent(command));
+      Event * event = new Event(database->getEvent(String::extract(ss)));
       events->push_back(event);
     }
     else if(keyword == "Map") {
-      Map * map = new Map(database->getMap(command.substr(0, command.find('#'))), command);
+      std::string map_name = String::extract(ss);
+      Map * map = new Map(database->getMap(map_name.substr(0, map_name.find('#'))), map_name);
       world->addMap(map);
     }
     else if(keyword == "MapLink") {
-      std::string map1_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      int x1 = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int y1 = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string map2_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      int x2 = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int y2 = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      int type = database->getTargetFromMacro(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      Map * map1 = world->getMap(map1_str);
-      Map * map2 = world->getMap(map2_str);
+      long id1, id2;
       MapLink * link = new MapLink();
+      std::string coord = String::extract(ss);
+      getCoordinates(coord, id1, link->y1, link->x1, world);
+      coord = String::extract(ss);
+      getCoordinates(coord, id2, link->y2, link->x2, world);
+      link->type = database->getTargetFromMacro(String::extract(ss));
+      Map * map1 = world->getMap(id1);
+      Map * map2 = world->getMap(id2);
       link->map1 = map1;
       link->map2 = map2;
-      link->x1 = x1;
-      link->y1 = y1;
-      link->x2 = x2;
-      link->y2 = y2;
-      link->type = type;
+      world->addMapLink(link);
       world->addMapLink(link);
     }
     else if(keyword == "Loot" && isServer) {
 
     }
     else if(keyword == "Quest") {
-      Quest * quest = new Quest(database->getQuest(command));
+      Quest * quest = new Quest(database->getQuest(String::extract(ss)));
       quests->push_back(quest);
     }
     else if(keyword == "Settings") {
-      std::string setting = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string value_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
+      std::string setting = String::extract(ss);
+      std::string value_str = String::extract(ss);
       if(setting == "LIGHT_MAX_POWER") {
         Settings::setLightMaxPower(stoi(value_str));
       }
@@ -333,40 +327,31 @@ namespace FileOpener {
     }
     else if(keyword == "Spawn" && isServer) {
       Spawn * spawn = new Spawn();
-      std::string map_str = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      spawn->x = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      spawn->y = stoi(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      spawn->map_id = world->getMap(map_str)->id;
+      std::string coord = String::extract(ss);
+      getCoordinates(coord, spawn->map_id, spawn->y, spawn->x, world);
       spawns->push_back(spawn);
     }
     else if(keyword == "StartingAttributes") {
-      startingAttributes->push_back( (Attributes *) database->getAttributes(command));
+      startingAttributes->push_back( (Attributes *) database->getAttributes(String::extract(ss)));
     }
     else if(keyword == "StartingWay") {
-      startingWays->push_back( (Way *) database->getWay(command));
+      startingWays->push_back( (Way *) database->getWay(String::extract(ss)));
     }
     else if(keyword == "TeamRelation") {
-      int relation = database->getTargetFromMacro(command.substr(0, command.find('%')));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string team1 = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string team2 = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
+      int relation = database->getTargetFromMacro(String::extract(ss));
+      std::string team1 = String::extract(ss);
+      std::string team2 = String::extract(ss);
       database->addRelation(team1, team2, relation);
     }
     else if(keyword == "Translation" && !isServer) {
-      database->addTranslationPath(command);
+      database->addTranslationPath(String::extract(ss));
     }
     else if(keyword == "WayImcompatibility") {
-      std::string way1 = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
-      std::string way2 = command.substr(0, command.find('%'));
-      command = command.substr(command.find('%') + 1, command.length());
+      std::string way1 = String::extract(ss);
+      std::string way2 = String::extract(ss);
       database->addWayImcompatibility(way1, way2);
     }
+    delete ss;
   }
 
   void AttributesOpener(std::string fileName, Database * database) {
@@ -444,11 +429,6 @@ namespace FileOpener {
     if(values.at("talking_speech") != "none") {
       talking_speech = (Speech *) database->getSpeech(values.at("talking_speech"));
     }
-    int type = database->getTargetFromMacro(values.at("type"));
-    long gold = stol(values.at("gold"));
-    std::istringstream is_has_soulspark(values.at("has_soulspark"));
-    bool has_soulspark;
-    is_has_soulspark >> std::boolalpha >> has_soulspark;
     std::istringstream is_merchant(values.at("merchant"));
     bool merchant;
     is_merchant >> std::boolalpha >> merchant;
@@ -485,9 +465,6 @@ namespace FileOpener {
       player_character,
       death_speech,
       talking_speech,
-      type,
-      gold,
-      has_soulspark,
       merchant,
       *effects,
       *skills,
@@ -951,6 +928,12 @@ namespace FileOpener {
           team = "";
         }
         Race * race = (Race *) database->getWay(values.at("race"));
+        std::list<Race *> * race_modifiers = new std::list<Race *>();
+        std::istringstream is_race_modifiers(values.at("race_modifiers"));
+        std::string modifier;
+        while(getline(is_race_modifiers, modifier, '%') && modifier != "none") {
+          race_modifiers->push_back((Race *) database->getWay(modifier));
+        }
         Way * origin = (Way *) database->getWay(values.at("origin"));
         Way * culture = (Way *) database->getWay(values.at("culture"));
         Way * religion = (Way *) database->getWay(values.at("religion"));
@@ -974,6 +957,7 @@ namespace FileOpener {
           ai_str,
           team,
           race,
+          *race_modifiers,
           origin,
           culture,
           religion,
@@ -983,6 +967,7 @@ namespace FileOpener {
           apparition_type,
           xp
         );
+        delete race_modifiers;
         delete titles;
         break;
       }
@@ -1066,6 +1051,7 @@ namespace FileOpener {
       skills->push_back((Skill *) database->getSkill(skill));
     }
     if(type == WAY_RACE) {
+      int race_type = database->getTargetFromMacro(values.at("race_type"));
       int baseArmor = stoi(values.at("baseArmor"));
       float size = stof(values.at("size"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
@@ -1077,6 +1063,9 @@ namespace FileOpener {
       std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
       bool need_to_sleep;
       is_need_to_sleep >> std::boolalpha >> need_to_sleep;
+      std::istringstream is_has_soulspark(values.at("has_soulspark"));
+      bool has_soulspark;
+      is_has_soulspark >> std::boolalpha >> has_soulspark;
       float action_time_modifier = stof(values.at("action_time_modifier"));
       float strike_time_modifier = stof(values.at("strike_time_modifier"));
       float skill_time_modifier = stof(values.at("skill_time_modifier"));
@@ -1107,11 +1096,13 @@ namespace FileOpener {
         flowIncr,
         *effects,
         *skills,
+        race_type,
         size,
         baseArmor,
         need_to_eat,
         can_eat_food,
         need_to_sleep,
+        has_soulspark,
         action_time_modifier,
         strike_time_modifier,
         skill_time_modifier,

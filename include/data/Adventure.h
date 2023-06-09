@@ -11,7 +11,7 @@
 typedef struct Spawn {
   int x;
   int y;
-  int map_id;
+  long map_id;
 } Spawn;
 
 typedef struct StateDisplay {

@@ -40,6 +40,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     nullptr,
     (Gear *) adventure->getDatabase()->getGear("TXT_NO_GEAR"),
     race,
+    race_modifiers,
     origin,
     culture,
     religion,
@@ -74,6 +75,7 @@ float SummonSkill::getDamageReductionFromType(int damage_type, int overcharge_po
 Character * SummonSkill::getCharacter() { return character; }
 std::string SummonSkill::getAI() { return ai_str; }
 Race * SummonSkill::getRace() { return race; }
+std::list<Race *> SummonSkill::getRaceModifiers() { return race_modifiers; }
 Way * SummonSkill::getOrigin() { return origin; }
 Way * SummonSkill::getCulture() { return culture; }
 Way * SummonSkill::getReligion() { return religion; }

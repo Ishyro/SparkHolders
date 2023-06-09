@@ -24,43 +24,43 @@
 #include "util/String.h"
 
 void Character::initializeCharacter(Gear * gear) {
-  size = race->getSize();
-  maxHp = attributes->baseHp + race->getBaseHp() + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
+  size = race->getSize(race_modifiers);
+  maxHp = attributes->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
     maxHp += way->baseHp;
   }
-  maxMana = attributes->baseMana + race->getBaseMana() + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
+  maxMana = attributes->baseMana + race->getBaseMana(race_modifiers) + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
   for(Way * way : titles) {
     maxHp += way->baseMana;
   }
   hp = maxHp;
   mana = maxMana;
-  armor = race->getBaseArmor();
-  armor_multiplier = attributes->baseArmorMult + race->getBaseArmorMult() + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
+  armor = race->getBaseArmor(race_modifiers);
+  armor_multiplier = attributes->baseArmorMult + race->getBaseArmorMult(race_modifiers) + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
   for(Way * way : titles) {
     maxHp += way->baseArmorMult;
   }
-  damage_multiplier = attributes->baseDamageMult + race->getBaseDamageMult() + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
+  damage_multiplier = attributes->baseDamageMult + race->getBaseDamageMult(race_modifiers) + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
   for(Way * way : titles) {
     maxHp += way->baseDamageMult;
   }
-  soulBurnTreshold = attributes->baseSoulBurn + race->getBaseSoulBurn() + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
+  soulBurnTreshold = attributes->baseSoulBurn + race->getBaseSoulBurn(race_modifiers) + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
   for(Way * way : titles) {
     maxHp += way->baseSoulBurn;
   }
-  flow = attributes->baseFlow + race->getBaseFlow() + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
+  flow = attributes->baseFlow + race->getBaseFlow(race_modifiers) + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
   for(Way * way : titles) {
     maxHp += way->baseFlow;
   }
-  visionRange = attributes->baseVisionRange + race->getBaseVisionRange() + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
+  visionRange = attributes->baseVisionRange + race->getBaseVisionRange(race_modifiers) + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
   for(Way * way : titles) {
     maxHp += way->baseVisionRange;
   }
-  visionPower = attributes->baseVisionPower + race->getBaseVisionPower() + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
+  visionPower = attributes->baseVisionPower + race->getBaseVisionPower(race_modifiers) + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
   for(Way * way : titles) {
     maxHp += way->baseVisionPower;
   }
-  detectionRange = attributes->baseDetectionRange + race->getBaseDetectionRange() + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
+  detectionRange = attributes->baseDetectionRange + race->getBaseDetectionRange(race_modifiers) + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
   for(Way * way : titles) {
     maxHp += way->baseDetectionRange;
   }
@@ -121,12 +121,12 @@ void Character::initSkillsAndEffects() {
       toadd->activate(this);
     }
   }
-  for(Skill * skill : race->getSkills()) {
+  for(Skill * skill : race->getSkills(race_modifiers)) {
     if(skill->level == 0) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : race->getEffects()) {
+  for(Effect * effect : race->getEffects(race_modifiers)) {
     if(effect->level == 0) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
@@ -339,13 +339,14 @@ AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 Speech * Character::getDeathSpeech() { return death_speech; }
 Speech * Character::getTalkingSpeech() { return talking_speech; }
+int Character::getType() { return race->getType(race_modifiers); }
 
 int Character::getCurrentMapId() { return current_map_id; }
 
 Gear * Character::getGear() { return gear; }
 
 float Character::getActionTimeModifier() {
-  float result = race->getActionTimeModifier();
+  float result = race->getActionTimeModifier(race_modifiers);
   for(Effect * e : effects) {
     if(e->type == EFFECT_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -355,7 +356,7 @@ float Character::getActionTimeModifier() {
 }
 
 float Character::getHandActionTimeModifier() {
-  float result = race->getStrikeTimeModifier();
+  float result = race->getStrikeTimeModifier(race_modifiers);
   for(Effect * e : effects) {
     if(e->type == EFFECT_HAND_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -365,7 +366,7 @@ float Character::getHandActionTimeModifier() {
 }
 
 float Character::getSkillTimeModifier() {
-  float result = race->getSkillTimeModifier();
+  float result = race->getSkillTimeModifier(race_modifiers);
   for(Effect * e : effects) {
     if(e->type == EFFECT_SKILL_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -375,7 +376,7 @@ float Character::getSkillTimeModifier() {
 }
 
 float Character::getMovementTimeModifier() {
-  float result = race->getMovementTimeModifier();
+  float result = race->getMovementTimeModifier(race_modifiers);
   for(Effect * e : effects) {
     if(e->type == EFFECT_MOVEMENT_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
@@ -414,6 +415,7 @@ int Character::getLight() {
   return light;
 }
 std::list<Item *> Character::getItems() { return items; }
+std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
@@ -473,7 +475,7 @@ void Character::incrMaxHp() {
   int incr = 0;
   incr += attributes->hpIncr;
   incr += second_attributes->hpIncr;
-  incr += race->getHpIncr();
+  incr += race->getHpIncr(race_modifiers);
   incr += origin->hpIncr;
   incr += culture->hpIncr;
   incr += religion->hpIncr;
@@ -499,7 +501,7 @@ void Character::incrMaxMana() {
   int incr = 0;
   incr += attributes->manaIncr;
   incr += second_attributes->manaIncr;
-  incr += race->getManaIncr();
+  incr += race->getManaIncr(race_modifiers);
   incr += origin->manaIncr;
   incr += culture->manaIncr;
   incr += religion->manaIncr;
@@ -525,7 +527,7 @@ void Character::incrArmorMultiplier() {
   int incr = 0;
   incr += attributes->armorMultIncr;
   incr += second_attributes->armorMultIncr;
-  incr += race->getArmorMultIncr();
+  incr += race->getArmorMultIncr(race_modifiers);
   incr += origin->armorMultIncr;
   incr += culture->armorMultIncr;
   incr += religion->armorMultIncr;
@@ -542,7 +544,7 @@ void Character::incrDamageMultiplier() {
   int incr = 0;
   incr += attributes->damageMultIncr;
   incr += second_attributes->damageMultIncr;
-  incr += race->getDamageMultIncr();
+  incr += race->getDamageMultIncr(race_modifiers);
   incr += origin->damageMultIncr;
   incr += culture->damageMultIncr;
   incr += religion->damageMultIncr;
@@ -559,7 +561,7 @@ void Character::incrSoulBurnTreshold() {
   int incr = 0;
   incr += attributes->soulBurnIncr;
   incr += second_attributes->soulBurnIncr;
-  incr += race->getSoulBurnIncr();
+  incr += race->getSoulBurnIncr(race_modifiers);
   incr += origin->soulBurnIncr;
   incr += culture->soulBurnIncr;
   incr += religion->soulBurnIncr;
@@ -577,7 +579,7 @@ void Character::incrFlow() {
   int incr = 0;
   incr += attributes->flowIncr;
   incr += second_attributes->flowIncr;
-  incr += race->getFlowIncr();
+  incr += race->getFlowIncr(race_modifiers);
   incr += origin->flowIncr;
   incr += culture->flowIncr;
   incr += religion->flowIncr;
@@ -625,7 +627,7 @@ void Character::applySoulBurn() {
 }
 
 void Character::applyTiredness() {
-  if(race->getNeedToSleep()) {
+  if(race->getNeedToSleep(race_modifiers)) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
     float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
     int manaValue = (int) std::floor(currentManaRegen + savedManaRegen);
@@ -643,7 +645,7 @@ void Character::applyTiredness() {
 }
 
 void Character::applyHunger() {
-  if(race->getNeedToEat()) {
+  if(race->getNeedToEat(race_modifiers)) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
     float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
     int hpValue = (int) std::floor(currentHpRegen + savedHpRegen);
@@ -675,7 +677,7 @@ void Character::applyEffects() {
 }
 
 void Character::rest() {
-  if(race->getNeedToSleep()) {
+  if(race->getNeedToSleep(race_modifiers)) {
     // +1 because the character will still apply his tiredness while sleeping
     addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
   }
@@ -747,12 +749,12 @@ void Character::newSkillsAndEffects() {
       toadd->activate(this);
     }
   }
-  for(Skill * skill : race->getSkills()) {
+  for(Skill * skill : race->getSkills(race_modifiers)) {
     if(level == 5 * skill->level) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : race->getEffects()) {
+  for(Effect * effect : race->getEffects(race_modifiers)) {
     if(level == 5 * effect->level) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
@@ -929,6 +931,13 @@ void Character::setWay(Way * way) {
       to_remove = profession;
       profession = way;
       break;
+    case WAY_RACE_MODIFIER:
+      for(Way * modifier : race_modifiers) {
+        if(modifier == way) {
+          return;
+        }
+      }
+      race_modifiers.push_back( (Race *) way);
     case WAY_TITLE:
       for(Way * title : titles) {
         if(title == way) {
@@ -998,7 +1007,7 @@ void Character::useItem(long item_id) {
       if(player_character) {
         setNeedToSend(true);
       }
-      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->getCanEatFood()) {
+      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->getCanEatFood(race_modifiers)) {
         for(Effect * e : i->effects) {
           e->activate(this);
         }
@@ -1380,7 +1389,7 @@ std::string Character::to_string() {
   String::insert_int(ss, getSoulBurnTreshold());
   String::insert_int(ss, getFlow());
   String::insert_bool(ss, player_character);
-  String::insert_int(ss, type);
+  String::insert_int(ss, race->getType(race_modifiers));
   String::insert_float(ss, x);
   String::insert_float(ss, y);
   String::insert_float(ss, size);
@@ -1480,13 +1489,11 @@ std::string Character::full_to_string(Adventure * adventure) {
   else {
     String::insert(ss, "none");
   }
-  String::insert_int(ss, type);
   String::insert_float(ss, x);
   String::insert_float(ss, y);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
   String::insert_int(ss, current_map_id);
-  String::insert_bool(ss, has_soulspark);
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1538,6 +1545,12 @@ std::string Character::full_to_string(Adventure * adventure) {
     String::insert(ss, "none");
   }
   String::insert(ss, race->name);
+  std::stringstream * ss_race_modifiers = new std::stringstream();
+  for(Race * modifier : race_modifiers) {
+    String::insert(ss_race_modifiers, modifier->name);
+  }
+  String::insert(ss, ss_race_modifiers->str());
+  delete ss_race_modifiers;
   String::insert(ss, origin->name);
   String::insert(ss, culture->name);
   String::insert(ss, religion->name);
@@ -1586,13 +1599,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   if(talking_speech_str != "none") {
     talking_speech = Speech::from_string(talking_speech_str);
   }
-  int type = String::extract_int(ss);
   float x = String::extract_float(ss);
   float y = String::extract_float(ss);
   float size = String::extract_float(ss);
   float orientation = String::extract_float(ss);
   int current_map_id = String::extract_int(ss);
-  bool has_soulspark = String::extract_bool(ss);
   bool merchant = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);
@@ -1642,6 +1653,12 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     second_attributes = (Attributes *) adventure->getDatabase()->getAttributes(second_attributes_str);
   }
   Race * race = (Race *) adventure->getDatabase()->getWay(String::extract(ss));
+  std::stringstream * ss_race_modifiers = new std::stringstream(String::extract(ss));
+  std::list<Race *> * race_modifiers = new std::list<Race *>();
+  while(ss_race_modifiers->rdbuf()->in_avail() != 0) {
+    race_modifiers->push_back((Race *) adventure->getDatabase()->getWay(String::extract(ss_race_modifiers)));
+  }
+  delete ss_race_modifiers;
   Way * origin = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
   Way * culture = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
   Way * religion = (Way *) adventure->getDatabase()->getWay(String::extract(ss));
@@ -1677,13 +1694,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     player_character,
     death_speech,
     talking_speech,
-    type,
     x,
     y,
     size,
     orientation,
     current_map_id,
-    has_soulspark,
     merchant,
     gold,
     xp,
@@ -1699,6 +1714,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     attributes,
     second_attributes,
     race,
+    *race_modifiers,
     origin,
     culture,
     religion,
@@ -1711,6 +1727,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   delete sellable_items;
   delete sellable_effects;
   delete sellable_skills;
+  delete race_modifiers;
   delete titles;
   return result;
 }
@@ -1719,7 +1736,7 @@ void Character::deepDelete() {
   for(Item * item : items) {
     delete item;
   }
-  for(Item * item : race->getLoot()) {
+  for(Item * item : race->getLoot(race_modifiers)) {
     delete item;
   }
   for(Skill * skill : skills) {

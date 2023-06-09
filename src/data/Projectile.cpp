@@ -116,7 +116,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
   if(target != nullptr && (target->getTeam() == owner->getTeam() || alreadyHit(target))) {
     return;
   }
-  if(target->type == TARGET_CHARACTER && target->id == this->target->id) {
+  if(this->target->type == TARGET_CHARACTER && target->id == this->target->id) {
     setLost(true);
   }
   if(area == 0.F) {

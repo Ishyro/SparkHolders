@@ -19,6 +19,7 @@ class SummonSkill : public PseudoSkill {
       std::string ai_str,
       std::string team,
       Race * race,
+      std::list<Race *> race_modifiers,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -33,6 +34,7 @@ class SummonSkill : public PseudoSkill {
       ai_str(ai_str),
       team(team),
       race(race),
+      race_modifiers(race_modifiers),
       origin(origin),
       culture(culture),
       religion(religion),
@@ -50,6 +52,7 @@ class SummonSkill : public PseudoSkill {
     Character * getCharacter();
     std::string getAI();
     Race * getRace();
+    std::list<Race *> getRaceModifiers();
     Way * getOrigin();
     Way * getCulture();
     Way * getReligion();
@@ -59,6 +62,7 @@ class SummonSkill : public PseudoSkill {
   private:
     Character * character;
     Race * race;
+    std::list<Race *> race_modifiers;
     Way * origin;
     Way * culture;
     Way * religion;

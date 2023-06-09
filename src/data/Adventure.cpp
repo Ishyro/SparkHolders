@@ -229,6 +229,7 @@ void Adventure::actAllProjectiles() {
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession) {
   Spawn * spawn = spawns.front();
   spawns.remove(spawn);
+  std::list<Race *> * race_modifiers = new std::list<Race *>();
   std::list<Way *> * titles = new std::list<Way *>();
   Character * player = new Character(
     database->getCharacter("TXT_PLAYER"),
@@ -244,6 +245,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     (Attributes *) database->getAttributes("TXT_NO_ATTRIBUTES"),
     (Gear *) database->getGear("TXT_LIGHT_STARTING_GEAR"),
     race,
+    *race_modifiers,
     origin,
     culture,
     religion,
@@ -252,6 +254,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
   );
   world->getMap(spawn->map_id)->addCharacter(player);
   delete spawn;
+  delete race_modifiers;
   delete titles;
   return player;
 }

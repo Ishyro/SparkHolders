@@ -5,6 +5,7 @@ character = TXT_GRASS_FAIRY
 team = world
 ai = EtheralCasterAI
 race = TXT_NO_RACE
+race_modifiers = TXT_SPARK_HOLDER%
 origin = TXT_NO_ORIGIN
 culture = TXT_NO_CULTURE
 religion = TXT_NO_RELIGION

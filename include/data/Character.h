@@ -50,17 +50,12 @@ class Character {
     const long id;
     const std::string name;
     const bool player_character;
-    const int type;
-    const bool has_soulspark;
     // not instancied character constructor
     Character(
       std::string name,
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      int type,
-      long gold,
-      bool has_soulspark,
       bool merchant,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
@@ -73,9 +68,6 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
-      type(type),
-      gold(gold),
-      has_soulspark(has_soulspark),
       merchant(merchant),
       effects(effects),
       skills(skills),
@@ -86,7 +78,8 @@ class Character {
     Character(
       const Character * from_database,
       std::string name,
-      int xp,
+      long xp,
+      int gold,
       int x,
       int y,
       float orientation,
@@ -97,6 +90,7 @@ class Character {
       Attributes * second_attributes,
       Gear * gear,
       Race * race,
+      std::list<Race *> race_modifiers,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -108,15 +102,13 @@ class Character {
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speech(from_database->talking_speech),
-      type(from_database->type),
-      gold(from_database->gold),
+      gold(gold),
       xp(xp),
       level(1),
       x(x + 0.5F),
       y(y + 0.5F),
       orientation(orientation),
       current_map_id(current_map_id),
-      has_soulspark(from_database->has_soulspark),
       merchant(from_database->merchant),
       team(team),
       ai(ai),
@@ -137,6 +129,9 @@ class Character {
     {
       for(Item * item : from_database->sellable_items) {
         sellable_items.push_back(Item::init(item, 1, 1));
+      }
+      for(Race * modifier : race_modifiers) {
+        setWay( (Way *) modifier);
       }
       for(Way * title : titles) {
         setWay(title);
@@ -168,13 +163,11 @@ class Character {
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      int type,
       float x,
       float y,
       float size,
       float orientation,
       int current_map_id,
-      bool has_soulspark,
       bool merchant,
       long gold,
       long xp,
@@ -190,6 +183,7 @@ class Character {
       Attributes * attributes,
       Attributes * second_attributes,
       Race * race,
+      std::list<Race *> race_modifiers,
       Way * origin,
       Way * culture,
       Way * religion,
@@ -219,13 +213,11 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
-      type(type),
       x(x),
       y(y),
       size(size),
       orientation(orientation),
       current_map_id(current_map_id),
-      has_soulspark(has_soulspark),
       merchant(merchant),
       gold(gold),
       xp(xp),
@@ -242,6 +234,7 @@ class Character {
       attributes(attributes),
       second_attributes(second_attributes),
       race(race),
+      race_modifiers(race_modifiers),
       origin(origin),
       culture(culture),
       religion(religion),
@@ -289,6 +282,7 @@ class Character {
     std::string getTeam();
     Speech * getDeathSpeech();
     Speech * getTalkingSpeech();
+    int getType();
 
     Gear * getGear();
     float getActionTimeModifier();
@@ -301,6 +295,7 @@ class Character {
     float getUseTime(long item_id);
     int getLight();
     std::list<Item *> getItems();
+    std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
     std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> getDamageSkills();
@@ -313,6 +308,7 @@ class Character {
     Attributes * getAttributes();
     Attributes * getSecondAttributes();
     Race * getRace();
+    std::list<Race *> getRaceModifiers();
     Way * getOrigin();
     Way * getCulture();
     Way * getReligion();
@@ -462,6 +458,7 @@ class Character {
     Attributes * attributes;
     Attributes * second_attributes;
     Race * race;
+    std::list<Race *> race_modifiers;
     Way * origin;
     Way * culture;
     Way * religion;
