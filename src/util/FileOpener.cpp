@@ -166,8 +166,8 @@ namespace FileOpener {
       }
     }
     file.close();
-    // regex the path to / if it was on Windows.
-    Adventure * adventure = new Adventure(name, std::regex_replace(fileName, std::regex(PATH_DELIMITER), "/"), spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
+    // we need to escape '\' 2 times
+    Adventure * adventure = new Adventure(name, std::regex_replace(fileName, std::regex("\\\\"), "/"), spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
     delete quests;
     delete events;
     delete spawns;

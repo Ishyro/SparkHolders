@@ -109,6 +109,7 @@ CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 GRAPHICS_LIBRARIES=
+PLATFORM=linuxbsd
 
 # Windows
 ifdef WINDOWS
@@ -118,16 +119,17 @@ _WIN32_WINNT=0x0800
 endif # _D_WIN32_WINNT
 CC=x86_64-w64-mingw32-g++
 CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -pipe -static-libstdc++ -static-libgcc -fpermissive -g -Wall -Wno-reorder
-CC_LIBRARIES+=-lws2_32
+CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
 # We don't build the terminal client for Windows
 CLIENTS_TERMINAL_BINAIRIES=
 TARGET_CLIENT_TERMINAL=
+PLATFORM=windows
 endif # WINDOWS
 
 # Rules
 
 all: bin $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
-		exec $(TARGET_SERVER) $(CLIENTS_TERMINAL_BINAIRIES) $(TARGET_CLIENT_TERMINAL) $(CLIENTS_GRAPHICS_BINAIRIES) $(TARGET_CLIENT_GRAPHICS)
+		exec $(TARGET_SERVER) $(CLIENTS_TERMINAL_BINAIRIES) $(TARGET_CLIENT_TERMINAL) godot $(CLIENTS_GRAPHICS_BINAIRIES) $(TARGET_CLIENT_GRAPHICS)
 
 bin:
 	$(MKDIR) $(BIN) $(BIN_AI) $(BIN_COM) $(BIN_DATA) $(BIN_ACTIONS) $(BIN_ITEMS) $(BIN_SKILLS) $(BIN_UTIL) $(BIN_SERVER) $(BIN_CLIENTS) $(BIN_CLIENT_GRAPHICS) $(BIN_CLIENT_TERMINAL)
@@ -135,7 +137,10 @@ bin:
 exec:
 	$(MKDIR) $(EXEC)
 
-$(BIN)/clients/terminal/%.o : $(SRC)/clients/terminal/%.cpp
+godot:
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/modules platform=$(PLATFORM)
+
+$(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)
 
 $(BIN)/%.o: $(SRC)/%.cpp
