@@ -60,16 +60,11 @@
 #include "data/skills/TileSwapSkill.h"
 
 #include "data/Settings.h"
+#include "data/ClientSettings.h"
 
 #include "util/String.h"
 
 namespace FileOpener {
-
-  #ifdef _WIN32_WINNT
-    static std::string PATH_DELIMITER = "\\";
-  #else
-    static std::string PATH_DELIMITER = "/";
-  #endif
 
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
     std::map<const std::string, std::string> result = std::map<const std::string,std::string>();
@@ -123,7 +118,7 @@ namespace FileOpener {
   Adventure * AdventureOpener(std::string fileName, bool isServer) {
     std::string delimiter = ".";
     std::string dataFile = std::regex_replace(fileName, std::regex(".commands"), ".data");
-    Database * database = DatabaseOpener(dataFile);
+    Database * database = DatabaseOpener(dataFile, isServer);
     if(isServer) {
       SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
     }
@@ -861,6 +856,14 @@ namespace FileOpener {
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
   }
 
+  void ClientSettingsOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    ClientSettings::setPort(stoi(values.at("PORT")));
+    ClientSettings::setLang(values.at("LANG"));
+    ClientSettings::setResolution(values.at("RESOLUTION"));
+    ClientSettings::setWindowType(database->getTargetFromMacro(values.at("WINDOW_TYPE")));
+  }
+
   void SkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
@@ -1001,7 +1004,7 @@ namespace FileOpener {
     delete options;
   }
 
-  void TileOpener(std::string fileName, Database * database) {
+  std::string TileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::istringstream is_untraversable(values.at("untraversable"));
@@ -1017,6 +1020,7 @@ namespace FileOpener {
     float ap_cost = stof(values.at("ap_cost"));
     Tile * tile = new Tile(name, untraversable, opaque, solid, light, ap_cost);
     database->addTile(tile);
+    return name;
   }
 
   void WayOpener(std::string fileName, Database * database) {
@@ -1142,7 +1146,7 @@ namespace FileOpener {
     }
   }
 
-  void FileOpener(std::string fileName, Database * database) {
+  void FileOpener(std::string fileName, Database * database, bool isServer) {
     std::fstream file;
     char delimiter = '/';
     std::string dirname = fileName.substr(0, fileName.rfind(delimiter));
@@ -1184,7 +1188,10 @@ namespace FileOpener {
       SpeechOpener(fileName, database);
     }
     else if(last_folder == "tiles") {
-      TileOpener(fileName, database);
+      std::string tile_name = TileOpener(fileName, database);
+      if(!isServer) {
+        database->addTileRes(tile_name, std::regex_replace(fileName, std::regex(".data"), ".tres"));
+      }
     }
     else if((last_folder == "ways") ||
             (last_folder == "races") ||
@@ -1197,7 +1204,7 @@ namespace FileOpener {
     }
   }
 
-  Database * DatabaseOpener(std::string fileName) {
+  Database * DatabaseOpener(std::string fileName, bool isServer) {
     Database * database = new Database();
     std::fstream file;
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
@@ -1214,7 +1221,7 @@ namespace FileOpener {
         while(std::isspace(line.at(line.length() - 1))) {
           line = line.substr(0, line.length() - 1);
         }
-        FileOpener(line, database);
+        FileOpener(line, database, isServer);
       }
     }
     file.close();

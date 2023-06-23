@@ -1,0 +1,14 @@
+# SCsub
+
+import os
+
+Import('env')
+
+env.Append(CPPPATH=['../../../../../include'])
+env.Append(LIBPATH=[os.path.abspath('../../../../../exec')])
+env.Append(LIBS=['sparkholders'])
+if env["platform"] == 'windows':
+  env.Append(LIBS=['ws2_32'])
+module_env = env.Clone()
+module_env.add_source_files(env.modules_sources, "*.cpp")
+module_env.Append(CXXFLAGS=['-O2'])

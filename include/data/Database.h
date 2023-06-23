@@ -27,6 +27,8 @@ class Database {
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
     const Tile * getTile(const std::string tile);
+    const std::string getTileRes(const std::string tile);
+    std::map<const std::string, const Tile *> getAvaillableTiles();
     const Way * getWay(const std::string way);
     const int getRelation(const std::string team1, const std::string team2);
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
@@ -45,6 +47,7 @@ class Database {
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
     void addTile(const Tile * tile);
+    void addTileRes(const std::string tile, const std::string path);
     void addWay(const Way * way);
     void addRelation(const std::string team1, const std::string team2, int relation);
     void addWayImcompatibility(const std::string way1, const std::string way2);
@@ -66,6 +69,7 @@ class Database {
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
     std::map<const std::string, const Tile * > tiles;
+    std::map<const std::string, const std::string> tilesRes;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, std::map<const std::string, int>> relations;
     std::list<std::pair<const std::string, const std::string>> waysIncompatibilities;

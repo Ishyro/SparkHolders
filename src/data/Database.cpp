@@ -32,6 +32,7 @@ Database::Database() {
   pseudoSkills = std::map<const std::string, const PseudoSkill * >();
   speechs = std::map<const std::string, const Speech * >();
   tiles = std::map<const std::string, const Tile * >();
+  tilesRes = std::map<const std::string, const std::string >();
   ways = std::map<const std::string, const Way * >();
   relations = std::map<const std::string, std::map<const std::string, int>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
@@ -227,6 +228,11 @@ Database::Database() {
   macros.insert(std::make_pair("TEAM_ALLY", TEAM_ALLY));
   macros.insert(std::make_pair("TEAM_NEUTRAL", TEAM_NEUTRAL));
   macros.insert(std::make_pair("TEAM_ENEMY", TEAM_ENEMY));
+
+  // window_type
+  macros.insert(std::make_pair("WINDOW_FULLSCREEN", WINDOW_FULLSCREEN));
+  macros.insert(std::make_pair("WINDOW_WINDOW", WINDOW_WINDOW));
+  macros.insert(std::make_pair("WINDOW_BORDERLESS", WINDOW_BORDERLESS));
 }
 
 const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
@@ -244,6 +250,8 @@ const Skill * Database::getSkill(const std::string skill) { return skills.at(ski
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
+std::map<const std::string, const Tile *> Database::getAvaillableTiles() { return tiles; }
+const std::string Database::getTileRes(const std::string tile) { return tilesRes.at(tile); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
   if(team1 == team2) {
@@ -273,6 +281,7 @@ void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skil
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
+void Database::addTileRes(const std::string tile, const std::string path) { tilesRes.insert(std::make_pair(tile, path)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addRelation(const std::string team1, const std::string team2, int relation) {
   if(relations.find(team1) == relations.end()) {

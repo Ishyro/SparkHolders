@@ -4,3 +4,4 @@ externals/godot
 .vscode/
 src/clients/graphics/modules/spark_holders_graphical/__pycache__/
 src/clients/graphics/modules/spark_holders_graphical/*.o
+*.import

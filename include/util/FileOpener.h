@@ -8,6 +8,13 @@
 #include "Values.h"
 
 namespace FileOpener {
+
+  #ifdef _WIN32_WINNT
+    static std::string PATH_DELIMITER = "\\";
+  #else
+    static std::string PATH_DELIMITER = "/";
+  #endif
+
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName);
 
   Adventure * AdventureOpener(std::string fileName, bool isServer);
@@ -22,15 +29,16 @@ namespace FileOpener {
   void MapOpener(std::string fileName, Database * database);
   void ProjectileOpener(std::string fileName, Database * database);
   void QuestOpener(std::string fileName, Database * database);
+  void ClientSettingsOpener(std::string fileName, Database * database);
   void SettingsOpener(std::string fileName, Database * database);
   void SkillOpener(std::string fileName, Database * database);
   void PseudoSkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);
-  void TileOpener(std::string fileName, Database * database);
+  std::string TileOpener(std::string fileName, Database * database);
   void WayOpener(std::string fileName, Database * database);
 
-  void FileOpener(std::string fileName, Database * database);
-  Database * DatabaseOpener(std::string fileName);
+  void FileOpener(std::string fileName, Database * database, bool isServer);
+  Database * DatabaseOpener(std::string fileName, bool isServer);
 };
 
 #endif // _FILE_OPENER_H_

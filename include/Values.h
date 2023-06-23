@@ -290,4 +290,10 @@ class SpeechManager;
 #define TEAM_NEUTRAL 3
 #define TEAM_ENEMY 4
 
+// window_type
+
+#define WINDOW_FULLSCREEN 1
+#define WINDOW_WINDOW 2
+#define WINDOW_BORDERLESS 3
+
 #endif // _VALUES_H_
