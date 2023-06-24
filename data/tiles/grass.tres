@@ -1,15 +1,15 @@
 [gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://duti34vxoswq3"]
 
-[ext_resource type="Texture2D" uid="uid://bpsh83b7xsleb" path="res://data/tiles/grass/Color.jpg" id="1_vkhqa"]
-[ext_resource type="Texture2D" uid="uid://cixgu65qm3q4h" path="res://data/tiles/grass/AmbientOcclusion.jpg" id="2_38nb2"]
-[ext_resource type="Texture2D" uid="uid://dk1vh1wuwdud0" path="res://data/tiles/grass/NormalDX.jpg" id="3_av6vd"]
-[ext_resource type="Texture2D" uid="uid://b6vsclrr651as" path="res://data/tiles/grass/Roughness.jpg" id="3_v84rx"]
+[ext_resource type="Texture2D" path="res://data/tiles/grass/Color.jpg" id="1_grass"]
+[ext_resource type="Texture2D" path="res://data/tiles/grass/AmbientOcclusion.jpg" id="2_grass"]
+[ext_resource type="Texture2D" path="res://data/tiles/grass/NormalDX.jpg" id="3_grass"]
+[ext_resource type="Texture2D" path="res://data/tiles/grass/Roughness.jpg" id="3_grass"]
 
 [resource]
 vertex_color_use_as_albedo = true
-albedo_texture = ExtResource("1_vkhqa")
-roughness_texture = ExtResource("3_v84rx")
+albedo_texture = ExtResource("1_grass")
+roughness_texture = ExtResource("3_grass")
 normal_enabled = true
-normal_texture = ExtResource("3_av6vd")
+normal_texture = ExtResource("3_grass")
 ao_enabled = true
-ao_texture = ExtResource("2_38nb2")
+ao_texture = ExtResource("2_grass")

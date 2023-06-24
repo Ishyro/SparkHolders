@@ -11,7 +11,6 @@ func _ready():
 	var ip = "127.0.0.1";
 	link.initialize(ip)
 	for tile in link.getAvaillableTiles():
-		#materials[tile] = load("res://data/tiles/" + material + ".tres")
 		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" :
 			materials[tile] = load(link.getPathFromTile(tile))
 	for x in range(0, 10):

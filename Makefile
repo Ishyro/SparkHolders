@@ -102,6 +102,7 @@ CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 PLATFORM=linuxbsd
 AR=ar rcs
+DEPENDENCIES=scons
 
 # Windows
 ifdef WINDOWS
@@ -116,9 +117,18 @@ CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-
 CLIENTS_TERMINAL_BINAIRIES=
 TARGET_CLIENT_TERMINAL=
 PLATFORM=windows
+DEPENDENCIES=scons g++-mingw-w64-x86-64 (posix mode)
 endif # WINDOWS
 
 # Rules
+
+dependencies: extern_godot print_dep
+
+extern_godot:
+	$(MKDIR) externals; cd externals; git clone https://github.com/godotengine/godot.git
+
+print_dep:
+	echo $(DEPENDENCIES)
 
 all: bin $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
 		exec $(TARGET_SERVER) $(CLIENTS_TERMINAL_BINAIRIES) $(TARGET_CLIENT_TERMINAL) exec/libsparkholders.a godot

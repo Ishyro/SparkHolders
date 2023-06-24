@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dthrypj46h2re"]
 
 [ext_resource type="PackedScene" uid="uid://1s4asqpay67m" path="res://player/player.tscn" id="1_rbafw"]
-[ext_resource type="Texture2D" uid="uid://cgv7xgoy43rbc" path="res://player/crosshair.svg" id="2_0wbwf"]
+[ext_resource type="Texture2D" uid="uid://dfwoxq0daxje7" path="res://player/crosshair.svg" id="2_0wbwf"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0iwyg"]
