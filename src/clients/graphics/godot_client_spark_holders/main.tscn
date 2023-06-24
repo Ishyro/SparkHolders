@@ -1,0 +1,22 @@
+[gd_scene load_steps=7 format=3 uid="uid://dthrypj46h2re"]
+
+[ext_resource type="PackedScene" uid="uid://dbxsdcmlke8oe" path="res://menus/intro.tscn" id="2_28q53"]
+[ext_resource type="PackedScene" uid="uid://cw3l1q414ycnf" path="res://menus/main_menu.tscn" id="2_ehmh8"]
+[ext_resource type="PackedScene" uid="uid://by115lditjx20" path="res://menus/offline.tscn" id="3_bol75"]
+[ext_resource type="PackedScene" uid="uid://0fnxik7j4q84" path="res://world/world.tscn" id="3_iubd2"]
+[ext_resource type="PackedScene" uid="uid://d3g3bntmscrr4" path="res://menus/multiplayer.tscn" id="4_nsljb"]
+[ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="5_vrvlm"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Intro" parent="." instance=ExtResource("2_28q53")]
+
+[node name="MainMenu" parent="." instance=ExtResource("2_ehmh8")]
+
+[node name="Offline" parent="." instance=ExtResource("3_bol75")]
+
+[node name="Multiplayer" parent="." instance=ExtResource("4_nsljb")]
+
+[node name="Settings" parent="." instance=ExtResource("5_vrvlm")]
+
+[node name="World" parent="." instance=ExtResource("3_iubd2")]

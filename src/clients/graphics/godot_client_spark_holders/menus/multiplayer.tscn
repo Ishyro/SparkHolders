@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3g3bntmscrr4"]
+
+[ext_resource type="Script" path="res://menus/multiplayer.gd" id="1_33t1f"]
+
+[node name="Multiplayer" type="VBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.5
+offset_top = -85.5
+offset_right = 48.5
+offset_bottom = 85.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_33t1f")
+
+[node name="New Game" type="Button" parent="."]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Back")
+text = "New Game"
+
+[node name="Load Game" type="Button" parent="."]
+layout_mode = 2
+text = "Load Game"
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 2
+text = "Join"
+
+[node name="Settings" type="Button" parent="."]
+layout_mode = 2
+text = "Settings"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../New Game")
+text = "Back"
+
+[connection signal="pressed" from="New Game" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="Load Game" to="." method="_on_load_game_pressed"]
+[connection signal="pressed" from="Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
