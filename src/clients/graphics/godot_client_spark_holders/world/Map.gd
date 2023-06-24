@@ -11,12 +11,13 @@ func _ready():
 	var ip = "127.0.0.1";
 	link.initialize(ip)
 	for tile in link.getAvaillableTiles():
+		#materials[tile] = load("res://data/tiles/" + material + ".tres")
 		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" :
 			materials[tile] = load(link.getPathFromTile(tile))
-	for x in range(0, 10):
-		for z in range(0, 10):
+	for x in range(0, 100):
+		for z in range(0, 100):
 			_create_tile_mesh(Vector3(x, 0, z), "TXT_GRASS")
-			_create_tile_mesh(Vector3(x - 10, 0, z - 10), "TXT_FLOOR_STONE")
+			_create_tile_mesh(Vector3(x - 100, 0, z - 100), "TXT_FLOOR_STONE")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

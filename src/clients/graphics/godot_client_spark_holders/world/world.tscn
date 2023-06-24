@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=8 format=3 uid="uid://0fnxik7j4q84"]
 
-[ext_resource type="PackedScene" uid="uid://1s4asqpay67m" path="res://player/player.tscn" id="1_rbafw"]
-[ext_resource type="Texture2D" uid="uid://dfwoxq0daxje7" path="res://player/crosshair.svg" id="2_0wbwf"]
+[ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
+[ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0iwyg"]
 sky_top_color = Color(0.341176, 0.439216, 0.67451, 1)
@@ -20,21 +22,27 @@ sky = SubResource("Sky_face0")
 
 [node name="World" type="Node3D"]
 
-[node name="Player" parent="." instance=ExtResource("1_rbafw")]
-
 [node name="Map" type="Node" parent="."]
 script = ExtResource("2_kskax")
 
-[node name="Crosshair" type="CenterContainer" parent="."]
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="View" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+script = ExtResource("2_7wmtq")
 
-[node name="TextureRect" type="TextureRect" parent="Crosshair"]
-layout_mode = 2
-texture = ExtResource("2_0wbwf")
+[node name="Camera3D" type="Camera3D" parent="View"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+attributes = SubResource("CameraAttributesPractical_6mjh4")
+fov = 90.0
+
+[node name="RayCast3D" type="RayCast3D" parent="View"]
+target_position = Vector3(0, 0, 0)
+
+[node name="Pause" parent="View" instance=ExtResource("4_0dq18")]
+visible = false
+visibility_layer = 524288
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 50, 0)
 shadow_enabled = true
 shadow_bias = 0.04
 

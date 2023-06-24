@@ -1,20 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3g3bntmscrr4"]
+[gd_scene load_steps=3 format=3 uid="uid://by115lditjx20"]
 
-[ext_resource type="Script" path="res://menus/multiplayer.gd" id="1_33t1f"]
-[ext_resource type="Texture2D" path="res://data/tiles/grass/Color.jpg" id="2_ffrg3"]
+[ext_resource type="Script" path="res://menus/singleplayer.gd" id="1_6xlc5"]
+[ext_resource type="Texture2D" path="res://data/tiles/grass/Color.jpg" id="2_fpy6k"]
 
-[node name="Multiplayer" type="Control"]
+[node name="SinglePlayer" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_33t1f")
+script = ExtResource("1_6xlc5")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -6)
-texture = ExtResource("2_ffrg3")
+texture = ExtResource("2_fpy6k")
 
 [node name="Menu" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -24,9 +24,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -48.5
-offset_top = -85.5
+offset_top = -68.0
 offset_right = 48.5
-offset_bottom = 85.5
+offset_bottom = 68.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
@@ -40,10 +40,6 @@ text = "New Game"
 layout_mode = 2
 text = "Load Game"
 
-[node name="Join" type="Button" parent="Menu"]
-layout_mode = 2
-text = "Join"
-
 [node name="Settings" type="Button" parent="Menu"]
 layout_mode = 2
 text = "Settings"
@@ -55,6 +51,5 @@ text = "Back"
 
 [connection signal="pressed" from="Menu/New" to="." method="_on_new_pressed"]
 [connection signal="pressed" from="Menu/Load" to="." method="_on_load_pressed"]
-[connection signal="pressed" from="Menu/Join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Menu/Back" to="." method="_on_back_pressed"]
