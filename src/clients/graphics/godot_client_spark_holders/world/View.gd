@@ -3,14 +3,14 @@ extends Node3D
 const MOVEMENT_SPEED = 0.6
 const MOVEMENT_FRICTION = 0.5
 
-var _mouse_motion = Vector2()
+var _mouse_motion = Vector2.ZERO
 var velocity = Vector3.ZERO
 var pause_state = false
 
-@onready var raycast = $RayCast3D
 @onready var camera = $Camera3D
 @onready var camera_attributes = camera.attributes
 @onready var pause = $Pause
+@onready var grid = $"../Map/Grid"
 
 
 func _ready():
@@ -18,11 +18,10 @@ func _ready():
 	pass
 
 func _process(_delta):
-	# Mouse movement.
-	#_mouse_motion.y = clamp(_mouse_motion.y, -1560, 1560)
-	camera.rotation_degrees = Vector3(min(-30, max(-90, camera.rotation_degrees.x + _mouse_motion.y * -0.001)), camera.rotation_degrees.y, camera.rotation_degrees.z)
-	#transform.basis = Basis.from_euler(Vector3(0, _mouse_motion.x * -0.001, 0))
-
+	if(not pause_state):
+		# Mouse movement.
+		_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
+		camera.rotation_degrees = Vector3(min(-30, max(-90, camera.rotation_degrees.x + _mouse_motion.y * -0.001)), camera.rotation_degrees.y, camera.rotation_degrees.z)
 
 func _physics_process(_delta):
 	if(not pause_state):
@@ -32,8 +31,9 @@ func _physics_process(_delta):
 		
 		# Keyboard movement.
 		var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-		var movement = camera.transform.basis * (Vector3(movement_vec2.x, 0, movement_vec2.y))
-
+		movement_vec2 = movement_vec2.rotated(deg_to_rad(-camera.rotation_degrees.y))
+		var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
+		
 		movement *= MOVEMENT_SPEED * ( 3 + transform.origin.y) / 10
 
 		velocity += Vector3(movement.x, 0, movement.z)
@@ -62,4 +62,7 @@ func _input(event):
 			camera.rotation_degrees += Vector3(0, 45, 0)
 		if event.is_action_pressed("rotate_right"):
 			camera.rotation_degrees += Vector3(0, -45, 0)
-		
+		if event.is_action_pressed("display_grid"):
+			grid.visible = true
+		if event.is_action_released("display_grid"):
+			grid.visible = false
