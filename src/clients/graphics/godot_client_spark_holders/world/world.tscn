@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=10 format=3 uid="uid://0fnxik7j4q84"]
 
+[ext_resource type="Script" path="res://world/Plans.gd" id="1_vw6jy"]
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
-[ext_resource type="PackedScene" path="res://menus/pause_menu.tscn" id="4_0dq18"]
+[ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
 
 [sub_resource type="MeshLibrary" id="MeshLibrary_5p4l8"]
 
@@ -24,6 +25,10 @@ sky = SubResource("Sky_face0")
 
 [node name="World" type="Node3D"]
 
+[node name="Plans" type="Node3D" parent="."]
+visible = false
+script = ExtResource("1_vw6jy")
+
 [node name="Map" type="GridMap" parent="."]
 mesh_library = SubResource("MeshLibrary_5p4l8")
 cell_size = Vector3(1, 1, 1)
@@ -33,6 +38,9 @@ script = ExtResource("2_kskax")
 visible = false
 
 [node name="Tiles" type="Node3D" parent="Map"]
+
+[node name="Lights" type="Node3D" parent="Map"]
+visible = false
 
 [node name="Characters" type="Node3D" parent="Map"]
 

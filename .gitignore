@@ -1,8 +1,6 @@
 bin/
-exec/
 externals/godot
 .vscode/
 src/clients/graphics/godot_modules/spark_holders_graphical/__pycache__/
 src/clients/graphics/godot_modules/spark_holders_graphical/*.o
-*.import
 *.tmp

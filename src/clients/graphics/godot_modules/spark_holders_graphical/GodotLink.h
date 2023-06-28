@@ -3,6 +3,7 @@
 
 #include "core/object/ref_counted.h"
 
+#include "data/Adventure.h"
 
 #include "communication/Socket.h"
 
@@ -16,9 +17,12 @@ class GodotLink : public RefCounted {
 public:
   GodotLink():
     link(nullptr),
-    translator(nullptr)
+    translator(nullptr),
+    state(nullptr)
   {}
   void initialize(String ip);
+  void receiveState();
+  float getMoveCost(int64_t character_id, int y, int x);
   Array getAvaillableTiles();
   String getPathFromTile(String tile);
 
@@ -28,6 +32,7 @@ private:
   Socket s;
   Link * link;
   Translator * translator;
+  StateDisplay * state;
 };
 
 #endif // _GODOT_LINK_H_

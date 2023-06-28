@@ -15,7 +15,9 @@ func _on_load_pressed():
 	pass # Replace with function body.szqdzq
 
 func _on_menu_pressed():
+	OS.kill(Values.server_pid)
 	get_tree().change_scene_to_file("res://menus/main_menu.tscn")
 
 func _on_quit_pressed():
+	OS.kill(Values.server_pid)
 	get_tree().quit()

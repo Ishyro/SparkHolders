@@ -10,16 +10,24 @@ config_version=5
 
 [application]
 
-config/name="Godot Client Spark Holders"
+config/name="SparkHolders"
 run/main_scene="res://menus/intro.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Values="*res://values.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/borderless=true
+
+[filesystem]
+
+import/fbx/enabled=false
 
 [input]
 

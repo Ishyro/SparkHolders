@@ -5,7 +5,7 @@ import os
 Import('env')
 
 env.Append(CPPPATH=['../../../../../include'])
-env.Append(LIBPATH=[os.path.abspath('../../../../../exec')])
+env.Append(LIBPATH=[os.path.abspath('../../../../../bin')])
 env.Append(LIBS=['sparkholders'])
 if env["platform"] == 'windows':
   env.Append(LIBS=['ws2_32'])

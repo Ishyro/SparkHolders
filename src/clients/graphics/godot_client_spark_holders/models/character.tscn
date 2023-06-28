@@ -1,0 +1,48 @@
+[gd_scene load_steps=9 format=3 uid="uid://dhv0dj6a57no3"]
+
+[ext_resource type="Script" path="res://models/character.gd" id="1_au3f8"]
+[ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://world/board_material.tres" id="2_k4gql"]
+[ext_resource type="PackedScene" uid="uid://cu02blmr4xp8t" path="res://chess/Kingpiece.1.glb" id="3_r3sm8"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lwiiu"]
+material = ExtResource("2_k4gql")
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.025
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_t5xkk"]
+material = ExtResource("2_k4gql")
+top_radius = 0.85
+bottom_radius = 0.9
+height = 0.025
+
+[sub_resource type="TorusMesh" id="TorusMesh_bef1l"]
+inner_radius = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35ev2"]
+
+[sub_resource type="TextMesh" id="TextMesh_3uq5c"]
+material = SubResource("StandardMaterial3D_35ev2")
+text = "^"
+
+[node name="Character" type="Node3D"]
+script = ExtResource("1_au3f8")
+
+[node name="LowerBasement" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_lwiiu")
+skeleton = NodePath("")
+
+[node name="Upper Basement" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+mesh = SubResource("CylinderMesh_t5xkk")
+
+[node name="Color" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+mesh = SubResource("TorusMesh_bef1l")
+
+[node name="Orientation" type="MeshInstance3D" parent="."]
+transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.05, 0.7)
+mesh = SubResource("TextMesh_3uq5c")
+
+[node name="Placeholder" parent="." instance=ExtResource("3_r3sm8")]
+transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0, 0)

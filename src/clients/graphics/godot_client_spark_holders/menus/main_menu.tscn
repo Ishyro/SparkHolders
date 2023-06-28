@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cw3l1q414ycnf"]
 
 [ext_resource type="Script" path="res://menus/main_menu.gd" id="1_vnb7q"]
-[ext_resource type="Texture2D" path="res://data/tiles/grass/Color.jpg" id="2_5fb1q"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_5fb1q"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -49,7 +49,7 @@ layout_mode = 2
 focus_neighbor_bottom = NodePath("../Singleplayer")
 text = "Quit Game"
 
-[connection signal="pressed" from="Menu/Singleplayer" to="." method="_on_offline_pressed"]
+[connection signal="pressed" from="Menu/Singleplayer" to="." method="_on_singleplayer_pressed"]
 [connection signal="pressed" from="Menu/Multiplayer" to="." method="_on_multiplayer_pressed"]
 [connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Menu/Quit" to="." method="_on_quit_pressed"]

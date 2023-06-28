@@ -55,7 +55,7 @@ func _input(event):
 		else:
 			_mouse_motion = Vector2.ZERO
 		if event.is_action_pressed("zoom_in"):
-			transform.origin = Vector3(transform.origin.x, max(transform.origin.y - 1, 1), transform.origin.z)
+			transform.origin = Vector3(transform.origin.x, max(transform.origin.y - 1, 2), transform.origin.z)
 		if event.is_action_pressed("zoom_out"):
 			transform.origin = Vector3(transform.origin.x, min(transform.origin.y + 1, 20), transform.origin.z)
 		if event.is_action_pressed("rotate_left"):

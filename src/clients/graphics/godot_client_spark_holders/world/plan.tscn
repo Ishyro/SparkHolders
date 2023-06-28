@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgha3tm6jxc11"]
+
+[ext_resource type="Script" path="res://world/plan.gd" id="1_53vmf"]
+
+[node name="Plan" type="Node3D"]
+script = ExtResource("1_53vmf")

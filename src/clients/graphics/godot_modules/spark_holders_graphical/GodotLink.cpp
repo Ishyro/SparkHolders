@@ -1,7 +1,7 @@
 #include "GodotLink.h"
 
-#include "data/Adventure.h"
 #include "data/Database.h"
+#include "data/Map.h"
 
 #include "util/FileOpener.h"
 
@@ -17,7 +17,15 @@ void GodotLink::initialize(String ip) {//std::string p_ip, int p_port, std::stri
   translator = link->initialize(ClientSettings::getLang());
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
-  // link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
+  link->sendChoices("test", "TXT_DUELIST", "TXT_HUMAN", "TXT_ARMYTHAS", "TXT_TAGRAN", "TXT_BESTIONA", "TXT_SOLIDER");
+}
+
+void GodotLink::receiveState() {
+  state = link->receiveState();
+}
+
+float GodotLink::getMoveCost(int64_t character_id, int y, int x) {
+  return state->map->getMoveCost(link->getAdventure()->getCharacter((long) character_id), y, x);
 }
 
 Array GodotLink::getAvaillableTiles() {
@@ -34,6 +42,8 @@ String GodotLink::getPathFromTile(String tile) {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("receiveState"), &GodotLink::receiveState);
+  ClassDB::bind_method(D_METHOD("getMoveCost", "id", "x", "z"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getAvaillableTiles"), &GodotLink::getAvaillableTiles);
   ClassDB::bind_method(D_METHOD("getPathFromTile", "tile"), &GodotLink::getPathFromTile);
 }

@@ -13,7 +13,6 @@ class Link {
   public:
     Link(Socket s):s(s) {}
     Translator * initialize(std::string language);
-    void receiveAdventure();
     void sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
     StateDisplay * receiveState();
     void sendAction(int type, void * arg1, void * arg2, int overcharge_power, int overcharge_duration, int overcharge_rang);
