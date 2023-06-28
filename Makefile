@@ -92,6 +92,7 @@ CC=g++
 CC_FLAGS=-O0 -pipe -pthread -fpermissive -g -Wall -Wno-reorder
 CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
+TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
 PLATFORM=linuxbsd
 AR=ar rcs
 
@@ -104,6 +105,7 @@ endif # _D_WIN32_WINNT
 CC=x86_64-w64-mingw32-g++
 CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -pipe -static-libstdc++ -static-libgcc -fpermissive -g -Wall -Wno-reorder
 CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
 PLATFORM=windows
 endif # WINDOWS
 
@@ -134,4 +136,4 @@ $(TARGET_SERVER): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_B
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) $^ -o $@ $(CC_LIBRARIES)
 
 clean:
-	$(RM) $(BIN) $(TARGET_SERVER)
+	$(RM) $(BIN) $(TARGET_SERVER) $(TARGET_GODOT)

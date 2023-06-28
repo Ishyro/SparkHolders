@@ -23,8 +23,17 @@ public:
   void initialize(String ip);
   void receiveState();
   float getMoveCost(int64_t character_id, int y, int x);
+  Vector3 getSizes();
+  Vector3 getOffsets();
   Array getAvaillableTiles();
-  String getPathFromTile(String tile);
+  Array getTiles();
+  Array getLights();
+  Array getControlledParty();
+  Dictionary getCharacters();
+  Dictionary getProjectiles();
+  Dictionary getDataFromTile(String tile_name);
+  Dictionary getDataFromCharacter(long id);
+  Dictionary getDataFromProjectile(long id);
 
 protected:
   static void _bind_methods();

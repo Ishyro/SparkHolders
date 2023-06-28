@@ -1,5 +1,7 @@
 extends Node3D
 
+var owned_characters = []
+
 var grid = []
 var board = []
 var tiles = []
@@ -7,6 +9,9 @@ var lights = []
 var characters = {}
 var projectiles = {}
 var loots = {}
+var tiles_data = {}
+var characters_data = {}
+var projectiles_data = {}
 var materials = {}
 
 var board_material = preload("res://world/board_material.tres")
@@ -31,13 +36,11 @@ var light_f = StandardMaterial3D.new()
 var base_character = preload("res://models/character.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
 
-var height
-var width
-var level
 var plan
-var mid_height
-var mid_width
-var ori = Vector3(50, 0, 60)#Vector3.ZERO
+var offset = Vector3.ZERO
+var size = Vector3.ZERO
+var mid_size = Vector3.ZERO
+#var ori = Vector3(50, 0, 60)
 var link = GodotLink.new()
 
 @onready var n_view = $"../View"
@@ -66,125 +69,174 @@ func _ready():
 	light_d.albedo_color = "dddddd"
 	light_e.albedo_color = "eeeeee"
 	light_f.albedo_color = "ffffff"
-	var ip = "84.97.162.152";
+	# var ip = "84.97.162.152";
 	# var ip = "192.168.168.164";
 	# var ip = "192.168.1.83";
-	# var ip = "127.0.0.1";
+	var ip = "127.0.0.1";
 	link.initialize(ip)
-	#link.receiveState()
+	
+	
+	link.receiveState()
 	grid_material.albedo_color = "000000"
-	height = 21
-	width = 21
-	level = 0
+	offset = link.getOffsets()
+	size = link.getSizes()
+	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
-	mid_height = height / 2.0
-	mid_width = width / 2.0
-	n_view.transform.origin = Vector3(ori.x + mid_height - 5, n_view.transform.origin.y, ori.z + mid_width)
-	for i in height:
+	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, n_view.transform.origin.y, offset.z + mid_size.z)
+	for i in size.x:
 		tiles.append([])
 		lights.append([])
-		for j in width:
+		for j in size.z:
 			tiles[i].append([])
 			lights[i].append([])
 	board.append([])
 	for tile in link.getAvaillableTiles():
-		materials[tile] = load(link.getPathFromTile(tile))
+		tiles_data[tile] = link.getDataFromTile(tile)
+		materials[tile] = load(tiles_data[tile]["path"])
+		
+	owned_characters = link.getControlledParty()
+	characters_data = link.getCharacters()
+	projectiles_data = link.getProjectiles()
 	create_grid()
 	create_board()
 	create_tiles()
-	add_character(Vector3(ori.x + mid_height, 1, ori.z + mid_width), "0000FF", 0.3, 90., 1)
-	add_character(Vector3(ori.x + mid_height + 2, 1, ori.z + mid_width + 2), "FF0000", 0.5, 180., 2)
-	add_projectile(Vector3(ori.x + mid_height + 7, 1, ori.z + mid_width + 2), 0.1, 270., 1)
+	for character_id in characters_data:
+		add_character(character_id, characters_data[character_id])
+	for projectile_id in projectiles_data:
+		add_projectile(projectile_id, projectiles_data[projectile_id])
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
 	
 func create_grid():
-	var pos = Vector3(ori.x + mid_height, ori.y, ori.z + mid_width)
-	for x in range(0, height + 1):
+	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
+	for x in range(0, size.x + 1):
 		var line = MeshInstance3D.new()
 		line.mesh = BoxMesh.new()
-		line.mesh.set_size(Vector3(0.05, 0.001, width))
+		line.mesh.set_size(Vector3(0.05, 0.001, size.z))
 		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(x - mid_height, 1.001, 0)
+		line.transform.origin = pos + Vector3(x - mid_size.x, 1.001, 0)
 		grid.append(line)
 		n_grid.add_child(line)
-	for z in range(0, width + 1):
+	for z in range(0, size.z + 1):
 		var line = MeshInstance3D.new()
 		line.mesh = BoxMesh.new()
-		line.mesh.set_size(Vector3(height, 0.001, 0.05))
+		line.mesh.set_size(Vector3(size.x, 0.001, 0.05))
 		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(0, 1.001, z - mid_width)
+		line.transform.origin = pos + Vector3(0, 1.001, z - mid_size.z)
 		grid.append(line)
 		n_grid.add_child(line)
 
 func create_board():
-	var pos = Vector3(ori.x + mid_height, ori.y, ori.z + mid_width)
+	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
 	# 1
 	var rod = MeshInstance3D.new()
 	rod.mesh = BoxMesh.new()
-	rod.mesh.set_size(Vector3(0.1, 1, width + 0.1))
+	rod.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(-0.05 - mid_height, 0.5, -0.05)
+	rod.transform.origin = pos + Vector3(-0.05 - mid_size.x, 0.5, -0.05)
 	board.append(rod)
 	add_child(rod)
 	# 2
 	rod = MeshInstance3D.new()
 	rod.mesh = BoxMesh.new()
-	rod.mesh.set_size(Vector3(height + 0.1, 1, 0.1))
+	rod.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(0.05, 0.5, -0.05 - mid_width)
+	rod.transform.origin = pos + Vector3(0.05, 0.5, -0.05 - mid_size.z)
 	board.append(rod)
 	add_child(rod)
 	# 3
 	rod = MeshInstance3D.new()
 	rod.mesh = BoxMesh.new()
-	rod.mesh.set_size(Vector3(0.1, 1, width + 0.1))
+	rod.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(0.05 + mid_height, 0.5, 0.05)
+	rod.transform.origin = pos + Vector3(0.05 + mid_size.x, 0.5, 0.05)
 	board.append(rod)
 	add_child(rod)
 	# 4
 	rod = MeshInstance3D.new()
 	rod.mesh = BoxMesh.new()
-	rod.mesh.set_size(Vector3(height + 0.1, 1, 0.1))
+	rod.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(-0.05, 0.5, 0.05 + mid_width)
+	rod.transform.origin = pos + Vector3(-0.05, 0.5, 0.05 + mid_size.z)
 	board.append(rod)
 	add_child(rod)
+	
+func get_light(light: int):
+	match light:
+		0:
+			return light_0
+		1:
+			return light_1
+		2: 
+			return light_2
+		3:
+			return light_3
+		4:
+			return light_4
+		5:
+			return light_5
+		6:
+			return light_6
+		7:
+			return light_7
+		8:
+			return light_8
+		9:
+			return light_9
+		10:
+			return light_a
+		11:
+			return light_b
+		12:
+			return light_c
+		13:
+			return light_d
+		14:
+			return light_e
+		15:
+			return light_f
 
 func create_tiles():
-	for x in range(0, height):
-		for z in range(0, width):
+	var current_tiles = link.getTiles()
+	var current_lights = link.getLights()
+	for x in range(0, size.x):
+		for z in range(0, size.z):
 			var light = MeshInstance3D.new()
 			light.mesh = PlaneMesh.new()
 			light.mesh.set_size(Vector2.ONE)
-			light.set_surface_override_material(0, light_c)
-			light.transform.origin = Vector3(ori.x + x + 0.5, 1.001, ori.z + z + 0.5)
+			light.set_surface_override_material(0, get_light(current_lights[x][z]))
+			light.transform.origin = Vector3(offset.x + x + 0.5, 1.001, offset.z + z + 0.5)
 			lights[x][z] = light
 			n_lights.add_child(light)
 			var tile = MeshInstance3D.new()
 			tile.mesh = BoxMesh.new()
-			tile.mesh.set_size(Vector3.ONE)
-			tile.set_surface_override_material(0, materials["TXT_GRASS"])
-			tile.transform.origin = Vector3(ori.x + x + 0.5, 0.5, ori.z + z + 0.5)
+			if tiles_data[current_tiles[x][z]]["solid"]:
+				tile.mesh.set_size(Vector3(1, 4, 1))
+			else:
+				tile.mesh.set_size(Vector3.ONE)
+			tile.set_surface_override_material(0, materials[current_tiles[x][z]])
+			tile.transform.origin = Vector3(offset.x + x + 0.5, 0.5, offset.z + z + 0.5)
 			tiles[x][z] = tile
 			n_tiles.add_child(tile)
-	
-func add_character(pos: Vector3, color: String, size: float, orientation: float, id: int):
+
+func get_color(_character_data: Dictionary):
+	return "0000FF"
+
+func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
-	character.scale_object_local(Vector3(size, size, size))
-	character.set_color(color)
-	character.transform.origin = pos
-	character.rotation_degrees += Vector3(0, orientation, 0)
-	characters[id] = character
+	character.scale_object_local(Vector3(character_data["size"], character_data["size"], character_data["size"]))
+	character.set_color(get_color(character_data))
+	character.transform.origin = Vector3(character_data["y"], 1, character_data["x"])
+	character.rotation_degrees += Vector3(0, character_data["orientation"], 0)
+	characters[str(character_id)] = character
 	n_characters.add_child(character)
 	
-func add_projectile(pos: Vector3, size: float, orientation: float, id: int):
+func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	var projectile = base_projectile.instantiate()
-	projectile.scale_object_local(Vector3(size, size, size))
-	projectile.transform.origin = pos
-	projectile.rotation_degrees += Vector3(0, orientation, 0)
-	projectiles[id] = projectile
+	projectile.scale_object_local(Vector3(projectile_data["size"], projectile_data["size"], projectile_data["size"]))
+	projectile.transform.origin = Vector3(projectile_data["y"], 1, projectile_data["x"])
+	projectile.rotation_degrees += Vector3(0, projectile_data["orientation"], 0)
+	projectile[str(projectile_id)] = projectile
 	n_projectiles.add_child(projectile)

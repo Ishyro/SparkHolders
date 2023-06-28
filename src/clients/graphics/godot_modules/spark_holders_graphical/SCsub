@@ -11,4 +11,4 @@ if env["platform"] == 'windows':
   env.Append(LIBS=['ws2_32'])
 module_env = env.Clone()
 module_env.add_source_files(env.modules_sources, "*.cpp")
-module_env.Append(CXXFLAGS=['-O2'])
+module_env.Append(CXXFLAGS=['-O0', '-Wno-reorder'])

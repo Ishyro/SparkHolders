@@ -16,6 +16,9 @@ void Link::initialize() {
   try {
     Server::sendAdventure(s, adventure);
     player = Server::receiveChoices(s, adventure);
+    if(player == nullptr) {
+      markClosed();
+    }
   } catch (const CloseException &e) {
     markClosed();
     throw e;
