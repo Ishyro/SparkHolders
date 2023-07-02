@@ -16,14 +16,14 @@
 #include "ai/NocturnalPassiveAI.h"
 
 Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
-  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  Map * visionMap = updateMap(adventure, c);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 3);
   float orientation = 0.F;
   if(!threats.empty()) {
     Character * target = threats.front();
     orientation = getFleeOrientation(adventure, c, target->getX(), target->getY());
     /*MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, c->getX(), c->getY());
-    if(!adventure->getWorld()->getMap(c->getCurrentMapId())->getTile(pair.y, pair.x)->untraversable) {*/
+    if(!adventure->getWorld()->getMap(c->getCurrentMap()->id)->getTile(pair.x, pair.y)->untraversable) {*/
       delete visionMap;
       //return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     //}
@@ -32,7 +32,7 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
       delete visionMap;
       Target * t = new Target();
       t->type = TARGET_TILE;
-      t->id = c->getCurrentMapId();
+      t->id = c->getCurrentMap()->id;
       t->x = origin_x;
       t->y = origin_y;
       return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
@@ -56,7 +56,7 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
     delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);

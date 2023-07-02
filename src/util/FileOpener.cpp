@@ -107,11 +107,11 @@ namespace FileOpener {
     return result;
   }
 
-  void getCoordinates(std::string to_read, long & map_id, int & y, int & x, World * world) {
+  void getCoordinates(std::string to_read, int & x, int & y, int & z) {
     std::stringstream * ss = new std::stringstream(to_read);
-    map_id = world->getMap(String::extract(ss))->id;
     x = String::extract_int(ss);
     y = String::extract_int(ss);
+    z = String::extract_int(ss);
     delete ss;
   }
 
@@ -176,9 +176,9 @@ namespace FileOpener {
     if(keyword == "Character" && isServer) {
       std::string name = String::extract(ss);
       std::string coord = String::extract(ss);
-      int x, y;
-      long map_id;
-      getCoordinates(coord, map_id, y, x, world);
+      int x, y, z;
+      getCoordinates(coord, x, y, z);
+      Map * map = world->getMap(x, y, z);
       std::string team = String::extract(ss);
       std::string ai_str = String::extract(ss);
       Attributes * attributes = (Attributes *) database->getAttributes(String::extract(ss));
@@ -230,8 +230,9 @@ namespace FileOpener {
         gold,
         x,
         y,
+        z,
         90.F,
-        map_id,
+        map,
         team,
         ai,
         attributes,
@@ -245,7 +246,7 @@ namespace FileOpener {
         profession,
         *titles
       );
-      world->getMap(map_id)->addCharacter(c);
+      world->getMap(map->id)->addCharacter(c);
       delete race_modifiers;
       delete titles;
     }
@@ -255,21 +256,21 @@ namespace FileOpener {
     }
     else if(keyword == "Map") {
       std::string map_name = String::extract(ss);
-      Map * map = new Map(database->getMap(map_name.substr(0, map_name.find('#'))), map_name);
+      int offsetX = String::extract_int(ss);
+      int offsetY = String::extract_int(ss);
+      int offsetZ = String::extract_int(ss);
+      Map * map = new Map(database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ);
       world->addMap(map);
     }
     else if(keyword == "MapLink") {
-      long id1, id2;
       MapLink * link = new MapLink();
       std::string coord = String::extract(ss);
-      getCoordinates(coord, id1, link->y1, link->x1, world);
+      getCoordinates(coord, link->x1, link->y1, link->z1);
       coord = String::extract(ss);
-      getCoordinates(coord, id2, link->y2, link->x2, world);
+      getCoordinates(coord, link->x2, link->y2, link->z2);
       link->type = database->getTargetFromMacro(String::extract(ss));
-      Map * map1 = world->getMap(id1);
-      Map * map2 = world->getMap(id2);
-      link->map1 = map1;
-      link->map2 = map2;
+      link->map1 = world->getMap(link->x1, link->y1, link->z1);
+      link->map2 = world->getMap(link->x2, link->y2, link->z2);
       world->addMapLink(link);
       world->addMapLink(link);
     }
@@ -323,7 +324,7 @@ namespace FileOpener {
     else if(keyword == "Spawn" && isServer) {
       Spawn * spawn = new Spawn();
       std::string coord = String::extract(ss);
-      getCoordinates(coord, spawn->map_id, spawn->y, spawn->x, world);
+      getCoordinates(coord, spawn->x, spawn->y, spawn->z);
       spawns->push_back(spawn);
     }
     else if(keyword == "StartingAttributes") {
@@ -756,11 +757,12 @@ namespace FileOpener {
     std::string name = values.at("name");
     int sizeX = stoi(values.at("width"));
     int sizeY = stoi(values.at("height"));
+    int sizeZ = stoi(values.at("depth"));
     std::istringstream is(values.at("outside"));
     bool outside;
     is >> std::boolalpha >> outside;
 
-    Map * map = new Map(name, sizeX, sizeY, outside);
+    Map * map = new Map(name, sizeX, sizeY, sizeZ, outside);
 
     std::fstream file;
     std::string line;
@@ -777,7 +779,7 @@ namespace FileOpener {
       for(int x = 0; x < sizeX; x++) {
         std::string tile;
         getline(is, tile, ' ');
-        map->setTile(y, x, (Tile *) database->getTile(values.at(tile)));
+        map->setTile(x, y, (Tile *) database->getTile(values.at(tile)));
       }
     }
 

@@ -202,6 +202,7 @@ bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 float Character::getX() { return x; }
 float Character::getY() { return y; }
+float Character::getZ() { return z; }
 float Character::getSize() { return size; }
 float Character::getOrientation() { return orientation; }
 int Character::getHp() { return hp; }
@@ -341,7 +342,7 @@ Speech * Character::getDeathSpeech() { return death_speech; }
 Speech * Character::getTalkingSpeech() { return talking_speech; }
 int Character::getType() { return race->getType(race_modifiers); }
 
-int Character::getCurrentMapId() { return current_map_id; }
+Map * Character::getCurrentMap() { return current_map; }
 
 Gear * Character::getGear() { return gear; }
 
@@ -460,11 +461,16 @@ std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
-void Character::move(float y, float x, float orientation, int map_id) {
+void Character::move(float x, float y, float z, float orientation, World * world) {
+  Map * new_map = world->getMap(x, y, z);
+  if(current_map->id != new_map->id) {
+    world->getMap(this->x, this->y, this->z)->removeCharacter(this);
+    new_map->addCharacter(this);
+  }
   this->x = x;
   this->y = y;
+  this->z = z;
   this->orientation = orientation;
-  this->current_map_id = map_id;
 }
 
 void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
@@ -611,7 +617,7 @@ void Character::incrDetectionRange() {
   detectionRange++;
 }
 
-void Character::setCurrentMapId(int map_id) { this->current_map_id = map_id; }
+void Character::setCurrentMap(Map * map) { this->current_map = map; }
 
 void Character::applySoulBurn() {
   int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 10., (float) soulBurnTreshold / 10.);
@@ -1158,7 +1164,7 @@ Projectile * Character::shoot(Target * target, Adventure * adventure) {
         }
         gear->getWeapon()->useAmmo();
       }
-      return new Projectile(base_projectile, realDamages, adventure->getWorld(), current_map_id, target, this, 1, 1, 1, true);
+      return new Projectile(base_projectile, realDamages, adventure->getWorld(), current_map->id, target, this, 1, 1, 1, true);
     }
   }
   return nullptr;
@@ -1392,6 +1398,7 @@ std::string Character::to_string() {
   String::insert_int(ss, race->getType(race_modifiers));
   String::insert_float(ss, x);
   String::insert_float(ss, y);
+  String::insert_float(ss, z);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
   String::insert(ss, team);
@@ -1433,6 +1440,7 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->type = String::extract_int(ss);
   display->x = String::extract_float(ss);
   display->y = String::extract_float(ss);
+  display->z = String::extract_float(ss);
   display->size = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
   display->team = String::extract(ss);
@@ -1491,9 +1499,10 @@ std::string Character::full_to_string(Adventure * adventure) {
   }
   String::insert_float(ss, x);
   String::insert_float(ss, y);
+  String::insert_float(ss, z);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
-  String::insert_int(ss, current_map_id);
+  String::insert_int(ss, current_map->id);
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1601,9 +1610,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   }
   float x = String::extract_float(ss);
   float y = String::extract_float(ss);
+  float z = String::extract_float(ss);
   float size = String::extract_float(ss);
   float orientation = String::extract_float(ss);
-  int current_map_id = String::extract_int(ss);
+  Map * current_map = adventure->getWorld()->getMap(String::extract_int(ss));
   bool merchant = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);
@@ -1696,9 +1706,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     talking_speech,
     x,
     y,
+    z,
     size,
     orientation,
-    current_map_id,
+    current_map,
     merchant,
     gold,
     xp,

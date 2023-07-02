@@ -21,12 +21,14 @@ void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int ov
   if(!teleport) {
     x = owner->getX() + (owner->getSize() + size) * std::cos(orientation * 3.141593F / 180.F);
     y = owner->getY() + (owner->getSize() + size) * std::sin(orientation * 3.141593F / 180.F);
+    z = owner->getZ();
   }
 }
 
 int Projectile::getCurrentMapId() { return current_map_id; }
 float Projectile::getX() { return x; }
 float Projectile::getY() { return y; }
+float Projectile::getZ() { return z; }
 float Projectile::getDestX() {
   return target->x;
 }
@@ -91,11 +93,16 @@ void Projectile::markDestroyed() {
   }
 }
 
-void::Projectile::move(float y, float x, float orientation, int map_id) {
+void::Projectile::move(float x, float y, float z, float orientation, World * world) {
+  Map * new_map = world->getMap(x, y, z);
+  if(current_map_id != new_map->id) {
+    world->getMap(this->x, this->y, this->z)->removeProjectile(this);
+    new_map->addProjectile(this);
+  }
   this->x = x;
   this->y = y;
+  this->z = z;
   this->orientation = orientation;
-  this->current_map_id = map_id;
 }
 
 void Projectile::reduceDamageTick() {
@@ -191,6 +198,7 @@ std::string Projectile::to_string() {
   String::insert_float(ss, size);
   String::insert_float(ss, x);
   String::insert_float(ss, y);
+  String::insert_float(ss, z);
   String::insert_float(ss, orientation);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, current_damages[i]);
@@ -215,6 +223,7 @@ std::string Projectile::full_to_string() {
   String::insert_int(ss, current_map_id);
   String::insert_float(ss, x);
   String::insert_float(ss, y);
+  String::insert_float(ss, z);
   if(skill != nullptr) {
     String::insert(ss, skill->name);
   }
@@ -254,6 +263,7 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   display->size = String::extract_float(ss);
   display->x = String::extract_float(ss);
   display->y = String::extract_float(ss);
+  display->z = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
@@ -277,6 +287,7 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
   int current_map_id = String::extract_int(ss);
   float x = String::extract_float(ss);
   float y = String::extract_float(ss);
+  float z = String::extract_float(ss);
   std::string skill_str = String::extract(ss);
   Skill * skill = nullptr;
   if(skill_str != "none") {
@@ -314,6 +325,7 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
     current_map_id,
     x,
     y,
+    z,
     skill,
     *effects,
     target,

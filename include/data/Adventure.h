@@ -11,7 +11,7 @@
 typedef struct Spawn {
   int x;
   int y;
-  long map_id;
+  int z;
 } Spawn;
 
 typedef struct StateDisplay {
@@ -69,14 +69,14 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, int mapId, float y, float x);
-    void hardMoveCharacterToMap(Character * character, int mapId, float y, float x);
+    void softMoveCharacterToMap(Character * character, int mapId, float x, float y, float z);
+    void hardMoveCharacterToMap(Character * character, int mapId, float x, float y, float z);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
-    void resurrect(Character * player, int map_id, int y, int x);
+    void resurrect(Character * player, int map_id, float x, float y, float z);
     long getRound();
     int getTick();
     void incrTick();

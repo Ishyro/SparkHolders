@@ -22,6 +22,8 @@ process_mode = 3
 [sub_resource type="Environment" id="Environment_1nh6o"]
 background_mode = 2
 sky = SubResource("Sky_face0")
+volumetric_fog_enabled = true
+volumetric_fog_sky_affect = 0.0
 
 [node name="World" type="Node3D"]
 

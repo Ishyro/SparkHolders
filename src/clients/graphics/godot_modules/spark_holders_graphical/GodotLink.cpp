@@ -46,9 +46,9 @@ Array GodotLink::getAvaillableTiles() {
 
 Array GodotLink::getTiles() {
   Array result = Array();
-  for(int y = 0; y < state->map->sizeY; y++) {
+  for(int y = state->map->offsetY; y < state->map->offsetY + state->map->sizeY; y++) {
     Array result_y = Array();
-    for(int x = 0; x < state->map->sizeX; x++) {
+    for(int x = state->map->offsetX; x < state->map->offsetX + state->map->sizeX; x++) {
       result_y.push_back(state->map->getTile(y, x)->name.c_str());
     }
     result.push_back(result_y);
@@ -58,10 +58,10 @@ Array GodotLink::getTiles() {
 
 Array GodotLink::getLights() {
   Array result = Array();
-  for(int y = 0; y < state->map->sizeY; y++) {
+  for(int y = state->map->offsetY; y < state->map->offsetY + state->map->sizeY; y++) {
     Array result_y = Array();
-    for(int x = 0; x < state->map->sizeX; x++) {
-      result_y.push_back(state->map->getLight(y, x));
+    for(int x = state->map->offsetX; x < state->map->offsetX + state->map->sizeX; x++) {
+      result_y.push_back(state->map->getLight(x, y));
     }
     result.push_back(result_y);
   }
@@ -124,6 +124,7 @@ Dictionary GodotLink::getDataFromCharacter(long id) {
       result["type"] = character->type;
       result["x"] = character->x;
       result["y"] = character->y;
+      result["z"] = character->z;
       result["size"] = character->size;
       result["orientation"] = character->orientation;
       result["team"] = character->team.c_str();
@@ -156,6 +157,7 @@ Dictionary GodotLink::getDataFromProjectile(long id) {
       result["size"] = projectile->size;
       result["x"] = projectile->x;
       result["y"] = projectile->y;
+      result["z"] = projectile->z;
       result["orientation"] = projectile->orientation;
       Array damages = Array();
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

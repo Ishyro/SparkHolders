@@ -6,7 +6,7 @@ RM=rm -rf
 # Directories
 
 BIN=bin
-EXEC=src/clients/graphics/godot_client_spark_holders/
+EXEC=src/clients/graphics/godot_client_spark_holders
 TEST=test
 SRC=src
 INCLUDE=include
@@ -34,6 +34,7 @@ SRC_UTIL=$(SRC)/util
 
 SRC_SERVER=$(SRC)/server
 SRC_CLIENTS=$(SRC)/clients
+SRC_CLIENT_TERMINAL=$(SRC_CLIENTS)/terminal
 
 BIN_AI=$(BIN)/ai
 BIN_COM=$(BIN)/communication
@@ -45,8 +46,10 @@ BIN_UTIL=$(BIN)/util
 
 BIN_SERVER=$(BIN)/server
 BIN_CLIENTS=$(BIN)/clients
+BIN_CLIENT_TERMINAL=$(BIN_CLIENTS)/terminal
 
 TARGET_SERVER=$(EXEC)/SparkHolders.Server.exe
+TARGET_CLIENT_TERMINAL=$(EXEC)/Client_terminal
 
 # Files
 
@@ -86,12 +89,17 @@ CLIENTS_HEADERS=$(wildcard $(INCLUDE_CLIENTS)/*.h)
 CLIENTS_SOURCES=$(patsubst $(INCLUDE_CLIENTS)/%.h,$(SRC_CLIENTS)/%.cpp,$(CLIENTS_HEADERS))
 CLIENTS_BINAIRIES=$(patsubst $(INCLUDE_CLIENTS)/%.h,$(BIN_CLIENTS)/%.o,$(CLIENTS_HEADERS))
 
+CLIENT_TERMINAL_HEADERS=$(wildcard $(INCLUDE_CLIENT_TERMINAL)/*.h)
+CLIENT_TERMINAL_SOURCES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(SRC_CLIENT_TERMINAL)/%.cpp,$(CLIENT_TERMINAL_HEADERS))
+CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT_TERMINAL)/%.o,$(CLIENT_TERMINAL_HEADERS))
+
 # Compiler and flags
 
 CC=g++
 CC_FLAGS=-O0 -pipe -pthread -fpermissive -g -Wall -Wno-reorder
 CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
+NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
 PLATFORM=linuxbsd
 AR=ar rcs
@@ -106,16 +114,18 @@ CC=x86_64-w64-mingw32-g++
 CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -pipe -static-libstdc++ -static-libgcc -fpermissive -g -Wall -Wno-reorder
 CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
+CLIENT_TERMINAL_BINAIRIES=
+TARGET_CLIENT_TERMINAL=
 PLATFORM=windows
 endif # WINDOWS
 
 # Rules
 
 all: bin $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
-	$(TARGET_SERVER) $(CLIENTS_TERMINAL_BINAIRIES) $(BIN)/libsparkholders.a godot
+	$(TARGET_SERVER) $(CLIENT_TERMINAL_BINAIRIES) $(TARGET_CLIENT_TERMINAL) $(BIN)/libsparkholders.a godot
 
 bin:
-	$(MKDIR) $(BIN) $(BIN_AI) $(BIN_COM) $(BIN_DATA) $(BIN_ACTIONS) $(BIN_ITEMS) $(BIN_SKILLS) $(BIN_UTIL) $(BIN_SERVER) $(BIN_CLIENTS)
+	$(MKDIR) $(BIN) $(BIN_AI) $(BIN_COM) $(BIN_DATA) $(BIN_ACTIONS) $(BIN_ITEMS) $(BIN_SKILLS) $(BIN_UTIL) $(BIN_SERVER) $(BIN_CLIENTS) $(BIN_CLIENT_TERMINAL)
 
 exec:
 	$(MKDIR) $(EXEC)
@@ -135,5 +145,8 @@ $(BIN)/%.o: $(SRC)/%.cpp
 $(TARGET_SERVER): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES)
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) $^ -o $@ $(CC_LIBRARIES)
 
+$(TARGET_CLIENT_TERMINAL): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(SKILLS_BINAIRIES) $(UTIL_BINAIRIES) $(CLIENTS_BINAIRIES) $(CLIENT_TERMINAL_BINAIRIES)
+	$(CC) $(CC_FLAGS) $(CC_INCLUDES) $^ -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)
+
 clean:
-	$(RM) $(BIN) $(TARGET_SERVER) $(TARGET_GODOT)
+	$(RM) $(BIN) $(TARGET_SERVER)

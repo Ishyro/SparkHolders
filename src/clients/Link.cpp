@@ -31,10 +31,9 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
 StateDisplay * Link::receiveState() {
   try {
     StateDisplay * game_state = Client::receiveState(s, adventure, &player, &need_to_update_actions);
-    game_state->map = new Map(adventure->getWorld()->getMap(player->getCurrentMapId()), player, adventure->getDatabase());
     for(CharacterDisplay * display : game_state->characters) {
       if(player->id == display->id) {
-        player->move(display->y, display->x, display->orientation, game_state->map_id);
+        player->move(display->x, display->y, display->z, display->orientation, adventure->getWorld());
         player->setHp(display->hp);
         player->setMana(display->mana);
         player->setStamina(display->stamina);
@@ -43,6 +42,8 @@ StateDisplay * Link::receiveState() {
         player->gainXP(display->xp - player->getXP());
       }
     }
+    game_state->map = new Map(adventure->getWorld()->getMap(player->getX(), player->getY(), player->getZ()), player, adventure->getDatabase(), adventure->getWorld());
+    player->setCurrentMap(game_state->map);
     return game_state;
   } catch (const CloseException &e) {
     throw e;

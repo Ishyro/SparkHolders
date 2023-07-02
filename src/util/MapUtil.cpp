@@ -74,41 +74,41 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
   if(startY > 0) {
-    if(!map->getTile(startY - 1, startX)->untraversable) {
+    if(!map->getTile(startX, startY - 1)->untraversable) {
       next.x = startX;
       next.y = startY - 1;
       result.push_back(next);
     }
   }
   if(startY < map->sizeY - 1) {
-    if(!map->getTile(startY + 1, startX)->untraversable) {
+    if(!map->getTile(startX, startY + 1)->untraversable) {
       next.x = startX;
       next.y = startY + 1;
       result.push_back(next);
     }
   }
   if(startX > 0) {
-    if(!map->getTile(startY, startX - 1)->untraversable) {
+    if(!map->getTile(startX - 1, startY)->untraversable) {
       next.x = startX - 1;
       next.y = startY;
       result.push_back(next);
     }
   }
   if(startX < map->sizeX - 1) {
-    if(!map->getTile(startY, startX + 1)->untraversable) {
+    if(!map->getTile(startX + 1, startY)->untraversable) {
       next.x = startX + 1;
       next.y = startY;
       result.push_back(next);
     }
     if(startY > 0) {
-      if(!map->getTile(startY - 1, startX + 1)->untraversable) {
+      if(!map->getTile(startX + 1, startY - 1)->untraversable) {
         next.x = startX + 1;
         next.y = startY - 1;
         result.push_back(next);
       }
     }
     if(startY < map->sizeY - 1) {
-      if(!map->getTile(startY + 1, startX + 1)->untraversable) {
+      if(!map->getTile(startX + 1, startY + 1)->untraversable) {
         next.x = startX + 1;
         next.y = startY + 1;
         result.push_back(next);
@@ -117,14 +117,14 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
   }
   if(startX > 0) {
     if(startY > 0) {
-      if(!map->getTile(startY - 1, startX - 1)->untraversable) {
+      if(!map->getTile(startX - 1, startY - 1)->untraversable) {
         next.x = startX - 1;
         next.y = startY - 1;
         result.push_back(next);
       }
     }
     if(startY < map->sizeY - 1) {
-      if(!map->getTile(startY + 1, startX - 1)->untraversable) {
+      if(!map->getTile(startX - 1, startY + 1)->untraversable) {
         next.x = startX - 1;
         next.y = startY + 1;
         result.push_back(next);
@@ -138,41 +138,41 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, i
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
   if(startY > 0) {
-    if(!map->getTile(startY - 1, startX)->solid) {
+    if(!map->getTile(startX, startY - 1)->solid) {
       next.x = startX;
       next.y = startY - 1;
       result.push_back(next);
     }
   }
   if(startY < map->sizeY - 1) {
-    if(!map->getTile(startY + 1, startX)->solid) {
+    if(!map->getTile(startX, startY + 1)->solid) {
       next.x = startX;
       next.y = startY + 1;
       result.push_back(next);
     }
   }
   if(startX > 0) {
-    if(!map->getTile(startY, startX - 1)->solid) {
+    if(!map->getTile(startX - 1, startY)->solid) {
       next.x = startX - 1;
       next.y = startY;
       result.push_back(next);
     }
   }
   if(startX < map->sizeX - 1) {
-    if(!map->getTile(startY, startX + 1)->solid) {
+    if(!map->getTile(startX + 1, startY)->solid) {
       next.x = startX + 1;
       next.y = startY;
       result.push_back(next);
     }
     if(startY > 0) {
-      if(!map->getTile(startY - 1, startX + 1)->solid) {
+      if(!map->getTile(startX + 1, startY - 1)->solid) {
         next.x = startX + 1;
         next.y = startY - 1;
         result.push_back(next);
       }
     }
     if(startY < map->sizeY - 1) {
-      if(!map->getTile(startY + 1, startX + 1)->solid) {
+      if(!map->getTile(startX + 1, startY + 1)->solid) {
         next.x = startX + 1;
         next.y = startY + 1;
         result.push_back(next);
@@ -181,14 +181,14 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, i
   }
   if(startX > 0) {
     if(startY > 0) {
-      if(!map->getTile(startY - 1, startX - 1)->solid) {
+      if(!map->getTile(startX - 1, startY - 1)->solid) {
         next.x = startX - 1;
         next.y = startY - 1;
         result.push_back(next);
       }
     }
     if(startY < map->sizeY - 1) {
-      if(!map->getTile(startY + 1, startX - 1)->solid) {
+      if(!map->getTile(startX - 1, startY + 1)->solid) {
         next.x = startX - 1;
         next.y = startY + 1;
         result.push_back(next);

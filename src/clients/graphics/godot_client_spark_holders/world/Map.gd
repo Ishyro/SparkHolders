@@ -35,6 +35,7 @@ var light_f = StandardMaterial3D.new()
 
 var base_character = preload("res://models/character.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
+var base_mist = preload("res://models/mist.tscn")
 
 var plan
 var offset = Vector3.ZERO
@@ -74,8 +75,6 @@ func _ready():
 	# var ip = "192.168.1.83";
 	var ip = "127.0.0.1";
 	link.initialize(ip)
-	
-	
 	link.receiveState()
 	grid_material.albedo_color = "000000"
 	offset = link.getOffsets()
@@ -116,7 +115,7 @@ func create_grid():
 		line.mesh = BoxMesh.new()
 		line.mesh.set_size(Vector3(0.05, 0.001, size.z))
 		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(x - mid_size.x, 1.001, 0)
+		line.transform.origin = pos + Vector3(x - mid_size.x, offset.y + 1.001, 0)
 		grid.append(line)
 		n_grid.add_child(line)
 	for z in range(0, size.z + 1):
@@ -124,7 +123,7 @@ func create_grid():
 		line.mesh = BoxMesh.new()
 		line.mesh.set_size(Vector3(size.x, 0.001, 0.05))
 		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(0, 1.001, z - mid_size.z)
+		line.transform.origin = pos + Vector3(0, offset.y + 1.001, z - mid_size.z)
 		grid.append(line)
 		n_grid.add_child(line)
 
@@ -135,7 +134,7 @@ func create_board():
 	rod.mesh = BoxMesh.new()
 	rod.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(-0.05 - mid_size.x, 0.5, -0.05)
+	rod.transform.origin = pos + Vector3(-0.05 - mid_size.x, offset.y + 0.5, -0.05)
 	board.append(rod)
 	add_child(rod)
 	# 2
@@ -143,7 +142,7 @@ func create_board():
 	rod.mesh = BoxMesh.new()
 	rod.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(0.05, 0.5, -0.05 - mid_size.z)
+	rod.transform.origin = pos + Vector3(0.05, offset.y + 0.5, -0.05 - mid_size.z)
 	board.append(rod)
 	add_child(rod)
 	# 3
@@ -151,7 +150,7 @@ func create_board():
 	rod.mesh = BoxMesh.new()
 	rod.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(0.05 + mid_size.x, 0.5, 0.05)
+	rod.transform.origin = pos + Vector3(0.05 + mid_size.x, offset.y + 0.5, 0.05)
 	board.append(rod)
 	add_child(rod)
 	# 4
@@ -159,7 +158,7 @@ func create_board():
 	rod.mesh = BoxMesh.new()
 	rod.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
 	rod.set_surface_override_material(0, board_material)
-	rod.transform.origin = pos + Vector3(-0.05, 0.5, 0.05 + mid_size.z)
+	rod.transform.origin = pos + Vector3(-0.05, offset.y + 0.5, 0.05 + mid_size.z)
 	board.append(rod)
 	add_child(rod)
 	
@@ -207,17 +206,20 @@ func create_tiles():
 			light.mesh = PlaneMesh.new()
 			light.mesh.set_size(Vector2.ONE)
 			light.set_surface_override_material(0, get_light(current_lights[x][z]))
-			light.transform.origin = Vector3(offset.x + x + 0.5, 1.001, offset.z + z + 0.5)
+			light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.001, offset.z + z + 0.5)
 			lights[x][z] = light
 			n_lights.add_child(light)
 			var tile = MeshInstance3D.new()
 			tile.mesh = BoxMesh.new()
 			if tiles_data[current_tiles[x][z]]["solid"]:
-				tile.mesh.set_size(Vector3(1, 4, 1))
+				tile.mesh.set_size(Vector3(1, 3, 1))
+				tile.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.5, offset.z + z + 0.5)
 			else:
 				tile.mesh.set_size(Vector3.ONE)
+				tile.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 0.5, offset.z + z + 0.5)
+				if(current_tiles[x][z] == "TXT_MIST"):
+					tile.add_child(base_mist.instantiate())
 			tile.set_surface_override_material(0, materials[current_tiles[x][z]])
-			tile.transform.origin = Vector3(offset.x + x + 0.5, 0.5, offset.z + z + 0.5)
 			tiles[x][z] = tile
 			n_tiles.add_child(tile)
 

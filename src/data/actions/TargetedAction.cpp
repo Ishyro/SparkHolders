@@ -7,8 +7,6 @@
 
 #include "util/MapUtil.h"
 
-#include <iostream>
-
 Action * TargetedAction::execute(Adventure * adventure) {
   if(next != nullptr) {
     next->computeTime(adventure);
@@ -16,12 +14,12 @@ Action * TargetedAction::execute(Adventure * adventure) {
       next->execute(adventure);
     }
   }
-  user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMapId(), user->getX(), user->getY(), target));
+  user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMap()->id, user->getX(), user->getY(), target));
   switch(type) {
     case ACTION_MOVE: {
       float ap = 1.F;
       while(ap > 0.F) {
-        ap = adventure->getWorld()->getMap(user->getCurrentMapId())->move(user, user->getOrientation(), target->y, target->x, ap, adventure->getWorld());
+        ap = user->getCurrentMap()->move(user, user->getOrientation(), target->x, target->y, ap, adventure->getWorld());
         // we took a MapLink, or maybe got stuck on a wall that wasn't here before, but that would update our Actions anyway
         if(ap > 0.F && target->next != nullptr) {
           Target * temp = target;
@@ -40,7 +38,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
     case ACTION_SHOOT: {
       Projectile * projectile = user->shoot(target, adventure);
       if(projectile != nullptr) {
-        adventure->getWorld()->getMap(user->getCurrentMapId())->addProjectile(projectile);
+        adventure->getWorld()->getMap(user->getCurrentMap()->id)->addProjectile(projectile);
       }
       break;
     }
@@ -49,16 +47,16 @@ Action * TargetedAction::execute(Adventure * adventure) {
         Character * other = adventure->getCharacter(target->id); 
         user->attack(other, ACTION_STRIKE);
         if(!other->isAlive()) {
-          adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, other);
+          adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
         }
       }
       else {
         /*
-        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
+        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMap()->id)->getCharacters()) {
           if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
             user->attack(c);
             if(!c->isAlive()) {
-              adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, c);
+              adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, c);
             }
             break;
           }
@@ -75,16 +73,16 @@ Action * TargetedAction::execute(Adventure * adventure) {
         Character * other = adventure->getCharacter(target->id); 
         user->attack(other, ACTION_HEAVY_STRIKE);
         if(!other->isAlive()) {
-          adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, other);
+          adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
         }
       }
       else {
         /*
-        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMapId())->getCharacters()) {
+        for(Character * c : adventure->getWorld()->getMap(user->getCurrentMap()->id)->getCharacters()) {
           if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
             user->attack(c);
             if(!c->isAlive()) {
-              adventure->getWorld()->getMap(user->getCurrentMapId())->killCharacter(user, c);
+              adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, c);
             }
             break;
           }
@@ -138,29 +136,29 @@ Target * TargetedAction::getTarget() { return target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    if(target->id == user->getCurrentMapId()) {
+    if(target->id == user->getCurrentMap()->id) {
       user->setOrientation(MapUtil::getOrientationToTarget(user->getX(), user->getY(), target->x, target->y));
     }
     // shouldn't happen if Target is well built
     else {
-      user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMapId(), user->getX(), user->getY(), target));
+      user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMap()->id, user->getX(), user->getY(), target));
     }
   }
   else if(target->type == TARGET_CHARACTER) {
-    if(target->id == user->getCurrentMapId()) {
+    if(target->id == user->getCurrentMap()->id) {
       Character * other = adventure->getCharacter(target->id);
       user->setOrientation(MapUtil::getOrientationToTarget(user->getX(), user->getY(), other->getX(), other->getY()));
     }
     // shouldn't happen if Target is well built
     else {
-      user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMapId(), user->getX(), user->getY(), target));
+      user->setOrientation(adventure->getWorld()->setPathToTarget(user->getCurrentMap()->id, user->getX(), user->getY(), target));
     }
   }
 }
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    if(target->id == user->getCurrentMapId()) {
+    if(target->id == user->getCurrentMap()->id) {
       return MapUtil::distance(user->getX(), user->getY(), target->x, target->y);
     }
     else {
@@ -169,7 +167,7 @@ float TargetedAction::rangeFromTarget(Adventure * adventure) {
     }
   }
   else if(target->type == TARGET_CHARACTER) {
-    if(target->id == user->getCurrentMapId()) {
+    if(target->id == user->getCurrentMap()->id) {
       Character * other = adventure->getCharacter(target->id);
       return MapUtil::distance(user->getX(), user->getY(), other->getX(), other->getY());
     }

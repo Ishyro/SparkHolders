@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bstif0y78sa7d"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_ayf44"]
+density = 2.0
+albedo = Color(0.466667, 0.466667, 0.466667, 1)
+emission = Color(1, 1, 1, 1)
+
+[node name="Mist" type="FogVolume"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+size = Vector3(1, 1, 1)
+material = SubResource("FogMaterial_ayf44")

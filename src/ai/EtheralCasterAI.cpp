@@ -17,12 +17,12 @@
 
 Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
   if(casted) {
-    adventure->getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
+    adventure->getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
@@ -34,7 +34,7 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     casted = true;
     Target * target = new Target();
     target->type = TARGET_TILE;
-    target->id = c->getCurrentMapId();
+    target->id = c->getCurrentMap()->id;
     target->x = origin_x;
     target->y = origin_y;
     // EhteralCasters should have only one skill

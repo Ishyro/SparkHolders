@@ -16,7 +16,8 @@
 #include "ai/DiurnalAgressiveAI.h"
 
 Action * DiurnalAgressiveAI::getActions(Adventure * adventure, Character * c) {
-  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  Map * visionMap = updateMap(adventure, c);
+  c->setCurrentMap(visionMap);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
   if(!threats.empty()) {
@@ -25,7 +26,7 @@ Action * DiurnalAgressiveAI::getActions(Adventure * adventure, Character * c) {
     delete visionMap;
     Target * t = new Target();
     t->type = TARGET_CHARACTER;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = target->getX();
     t->y = target->getY();
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
@@ -48,7 +49,7 @@ Action * DiurnalAgressiveAI::getActions(Adventure * adventure, Character * c) {
     delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
     return  new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);

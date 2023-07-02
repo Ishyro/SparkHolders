@@ -33,6 +33,7 @@ typedef struct CharacterDisplay {
   int type;
   float x;
   float y;
+  float z;
   float size;
   float orientation;
   std::string team;
@@ -82,8 +83,9 @@ class Character {
       int gold,
       int x,
       int y,
+      int z,
       float orientation,
-      int current_map_id,
+      Map * current_map,
       std::string team,
       AI * ai,
       Attributes * attributes,
@@ -107,8 +109,9 @@ class Character {
       level(1),
       x(x + 0.5F),
       y(y + 0.5F),
+      z(z),
       orientation(orientation),
-      current_map_id(current_map_id),
+      current_map(current_map),
       merchant(from_database->merchant),
       team(team),
       ai(ai),
@@ -165,9 +168,10 @@ class Character {
       Speech * talking_speech,
       float x,
       float y,
+      float z,
       float size,
       float orientation,
-      int current_map_id,
+      Map * current_map,
       bool merchant,
       long gold,
       long xp,
@@ -215,9 +219,10 @@ class Character {
       talking_speech(talking_speech),
       x(x),
       y(y),
+      z(z),
       size(size),
       orientation(orientation),
-      current_map_id(current_map_id),
+      current_map(current_map),
       merchant(merchant),
       gold(gold),
       xp(xp),
@@ -249,6 +254,7 @@ class Character {
     bool isSoulBurning();
     float getX();
     float getY();
+    float getZ();
     float getOrientation();
     float getSize();
     int getHp();
@@ -266,7 +272,7 @@ class Character {
     int getVisionRange();
     int getVisionPower();
     int getDetectionRange();
-    int getCurrentMapId();
+    Map * getCurrentMap();
     long getGold();
     long getXP();
     int getLevel();
@@ -317,7 +323,7 @@ class Character {
 
     void setOrientation(float orientation);
     void setSize(float size);
-    void move(float y, float x, float orientation, int map_id);
+    void move(float x, float y, float z, float orientation, World * world);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);
@@ -338,7 +344,7 @@ class Character {
     void incrVisionRange();
     void incrVisionPower();
     void incrDetectionRange();
-    void setCurrentMapId(int map_id);
+    void setCurrentMap(Map * map);
 
     void applySoulBurn();
     void applyTiredness();
@@ -410,9 +416,10 @@ class Character {
     void initEffects(std::list<Effect *> effects);
     float x;
     float y;
+    float z = 0;
     float size;
     float orientation;
-    int current_map_id;
+    Map * current_map;
     int hp;
     int maxHp;
     int mana;

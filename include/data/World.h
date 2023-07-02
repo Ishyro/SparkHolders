@@ -8,8 +8,10 @@
 typedef struct MapLink {
     int x1;
     int y1;
+    int z1;
     int x2;
     int y2;
+    int z2;
     int type;
     Map * map1;
     Map * map2;
@@ -27,9 +29,14 @@ class World {
     Map * getMap(int map_id);
     Map * getMap(std::string name);
     std::list<Map *> getMaps();
-    MapLink * getMapLink(int y, int x, int mapId);
+    MapLink * getMapLink(int x, int y, int mapId);
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
+    Map * getMap(int x, int y, int z);
+    Tile * getTile(int x, int y, int z);
+    Tile * getTile(float x, float y, float z);
+    int getLight(int x, int y, int z);
+    int getLight(float x, float y, float z);
     float setPathToTarget(int map_id, float x, float y, Target * target);
     float distance(int map_id, float x, float y, Target * target);
   private:

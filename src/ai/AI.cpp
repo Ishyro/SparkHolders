@@ -26,6 +26,12 @@ Action * AI::getActions(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
+Map * AI::updateMap(Adventure * adventure, Character * c) {
+  Map * map = new Map(adventure->getWorld()->getMap(c->getX(), c->getY(), c->getZ()), c, adventure->getDatabase(), adventure->getWorld());
+  c->setCurrentMap(map);
+  return map;
+}
+
 float AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
   return MapUtil::getOrientationToTarget(self->getX(), self->getY(), x, y);
 }
@@ -40,7 +46,7 @@ float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int
 }
 
 std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMapId()), self->getX(), self->getY(), x, y, false);
+  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMap()->id), self->getX(), self->getY(), x, y, false);
 }
 
 void AI::selectHungriness(Character * self) {
@@ -81,9 +87,10 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
       MapUtil::Pair tp_target = path[tp_index];
       Target * target = new Target();
       target->type = TARGET_TILE;
-      target->id = self->getCurrentMapId();
+      target->id = self->getCurrentMap()->id;
       target->x = tp_target.x;
       target->y = tp_target.y;
+      target->z = self->getZ();
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, target, skill, 1, 1, 1);
     }
   }
@@ -91,9 +98,10 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
     MapUtil::Pair next = path[0];
     Target * target = new Target();
     target->type = TARGET_TILE;
-    target->id = self->getCurrentMapId();
+    target->id = self->getCurrentMap()->id;
     target->x = next.x;
     target->y = next.y;
+    target->z = self->getZ();
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, self, target);
     //return new Action(MOVE, adventure, nullptr, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), next.x, next.y, 0.F, 0.F), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
@@ -115,7 +123,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
   // herbivorous creature dependent on a skill to eat
   }
   else {
-    Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
+    Map * map = adventure->getWorld()->getMap(self->getCurrentMap()->id);
     Tile * target = nullptr;
     Skill * skill = nullptr;
     for(Skill * s : self->getSkills()) {
@@ -166,15 +174,16 @@ Action * AI::eat(Adventure * adventure, Character * self) {
           i -= power;
           break;
       }
-      if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (correct_tile = map->getTile(j, i) == target )) {
+      if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (correct_tile = map->getTile(i, j) == target )) {
         continue;
       }
     }
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = self->getCurrentMapId();
+    t->id = self->getCurrentMap()->id;
     t->x = i;
     t->y = j;
+    t->z = self->getZ();
     if(i == self->getX() && j == self->getY()) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
@@ -185,7 +194,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
 }
 
 Action * AI::trackPrey(Adventure * adventure, Character * self) {
-  Map * map = adventure->getWorld()->getMap(self->getCurrentMapId());
+  Map * map = adventure->getWorld()->getMap(self->getCurrentMap()->id);
   Character * prey = nullptr;
   Loot * corpse = nullptr;
   // a predator can sense prey even if they are far.
@@ -231,9 +240,10 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
     else {
       Target * target = new Target();
       target->type = TARGET_TILE;
-      target->id = self->getCurrentMapId();
+      target->id = self->getCurrentMap()->id;
       target->x = corpse->x;
       target->y = corpse->y;
+      target->z = self->getZ();
       return new TargetedAction(ACTION_MOVE, adventure, nullptr, self, target);
     }
   }

@@ -2,10 +2,10 @@
 
 void TileSwapSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
   // Target will always be a Tile
-  adventure->getWorld()->getMap(target->id)->setTile((int) target->y, (int) target->x, new_tile);
+  adventure->getWorld()->getMap(target->id)->setTile((int) target->x, (int) target->y, new_tile);
 }
 bool TileSwapSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
-  return current_tile == nullptr || adventure->getWorld()->getMap(target->id)->getTile((int) target->y, (int) target->x) == current_tile;
+  return current_tile == nullptr || adventure->getWorld()->getMap(target->id)->getTile((int) target->x, (int) target->y) == current_tile;
 }
 
 int TileSwapSkill::getPower() {

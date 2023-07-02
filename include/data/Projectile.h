@@ -14,6 +14,7 @@ typedef struct ProjectileDisplay {
   float size;
   float x;
   float y;
+  float z;
   float orientation;
   int damages[DAMAGE_TYPE_NUMBER];
   float speed;
@@ -69,6 +70,7 @@ class Projectile {
       current_map_id = 0;
       x = 0.F;
       y = 0.F;
+      z = 0.F;
       target = nullptr;
       owner = nullptr;
       orientation = 0.F;
@@ -129,6 +131,7 @@ class Projectile {
       int current_map_id,
       float x,
       float y,
+      float z,
       Target * target,
       Character * owner,
       int overcharge_power,
@@ -144,6 +147,7 @@ class Projectile {
       current_map_id(current_map_id),
       x(x),
       y(y),
+      z(z),
       skill(projectile->skill),
       effects(std::list<Effect *>()),
       target(target),
@@ -176,6 +180,7 @@ class Projectile {
       int current_map_id,
       float x,
       float y,
+      float z,
       Skill * skill,
       std::list<Effect *> effects,
       Target * target,
@@ -200,6 +205,7 @@ class Projectile {
       current_map_id(current_map_id),
       x(x),
       y(y),
+      z(z),
       skill(skill),
       effects(effects),
       target(target),
@@ -228,6 +234,7 @@ class Projectile {
     int getCurrentMapId();
     float getX();
     float getY();
+    float getZ();
     float getDestX();
     float getDestY();
     float getOrientation();
@@ -261,7 +268,7 @@ class Projectile {
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(float y, float x, float orientation, int map_id);
+    void move(float x, float y, float z, float orientation, World * world);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -277,6 +284,7 @@ class Projectile {
     int current_map_id;
     float x;
     float y;
+    float z;
     int target_type;
     bool lost;
     Skill * skill;

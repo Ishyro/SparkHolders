@@ -14,6 +14,7 @@ class AI {
     virtual Action * getActions(Adventure * adventure, Character * c) = 0;
     static float getFollowOrientation(Adventure * adventure, Character * self, int x, int y);
     static float getFleeOrientation(Adventure * adventure, Character * self, int x, int y);
+    static Map * updateMap(Adventure * adventure, Character * c);
     std::vector<MapUtil::Pair> getFollowPath(Adventure * adventure, Character * self, int x, int y);
   protected:
     int origin_x;

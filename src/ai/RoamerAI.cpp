@@ -18,7 +18,7 @@
 #include <random>
 
 Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
-  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  Map * visionMap = updateMap(adventure, c);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
   if(!threats.empty()) {
@@ -43,14 +43,14 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
     delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
   // we are at destination
-  origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeX;
-  origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMapId())->sizeY;
+  origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeX;
+  origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeY;
   delete visionMap;
     return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
 }

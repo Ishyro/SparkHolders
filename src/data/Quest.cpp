@@ -21,7 +21,7 @@ bool Quest::stepDone(Adventure * adventure) {
       break;
     case QUEST_DISCOVER:
       for(Character * c : adventure->getParty()) {
-        if(c->getCurrentMapId() == current_step->discover_map_id) {
+        if(c->getCurrentMap()->id == current_step->discover_map_id) {
           result = true;
           break;
         }

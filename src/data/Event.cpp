@@ -18,12 +18,12 @@ void Event::activate(Adventure * adventure) {
   switch(character_apparition_type) {
     case APPARITION_SOFT:
       for(Character * c : characters) {
-        adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
+        adventure->softMoveCharacterToMap(c, c->getCurrentMap()->id, c->getX(), c->getY(), c->getZ());
       }
       break;
     case APPARITION_HARD:
       for(Character * c : characters) {
-        adventure->softMoveCharacterToMap(c, c->getCurrentMapId(), c->getX(), c->getY());
+        adventure->softMoveCharacterToMap(c, c->getCurrentMap()->id, c->getX(), c->getY(), c->getZ());
       }
       break;
   }

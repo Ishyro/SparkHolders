@@ -91,16 +91,18 @@ namespace Display {
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
     mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
-    for(int y = display->map->sizeY - 1; y >= 0; y--) {
-      for(int x = 0; x < display->map->sizeX; x++) {
+    for(int y = display->map->offsetY + display->map->sizeY - 1; y >= display->map->offsetY; y--) {
+      for(int x = display->map->offsetX; x < display->map->sizeX + display->map->offsetX; x++) {
         std::string to_print = "·";
-        if(display->map->getTile(y, x)->untraversable) {
-          to_print = "#";
+        if(display->map->getTile(x, y) != nullptr) {
+          if(display->map->getTile(x, y)->untraversable) {
+            to_print = "#";
+          }
+          if(display->map->getTile(x, y)->name == "TXT_MIST") { // unseen
+            to_print = "~";
+          }
         }
-        if(display->map->getTile(y, x)->name == "TXT_MIST") { // unseen
-          to_print = "~";
-        }
-        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (y - display->map->offsetY), (x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
     }
     for(CharacterDisplay * character : display->characters) {
@@ -201,7 +203,7 @@ namespace Display {
     for(int y = display->map->sizeY - 1; y >= 0 ; y--) {
       for(int x = 0; x < display->map->sizeX; x++) {
         std::string to_print;
-        char ch = t->getTileName(display->map->getTile(y, x)->name).at(0);
+        char ch = t->getTileName(display->map->getTile(x, y)->name).at(0);
         to_print = ch;
         mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY -1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
@@ -1593,6 +1595,9 @@ namespace Display {
     int player_x = target_x;
     int player_y = target_y;
     getmaxyx(mapScreen, lines, cols);
+    int lines2 = 0;
+    int cols2 = 0;
+    getmaxyx(targetScreen, lines2, cols2);
     cchar_t *wch_old = new cchar_t();
     mvwin_wch(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2, wch_old);
     while(!done) {
@@ -1657,7 +1662,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x, target_y);
+          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + display->map->offsetX, target_y + display->map->offsetY);
           break;
         }
         case ' ': {
@@ -1676,6 +1681,9 @@ namespace Display {
       }
       wclear(targetScreen);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
+      wrefresh(targetScreen);
+      std::string to_print = "x= " + std::to_string(target_x + display->map->offsetX) + " y= " + std::to_string(target_y + display->map->offsetY);
+      mvwprintw(targetScreen, lines2 / 2, cols2 / 2 - to_print.length() / 2, to_print.c_str());
       wrefresh(targetScreen);
       for(CharacterDisplay * character : display->characters) {
         if(character->x == target_x && character->y == target_y) {

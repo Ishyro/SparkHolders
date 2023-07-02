@@ -22,10 +22,10 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, int map_id, float y, float x) {
+void Adventure::softMoveCharacterToMap(Character * character, int map_id, float x, float y, float z) {
   Map * map = world->getMap(map_id);
-  world->getMap(character->getCurrentMapId())->removeCharacter(character);
-  for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
+  world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
+  for(Projectile * p : world->getMap(character->getCurrentMap()->id)->getProjectiles()) {
     if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
     }
@@ -35,10 +35,10 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, float 
     }
   }
   map->addCharacter(character);
-  character->move(y, x, character->getOrientation(), map_id);
+  character->move(x, y, z, character->getOrientation(), world);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float y, float x) {
+void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float x, float y, float z) {
   Map * map = world->getMap(map_id);
   for(Character * c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
@@ -52,13 +52,13 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
       removePlayer(c);
     }
   }
-  if(map->getTile(y, x)->untraversable) {
-    world->getMap(character->getCurrentMapId())->removeCharacter(character);
+  if(map->getTile(x, y)->untraversable) {
+    world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
     delete character;
     return;
   }
-  world->getMap(character->getCurrentMapId())->removeCharacter(character);
-  for(Projectile * p : world->getMap(character->getCurrentMapId())->getProjectiles()) {
+  world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
+  for(Projectile * p : world->getMap(character->getCurrentMap()->id)->getProjectiles()) {
     if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
     }
@@ -68,7 +68,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
     }
   }
   map->addCharacter(character);
-  character->move(y, x, character->getOrientation(), map_id);
+  character->move(x, y, z, character->getOrientation(), world);
 }
 
 void Adventure::addPlayer(Character * player) { party.push_back(player); }
@@ -81,9 +81,9 @@ std::list<Character *> Adventure::getParty() { return party; }
 
 std::list<Character *> Adventure::getPreservedPlayers() { return preserved_players; }
 
-void Adventure::resurrect(Character * player, int map_id, int y, int x) {
+void Adventure::resurrect(Character * player, int map_id, float x, float y, float z) {
   if(std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
-    softMoveCharacterToMap(player, map_id, y, x);
+    softMoveCharacterToMap(player, map_id, x, y, z);
   }
 }
 
@@ -238,8 +238,9 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     50,
     spawn->x,
     spawn->y,
+    spawn->z,
     90.F,
-    spawn->map_id,
+    world->getMap(spawn->y, spawn->x, spawn->z),
     "party",
     new PlayerAI(),
     attr,
@@ -253,7 +254,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     profession,
     *titles
   );
-  world->getMap(spawn->map_id)->addCharacter(player);
+  world->getMap(spawn->y, spawn->x, spawn->z)->addCharacter(player);
   delete spawn;
   delete race_modifiers;
   delete titles;
@@ -272,7 +273,7 @@ void Adventure::applyIteration() {
         c->applyHunger();
       }
       if(!c->isAlive()) {
-        getWorld()->getMap(c->getCurrentMapId())->killCharacter(c, c);
+        getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
       }
     }
   }
@@ -318,18 +319,18 @@ std::string Adventure::state_to_string(Character * c) {
   String::insert_long(ss, round);
   String::insert_int(ss, tick);
   String::insert_int(ss, light);
-  String::insert_long(ss, c->getCurrentMapId());
-  Map * map = world->getMap(c->getCurrentMapId());
+  Map * map = world->getMap(c->getX(), c->getY(), c->getZ());
+  String::insert_long(ss, map->id);
   Map * baseMap = (Map *) database->getMap(map->baseName);
-  Map * visionMap = new Map(map, c, database);
+  Map * visionMap = new Map(map, c, database, world);
+  c->setCurrentMap(visionMap);
   std::stringstream * ss_tiles = new std::stringstream();
-  for(int y = 0; y < map->sizeY; y++) {
-    for(int x = 0; x < map->sizeX; x++) {
-      int visionY = y - visionMap->offsetY;
-      int visionX = x - visionMap->offsetX;
-      if(visionY > 0 && visionY < visionMap->sizeY && visionX > 0 && visionX < visionMap->sizeX && visionMap->getTile(visionY, visionX)->name != "TXT_MIST" &&
-        map->getTile(y, x) != baseMap->getTile(y + map->offsetY, x + map->offsetX)) {
-        String::insert(ss_tiles, map->tile_to_string(y, x));
+  for(int y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
+    for(int x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
+      if(visionMap->getTile(x, y) != nullptr && visionMap->getTile(x, y)->name != "TXT_MIST" &&
+        world->getTile(x, y, visionMap->offsetZ) != baseMap->getTile(x + map->offsetX, y + map->offsetY)) {
+        // TODO
+        // String::insert(ss_tiles, map->tile_to_string(y, x));
       }
     }
   }
@@ -380,9 +381,9 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   while(ss_tiles->rdbuf()->in_avail() != 0) {
     std::stringstream * ss_tile = new std::stringstream(String::extract(ss_tiles));
     long id = String::extract_long(ss_tile);
-    int y = String::extract_int(ss_tile);
     int x = String::extract_int(ss_tile);
-    world->getMap(id)->setTile(y, x, (Tile *) database->getTile(String::extract(ss_tile)));
+    int y = String::extract_int(ss_tile);
+    world->getMap(id)->setTile(x, y, (Tile *) database->getTile(String::extract(ss_tile)));
     delete ss_tile;
   }
   delete ss_tiles;

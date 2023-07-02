@@ -16,10 +16,10 @@
 #include "ai/GuardAI.h"
 
 Action * GuardAI::getActions(Adventure * adventure, Character * c) {
-  Map * visionMap = new Map(adventure->getWorld()->getMap(c->getCurrentMapId()), c, adventure->getDatabase());
+  Map * visionMap = updateMap(adventure, c);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
-  if(!threats.empty() && visionMap->getTile(origin_y - visionMap->offsetY, origin_x - visionMap->offsetX)->name != "TXT_MIST") {
+  if(!threats.empty() && visionMap->getTile(origin_x - visionMap->offsetX, origin_y - visionMap->offsetY)->name != "TXT_MIST") {
     delete visionMap;
     return attack(adventure, threats, c);
   }
@@ -41,7 +41,7 @@ Action * GuardAI::getActions(Adventure * adventure, Character * c) {
     delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
-    t->id = c->getCurrentMapId();
+    t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);

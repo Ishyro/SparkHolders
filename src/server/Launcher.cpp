@@ -165,7 +165,7 @@ int main(int argc, char ** argv) {
       links[i]->sendState();
     }
     SpeechManager::clear();
-    adventure->getNPCsActions();
+    // adventure->getNPCsActions();
     // receive playerActions
     std::list<Action *> actionsPlayers = std::list<Action *>();
     for(int i = 0; i < playersNumber; i++) {
