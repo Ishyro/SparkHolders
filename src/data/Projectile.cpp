@@ -93,12 +93,7 @@ void Projectile::markDestroyed() {
   }
 }
 
-void::Projectile::move(float x, float y, float z, float orientation, World * world) {
-  Map * new_map = world->getMap(x, y, z);
-  if(current_map_id != new_map->id) {
-    world->getMap(this->x, this->y, this->z)->removeProjectile(this);
-    new_map->addProjectile(this);
-  }
+void::Projectile::move(float x, float y, float z, float orientation) {
   this->x = x;
   this->y = y;
   this->z = z;

@@ -94,7 +94,7 @@ namespace Display {
     for(int y = display->map->offsetY + display->map->sizeY - 1; y >= display->map->offsetY; y--) {
       for(int x = display->map->offsetX; x < display->map->sizeX + display->map->offsetX; x++) {
         std::string to_print = "·";
-        if(display->map->getTile(x, y) != nullptr) {
+        if(display->map->getTile(x, y) != nullptr && display->map->getTile(x, y)->name != "TXT_VOID") {
           if(display->map->getTile(x, y)->untraversable) {
             to_print = "#";
           }
@@ -1358,7 +1358,6 @@ namespace Display {
       for(Loot * loot : display->loots) {
         delete loot;
       }
-      delete display->map;
       delete display;
     }
   }

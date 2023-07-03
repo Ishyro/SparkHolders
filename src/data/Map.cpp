@@ -1056,7 +1056,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
       MapUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
       >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
-        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation(), adventure->getWorld());
+        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
         p->attack(nullptr, characters, adventure);
       }
     p->attack(character, characters, adventure);
@@ -1068,7 +1068,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     MapUtil::distance(p->getX(), p->getY(), x, y)
     >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
       // exploding on targeted zone when no other target where found
-      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation(), adventure->getWorld());
+      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
       p->attack(nullptr, characters, adventure);
   }
   std::list<Character *> tokill = std::list<Character *>();
@@ -1153,11 +1153,11 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           dy = (dy == low_limit ? high_limit : low_limit);
         }
         if(x < next_map->offsetX || std::floor(x) >= next_map->sizeX + next_map->offsetX || y < next_map->offsetY || std::floor(y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(x, y)->solid) {
-          p->move(old_x, old_y, offsetZ, orientation, adventure->getWorld());
+          p->move(old_x, old_y, offsetZ, orientation);
           return 0.F;
         }
         else {
-          p->move(x, y, offsetZ, dest_orientation, adventure->getWorld());
+          p->move(x, y, offsetZ, dest_orientation);
         }
         break;
       case MAPLINK_BOUNCE:
@@ -1210,17 +1210,17 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           dest_orientation -= 360.F;
         }
         if(x < next_map->offsetX || std::floor(x) >= next_map->sizeX + next_map->offsetX || y < next_map->offsetY || std::floor(y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(x, y)->solid) {
-          p->move(old_x, old_y, offsetZ, orientation, adventure->getWorld());
+          p->move(old_x, old_y, offsetZ, orientation);
           return 0.F;
         }
         else {
-          p->move(x + dx, y + dy, offsetZ, dest_orientation, adventure->getWorld());
+          p->move(x + dx, y + dy, offsetZ, dest_orientation);
         }
         break;
     }
     return speed - range;
   }
-  p->move(x, y, offsetZ, p->getOrientation(), adventure->getWorld());
+  p->move(x, y, offsetZ, p->getOrientation());
   return 0.F;
 }
 

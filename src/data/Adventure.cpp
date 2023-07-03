@@ -213,15 +213,17 @@ void Adventure::actAllProjectiles() {
   for(Projectile * p : projectiles) {
     bool keep = true;
     float speed = p->getSpeed();
+    Map * current_map = new Map(world->getMap(p->getCurrentMapId()), p, database, world);
     while(keep && speed > 0.F) {
-      speed = world->getMap(p->getCurrentMapId())->actProjectile(p, this, speed);
+      speed = current_map->actProjectile(p, this, speed);
       if(p->noDamage()) {
         keep = false;
         delete p;
       }
     }
+    delete current_map;
     if(keep) {
-      world->getMap(p->getCurrentMapId())->addProjectile(p);
+      world->getMap(p->getX(), p->getY(), p->getZ())->addProjectile(p);
     }
   }
 }
@@ -240,7 +242,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     spawn->y,
     spawn->z,
     90.F,
-    world->getMap(spawn->y, spawn->x, spawn->z),
+    nullptr,
     "party",
     new PlayerAI(),
     attr,

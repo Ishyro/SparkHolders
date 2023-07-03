@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <list>
+#include <set>
 #include <vector>
 #include <string>
 
@@ -11,9 +12,6 @@
 #include "data/Projectile.h"
 #include "data/Tile.h"
 #include "data/World.h"
-
-
-#include <iostream>
 
 typedef struct Loot {
   int type;
@@ -109,6 +107,8 @@ class Map {
       tiles(sizeY),
       light(map->light)
     {
+      std::set<int> ids = std::set<int>();
+      ids.insert(id);
       for(int i = 0; i < sizeY; i++) {
         lights[i] = std::vector<int>(sizeX);
         tiles[i] = std::vector<Tile *>(sizeX);
@@ -128,6 +128,7 @@ class Map {
             }
             else {
               lights[y][x] = world->getLight(x + offsetX, y + offsetY, offsetZ);
+              ids.insert(world->getMap(x + offsetX, y + offsetY, offsetZ)->id);
             }
           }
         }
@@ -136,24 +137,75 @@ class Map {
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
-      for(Character * c : map->characters) {
-        if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
-          tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "TXT_MIST" &&
-          !c->isInvisible() &&
-          !c->isEtheral()) {
-          characters.push_back(c);
+      for(int used_map_id : ids) {
+        Map * used_map = world->getMap(used_map_id);
+        for(Character * c : used_map->characters) {
+          if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
+            tiles[c->getY() - offsetY][c->getX() - offsetX]->name != "TXT_MIST" &&
+            !c->isInvisible() &&
+            !c->isEtheral()) {
+            characters.push_back(c);
+          }
+        }
+        for(Projectile * p : used_map->projectiles) {
+          if(p->getX() - offsetX >= 0 && p->getX() - offsetX < sizeX && p->getY() - offsetY >= 0 && p->getY() - offsetY < sizeY &&
+            tiles[p->getY() - offsetY][p->getX() - offsetX]->name != "TXT_MIST") {
+            projectiles.push_back(p);
+          }
+        }
+        for(Loot * l : used_map->loots) {
+          if(l->x - offsetX >= 0 && l->x - offsetX < sizeX && l->y - offsetY >= 0 && l->y - offsetY < sizeY &&
+            tiles[l->y - offsetY][l->x - offsetX]->name != "TXT_MIST") {
+            loots.push_back(l);
+          }
         }
       }
-      for(Projectile * p : map->projectiles) {
-        if(p->getX() - offsetX >= 0 && p->getX() - offsetX < sizeX && p->getY() - offsetY >= 0 && p->getY() - offsetY < sizeY &&
-          tiles[p->getY() - offsetY][p->getX() - offsetX]->name != "TXT_MIST") {
-          projectiles.push_back(p);
+    }
+
+    Map(Map * map, Projectile * projectile, Database * database, World * world):
+      name(map->name),
+      baseName(map->name),
+      id(map->id),
+      offsetX( (int) std::floor(projectile->getX()) - projectile->getSpeed()),
+      offsetY( (int) std::floor(projectile->getY()) - projectile->getSpeed()),
+      offsetZ(map->offsetZ),
+      sizeX( (int) std::floor(projectile->getX()) + projectile->getSpeed() + 1 - offsetX),
+      sizeY( (int) std::floor(projectile->getY()) + projectile->getSpeed() + 1 - offsetY),
+      sizeZ(map->sizeZ),
+      outside(map->outside),
+      lights(sizeY),
+      tiles(sizeY),
+      light(map->light)
+    {
+      std::set<int> ids = std::set<int>();
+      ids.insert(id);
+      for(int i = 0; i < sizeY; i++) {
+        tiles[i] = std::vector<Tile *>(sizeX);
+      }
+      for(int y = 0; y < sizeY; y++) {
+        for(int x = 0; x < sizeX; x++) {
+          Tile * tile = map->getTile(x + offsetX, y + offsetY); 
+          if(tile != nullptr && tile->name != "TXT_VOID") {
+            tiles[y][x] = tile;
+          }
+          else {
+            tiles[y][x] = world->getTile(x + offsetX, y + offsetY, offsetZ);
+            if(tiles[y][x] == nullptr) {
+              tiles[y][x] = (Tile *) database->getTile("TXT_VOID");
+            }
+            else {
+              ids.insert(world->getMap(x + offsetX, y + offsetY, offsetZ)->id);
+            }
+          }
         }
       }
-      for(Loot * l : map->loots) {
-        if(l->x - offsetX >= 0 && l->x - offsetX < sizeX && l->y - offsetY >= 0 && l->y - offsetY < sizeY &&
-          tiles[l->y - offsetY][l->x - offsetX]->name != "TXT_MIST") {
-          loots.push_back(l);
+      characters = std::list<Character *>();
+      for(int used_map_id : ids) {
+        Map * used_map = world->getMap(used_map_id);
+        for(Character * c : used_map->characters) {
+          if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY) {
+            characters.push_back(c);
+          }
         }
       }
     }

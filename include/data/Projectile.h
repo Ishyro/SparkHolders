@@ -268,7 +268,7 @@ class Projectile {
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(float x, float y, float z, float orientation, World * world);
+    void move(float x, float y, float z, float orientation);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);

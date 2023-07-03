@@ -463,7 +463,7 @@ void Character::setOrientation(float orientation) { this->orientation = orientat
 void Character::setSize(float size) { this->size = size; }
 void Character::move(float x, float y, float z, float orientation, World * world) {
   Map * new_map = world->getMap(x, y, z);
-  if(current_map->id != new_map->id) {
+  if(current_map != nullptr && current_map->id != new_map->id) {
     world->getMap(this->x, this->y, this->z)->removeCharacter(this);
     new_map->addCharacter(this);
   }
@@ -617,7 +617,12 @@ void Character::incrDetectionRange() {
   detectionRange++;
 }
 
-void Character::setCurrentMap(Map * map) { this->current_map = map; }
+void Character::setCurrentMap(Map * map) {
+  if(this->current_map != nullptr) {
+    delete this->current_map;
+  }
+  this->current_map = map;
+}
 
 void Character::applySoulBurn() {
   int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 10., (float) soulBurnTreshold / 10.);
@@ -1502,7 +1507,12 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, z);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
-  String::insert_int(ss, current_map->id);
+  if(current_map != nullptr) {
+    String::insert_long(ss, current_map->id);
+  }
+  else {
+    String::insert_long(ss, -1);
+  }
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1613,7 +1623,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   float z = String::extract_float(ss);
   float size = String::extract_float(ss);
   float orientation = String::extract_float(ss);
-  Map * current_map = adventure->getWorld()->getMap(String::extract_int(ss));
+  Map * current_map = nullptr;
+  long map_id = String::extract_long(ss);
+  if(map_id != -1) {
+    current_map = adventure->getWorld()->getMap(String::extract_int(ss));
+  }
   bool merchant = String::extract_bool(ss);
   int gold = String::extract_long(ss);
   int xp = String::extract_long(ss);

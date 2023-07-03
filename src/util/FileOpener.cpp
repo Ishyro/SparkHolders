@@ -232,7 +232,7 @@ namespace FileOpener {
         y,
         z,
         90.F,
-        map,
+        nullptr,
         team,
         ai,
         attributes,
