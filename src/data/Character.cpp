@@ -997,7 +997,6 @@ void Character::addItem(Item * i) {
         break;
       }
     }
-    items.push_back(i);
   }
   else {
     items.push_back(i);
@@ -1507,12 +1506,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, z);
   String::insert_float(ss, size);
   String::insert_float(ss, orientation);
-  if(current_map != nullptr) {
-    String::insert_long(ss, current_map->id);
-  }
-  else {
-    String::insert_long(ss, -1);
-  }
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1623,14 +1616,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   float z = String::extract_float(ss);
   float size = String::extract_float(ss);
   float orientation = String::extract_float(ss);
-  Map * current_map = nullptr;
-  long map_id = String::extract_long(ss);
-  if(map_id != -1) {
-    current_map = adventure->getWorld()->getMap(String::extract_int(ss));
-  }
   bool merchant = String::extract_bool(ss);
-  int gold = String::extract_long(ss);
-  int xp = String::extract_long(ss);
+  long gold = String::extract_long(ss);
+  long xp = String::extract_long(ss);
   int level = String::extract_int(ss);
   std::string team = String::extract(ss);
   Gear * gear = Gear::from_string(String::extract(ss), adventure);
@@ -1723,7 +1711,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     z,
     size,
     orientation,
-    current_map,
+    nullptr,
     merchant,
     gold,
     xp,

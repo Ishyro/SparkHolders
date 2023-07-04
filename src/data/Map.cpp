@@ -577,7 +577,7 @@ bool Map::tryMove(Character * c, float destX, float destY) {
     return true;
   }
   for(Character * other : characters) {
-    if(c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
+    if(other != nullptr && c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
       return false;
     } 
   }

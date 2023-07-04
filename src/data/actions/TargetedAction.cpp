@@ -158,23 +158,11 @@ void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    if(target->id == user->getCurrentMap()->id) {
-      return MapUtil::distance(user->getX(), user->getY(), target->x, target->y);
-    }
-    else {
-      // TODO
-      return 100;
-    }
+    return MapUtil::distance(user->getX(), user->getY(), target->x, target->y);
   }
   else if(target->type == TARGET_CHARACTER) {
-    if(target->id == user->getCurrentMap()->id) {
-      Character * other = adventure->getCharacter(target->id);
-      return MapUtil::distance(user->getX(), user->getY(), other->getX(), other->getY());
-    }
-    else {
-      // TODO
-      return 100;
-    }
+    Character * other = adventure->getCharacter(target->id);
+    return MapUtil::distance(user->getX(), user->getY(), other->getX(), other->getY());
   }
 }
 

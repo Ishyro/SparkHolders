@@ -36,7 +36,7 @@ Action * GearAction::execute(Adventure * adventure) {
       }
       break;
     case ACTION_GRAB:
-      user->getCurrentMap()->takeLoot(user, item_id);
+      adventure->getWorld()->getMap(user->getCurrentMap()->id)->takeLoot(user, item_id);
       break;
     case ACTION_USE_ITEM:
       user->useItem(item_id);

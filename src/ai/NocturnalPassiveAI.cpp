@@ -24,12 +24,10 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
     orientation = getFleeOrientation(adventure, c, target->getX(), target->getY());
     /*MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, c->getX(), c->getY());
     if(!adventure->getWorld()->getMap(c->getCurrentMap()->id)->getTile(pair.x, pair.y)->untraversable) {*/
-      delete visionMap;
       //return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     //}
     //else {
       orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-      delete visionMap;
       Target * t = new Target();
       t->type = TARGET_TILE;
       t->id = c->getCurrentMap()->id;
@@ -43,17 +41,14 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
   if(hungry) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
-      delete visionMap;
       return eat_food;
     }
   }
   if(sleepy && adventure->getLight() > 6) {
-    delete visionMap;
     return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
-    delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
     t->id = c->getCurrentMap()->id;
@@ -61,6 +56,5 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
-  delete visionMap;
-    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
 }

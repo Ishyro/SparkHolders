@@ -203,7 +203,7 @@ namespace FileOpener {
       }
       delete ss_titles;
       long xp = String::extract_long(ss);
-      int gold = String::extract_int(ss);
+      long gold = String::extract_long(ss);
       AI * ai;
       if (ai_str == "DiurnalPassiveAI") {
         ai = new DiurnalPassiveAI(x, y);
@@ -246,7 +246,8 @@ namespace FileOpener {
         profession,
         *titles
       );
-      world->getMap(map->id)->addCharacter(c);
+      map->addCharacter(c);
+      c->setCurrentMap(new Map(map, c, database, world));
       delete race_modifiers;
       delete titles;
     }

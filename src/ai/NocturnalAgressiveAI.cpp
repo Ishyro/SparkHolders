@@ -22,7 +22,6 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   if(!threats.empty()) {
     Character * target = threats.front();
     // orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
-    delete visionMap;
     Target * t = new Target();
     t->type = TARGET_CHARACTER;
     t->id = c->getCurrentMap()->id;
@@ -35,17 +34,14 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   if(hungry) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
-      delete visionMap;
       return eat_food;
     }
   }
   if(sleepy && adventure->getLight() > 6) {
-    delete visionMap;
     return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
-    delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
     t->id = c->getCurrentMap()->id;
@@ -53,6 +49,5 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
     t->y = origin_y;
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
   }
-  delete visionMap;
-    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
 }

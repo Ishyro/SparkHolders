@@ -1253,6 +1253,7 @@ namespace Display {
               break;
             case ' ':
               type = ACTION_GRAB;
+              object_id = 0;
               done = true;
               break;
             case 'x':
@@ -1685,7 +1686,7 @@ namespace Display {
       mvwprintw(targetScreen, lines2 / 2, cols2 / 2 - to_print.length() / 2, to_print.c_str());
       wrefresh(targetScreen);
       for(CharacterDisplay * character : display->characters) {
-        if(character->x == target_x && character->y == target_y) {
+        if((int) std::floor(character->x) == target_x + display->map->offsetX && (int) std::floor(character->y) == target_y + display->map->offsetY) {
           target_id = character->id;
           displayTarget(character, targetScreen, t);
           break;

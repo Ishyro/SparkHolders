@@ -185,7 +185,9 @@ void Adventure::executeActions() {
   for(Action * action : actions) {
     // the user might have been killed and deleted
     if(action != nullptr && action->getTick() <= 1.F && action->getUser() != nullptr) {
+      std::list<Character *> characters = std::list<Character *>(action->getUser()->getCurrentMap()->getCharacters());
       Action * next = action->execute(this);
+      characters = std::list<Character *>(action->getUser()->getCurrentMap()->getCharacters());
       if(next != nullptr) {
         next_actions.push_back(next);
       }
@@ -256,7 +258,9 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     profession,
     *titles
   );
-  world->getMap(spawn->y, spawn->x, spawn->z)->addCharacter(player);
+  Map * map = world->getMap(spawn->y, spawn->x, spawn->z);
+  player->setCurrentMap(new Map(map, player, database, world));
+  map->addCharacter(player);
   delete spawn;
   delete race_modifiers;
   delete titles;

@@ -82,6 +82,18 @@ Map * World::getMap(int x, int y, int z) {
   return nullptr;
 }
 
+Map * World::getMap(float x, float y, float z) {
+  for (auto pair : maps) {
+    if(pair.second->offsetZ == z) {
+      Tile * tile = pair.second->getTile(x, y);
+      if(tile != nullptr && tile->name != "TXT_VOID") {
+        return pair.second;
+      }
+    }
+  }
+  return nullptr;
+}
+
 Tile * World::getTile(int x, int y, int z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {

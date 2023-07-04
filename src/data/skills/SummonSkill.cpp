@@ -35,7 +35,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     (int) target->y,
     (int) target->z,
     owner->getOrientation(),
-    target->id,
+    nullptr,
     team == "" ? owner->getTeam() : team,
     ai,
     attributes,
@@ -49,6 +49,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     profession,
     titles
   );
+  c->setCurrentMap(new Map(adventure->getWorld()->getMap(target->x, target->y, target->z), c, adventure->getDatabase(), adventure->getWorld()));
   adventure->getWorld()->getMap(target->id)->addCharacter(c);
   if(apparition_type == APPARITION_SOFT) {
     adventure->softMoveCharacterToMap(c, target->id, target->x, target->y, target->z);

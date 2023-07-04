@@ -22,7 +22,6 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
   if(!threats.empty()) {
-    delete visionMap;
     return attack(adventure, threats, c);
   }
   selectHungriness(c);
@@ -30,17 +29,14 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   if(hungry) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
-      delete visionMap;
       return eat_food;
     }
   }
   if(sleepy && adventure->getLight() < 4) {
-    delete visionMap;
     return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
-    delete visionMap;
     Target * t = new Target();
     t->type = TARGET_TILE;
     t->id = c->getCurrentMap()->id;
@@ -51,6 +47,5 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   // we are at destination
   origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeX;
   origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeY;
-  delete visionMap;
-    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
 }

@@ -33,7 +33,7 @@ Map * AI::updateMap(Adventure * adventure, Character * c) {
 }
 
 float AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getOrientationToTarget(self->getX(), self->getY(), x, y);
+  return MapUtil::getOrientationToTarget(self->getX(), self->getY(), (float) x + 0.5F, (float) y + 0.5F);
 }
 
 float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
@@ -123,7 +123,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
   // herbivorous creature dependent on a skill to eat
   }
   else {
-    Map * map = adventure->getWorld()->getMap(self->getCurrentMap()->id);
+    Map * map = self->getCurrentMap();
     Tile * target = nullptr;
     Skill * skill = nullptr;
     for(Skill * s : self->getSkills()) {
@@ -174,7 +174,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
           i -= power;
           break;
       }
-      if(!(j >= 0 && j < map->sizeY) || !(i >= 0 && i < map->sizeX) || (correct_tile = map->getTile(i, j) == target )) {
+      if(!(j >= map->offsetY && j < map->sizeY + map->offsetY) || !(i >= map->offsetX && i < map->sizeX + map->offsetX) || (correct_tile = map->getTile(i, j) == target )) {
         continue;
       }
     }
@@ -184,7 +184,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     t->x = i;
     t->y = j;
     t->z = self->getZ();
-    if(i == self->getX() && j == self->getY()) {
+    if(i == (int) std::floor(self->getX()) && j == (int) std::floor(self->getY())) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
     else {
@@ -194,11 +194,10 @@ Action * AI::eat(Adventure * adventure, Character * self) {
 }
 
 Action * AI::trackPrey(Adventure * adventure, Character * self) {
-  Map * map = adventure->getWorld()->getMap(self->getCurrentMap()->id);
+  Map * map = self->getCurrentMap();
   Character * prey = nullptr;
   Loot * corpse = nullptr;
-  // a predator can sense prey even if they are far.
-  float max_distance_prey = (float) self->getVisionRange() * 2.F;
+  float max_distance_prey = (float) self->getVisionRange();
   float distance_prey = max_distance_prey;
   for(Character * other : map->getCharacters()) {
     if(other->getTeam() == "prey" || (other->getTeam() != self->getTeam() && self->getSatiety() < 15.F)) {

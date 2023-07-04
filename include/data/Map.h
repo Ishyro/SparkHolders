@@ -90,7 +90,11 @@ class Map {
       tiles(map->tiles),
       lights(map->lights),
       light(map->light)
-    {}
+    {
+      characters = std::list<Character *>();
+      projectiles = std::list<Projectile *>();
+      loots = std::list<Loot *>();
+    }
 
     Map(Map * map, Character * player, Database * database, World * world):
       name(map->name),

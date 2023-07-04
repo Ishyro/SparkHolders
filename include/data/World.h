@@ -33,6 +33,7 @@ class World {
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
     Map * getMap(int x, int y, int z);
+    Map * getMap(float x, float y, float z);
     Tile * getTile(int x, int y, int z);
     Tile * getTile(float x, float y, float z);
     int getLight(int x, int y, int z);
