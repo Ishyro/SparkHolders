@@ -23,6 +23,17 @@
 
 #include "util/String.h"
 
+Character::~Character() {
+      delete current_map;
+      current_map = nullptr;
+      delete ai;
+      ai = nullptr;
+      for(Effect * effect : effects) {
+        delete effect;
+        effect = nullptr;
+      }
+    }
+
 void Character::initializeCharacter(Gear * gear) {
   size = race->getSize(race_modifiers);
   maxHp = attributes->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
@@ -199,6 +210,8 @@ void Character::initEffects(std::list<Effect *> effects) {
 }
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
+bool Character::isMarkedDead() { return dead; }
+bool Character::markDead(bool dead) { this->dead = dead; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 float Character::getX() { return x; }
 float Character::getY() { return y; }
@@ -1743,25 +1756,4 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   delete race_modifiers;
   delete titles;
   return result;
-}
-
-void Character::deepDelete() {
-  for(Item * item : items) {
-    delete item;
-  }
-  for(Item * item : race->getLoot(race_modifiers)) {
-    delete item;
-  }
-  for(Skill * skill : skills) {
-    delete skill;
-  }
-  for(Way * title : titles) {
-    delete title;
-  }
-  delete gear;
-  delete race;
-  delete origin;
-  delete culture;
-  delete religion;
-  delete profession;
 }

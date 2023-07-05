@@ -1,6 +1,6 @@
 name = TXT_VOID
-untraversable = false
+untraversable = true
 opaque = true
-solid = false
+solid = true
 light = 0
 ap_cost = 10.

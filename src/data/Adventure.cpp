@@ -184,10 +184,8 @@ void Adventure::executeActions() {
   std::list<Action *> next_actions;
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    if(action != nullptr && action->getTick() <= 1.F && action->getUser() != nullptr) {
-      std::list<Character *> characters = std::list<Character *>(action->getUser()->getCurrentMap()->getCharacters());
+    if(action != nullptr && !action->getUser()->isMarkedDead() && action->getTick() <= 1.F ) {
       Action * next = action->execute(this);
-      characters = std::list<Character *>(action->getUser()->getCurrentMap()->getCharacters());
       if(next != nullptr) {
         next_actions.push_back(next);
       }
@@ -269,10 +267,9 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
 
 void Adventure::applyIteration() {
   for(Character * c : getCharacters()) {
-    c->gainLevel();
-    c->applyEffects();
-    // might have been killed by an effect
-    if(c != nullptr) {
+    if(!c->isMarkedDead()) {
+      c->gainLevel();
+      c->applyEffects();
       c->applySoulBurn();
       if(tick == 0) {
         c->applyTiredness();
@@ -281,6 +278,9 @@ void Adventure::applyIteration() {
       if(!c->isAlive()) {
         getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
       }
+    }
+    if(!c->isAlive()) {
+      delete c;
     }
   }
 }

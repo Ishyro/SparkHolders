@@ -250,6 +250,11 @@ class Character {
       currentFlowOut = 0;
       currentFlowIn = 0;
     }
+
+    ~Character();
+    
+    bool isMarkedDead();
+    bool markDead(bool dead);
     bool isAlive();
     bool isSoulBurning();
     float getX();
@@ -408,7 +413,6 @@ class Character {
     static Character * full_from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Character& c) const { return id == c.id; }
     bool operator != (const Character& c) const { return !operator==(c); }
-    void deepDelete();
 
   private:
     void initializeCharacter(Gear * gear);
@@ -442,6 +446,7 @@ class Character {
     int detectionRange;
     bool need_to_send = false;
     bool need_to_update_actions = true;
+    bool dead = false;
 
     long gold;
     long xp;

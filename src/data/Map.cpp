@@ -388,8 +388,7 @@ void Map::killCharacter(Character * killer, Character * victim) {
   else {
     loots.push_back(loot);
   }
-  delete victim;
-  victim = nullptr;
+  victim->markDead(true);
 }
 
 void Map::removeProjectile(Projectile * p) { projectiles.remove(p); }
@@ -577,7 +576,7 @@ bool Map::tryMove(Character * c, float destX, float destY) {
     return true;
   }
   for(Character * other : characters) {
-    if(other != nullptr && c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
+    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
       return false;
     } 
   }
@@ -1002,7 +1001,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   std::list<Character *> targets = std::list<Character *>();
   if(p->getY() == y) {
     for(Character * c : characters) {
-      if(c->getY() <=  y + c->getSize() + p->getSize() && c->getY() >= y - c->getSize() - p->getSize()) {
+      if(!c->isMarkedDead() && c->getY() <=  y + c->getSize() + p->getSize() && c->getY() >= y - c->getSize() - p->getSize()) {
         if( x > p->getX()) {
           if(c->getX() <= x + c->getSize() + p->getSize() && c->getX()>= p->getX() - c->getSize() - p->getSize()) {
             targets.push_back(c);
@@ -1018,7 +1017,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   }
   else if(p->getX() == x) {
     for(Character * c : characters) {
-      if(c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) {
+      if(!c->isMarkedDead() && c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) {
         if(y > p->getY()) {
           if(c->getY() <= y + c->getSize() + p->getSize() && c->getY() >= p->getY() - c->getSize() - p->getSize()) {
             targets.push_back(c);
@@ -1035,8 +1034,8 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   else {
     float tan = std::tan(p->getOrientation() * 3.141593F / 180.F);
     for(Character * c : characters) {
-      if( (c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= p->getX() - c->getSize() - p->getSize()) ||
-        (c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) ) {
+      if(!c->isMarkedDead() && ((c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= p->getX() - c->getSize() - p->getSize()) ||
+        (c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) )) {
         float p_y = tan * c->getX() + p->getY();
         if( (c->getY() <= p_y + c->getSize() + p->getSize() && c->getY() >= p_y - c->getSize() - p->getSize()) ||
           (c->getY() <= p_y - c->getSize() - p->getSize() && c->getY() >= p_y + c->getSize() + p->getSize()) ) {
@@ -1052,7 +1051,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   };
   targets.sort(rangeSort);
   for(Character * character : targets) {
-    if(!p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
+    if(!character->isMarkedDead() && !p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
       MapUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
       >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
@@ -1073,7 +1072,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   }
   std::list<Character *> tokill = std::list<Character *>();
   for(Character * c : characters) {
-    if(c != nullptr && !c->isAlive()) {
+    if(!c->isMarkedDead() && !c->isAlive()) {
       tokill.push_back(c);
     }
   }

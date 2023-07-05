@@ -101,8 +101,8 @@ namespace Display {
           if(display->map->getTile(x, y)->name == "TXT_MIST") { // unseen
             to_print = "~";
           }
+          mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (y - display->map->offsetY), (x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
         }
-        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (y - display->map->offsetY), (x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
       }
     }
     for(CharacterDisplay * character : display->characters) {
