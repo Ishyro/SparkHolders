@@ -46,6 +46,8 @@ func _input(event):
 	if event.is_action_pressed("pause"):
 		pause_state = not pause_state
 		pause.visible = pause_state
+		if pause_state:
+			$Pause/Menu/Continue.grab_focus()
 	if not pause_state:
 		if event.is_action_pressed("rotate_up_down") and event.double_click:
 				camera.rotation_degrees = Vector3(-60, camera.rotation_degrees.y, 0)

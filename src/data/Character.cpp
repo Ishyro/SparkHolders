@@ -1416,7 +1416,7 @@ std::string Character::to_string() {
   String::insert_float(ss, x);
   String::insert_float(ss, y);
   String::insert_float(ss, z);
-  String::insert_float(ss, size);
+  String::insert_float(ss, getSize());
   String::insert_float(ss, orientation);
   String::insert(ss, team);
   String::insert_int(ss, getArmor());

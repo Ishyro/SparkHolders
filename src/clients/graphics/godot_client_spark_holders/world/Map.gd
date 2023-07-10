@@ -81,7 +81,7 @@ func _ready():
 	size = link.getSizes()
 	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
-	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, n_view.transform.origin.y, offset.z + mid_size.z)
+	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
 	for i in size.x:
 		tiles.append([])
 		lights.append([])
@@ -91,8 +91,10 @@ func _ready():
 	board.append([])
 	for tile in link.getAvaillableTiles():
 		tiles_data[tile] = link.getDataFromTile(tile)
-		materials[tile] = load(tiles_data[tile]["path"])
-		
+		if tile != "TXT_MIST":
+			materials[tile] = load(tiles_data[tile]["path"])
+		else:
+			materials[tile] = board_material
 	owned_characters = link.getControlledParty()
 	characters_data = link.getCharacters()
 	projectiles_data = link.getProjectiles()
@@ -230,15 +232,15 @@ func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
 	character.scale_object_local(Vector3(character_data["size"], character_data["size"], character_data["size"]))
 	character.set_color(get_color(character_data))
-	character.transform.origin = Vector3(character_data["y"], 1, character_data["x"])
+	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 1, character_data["x"])
 	character.rotation_degrees += Vector3(0, character_data["orientation"], 0)
 	characters[str(character_id)] = character
 	n_characters.add_child(character)
-	
+
 func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	var projectile = base_projectile.instantiate()
 	projectile.scale_object_local(Vector3(projectile_data["size"], projectile_data["size"], projectile_data["size"]))
-	projectile.transform.origin = Vector3(projectile_data["y"], 1, projectile_data["x"])
+	projectile.transform.origin = Vector3(projectile_data["y"], projectile_data["z"] + 1, projectile_data["x"])
 	projectile.rotation_degrees += Vector3(0, projectile_data["orientation"], 0)
 	projectile[str(projectile_id)] = projectile
 	n_projectiles.add_child(projectile)

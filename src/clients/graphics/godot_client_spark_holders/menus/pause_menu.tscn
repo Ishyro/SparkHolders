@@ -33,6 +33,7 @@ grow_vertical = 2
 
 [node name="Continue" type="Button" parent="Menu"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../Quit")
 text = "Continue
 "
 
@@ -50,6 +51,7 @@ text = "Main Menu"
 
 [node name="Quit" type="Button" parent="Menu"]
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../Continue")
 text = "Quit Game"
 
 [connection signal="pressed" from="Menu/Continue" to="." method="_on_continue_pressed"]

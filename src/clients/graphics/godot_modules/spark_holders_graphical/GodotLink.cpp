@@ -29,18 +29,18 @@ float GodotLink::getMoveCost(int64_t character_id, int y, int x) {
 }
 
 Vector3 GodotLink::getSizes() {
-  return Vector3(state->map->sizeY, 1, state->map->sizeX);
+  return Vector3(state->map->sizeY, state->map->sizeZ, state->map->sizeX);
 }
 
 Vector3 GodotLink::getOffsets() {
-  return Vector3(state->map->offsetY, 0, state->map->offsetX);
+  return Vector3(state->map->offsetY, state->map->offsetZ, state->map->offsetX);
 }
 
 Array GodotLink::getAvaillableTiles() {
   Array result = Array();
   for(auto pair : link->getAdventure()->getDatabase()->getAvaillableTiles()) {
     result.push_back(pair.first.c_str());
-  } 
+  }
   return result;
 }
 
@@ -49,7 +49,7 @@ Array GodotLink::getTiles() {
   for(int y = state->map->offsetY; y < state->map->offsetY + state->map->sizeY; y++) {
     Array result_y = Array();
     for(int x = state->map->offsetX; x < state->map->offsetX + state->map->sizeX; x++) {
-      result_y.push_back(state->map->getTile(y, x)->name.c_str());
+      result_y.push_back(state->map->getTile(x, y)->name.c_str());
     }
     result.push_back(result_y);
   }

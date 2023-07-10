@@ -66,6 +66,17 @@
 
 namespace FileOpener {
 
+  float _stof(std::string msg) {
+    float result = stof(msg);
+    int int_part = (int) result;
+    if(result - int_part == 0.) {
+      // float formating is not the same everywhere
+      std::replace(msg.begin(), msg.end(), '.', ',');
+      result = stof(msg);
+    }
+    return result;
+  }
+
   std::map<const std::string,std::string> getValuesFromFile(std::string fileName) {
     std::map<const std::string, std::string> result = std::map<const std::string,std::string>();
     std::fstream file;
@@ -184,7 +195,7 @@ namespace FileOpener {
       Attributes * attributes = (Attributes *) database->getAttributes(String::extract(ss));
       Attributes * second_attributes = (Attributes *) database->getAttributes(String::extract(ss));
       Gear * gear = (Gear *) database->getGear(String::extract(ss));
-      
+
       Race * race = (Race *) database->getWay(String::extract(ss));
       std::stringstream * ss_race_modifiers = new std::stringstream(String::extract(ss));
       std::list<Race *> * race_modifiers = new std::list<Race *>();
@@ -505,15 +516,15 @@ namespace FileOpener {
       damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
     }
     if(type == EFFECT_DAMAGE_REDUCTION) {
-      damage_reductions[DAMAGE_SLASH] = stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[DAMAGE_PUNCTURE] = stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_IMPACT] = stof(values.at("IMPACT_REDUCTION"));
-      damage_reductions[DAMAGE_FIRE] = stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[DAMAGE_LIGHTNING] = stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[DAMAGE_FROST] = stof(values.at("COLD_REDUCTION"));
-      damage_reductions[DAMAGE_POISON] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[DAMAGE_IMPACT] = _stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[DAMAGE_FROST] = _stof(values.at("COLD_REDUCTION"));
+      damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
       damage_reductions[DAMAGE_ACID] = 0.;
-      damage_reductions[DAMAGE_MIND] = stof(values.at("MIND_REDUCTION"));
+      damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
       damage_reductions[DAMAGE_TRUE] = 0.;
       damage_reductions[DAMAGE_SOUL] = 0.;
     }
@@ -595,7 +606,7 @@ namespace FileOpener {
     int type = database->getTargetFromMacro(values.at("type"));
     int type2 = database->getTargetFromMacro(values.at("type2"));
     int max_tier = stoi(values.at("tier"));
-    float weight = stof(values.at("weight"));
+    float weight = _stof(values.at("weight"));
     int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_droppable(values.at("droppable"));
     bool droppable;
@@ -621,15 +632,15 @@ namespace FileOpener {
       int armor = stoi(values.at("armor"));
       int swap_time = stoi(values.at("swap_time"));
       float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
-      damage_reductions[DAMAGE_SLASH] = stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[DAMAGE_PUNCTURE] = stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_IMPACT] = stof(values.at("IMPACT_REDUCTION"));
-      damage_reductions[DAMAGE_FIRE] = stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[DAMAGE_LIGHTNING] = stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[DAMAGE_FROST] = stof(values.at("FROST_REDUCTION"));
-      damage_reductions[DAMAGE_POISON] = stof(values.at("POISON_REDUCTION"));
+      damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
+      damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
+      damage_reductions[DAMAGE_IMPACT] = _stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
+      damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
+      damage_reductions[DAMAGE_FROST] = _stof(values.at("FROST_REDUCTION"));
+      damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
       damage_reductions[DAMAGE_ACID] = 0.;
-      damage_reductions[DAMAGE_MIND] = stof(values.at("MIND_REDUCTION"));
+      damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
       damage_reductions[DAMAGE_TRUE] = 0.;
       damage_reductions[DAMAGE_SOUL] = 0.;
       item = new ArmorItem(
@@ -654,7 +665,7 @@ namespace FileOpener {
     if(type == ITEM_WEAPON) {
       int armor = stoi(values.at("armor"));
       int swap_time = stoi(values.at("swap_time"));
-      float range = stof(values.at("range"));
+      float range = _stof(values.at("range"));
       int strike_time = stoi(values.at("strike_time"));
       std::istringstream is_use_projectile(values.at("use_projectile"));
       bool use_projectile;
@@ -793,7 +804,7 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
-    float size = stof(values.at("size"));
+    float size = _stof(values.at("size"));
     std::istringstream is(values.at("homing"));
     bool homing;
     is >> std::boolalpha >> homing;
@@ -808,12 +819,12 @@ namespace FileOpener {
     while(getline(is_effects, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
-    float speed = stof(values.at("speed"));
-    float area = stof(values.at("area"));
+    float speed = _stof(values.at("speed"));
+    float area = _stof(values.at("area"));
     int falloff_timer = stoi(values.at("falloff_timer"));
-    float waste_per_tick = stof(values.at("waste_per_tick"));
-    float waste_per_area = stof(values.at("waste_per_area"));
-    float waste_per_hit = stof(values.at("waste_per_hit"));
+    float waste_per_tick = _stof(values.at("waste_per_tick"));
+    float waste_per_area = _stof(values.at("waste_per_area"));
+    float waste_per_hit = _stof(values.at("waste_per_hit"));
     int damages[DAMAGE_TYPE_NUMBER];
     damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
     damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
@@ -853,7 +864,7 @@ namespace FileOpener {
     Settings::setSatietyRecoveryRatio(stoi(values.at("SATIETY_RECOVERY_RATIO")));
     Settings::setStaminaOverextendRatio(stoi(values.at("STAMINA_OVEREXTEND_RATIO")));
     Settings::setSatietyOverextendRatio(stoi(values.at("SATIETY_OVEREXTEND_RATIO")));
-    Settings::setBuyingPriceModifier(stof(values.at("BUYING_PRICE_MODIFIER")));
+    Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
@@ -1020,7 +1031,7 @@ namespace FileOpener {
     bool solid;
     is_solid >> std::boolalpha >> solid;
     int light = stoi(values.at("light"));
-    float ap_cost = stof(values.at("ap_cost"));
+    float ap_cost = _stof(values.at("ap_cost"));
     Tile * tile = new Tile(name, untraversable, opaque, solid, light, ap_cost);
     database->addTile(tile);
     return name;
@@ -1060,7 +1071,7 @@ namespace FileOpener {
     if(type == WAY_RACE) {
       int race_type = database->getTargetFromMacro(values.at("race_type"));
       int baseArmor = stoi(values.at("baseArmor"));
-      float size = stof(values.at("size"));
+      float size = _stof(values.at("size"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
       bool need_to_eat;
       is_need_to_eat >> std::boolalpha >> need_to_eat;
@@ -1073,10 +1084,10 @@ namespace FileOpener {
       std::istringstream is_has_soulspark(values.at("has_soulspark"));
       bool has_soulspark;
       is_has_soulspark >> std::boolalpha >> has_soulspark;
-      float action_time_modifier = stof(values.at("action_time_modifier"));
-      float strike_time_modifier = stof(values.at("strike_time_modifier"));
-      float skill_time_modifier = stof(values.at("skill_time_modifier"));
-      float movement_time_modifier = stof(values.at("movement_time_modifier"));
+      float action_time_modifier = _stof(values.at("action_time_modifier"));
+      float strike_time_modifier = _stof(values.at("strike_time_modifier"));
+      float skill_time_modifier = _stof(values.at("skill_time_modifier"));
+      float movement_time_modifier = _stof(values.at("movement_time_modifier"));
       std::list<Item *> * loots = new std::list<Item *>();
       std::istringstream is_loot(values.at("loot"));
       std::string loot;
