@@ -8,11 +8,13 @@ var tiles = []
 var lights = []
 var characters = {}
 var projectiles = {}
-var loots = {}
+var furnitures = {}
 var tiles_data = {}
 var characters_data = {}
 var projectiles_data = {}
 var materials = {}
+
+var tiles_img = {}
 
 var board_material = preload("res://world/board_material.tres")
 var grid_material = StandardMaterial3D.new()
@@ -35,14 +37,12 @@ var light_f = StandardMaterial3D.new()
 
 var base_character = preload("res://models/character.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
-var base_mist = preload("res://models/mist.tscn")
+var base_tile = preload("res://world/tile.tscn")
 
 var plan
 var offset = Vector3.ZERO
 var size = Vector3.ZERO
 var mid_size = Vector3.ZERO
-#var ori = Vector3(50, 0, 60)
-var link = GodotLink.new()
 
 @onready var n_view = $"../View"
 @onready var n_grid = $Grid
@@ -50,7 +50,7 @@ var link = GodotLink.new()
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
-@onready var n_loots = $Loots
+@onready var n_furnitures = $Furnitures
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -74,11 +74,11 @@ func _ready():
 	# var ip = "192.168.168.164";
 	# var ip = "192.168.1.83";
 	var ip = "127.0.0.1";
-	link.initialize(ip)
-	link.receiveState()
+	Values.link.initialize(ip)
+	Values.link.receiveState()
 	grid_material.albedo_color = "000000"
-	offset = link.getOffsets()
-	size = link.getSizes()
+	offset = Values.link.getOffsets()
+	size = Values.link.getSizes()
 	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
 	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
@@ -89,15 +89,18 @@ func _ready():
 			tiles[i].append([])
 			lights[i].append([])
 	board.append([])
-	for tile in link.getAvaillableTiles():
-		tiles_data[tile] = link.getDataFromTile(tile)
+	for tile in Values.link.getAvaillableTiles():
+		tiles_data[tile] = Values.link.getDataFromTile(tile)
 		if tile != "TXT_MIST":
 			materials[tile] = load(tiles_data[tile]["path"])
 		else:
 			materials[tile] = board_material
-	owned_characters = link.getControlledParty()
-	characters_data = link.getCharacters()
-	projectiles_data = link.getProjectiles()
+		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE" || tile == "TXT_MIST":
+			var img = materials[tile].albedo_texture.get_image()
+			tiles_img[tile] = ImageTexture.create_from_image(img)
+	owned_characters = Values.link.getControlledParty()
+	characters_data = Values.link.getCharacters()
+	projectiles_data = Values.link.getProjectiles()
 	create_grid()
 	create_board()
 	create_tiles()
@@ -166,67 +169,50 @@ func create_board():
 	
 func get_light(light: int):
 	match light:
-		0:
-			return light_0
-		1:
-			return light_1
-		2: 
-			return light_2
-		3:
-			return light_3
-		4:
-			return light_4
-		5:
-			return light_5
-		6:
-			return light_6
-		7:
-			return light_7
-		8:
-			return light_8
-		9:
-			return light_9
-		10:
-			return light_a
-		11:
-			return light_b
-		12:
-			return light_c
-		13:
-			return light_d
-		14:
-			return light_e
-		15:
-			return light_f
+		0: return light_0
+		1: return light_1
+		2: return light_2
+		3: return light_3
+		4: return light_4
+		5: return light_5
+		6: return light_6
+		7: return light_7
+		8: return light_8
+		9: return light_9
+		10: return light_a
+		11: return light_b
+		12: return light_c
+		13: return light_d
+		14: return light_e
+		15: return light_f
 
 func create_tiles():
-	var current_tiles = link.getTiles()
-	var current_lights = link.getLights()
+	var current_tiles = Values.link.getTiles()
+	var current_lights = Values.link.getLights()
 	for x in range(0, size.x):
 		for z in range(0, size.z):
 			var light = MeshInstance3D.new()
-			light.mesh = PlaneMesh.new()
-			light.mesh.set_size(Vector2.ONE)
+			light.mesh = BoxMesh.new()
 			light.set_surface_override_material(0, get_light(current_lights[x][z]))
-			light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.001, offset.z + z + 0.5)
+			if tiles_data[current_tiles[x][z]]["solid"]:
+				light.mesh.set_size(Vector3(1, 3, 1))
+				light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.5, offset.z + z + 0.5)
+			else:
+				light.mesh.set_size(Vector3.ONE)
+				light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 0.5, offset.z + z + 0.5)
 			lights[x][z] = light
 			n_lights.add_child(light)
-			var tile = MeshInstance3D.new()
-			tile.mesh = BoxMesh.new()
-			if tiles_data[current_tiles[x][z]]["solid"]:
-				tile.mesh.set_size(Vector3(1, 3, 1))
-				tile.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.5, offset.z + z + 0.5)
-			else:
-				tile.mesh.set_size(Vector3.ONE)
-				tile.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 0.5, offset.z + z + 0.5)
-				if(current_tiles[x][z] == "TXT_MIST"):
-					tile.add_child(base_mist.instantiate())
-			tile.set_surface_override_material(0, materials[current_tiles[x][z]])
+			var tile = base_tile.instantiate()
+			tile.create(Vector3(offset.x + x, offset.y, offset.z +z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
 			tiles[x][z] = tile
 			n_tiles.add_child(tile)
 
-func get_color(_character_data: Dictionary):
-	return "0000FF"
+func get_color(character_data: Dictionary):
+	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):
+		"SAME": return "0000FF"
+		"ALLY": return "00FF00"
+		"NEUTRAL": return "FFFF00"
+		"ENEMY": return "FF0000"
 
 func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
@@ -235,6 +221,8 @@ func add_character(character_id: int, character_data: Dictionary):
 	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 1, character_data["x"])
 	character.rotation_degrees += Vector3(0, character_data["orientation"], 0)
 	characters[str(character_id)] = character
+	character.id = character_id
+	character.character = character_data["name"]
 	n_characters.add_child(character)
 
 func add_projectile(projectile_id: int, projectile_data: Dictionary):
@@ -243,4 +231,7 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.transform.origin = Vector3(projectile_data["y"], projectile_data["z"] + 1, projectile_data["x"])
 	projectile.rotation_degrees += Vector3(0, projectile_data["orientation"], 0)
 	projectile[str(projectile_id)] = projectile
+	projectile.id = projectile_id
+	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
+

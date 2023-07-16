@@ -22,7 +22,7 @@ public:
   {}
   void initialize(String ip);
   void receiveState();
-  float getMoveCost(int64_t character_id, int y, int x);
+  float getMoveCost(int64_t character_id, float x, float y);
   Vector3 getSizes();
   Vector3 getOffsets();
   Array getAvaillableTiles();
@@ -31,9 +31,11 @@ public:
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
+  String getRelation(String team1, String team2);
   Dictionary getDataFromTile(String tile_name);
   Dictionary getDataFromCharacter(long id);
   Dictionary getDataFromProjectile(long id);
+  void close();
 
 protected:
   static void _bind_methods();

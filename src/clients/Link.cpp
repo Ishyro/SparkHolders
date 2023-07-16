@@ -22,13 +22,18 @@ Translator * Link::initialize(std::string language) {
 
 void Link::sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
   try {
-    player = Client::sendChoices(s, adventure, name, attributes, race, origin, culture, religion, profession);
+    Character * new_player = Client::sendChoices(s, adventure, name, attributes, race, origin, culture, religion, profession);
+    players.insert(std::make_pair(new_player->id, new_player));
   } catch (const CloseException &e) {
     throw e;
   }
 }
 
 StateDisplay * Link::receiveState() {
+  Character * player;
+  for(auto pair : players) {
+    player = pair.second;
+  }
   try {
     StateDisplay * game_state = Client::receiveState(s, adventure, &player, &need_to_update_actions);
     for(CharacterDisplay * display : game_state->characters) {
@@ -87,18 +92,25 @@ void Link::sendAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, in
 
 std::vector<Attributes *> Link::getStartingAttributes() {
   std::list<Attributes *> l = adventure->getStartingAttributes();
-  std::vector<Attributes *> v{ std::begin(l), std::end(l) };  
+  std::vector<Attributes *> v{ std::begin(l), std::end(l) };
   return v;
 }
 
-std::vector<Way *> Link::getStartingWays() { 
+std::vector<Way *> Link::getStartingWays() {
   std::list<Way *> l = adventure->getStartingWays();
-  std::vector<Way *> v{ std::begin(l), std::end(l) };  
+  std::vector<Way *> v{ std::begin(l), std::end(l) };
   return v;
 }
 std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return adventure->getDatabase()->getWaysIncompatibilities(); }
 
-Character * Link::getPlayer() { return player; }
+Character * Link::getPlayer(long id) { return players.at(id); }
+Character * Link::getPlayer() {
+  Character * player;
+  for(auto pair : players) {
+    player = pair.second;
+  }
+  return player;
+}
 Adventure * Link::getAdventure() { return adventure; }
 
 bool Link::getNeedToUpdateActions() { return need_to_update_actions; }

@@ -445,16 +445,16 @@ void Map::takeLoot(Character * c, int mode) {
   to_delete.clear();
 }
 
-float Map::getMoveCost(Character * c, float y, float x) {
+float Map::getMoveCost(Character * c, float x, float y) {
   if(c->isFlying()) {
-    return MapUtil::distance(c->getX(), c->getY(), x, y) * 10.F;
+    return MapUtil::distance(c->getX(), c->getY(), x, y) * 10.F / c->getMovementTimeModifier();
   }
   float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
   float ap_cost = 0.F;
-  int current_x = c->getX();
-  int current_y = c->getY();
-  int next_x = current_x;
-  int next_y = current_y;
+  float current_x = c->getX();
+  float current_y = c->getY();
+  float next_x = current_x;
+  float next_y = current_y;
   int x_direction = 1;
   int y_direction = 1;
   if(orientation > 180.F) {
@@ -464,12 +464,12 @@ float Map::getMoveCost(Character * c, float y, float x) {
     x_direction = -1;
   }
   if(c->getY() == y) {
-    if(current_x !=  x && x_direction == -1) {
+    if(current_x != x && x_direction == -1) {
       next_x = std::floor(next_x);
       ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       current_x = next_x;
     }
-    while(current_x !=  x) {
+    while(current_x != std::floor(x)) {
       next_x = std::floor(current_x + x_direction);
       if(x_direction == -1) {
         ap_cost += getTile(current_x, next_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
@@ -479,14 +479,20 @@ float Map::getMoveCost(Character * c, float y, float x) {
       }
       current_x = next_x;
     }
+    if(x_direction == -1) {
+      ap_cost -= getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+    }
+    else {
+      ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+    }
   }
   else if(c->getX() == x) {
-    if(current_y !=  y && y_direction == -1) {
+    if(current_y != y && y_direction == -1) {
       next_y = std::floor(next_y);
       ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
       current_y = next_y;
     }
-    while(current_y !=  y) {
+    while(current_y != std::floor(y)) {
       next_y = std::floor(current_y + y_direction);
       if(y_direction == -1) {
         ap_cost += getTile(next_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
@@ -496,77 +502,70 @@ float Map::getMoveCost(Character * c, float y, float x) {
       }
       current_y = next_y;
     }
-  }
-  else {
-    float cos = std::cos(orientation * 3.141593F / 180.F);
-    float sin = std::sin(orientation * 3.141593F / 180.F);
-    float current_dx = current_x - std::floor(current_x);
-    float current_dy = current_y - std::floor(current_y);
-    float range_x = std::abs(-current_dx / cos);
-    float range_y = std::abs(-current_dy / sin);
-    float range;
-    float next_dx;
-    float next_dy;
-    float x_x = (float) current_x + current_dx + cos * range_x;
-    float x_y = (float) current_y + current_dy + sin * range_x;
-    float y_x = (float) current_x + current_dx + cos * range_y;
-    float y_y = (float) current_y + current_dy + sin * range_y;
-    if(MapUtil::distanceSquare(x, y, x_x, x_y) < MapUtil::distanceSquare(x, y, x_x, x_y)) {
-      next_x = x_x;
-      next_dx = x_x - std::floor(current_x);
-      next_y = x_y;
-      next_dy = x_y - std::floor(current_y);
-      range = range_x;
+    if(y_direction == -1) {
+      ap_cost -= getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
     }
     else {
-      next_x = y_x;
-      next_dx = y_x - std::floor(current_x);
-      next_y = y_y;
-      next_dy = y_y - std::floor(current_y);
-      range = range_y;
+      ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
     }
-    ap_cost = getTile(current_x, current_y)->ap_cost * range;
-    current_dx = next_dx;
-    current_dy = next_dy;
-    while(MapUtil::distanceSquare(x, y, current_x, current_y) > 2) {
-    //while(current_x != x || current_y != y) {
-      range_x = std::abs((x_direction - current_dx) / cos);
-      range_y = std::abs((y_direction - current_dy) / sin);
-      x_x = (float) current_x + current_dx + cos * range_x;
-      x_y = (float) current_y + current_dy + sin * range_x;
-      y_x = (float) current_x + current_dx + cos * range_y;
-      y_y = (float) current_y + current_dy + sin * range_y;
-      if(MapUtil::distanceSquare(x, y, x_x, x_y) < MapUtil::distanceSquare(x, y, x_x, x_y)) {
-        next_x = std::floor(x_x);
-        next_dx = x_x - (float) next_x;
-        next_y = std::floor(x_y);
-        next_dy = x_y - (float) next_y;
-        range = range_x;
-      }
-      else {
-        next_x = std::floor(y_x);
-        next_dx = y_x - (float) next_x;
-        next_y = std::floor(y_y);
-        next_dy = y_y - (float) next_y;
-        range = range_y;
-      }
-      if(x_direction == -1 || y_direction == -1) {
-        ap_cost += getTile(next_x, next_y)->ap_cost * range;
-      }
-      else {
-        ap_cost += getTile(current_x, current_y)->ap_cost * range;
-      }
-      current_x = next_x;
-      current_dx = next_dx;
-      current_y = next_y;
-      current_dy = next_dy;
-    }
-  }
-  if(x_direction == -1 || y_direction == -1) {
-    ap_cost -= getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
   }
   else {
-    ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+    float a = (y - current_y) / (x - current_x);
+    float b = y - a * x;
+    if(abs(a) < 1) {
+      if(x_direction == -1) {
+        next_x = std::floor(current_x);
+        next_y = a * next_x + b;
+        ap_cost += getTile(next_x, next_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        current_x = next_x;
+        current_y = next_y;
+      }
+      while(std::floor(current_x) != std::floor(x)) {
+        next_x = std::floor(current_x) + x_direction;
+        next_y = a * next_x + b;
+        if(x_direction == -1) {
+          ap_cost += getTile(next_x, next_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        }
+        else {
+          ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        }
+        current_x = next_x;
+        current_y = next_y;
+      }
+      if(x_direction == -1) {
+        ap_cost -= getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+      }
+      else {
+        ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+      }
+    }
+    else {
+      if(y_direction == -1) {
+        next_y = std::floor(current_y);
+        next_x = (next_y - b) / a;
+        ap_cost += getTile(next_x, next_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        current_x = next_x;
+        current_y = next_y;
+      }
+      while(std::floor(current_y) != std::floor(y)) {
+        next_y = std::floor(current_y) + y_direction;
+        next_x = (next_y - b) / a;
+        if(y_direction == -1) {
+          ap_cost += getTile(next_x, next_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        }
+        else {
+          ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        }
+        current_x = next_x;
+        current_y = next_y;
+      }
+      if(y_direction == -1) {
+        ap_cost -= getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+      }
+      else {
+        ap_cost += getTile(current_x, current_y)->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+      }
+    }
   }
   return ap_cost / c->getMovementTimeModifier();
 }
@@ -578,7 +577,7 @@ bool Map::tryMove(Character * c, float destX, float destY) {
   for(Character * other : characters) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
       return false;
-    } 
+    }
   }
   return true;
 }

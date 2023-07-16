@@ -1,0 +1,1557 @@
+[gd_scene load_steps=5 format=3 uid="uid://c4dl1848sgldd"]
+
+[ext_resource type="Script" path="res://menus/hud.gd" id="1_7f8qf"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_4y1cm"]
+[ext_resource type="Texture2D" uid="uid://d0q33vsgmvfxb" path="res://data/tiles/lava/Color.jpg" id="3_skdcv"]
+[ext_resource type="Texture2D" uid="uid://b84ksryi2usv1" path="res://data/tiles/soil/Color.jpg" id="4_oag3h"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 8
+mouse_filter = 2
+script = ExtResource("1_7f8qf")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 2
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Skills" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 414.0
+offset_top = 985.0
+offset_right = 1510.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Tabs" type="TabContainer" parent="Skills"]
+layout_mode = 2
+mouse_filter = 0
+
+[node name="1" type="HBoxContainer" parent="Skills/Tabs"]
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/1"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="2" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="3" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/3"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="4" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/4"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="5" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/5"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="6" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/6"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="7" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/7"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="8" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/8"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="9" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/9"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="10" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/10"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="11" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/11"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="12" type="HBoxContainer" parent="Skills/Tabs"]
+visible = false
+layout_mode = 2
+
+[node name="Skill1" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill2" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill3" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill4" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill5" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill6" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill7" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill8" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill9" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill10" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill11" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill12" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill13" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill14" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill15" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Skill16" type="TextureRect" parent="Skills/Tabs/12"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Background" type="TextureRect" parent="Skills"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MapOptions" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 815.0
+offset_top = 985.0
+offset_right = 1505.0
+offset_bottom = 1016.0
+mouse_filter = 2
+
+[node name="Options" type="HBoxContainer" parent="MapOptions"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Grid" type="Button" parent="MapOptions/Options"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Grid"
+
+[node name="Lights" type="Button" parent="MapOptions/Options"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Lights"
+
+[node name="Characters" type="Button" parent="MapOptions/Options"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Characters"
+
+[node name="Projectiles" type="Button" parent="MapOptions/Options"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Projectiles"
+
+[node name="Furnitures" type="Button" parent="MapOptions/Options"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Furnitures"
+
+[node name="Self" type="Control" parent="."]
+layout_mode = 2
+anchors_preset = 0
+offset_top = 888.0
+offset_right = 412.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Bars" type="VBoxContainer" parent="Self"]
+layout_mode = 0
+offset_right = 371.0
+offset_bottom = 128.0
+
+[node name="Life" type="NinePatchRect" parent="Self/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Self/Bars/Life"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Self/Bars/Life/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Life/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="Mana" type="NinePatchRect" parent="Self/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Self/Bars/Mana"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Self/Bars/Mana/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Mana/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="Soulburn" type="NinePatchRect" parent="Self/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Self/Bars/Soulburn"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Self/Bars/Soulburn/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Soulburn/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="OffensiveStats" type="VBoxContainer" parent="Self"]
+layout_mode = 0
+offset_left = 369.0
+offset_right = 412.0
+offset_bottom = 128.0
+
+[node name="Damage" type="MarginContainer" parent="Self/OffensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Self/OffensiveStats/Damage"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/OffensiveStats/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Flow" type="MarginContainer" parent="Self/OffensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Self/OffensiveStats/Flow"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/OffensiveStats/Flow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DefensiveStats" type="HBoxContainer" parent="Self"]
+layout_mode = 2
+offset_top = 128.0
+offset_right = 414.0
+offset_bottom = 192.0
+size_flags_vertical = 3
+
+[node name="Armor" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/Armor"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/Armor"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SlashReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/SlashReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/SlashReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BluntReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/BluntReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/BluntReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PunctureReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/PunctureReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/PunctureReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FireReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/FireReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/FireReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LightningReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/LightningReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/LightningReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FrostReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/FrostReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/FrostReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PoisonReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/PoisonReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/PoisonReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MindReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Self/DefensiveStats/MindReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/MindReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DisplayInfo" type="TextureButton" parent="Self"]
+layout_mode = 0
+offset_left = 369.0
+offset_top = -16.0
+offset_right = 412.0
+toggle_mode = true
+action_mode = 0
+texture_normal = ExtResource("2_4y1cm")
+texture_pressed = ExtResource("3_skdcv")
+texture_hover = ExtResource("4_oag3h")
+ignore_texture_size = true
+stretch_mode = 1
+
+[node name="Target" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -414.0
+offset_top = -192.0
+offset_right = -2.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Bars" type="VBoxContainer" parent="Target"]
+layout_mode = 0
+offset_left = 43.0
+offset_right = 414.0
+offset_bottom = 128.0
+
+[node name="Life" type="NinePatchRect" parent="Target/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Target/Bars/Life"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Target/Bars/Life/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Life/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+fill_mode = 1
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="Mana" type="NinePatchRect" parent="Target/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Target/Bars/Mana"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Target/Bars/Mana/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Mana/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+fill_mode = 1
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="Soulburn" type="NinePatchRect" parent="Target/Bars"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Target/Bars/Soulburn"]
+layout_mode = 2
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 30.0
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="Label" type="Label" parent="Target/Bars/Soulburn/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "0 / 0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Soulburn/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+fill_mode = 1
+stretch_margin_left = 20
+stretch_margin_right = 20
+
+[node name="OffensiveStats" type="VBoxContainer" parent="Target"]
+layout_mode = 0
+offset_right = 43.0
+offset_bottom = 128.0
+
+[node name="Damage" type="MarginContainer" parent="Target/OffensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Target/OffensiveStats/Damage"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/OffensiveStats/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Flow" type="MarginContainer" parent="Target/OffensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Target/OffensiveStats/Flow"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/OffensiveStats/Flow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DefensiveStats" type="HBoxContainer" parent="Target"]
+layout_mode = 2
+offset_top = 128.0
+offset_right = 414.0
+offset_bottom = 192.0
+size_flags_vertical = 3
+
+[node name="Armor" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/Armor"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/Armor"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SlashReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/SlashReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/SlashReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BluntReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/BluntReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/BluntReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PunctureReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/PunctureReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/PunctureReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FireReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/FireReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/FireReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LightningReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/LightningReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/LightningReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FrostReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/FrostReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/FrostReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PoisonReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/PoisonReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/PoisonReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MindReduction" type="MarginContainer" parent="Target/DefensiveStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Target/DefensiveStats/MindReduction"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "0%"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/MindReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DisplayInfo" type="TextureButton" parent="Target"]
+layout_mode = 0
+offset_top = -16.0
+offset_right = 43.0
+toggle_mode = true
+action_mode = 0
+texture_normal = ExtResource("2_4y1cm")
+texture_pressed = ExtResource("3_skdcv")
+texture_hover = ExtResource("4_oag3h")
+ignore_texture_size = true
+stretch_mode = 1
+
+[node name="Tile" type="Control" parent="."]
+visible = false
+layout_mode = 2
+anchors_preset = 0
+offset_left = 1506.0
+offset_top = 738.0
+offset_right = 1918.0
+offset_bottom = 1080.0
+mouse_filter = 2
+
+[node name="Picture" type="TextureRect" parent="Tile"]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 0
+offset_left = 90.0
+offset_top = 20.0
+offset_right = 250.0
+offset_bottom = 180.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Description" type="RichTextLabel" parent="Tile"]
+layout_mode = 0
+offset_top = 180.0
+offset_right = 342.0
+offset_bottom = 340.0
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center]Grass[/center]
+
+Traversable
+See through
+Non solid
+AP Cost:	10.0
+It's grass"
+scroll_active = false
+
+[node name="Dialogue" type="Control" parent="."]
+layout_mode = 2
+anchors_preset = 0
+offset_left = 420.0
+offset_right = 1500.0
+offset_bottom = 270.0
+mouse_filter = 2
+
+[node name="Speech" type="RichTextLabel" parent="Dialogue"]
+layout_mode = 0
+offset_right = 1236.0
+offset_bottom = 180.0
+mouse_filter = 2
+text = "Test
+"
+
+[node name="Answer" type="RichTextLabel" parent="Dialogue"]
+layout_mode = 0
+offset_top = 180.0
+offset_right = 1236.0
+offset_bottom = 270.0
+mouse_filter = 2
+text = "Test"
+
+[connection signal="toggled" from="MapOptions/Options/Grid" to="." method="_on_grid_toggled"]
+[connection signal="toggled" from="MapOptions/Options/Lights" to="." method="_on_lights_toggled"]
+[connection signal="toggled" from="MapOptions/Options/Characters" to="." method="_on_characters_toggled"]
+[connection signal="toggled" from="MapOptions/Options/Projectiles" to="." method="_on_projectiles_toggled"]
+[connection signal="toggled" from="MapOptions/Options/Furnitures" to="." method="_on_furnitures_toggled"]

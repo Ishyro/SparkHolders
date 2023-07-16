@@ -9,12 +9,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_a48ly")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 2
 offset_right = 1920.0
 offset_bottom = 1080.0
+mouse_filter = 2
 color = Color(0, 0, 0, 0.352941)
 
 [node name="Menu" type="VBoxContainer" parent="."]
@@ -30,6 +32,7 @@ offset_right = 4.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Continue" type="Button" parent="Menu"]
 layout_mode = 2
@@ -54,6 +57,7 @@ layout_mode = 2
 focus_neighbor_bottom = NodePath("../Continue")
 text = "Quit Game"
 
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="pressed" from="Menu/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Menu/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu/Load" to="." method="_on_load_pressed"]

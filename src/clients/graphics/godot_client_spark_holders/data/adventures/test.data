@@ -25,6 +25,7 @@ data/maps/house_west.data
 data/effects/experience_10.data
 data/effects/satiety_10.data
 data/effects/etheral.data
+data/effects/flying.data
 # items
 data/items/bone.data
 data/items/homo_meat.data

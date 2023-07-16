@@ -24,8 +24,9 @@ void GodotLink::receiveState() {
   state = link->receiveState();
 }
 
-float GodotLink::getMoveCost(int64_t character_id, int y, int x) {
-  return state->map->getMoveCost(link->getAdventure()->getCharacter((long) character_id), y, x);
+float GodotLink::getMoveCost(int64_t character_id, float x, float y) {
+  //return state->map->getMoveCost(link->getPlayer((long) character_id), x, y);
+  return state->map->getMoveCost(link->getPlayer(), x, y);
 }
 
 Vector3 GodotLink::getSizes() {
@@ -92,6 +93,19 @@ Dictionary GodotLink::getProjectiles() {
     result[ (int64_t) projectile->id] = getDataFromProjectile(projectile->id);
   }
   return result;
+}
+
+String GodotLink::getRelation(String team1, String team2) {
+  switch(link->getAdventure()->getDatabase()->getRelation(std::string(team1.utf8().get_data()), std::string(team2.utf8().get_data()))) {
+    case TEAM_SAME:
+      return "SAME";
+    case TEAM_ALLY:
+      return "ALLY";
+    case TEAM_NEUTRAL:
+      return "NEUTRAL";
+    case TEAM_ENEMY:
+      return "ENEMY";
+  }
 }
 
 Dictionary GodotLink::getDataFromTile(String tile_name) {
@@ -175,6 +189,13 @@ Dictionary GodotLink::getDataFromProjectile(long id) {
   return result;
 }
 
+void GodotLink::close() {
+  s.close();
+  delete link;
+  delete state;
+  delete translator;
+}
+
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("receiveState"), &GodotLink::receiveState);
@@ -187,5 +208,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
+  ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
+  ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

@@ -19,6 +19,7 @@ class Link {
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
+    Character * getPlayer(long id);
     Character * getPlayer();
     Adventure * getAdventure();
     bool getNeedToUpdateActions();
@@ -26,7 +27,7 @@ class Link {
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
     std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities;
-    Character * player;
+    std::map<const long, Character *> players = std::map<const long, Character *>();
     Adventure * adventure;
     bool need_to_update_actions = true;
     Socket s;

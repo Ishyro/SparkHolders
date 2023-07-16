@@ -505,7 +505,7 @@ namespace FileOpener {
     if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
       damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-      damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+      damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
       damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
       damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
       damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
@@ -518,7 +518,7 @@ namespace FileOpener {
     if(type == EFFECT_DAMAGE_REDUCTION) {
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
       damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_IMPACT] = _stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_BLUNT] = _stof(values.at("BLUNT_REDUCTION"));
       damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
       damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
       damage_reductions[DAMAGE_FROST] = _stof(values.at("COLD_REDUCTION"));
@@ -634,7 +634,7 @@ namespace FileOpener {
       float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
       damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_IMPACT] = _stof(values.at("IMPACT_REDUCTION"));
+      damage_reductions[DAMAGE_BLUNT] = _stof(values.at("BLUNT_REDUCTION"));
       damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
       damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
       damage_reductions[DAMAGE_FROST] = _stof(values.at("FROST_REDUCTION"));
@@ -686,7 +686,7 @@ namespace FileOpener {
       int damages[DAMAGE_TYPE_NUMBER] = {0};
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
       damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-      damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+      damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
       damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
       damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
       damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
@@ -828,7 +828,7 @@ namespace FileOpener {
     int damages[DAMAGE_TYPE_NUMBER];
     damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
     damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-    damages[DAMAGE_IMPACT] = stoi(values.at("DAMAGE_IMPACT"));
+    damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
     damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
     damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
     damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));

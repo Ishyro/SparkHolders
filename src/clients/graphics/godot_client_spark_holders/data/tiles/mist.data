@@ -1,6 +1,6 @@
 name = TXT_MIST
 untraversable = false
-opaque = false
+opaque = true
 solid = false
 light = 0
 ap_cost = 10.0

@@ -204,7 +204,7 @@ namespace Server {
       throw e;
     }
   }
-  
+
   void sendAdventure(Socket s, Adventure * adventure) {
     try {
       s.write(adventure->filePath);

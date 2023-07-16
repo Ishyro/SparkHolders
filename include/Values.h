@@ -214,7 +214,7 @@ class SpeechManager;
 
 #define DAMAGE_SLASH 0
 #define DAMAGE_PUNCTURE 1
-#define DAMAGE_IMPACT 2
+#define DAMAGE_BLUNT 2
 #define DAMAGE_FIRE 3
 #define DAMAGE_LIGHTNING 4
 #define DAMAGE_FROST 5

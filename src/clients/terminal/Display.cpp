@@ -290,9 +290,9 @@ namespace Display {
     if(damage_PUNCTURE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
     }
-    int damage_IMPACT = skill->getDamageFromType(DAMAGE_IMPACT, overcharge_power);
-    if(damage_IMPACT != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(damage_IMPACT)).c_str());
+    int damage_BLUNT = skill->getDamageFromType(DAMAGE_BLUNT, overcharge_power);
+    if(damage_BLUNT != 0) {
+      mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(damage_BLUNT)).c_str());
     }
     int damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, overcharge_power);
     if(damage_FIRE != 0) {
@@ -353,7 +353,7 @@ namespace Display {
     mvwprintw(screen, 8, 1, (t->getStandardName("Armor") + std::string(": ") + std::to_string(target->armor)).c_str());
     mvwprintw(screen, 9, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(target->damages[DAMAGE_SLASH]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_SLASH])).c_str());
     mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[DAMAGE_PUNCTURE]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_PUNCTURE])).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(target->damages[DAMAGE_IMPACT]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_IMPACT])).c_str());
+    mvwprintw(screen, 11, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(target->damages[DAMAGE_BLUNT]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_BLUNT])).c_str());
     mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[DAMAGE_FIRE]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_FIRE])).c_str());
     mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[DAMAGE_LIGHTNING]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_LIGHTNING])).c_str());
     mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[DAMAGE_FROST]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_FROST])).c_str());
@@ -391,8 +391,8 @@ namespace Display {
         mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_SLASH))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_PUNCTURE) != 0.F)
         mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_PUNCTURE))).c_str());
-      if(armor->getDamageReductionFromType(DAMAGE_IMPACT) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_IMPACT))).c_str());
+      if(armor->getDamageReductionFromType(DAMAGE_BLUNT) != 0.F)
+        mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_BLUNT))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_FIRE) != 0.F)
         mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FIRE))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_LIGHTNING) != 0.F)
@@ -412,8 +412,8 @@ namespace Display {
         mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SLASH))).c_str());
       if(weapon->getDamageFromType(DAMAGE_PUNCTURE) > 0)
         mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_PUNCTURE))).c_str());
-      if(weapon->getDamageFromType(DAMAGE_IMPACT) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("IMPACT") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_IMPACT))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_BLUNT) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_BLUNT))).c_str());
       if(weapon->getDamageFromType(DAMAGE_FIRE) > 0)
         mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FIRE))).c_str());
       if(weapon->getDamageFromType(DAMAGE_LIGHTNING) > 0)

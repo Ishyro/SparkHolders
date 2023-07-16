@@ -187,7 +187,7 @@ Database::Database() {
 
   macros.insert(std::make_pair("DAMAGE_SLASH", DAMAGE_SLASH));
   macros.insert(std::make_pair("DAMAGE_PUNCTURE", DAMAGE_PUNCTURE));
-  macros.insert(std::make_pair("DAMAGE_IMPACT", DAMAGE_IMPACT));
+  macros.insert(std::make_pair("DAMAGE_BLUNT", DAMAGE_BLUNT));
   macros.insert(std::make_pair("DAMAGE_FIRE", DAMAGE_FIRE));
   macros.insert(std::make_pair("DAMAGE_LIGHTNING", DAMAGE_LIGHTNING));
   macros.insert(std::make_pair("DAMAGE_FROST", DAMAGE_FROST));
