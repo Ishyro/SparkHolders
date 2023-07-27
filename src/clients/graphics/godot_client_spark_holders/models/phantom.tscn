@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://bfvj57vwlveba"]
+
+[ext_resource type="Script" path="res://models/phantom.gd" id="1_8ucbl"]
+[ext_resource type="Material" uid="uid://dk3ukop3owkep" path="res://models/phantom.tres" id="1_k5wc6"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_gh3fj"]
+height = 0.2
+radius = 1.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_blden"]
+material = ExtResource("1_k5wc6")
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.025
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tfk8q"]
+material = ExtResource("1_k5wc6")
+top_radius = 0.85
+bottom_radius = 0.9
+height = 0.025
+
+[sub_resource type="TorusMesh" id="TorusMesh_sie6r"]
+inner_radius = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35ev2"]
+
+[sub_resource type="TextMesh" id="TextMesh_ye7ty"]
+material = SubResource("StandardMaterial3D_35ev2")
+text = "^"
+
+[node name="Phantom" type="CharacterBody3D"]
+collision_layer = 8
+script = ExtResource("1_8ucbl")
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("CylinderShape3D_gh3fj")
+
+[node name="LowerBasement" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("CylinderMesh_blden")
+skeleton = NodePath("")
+
+[node name="UpperBasement" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
+mesh = SubResource("CylinderMesh_tfk8q")
+
+[node name="OuterRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+mesh = SubResource("TorusMesh_sie6r")
+
+[node name="Orientation" type="MeshInstance3D" parent="."]
+transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.1, 0.7)
+mesh = SubResource("TextMesh_ye7ty")
+
+[node name="Father" type="Node3D" parent="."]

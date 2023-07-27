@@ -4,6 +4,7 @@
 #include "data/Map.h"
 
 #include "util/FileOpener.h"
+#include "util/MapUtil.h"
 
 #include "data/ClientSettings.h"
 
@@ -27,6 +28,10 @@ void GodotLink::receiveState() {
 float GodotLink::getMoveCost(int64_t character_id, float x, float y) {
   //return state->map->getMoveCost(link->getPlayer((long) character_id), x, y);
   return state->map->getMoveCost(link->getPlayer(), x, y);
+}
+
+float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
+  return MapUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
 Vector3 GodotLink::getSizes() {
@@ -200,6 +205,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("receiveState"), &GodotLink::receiveState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "x", "z"), &GodotLink::getMoveCost);
+  ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getSizes"), &GodotLink::getSizes);
   ClassDB::bind_method(D_METHOD("getOffsets"), &GodotLink::getOffsets);
   ClassDB::bind_method(D_METHOD("getAvaillableTiles"), &GodotLink::getAvaillableTiles);

@@ -32,23 +32,27 @@ material = SubResource("StandardMaterial3D_qirx8")
 text = "^"
 
 [node name="projectile" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
 script = ExtResource("1_1nc2d")
 
 [node name="Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("CylinderShape3D_6a6lm")
 
 [node name="LowerBasement" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 mesh = SubResource("CylinderMesh_aiw6e")
 skeleton = NodePath("")
 
 [node name="UpperBasement" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 mesh = SubResource("CylinderMesh_wo18n")
 
 [node name="Rod" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.27101, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.275, 0)
 mesh = SubResource("CylinderMesh_6pvux")
 
 [node name="Orientation" type="MeshInstance3D" parent="."]
-transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.075, 0.7)
+transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.125, 0.7)
 mesh = SubResource("TextMesh_2ilnq")

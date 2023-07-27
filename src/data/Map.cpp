@@ -446,6 +446,9 @@ void Map::takeLoot(Character * c, int mode) {
 }
 
 float Map::getMoveCost(Character * c, float x, float y) {
+  if(!allowedCoords(x, y)) {
+    return -1.F;
+  }
   if(c->isFlying()) {
     return MapUtil::distance(c->getX(), c->getY(), x, y) * 10.F / c->getMovementTimeModifier();
   }

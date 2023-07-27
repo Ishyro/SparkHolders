@@ -17,12 +17,12 @@ var pause_state = false
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 
-func update_mouse_coordinates():
+func update_mouse_coordinates(delta):
 	var mouse_coords = camera.get_viewport().get_mouse_position()
 	var from = camera.project_ray_origin(mouse_coords)
 	var to = from + camera.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(from, to)
+	var query = PhysicsRayQueryParameters3D.create(from, to, 0x000f)
 	query.collide_with_areas = true
 	var result = space.intersect_ray(query)
 	if not result.is_empty():
@@ -45,6 +45,9 @@ func update_mouse_coordinates():
 					Values.selected_target = selection
 				Values.selected_projectile = null
 				Values.selected_tile = null
+			if "phantom" in selection:
+				Values.selected_team = map.characters[str(selection.id)]
+				Values.mode = Values.ACTION_MOVE
 			if "projectile" in selection:
 				Values.selected_projectile = selection
 				Values.selected_target = null
@@ -55,36 +58,38 @@ func update_mouse_coordinates():
 				Values.selected_tile = selection
 		if Input.is_action_pressed("action"):
 			var selection = result["collider"]
-			if "character" in selection:
-				Values.link.move(Values.selected_team.id, selection)
-			if "tile" in selection:
-				Values.link.move(Values.selected_team.id, Values.coord.z, Values.coord.x)
+			if Values.mode == Values.ACTION_MOVE:
+				Values.mode = Values.ACTION_NONE
+				if "character" in selection:
+					Values.link.move(Values.selected_team.id, selection)
+				if "tile" in selection:
+					print("test")
+					#Values.link.move(Values.selected_team.id, Values.coord.z, Values.coord.x)
+	if not pause_state:
+		hud.update_mouse_box(mouse_coords)
+		if(Values.selected_team and Values.mode == Values.ACTION_MOVE):
+			map.update_phantom(Values.selected_team.id, delta)
 
 func _process(_delta):
 	if(not pause_state):
 		# Mouse movement.
 		_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
 		camera.rotation_degrees = Vector3(min(-30, max(-90, camera.rotation_degrees.x + _mouse_motion.y * -0.001)), camera.rotation_degrees.y, camera.rotation_degrees.z)
-		$"../HUD/Dialogue/Speech".text = String.num(Values.coord.z, 3) + " " + String.num(Values.coord.x, 3)
-		if Values.selected_team:
-			$"../HUD/Dialogue/Answer".text = String.num(Values.link.getMoveCost(Values.selected_team.id, Values.coord.z, Values.coord.x), 3)
 		if Values.selection_changed:
 			Values.selection_changed = false
 			if Values.selected_projectile:
-				$"../HUD/Dialogue/Answer".text = "projectile"
-				$"../HUD/Tile/Picture".texture = null
+				hud.display_projectile(Values.selected_projectile, map.projectiles_data[Values.selected_projectile.id])
 			if Values.selected_target:
 				hud.display_target(Values.selected_target, map.characters_data[Values.selected_target.id])
 			if Values.selected_team:
 				hud.display_team(Values.selected_team, map.characters_data[Values.selected_team.id])
 			if Values.selected_tile:
-				$"../HUD/Dialogue/Answer".text = "tile"
 				$"../HUD/Tile/Picture".texture = map.tiles_img[Values.selected_tile.tile]
 				hud.display_tile(Values.selected_tile, map.tiles_data[Values.selected_tile.tile])
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if(not pause_state):
-		update_mouse_coordinates()
+		update_mouse_coordinates(delta)
 		camera_attributes.dof_blur_far_enabled = true
 		camera_attributes.dof_blur_far_distance = 100 * 1.5
 		camera_attributes.dof_blur_far_transition = 100 * 0.125
@@ -102,7 +107,7 @@ func _physics_process(_delta):
 		velocity.z *= MOVEMENT_FRICTION
 		transform.origin += velocity
 
-func _input(event):
+func _unhandled_input(event):
 	if event.is_action_pressed("pause"):
 		pause_state = not pause_state
 		pause.visible = pause_state

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
-[ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://menus/hud.tscn" id="5_feur5"]
+[ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://hud/hud.tscn" id="5_feur5"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
 

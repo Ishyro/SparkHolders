@@ -23,10 +23,10 @@ height = 0.025
 [sub_resource type="TorusMesh" id="TorusMesh_bef1l"]
 inner_radius = 0.9
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35ev2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_moo85"]
 
 [sub_resource type="TextMesh" id="TextMesh_3uq5c"]
-material = SubResource("StandardMaterial3D_35ev2")
+material = SubResource("StandardMaterial3D_moo85")
 text = "^"
 
 [sub_resource type="TorusMesh" id="TorusMesh_js08s"]
@@ -34,30 +34,35 @@ inner_radius = 1.5
 outer_radius = 1.75
 
 [node name="Character" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_au3f8")
 
 [node name="Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("CylinderShape3D_o6018")
 
 [node name="LowerBasement" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 mesh = SubResource("CylinderMesh_lwiiu")
 skeleton = NodePath("")
 
 [node name="UpperBasement" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
 mesh = SubResource("CylinderMesh_t5xkk")
 
 [node name="Color" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 mesh = SubResource("TorusMesh_bef1l")
 
 [node name="Orientation" type="MeshInstance3D" parent="."]
-transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.05, 0.7)
+transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.1, 0.7)
 mesh = SubResource("TextMesh_3uq5c")
 
 [node name="Placeholder" parent="." instance=ExtResource("3_r3sm8")]
-transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0, 0)
+transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0.05, 0)
 
 [node name="Selection" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 visible = false
 mesh = SubResource("TorusMesh_js08s")

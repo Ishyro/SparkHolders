@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://4lgdlmwmri7t"]
+
+[ext_resource type="Shader" path="res://models/bars/mana.gdshader" id="1_mwwuu"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1xawv"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w4q6y"]
+in_3d_space = true
+generate_mipmaps = false
+seamless = true
+noise = SubResource("FastNoiseLite_1xawv")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_mwwuu")
+shader_parameter/albedo = Color(0, 0, 1, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/scrollSpeed = Vector2(0.05, 0)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_w4q6y")

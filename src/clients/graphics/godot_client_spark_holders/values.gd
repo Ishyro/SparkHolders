@@ -15,9 +15,14 @@ const DAMAGE_MIND = 8
 const DAMAGE_TRUE = 9
 const DAMAGE_SOUL = 10
 
+const ACTION_NONE = 0
+const ACTION_MOVE = 1
+const ACTION_SKILL = 2
+
 # Variables
 var server_pid = -1
 var link = GodotLink.new()
+var mode = ACTION_MOVE
 
 var coord = Vector3.ZERO
 var selection_changed = false

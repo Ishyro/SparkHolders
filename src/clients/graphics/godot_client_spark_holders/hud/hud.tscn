@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4dl1848sgldd"]
+[gd_scene load_steps=9 format=3 uid="uid://c4dl1848sgldd"]
 
-[ext_resource type="Script" path="res://menus/hud.gd" id="1_7f8qf"]
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_4y1cm"]
-[ext_resource type="Texture2D" uid="uid://d0q33vsgmvfxb" path="res://data/tiles/lava/Color.jpg" id="3_skdcv"]
-[ext_resource type="Texture2D" uid="uid://b84ksryi2usv1" path="res://data/tiles/soil/Color.jpg" id="4_oag3h"]
+[ext_resource type="Script" path="res://hud/hud.gd" id="1_wlfo0"]
+[ext_resource type="PackedScene" uid="uid://dgv5p4kojbim" path="res://models/bar.tscn" id="2_8655o"]
+[ext_resource type="Texture2D" uid="uid://ct0d01n0csnmo" path="res://hud/label_background.png" id="2_sc5jq"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="3_6r1hr"]
+[ext_resource type="Texture2D" uid="uid://d0q33vsgmvfxb" path="res://data/tiles/lava/Color.jpg" id="4_tsgti"]
+[ext_resource type="Texture2D" uid="uid://b84ksryi2usv1" path="res://data/tiles/soil/Color.jpg" id="5_m8mij"]
+[ext_resource type="Texture2D" uid="uid://dy3xhbt551cgh" path="res://hud/background.png" id="7_p1t0r"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yujpb"]
+font_color = Color(0.386719, 0.195313, 0.109375, 1)
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -14,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 8
 mouse_filter = 2
-script = ExtResource("1_7f8qf")
+script = ExtResource("1_wlfo0")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 2
@@ -900,298 +906,385 @@ focus_mode = 0
 toggle_mode = true
 text = "Furnitures"
 
-[node name="Self" type="Control" parent="."]
+[node name="Self" type="MarginContainer" parent="."]
 layout_mode = 2
-anchors_preset = 0
-offset_top = 888.0
+offset_top = 758.0
 offset_right = 412.0
-offset_bottom = 1080.0
+offset_bottom = 1078.0
 mouse_filter = 2
 
-[node name="Bars" type="VBoxContainer" parent="Self"]
-layout_mode = 0
-offset_right = 371.0
-offset_bottom = 128.0
-
-[node name="Life" type="NinePatchRect" parent="Self/Bars"]
+[node name="Margin" type="MarginContainer" parent="Self"]
 layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="HBoxContainer" parent="Self/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Resistances" type="HBoxContainer" parent="Self/Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Raw1" type="VBoxContainer" parent="Self/Margin/Content/Resistances"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SlashReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw1"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Self/Bars/Life"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw1/SlashReduction"]
 layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
 
-[node name="Label" type="Label" parent="Self/Bars/Life/Margin"]
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw1/SlashReduction"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 1
-text = "0 / 0
-"
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Life/Margin"]
+[node name="BluntReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw1"]
 layout_mode = 2
-size_flags_vertical = 3
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="Mana" type="NinePatchRect" parent="Self/Bars"]
-layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Self/Bars/Mana"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw1/BluntReduction"]
 layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
 
-[node name="Label" type="Label" parent="Self/Bars/Mana/Margin"]
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw1/BluntReduction"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 1
-text = "0 / 0
-"
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Mana/Margin"]
+[node name="PunctureReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw1"]
 layout_mode = 2
-size_flags_vertical = 3
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="Soulburn" type="NinePatchRect" parent="Self/Bars"]
-layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Self/Bars/Soulburn"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw1/PunctureReduction"]
 layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
 
-[node name="Label" type="Label" parent="Self/Bars/Soulburn/Margin"]
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw1/PunctureReduction"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 1
-text = "0 / 0
-"
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Bar" type="TextureProgressBar" parent="Self/Bars/Soulburn/Margin"]
-layout_mode = 2
-size_flags_vertical = 3
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="OffensiveStats" type="VBoxContainer" parent="Self"]
-layout_mode = 0
-offset_left = 369.0
-offset_right = 412.0
-offset_bottom = 128.0
-
-[node name="Damage" type="MarginContainer" parent="Self/OffensiveStats"]
+[node name="MindReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw1"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Self/OffensiveStats/Damage"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw1/MindReduction"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw1/MindReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Raw2" type="VBoxContainer" parent="Self/Margin/Content/Resistances"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FireReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw2/FireReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw2/FireReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LightningReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw2/LightningReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw2/LightningReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FrostReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw2/FrostReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw2/FrostReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PoisonReduction" type="MarginContainer" parent="Self/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Resistances/Raw2/PoisonReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Resistances/Raw2/PoisonReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bars" type="HBoxContainer" parent="Self/Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ShieldBar" type="VBoxContainer" parent="Self/Margin/Content/Bars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BarContainer" type="SubViewportContainer" parent="Self/Margin/Content/Bars/ShieldBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Self/Margin/Content/Bars/ShieldBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Self/Margin/Content/Bars/ShieldBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Bars/ShieldBar/Current"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Bars/ShieldBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
 text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
-vertical_alignment = 2
+vertical_alignment = 1
 
-[node name="Background" type="NinePatchRect" parent="Self/OffensiveStats/Damage"]
+[node name="HealthBar" type="VBoxContainer" parent="Self/Margin/Content/Bars"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Flow" type="MarginContainer" parent="Self/OffensiveStats"]
+[node name="BarContainer" type="SubViewportContainer" parent="Self/Margin/Content/Bars/HealthBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Self/Margin/Content/Bars/HealthBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Self/Margin/Content/Bars/HealthBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Self/OffensiveStats/Flow"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Bars/HealthBar/Current"]
 layout_mode = 2
-size_flags_vertical = 0
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
 
-[node name="Background" type="NinePatchRect" parent="Self/OffensiveStats/Flow"]
+[node name="Label" type="Label" parent="Self/Margin/Content/Bars/HealthBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaBar" type="VBoxContainer" parent="Self/Margin/Content/Bars"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DefensiveStats" type="HBoxContainer" parent="Self"]
+[node name="BarContainer" type="SubViewportContainer" parent="Self/Margin/Content/Bars/ManaBar"]
 layout_mode = 2
-offset_top = 128.0
-offset_right = 414.0
-offset_bottom = 192.0
+size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Armor" type="MarginContainer" parent="Self/DefensiveStats"]
+[node name="Bar" parent="Self/Margin/Content/Bars/ManaBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Self/Margin/Content/Bars/ManaBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Self/DefensiveStats/Armor"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Bars/ManaBar/Current"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Bars/ManaBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
 text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
-vertical_alignment = 2
+vertical_alignment = 1
 
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/Armor"]
+[node name="SoulBurnBar" type="VBoxContainer" parent="Self/Margin/Content/Bars"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SlashReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+[node name="BarContainer" type="SubViewportContainer" parent="Self/Margin/Content/Bars/SoulBurnBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Self/Margin/Content/Bars/SoulBurnBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Self/Margin/Content/Bars/SoulBurnBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Self/DefensiveStats/SlashReduction"]
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/Bars/SoulBurnBar/Current"]
 layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/Bars/SoulBurnBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
 horizontal_alignment = 1
-vertical_alignment = 2
+vertical_alignment = 1
 
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/SlashReduction"]
+[node name="MainStats" type="VBoxContainer" parent="Self/Margin/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
 
-[node name="BluntReduction" type="MarginContainer" parent="Self/DefensiveStats"]
+[node name="DisplayInfo" type="TextureButton" parent="Self/Margin/Content/MainStats"]
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/BluntReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/BluntReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PunctureReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/PunctureReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/PunctureReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FireReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/FireReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/FireReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LightningReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/LightningReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/LightningReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FrostReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/FrostReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/FrostReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PoisonReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/PoisonReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/PoisonReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MindReduction" type="MarginContainer" parent="Self/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Self/DefensiveStats/MindReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Self/DefensiveStats/MindReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DisplayInfo" type="TextureButton" parent="Self"]
-layout_mode = 0
-offset_left = 369.0
-offset_top = -16.0
-offset_right = 412.0
+size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
-texture_normal = ExtResource("2_4y1cm")
-texture_pressed = ExtResource("3_skdcv")
-texture_hover = ExtResource("4_oag3h")
+texture_normal = ExtResource("3_6r1hr")
+texture_pressed = ExtResource("4_tsgti")
+texture_hover = ExtResource("5_m8mij")
 ignore_texture_size = true
 stretch_mode = 1
 
-[node name="Target" type="Control" parent="."]
-visible = false
+[node name="Damage" type="MarginContainer" parent="Self/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/MainStats/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/MainStats/Damage"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Armor" type="MarginContainer" parent="Self/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/MainStats/Armor"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/MainStats/Armor"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Flow" type="MarginContainer" parent="Self/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Self/Margin/Content/MainStats/Flow"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Self/Margin/Content/MainStats/Flow"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Background" type="NinePatchRect" parent="Self"]
+z_index = -1
+layout_mode = 2
+texture = ExtResource("7_p1t0r")
+
+[node name="Target" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -1199,295 +1292,383 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -414.0
-offset_top = -192.0
+offset_top = -322.0
 offset_right = -2.0
+offset_bottom = -2.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="Bars" type="VBoxContainer" parent="Target"]
-layout_mode = 0
-offset_left = 43.0
-offset_right = 414.0
-offset_bottom = 128.0
-
-[node name="Life" type="NinePatchRect" parent="Target/Bars"]
+[node name="Margin" type="MarginContainer" parent="Target"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="Margin" type="MarginContainer" parent="Target/Bars/Life"]
-layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="Label" type="Label" parent="Target/Bars/Life/Margin"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 1
-text = "0 / 0
-"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Life/Margin"]
-layout_mode = 2
-size_flags_vertical = 3
-fill_mode = 1
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="Mana" type="NinePatchRect" parent="Target/Bars"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Margin" type="MarginContainer" parent="Target/Bars/Mana"]
-layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="Label" type="Label" parent="Target/Bars/Mana/Margin"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 1
-text = "0 / 0
-"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Mana/Margin"]
-layout_mode = 2
-size_flags_vertical = 3
-fill_mode = 1
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="Soulburn" type="NinePatchRect" parent="Target/Bars"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Margin" type="MarginContainer" parent="Target/Bars/Soulburn"]
-layout_mode = 2
-offset_top = 4.0
-offset_right = 371.0
-offset_bottom = 30.0
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_right = 20
-
-[node name="Label" type="Label" parent="Target/Bars/Soulburn/Margin"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 1
-text = "0 / 0
-"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Bar" type="TextureProgressBar" parent="Target/Bars/Soulburn/Margin"]
-layout_mode = 2
-size_flags_vertical = 3
-fill_mode = 1
-stretch_margin_left = 20
-stretch_margin_right = 20
-
-[node name="OffensiveStats" type="VBoxContainer" parent="Target"]
-layout_mode = 0
-offset_right = 43.0
-offset_bottom = 128.0
-
-[node name="Damage" type="MarginContainer" parent="Target/OffensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Target/OffensiveStats/Damage"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/OffensiveStats/Damage"]
+[node name="Content" type="HBoxContainer" parent="Target/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Flow" type="MarginContainer" parent="Target/OffensiveStats"]
+[node name="MainStats" type="VBoxContainer" parent="Target/Margin/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
 
-[node name="Label" type="Label" parent="Target/OffensiveStats/Flow"]
+[node name="DisplayInfo" type="TextureButton" parent="Target/Margin/Content/MainStats"]
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-size_flags_vertical = 0
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/OffensiveStats/Flow"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DefensiveStats" type="HBoxContainer" parent="Target"]
-layout_mode = 2
-offset_top = 128.0
-offset_right = 414.0
-offset_bottom = 192.0
-size_flags_vertical = 3
-
-[node name="Armor" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/Armor"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/Armor"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SlashReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/SlashReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/SlashReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="BluntReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/BluntReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/BluntReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PunctureReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/PunctureReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/PunctureReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FireReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/FireReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/FireReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="LightningReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/LightningReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/LightningReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FrostReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/FrostReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/FrostReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PoisonReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/PoisonReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/PoisonReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MindReduction" type="MarginContainer" parent="Target/DefensiveStats"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="Target/DefensiveStats/MindReduction"]
-layout_mode = 2
-size_flags_vertical = 0
-text = "0%"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="Background" type="NinePatchRect" parent="Target/DefensiveStats/MindReduction"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DisplayInfo" type="TextureButton" parent="Target"]
-layout_mode = 0
-offset_top = -16.0
-offset_right = 43.0
+size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
-texture_normal = ExtResource("2_4y1cm")
-texture_pressed = ExtResource("3_skdcv")
-texture_hover = ExtResource("4_oag3h")
+texture_normal = ExtResource("3_6r1hr")
+texture_pressed = ExtResource("4_tsgti")
+texture_hover = ExtResource("5_m8mij")
 ignore_texture_size = true
 stretch_mode = 1
+
+[node name="Damage" type="MarginContainer" parent="Target/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/MainStats/Damage"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/MainStats/Damage"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Armor" type="MarginContainer" parent="Target/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/MainStats/Armor"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/MainStats/Armor"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Flow" type="MarginContainer" parent="Target/Margin/Content/MainStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/MainStats/Flow"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/MainStats/Flow"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bars" type="HBoxContainer" parent="Target/Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SoulBurnBar" type="VBoxContainer" parent="Target/Margin/Content/Bars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BarContainer" type="SubViewportContainer" parent="Target/Margin/Content/Bars/SoulBurnBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Target/Margin/Content/Bars/SoulBurnBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Target/Margin/Content/Bars/SoulBurnBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Bars/SoulBurnBar/Current"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Bars/SoulBurnBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaBar" type="VBoxContainer" parent="Target/Margin/Content/Bars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BarContainer" type="SubViewportContainer" parent="Target/Margin/Content/Bars/ManaBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Target/Margin/Content/Bars/ManaBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Target/Margin/Content/Bars/ManaBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Bars/ManaBar/Current"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Bars/ManaBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HealthBar" type="VBoxContainer" parent="Target/Margin/Content/Bars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BarContainer" type="SubViewportContainer" parent="Target/Margin/Content/Bars/HealthBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Target/Margin/Content/Bars/HealthBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Target/Margin/Content/Bars/HealthBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Bars/HealthBar/Current"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Bars/HealthBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShieldBar" type="VBoxContainer" parent="Target/Margin/Content/Bars"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BarContainer" type="SubViewportContainer" parent="Target/Margin/Content/Bars/ShieldBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="Bar" parent="Target/Margin/Content/Bars/ShieldBar/BarContainer" instance=ExtResource("2_8655o")]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Current" type="MarginContainer" parent="Target/Margin/Content/Bars/ShieldBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Bars/ShieldBar/Current"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Bars/ShieldBar/Current"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Resistances" type="HBoxContainer" parent="Target/Margin/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Raw2" type="VBoxContainer" parent="Target/Margin/Content/Resistances"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FireReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw2/FireReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw2/FireReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LightningReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw2/LightningReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw2/LightningReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FrostReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw2/FrostReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw2/FrostReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PoisonReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw2/PoisonReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw2/PoisonReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Raw1" type="VBoxContainer" parent="Target/Margin/Content/Resistances"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SlashReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw1/SlashReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw1/SlashReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BluntReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw1/BluntReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw1/BluntReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PunctureReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw1/PunctureReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw1/PunctureReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MindReduction" type="MarginContainer" parent="Target/Margin/Content/Resistances/Raw1"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="NinePatchRect" parent="Target/Margin/Content/Resistances/Raw1/MindReduction"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_sc5jq")
+
+[node name="Label" type="Label" parent="Target/Margin/Content/Resistances/Raw1/MindReduction"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "0%"
+label_settings = SubResource("LabelSettings_yujpb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Background" type="NinePatchRect" parent="Target"]
+z_index = -1
+layout_mode = 2
+texture = ExtResource("7_p1t0r")
 
 [node name="Tile" type="Control" parent="."]
 visible = false
@@ -1549,6 +1730,22 @@ offset_right = 1236.0
 offset_bottom = 270.0
 mouse_filter = 2
 text = "Test"
+
+[node name="MouseBox" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 953.0
+offset_top = 462.0
+offset_right = 1017.0
+offset_bottom = 526.0
+mouse_filter = 2
+theme_override_constants/margin_top = 16
+
+[node name="Label" type="Label" parent="MouseBox"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "(0 , 0)"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="toggled" from="MapOptions/Options/Grid" to="." method="_on_grid_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Lights" to="." method="_on_lights_toggled"]
