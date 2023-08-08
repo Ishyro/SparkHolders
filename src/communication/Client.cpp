@@ -23,17 +23,16 @@ namespace Client {
     }
   }
 
-  StateDisplay * receiveState(Socket s, Adventure * adventure, Character ** player, bool * need_action) {
+  StateDisplay * receiveState(Socket s, Adventure * adventure, Character *& player, bool & need_action) {
     try {
       std::string msg = s.read();
       std::stringstream * ss = new std::stringstream(msg);
       std::string player_str = String::extract(ss);
       if(player_str != "0") {
-        delete *player;
-        *player = Character::full_from_string(player_str, adventure);
+        player = Character::full_from_string(player_str, adventure);
       }
       StateDisplay * result = adventure->update_state(String::extract(ss));
-      *need_action = String::extract_bool(ss);
+      need_action = String::extract_bool(ss);
       delete ss;
       return result;
     } catch (const CloseException &e) {

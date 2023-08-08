@@ -22,7 +22,7 @@ public:
   {}
   void initialize(String ip);
   void receiveState();
-  float getMoveCost(int64_t character_id, float x, float y);
+  float getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY);
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Vector3 getSizes();
   Vector3 getOffsets();

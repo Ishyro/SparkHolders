@@ -29,6 +29,7 @@ material = SubResource("StandardMaterial3D_35ev2")
 text = "^"
 
 [node name="Phantom" type="CharacterBody3D"]
+visible = false
 collision_layer = 8
 script = ExtResource("1_8ucbl")
 
@@ -52,5 +53,3 @@ mesh = SubResource("TorusMesh_sie6r")
 [node name="Orientation" type="MeshInstance3D" parent="."]
 transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.1, 0.7)
 mesh = SubResource("TextMesh_ye7ty")
-
-[node name="Father" type="Node3D" parent="."]

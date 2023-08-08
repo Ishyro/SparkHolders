@@ -6,7 +6,7 @@
 #include "util/MapUtil.h"
 
 float MapUtil::round(float var) {
-  float value = (int) (var * 1000.F + .5F);
+  float value = (int) std::floor(var * 1000.F + .5F);
   value /= 1000.F;
   return value > 0.999F && value < 1.F ? 0.999F : value;
 }

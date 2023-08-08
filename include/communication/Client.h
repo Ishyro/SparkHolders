@@ -12,7 +12,7 @@ class Socket;
 
 namespace Client {
   Adventure * receiveAdventure(Socket s);
-  StateDisplay * receiveState(Socket s, Adventure * adventure, Character ** player, bool * need_action);
+  StateDisplay * receiveState(Socket s, Adventure * adventure, Character *& player, bool & need_action);
   void sendBaseAction(Socket s, int type);
   void sendGearAction(Socket s, int type, long item_id);
   void sendTargetedAction(Socket s, int type, Target * target);

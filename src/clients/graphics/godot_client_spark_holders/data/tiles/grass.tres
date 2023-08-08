@@ -7,6 +7,7 @@
 
 [resource]
 albedo_texture = ExtResource("1_grass")
+metallic_specular = 0.1
 roughness_texture = ExtResource("3_grass")
 normal_enabled = true
 normal_texture = ExtResource("3_oqwf8")

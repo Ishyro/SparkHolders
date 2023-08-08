@@ -46,7 +46,7 @@ func update_mouse_coordinates(delta):
 				Values.selected_projectile = null
 				Values.selected_tile = null
 			if "phantom" in selection:
-				Values.selected_team = map.characters[str(selection.id)]
+				Values.selected_team = map.characters[selection.id]
 				Values.mode = Values.ACTION_MOVE
 			if "projectile" in selection:
 				Values.selected_projectile = selection
@@ -66,9 +66,10 @@ func update_mouse_coordinates(delta):
 					print("test")
 					#Values.link.move(Values.selected_team.id, Values.coord.z, Values.coord.x)
 	if not pause_state:
-		hud.update_mouse_box(mouse_coords)
+		var ap_cost = ""
 		if(Values.selected_team and Values.mode == Values.ACTION_MOVE):
-			map.update_phantom(Values.selected_team.id, delta)
+			ap_cost = map.update_phantom(Values.selected_team.id, delta)
+		hud.update_mouse_box(mouse_coords, ap_cost)
 
 func _process(_delta):
 	if(not pause_state):

@@ -19,6 +19,7 @@ var materials = {}
 var tiles_img = {}
 
 var board_material = preload("res://world/board_material.tres")
+var phantom_material = preload("res://models/phantom.tres")
 var grid_material = StandardMaterial3D.new()
 var light_0 = StandardMaterial3D.new()
 var light_1 = StandardMaterial3D.new()
@@ -47,31 +48,6 @@ var offset = Vector3.ZERO
 var size = Vector3.ZERO
 var mid_size = Vector3.ZERO
 
-class Pathfinding:
-	extends AStar3D
-	
-	var size
-	var edge = sqrt(2)
-	
-	func _init(arg):
-		size = arg
-
-	func _compute_cost(u, v):
-		var diff = abs(u - v)
-		if diff == 1 || diff == size.x:
-			return 1
-		else:
-			return edge
-
-	func _estimate_cost(u, v):
-		var diff = abs(u - v)
-		if diff == 1 || diff == size.x:
-			return 1
-		else:
-			return edge
-
-var pathfind
-
 @onready var n_view = $"../View"
 @onready var n_grid = $Grid
 @onready var n_tiles = $Tiles
@@ -79,6 +55,8 @@ var pathfind
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
+
+@onready var navigationserver_region_rid: RID = n_tiles.get_region_rid()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -107,7 +85,6 @@ func _ready():
 	grid_material.albedo_color = "000000"
 	offset = Values.link.getOffsets()
 	size = Values.link.getSizes()
-	pathfind = Pathfinding.new(size)
 	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
 	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
@@ -133,7 +110,6 @@ func _ready():
 	create_grid()
 	create_board()
 	create_tiles()
-	create_paths()
 	for character_id in characters_data:
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
@@ -142,8 +118,12 @@ func _ready():
 		phantoms[character_id] = base_phantom.instantiate()
 		phantoms[character_id].scale_object_local(Vector3(characters_data[character_id]["size"], characters_data[character_id]["size"], characters_data[character_id]["size"]))
 		phantoms[character_id].id = character_id
-		phantoms[character_id].transform.origin = characters[str(character_id)].transform.origin
+		phantoms[character_id].transform.origin = characters[character_id].transform.origin
 		n_characters.add_child(phantoms[character_id])
+	var map_rid = get_world_3d().get_navigation_map()
+	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
+	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
+	n_tiles.bake_navigation_mesh()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -274,33 +254,6 @@ func create_tiles():
 			tile.create(Vector3(offset.x + x, offset.y, offset.z +z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
 			tiles[x][z] = tile
 			n_tiles.add_child(tile)
-			
-func create_paths():
-	var indice = 0
-	for x in range(0, size.x):
-		for z in range(0, size.z):
-			pathfind.add_point(indice, Vector3(x + 0.5, offset.y + 1, z + 0.5), tiles_data[tiles[x][z].tile]["ap_cost"])
-			indice = indice + 1
-	for i in range(0, indice, 2):
-		var x = floor(i / size.z)
-		var z = max(0, i - x * size.z)
-		if !tiles_data[tiles[x][z].tile]["solid"]:
-			if z > 0 && tiles_data[tiles[x][z - 1].tile]["solid"]:
-				pathfind.connect_points(i - 1, i, true)
-				if x > 0 && tiles_data[tiles[x - 1][z - 1].tile]["solid"]:
-					pathfind.connect_points(i - size.z - 1, i, true)
-				if x < size.x - 1 && tiles_data[tiles[x + 1][z - 1].tile]["solid"]:
-					pathfind.connect_points(i, i + size.z - 1, true)
-			if x > 0 && tiles_data[tiles[x - 1][z].tile]["solid"]:
-				pathfind.connect_points(i - size.z, i, true)
-			if z < size.z - 1 && tiles_data[tiles[x][z + 1].tile]["solid"]:
-				pathfind.connect_points(i, i + 1, true)
-				if x > 0 && tiles_data[tiles[x - 1][z + 1].tile]["solid"]:
-					pathfind.connect_points(i - size.z + 1, i, true)
-				if x < size.z - 1 && tiles_data[tiles[x + 1][z + 1].tile]["solid"]:
-					pathfind.connect_points(i, i + size.z + 1, true)
-			if x < size.x - 1 && tiles_data[tiles[x + 1][z].tile]["solid"]:
-				pathfind.connect_points(i, i + size.z, true)
 
 func get_color(character_data: Dictionary):
 	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):
@@ -315,7 +268,7 @@ func add_character(character_id: int, character_data: Dictionary):
 	character.set_color(get_color(character_data))
 	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 1, character_data["x"])
 	character.rotation_degrees = Vector3(0, character_data["orientation"], 0)
-	characters[str(character_id)] = character
+	characters[character_id] = character
 	character.id = character_id
 	character.character = character_data["name"]
 	n_characters.add_child(character)
@@ -325,14 +278,45 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.scale_object_local(Vector3(projectile_data["size"], projectile_data["size"], projectile_data["size"]))
 	projectile.transform.origin = Vector3(projectile_data["y"], projectile_data["z"] + 1, projectile_data["x"])
 	projectile.rotation_degrees = Vector3(0, projectile_data["orientation"], 0)
-	projectile[str(projectile_id)] = projectile
+	projectiles[projectile_id] = projectile
 	projectile.id = projectile_id
 	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
 	
 func update_phantom(character_id: int, delta):
 	phantoms[character_id].visible = true
-	var distance = characters[str(character_id)].transform.origin.distance_to(phantoms[character_id].transform.origin) / characters_data[character_id]["size"]
 	var movement = (Values.coord - phantoms[character_id].transform.origin) * 100
 	phantoms[character_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-	phantoms[character_id].rotation_degrees = Vector3(0, Values.link.getOrientationToTarget(Vector2(characters_data[character_id]["x"], characters_data[character_id]["y"]), Vector2(Values.coord.z, Values.coord.x)), 0)
+	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
+	characters[character_id].nav.get_next_path_position()
+	if phantom_lines.has(character_id):
+		for phantom_line in phantom_lines[character_id]:
+			n_characters.remove_child(phantom_line)
+	phantom_lines[character_id] = []
+	var previous_vec = characters[character_id].transform.origin + Vector3(0, 0.1, 0)
+	var last_angle = Vector3.ZERO
+	var ap_cost = 0.
+	for vec in characters[character_id].nav.get_current_navigation_path():
+		vec = round_vec(vec)
+		var distance = previous_vec.distance_to(vec)
+		if distance != 0.:
+			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec.z, previous_vec.x, vec.z, vec.x)
+			var phantom_line = MeshInstance3D.new()
+			phantom_line.mesh = BoxMesh.new()
+			phantom_line.mesh.set_size(Vector3(0.1, 0.01, distance))
+			last_angle = Vector3(0, Values.link.getOrientationToTarget(Vector2(previous_vec.z, previous_vec.x), Vector2(vec.z, vec.x)), 0)
+			phantom_line.rotation_degrees = last_angle
+			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, offset.y + 1.001, (vec.z + previous_vec.z) / 2)
+			phantom_line.set_surface_override_material(0, phantom_material)
+			phantom_lines[character_id].push_back(phantom_line)
+			n_characters.add_child(phantom_line)
+			previous_vec = vec
+	phantoms[character_id].rotation_degrees = last_angle
+	return String.num(ap_cost, 3)
+	
+func round_float(number: float):
+	var value = int(number * 1000. + 0.5)
+	return float(value) / 1000.
+	
+func round_vec(vec: Vector3):
+	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))

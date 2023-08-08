@@ -136,10 +136,10 @@ func display_tile(_tile_object, _tile_data: Dictionary):
 	target.visible = false
 	tile.visible = true
 	
-func update_mouse_box(mouse_coord: Vector2):
+func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	mouse_box._set_position(Vector2(mouse_coord.x - mouse_box.get_size().x / 2.0, mouse_coord.y))
 	if Values.selected_team:
-		mouse_label.text = "(" + String.num(Values.coord.z, 3) + " , " + String.num(Values.coord.x, 3) + ")\n" + String.num(Values.link.getMoveCost(Values.selected_team.id, Values.coord.z, Values.coord.x), 3)
+		mouse_label.text = "(" + String.num(Values.coord.z, 3) + " , " + String.num(Values.coord.x, 3) + ")\n" + ap_cost
 	else:
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + " , " + String.num(Values.coord.x, 3) + ")"
 

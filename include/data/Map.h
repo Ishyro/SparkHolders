@@ -239,7 +239,7 @@ class Map {
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
     void takeLoot(Character * c, int mode);
-    float getMoveCost(Character * c, float x, float y);
+    float getMoveCost(Character * c, float ori_x, float ori_y, float x, float y);
     bool tryMove(Character * c, float destX, float destY);
     float move(Character * c, float y, float x, World * world);
     float move(Character * c, float orientation, float destX, float destY, float ap, World * world);

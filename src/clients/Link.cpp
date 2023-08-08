@@ -30,12 +30,17 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
 }
 
 StateDisplay * Link::receiveState() {
-  Character * player;
+  Character * player = nullptr;
   for(auto pair : players) {
     player = pair.second;
   }
   try {
-    StateDisplay * game_state = Client::receiveState(s, adventure, &player, &need_to_update_actions);
+    Character * new_player = nullptr;
+    StateDisplay * game_state = Client::receiveState(s, adventure, new_player, need_to_update_actions);
+    if(new_player != nullptr) {
+      players.erase(new_player->id);
+      players.insert(std::make_pair(new_player->id, new_player));
+    }
     for(CharacterDisplay * display : game_state->characters) {
       if(player->id == display->id) {
         player->move(display->x, display->y, display->z, display->orientation, adventure->getWorld());
