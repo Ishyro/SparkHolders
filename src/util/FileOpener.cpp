@@ -868,6 +868,7 @@ namespace FileOpener {
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
+    Settings::setMasterPassword(values.at("MASTER_PASSWORD"));
   }
 
   void ClientSettingsOpener(std::string fileName, Database * database) {

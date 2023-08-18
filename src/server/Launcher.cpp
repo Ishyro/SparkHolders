@@ -37,7 +37,7 @@
 
 // Windows is great
 typedef struct StartCommunicationParameter {
-  Link ** link;
+  Link * link;
   ServerSocket * ss;
   Adventure * adventure;
 } StartCommunicationParameter;
@@ -50,19 +50,23 @@ typedef struct RelinkCommunicationParameter {
   int playersNumber;
 } RelinkCommunicationParameter;
 
-void startCommunication(void * param) {
-  Link ** link = ((StartCommunicationParameter *) param)->link;
+void listener(void * param) {
+  Link * link = ((StartCommunicationParameter *) param)->link;
   ServerSocket * ss = ((StartCommunicationParameter *) param)->ss;
   Adventure * adventure = ((StartCommunicationParameter *) param)->adventure;
   bool done = false;
   while(!done) {
     try {
-      *link = new Link(ss->accept(), adventure);
+      link->initialize(ss->accept());
       done = true;
     } catch (CloseException &e) {
-      delete *link;
-      *link = nullptr;
+      delete link;
+      link = nullptr;
     }
+  }
+  done = false;
+  while(!link->isClosed()) {
+    link->listen();
   }
 }
 
@@ -81,6 +85,7 @@ void relinkCommunication(void * param) {
     } catch (CloseException &e) {
       continue;
     }
+    /* TODO
     for(int i = 0; i < playersNumber; i++) {
       if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
         (*links)[i]->changeSocket(newSocket);
@@ -94,6 +99,7 @@ void relinkCommunication(void * param) {
         }
       }
     }
+    */
     if(!used) {
       newSocket.close();
     }
@@ -129,24 +135,31 @@ int main(int argc, char ** argv) {
   std::vector<Link *> links = std::vector<Link *>(playersNumber);
   ServerSocket * ss = new ServerSocket(Settings::getPort(), playersNumber, false);
   for(int i = 0; i < playersNumber; i++) {
+    links[i] = new Link(adventure);
     params[i] = new StartCommunicationParameter();
-    params[i]->link = &links[i];
+    params[i]->link = links[i];
     params[i]->ss = ss;
     params[i]->adventure = adventure;
     #ifdef _WIN32_WINNT
-      threads[i] = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) startCommunication, (void *) params[i], 0, NULL);
+      threads[i] = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) params[i], 0, NULL);
     #else
-      threads[i] = std::thread(startCommunication, (void *) params[i]);
+      threads[i] = std::thread(listener, (void *) params[i]);
     #endif
   }
+  bool started = true;
+  do {
+    usleep(1);
+    for(int i = 0; i < playersNumber; i++) {
+      if(links[i]->isMaster() && links[i]->isReady()) {
+        started = true;
+        break;
+      }
+      started &= links[i]->isReady();
+    }
+  } while (!started);
   for(int i = 0; i < playersNumber; i++) {
-    #ifdef _WIN32_WINNT
-      WaitForSingleObject(threads[i], INFINITE);
-    #else
-      threads[i].join();
-    #endif
+    links[i]->sendStart();
   }
-  threads.clear();
   bool noPlayers = false;
   RelinkCommunicationParameter * param = new RelinkCommunicationParameter();
   param->links = &links;
@@ -169,9 +182,11 @@ int main(int argc, char ** argv) {
     // receive playerActions
     std::list<Action *> actionsPlayers = std::list<Action *>();
     for(int i = 0; i < playersNumber; i++) {
-      if(links[i]->getPlayer()->getNeedToUpdateActions() && !links[i]->getPlayer()->isInWeakState()) {
-        actionsPlayers.push_back(links[i]->receiveAction());
-        links[i]->getPlayer()->setNeedToUpdateActions(false);
+      if(links[i]->getNeedToUpdateActions()) {
+        while(!links[i]->hasActions()) {
+          usleep(1);
+        }
+        actionsPlayers.merge(links[i]->getActions());
       }
     }
     adventure->mergeActions(actionsPlayers);

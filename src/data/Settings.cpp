@@ -25,6 +25,7 @@ namespace Settings {
   float buyingPriceModifier;
   int port;
   int seed;
+  std::string masterPassword;
 
   int getLightMaxPower() { return lightMaxPower; }
   int getLighDuration() { return lighDuration; }
@@ -53,6 +54,7 @@ namespace Settings {
   float getBuyingPriceModifier() { return buyingPriceModifier; }
   int getPort() { return port; }
   int getSeed() { return seed; }
+  std::string getMasterPassword() { return masterPassword; }
 
   void setLightMaxPower(int data) { lightMaxPower = data; }
   void setLighDuration(int data) { lighDuration = data; }
@@ -75,4 +77,5 @@ namespace Settings {
   void setBuyingPriceModifier(float data) { buyingPriceModifier = data; }
   void setPort(int data) { port = data; }
   void setSeed(int data) { seed = data; }
+  void setMasterPassword(std::string data) { masterPassword = data; }
 };

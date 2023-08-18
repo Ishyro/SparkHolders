@@ -1,3 +1,11 @@
+#ifdef _WIN32_WINNT
+  #include <winsock2.h>
+  #include <windows.h>
+  #include <thread>
+#endif
+
+#include <thread>
+
 #include <string>
 #include <ncurses.h>
 
@@ -11,6 +19,13 @@
 
 #include "data/Map.h"
 #include "data/Tile.h"
+
+void listener(void * param) {
+  Link * link = (Link *) param;
+  while(!link->isClosed()) {
+    link->listen();
+  }
+}
 
 int main(int argc, char ** argv) {
   setlocale(LC_ALL, "");
@@ -33,27 +48,43 @@ int main(int argc, char ** argv) {
   init_pair(BACK_RED, *default_foreground, COLOR_RED);
   delete default_background;
   delete default_foreground;
+  #ifdef _WIN32_WINNT
+    HANDLE thread;
+  #else
+    std::thread thread;
+  #endif
   Socket s = Socket();
   // std::string IP = "84.97.162.152";
   // std::string IP = "192.168.168.164";
   // std::string IP = "192.168.1.83";
   std::string IP = "127.0.0.1";
   s.connect(IP, 45678);
-  Link * link = new Link(s);
+  Link * link;
   Translator * t;
   if (argc == 2) {
     try {
-      t = link->initialize(std::string(argv[1]));
+      link = new Link(s, argv[1]);
+      link->initialize("tester", "admin");
     } catch (CloseException &e) {
       endwin();
       s.close();
       delete link;
       return EXIT_FAILURE;
     }
+    #ifdef _WIN32_WINNT
+      thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
+    #else
+      thread = std::thread(listener, (void *) link);
+    #endif
+    while(!link->isStarted()) {
+      usleep(1);
+    }
+    t = link->getTranslator();
     std::vector<std::string> choices;
     choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
     try {
       link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
+      link->sendReady();
     } catch (CloseException &e) {
       endwin();
       s.close();
@@ -77,7 +108,16 @@ int main(int argc, char ** argv) {
         delete link;
         return EXIT_FAILURE;
       }
-      t = link->initialize(std::string(argv[1]));
+      link = new Link(s, argv[1]);
+      #ifdef _WIN32_WINNT
+        HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
+      #else
+        std::thread thread = std::thread(listener, (void *) link);
+      #endif
+      while(!link->isStarted()) {
+        usleep(1);
+      }
+      t = link->getTranslator();
     } catch (CloseException &e) {
       endwin();
       s.close();

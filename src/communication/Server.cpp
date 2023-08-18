@@ -24,13 +24,34 @@
 #include "util/String.h"
 
 namespace Server {
-  Action * receiveAction(Socket s, Character * user, Adventure * adventure) {
-    std::string msg;
-    try {
-      msg = s.read();
-    } catch (const CloseException &e) {
-      throw e;
+
+  std::list<Action *> receiveActions(std::string msg, std::map<const long, Character *> characters, Adventure * adventure) {
+    std::list<Action *> result = std::list<Action *>();
+    std::stringstream * ss = new std::stringstream(msg);
+    // ignore socket_msg_type
+    String::extract(ss);
+    while(ss->rdbuf()->in_avail() != 0) {
+      std::stringstream * ss_actions = new std::stringstream(String::extract(ss));
+      long id = String::extract_long(ss_actions);
+      std::vector<Action *> actions = std::vector<Action *>();
+      while(ss_actions->rdbuf()->in_avail() != 0) {
+        actions.push_back(readAction(String::extract(ss_actions), characters.at(id), adventure));
+      }
+      for(int i = 1; i < actions.size(); i++) {
+        actions[i-1]->setNext(actions[i]);
+        actions[i]->setPrevious(actions[i-1]);
+      }
+      actions[0]->computeTime(adventure);
+      characters.at(id)->setNeedToUpdateActions(false);
+      result.push_back(actions[0]);
+      delete ss_actions;
     }
+    delete ss;
+    result.sort();
+    return result;
+  }
+
+  Action * readAction(std::string msg, Character * user, Adventure * adventure) {
     std::stringstream * ss = new std::stringstream(msg);
     int type = String::extract_int(ss);
     Action * action;
@@ -76,19 +97,13 @@ namespace Server {
         delete ss;
         action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
     }
-    action->computeTime(adventure);
     return action;
   }
 
-  Character * receiveChoices(Socket s, Adventure * adventure) {
-    std::string msg;
-    try {
-      msg = s.read();
-    } catch (const CloseException &e) {
-      throw e;
-    }
+  Character * receiveChoices(std::string msg, Adventure * adventure) {
     std::stringstream * ss = new std::stringstream(msg);
-
+    // ignore socket_msg_type
+    String::extract(ss);
     std::string  name = String::extract(ss);
     Attributes * attr = nullptr;
     std::string attr_name = String::extract(ss);
@@ -175,29 +190,17 @@ namespace Server {
         }
       }
     }
-    Character * player = adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
-    player->setNeedToSend(true);
-    try {
-      s.write(player->full_to_string(adventure));
-    } catch (const CloseException &e) {
-      throw e;
-    }
+    Character * character = adventure->spawnPlayer(name, attr, race, origin, culture, religion, profession);
     delete ss;
-    return player;
+    return character;
   }
 
-  void sendState(Socket s, Character * player, Adventure * adventure) {
+  void sendState(Socket s, std::map<const long, Character *> characters, bool need_to_send, Adventure * adventure) {
     try {
       std::stringstream * ss = new std::stringstream();
-      if(player->needToSend()) {
-        player->setNeedToSend(false);
-        String::insert(ss, player->full_to_string(adventure));
-      }
-      else {
-        String::insert(ss, "0");
-      }
-      String::insert(ss, adventure->state_to_string(player));
-      String::insert_bool(ss, player->getNeedToUpdateActions());
+      String::insert_int(ss, SOCKET_MSG_STATE);
+      String::insert(ss, adventure->state_to_string(characters));
+      String::insert_bool(ss, need_to_send);
       s.write(ss->str());
       delete ss;
     } catch (const CloseException &e) {
@@ -205,9 +208,39 @@ namespace Server {
     }
   }
 
-  void sendAdventure(Socket s, Adventure * adventure) {
+  void sendAdventure(Socket s, Adventure * adventure, bool master) {
     try {
-      s.write(adventure->filePath);
+      std::stringstream * ss = new std::stringstream();
+      String::insert_int(ss, SOCKET_MSG_ADVENTURE);
+      String::insert(ss, adventure->filePath);
+      String::insert_bool(ss, master);
+      s.write(ss->str());
+      delete ss;
+    } catch (const CloseException &e) {
+      throw e;
+    }
+  }
+
+  void sendCharacter(Socket s, Character * character, Adventure * adventure) {
+    try {
+      std::stringstream * ss = new std::stringstream();
+      String::insert_int(ss, SOCKET_MSG_CHARACTER);
+      String::insert(ss, character->full_to_string(adventure));
+      character->setNeedToSend(false);
+      std::cout << "x=" << character->getX() << " y=" << character->getY() << std::endl;
+      s.write(ss->str());
+      delete ss;
+    } catch (const CloseException &e) {
+      throw e;
+    }
+  }
+
+  void sendAction(Socket s) {
+    try {
+      std::stringstream * ss = new std::stringstream();
+      String::insert_int(ss, SOCKET_MSG_ACTION);
+      s.write(ss->str());
+      delete ss;
     } catch (const CloseException &e) {
       throw e;
     }

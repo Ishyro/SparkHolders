@@ -1,6 +1,8 @@
 #ifndef _SETTINGS_H_
 #define _SETTINGS_H_
 
+#include <string>
+
 namespace Settings {
   int getLightMaxPower();
   int getLighDuration();
@@ -29,6 +31,7 @@ namespace Settings {
   float getBuyingPriceModifier();
   int getPort();
   int getSeed();
+  std::string getMasterPassword();
 
   void setLightMaxPower(int data);
   void setLighDuration(int data);
@@ -51,6 +54,7 @@ namespace Settings {
   void setBuyingPriceModifier(float data);
   void setPort(int data);
   void setSeed(int data);
+  void setMasterPassword(std::string data);
 };
 
 #endif // _SETTINGS_H_

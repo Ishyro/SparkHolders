@@ -320,51 +320,52 @@ std::string Adventure::getTime() {
   return result;
 }
 
-std::string Adventure::state_to_string(Character * c) {
+std::string Adventure::state_to_string(std::map<const long, Character *> players) {
   std::stringstream * ss = new std::stringstream();
+  std::stringstream * ss_tiles = new std::stringstream();
+  std::stringstream * ss_characters = new std::stringstream();
+  std::stringstream * ss_projectiles = new std::stringstream();
+  std::stringstream * ss_loots = new std::stringstream();
+  std::stringstream * ss_speeches = new std::stringstream();
   String::insert_long(ss, round);
   String::insert_int(ss, tick);
   String::insert_int(ss, light);
-  Map * map = world->getMap(c->getX(), c->getY(), c->getZ());
-  String::insert_long(ss, map->id);
-  Map * baseMap = (Map *) database->getMap(map->baseName);
-  Map * visionMap = new Map(map, c, database, world);
-  c->setCurrentMap(visionMap);
-  std::stringstream * ss_tiles = new std::stringstream();
-  for(int y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
-    for(int x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
-      if(visionMap->getTile(x, y) != nullptr && visionMap->getTile(x, y)->name != "TXT_MIST" &&
-        world->getTile(x, y, visionMap->offsetZ) != baseMap->getTile(x + map->offsetX, y + map->offsetY)) {
-        // TODO
-        // String::insert(ss_tiles, map->tile_to_string(y, x));
+  for(auto pair : players) {
+    Map * map = world->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ());
+    Map * baseMap = (Map *) database->getMap(map->baseName);
+    Map * visionMap = new Map(map, pair.second, database, world);
+    pair.second->setCurrentMap(visionMap);
+    for(int y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
+      for(int x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
+        if(visionMap->getTile(x, y) != nullptr && visionMap->getTile(x, y)->name != "TXT_MIST" &&
+          world->getTile(x, y, visionMap->offsetZ) != baseMap->getTile(x + map->offsetX, y + map->offsetY)) {
+          // TODO
+          // String::insert(ss_tiles, map->tile_to_string(y, x));
+        }
       }
+    }
+    for(Character * character : visionMap->getCharacters()) {
+      String::insert(ss_characters, character->to_string());
+      String::insert_int(ss_characters, database->getRelation(character->getTeam(), pair.second->getTeam()));
+    }
+    for(Projectile * projectile : visionMap->getProjectiles()) {
+      String::insert(ss_projectiles, projectile->to_string());
+    }
+    for(Loot * loot : visionMap->getLoots()) {
+      String::insert_int(ss_loots, loot->type);
+      String::insert_float(ss_loots, loot->x);
+      String::insert_float(ss_loots, loot->y);
+      String::insert_float(ss_loots, loot->size);
     }
   }
   String::insert(ss, ss_tiles->str());
   delete ss_tiles;
-  std::stringstream * ss_characters = new std::stringstream();
-  for(Character * character : visionMap->getCharacters()) {
-    String::insert(ss_characters, character->to_string());
-    String::insert_int(ss_characters, database->getRelation(character->getTeam(), c->getTeam()));
-  }
   String::insert(ss, ss_characters->str());
   delete ss_characters;
-  std::stringstream * ss_projectiles = new std::stringstream();
-  for(Projectile * projectile : visionMap->getProjectiles()) {
-    String::insert(ss_projectiles, projectile->to_string());
-  }
   String::insert(ss, ss_projectiles->str());
   delete ss_projectiles;
-  std::stringstream * ss_loots = new std::stringstream();
-  for(Loot * loot : visionMap->getLoots()) {
-    String::insert_int(ss_loots, loot->type);
-    String::insert_float(ss_loots, loot->x);
-    String::insert_float(ss_loots, loot->y);
-    String::insert_float(ss_loots, loot->size);
-  }
   String::insert(ss, ss_loots->str());
   delete ss_loots;
-  std::stringstream * ss_speeches = new std::stringstream();
   for(Speech * speech : SpeechManager::get()) {
     String::insert(ss_speeches, speech->to_string());
   }
@@ -382,7 +383,6 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   tick = String::extract_int(ss);
   light = String::extract_int(ss);
   applyDayLight();
-  display->map_id = String::extract_long(ss);
   std::stringstream * ss_tiles = new std::stringstream(String::extract(ss));
   while(ss_tiles->rdbuf()->in_avail() != 0) {
     std::stringstream * ss_tile = new std::stringstream(String::extract(ss_tiles));

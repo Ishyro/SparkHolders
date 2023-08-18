@@ -8,25 +8,47 @@
 
 #include "data/ClientSettings.h"
 
+void listener(void * param) {
+  Link * link = (Link *) param;
+  while(!link->isClosed()) {
+    link->listen();
+  }
+}
+
 void GodotLink::initialize(String ip) {
   Database * temp = new Database();
   FileOpener::ClientSettingsOpener("data" + FileOpener::PATH_DELIMITER + "settings_client.data", temp);
   delete temp;
   s = Socket();
   s.connect(std::string(ip.utf8().get_data()), ClientSettings::getPort());
-  link = new Link(s);
-  translator = link->initialize(ClientSettings::getLang());
+  try {
+    link = new Link(s, ClientSettings::getLang());
+    link->initialize("tester", "admin");
+  } catch (CloseException &e) {
+    close();
+    return;
+  }
+  #ifdef _WIN32_WINNT
+    thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
+  #else
+    thread = std::thread(listener, (void *) link);
+  #endif
+  while(!link->isStarted()) {
+    usleep(1);
+  }
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
   link->sendChoices("test", "TXT_DUELIST", "TXT_HUMAN", "TXT_ARMYTHAS", "TXT_TAGRAN", "TXT_BEASTIONA_FOLLOWER", "TXT_SOLDIER");
+  link->sendReady();
 }
 
-void GodotLink::receiveState() {
-  state = link->receiveState();
+void GodotLink::getState() {
+  delete state;
+  state = link->getState();
 }
 
 float GodotLink::getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY) {
-  float result = state->map->getMoveCost(link->getPlayer((long) character_id), oriX, oriY, destX, destY);
+  float result = state->maps.at((long) character_id)->getMoveCost(link->getPlayer((long) character_id), oriX, oriY, destX, destY);
   return result;
 }
 
@@ -34,12 +56,14 @@ float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   return MapUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
-Vector3 GodotLink::getSizes() {
-  return Vector3(state->map->sizeY, state->map->sizeZ, state->map->sizeX);
+Vector3 GodotLink::getSizes(int64_t character_id) {
+  Map * map = state->maps.at((long) character_id);
+  return Vector3(map->sizeY, map->sizeZ, map->sizeX);
 }
 
-Vector3 GodotLink::getOffsets() {
-  return Vector3(state->map->offsetY, state->map->offsetZ, state->map->offsetX);
+Vector3 GodotLink::getOffsets(int64_t character_id) {
+  Map * map = state->maps.at((long) character_id);
+  return Vector3(map->offsetY, map->offsetZ, map->offsetX);
 }
 
 Array GodotLink::getAvaillableTiles() {
@@ -50,24 +74,26 @@ Array GodotLink::getAvaillableTiles() {
   return result;
 }
 
-Array GodotLink::getTiles() {
+Array GodotLink::getTiles(int64_t character_id) {
+  Map * map = state->maps.at((long) character_id);
   Array result = Array();
-  for(int y = state->map->offsetY; y < state->map->offsetY + state->map->sizeY; y++) {
+  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
     Array result_y = Array();
-    for(int x = state->map->offsetX; x < state->map->offsetX + state->map->sizeX; x++) {
-      result_y.push_back(state->map->getTile(x, y)->name.c_str());
+    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
+      result_y.push_back(map->getTile(x, y)->name.c_str());
     }
     result.push_back(result_y);
   }
   return result;
 }
 
-Array GodotLink::getLights() {
+Array GodotLink::getLights(int64_t character_id) {
+  Map * map = state->maps.at((long) character_id);
   Array result = Array();
-  for(int y = state->map->offsetY; y < state->map->offsetY + state->map->sizeY; y++) {
+  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
     Array result_y = Array();
-    for(int x = state->map->offsetX; x < state->map->offsetX + state->map->sizeX; x++) {
-      result_y.push_back(state->map->getLight(x, y));
+    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
+      result_y.push_back(map->getLight(x, y));
     }
     result.push_back(result_y);
   }
@@ -76,10 +102,8 @@ Array GodotLink::getLights() {
 
 Array GodotLink::getControlledParty() {
   Array result = Array();
-  for(CharacterDisplay * character : state->characters) {
-    if(character->id == link->getPlayer()->id) {
-      result.push_back( (int64_t) character->id);
-    }
+  for(long id : link->getPlayersId()) {
+    result.push_back( (int64_t) id);
   }
   return result;
 }
@@ -195,6 +219,7 @@ Dictionary GodotLink::getDataFromProjectile(long id) {
 }
 
 void GodotLink::close() {
+  link->markClosed();
   s.close();
   delete link;
   delete state;
@@ -203,14 +228,14 @@ void GodotLink::close() {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
-  ClassDB::bind_method(D_METHOD("receiveState"), &GodotLink::receiveState);
+  ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "oriX", "oriY", "destX", "destY"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
-  ClassDB::bind_method(D_METHOD("getSizes"), &GodotLink::getSizes);
-  ClassDB::bind_method(D_METHOD("getOffsets"), &GodotLink::getOffsets);
+  ClassDB::bind_method(D_METHOD("getSizes", "id"), &GodotLink::getSizes);
+  ClassDB::bind_method(D_METHOD("getOffsets", "id"), &GodotLink::getOffsets);
   ClassDB::bind_method(D_METHOD("getAvaillableTiles"), &GodotLink::getAvaillableTiles);
-  ClassDB::bind_method(D_METHOD("getTiles"), &GodotLink::getTiles);
-  ClassDB::bind_method(D_METHOD("getLights"), &GodotLink::getLights);
+  ClassDB::bind_method(D_METHOD("getTiles", "id"), &GodotLink::getTiles);
+  ClassDB::bind_method(D_METHOD("getLights", "id"), &GodotLink::getLights);
   ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);

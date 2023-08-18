@@ -25,3 +25,4 @@ BUYING_PRICE_MODIFIER = 1.25
 # Server values
 PORT = 45678
 SEED = rand
+MASTER_PASSWORD = admin

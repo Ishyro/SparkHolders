@@ -81,10 +81,17 @@ func _ready():
 	# var ip = "192.168.1.83";
 	var ip = "127.0.0.1";
 	Values.link.initialize(ip)
-	Values.link.receiveState()
+	Values.link.getState()
 	grid_material.albedo_color = "000000"
-	offset = Values.link.getOffsets()
-	size = Values.link.getSizes()
+	owned_characters = Values.link.getControlledParty()
+	characters_data = Values.link.getCharacters()
+	projectiles_data = Values.link.getProjectiles()
+	for character_id in characters_data:
+		add_character(character_id, characters_data[character_id])
+	for projectile_id in projectiles_data:
+		add_projectile(projectile_id, projectiles_data[projectile_id])
+	offset = Values.link.getOffsets(owned_characters[0])
+	size = Values.link.getSizes(owned_characters[0])
 	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
 	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
@@ -104,16 +111,9 @@ func _ready():
 		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE" || tile == "TXT_MIST":
 			var img = materials[tile].albedo_texture.get_image()
 			tiles_img[tile] = ImageTexture.create_from_image(img)
-	owned_characters = Values.link.getControlledParty()
-	characters_data = Values.link.getCharacters()
-	projectiles_data = Values.link.getProjectiles()
 	create_grid()
 	create_board()
-	create_tiles()
-	for character_id in characters_data:
-		add_character(character_id, characters_data[character_id])
-	for projectile_id in projectiles_data:
-		add_projectile(projectile_id, projectiles_data[projectile_id])
+	create_tiles(owned_characters[0])
 	for character_id in owned_characters:
 		phantoms[character_id] = base_phantom.instantiate()
 		phantoms[character_id].scale_object_local(Vector3(characters_data[character_id]["size"], characters_data[character_id]["size"], characters_data[character_id]["size"]))
@@ -234,9 +234,9 @@ func get_light(light: int):
 		14: return light_e
 		15: return light_f
 
-func create_tiles():
-	var current_tiles = Values.link.getTiles()
-	var current_lights = Values.link.getLights()
+func create_tiles(character_id: int):
+	var current_tiles = Values.link.getTiles(character_id)
+	var current_lights = Values.link.getLights(character_id)
 	for x in range(0, size.x):
 		for z in range(0, size.z):
 			var light = MeshInstance3D.new()

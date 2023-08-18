@@ -296,4 +296,16 @@ class SpeechManager;
 #define WINDOW_WINDOW 2
 #define WINDOW_BORDERLESS 3
 
+// socket_msg_type
+
+#define SOCKET_MSG_CONNECT 1
+#define SOCKET_MSG_RECONNECT 2
+#define SOCKET_MSG_ADVENTURE 3
+#define SOCKET_MSG_CHOICE 4
+#define SOCKET_MSG_READY 5
+#define SOCKET_MSG_CHARACTER 6
+#define SOCKET_MSG_ACTION 7
+#define SOCKET_MSG_STATE 8
+#define SOCKET_MSG_SWITCH 9 
+
 #endif // _VALUES_H_

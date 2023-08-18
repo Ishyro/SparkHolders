@@ -1,6 +1,14 @@
 #ifndef _GODOT_LINK_H_
 #define _GODOT_LINK_H_
 
+#ifdef _WIN32_WINNT
+  #include <winsock2.h>
+  #include <windows.h>
+  #include <thread>
+#endif
+
+#include <thread>
+
 #include "core/object/ref_counted.h"
 
 #include "data/Adventure.h"
@@ -21,14 +29,14 @@ public:
     state(nullptr)
   {}
   void initialize(String ip);
-  void receiveState();
+  void getState();
   float getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY);
   float getOrientationToTarget(Vector2 a, Vector2 b);
-  Vector3 getSizes();
-  Vector3 getOffsets();
+  Vector3 getSizes(int64_t character_id);
+  Vector3 getOffsets(int64_t character_id);
   Array getAvaillableTiles();
-  Array getTiles();
-  Array getLights();
+  Array getTiles(int64_t character_id);
+  Array getLights(int64_t character_id);
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
@@ -45,6 +53,11 @@ private:
   Link * link;
   Translator * translator;
   StateDisplay * state;
+  #ifdef _WIN32_WINNT
+    HANDLE thread;
+  #else
+    std::thread thread;
+  #endif
 };
 
 #endif // _GODOT_LINK_H_

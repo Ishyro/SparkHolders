@@ -90,18 +90,21 @@ namespace Display {
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
-    for(int y = display->map->offsetY + display->map->sizeY - 1; y >= display->map->offsetY; y--) {
-      for(int x = display->map->offsetX; x < display->map->sizeX + display->map->offsetX; x++) {
+    Map * map = display->maps.at(player->id);
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(map->name).length() / 2, t->getMapName(map->name).c_str());
+    mvwprintw(screen, 2, cols / 2, std::to_string(map->offsetX).c_str());
+    mvwprintw(screen, 3, cols / 2, std::to_string(map->offsetY).c_str());
+    for(int y = map->offsetY + map->sizeY - 1; y >= map->offsetY; y--) {
+      for(int x = map->offsetX; x < map->sizeX + map->offsetX; x++) {
         std::string to_print = "·";
-        if(display->map->getTile(x, y) != nullptr && display->map->getTile(x, y)->name != "TXT_VOID") {
-          if(display->map->getTile(x, y)->untraversable) {
+        if(map->getTile(x, y) != nullptr && map->getTile(x, y)->name != "TXT_VOID") {
+          if(map->getTile(x, y)->untraversable) {
             to_print = "#";
           }
-          if(display->map->getTile(x, y)->name == "TXT_MIST") { // unseen
+          if(map->getTile(x, y)->name == "TXT_MIST") { // unseen
             to_print = "~";
           }
-          mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (y - display->map->offsetY), (x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+          mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (y - map->offsetY), (x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
         }
       }
     }
@@ -127,7 +130,7 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(character->y - display->map->offsetY), (int) std::floor(character->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(character->y - map->offsetY), (int) std::floor(character->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
@@ -162,13 +165,13 @@ namespace Display {
           break;
       }
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(projectile->y - display->map->offsetY), (int) std::floor(projectile->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(projectile->y - map->offsetY), (int) std::floor(projectile->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
       std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
-      mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - (int) std::floor(loot->y - display->map->offsetY), (int) std::floor(loot->x - display->map->offsetX) + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(loot->y - map->offsetY), (int) std::floor(loot->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
     std::string to_print = std::to_string(player->getOrientation());
@@ -193,37 +196,37 @@ namespace Display {
     wrefresh(screen);
   }
 
-  void displayTileMap(StateDisplay * display, WINDOW * screen, Translator * t) {
+  void displayTileMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
-    for(int y = display->map->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->map->sizeX; x++) {
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->maps.at(player->id)->name).length() / 2, t->getMapName(display->maps.at(player->id)->name).c_str());
+    for(int y = display->maps.at(player->id)->sizeY - 1; y >= 0 ; y--) {
+      for(int x = 0; x < display->maps.at(player->id)->sizeX; x++) {
         std::string to_print;
-        char ch = t->getTileName(display->map->getTile(x, y)->name).at(0);
+        char ch = t->getTileName(display->maps.at(player->id)->getTile(x, y)->name).at(0);
         to_print = ch;
-        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY -1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY -1 - y, x + cols / 2 - display->maps.at(player->id)->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
   }
 
-  void displayLightMap(StateDisplay * display, WINDOW * screen, Translator * t) {
+  void displayLightMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t) {
     int lines = 0;
     int cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->map->name).length() / 2, t->getMapName(display->map->name).c_str());
-    for(int y = display->map->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->map->sizeX; x++) {
+    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->maps.at(player->id)->name).length() / 2, t->getMapName(display->maps.at(player->id)->name).c_str());
+    for(int y = display->maps.at(player->id)->sizeY - 1; y >= 0 ; y--) {
+      for(int x = 0; x < display->maps.at(player->id)->sizeX; x++) {
         std::string to_print;
-        char ch = std::to_string(display->map->getLight(y, x)).at(0);
+        char ch = std::to_string(display->maps.at(player->id)->getLight(y, x)).at(0);
         to_print = ch;
-        mvwprintw(screen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY -1 - y, x + cols / 2 - display->map->sizeX / 2, to_print.c_str());
+        mvwprintw(screen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY -1 - y, x + cols / 2 - display->maps.at(player->id)->sizeX / 2, to_print.c_str());
       }
     }
     wrefresh(screen);
@@ -1195,11 +1198,15 @@ namespace Display {
   }
 
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t) {
+    while(!link->isReady()) {
+      usleep(1);
+    }
+    long id = link->getPlayersId().front();
     while(true) {
-      StateDisplay * display = link->receiveState();
-      if(link->getNeedToUpdateActions()) {
-        displayMap(display, link->getAdventure(), link->getPlayer(), mapScreen, t);
-        displayStats(link->getPlayer(), statsScreen, t);
+      StateDisplay * display = link->getState();
+      if(display->need_to_send_actions) {
+        displayMap(display, link->getAdventure(), link->getPlayer(id), mapScreen, t);
+        displayStats(link->getPlayer(id), statsScreen, t);
         displayCommands(targetScreen, t);
         wrefresh(targetScreen);
         bool done = false;
@@ -1219,11 +1226,11 @@ namespace Display {
           object_type = 0;
           object = "";
           object_id = 0;
-          orientation = link->getPlayer()->getOrientation();
+          orientation = link->getPlayer(id)->getOrientation();
           skill = nullptr;
           target_id = 0;
-          target_x = (int) std::floor(link->getPlayer()->getX()) - display->map->offsetX;
-          target_y = (int) std::floor(link->getPlayer()->getY()) - display->map->offsetY;
+          target_x = (int) std::floor(link->getPlayer(id)->getX()) - display->maps.at(id)->offsetX;
+          target_y = (int) std::floor(link->getPlayer(id)->getY()) - display->maps.at(id)->offsetY;
           overcharge_power = 1;
           overcharge_duration = 1;
           overcharge_range = 1;
@@ -1246,7 +1253,7 @@ namespace Display {
             case '8':
             case KEY_UP:
             case '9':
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
                 type = ACTION_MOVE;
                 done = true;
               }
@@ -1259,8 +1266,8 @@ namespace Display {
             case 'x':
             case 'X':
               type = ACTION_USE_SKILL;
-              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
-              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, skill->range, target_id, target_x, target_y, orientation, t))) {
+              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(id), overcharge_power, overcharge_duration, overcharge_range, t);
+              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), skill->range, target_id, target_x, target_y, orientation, t))) {
                 done = true;
                 object = skill->name;
               }
@@ -1268,16 +1275,16 @@ namespace Display {
             case 'c':
             case 'C':
               type = ACTION_REST;
-              if(!link->getPlayer()->getGear()->getWeapon()->use_projectile) {
+              if(!link->getPlayer(id)->getGear()->getWeapon()->use_projectile) {
                 type = ACTION_STRIKE;
               }
-              else if(!link->getPlayer()->getGear()->getWeapon()->use_ammo || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+              else if(!link->getPlayer(id)->getGear()->getWeapon()->use_ammo || link->getPlayer(id)->getGear()->getWeapon()->getCurrentCapacity() > 0) {
                 type = ACTION_SHOOT;
               }
               if(type == ACTION_SHOOT || type == ACTION_STRIKE) {
-                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer()->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
-                  if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-                    link->getPlayer()->getGear()->getWeapon()->useAmmo();
+                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
+                  if(link->getPlayer(id)->getGear()->getWeapon()->use_ammo) {
+                    link->getPlayer(id)->getGear()->getWeapon()->useAmmo();
                   }
                   done = true;
                 }
@@ -1286,9 +1293,9 @@ namespace Display {
             case 'i':
             case 'I':
               type = ACTION_SWAP_GEAR;
-              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, t);
+              object = selectItem(displayScreen, targetScreen, link->getPlayer(id), object_type, object_id, t);
               if(object != "") {
-                for(Item * item : link->getPlayer()->getItems()) {
+                for(Item * item : link->getPlayer(id)->getItems()) {
                   if(item->id == object_id) {
                     if(item->usable) {
                       type = ACTION_USE_ITEM;
@@ -1304,11 +1311,11 @@ namespace Display {
             case 'r':
             case 'R':
               type = ACTION_RELOAD;
-              if(link->getPlayer()->getGear()->getWeapon()->use_ammo) {
-                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
-                if(object != "" && (link->getPlayer()->getGear()->getWeapon()->getAmmo() == nullptr
-                || link->getPlayer()->getGear()->getWeapon()->getAmmo()->getProjectile()->name != object
-                || link->getPlayer()->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon()->capacity)) {
+              if(link->getPlayer(id)->getGear()->getWeapon()->use_ammo) {
+                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(id), t);
+                if(object != "" && (link->getPlayer(id)->getGear()->getWeapon()->getAmmo() == nullptr
+                || link->getPlayer(id)->getGear()->getWeapon()->getAmmo()->getProjectile()->name != object
+                || link->getPlayer(id)->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer(id)->getGear()->getWeapon()->capacity)) {
                   done = true;
                 }
               }
@@ -1322,7 +1329,7 @@ namespace Display {
           case ACTION_RESPITE:
           case ACTION_REST:
           case ACTION_BREAKPOINT:
-            link->sendAction(type, nullptr, nullptr, 0, 0, 0);
+            sendAction(link, id, type, nullptr, nullptr, 0, 0, 0);
             break;
           case ACTION_MOVE:
           case ACTION_STRIKE:
@@ -1331,18 +1338,18 @@ namespace Display {
           case ACTION_USE_SKILL: {
             Target * target = new Target();
             ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
-            ((Target *) target)->id = (target_id == 0 ? display->map->id : target_id);
+            ((Target *) target)->id = (target_id == 0 ? display->maps.at(id)->id : target_id);
             ((Target *) target)->x = target_x + 0.5;
             ((Target *) target)->y = target_y + 0.5;
             ((Target *) target)->next = nullptr;
-            link->sendAction(type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
+            sendAction(link, id, type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
             break;
           }
           case ACTION_RELOAD:
           case ACTION_SWAP_GEAR:
           case ACTION_GRAB:
           case ACTION_USE_ITEM:
-            link->sendAction(type, (void *) object_id, nullptr, 0, 0, 0);
+            sendAction(link, id, type, (void *) object_id, nullptr, 0, 0, 0);
             break;
           case ACTION_TALKING:
           case ACTION_ECONOMICS:
@@ -1588,7 +1595,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
     bool done = false;
     int lines = 0;
     int cols = 0;
@@ -1599,14 +1606,14 @@ namespace Display {
     int cols2 = 0;
     getmaxyx(targetScreen, lines2, cols2);
     cchar_t *wch_old = new cchar_t();
-    mvwin_wch(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2, wch_old);
+    mvwin_wch(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2, wch_old);
     while(!done) {
       flushinp();
       int keyPressed = getch();
       target_id = 0;
       int previous_x = target_x;
       int previous_y = target_y;
-      wmove(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2);
+      wmove(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2);
       wecho_wchar(mapScreen, wch_old);
       switch(keyPressed) {
         case '4':
@@ -1616,20 +1623,20 @@ namespace Display {
           }
           break;
         case '7':
-          if(target_x > 0 && target_y < display->map->sizeY - 1) {
+          if(target_x > 0 && target_y < display->maps.at(player->id)->sizeY - 1) {
             target_x--;
             target_y++;
           }
           break;
         case '8':
         case KEY_UP: {
-          if(target_y < display->map->sizeY - 1) {
+          if(target_y < display->maps.at(player->id)->sizeY - 1) {
             target_y++;
           }
           break;
         }
         case '9': {
-          if(target_x < display->map->sizeX - 1 && target_y < display->map->sizeY - 1) {
+          if(target_x < display->maps.at(player->id)->sizeX - 1 && target_y < display->maps.at(player->id)->sizeY - 1) {
             target_x++;
             target_y++;
           }
@@ -1637,12 +1644,12 @@ namespace Display {
         }
         case '6':
         case KEY_RIGHT:
-          if(target_x < display->map->sizeX - 1) {
+          if(target_x < display->maps.at(player->id)->sizeX - 1) {
             target_x++;
           }
           break;
         case '3':
-          if(target_x < display->map->sizeX - 1 && target_y > 0) {
+          if(target_x < display->maps.at(player->id)->sizeX - 1 && target_y > 0) {
             target_x++;
             target_y--;
           }
@@ -1662,7 +1669,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + display->map->offsetX, target_y + display->map->offsetY);
+          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + display->maps.at(player->id)->offsetX, target_y + display->maps.at(player->id)->offsetY);
           break;
         }
         case ' ': {
@@ -1682,25 +1689,25 @@ namespace Display {
       wclear(targetScreen);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
       wrefresh(targetScreen);
-      std::string to_print = "x= " + std::to_string(target_x + display->map->offsetX) + " y= " + std::to_string(target_y + display->map->offsetY);
+      std::string to_print = "x= " + std::to_string(target_x + display->maps.at(player->id)->offsetX) + " y= " + std::to_string(target_y + display->maps.at(player->id)->offsetY);
       mvwprintw(targetScreen, lines2 / 2, cols2 / 2 - to_print.length() / 2, to_print.c_str());
       wrefresh(targetScreen);
       for(CharacterDisplay * character : display->characters) {
-        if((int) std::floor(character->x) == target_x + display->map->offsetX && (int) std::floor(character->y) == target_y + display->map->offsetY) {
+        if((int) std::floor(character->x) == target_x + display->maps.at(player->id)->offsetX && (int) std::floor(character->y) == target_y + display->maps.at(player->id)->offsetY) {
           target_id = character->id;
           displayTarget(character, targetScreen, t);
           break;
         }
       }
-      wmove(mapScreen, lines / 2 - display->map->sizeY / 2 + display->map->sizeY - 1 - target_y, target_x + cols / 2 - display->map->sizeX / 2);
+      wmove(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2);
       win_wch(mapScreen, wch_old);
       wattron(mapScreen, COLOR_PAIR(BACK_RED));
       wprintw(mapScreen, "X");
       wattroff(mapScreen, COLOR_PAIR(BACK_RED));
       wrefresh(mapScreen);
     }
-    target_x += display->map->offsetX;
-    target_y += display->map->offsetY;
+    target_x += display->maps.at(player->id)->offsetX;
+    target_y += display->maps.at(player->id)->offsetY;
     delete wch_old;
     return true;
   }
@@ -1911,4 +1918,34 @@ namespace Display {
     wrefresh(targetScreen);
     return result;
   }
+}
+
+void Display::sendAction(Link * link, long id, int type, void * arg1, void * arg2, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  std::vector<long> ids = std::vector<long>();
+  ids.push_back(id);
+  std::vector<std::vector<int>> types = std::vector<std::vector<int>>(); 
+  std::vector<int> types_args = std::vector<int>();
+  types_args.push_back(type);
+  types.push_back(types_args);
+  std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>(); 
+  std::vector<void *> args1_args = std::vector<void *>();
+  args1_args.push_back(arg1);
+  args1.push_back(args1_args);
+  std::vector<std::vector<void *>> args2 = std::vector<std::vector<void *>>(); 
+  std::vector<void *> args2_args = std::vector<void *>();
+  args2_args.push_back(arg2);
+  args2.push_back(args2_args);
+  std::vector<std::vector<int>> overcharge_powers = std::vector<std::vector<int>>(); 
+  std::vector<int> overcharge_powers_args = std::vector<int>();
+  overcharge_powers_args.push_back(overcharge_power);
+  overcharge_powers.push_back(overcharge_powers_args);
+  std::vector<std::vector<int>> overcharge_durations = std::vector<std::vector<int>>(); 
+  std::vector<int> overcharge_durations_args = std::vector<int>();
+  overcharge_durations_args.push_back(overcharge_duration);
+  overcharge_durations.push_back(overcharge_durations_args);
+  std::vector<std::vector<int>> overcharge_ranges = std::vector<std::vector<int>>(); 
+  std::vector<int> overcharge_ranges_args = std::vector<int>();
+  overcharge_ranges_args.push_back(overcharge_range);
+  overcharge_ranges.push_back(overcharge_ranges_args);
+  link->sendActions(ids, types, args1, args2, overcharge_powers, overcharge_durations, overcharge_ranges);
 }

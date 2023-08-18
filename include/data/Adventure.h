@@ -2,6 +2,7 @@
 #define _ADVENTURE_H_
 
 #include <list>
+#include <map>
 #include <string>
 #include <algorithm>
 
@@ -15,12 +16,12 @@ typedef struct Spawn {
 } Spawn;
 
 typedef struct StateDisplay {
-  long map_id;
-  Map * map;
+  std::map<const long, Map *> maps;
   std::list<CharacterDisplay *> characters;
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
   std::list<Speech *> speeches;
+  bool need_to_send_actions;
 } StateDisplay;
 
 class Adventure {
@@ -100,7 +101,7 @@ class Adventure {
     Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
     std::string getTime();
-    std::string state_to_string(Character * c);
+    std::string state_to_string(std::map<const long, Character *> players);
     StateDisplay * update_state(std::string to_read);
   private:
     World * world;
