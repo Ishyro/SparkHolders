@@ -136,6 +136,8 @@ $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRI
 
 godot:
 	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM)
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=template_release arch=x86_64
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=template_debug arch=x86_64
 
 $(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)
