@@ -1,5 +1,8 @@
 extends Node3D
 
+var thread
+var mutex
+
 var owned_characters = []
 var phantoms = {}
 var phantom_lines = {}
@@ -76,14 +79,17 @@ func _ready():
 	light_d.albedo_color = "dddddd"
 	light_e.albedo_color = "eeeeee"
 	light_f.albedo_color = "ffffff"
-	# var ip = "84.97.162.152";
-	# var ip = "192.168.168.164";
-	# var ip = "192.168.1.83";
-	var ip = "127.0.0.1";
+	# var ip = "84.97.162.152"
+	# var ip = "192.168.168.164"
+	# var ip = "192.168.1.83"
+	var ip = "127.0.0.1"
+	thread = Thread.new()
+	mutex = Mutex.new()
 	Values.link.initialize(ip)
 	Values.link.getState()
 	grid_material.albedo_color = "000000"
 	owned_characters = Values.link.getControlledParty()
+	init_actions()
 	characters_data = Values.link.getCharacters()
 	projectiles_data = Values.link.getProjectiles()
 	for character_id in characters_data:
@@ -124,10 +130,74 @@ func _ready():
 	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
 	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
 	n_tiles.bake_navigation_mesh()
+	thread.start(state_updater, Thread.PRIORITY_LOW)
+
+func state_updater():
+	var running = true
+	while running:
+		while (Values.updating_state || !Values.link.hasState()):
+			await get_tree().create_timer(0.001).timeout
+		mutex.lock()
+		running = Values.link.getState()
+		if running:
+			offset = Values.link.getOffsets(owned_characters[0])
+			size = Values.link.getSizes(owned_characters[0])
+			mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
+			plan = "Aytlanta"
+			var next_characters_data = Values.link.getCharacters()
+			for character_id in characters_data.keys():
+				if !next_characters_data.has(character_id):
+					n_characters.remove_child(characters[character_id])
+					characters.erase(character_id)
+			for character_id in next_characters_data.keys():
+				if !characters_data.has(character_id):
+					add_character(character_id, next_characters_data[character_id])
+			characters_data = next_characters_data
+			var next_projectiles_data = Values.link.getProjectiles()
+			for projectile_id in projectiles_data.keys():
+				if !next_projectiles_data.has(projectile_id):
+					n_projectiles.remove_child(projectiles[projectile_id])
+					projectiles.erase(projectile_id)
+			for projectile_id in next_projectiles_data.keys():
+				if !projectiles_data.has(projectile_id):
+					add_projectile(projectile_id, next_projectiles_data[projectile_id])
+			projectiles_data = next_projectiles_data
+		Values.updating_state = true
+		mutex.unlock()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
+	
+func _physics_process(delta):
+	if mutex.try_lock():
+		if Values.updating_state:
+			var done = true
+			for character_id in characters_data.keys():
+				var dest = Vector3(characters_data[character_id]["y"], characters[character_id].transform.origin.y, characters_data[character_id]["x"])
+				var movement = (dest - characters[character_id].transform.origin).normalized() * 10
+				characters[character_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)	
+				if characters[character_id].transform.origin.distance_to(dest) < 0.1:
+					characters[character_id].transform.origin = dest
+					if phantoms.has(character_id):
+						if phantom_lines.has(character_id):
+							for phantom_line in phantom_lines[character_id]:
+								n_characters.remove_child(phantom_line)
+						phantom_lines[character_id] = []
+						phantoms[character_id].transform.origin = dest
+						phantoms[character_id].visible = false
+				done = done && (characters[character_id].transform.origin == dest)
+			for projectile_id in projectiles_data.keys():
+				var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
+				var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
+				projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+				projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
+				if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
+					projectiles[projectile_id].transform.origin = dest
+				done = done && (projectiles[projectile_id].transform.origin == dest)
+			Values.updating_state = !done
+		mutex.unlock()
 	
 func create_grid():
 	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
@@ -152,8 +222,8 @@ func create_board():
 	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
 	# 1
 	var rod = StaticBody3D.new()
-	rod.collision_layer = 0x0001
-	rod.collision_mask = 0x000f
+	rod.collision_layer = 0x0010
+	rod.collision_mask = 0x001f
 	var rod_mesh = MeshInstance3D.new()
 	var rod_shape = CollisionShape3D.new()
 	rod_mesh.mesh = BoxMesh.new()
@@ -168,8 +238,8 @@ func create_board():
 	add_child(rod)
 	# 2
 	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0001
-	rod.collision_mask = 0x000f
+	rod.collision_layer = 0x0010
+	rod.collision_mask = 0x001f
 	rod_mesh = MeshInstance3D.new()
 	rod_shape = CollisionShape3D.new()
 	rod_mesh.mesh = BoxMesh.new()
@@ -184,8 +254,8 @@ func create_board():
 	add_child(rod)
 	# 3
 	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0001
-	rod.collision_mask = 0x000f
+	rod.collision_layer = 0x0010
+	rod.collision_mask = 0x001f
 	rod_mesh = MeshInstance3D.new()
 	rod_shape = CollisionShape3D.new()
 	rod_mesh.mesh = BoxMesh.new()
@@ -200,8 +270,8 @@ func create_board():
 	add_child(rod)
 	# 4
 	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0001
-	rod.collision_mask = 0x000f
+	rod.collision_layer = 0x0010
+	rod.collision_mask = 0x001f
 	rod_mesh = MeshInstance3D.new()
 	rod_shape = CollisionShape3D.new()
 	rod_mesh.mesh = BoxMesh.new()
@@ -282,7 +352,7 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.id = projectile_id
 	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
-	
+
 func update_phantom(character_id: int, delta):
 	phantoms[character_id].visible = true
 	var movement = (Values.coord - phantoms[character_id].transform.origin) * 100
@@ -313,10 +383,68 @@ func update_phantom(character_id: int, delta):
 			previous_vec = vec
 	phantoms[character_id].rotation_degrees = last_angle
 	return String.num(ap_cost, 3)
-	
+
 func round_float(number: float):
 	var value = int(number * 1000. + 0.5)
 	return float(value) / 1000.
-	
+
 func round_vec(vec: Vector3):
 	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))
+	
+
+func init_actions():
+	Values.actions = {}
+	Values.actions["ids"] = owned_characters
+	Values.actions["types"] = {}
+	Values.actions["arg1"] = {}
+	Values.actions["arg2"] = {}
+	Values.actions["overcharge_power"] = {}
+	Values.actions["overcharge_duration"] = {}
+	Values.actions["overcharge_range"] = {}
+	for id in owned_characters:
+		Values.actions["types"][id] = []
+		Values.actions["arg1"][id] = []
+		Values.actions["arg2"][id] = []
+		Values.actions["overcharge_power"][id] = []
+		Values.actions["overcharge_duration"][id] = []
+		Values.actions["overcharge_range"][id] = []
+	
+func add_base_action(id, type):
+	Values.actions["types"][id].push_back(type)
+	Values.actions["arg1"][id].push_back(0)
+	Values.actions["arg2"][id].push_back(0)
+	Values.actions["overcharge_power"][id].push_back(0)
+	Values.actions["overcharge_duration"][id].push_back(0)
+	Values.actions["overcharge_range"][id].push_back(0)
+	
+func add_targeted_action(id, type, target_type, target_id, pos):
+	Values.actions["types"][id].push_back(type)
+	var target = {}
+	target["type"] = target_type
+	target["id"] = target_id
+	target["pos"] = pos
+	Values.actions["arg1"][id].push_back(target)
+	Values.actions["arg2"][id].push_back(0)
+	Values.actions["overcharge_power"][id].push_back(0)
+	Values.actions["overcharge_duration"][id].push_back(0)
+	Values.actions["overcharge_range"][id].push_back(0)
+	
+func add_gear_action(id, type, item_id):
+	Values.actions["types"][id].push_back(type)
+	Values.actions["arg1"][id].push_back(item_id)
+	Values.actions["arg2"][id].push_back(0)
+	Values.actions["overcharge_power"][id].push_back(0)
+	Values.actions["overcharge_duration"][id].push_back(0)
+	Values.actions["overcharge_range"][id].push_back(0)
+	
+func add_skill_action(id, type, target_type, target_id, pos, skill, overcharge_power, overcharge_duration, overcharge_range):
+	Values.actions["types"][id].push_back(type)
+	var target = {}
+	target["type"] = target_type
+	target["id"] = target_id
+	target["pos"] = pos
+	Values.actions["arg1"][id].push_back(target)
+	Values.actions["arg2"][id].push_back(skill)
+	Values.actions["overcharge_power"][id].push_back(overcharge_power)
+	Values.actions["overcharge_duration"][id].push_back(overcharge_duration)
+	Values.actions["overcharge_range"][id].push_back(overcharge_range)

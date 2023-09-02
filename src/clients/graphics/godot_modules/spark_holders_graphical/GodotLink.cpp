@@ -21,13 +21,8 @@ void GodotLink::initialize(String ip) {
   delete temp;
   s = Socket();
   s.connect(std::string(ip.utf8().get_data()), ClientSettings::getPort());
-  try {
-    link = new Link(s, ClientSettings::getLang());
-    link->initialize("tester", "admin");
-  } catch (CloseException &e) {
-    close();
-    return;
-  }
+  link = new Link(s, ClientSettings::getLang());
+  link->initialize("tester", "admin");
   #ifdef _WIN32_WINNT
     thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
   #else
@@ -42,9 +37,14 @@ void GodotLink::initialize(String ip) {
   link->sendReady();
 }
 
-void GodotLink::getState() {
+bool GodotLink::hasState() {
+  return link->hasState();
+}
+
+bool GodotLink::getState() {
   delete state;
   state = link->getState();
+  return state != nullptr;
 }
 
 float GodotLink::getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY) {
@@ -218,6 +218,94 @@ Dictionary GodotLink::getDataFromProjectile(long id) {
   return result;
 }
 
+void GodotLink::send_actions(Dictionary actions) {
+  std::vector<long> ids = std::vector<long>();
+  std::vector<std::vector<int>> types = std::vector<std::vector<int>>();
+  std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>();
+  std::vector<std::vector<void *>> args2 = std::vector<std::vector<void *>>();
+  std::vector<std::vector<int>> overcharge_powers = std::vector<std::vector<int>>();
+  std::vector<std::vector<int>> overcharge_durations = std::vector<std::vector<int>>();
+  std::vector<std::vector<int>> overcharge_ranges = std::vector<std::vector<int>>();
+  for(int64_t iterator_id = 0; iterator_id < ((Array) actions["ids"]).size(); iterator_id++) {
+    int64_t id = (int64_t) ((Array) actions["ids"])[iterator_id];
+    ids.push_back( (long) id);
+    std::vector<int> types_i = std::vector<int>();
+    std::vector<void *> args1_i = std::vector<void *>();
+    std::vector<void *> args2_i = std::vector<void *>();
+    std::vector<int> overcharge_powers_i = std::vector<int>();
+    std::vector<int> overcharge_durations_i = std::vector<int>();
+    std::vector<int> overcharge_ranges_i = std::vector<int>();
+    for(int64_t i = 0; i < ( (Array) ( (Dictionary) actions["types"])[id]).size(); i++) {
+      int type = (int) (int64_t) ( (Array) ( (Dictionary) actions["types"])[id])[i];
+      void * arg1 = 0;
+      void * arg2 = 0;
+      int overcharge_power = 1;
+      int overcharge_duration = 1;
+      int overcharge_range = 1;
+      switch(type) {
+        case ACTION_IDLE:
+        case ACTION_RESPITE:
+        case ACTION_REST:
+        case ACTION_BREAKPOINT:
+          break;
+        case ACTION_MOVE:
+        case ACTION_STRIKE:
+        case ACTION_HEAVY_STRIKE:
+        case ACTION_SHOOT: {
+          Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
+          Target * target = new Target();
+          target->type = (int) (int64_t) target_ori["type"];
+          target->id = (long) (int64_t) target_ori["id"];
+          Vector3 pos = (Vector3) target_ori["pos"];
+          target->x = pos.x;
+          target->y = pos.y;
+          target->z = pos.z;
+          arg1 = (void *) target;
+          break;
+        }
+        case ACTION_RELOAD:
+        case ACTION_SWAP_GEAR:
+        case ACTION_GRAB:
+        case ACTION_USE_ITEM: {
+          long item_id = (long) (int64_t) ( (Array) ( (Dictionary) actions["arg2"])[id])[i];
+          arg1 = (void *) item_id;
+          break;
+        }
+        case ACTION_USE_SKILL: {
+          Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
+          Target * target = new Target();
+          target->type = (int) (int64_t) target_ori["type"];
+          target->id = (long) (int64_t) target_ori["id"];
+          Vector3 pos = (Vector3) target_ori["pos"];
+          target->x = pos.x;
+          target->y = pos.y;
+          target->z = pos.z;
+          arg1 = (void *) target;
+          Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) ( (Array) ( (Dictionary) actions["arg2"])[id])[i]).utf8().get_data()));
+          arg2 = (void *) skill;
+          overcharge_power = (int) ( (Array) ( (Dictionary) actions["overchage_power"])[id])[i];
+          overcharge_duration = (int) ( (Array) ( (Dictionary) actions["overchage_duration"])[id])[i];
+          overcharge_range = (int) ( (Array) ( (Dictionary) actions["overchage_range"])[id])[i];
+          break;
+        }
+      }
+      types_i.push_back(type);
+      args1_i.push_back(arg1);
+      args2_i.push_back(arg2);
+      overcharge_powers_i.push_back(overcharge_power);
+      overcharge_durations_i.push_back(overcharge_duration);
+      overcharge_ranges_i.push_back(overcharge_range);
+    }
+    types.push_back(types_i);
+    args1.push_back(args1_i);
+    args2.push_back(args2_i);
+    overcharge_powers.push_back(overcharge_powers_i);
+    overcharge_durations.push_back(overcharge_durations_i);
+    overcharge_ranges.push_back(overcharge_ranges_i);
+  }
+  link->sendActions(ids, types, args1, args2, overcharge_powers, overcharge_durations, overcharge_ranges);
+}
+
 void GodotLink::close() {
   link->markClosed();
   s.close();
@@ -228,6 +316,7 @@ void GodotLink::close() {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "oriX", "oriY", "destX", "destY"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
@@ -241,5 +330,6 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
+  ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

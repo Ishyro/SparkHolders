@@ -47,7 +47,7 @@ func update_mouse_coordinates(delta):
 				Values.selected_tile = null
 			if "phantom" in selection:
 				Values.selected_team = map.characters[selection.id]
-				Values.mode = Values.ACTION_MOVE
+				Values.mode = Values.ACTION_MODE_MOVE
 			if "projectile" in selection:
 				Values.selected_projectile = selection
 				Values.selected_target = null
@@ -57,17 +57,19 @@ func update_mouse_coordinates(delta):
 				Values.selected_target = null
 				Values.selected_tile = selection
 		if Input.is_action_pressed("action"):
-			var selection = result["collider"]
-			if Values.mode == Values.ACTION_MOVE:
-				Values.mode = Values.ACTION_NONE
-				if "character" in selection:
-					Values.link.move(Values.selected_team.id, selection)
-				if "tile" in selection:
-					print("test")
-					#Values.link.move(Values.selected_team.id, Values.coord.z, Values.coord.x)
+			var _selection = result["collider"]
+			if Values.mode == Values.ACTION_MODE_MOVE:
+				Values.mode = Values.ACTION_MODE_NONE
+				var is_first = true
+				for vec in map.characters[Values.selected_team.id].nav.get_current_navigation_path():
+					if is_first:
+						is_first = false
+					else:
+						vec = map.round_vec(vec)
+						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.offset.y))
 	if not pause_state:
 		var ap_cost = ""
-		if(Values.selected_team and Values.mode == Values.ACTION_MOVE):
+		if(Values.selected_team and Values.mode == Values.ACTION_MOVE and not Values.updating_state):
 			ap_cost = map.update_phantom(Values.selected_team.id, delta)
 		hud.update_mouse_box(mouse_coords, ap_cost)
 
@@ -152,3 +154,7 @@ func _unhandled_input(event):
 			hud.set_skill_tab(10)
 		if event.is_action_pressed("skill_tab_12"):
 			hud.set_skill_tab(11)
+		if event.is_action_pressed("send_actions"):
+			Values.link.send_actions(Values.actions)
+			map.init_actions()
+			Values.mode = Values.ACTION_MODE_MOVE

@@ -28,7 +28,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
           setUserOrientationToTarget(adventure);
         }
       }
-      if(ap == 0.F && target->next == nullptr && rangeFromTarget(adventure) > 0.01F && (next == nullptr || next->type != ACTION_MOVE)) {
+      if(ap == 0.F && target->next == nullptr && rangeFromTarget(adventure) > 0.01F) {
         Action * temp = next;
         next = new TargetedAction(ACTION_MOVE, adventure, nullptr, user, target);
         next->setNext(temp);

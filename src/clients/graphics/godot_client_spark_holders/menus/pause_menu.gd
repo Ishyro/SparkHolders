@@ -18,12 +18,14 @@ func _on_load_pressed():
 
 func _on_menu_pressed():
 	Values.link.close()
+	map.thread.wait_to_finish()
 	if Values.server_pid != -1:
 		OS.kill(Values.server_pid)
 	get_tree().change_scene_to_file("res://menus/main_menu.tscn")
 
 func _on_quit_pressed():
 	Values.link.close()
+	map.thread.wait_to_finish()
 	if Values.server_pid != -1:
 		OS.kill(Values.server_pid)
 	get_tree().quit()

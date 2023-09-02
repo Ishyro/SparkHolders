@@ -114,7 +114,6 @@ void Link::receiveState(std::string msg) {
     game_state->maps.insert(std::make_pair(pair.first, map));
   }
   state_pile.push_back(game_state);
-  state_ready = true;
 }
 
 void Link::sendReady() {
@@ -151,15 +150,18 @@ std::list<long> Link::getPlayersId() {
   return result;
 }
 Adventure * Link::getAdventure() { return adventure; }
+bool Link::hasState() { return closed || !state_pile.empty(); }
 
 StateDisplay * Link::getState() {
-  while(!state_ready) {
+  while(!hasState()) {
     usleep(1);
   }
-  StateDisplay * result = state_pile.front();
-  state_pile.pop_front();
-  state_ready = false;
-  return result;
+  if(!closed) {
+    StateDisplay * result = state_pile.front();
+    state_pile.pop_front();
+    return result;
+  }
+  return nullptr;
 }
 
 

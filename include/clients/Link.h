@@ -32,6 +32,7 @@ class Link {
     Character * getPlayer(long id);
     std::list<long> getPlayersId();
     Adventure * getAdventure();
+    bool hasState();
     StateDisplay * getState();
     Translator * getTranslator();
     void changeLanguage(std::string language);
@@ -47,7 +48,6 @@ class Link {
     std::list<StateDisplay *> state_pile = std::list<StateDisplay *>();
     Adventure * adventure;
     bool ready = false;
-    bool state_ready = false;
     bool master;
     bool closed = false;
     bool started = false;

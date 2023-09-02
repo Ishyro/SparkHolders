@@ -227,7 +227,6 @@ namespace Server {
       String::insert_int(ss, SOCKET_MSG_CHARACTER);
       String::insert(ss, character->full_to_string(adventure));
       character->setNeedToSend(false);
-      std::cout << "x=" << character->getX() << " y=" << character->getY() << std::endl;
       s.write(ss->str());
       delete ss;
     } catch (const CloseException &e) {

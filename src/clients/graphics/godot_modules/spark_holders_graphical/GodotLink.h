@@ -29,7 +29,8 @@ public:
     state(nullptr)
   {}
   void initialize(String ip);
-  void getState();
+  bool hasState();
+  bool getState();
   float getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY);
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Vector3 getSizes(int64_t character_id);
@@ -44,6 +45,7 @@ public:
   Dictionary getDataFromTile(String tile_name);
   Dictionary getDataFromCharacter(long id);
   Dictionary getDataFromProjectile(long id);
+  void send_actions(Dictionary actions);
   void close();
 
 protected:

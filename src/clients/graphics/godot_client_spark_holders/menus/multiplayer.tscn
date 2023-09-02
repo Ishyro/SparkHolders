@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d3g3bntmscrr4"]
 
 [ext_resource type="Script" path="res://menus/multiplayer.gd" id="1_33t1f"]
-[ext_resource type="Texture2D" path="res://data/tiles/grass/Color.jpg" id="2_ffrg3"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_ffrg3"]
 
 [node name="Multiplayer" type="Control"]
 layout_mode = 3
