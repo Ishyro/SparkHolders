@@ -143,6 +143,7 @@ func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	else:
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + " , " + String.num(Values.coord.x, 3) + ")"
 
+# Map options
 func _on_grid_toggled(_button_pressed):
 	map.n_grid.visible = !map.n_grid.visible
 
@@ -158,3 +159,37 @@ func _on_projectiles_toggled(_button_pressed):
 
 func _on_furnitures_toggled(_button_pressed):
 	map.n_furnitures.visible = !map.n_furnitures.visible
+
+# Actions
+func _on_move_pressed():
+	Values.mode = Values.ACTION_MODE_MOVE
+	map.phantoms[Values.selected_team.id].visible = true
+	map.characters[Values.selected_team.id].range_mesh.visible = false
+	map.n_tiles.set_navigation_mesh(map.navigations[Values.selected_team.id])
+	map.n_tiles.bake_navigation_mesh()
+
+func _on_attack_pressed():
+	Values.mode = Values.ACTION_MODE_ATTACK
+	map.characters[Values.selected_team.id].range_mesh.visible = true
+
+func _on_loot_pressed():
+	Values.mode = Values.ACTION_MODE_LOOT
+	map.characters[Values.selected_team.id].range_mesh.visible = false
+
+func _on_wait_pressed():
+	Values.mode = Values.ACTION_MODE_WAIT
+	map.characters[Values.selected_team.id].range_mesh.visible = false
+
+func _on_speak_pressed():
+	map.characters[Values.selected_team.id].range_mesh.visible = false
+	pass
+
+func _on_inventory_pressed():
+	pass # Replace with function body.
+
+func _on_sleep_pressed():
+	map.characters[Values.selected_team.id].range_mesh.visible = false
+	pass # Replace with function body.
+
+func _on_breakpoint_pressed():
+	pass # Replace with function body.

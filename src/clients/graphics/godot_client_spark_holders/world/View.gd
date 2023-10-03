@@ -17,7 +17,7 @@ var pause_state = false
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 
-func update_mouse_coordinates(delta):
+func update_mouse_coordinates():
 	var mouse_coords = camera.get_viewport().get_mouse_position()
 	var from = camera.project_ray_origin(mouse_coords)
 	var to = from + camera.project_ray_normal(mouse_coords) * 1000.0
@@ -40,6 +40,7 @@ func update_mouse_coordinates(delta):
 					if character_id == selection.id:
 						Values.selected_team = selection
 						owned = true
+						map.phantoms[Values.selected_team.id].visible = true
 						break
 				if !owned:
 					Values.selected_target = selection
@@ -47,7 +48,9 @@ func update_mouse_coordinates(delta):
 				Values.selected_tile = null
 			if "phantom" in selection:
 				Values.selected_team = map.characters[selection.id]
+				map.clear_actions(Values.selected_team.id)
 				Values.mode = Values.ACTION_MODE_MOVE
+				map.phantoms[Values.selected_team.id].collision_layer = 0x0010
 			if "projectile" in selection:
 				Values.selected_projectile = selection
 				Values.selected_target = null
@@ -60,24 +63,26 @@ func update_mouse_coordinates(delta):
 			var _selection = result["collider"]
 			if Values.mode == Values.ACTION_MODE_MOVE:
 				Values.mode = Values.ACTION_MODE_NONE
+				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
 				var is_first = true
+				map.clear_actions(Values.selected_team.id)
 				for vec in map.characters[Values.selected_team.id].nav.get_current_navigation_path():
 					if is_first:
 						is_first = false
 					else:
 						vec = map.round_vec(vec)
-						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.offset.y))
+						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.characters_data[Values.selected_team.id]["z"]))
 	if not pause_state:
 		var ap_cost = ""
 		if(Values.selected_team and Values.mode == Values.ACTION_MOVE and not Values.updating_state):
-			ap_cost = map.update_phantom(Values.selected_team.id, delta)
+			ap_cost = map.update_phantom(Values.selected_team.id)
 		hud.update_mouse_box(mouse_coords, ap_cost)
 
 func _process(_delta):
 	if(not pause_state):
 		# Mouse movement.
 		_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
-		camera.rotation_degrees = Vector3(min(-30, max(-90, camera.rotation_degrees.x + _mouse_motion.y * -0.001)), camera.rotation_degrees.y, camera.rotation_degrees.z)
+		camera.rotation_degrees = Vector3(clamp(camera.rotation_degrees.x + _mouse_motion.y * -0.001, -90, 0), camera.rotation_degrees.y, camera.rotation_degrees.z)
 		if Values.selection_changed:
 			Values.selection_changed = false
 			if Values.selected_projectile:
@@ -87,12 +92,13 @@ func _process(_delta):
 			if Values.selected_team:
 				hud.display_team(Values.selected_team, map.characters_data[Values.selected_team.id])
 			if Values.selected_tile:
-				$"../HUD/Tile/Picture".texture = map.tiles_img[Values.selected_tile.tile]
-				hud.display_tile(Values.selected_tile, map.tiles_data[Values.selected_tile.tile])
+				if map.tiles_img.has(Values.selected_tile.tile):
+					$"../HUD/Tile/Picture".texture = map.tiles_img[Values.selected_tile.tile]
+					hud.display_tile(Values.selected_tile, map.tiles_data[Values.selected_tile.tile])
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if(not pause_state):
-		update_mouse_coordinates(delta)
+		update_mouse_coordinates()
 		camera_attributes.dof_blur_far_enabled = true
 		camera_attributes.dof_blur_far_distance = 100 * 1.5
 		camera_attributes.dof_blur_far_transition = 100 * 0.125
@@ -157,4 +163,4 @@ func _unhandled_input(event):
 		if event.is_action_pressed("send_actions"):
 			Values.link.send_actions(Values.actions)
 			map.init_actions()
-			Values.mode = Values.ACTION_MODE_MOVE
+			Values.mode = Values.ACTION_MODE_NONE

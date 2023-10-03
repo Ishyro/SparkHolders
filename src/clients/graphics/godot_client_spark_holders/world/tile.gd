@@ -11,7 +11,7 @@ func _ready():
 func _process(_delta):
 	pass
 
-func create(coord: Vector3, tile_name: String, solid: bool, mist: bool, material: StandardMaterial3D):
+func create(coord: Vector3, tile_name: String, solid: bool, unwalkable, mist: bool, material: Material):
 	tile = tile_name
 	$Mesh.mesh = BoxMesh.new()
 	$Shape.shape = BoxShape3D.new()
@@ -19,10 +19,18 @@ func create(coord: Vector3, tile_name: String, solid: bool, mist: bool, material
 		$Mesh.mesh.set_size(Vector3(1, 3, 1))
 		$Shape.shape.set_size(Vector3(1, 3, 1))
 		transform.origin = Vector3(coord.x + 0.5, coord.y + 1.5, coord.z + 0.5)
+	elif unwalkable:
+		$Mesh.mesh = BoxMesh.new()
+		$Mesh.mesh.set_size(Vector3(1, 0.8, 1))
+		$Shape.shape.set_size(Vector3.ONE)
+		transform.origin = Vector3(coord.x + 0.5, coord.y + 0.4, coord.z + 0.5)
+		collision_layer = 0x0101
 	else:
 		$Mesh.mesh.set_size(Vector3.ONE)
 		$Shape.shape.set_size(Vector3.ONE)
 		transform.origin = Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)
 	if(mist):
 		add_child(base_mist.instantiate())
+		$Shape.shape.set_size(Vector3(1, 3, 1))
+		collision_layer = 0x0111
 	$Mesh.set_surface_override_material(0, material)

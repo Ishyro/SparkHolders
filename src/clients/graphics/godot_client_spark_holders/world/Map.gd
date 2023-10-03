@@ -7,10 +7,11 @@ var owned_characters = []
 var phantoms = {}
 var phantom_lines = {}
 
+var navigations = {}
 var grid = []
 var board = []
-var tiles = []
-var lights = []
+var tiles = {}
+var lights = {}
 var characters = {}
 var projectiles = {}
 var furnitures = {}
@@ -47,19 +48,16 @@ var base_projectile = preload("res://models/projectile.tscn")
 var base_tile = preload("res://world/tile.tscn")
 
 var plan
-var offset = Vector3.ZERO
-var size = Vector3.ZERO
-var mid_size = Vector3.ZERO
 
 @onready var n_view = $"../View"
-@onready var n_grid = $Grid
 @onready var n_tiles = $Tiles
+@onready var n_grid = $Grid
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
 
-@onready var navigationserver_region_rid: RID = n_tiles.get_region_rid()
+#@onready var navigationserver_region_rid: RID = n_tiles.get_region_rid()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -96,17 +94,11 @@ func _ready():
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
 		add_projectile(projectile_id, projectiles_data[projectile_id])
-	offset = Values.link.getOffsets(owned_characters[0])
-	size = Values.link.getSizes(owned_characters[0])
-	mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
+	var offset = Values.link.getOffsets(owned_characters[0])
+	var size = Values.link.getSizes(owned_characters[0])
+	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	plan = "Aytlanta"
 	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
-	for i in size.x:
-		tiles.append([])
-		lights.append([])
-		for j in size.z:
-			tiles[i].append([])
-			lights[i].append([])
 	board.append([])
 	for tile in Values.link.getAvaillableTiles():
 		tiles_data[tile] = Values.link.getDataFromTile(tile)
@@ -118,17 +110,31 @@ func _ready():
 			var img = materials[tile].albedo_texture.get_image()
 			tiles_img[tile] = ImageTexture.create_from_image(img)
 	create_grid()
-	create_board()
-	create_tiles(owned_characters[0])
+	#create_board()
 	for character_id in owned_characters:
+		create_tiles(character_id)
+	var map_rid = get_world_3d().get_navigation_map()
+	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
+	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
+	for character_id in owned_characters:
+		# Phantom
 		phantoms[character_id] = base_phantom.instantiate()
 		phantoms[character_id].scale_object_local(Vector3(characters_data[character_id]["size"], characters_data[character_id]["size"], characters_data[character_id]["size"]))
 		phantoms[character_id].id = character_id
 		phantoms[character_id].transform.origin = characters[character_id].transform.origin
 		n_characters.add_child(phantoms[character_id])
-	var map_rid = get_world_3d().get_navigation_map()
-	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
-	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
+		# Navigation3D
+		navigations[character_id] = NavigationMesh.new()
+		navigations[character_id].sample_partition_type = 2
+		navigations[character_id].geometry_parsed_geometry_type = 1
+		navigations[character_id].geometry_collision_mask = 0x31
+		navigations[character_id].cell_size = 0.05
+		navigations[character_id].cell_height = 0.05
+		navigations[character_id].agent_height = 0.0
+		navigations[character_id].agent_max_climb = 0.0
+		navigations[character_id].agent_max_slope = 0.02
+		navigations[character_id].agent_radius = characters_data[character_id]["size"]
+	n_tiles.set_navigation_mesh(navigations[owned_characters[0]])
 	n_tiles.bake_navigation_mesh()
 	thread.start(state_updater, Thread.PRIORITY_LOW)
 
@@ -140,9 +146,6 @@ func state_updater():
 		mutex.lock()
 		running = Values.link.getState()
 		if running:
-			offset = Values.link.getOffsets(owned_characters[0])
-			size = Values.link.getSizes(owned_characters[0])
-			mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 			plan = "Aytlanta"
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():
@@ -152,6 +155,9 @@ func state_updater():
 			for character_id in next_characters_data.keys():
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
+			for character_id in owned_characters:
+				if floor(characters_data[character_id]["x"]) != floor(next_characters_data[character_id]["x"]) || floor(characters_data[character_id]["y"]) != floor(next_characters_data[character_id]["y"]):
+					create_tiles(character_id)
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
@@ -176,9 +182,13 @@ func _physics_process(delta):
 			for character_id in characters_data.keys():
 				var dest = Vector3(characters_data[character_id]["y"], characters[character_id].transform.origin.y, characters_data[character_id]["x"])
 				var movement = (dest - characters[character_id].transform.origin).normalized() * 10
+				characters[character_id].collision_layer = 0x0000
+				characters[character_id].collision_mask = 0x0000
 				characters[character_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+				characters[character_id].collision_layer = 0x0002
+				characters[character_id].collision_mask = 0x0013
 				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)	
-				if characters[character_id].transform.origin.distance_to(dest) < 0.1:
+				if characters[character_id].transform.origin.distance_to(dest) < 1:#0.05:
 					characters[character_id].transform.origin = dest
 					if phantoms.has(character_id):
 						if phantom_lines.has(character_id):
@@ -200,6 +210,9 @@ func _physics_process(delta):
 		mutex.unlock()
 	
 func create_grid():
+	var offset = Values.link.getOffsets(owned_characters[0])
+	var size = Values.link.getSizes(owned_characters[0])
+	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
 	for x in range(0, size.x + 1):
 		var line = MeshInstance3D.new()
@@ -217,73 +230,6 @@ func create_grid():
 		line.transform.origin = pos + Vector3(0, offset.y + 1.001, z - mid_size.z)
 		grid.append(line)
 		n_grid.add_child(line)
-
-func create_board():
-	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
-	# 1
-	var rod = StaticBody3D.new()
-	rod.collision_layer = 0x0010
-	rod.collision_mask = 0x001f
-	var rod_mesh = MeshInstance3D.new()
-	var rod_shape = CollisionShape3D.new()
-	rod_mesh.mesh = BoxMesh.new()
-	rod_shape.shape = BoxShape3D.new()
-	rod_mesh.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
-	rod_shape.shape.set_size(Vector3(0.1, 2, size.z + 0.1))
-	rod_mesh.set_surface_override_material(0, board_material)
-	rod.add_child(rod_mesh)
-	rod.add_child(rod_shape)
-	rod.transform.origin = pos + Vector3(-0.05 - mid_size.x, offset.y + 0.5, -0.05)
-	board.append(rod)
-	add_child(rod)
-	# 2
-	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0010
-	rod.collision_mask = 0x001f
-	rod_mesh = MeshInstance3D.new()
-	rod_shape = CollisionShape3D.new()
-	rod_mesh.mesh = BoxMesh.new()
-	rod_shape.shape = BoxShape3D.new()
-	rod_mesh.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
-	rod_shape.shape.set_size(Vector3(size.x + 0.1, 2, 0.1))
-	rod_mesh.set_surface_override_material(0, board_material)
-	rod.add_child(rod_mesh)
-	rod.add_child(rod_shape)
-	rod.transform.origin = pos + Vector3(0.05, offset.y + 0.5, -0.05 - mid_size.z)
-	board.append(rod)
-	add_child(rod)
-	# 3
-	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0010
-	rod.collision_mask = 0x001f
-	rod_mesh = MeshInstance3D.new()
-	rod_shape = CollisionShape3D.new()
-	rod_mesh.mesh = BoxMesh.new()
-	rod_shape.shape = BoxShape3D.new()
-	rod_mesh.mesh.set_size(Vector3(0.1, 1, size.z + 0.1))
-	rod_shape.shape.set_size(Vector3(0.1, 2, size.z + 0.1))
-	rod_mesh.set_surface_override_material(0, board_material)
-	rod.add_child(rod_mesh)
-	rod.add_child(rod_shape)
-	rod.transform.origin = pos + Vector3(0.05 + mid_size.x, offset.y + 0.5, 0.05)
-	board.append(rod)
-	add_child(rod)
-	# 4
-	rod = StaticBody3D.new()
-	rod.collision_layer = 0x0010
-	rod.collision_mask = 0x001f
-	rod_mesh = MeshInstance3D.new()
-	rod_shape = CollisionShape3D.new()
-	rod_mesh.mesh = BoxMesh.new()
-	rod_shape.shape = BoxShape3D.new()
-	rod_mesh.mesh.set_size(Vector3(size.x + 0.1, 1, 0.1))
-	rod_shape.shape.set_size(Vector3(size.x + 0.1, 2, 0.1))
-	rod_mesh.set_surface_override_material(0, board_material)
-	rod.add_child(rod_mesh)
-	rod.add_child(rod_shape)
-	rod.transform.origin = pos + Vector3(-0.05, offset.y + 0.5, 0.05 + mid_size.z)
-	board.append(rod)
-	add_child(rod)
 	
 func get_light(light: int):
 	match light:
@@ -307,8 +253,15 @@ func get_light(light: int):
 func create_tiles(character_id: int):
 	var current_tiles = Values.link.getTiles(character_id)
 	var current_lights = Values.link.getLights(character_id)
+	var offset = Values.link.getOffsets(character_id)
+	var size = Values.link.getSizes(character_id)
 	for x in range(0, size.x):
 		for z in range(0, size.z):
+			var global_x = x + offset.x
+			var global_z = z + offset.z
+			var id = str(global_x) + " " + str(offset.y) + " " + str(global_z)
+			if lights.has(id):
+				n_lights.remove_child(lights[id])
 			var light = MeshInstance3D.new()
 			light.mesh = BoxMesh.new()
 			light.set_surface_override_material(0, get_light(current_lights[x][z]))
@@ -318,12 +271,15 @@ func create_tiles(character_id: int):
 			else:
 				light.mesh.set_size(Vector3.ONE)
 				light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 0.5, offset.z + z + 0.5)
-			lights[x][z] = light
+			lights[id] = light
 			n_lights.add_child(light)
-			var tile = base_tile.instantiate()
-			tile.create(Vector3(offset.x + x, offset.y, offset.z +z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
-			tiles[x][z] = tile
-			n_tiles.add_child(tile)
+			if !tiles.has(id) || tiles[id].tile == "TXT_MIST":
+				if tiles.has(id):
+					n_tiles.remove_child(tiles[id])
+				var tile = base_tile.instantiate()
+				tile.create(Vector3(global_x, offset.y, global_z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], tiles_data[current_tiles[x][z]]["untraversable"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
+				tiles[id] = tile
+				n_tiles.add_child(tile)
 
 func get_color(character_data: Dictionary):
 	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):
@@ -341,6 +297,7 @@ func add_character(character_id: int, character_data: Dictionary):
 	characters[character_id] = character
 	character.id = character_id
 	character.character = character_data["name"]
+	character.set_attack_range(1 / character_data["size"])
 	n_characters.add_child(character)
 
 func add_projectile(projectile_id: int, projectile_data: Dictionary):
@@ -353,10 +310,9 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
 
-func update_phantom(character_id: int, delta):
-	phantoms[character_id].visible = true
-	var movement = (Values.coord - phantoms[character_id].transform.origin) * 100
-	phantoms[character_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+func update_phantom(character_id: int):
+	var offset = Values.link.getOffsets(character_id)
+	phantoms[character_id].transform.origin = Vector3(Values.coord.x, offset.y + 1, Values.coord.z) 
 	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
 	characters[character_id].nav.get_next_path_position()
 	if phantom_lines.has(character_id):
@@ -390,7 +346,6 @@ func round_float(number: float):
 
 func round_vec(vec: Vector3):
 	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))
-	
 
 func init_actions():
 	Values.actions = {}
@@ -408,7 +363,15 @@ func init_actions():
 		Values.actions["overcharge_power"][id] = []
 		Values.actions["overcharge_duration"][id] = []
 		Values.actions["overcharge_range"][id] = []
-	
+
+func clear_actions(id):
+	Values.actions["types"][id] = []
+	Values.actions["arg1"][id] = []
+	Values.actions["arg2"][id] = []
+	Values.actions["overcharge_power"][id] = []
+	Values.actions["overcharge_duration"][id] = []
+	Values.actions["overcharge_range"][id] = []
+
 func add_base_action(id, type):
 	Values.actions["types"][id].push_back(type)
 	Values.actions["arg1"][id].push_back(0)

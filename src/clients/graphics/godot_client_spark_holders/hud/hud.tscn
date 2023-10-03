@@ -1284,6 +1284,68 @@ z_index = -1
 layout_mode = 2
 texture = ExtResource("7_p1t0r")
 
+[node name="ActionsSelection" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 412.0
+offset_top = 950.0
+offset_right = 1506.0
+offset_bottom = 982.0
+mouse_filter = 2
+
+[node name="Selection" type="HBoxContainer" parent="ActionsSelection"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Move" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Move"
+
+[node name="Attack" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Attack"
+
+[node name="Loot" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Loot"
+
+[node name="Wait" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Wait"
+
+[node name="Speak" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Speak"
+
+[node name="Inventory" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Inventory"
+
+[node name="Sleep" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+toggle_mode = true
+text = "Sleep"
+
+[node name="Breakpoint" type="Button" parent="ActionsSelection/Selection"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Breakpoint"
+
 [node name="Target" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -1720,8 +1782,6 @@ layout_mode = 0
 offset_right = 1236.0
 offset_bottom = 180.0
 mouse_filter = 2
-text = "Test
-"
 
 [node name="Answer" type="RichTextLabel" parent="Dialogue"]
 layout_mode = 0
@@ -1729,7 +1789,6 @@ offset_top = 180.0
 offset_right = 1236.0
 offset_bottom = 270.0
 mouse_filter = 2
-text = "Test"
 
 [node name="MouseBox" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -1752,3 +1811,11 @@ vertical_alignment = 1
 [connection signal="toggled" from="MapOptions/Options/Characters" to="." method="_on_characters_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Projectiles" to="." method="_on_projectiles_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Furnitures" to="." method="_on_furnitures_toggled"]
+[connection signal="pressed" from="ActionsSelection/Selection/Move" to="." method="_on_move_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Attack" to="." method="_on_attack_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Loot" to="." method="_on_loot_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Wait" to="." method="_on_wait_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Speak" to="." method="_on_speak_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Inventory" to="." method="_on_inventory_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Sleep" to="." method="_on_sleep_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Breakpoint" to="." method="_on_breakpoint_pressed"]

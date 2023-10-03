@@ -184,3 +184,4 @@ send_actions={
 3d_physics/layer_3="Projectiles"
 3d_physics/layer_4="Phantoms"
 3d_physics/layer_5="Borders"
+3d_physics/layer_6="Unwalkable"

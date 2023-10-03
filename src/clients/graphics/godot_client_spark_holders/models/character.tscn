@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dhv0dj6a57no3"]
+[gd_scene load_steps=13 format=3 uid="uid://dhv0dj6a57no3"]
 
 [ext_resource type="Script" path="res://models/character.gd" id="1_au3f8"]
 [ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://world/board_material.tres" id="2_k4gql"]
@@ -32,6 +32,16 @@ text = "^"
 [sub_resource type="TorusMesh" id="TorusMesh_js08s"]
 inner_radius = 1.5
 outer_radius = 1.75
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v7u03"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.501961)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_84t63"]
+material = SubResource("StandardMaterial3D_v7u03")
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.001
 
 [node name="Character" type="CharacterBody3D"]
 collision_layer = 2
@@ -69,3 +79,9 @@ mesh = SubResource("TorusMesh_js08s")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 radius = 0.3
+
+[node name="AttackRange" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+visible = false
+transparency = 0.5
+mesh = SubResource("CylinderMesh_84t63")

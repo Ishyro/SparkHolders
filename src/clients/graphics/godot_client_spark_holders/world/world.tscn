@@ -1,37 +1,55 @@
-[gd_scene load_steps=11 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
 
 [ext_resource type="Script" path="res://world/Plans.gd" id="1_vw6jy"]
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
 [ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://hud/hud.tscn" id="5_feur5"]
+[ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_bmsgv"]
-sample_partition_type = 2
-geometry_parsed_geometry_type = 1
-geometry_collision_mask = 4294901777
-cell_size = 0.05
-cell_height = 0.05
-agent_height = 0.0
-agent_radius = 0.3
-agent_max_climb = 0.0
-agent_max_slope = 0.02
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pulsa"]
+noise_type = 3
+frequency = 0.001
+fractal_type = 2
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0iwyg"]
-sky_top_color = Color(0.341176, 0.439216, 0.67451, 1)
-sky_horizon_color = Color(0.341176, 0.439216, 0.67451, 1)
-ground_bottom_color = Color(0.341176, 0.439216, 0.67451, 1)
-ground_horizon_color = Color(0.341176, 0.439216, 0.67451, 1)
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_m25s7"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_pulsa")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_egmw4"]
+noise_type = 3
+frequency = 0.001
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tbsnu"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_egmw4")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_emnl3"]
+shader = ExtResource("6_sgibh")
+shader_parameter/skyColor = Color(0.25098, 0.501961, 0.752941, 1)
+shader_parameter/horizonColor = Color(0.12549, 0.376471, 0.752941, 1)
+shader_parameter/cloud_direction = Vector2(0.002, 0)
+shader_parameter/cloud_direction2 = Vector2(0, 0.001)
+shader_parameter/cloud_scale = Vector2(0.1, 0.1)
+shader_parameter/cloud_distance = 100.0
+shader_parameter/cloud_texture = SubResource("NoiseTexture2D_m25s7")
+shader_parameter/cloud_texture2 = SubResource("NoiseTexture2D_tbsnu")
 
 [sub_resource type="Sky" id="Sky_face0"]
-sky_material = SubResource("ProceduralSkyMaterial_0iwyg")
+sky_material = SubResource("ShaderMaterial_emnl3")
 process_mode = 3
 
 [sub_resource type="Environment" id="Environment_1nh6o"]
 background_mode = 2
 sky = SubResource("Sky_face0")
+ambient_light_source = 3
 volumetric_fog_enabled = true
 volumetric_fog_sky_affect = 0.0
 
@@ -56,7 +74,6 @@ fov = 90.0
 script = ExtResource("2_kskax")
 
 [node name="Tiles" type="NavigationRegion3D" parent="Map"]
-navigation_mesh = SubResource("NavigationMesh_bmsgv")
 
 [node name="Grid" type="Node3D" parent="Map"]
 visible = false
@@ -74,10 +91,10 @@ visible = false
 visible = false
 script = ExtResource("1_vw6jy")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1nh6o")
+
+[node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 50, 0)
 shadow_enabled = true
 shadow_bias = 0.04
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1nh6o")
