@@ -56,6 +56,16 @@ float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   return MapUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
+bool GodotLink::needTilesUpdate(int64_t character_id) {
+  bool result = true;
+  if(mist_nbs.count(character_id) > 0) {
+    result = mist_nbs.at(character_id) > state->maps.at((long) character_id)->getMistNb();
+    mist_nbs.erase(character_id);
+  }
+  mist_nbs.insert(std::make_pair(character_id, state->maps.at((long) character_id)->getMistNb()));
+  return result;
+}
+
 Vector3 GodotLink::getSizes(int64_t character_id) {
   Map * map = state->maps.at((long) character_id);
   return Vector3(map->sizeY, map->sizeZ, map->sizeX);
@@ -135,6 +145,18 @@ String GodotLink::getRelation(String team1, String team2) {
     case TEAM_ENEMY:
       return "ENEMY";
   }
+}
+
+Array GodotLink::getNearMaps() {
+  Array result = Array();
+  for(auto pair : link->getState()->maps) {
+    result.push_back(pair.second->name.c_str());
+  }
+  return result;
+}
+
+String GodotLink::getMapFromCoords(Vector3 coords) {
+  return link->getAdventure()->getWorld()->getMap(coords.z, coords.x, coords.y)->name.c_str();
 }
 
 Dictionary GodotLink::getDataFromTile(String tile_name) {
@@ -320,6 +342,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "oriX", "oriY", "destX", "destY"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
+  ClassDB::bind_method(D_METHOD("needTilesUpdate", "id"), &GodotLink::needTilesUpdate);
   ClassDB::bind_method(D_METHOD("getSizes", "id"), &GodotLink::getSizes);
   ClassDB::bind_method(D_METHOD("getOffsets", "id"), &GodotLink::getOffsets);
   ClassDB::bind_method(D_METHOD("getAvaillableTiles"), &GodotLink::getAvaillableTiles);
@@ -329,6 +352,8 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
+  ClassDB::bind_method(D_METHOD("getNearMaps"), &GodotLink::getNearMaps);
+  ClassDB::bind_method(D_METHOD("getMapFromCoords", "coords"), &GodotLink::getMapFromCoords);
   ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
   ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);

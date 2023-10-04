@@ -164,7 +164,6 @@ StateDisplay * Link::getState() {
   return nullptr;
 }
 
-
 Translator * Link::getTranslator() { return t; }
 
 void Link::changeLanguage(std::string language) {

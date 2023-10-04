@@ -2,6 +2,7 @@ extends StaticBody3D
 
 var base_mist = preload("res://models/mist.tscn")
 var tile
+var map
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,6 +14,7 @@ func _process(_delta):
 
 func create(coord: Vector3, tile_name: String, solid: bool, unwalkable, mist: bool, material: Material):
 	tile = tile_name
+	map = Values.link.getMapFromCoords(coord)
 	$Mesh.mesh = BoxMesh.new()
 	$Shape.shape = BoxShape3D.new()
 	if solid:
@@ -24,7 +26,7 @@ func create(coord: Vector3, tile_name: String, solid: bool, unwalkable, mist: bo
 		$Mesh.mesh.set_size(Vector3(1, 0.8, 1))
 		$Shape.shape.set_size(Vector3.ONE)
 		transform.origin = Vector3(coord.x + 0.5, coord.y + 0.4, coord.z + 0.5)
-		collision_layer = 0x0101
+		collision_layer = 0x0021
 	else:
 		$Mesh.mesh.set_size(Vector3.ONE)
 		$Shape.shape.set_size(Vector3.ONE)
@@ -32,5 +34,5 @@ func create(coord: Vector3, tile_name: String, solid: bool, unwalkable, mist: bo
 	if(mist):
 		add_child(base_mist.instantiate())
 		$Shape.shape.set_size(Vector3(1, 3, 1))
-		collision_layer = 0x0111
+		collision_layer = 0x0031
 	$Mesh.set_surface_override_material(0, material)

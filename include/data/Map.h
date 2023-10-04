@@ -137,7 +137,7 @@ class Map {
           }
         }
       }
-      canSee(player, (Tile *) database->getTile("TXT_MIST"), offsetX, offsetY, offsetZ, sizeX, sizeY, tiles, lights);
+      mist_nb = canSee(player, (Tile *) database->getTile("TXT_MIST"), offsetX, offsetY, offsetZ, sizeX, sizeY, tiles, lights);
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
@@ -226,6 +226,7 @@ class Map {
     void propagateLight(int x, int y);
     void applyDayLight(int light);
     bool canSee(Character * watcher, Character * target);
+    int getMistNb();
     void setTile(int x, int y, Tile * tile);
     void setTile(float x, float y, Tile * tile);
     void crumble(int x, int y);
@@ -248,7 +249,7 @@ class Map {
     std::string tile_to_string(int x, int y);
     static std::string target_to_string(Target * target);
     static Target * target_from_string(std::string to_read);
-    static void canSee(
+    static int canSee(
       Character * watcher,
       Tile * mist,
       int offsetX,
@@ -263,6 +264,7 @@ class Map {
     bool operator != (const Map& m) const { return !operator==(m); }
   private:
     int light;
+    int mist_nb = 0;
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;
     std::list<Loot *> loots;

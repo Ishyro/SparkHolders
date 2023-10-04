@@ -11,6 +11,7 @@ var navigations = {}
 var grid = []
 var board = []
 var tiles = {}
+var seen_tiles = {}
 var lights = {}
 var characters = {}
 var projectiles = {}
@@ -112,7 +113,7 @@ func _ready():
 	create_grid()
 	#create_board()
 	for character_id in owned_characters:
-		create_tiles(character_id)
+		init_tiles(character_id)
 	var map_rid = get_world_3d().get_navigation_map()
 	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
 	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
@@ -156,8 +157,10 @@ func state_updater():
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 			for character_id in owned_characters:
-				if floor(characters_data[character_id]["x"]) != floor(next_characters_data[character_id]["x"]) || floor(characters_data[character_id]["y"]) != floor(next_characters_data[character_id]["y"]):
-					create_tiles(character_id)
+				if Values.link.needTilesUpdate(character_id):
+					init_tiles(character_id)
+				else:
+					create_tiles(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
@@ -250,36 +253,91 @@ func get_light(light: int):
 		14: return light_e
 		15: return light_f
 
-func create_tiles(character_id: int):
+func init_tiles(character_id: int):
 	var current_tiles = Values.link.getTiles(character_id)
 	var current_lights = Values.link.getLights(character_id)
 	var offset = Values.link.getOffsets(character_id)
 	var size = Values.link.getSizes(character_id)
 	for x in range(0, size.x):
 		for z in range(0, size.z):
-			var global_x = x + offset.x
-			var global_z = z + offset.z
-			var id = str(global_x) + " " + str(offset.y) + " " + str(global_z)
-			if lights.has(id):
-				n_lights.remove_child(lights[id])
-			var light = MeshInstance3D.new()
-			light.mesh = BoxMesh.new()
-			light.set_surface_override_material(0, get_light(current_lights[x][z]))
-			if tiles_data[current_tiles[x][z]]["solid"]:
-				light.mesh.set_size(Vector3(1, 3, 1))
-				light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 1.5, offset.z + z + 0.5)
-			else:
-				light.mesh.set_size(Vector3.ONE)
-				light.transform.origin = Vector3(offset.x + x + 0.5, offset.y + 0.5, offset.z + z + 0.5)
-			lights[id] = light
-			n_lights.add_child(light)
-			if !tiles.has(id) || tiles[id].tile == "TXT_MIST":
-				if tiles.has(id):
-					n_tiles.remove_child(tiles[id])
-				var tile = base_tile.instantiate()
-				tile.create(Vector3(global_x, offset.y, global_z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], tiles_data[current_tiles[x][z]]["untraversable"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
-				tiles[id] = tile
-				n_tiles.add_child(tile)
+			add_tile(offset, x, z, current_tiles, current_lights)
+				
+func create_tiles(character_id: int, x_direction: int, z_direction: int):
+	if x_direction == 0 && z_direction == 0:
+		return
+	var current_tiles = Values.link.getTiles(character_id)
+	var current_lights = Values.link.getLights(character_id)
+	var offset = Values.link.getOffsets(character_id)
+	var size = Values.link.getSizes(character_id)
+	if x_direction > 0:
+		for key in tiles.keys():
+			if key.x <= characters_data[character_id]["y"] - size.x * 2.5:
+				var tile = tiles[key]
+				if !seen_tiles.has(tile.map):
+					seen_tiles[tile.map] = {}
+				seen_tiles[tile.map][key] = tile
+				n_tiles.remove_child(tiles[key])
+				tiles.erase(key)
+		for z in range(0, size.z):
+			add_tile(offset, size.x - 1, z, current_tiles, current_lights)
+	if x_direction < 0:
+		for key in tiles.keys():
+			if key.x >= characters_data[character_id]["y"] + size.x * 2.5:
+				var tile = tiles[key]
+				if !seen_tiles.has(tile.map):
+					seen_tiles[tile.map] = {}
+				seen_tiles[tile.map][key] = tile
+				n_tiles.remove_child(tiles[key])
+				tiles.erase(key)
+		for z in range(0, size.z):
+			add_tile(offset, 0, z, current_tiles, current_lights)
+	if z_direction > 0:
+		for key in tiles.keys():
+			if key.z <= characters_data[character_id]["x"] - size.z * 2.5:
+				var tile = tiles[key]
+				if !seen_tiles.has(tile.map):
+					seen_tiles[tile.map] = {}
+				seen_tiles[tile.map][key] = tile
+				n_tiles.remove_child(tiles[key])
+				tiles.erase(key)
+		for x in range(0, size.x):
+			add_tile(offset, x, size.z - 1, current_tiles, current_lights)
+	if z_direction < 0:
+		for key in tiles.keys():
+			if key.z >= characters_data[character_id]["x"] + size.z * 2.5:
+				var tile = tiles[key]
+				if !seen_tiles.has(tile.map):
+					seen_tiles[tile.map] = {}
+				seen_tiles[tile.map][key] = tile
+				n_tiles.remove_child(tiles[key])
+				tiles.erase(key)
+		for x in range(0, size.x):
+			add_tile(offset, x, 0, current_tiles, current_lights)
+
+func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lights: Array,):
+	if current_tiles[x][z] == "TXT_MIST" || current_tiles[x][z] == "TXT_VOID":
+		return
+	var global_x = x + offset.x
+	var global_z = z + offset.z
+	var id = Vector3(global_x, offset.y, global_z)
+	if lights.has(id):
+		n_lights.remove_child(lights[id])
+	var light = MeshInstance3D.new()
+	light.mesh = BoxMesh.new()
+	light.set_surface_override_material(0, get_light(current_lights[x][z]))
+	if tiles_data[current_tiles[x][z]]["solid"]:
+		light.mesh.set_size(Vector3(1, 3, 1))
+		light.transform.origin = Vector3(global_x + 0.5, offset.y + 1.5, global_z + 0.5)
+	else:
+		light.mesh.set_size(Vector3.ONE)
+		light.transform.origin = Vector3(global_x + 0.5, offset.y + 0.5, global_z + 0.5)
+	lights[id] = light
+	n_lights.add_child(light)
+	if !tiles.has(id):
+		var tile = base_tile.instantiate()
+		tile.create(Vector3(global_x, offset.y, global_z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], tiles_data[current_tiles[x][z]]["untraversable"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
+		tiles[id] = tile
+		n_tiles.add_child(tile)
 
 func get_color(character_data: Dictionary):
 	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):

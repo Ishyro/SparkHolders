@@ -33,6 +33,7 @@ public:
   bool getState();
   float getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY);
   float getOrientationToTarget(Vector2 a, Vector2 b);
+  bool needTilesUpdate(int64_t character_id);
   Vector3 getSizes(int64_t character_id);
   Vector3 getOffsets(int64_t character_id);
   Array getAvaillableTiles();
@@ -42,6 +43,8 @@ public:
   Dictionary getCharacters();
   Dictionary getProjectiles();
   String getRelation(String team1, String team2);
+  Array getNearMaps();
+  String getMapFromCoords(Vector3 coords);
   Dictionary getDataFromTile(String tile_name);
   Dictionary getDataFromCharacter(long id);
   Dictionary getDataFromProjectile(long id);
@@ -55,6 +58,7 @@ private:
   Link * link;
   Translator * translator;
   StateDisplay * state;
+  std::map<long, int> mist_nbs = std::map<long, int>();
   #ifdef _WIN32_WINNT
     HANDLE thread;
   #else

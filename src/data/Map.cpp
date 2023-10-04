@@ -139,7 +139,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   return true;
 }
 
-void Map::canSee(
+int Map::canSee(
   Character * watcher,
   Tile * mist,
   int offsetX,
@@ -150,6 +150,7 @@ void Map::canSee(
   std::vector<std::vector<Tile *>>& tiles,
   std::vector<std::vector<int>>& lights
 ) {
+  int mist_nb = 0;
   std::vector<std::vector<Tile *>> old_tiles = tiles;
   int range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
   for(int y = 0; y <= range; y++) {
@@ -165,12 +166,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -182,12 +185,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -199,12 +204,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -216,12 +223,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -233,12 +242,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -250,12 +261,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -267,12 +280,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
     unseen = false;
@@ -284,12 +299,14 @@ void Map::canSee(
       }
       if(unseen) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
       if(tiles[j][i]->opaque) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
         tiles[j][i] = mist;
+        mist_nb++;
       }
     }
   }
@@ -298,6 +315,7 @@ void Map::canSee(
     for(int x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
       if(tiles[y][x]->name == "TXT_MIST" && old_tiles[y][x]->opaque && !(tiles[y-1][x]->opaque && tiles[y][x-1]->opaque)) {
         tiles[y][x] = old_tiles[y][x];
+        mist_nb--;
       }
     }
   }
@@ -305,6 +323,7 @@ void Map::canSee(
     for(int x = watcher->getX() - offsetX - 1; x >= 0; x--) {
       if(tiles[y][x]->name == "TXT_MIST" && old_tiles[y][x]->opaque && !(tiles[y-1][x]->opaque && tiles[y][x+1]->opaque)) {
         tiles[y][x] = old_tiles[y][x];
+        mist_nb--;
       }
     }
   }
@@ -312,6 +331,7 @@ void Map::canSee(
     for(int x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
       if(tiles[y][x]->name == "TXT_MIST" && old_tiles[y][x]->opaque && !(tiles[y+1][x]->opaque && tiles[y][x-1]->opaque)) {
         tiles[y][x] = old_tiles[y][x];
+        mist_nb--;
       }
     }
   }
@@ -319,10 +339,14 @@ void Map::canSee(
     for(int x = watcher->getX() - offsetX - 1; x >= 0; x--) {
       if(tiles[y][x]->name == "TXT_MIST" && old_tiles[y][x]->opaque && !(tiles[y+1][x]->opaque && tiles[y][x+1]->opaque)) {
         tiles[y][x] = old_tiles[y][x];
+        mist_nb--;
       }
     }
   }
+  return mist_nb;
 }
+
+int Map::getMistNb() { return mist_nb; }
 
 void Map::setTile(int x, int y, Tile * tile) { tiles[y - offsetY][x - offsetX] = tile; }
 void Map::setTile(float x, float y, Tile * tile) { tiles[(int) std::floor(y) - offsetY][(int) std::floor(x) - offsetX] = tile; }
