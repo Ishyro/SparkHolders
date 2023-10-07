@@ -163,9 +163,6 @@ class Map {
             loots.push_back(l);
           }
         }
-        if(player->player_character) {
-          world->addToRegion(id, used_map_id);
-        }
       }
     }
 

@@ -10,6 +10,61 @@
 #include "data/World.h"
 
 void World::addMap(Map * map) {
+  std::set<long> region = std::set<long>();
+  std::set<long> neighbours_group = std::set<long>();
+  region.insert(map->id);
+  regions.insert(std::make_pair(map->id, region));
+  neighbours_group.insert(map->id);
+  neighbours.insert(std::make_pair(map->id, neighbours_group));
+  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
+    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
+      if(map->getTile(x, y)->name == "TXT_VOID") {
+        Map * to_add = getMap(x, y, map->offsetZ);
+        if(to_add != nullptr) {
+          regions.at(map->id).insert(to_add->id);
+        }
+      }
+      // Border
+      if(y == map->offsetY || y == map->offsetY + map->sizeY - 1 || x == map->offsetX || x == map->offsetX + map->sizeX - 1) {
+        if(!(map->getTile(x, y)->opaque && map->getTile(x, y)->solid)) {
+          if(y == map->offsetY) {
+            Map * to_add = getMap(x, y - 1, map->offsetZ);
+            if(to_add != nullptr) {
+              neighbours.at(map->id).insert(to_add->id);
+              neighbours.at(to_add->id).insert(map->id);
+            }
+          }
+          if(y == map->offsetY + map->sizeY - 1) {
+            Map * to_add = getMap(x, y + 1, map->offsetZ);
+            if(to_add != nullptr) {
+              neighbours.at(map->id).insert(to_add->id);
+              neighbours.at(to_add->id).insert(map->id);
+            }
+          }
+          if(x == map->offsetX) {
+            Map * to_add = getMap(x - 1, y, map->offsetZ);
+            if(to_add != nullptr) {
+              neighbours.at(map->id).insert(to_add->id);
+              neighbours.at(to_add->id).insert(map->id);
+            }
+          }
+          if(x == map->offsetX + map->sizeX - 1) {
+            Map * to_add = getMap(x + 1, y, map->offsetZ);
+            if(to_add != nullptr) {
+              neighbours.at(map->id).insert(to_add->id);
+              neighbours.at(to_add->id).insert(map->id);
+            }
+          }
+        }
+      }
+    }
+  }
+  for(long id1 : regions.at(map->id)) {
+    for(long id2 : regions.at(map->id)) {
+      regions.at(id1).insert(id2);
+      regions.at(id2).insert(id1);
+    }
+  }
   maps.insert(std::pair<int, Map *>(map->id, map));
 }
 
@@ -17,25 +72,12 @@ void World::addMapLink(MapLink * link) {
   links.push_back(link);
 }
 
-void World::addToRegion(long map_id1, long map_id2) {
-  if(regions.count(map_id1) == 0) {
-    std::set<long> region = std::set<long>();
-    region.insert(map_id1);
-    region.insert(map_id2);
-    regions.insert(std::make_pair(map_id1, region));
-  }
-  else {
-    regions.at(map_id1).insert(map_id2);
-  }
+std::set<long> World::getRegion(long map_id) {
+  return regions.at(map_id);
 }
 
-std::set<long> World::getRegion(long map_id) {
-  if(regions.count(map_id) == 0) {
-    std::set<long> region = std::set<long>();
-    region.insert(map_id);
-    regions.insert(std::make_pair(map_id, region));
-  }
-  return regions.at(map_id);
+std::set<long> World::getNeighbours(long map_id) {
+  return neighbours.at(map_id);
 }
 
 Map * World::getMap(long map_id) { return maps.at(map_id); }

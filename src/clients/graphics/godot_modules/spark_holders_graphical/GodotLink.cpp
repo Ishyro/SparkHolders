@@ -150,8 +150,14 @@ String GodotLink::getRelation(String team1, String team2) {
 Dictionary GodotLink::getCurrentRegions() {
   Dictionary result = Dictionary();
   for(auto pair : state->maps) {
-    for(long id : link->getAdventure()->getWorld()->getRegion(pair.second->id)) {
-      result[(int64_t) id] = (int64_t) 0;
+    for(long region_id : link->getAdventure()->getWorld()->getRegion(pair.second->id)) {
+      result[(int64_t) region_id] = (int64_t) 0;
+      for(long neighbour_id : link->getAdventure()->getWorld()->getNeighbours(region_id)) {
+         result[(int64_t) neighbour_id] = (int64_t) 0;
+        for(long neighbour_region_id : link->getAdventure()->getWorld()->getRegion(neighbour_id)) {
+          result[(int64_t) neighbour_region_id] = (int64_t) 0;
+        }
+      }
     }
   }
   return result;

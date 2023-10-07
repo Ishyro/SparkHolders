@@ -16,8 +16,7 @@ Settings.{STARING_HOUR}{4}
 # translations files
 Translation.{data/translations/aytlanta}
 # add maps
-Map.{TXT_CAVE}{38}{101}{0}
-Map.{TXT_CENTRAL_SQUARE}{0}{0}{0}
+# included maps
 Map.{TXT_HOUSE_NORTH#1}{11}{38}{0}
 Map.{TXT_HOUSE_NORTH#2}{26}{38}{0}
 Map.{TXT_HOUSE_NORTH#3}{64}{38}{0}
@@ -34,6 +33,13 @@ Map.{TXT_HOUSE_WEST#1}{52}{11}{0}
 Map.{TXT_HOUSE_WEST#2}{52}{26}{0}
 Map.{TXT_HOUSE_WEST#3}{52}{64}{0}
 Map.{TXT_HOUSE_WEST#4}{52}{79}{0}
+# other maps
+Map.{TXT_CAVE}{38}{101}{0}
+Map.{TXT_CENTRAL_SQUARE}{0}{0}{0}
+Map.{TXT_OPEN_GRASSLAND#1}{101}{38}{0}
+Map.{TXT_OPEN_GRASSLAND#2}{126}{38}{0}
+Map.{TXT_OPEN_GRASSLAND#3}{126}{13}{0}
+Map.{TXT_OPEN_GRASSLAND#4}{126}{63}{0}
 # add map links
 #MapLink.{{TXT_CENTRAL_SQUARE}{17}{49}}{{TXT_HOUSE_NORTH#1}{5}{11}}{MAPLINK_THROUGH}
 #MapLink.{{TXT_CENTRAL_SQUARE}{32}{49}}{{TXT_HOUSE_NORTH#2}{5}{11}}{MAPLINK_THROUGH}

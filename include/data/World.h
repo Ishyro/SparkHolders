@@ -24,12 +24,14 @@ class World {
     World(std::string name):name(name) {
       maps = std::map<const long, Map *>();
       regions = std::map<const long, std::set<long>>();
+      neighbours = std::map<const long, std::set<long>>();
       links = std::list<MapLink *>();
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
-    void addToRegion(long map_id1, long map_id2);
+    void addToNeighbours(long map_id1, long map_id2);
     std::set<long> getRegion(long map_id);
+    std::set<long> getNeighbours(long map_id);
     Map * getMap(long map_id);
     Map * getMap(std::string name);
     std::list<Map *> getMaps();
@@ -47,6 +49,7 @@ class World {
   private:
     std::map<const long, Map *> maps;
     std::map<const long, std::set<long>> regions;
+    std::map<const long, std::set<long>> neighbours;
     std::list<MapLink *> links;
 };
 
