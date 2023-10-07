@@ -165,8 +165,7 @@ func _on_move_pressed():
 	Values.mode = Values.ACTION_MODE_MOVE
 	map.phantoms[Values.selected_team.id].visible = true
 	map.characters[Values.selected_team.id].range_mesh.visible = false
-	map.n_tiles.set_navigation_mesh(map.navigations[Values.selected_team.id])
-	map.n_tiles.bake_navigation_mesh()
+	map.bake_navigation_mesh(Values.selected_team.id)
 
 func _on_attack_pressed():
 	Values.mode = Values.ACTION_MODE_ATTACK

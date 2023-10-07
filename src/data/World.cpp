@@ -17,7 +17,28 @@ void World::addMapLink(MapLink * link) {
   links.push_back(link);
 }
 
-Map * World::getMap(int map_id) { return maps.at(map_id); }
+void World::addToRegion(long map_id1, long map_id2) {
+  if(regions.count(map_id1) == 0) {
+    std::set<long> region = std::set<long>();
+    region.insert(map_id1);
+    region.insert(map_id2);
+    regions.insert(std::make_pair(map_id1, region));
+  }
+  else {
+    regions.at(map_id1).insert(map_id2);
+  }
+}
+
+std::set<long> World::getRegion(long map_id) {
+  if(regions.count(map_id) == 0) {
+    std::set<long> region = std::set<long>();
+    region.insert(map_id);
+    regions.insert(std::make_pair(map_id, region));
+  }
+  return regions.at(map_id);
+}
+
+Map * World::getMap(long map_id) { return maps.at(map_id); }
 
 Map * World::getMap(std::string name) {
     for (auto pair = maps.begin(); pair != maps.end(); pair++) {
@@ -36,7 +57,7 @@ std::list<Map *> World::getMaps() {
   return to_return;
 }
 
-MapLink * World::getMapLink(int x, int y, int mapId) {
+MapLink * World::getMapLink(int x, int y, long mapId) {
   for(MapLink * link : links) {
     if((link->map1->id == mapId && link->x1 == x && link->y1 == y) ||
       (link->map2->id == mapId && link->x2 == x && link->y2 == y)) {
@@ -141,7 +162,7 @@ int World::getLight(float x, float y, float z) {
 }
 
 
-float World::setPathToTarget(int map_id, float x, float y, Target * target) {
+float World::setPathToTarget(long map_id, float x, float y, Target * target) {
   float target_x;
   float target_y;
   switch(target->type) {
@@ -164,6 +185,6 @@ float World::setPathToTarget(int map_id, float x, float y, Target * target) {
   return MapUtil::getOrientationToTarget(x, y, target_x, target_y);
 }
 
-float World::distance(int map_id, float x, float y, Target * target) {
+float World::distance(long map_id, float x, float y, Target * target) {
   return 0.F;
 }

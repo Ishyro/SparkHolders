@@ -1,6 +1,5 @@
 [gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
 
-[ext_resource type="Script" path="res://world/Plans.gd" id="1_vw6jy"]
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
@@ -9,12 +8,15 @@
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_rbf50"]
+size = Vector3(1000, 1, 1000)
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pulsa"]
 noise_type = 3
 frequency = 0.001
 fractal_type = 2
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_m25s7"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l3sw2"]
 width = 1024
 height = 1024
 seamless = true
@@ -25,7 +27,7 @@ noise_type = 3
 frequency = 0.001
 fractal_type = 2
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tbsnu"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_seckf"]
 width = 1024
 height = 1024
 seamless = true
@@ -39,16 +41,16 @@ shader_parameter/cloud_direction = Vector2(0.002, 0)
 shader_parameter/cloud_direction2 = Vector2(0, 0.001)
 shader_parameter/cloud_scale = Vector2(0.1, 0.1)
 shader_parameter/cloud_distance = 100.0
-shader_parameter/cloud_texture = SubResource("NoiseTexture2D_m25s7")
-shader_parameter/cloud_texture2 = SubResource("NoiseTexture2D_tbsnu")
+shader_parameter/cloud_texture = SubResource("NoiseTexture2D_l3sw2")
+shader_parameter/cloud_texture2 = SubResource("NoiseTexture2D_seckf")
 
-[sub_resource type="Sky" id="Sky_face0"]
+[sub_resource type="Sky" id="Sky_uya5k"]
 sky_material = SubResource("ShaderMaterial_emnl3")
 process_mode = 3
 
 [sub_resource type="Environment" id="Environment_1nh6o"]
 background_mode = 2
-sky = SubResource("Sky_face0")
+sky = SubResource("Sky_uya5k")
 ambient_light_source = 3
 volumetric_fog_enabled = true
 volumetric_fog_sky_affect = 0.0
@@ -75,6 +77,13 @@ script = ExtResource("2_kskax")
 
 [node name="Tiles" type="NavigationRegion3D" parent="Map"]
 
+[node name="Floor" type="StaticBody3D" parent="Map/Tiles"]
+collision_mask = 31
+
+[node name="Shape" type="CollisionShape3D" parent="Map/Tiles/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_rbf50")
+
 [node name="Grid" type="Node3D" parent="Map"]
 visible = false
 
@@ -86,10 +95,6 @@ visible = false
 [node name="Projectiles" type="Node3D" parent="Map"]
 
 [node name="Furnitures" type="Node3D" parent="Map"]
-
-[node name="Plans" type="Node3D" parent="."]
-visible = false
-script = ExtResource("1_vw6jy")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1nh6o")

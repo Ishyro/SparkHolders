@@ -147,16 +147,18 @@ String GodotLink::getRelation(String team1, String team2) {
   }
 }
 
-Array GodotLink::getNearMaps() {
-  Array result = Array();
-  for(auto pair : link->getState()->maps) {
-    result.push_back(pair.second->name.c_str());
+Dictionary GodotLink::getCurrentRegions() {
+  Dictionary result = Dictionary();
+  for(auto pair : state->maps) {
+    for(long id : link->getAdventure()->getWorld()->getRegion(pair.second->id)) {
+      result[(int64_t) id] = (int64_t) 0;
+    }
   }
   return result;
 }
 
-String GodotLink::getMapFromCoords(Vector3 coords) {
-  return link->getAdventure()->getWorld()->getMap(coords.z, coords.x, coords.y)->name.c_str();
+int64_t GodotLink::getMapFromCoords(Vector3 coords) {
+  return (int64_t) link->getAdventure()->getWorld()->getMap(coords.z, coords.x, coords.y)->id;
 }
 
 Dictionary GodotLink::getDataFromTile(String tile_name) {
@@ -331,6 +333,7 @@ void GodotLink::send_actions(Dictionary actions) {
 void GodotLink::close() {
   link->markClosed();
   s.close();
+  log.close();
   delete link;
   delete state;
   delete translator;
@@ -352,7 +355,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
-  ClassDB::bind_method(D_METHOD("getNearMaps"), &GodotLink::getNearMaps);
+  ClassDB::bind_method(D_METHOD("getCurrentRegions"), &GodotLink::getCurrentRegions);
   ClassDB::bind_method(D_METHOD("getMapFromCoords", "coords"), &GodotLink::getMapFromCoords);
   ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
   ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);

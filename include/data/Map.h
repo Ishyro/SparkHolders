@@ -111,7 +111,7 @@ class Map {
       tiles(sizeY),
       light(map->light)
     {
-      std::set<int> ids = std::set<int>();
+      std::set<long> ids = std::set<long>();
       ids.insert(id);
       for(int i = 0; i < sizeY; i++) {
         lights[i] = std::vector<int>(sizeX);
@@ -162,6 +162,9 @@ class Map {
             tiles[l->y - offsetY][l->x - offsetX]->name != "TXT_MIST") {
             loots.push_back(l);
           }
+        }
+        if(player->player_character) {
+          world->addToRegion(id, used_map_id);
         }
       }
     }

@@ -20,6 +20,9 @@
 
 #include "Values.h"
 
+#include <iostream>
+#include <fstream>
+
 class GodotLink : public RefCounted {
   GDCLASS(GodotLink, RefCounted);
 public:
@@ -27,7 +30,9 @@ public:
     link(nullptr),
     translator(nullptr),
     state(nullptr)
-  {}
+  {
+    log.open("log.txt");
+  }
   void initialize(String ip);
   bool hasState();
   bool getState();
@@ -43,8 +48,8 @@ public:
   Dictionary getCharacters();
   Dictionary getProjectiles();
   String getRelation(String team1, String team2);
-  Array getNearMaps();
-  String getMapFromCoords(Vector3 coords);
+  Dictionary getCurrentRegions();
+  int64_t getMapFromCoords(Vector3 coords);
   Dictionary getDataFromTile(String tile_name);
   Dictionary getDataFromCharacter(long id);
   Dictionary getDataFromProjectile(long id);
@@ -58,6 +63,7 @@ private:
   Link * link;
   Translator * translator;
   StateDisplay * state;
+  std::ofstream log;
   std::map<long, int> mist_nbs = std::map<long, int>();
   #ifdef _WIN32_WINNT
     HANDLE thread;

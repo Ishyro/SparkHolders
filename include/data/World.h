@@ -4,6 +4,7 @@
 #include <list>
 #include <string>
 #include <map>
+#include <set>
 
 typedef struct MapLink {
     int x1;
@@ -21,15 +22,18 @@ class World {
   public:
     const std::string name;
     World(std::string name):name(name) {
-      maps = std::map<const int, Map *>();
+      maps = std::map<const long, Map *>();
+      regions = std::map<const long, std::set<long>>();
       links = std::list<MapLink *>();
     }
     void addMap(Map * map);
     void addMapLink(MapLink * link);
-    Map * getMap(int map_id);
+    void addToRegion(long map_id1, long map_id2);
+    std::set<long> getRegion(long map_id);
+    Map * getMap(long map_id);
     Map * getMap(std::string name);
     std::list<Map *> getMaps();
-    MapLink * getMapLink(int x, int y, int mapId);
+    MapLink * getMapLink(int x, int y, long mapId);
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
     Map * getMap(int x, int y, int z);
@@ -38,10 +42,11 @@ class World {
     Tile * getTile(float x, float y, float z);
     int getLight(int x, int y, int z);
     int getLight(float x, float y, float z);
-    float setPathToTarget(int map_id, float x, float y, Target * target);
-    float distance(int map_id, float x, float y, Target * target);
+    float setPathToTarget(long map_id, float x, float y, Target * target);
+    float distance(long map_id, float x, float y, Target * target);
   private:
-    std::map<const int, Map *> maps;
+    std::map<const long, Map *> maps;
+    std::map<const long, std::set<long>> regions;
     std::list<MapLink *> links;
 };
 

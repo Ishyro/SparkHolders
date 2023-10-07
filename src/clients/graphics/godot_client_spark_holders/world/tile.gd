@@ -12,9 +12,9 @@ func _ready():
 func _process(_delta):
 	pass
 
-func create(coord: Vector3, tile_name: String, solid: bool, unwalkable, mist: bool, material: Material):
+func create(coord: Vector3, tile_name: String, map_id: int, solid: bool, unwalkable, mist: bool, material: Material):
 	tile = tile_name
-	map = Values.link.getMapFromCoords(coord)
+	map = map_id
 	$Mesh.mesh = BoxMesh.new()
 	$Shape.shape = BoxShape3D.new()
 	if solid:

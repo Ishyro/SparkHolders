@@ -22,8 +22,8 @@ namespace MapUtil {
   float distance(float x1, float y1, float x2, float y2);
   float getOrientationToTarget(float x1, float y1, float x2, float y2);
 
-  std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
-  float reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest);
+  std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int offsetX, int offsetY);
+  float reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int offsetX, int offsetY);
   std::list<Pair> getNeighboursTraversable(Map * map, int startX, int startY, int destX, int destY);
   std::list<Pair> getNeighboursNonSolid(Map * map, int startX, int startY, int destX, int destY);
   std::vector<Pair> getPathToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying);

@@ -46,12 +46,12 @@ float MapUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
   return angle * 180.F / 3.141593F;
 }
 
-std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest) {
+std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest, int offsetX, int offsetY) {
   std::list<MapUtil::Pair> work_list = std::list<MapUtil::Pair>();
   if(start == dest) {
     return std::vector<MapUtil::Pair>();
   }
-  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y][current.x]) {
+  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
     work_list.push_front(current);
   }
   std::vector<MapUtil::Pair> result = std::vector<MapUtil::Pair>(work_list.size());
@@ -59,12 +59,12 @@ std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<Map
   return result;
 }
 
-float MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest) {
+float MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest, int offsetX, int offsetY) {
   if(start == dest) {
     return 360.F;
   }
   MapUtil::Pair previous = dest;
-  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y][current.x]) {
+  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
     previous = current;
   }
   return getOrientationToTarget(start.x, start.y, previous.x, previous.y);
@@ -73,61 +73,61 @@ float MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> c
 std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX, int startY, int destX, int destY) {
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
-  if(startY > 0) {
+  if(startY > map->offsetY) {
     if(!map->getTile(startX, startY - 1)->untraversable) {
       next.x = startX;
       next.y = startY - 1;
       result.push_back(next);
     }
-  }
-  if(startY < map->sizeY - 1) {
-    if(!map->getTile(startX, startY + 1)->untraversable) {
-      next.x = startX;
-      next.y = startY + 1;
-      result.push_back(next);
+    if(startY < map->sizeY + map->offsetY - 1) {
+      if(!map->getTile(startX, startY + 1)->untraversable) {
+        next.x = startX;
+        next.y = startY + 1;
+        result.push_back(next);
+      }
     }
   }
-  if(startX > 0) {
+  if(startX > map->offsetX) {
     if(!map->getTile(startX - 1, startY)->untraversable) {
       next.x = startX - 1;
       next.y = startY;
       result.push_back(next);
     }
-  }
-  if(startX < map->sizeX - 1) {
-    if(!map->getTile(startX + 1, startY)->untraversable) {
-      next.x = startX + 1;
-      next.y = startY;
-      result.push_back(next);
-    }
-    if(startY > 0) {
-      if(!map->getTile(startX + 1, startY - 1)->untraversable) {
+    if(startX < map->sizeX + map->offsetX - 1) {
+      if(!map->getTile(startX + 1, startY)->untraversable) {
         next.x = startX + 1;
-        next.y = startY - 1;
+        next.y = startY;
         result.push_back(next);
       }
-    }
-    if(startY < map->sizeY - 1) {
-      if(!map->getTile(startX + 1, startY + 1)->untraversable) {
-        next.x = startX + 1;
-        next.y = startY + 1;
-        result.push_back(next);
+      if(startY > map->offsetY) {
+        if(!map->getTile(startX + 1, startY - 1)->untraversable) {
+          next.x = startX + 1;
+          next.y = startY - 1;
+          result.push_back(next);
+        }
+      }
+      if(startY < map->sizeY + map->offsetY - 1) {
+        if(!map->getTile(startX + 1, startY + 1)->untraversable) {
+          next.x = startX + 1;
+          next.y = startY + 1;
+          result.push_back(next);
+        }
       }
     }
   }
-  if(startX > 0) {
-    if(startY > 0) {
+  if(startX > map->offsetX) {
+    if(startY > map->offsetY) {
       if(!map->getTile(startX - 1, startY - 1)->untraversable) {
         next.x = startX - 1;
         next.y = startY - 1;
         result.push_back(next);
       }
-    }
-    if(startY < map->sizeY - 1) {
-      if(!map->getTile(startX - 1, startY + 1)->untraversable) {
-        next.x = startX - 1;
-        next.y = startY + 1;
-        result.push_back(next);
+      if(startY < map->sizeY + map->offsetY - 1) {
+        if(!map->getTile(startX - 1, startY + 1)->untraversable) {
+          next.x = startX - 1;
+          next.y = startY + 1;
+          result.push_back(next);
+        }
       }
     }
   }
@@ -137,61 +137,61 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
 std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, int startY, int destX, int destY) {
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
-  if(startY > 0) {
+  if(startY > map->offsetY) {
     if(!map->getTile(startX, startY - 1)->solid) {
       next.x = startX;
       next.y = startY - 1;
       result.push_back(next);
     }
-  }
-  if(startY < map->sizeY - 1) {
-    if(!map->getTile(startX, startY + 1)->solid) {
-      next.x = startX;
-      next.y = startY + 1;
-      result.push_back(next);
+    if(startY < map->sizeY + map->offsetY - 1) {
+      if(!map->getTile(startX, startY + 1)->solid) {
+        next.x = startX;
+        next.y = startY + 1;
+        result.push_back(next);
+      }
     }
   }
-  if(startX > 0) {
+  if(startX > map->offsetX) {
     if(!map->getTile(startX - 1, startY)->solid) {
       next.x = startX - 1;
       next.y = startY;
       result.push_back(next);
     }
-  }
-  if(startX < map->sizeX - 1) {
-    if(!map->getTile(startX + 1, startY)->solid) {
-      next.x = startX + 1;
-      next.y = startY;
-      result.push_back(next);
-    }
-    if(startY > 0) {
-      if(!map->getTile(startX + 1, startY - 1)->solid) {
+    if(startX < map->sizeX + map->offsetX - 1) {
+      if(!map->getTile(startX + 1, startY)->solid) {
         next.x = startX + 1;
-        next.y = startY - 1;
+        next.y = startY;
         result.push_back(next);
       }
-    }
-    if(startY < map->sizeY - 1) {
-      if(!map->getTile(startX + 1, startY + 1)->solid) {
-        next.x = startX + 1;
-        next.y = startY + 1;
-        result.push_back(next);
+      if(startY > map->offsetY) {
+        if(!map->getTile(startX + 1, startY - 1)->solid) {
+          next.x = startX + 1;
+          next.y = startY - 1;
+          result.push_back(next);
+        }
+      }
+      if(startY < map->sizeY + map->offsetY - 1) {
+        if(!map->getTile(startX + 1, startY + 1)->solid) {
+          next.x = startX + 1;
+          next.y = startY + 1;
+          result.push_back(next);
+        }
       }
     }
   }
-  if(startX > 0) {
-    if(startY > 0) {
+  if(startX > map->offsetX) {
+    if(startY > map->offsetY) {
       if(!map->getTile(startX - 1, startY - 1)->solid) {
         next.x = startX - 1;
         next.y = startY - 1;
         result.push_back(next);
       }
-    }
-    if(startY < map->sizeY - 1) {
-      if(!map->getTile(startX - 1, startY + 1)->solid) {
-        next.x = startX - 1;
-        next.y = startY + 1;
-        result.push_back(next);
+      if(startY < map->sizeY + map->offsetY - 1) {
+        if(!map->getTile(startX - 1, startY + 1)->solid) {
+          next.x = startX - 1;
+          next.y = startY + 1;
+          result.push_back(next);
+        }
       }
     }
   }
@@ -199,6 +199,8 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, i
 }
 
 std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying) {
+  int start_x = startX - map->offsetX;
+  int start_y = startY - map->offsetY;
   std::list<MapUtil::Pair> (*getNeighbours)(Map *, int, int, int, int){ &getNeighboursTraversable };
   if(flying) {
     getNeighbours = &getNeighboursNonSolid;
@@ -228,19 +230,19 @@ std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int s
     }
   }
   openSet.push_front(start);
-  gCost[startY][startX] = 0;
+  gCost[start_y][start_x] = 0;
 
   while(!openSet.empty()) {
     MapUtil::Pair current = openSet.front();
     openSet.pop_front();
     if(current.x == destX && current.y == destY) {
-      return reconstruct_path(cameFrom, start, dest);
+      return reconstruct_path(cameFrom, start, dest, map->offsetX, map->offsetY);
     }
     for(MapUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
-      int tentative_gScore = gCost[current.y][current.x] + 1;
-      if(gCost[pair.y][pair.x] > tentative_gScore) {
-        gCost[pair.y][pair.x] = tentative_gScore;
-        cameFrom[pair.y][pair.x] = current;
+      int tentative_gScore = gCost[current.y - map->offsetY][current.x - map->offsetX] + 1;
+      if(gCost[pair.y - map->offsetY][pair.x - map->offsetX] > tentative_gScore) {
+        gCost[pair.y - map->offsetY][pair.x - map->offsetX] = tentative_gScore;
+        cameFrom[pair.y - map->offsetY][pair.x - map->offsetX] = current;
         pair.score = tentative_gScore + distance(pair.x, pair.y, destX, destY);
         bool found = false;
         for(MapUtil::Pair pair2 : openSet) {
@@ -296,7 +298,7 @@ float MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int des
     MapUtil::Pair current = openSet.front();
     openSet.pop_front();
     if(current.x == destX && current.y == destY) {
-      return reconstruct_orientation(cameFrom, start, dest);
+      return reconstruct_orientation(cameFrom, start, dest, map->offsetX, map->offsetY);
     }
     for(MapUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
       int tentative_gScore = gCost[current.y][current.x] + 1;

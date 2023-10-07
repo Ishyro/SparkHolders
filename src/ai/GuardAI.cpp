@@ -19,7 +19,7 @@ Action * GuardAI::getActions(Adventure * adventure, Character * c) {
   Map * visionMap = updateMap(adventure, c);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
-  if(!threats.empty() && visionMap->getTile(origin_x - visionMap->offsetX, origin_y - visionMap->offsetY)->name != "TXT_MIST") {
+  if(!threats.empty() && visionMap->getTile(origin_x, origin_y)->name != "TXT_MIST") {
     return attack(adventure, threats, c);
   }
   selectHungriness(c);

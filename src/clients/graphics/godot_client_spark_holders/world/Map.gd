@@ -2,15 +2,19 @@ extends Node3D
 
 var thread
 var mutex
+var baking_done = false
 
 var owned_characters = []
 var phantoms = {}
 var phantom_lines = {}
 
 var navigations = {}
+var multiMeshInstances = {}
+var maps = {}
+var tiles_count = {}
+
 var grid = []
-var board = []
-var tiles = {}
+var regions = {}
 var seen_tiles = {}
 var lights = {}
 var characters = {}
@@ -48,8 +52,6 @@ var base_phantom = preload("res://models/phantom.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
 var base_tile = preload("res://world/tile.tscn")
 
-var plan
-
 @onready var n_view = $"../View"
 @onready var n_tiles = $Tiles
 @onready var n_grid = $Grid
@@ -58,7 +60,7 @@ var plan
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
 
-#@onready var navigationserver_region_rid: RID = n_tiles.get_region_rid()
+@onready var n_origin = $Tiles/Origin
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -98,22 +100,14 @@ func _ready():
 	var offset = Values.link.getOffsets(owned_characters[0])
 	var size = Values.link.getSizes(owned_characters[0])
 	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
-	plan = "Aytlanta"
 	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
-	board.append([])
 	for tile in Values.link.getAvaillableTiles():
-		tiles_data[tile] = Values.link.getDataFromTile(tile)
-		if tile != "TXT_MIST":
-			materials[tile] = load(tiles_data[tile]["path"])
-		else:
-			materials[tile] = board_material
-		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE" || tile == "TXT_MIST":
-			var img = materials[tile].albedo_texture.get_image()
-			tiles_img[tile] = ImageTexture.create_from_image(img)
+		initialize_tile(tile)
 	create_grid()
-	#create_board()
 	for character_id in owned_characters:
 		init_tiles(character_id)
+	regions = Values.link.getCurrentRegions()
+	display_map()
 	var map_rid = get_world_3d().get_navigation_map()
 	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
 	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
@@ -127,16 +121,15 @@ func _ready():
 		# Navigation3D
 		navigations[character_id] = NavigationMesh.new()
 		navigations[character_id].sample_partition_type = 2
-		navigations[character_id].geometry_parsed_geometry_type = 1
-		navigations[character_id].geometry_collision_mask = 0x31
+		navigations[character_id].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_MESH_INSTANCES
+		#navigations[character_id].geometry_collision_mask = 0x31
 		navigations[character_id].cell_size = 0.05
 		navigations[character_id].cell_height = 0.05
 		navigations[character_id].agent_height = 0.0
 		navigations[character_id].agent_max_climb = 0.0
 		navigations[character_id].agent_max_slope = 0.02
 		navigations[character_id].agent_radius = characters_data[character_id]["size"]
-	n_tiles.set_navigation_mesh(navigations[owned_characters[0]])
-	n_tiles.bake_navigation_mesh()
+	bake_navigation_mesh(owned_characters[0])
 	thread.start(state_updater, Thread.PRIORITY_LOW)
 
 func state_updater():
@@ -147,13 +140,12 @@ func state_updater():
 		mutex.lock()
 		running = Values.link.getState()
 		if running:
-			plan = "Aytlanta"
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():
 				if !next_characters_data.has(character_id):
 					n_characters.remove_child(characters[character_id])
 					characters.erase(character_id)
-			for character_id in next_characters_data.keys():
+			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 			for character_id in owned_characters:
@@ -161,13 +153,15 @@ func state_updater():
 					init_tiles(character_id)
 				else:
 					create_tiles(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
+				regions = Values.link.getCurrentRegions()
+				display_map()
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
 				if !next_projectiles_data.has(projectile_id):
 					n_projectiles.remove_child(projectiles[projectile_id])
 					projectiles.erase(projectile_id)
-			for projectile_id in next_projectiles_data.keys():
+			for projectile_id in next_projectiles_data:
 				if !projectiles_data.has(projectile_id):
 					add_projectile(projectile_id, next_projectiles_data[projectile_id])
 			projectiles_data = next_projectiles_data
@@ -182,7 +176,7 @@ func _physics_process(delta):
 	if mutex.try_lock():
 		if Values.updating_state:
 			var done = true
-			for character_id in characters_data.keys():
+			for character_id in characters_data:
 				var dest = Vector3(characters_data[character_id]["y"], characters[character_id].transform.origin.y, characters_data[character_id]["x"])
 				var movement = (dest - characters[character_id].transform.origin).normalized() * 10
 				characters[character_id].collision_layer = 0x0000
@@ -201,7 +195,7 @@ func _physics_process(delta):
 						phantoms[character_id].transform.origin = dest
 						phantoms[character_id].visible = false
 				done = done && (characters[character_id].transform.origin == dest)
-			for projectile_id in projectiles_data.keys():
+			for projectile_id in projectiles_data:
 				var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
 				var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
 				projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
@@ -270,56 +264,25 @@ func create_tiles(character_id: int, x_direction: int, z_direction: int):
 	var offset = Values.link.getOffsets(character_id)
 	var size = Values.link.getSizes(character_id)
 	if x_direction > 0:
-		for key in tiles.keys():
-			if key.x <= characters_data[character_id]["y"] - size.x * 2.5:
-				var tile = tiles[key]
-				if !seen_tiles.has(tile.map):
-					seen_tiles[tile.map] = {}
-				seen_tiles[tile.map][key] = tile
-				n_tiles.remove_child(tiles[key])
-				tiles.erase(key)
 		for z in range(0, size.z):
 			add_tile(offset, size.x - 1, z, current_tiles, current_lights)
 	if x_direction < 0:
-		for key in tiles.keys():
-			if key.x >= characters_data[character_id]["y"] + size.x * 2.5:
-				var tile = tiles[key]
-				if !seen_tiles.has(tile.map):
-					seen_tiles[tile.map] = {}
-				seen_tiles[tile.map][key] = tile
-				n_tiles.remove_child(tiles[key])
-				tiles.erase(key)
 		for z in range(0, size.z):
 			add_tile(offset, 0, z, current_tiles, current_lights)
 	if z_direction > 0:
-		for key in tiles.keys():
-			if key.z <= characters_data[character_id]["x"] - size.z * 2.5:
-				var tile = tiles[key]
-				if !seen_tiles.has(tile.map):
-					seen_tiles[tile.map] = {}
-				seen_tiles[tile.map][key] = tile
-				n_tiles.remove_child(tiles[key])
-				tiles.erase(key)
 		for x in range(0, size.x):
 			add_tile(offset, x, size.z - 1, current_tiles, current_lights)
 	if z_direction < 0:
-		for key in tiles.keys():
-			if key.z >= characters_data[character_id]["x"] + size.z * 2.5:
-				var tile = tiles[key]
-				if !seen_tiles.has(tile.map):
-					seen_tiles[tile.map] = {}
-				seen_tiles[tile.map][key] = tile
-				n_tiles.remove_child(tiles[key])
-				tiles.erase(key)
 		for x in range(0, size.x):
 			add_tile(offset, x, 0, current_tiles, current_lights)
 
-func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lights: Array,):
+func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lights: Array):
 	if current_tiles[x][z] == "TXT_MIST" || current_tiles[x][z] == "TXT_VOID":
 		return
 	var global_x = x + offset.x
 	var global_z = z + offset.z
 	var id = Vector3(global_x, offset.y, global_z)
+	var map_id = Values.link.getMapFromCoords(id)
 	if lights.has(id):
 		n_lights.remove_child(lights[id])
 	var light = MeshInstance3D.new()
@@ -333,11 +296,70 @@ func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lig
 		light.transform.origin = Vector3(global_x + 0.5, offset.y + 0.5, global_z + 0.5)
 	lights[id] = light
 	n_lights.add_child(light)
-	if !tiles.has(id):
-		var tile = base_tile.instantiate()
-		tile.create(Vector3(global_x, offset.y, global_z), current_tiles[x][z], tiles_data[current_tiles[x][z]]["solid"], tiles_data[current_tiles[x][z]]["untraversable"], current_tiles[x][z] == "TXT_MIST", materials[current_tiles[x][z]])
-		tiles[id] = tile
-		n_tiles.add_child(tile)
+	if !maps.has(map_id):
+		maps[map_id] = {}
+	if !maps[map_id].has(id):
+		maps[map_id][id] = current_tiles[x][z]
+		if !tiles_count[current_tiles[x][z]].has(map_id):
+			tiles_count[current_tiles[x][z]][map_id] = 1
+		else:
+			tiles_count[current_tiles[x][z]][map_id] = tiles_count[current_tiles[x][z]][map_id] + 1
+
+func bake_navigation_mesh(character_id: int):
+	baking_done = false
+	n_tiles.set_navigation_mesh(navigations[character_id])
+	n_tiles.bake_navigation_mesh()
+	baking_done = true
+
+func display_map():
+	var tile_current = {}
+	for tile_type in multiMeshInstances:
+		var total = 0
+		tile_current[tile_type] = 0
+		for map_id in regions:
+			if tiles_count[tile_type].has(map_id):
+				total = total + tiles_count[tile_type][map_id]
+		multiMeshInstances[tile_type].multimesh.set_instance_count(total)
+	for map_id in regions:
+		if maps.has(map_id):
+			var map = maps[map_id]
+			for tile in map:
+				var tile_type = map[tile]
+				var coord = Vector3.ZERO
+				if tiles_data[tile_type]["solid"]:
+					coord = Vector3(tile.x + 0.5, tile.y + 1.5, tile.z + 0.5)
+				elif tiles_data[tile_type]["untraversable"]:
+					coord = Vector3(tile.x + 0.5, tile.y + 0.4, tile.z + 0.5)
+				else:
+					coord = Vector3(tile.x + 0.5, tile.y + 0.5, tile.z + 0.5)
+				multiMeshInstances[tile_type].multimesh.set_instance_transform(tile_current[tile_type], Transform3D.IDENTITY.translated(coord))
+				tile_current[tile_type] = tile_current[tile_type] + 1
+
+func initialize_tile(tile: String):
+	if tile != "TXT_MIST" && tile != "TXT_VOID":
+		tiles_data[tile] = Values.link.getDataFromTile(tile)
+		tiles_count[tile] = {}
+		materials[tile] = load(tiles_data[tile]["path"])
+		var multimeshinstance = MultiMeshInstance3D.new()
+		var multimesh = MultiMesh.new()
+		var mesh = BoxMesh.new()
+		if tiles_data[tile]["solid"]:
+			mesh.set_size(Vector3(1, 3, 1))
+		elif tiles_data[tile]["untraversable"]:
+			mesh = BoxMesh.new()
+			mesh.set_size(Vector3(1, 0.8, 1))
+		else:
+			mesh.set_size(Vector3.ONE)
+		mesh.surface_set_material(0, materials[tile])
+		multimesh.set_mesh(mesh)
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimeshinstance.set_multimesh(multimesh)
+		multiMeshInstances[tile] = multimeshinstance
+		n_tiles.add_child(multimeshinstance)
+		
+		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE":
+			var img = materials[tile].albedo_texture.get_image()
+			tiles_img[tile] = ImageTexture.create_from_image(img)
 
 func get_color(character_data: Dictionary):
 	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):

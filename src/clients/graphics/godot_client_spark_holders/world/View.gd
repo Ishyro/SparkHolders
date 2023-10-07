@@ -61,7 +61,7 @@ func update_mouse_coordinates():
 				Values.selected_tile = selection
 		if Input.is_action_pressed("action"):
 			var _selection = result["collider"]
-			if Values.mode == Values.ACTION_MODE_MOVE:
+			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
 				Values.mode = Values.ACTION_MODE_NONE
 				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
 				var is_first = true
@@ -108,7 +108,7 @@ func _physics_process(_delta):
 		movement_vec2 = movement_vec2.rotated(deg_to_rad(-camera.rotation_degrees.y))
 		var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
 		
-		movement *= MOVEMENT_SPEED * ( 3 + transform.origin.y) / 10
+		movement *= MOVEMENT_SPEED * ( 3 + transform.origin.y) / 20
 
 		velocity += Vector3(movement.x, 0, movement.z)
 		# Apply horizontal friction.

@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://17qxy01t6awo"]
+
+[ext_resource type="Texture2D" uid="uid://bdpv6q4s7l0yj" path="res://data/tiles/wood/Color.jpg" id="1_26t4g"]
+[ext_resource type="Texture2D" uid="uid://dysdc7wjb1rho" path="res://data/tiles/wood/AmbientOcclusion.jpg" id="2_ubikl"]
+[ext_resource type="Texture2D" uid="uid://cqtixv14ruu6h" path="res://data/tiles/wood/Metalness.jpg" id="3_ep2wv"]
+[ext_resource type="Texture2D" uid="uid://bocao5xw6fds8" path="res://data/tiles/wood/NormalDX.jpg" id="4_dv3fg"]
+[ext_resource type="Texture2D" uid="uid://di6uwq2ussxd2" path="res://data/tiles/wood/Roughness.jpg" id="5_ifiul"]
+
+[resource]
+albedo_texture = ExtResource("1_26t4g")
+metallic = 1.0
+metallic_specular = 0.25
+metallic_texture = ExtResource("3_ep2wv")
+roughness_texture = ExtResource("5_ifiul")
+normal_enabled = true
+normal_texture = ExtResource("4_dv3fg")
+ao_enabled = true
+ao_texture = ExtResource("2_ubikl")
