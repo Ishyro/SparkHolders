@@ -52,7 +52,7 @@ const TARGET_MULTIPLE = 6
 var server_pid = -1
 var link = GodotLink.new()
 var updating_state = false
-var mode = ACTION_MODE_MOVE
+var mode = ACTION_MODE_NONE
 
 var coord = Vector3.ZERO
 var selection_changed = false

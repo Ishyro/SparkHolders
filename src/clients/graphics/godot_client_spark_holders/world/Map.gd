@@ -15,7 +15,6 @@ var tiles_count = {}
 
 var grid = []
 var regions = {}
-var seen_tiles = {}
 var lights = {}
 var characters = {}
 var projectiles = {}
@@ -54,13 +53,12 @@ var base_tile = preload("res://world/tile.tscn")
 
 @onready var n_view = $"../View"
 @onready var n_tiles = $Tiles
+@onready var n_floor = $Tiles/Floor
 @onready var n_grid = $Grid
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
-
-@onready var n_origin = $Tiles/Origin
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -119,18 +117,45 @@ func _ready():
 		phantoms[character_id].transform.origin = characters[character_id].transform.origin
 		n_characters.add_child(phantoms[character_id])
 		# Navigation3D
-		navigations[character_id] = NavigationMesh.new()
-		navigations[character_id].sample_partition_type = 2
-		navigations[character_id].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_MESH_INSTANCES
-		#navigations[character_id].geometry_collision_mask = 0x31
-		navigations[character_id].cell_size = 0.05
-		navigations[character_id].cell_height = 0.05
-		navigations[character_id].agent_height = 0.0
-		navigations[character_id].agent_max_climb = 0.0
-		navigations[character_id].agent_max_slope = 0.02
-		navigations[character_id].agent_radius = characters_data[character_id]["size"]
-	bake_navigation_mesh(owned_characters[0])
+		var character_size = round_float(characters_data[character_id]["size"])
+		if !navigations.has(character_size):
+			navigations[character_size] = NavigationMesh.new()
+			navigations[character_size].sample_partition_type = NavigationMesh.SAMPLE_PARTITION_LAYERS
+			navigations[character_size].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_MESH_INSTANCES
+			navigations[character_size].cell_size = 0.05
+			navigations[character_size].cell_height = 0.05
+			navigations[character_size].agent_height = 0.0
+			navigations[character_size].agent_max_climb = 0.0
+			navigations[character_size].agent_max_slope = 0.02
+			navigations[character_size].agent_radius = character_size
+	bake_navigation_meshes()
 	thread.start(state_updater, Thread.PRIORITY_LOW)
+	
+func bake_navigation_meshes():
+	if !baking_done:
+		for size in navigations:
+			var data = NavigationMeshSourceGeometryData3D.new()
+			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_tiles)
+			NavigationMeshGenerator.bake_from_source_geometry_data(navigations[size], data)
+		n_tiles.set_navigation_mesh(null)
+		baking_done = true
+
+func set_navigation_mesh(character_id: int):
+	n_tiles.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
+
+func select_character(character_id: int):
+	var offset = Values.link.getOffsets(character_id)
+	var size = Values.link.getSizes(character_id)
+	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
+	Values.mode = Values.ACTION_MODE_MOVE
+	if n_floor.transform.origin.y + 0.5 != round_float(characters_data[character_id]["z"]):
+		var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
+		var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
+		n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
+	n_floor.transform.origin = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"] + 0.5, characters_data[character_id]["x"])
+	phantoms[character_id].visible = true
+	bake_navigation_meshes()
+	set_navigation_mesh(character_id)
 
 func state_updater():
 	var running = true
@@ -145,6 +170,14 @@ func state_updater():
 				if !next_characters_data.has(character_id):
 					n_characters.remove_child(characters[character_id])
 					characters.erase(character_id)
+			var new_regions = Values.link.getCurrentRegions()
+			for map_id in new_regions:
+				if !regions.has(map_id):
+					baking_done = false
+			for map_id in regions:
+				if !new_regions.has(map_id):
+					baking_done = false
+			regions = new_regions
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
@@ -153,8 +186,7 @@ func state_updater():
 					init_tiles(character_id)
 				else:
 					create_tiles(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
-				regions = Values.link.getCurrentRegions()
-				display_map()
+			display_map()
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
@@ -254,8 +286,8 @@ func init_tiles(character_id: int):
 	var size = Values.link.getSizes(character_id)
 	for x in range(0, size.x):
 		for z in range(0, size.z):
-			add_tile(offset, x, z, current_tiles, current_lights)
-				
+			baking_done = add_tile(offset, x, z, current_tiles, current_lights) && baking_done
+
 func create_tiles(character_id: int, x_direction: int, z_direction: int):
 	if x_direction == 0 && z_direction == 0:
 		return
@@ -265,20 +297,20 @@ func create_tiles(character_id: int, x_direction: int, z_direction: int):
 	var size = Values.link.getSizes(character_id)
 	if x_direction > 0:
 		for z in range(0, size.z):
-			add_tile(offset, size.x - 1, z, current_tiles, current_lights)
+			baking_done = add_tile(offset, size.x - 1, z, current_tiles, current_lights) && baking_done
 	if x_direction < 0:
 		for z in range(0, size.z):
-			add_tile(offset, 0, z, current_tiles, current_lights)
+			baking_done = add_tile(offset, 0, z, current_tiles, current_lights) && baking_done
 	if z_direction > 0:
 		for x in range(0, size.x):
-			add_tile(offset, x, size.z - 1, current_tiles, current_lights)
+			baking_done = add_tile(offset, x, size.z - 1, current_tiles, current_lights) && baking_done
 	if z_direction < 0:
 		for x in range(0, size.x):
-			add_tile(offset, x, 0, current_tiles, current_lights)
+			baking_done = add_tile(offset, x, 0, current_tiles, current_lights) && baking_done
 
 func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lights: Array):
 	if current_tiles[x][z] == "TXT_MIST" || current_tiles[x][z] == "TXT_VOID":
-		return
+		return true
 	var global_x = x + offset.x
 	var global_z = z + offset.z
 	var id = Vector3(global_x, offset.y, global_z)
@@ -304,12 +336,8 @@ func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lig
 			tiles_count[current_tiles[x][z]][map_id] = 1
 		else:
 			tiles_count[current_tiles[x][z]][map_id] = tiles_count[current_tiles[x][z]][map_id] + 1
-
-func bake_navigation_mesh(character_id: int):
-	baking_done = false
-	n_tiles.set_navigation_mesh(navigations[character_id])
-	n_tiles.bake_navigation_mesh()
-	baking_done = true
+		return false
+	return true
 
 func display_map():
 	var tile_current = {}

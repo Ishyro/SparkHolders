@@ -40,7 +40,7 @@ func update_mouse_coordinates():
 					if character_id == selection.id:
 						Values.selected_team = selection
 						owned = true
-						map.phantoms[Values.selected_team.id].visible = true
+						map.select_character(Values.selected_team.id)
 						break
 				if !owned:
 					Values.selected_target = selection
@@ -51,6 +51,7 @@ func update_mouse_coordinates():
 				map.clear_actions(Values.selected_team.id)
 				Values.mode = Values.ACTION_MODE_MOVE
 				map.phantoms[Values.selected_team.id].collision_layer = 0x0010
+				map.set_navigation_mesh(Values.selected_team.id)
 			if "projectile" in selection:
 				Values.selected_projectile = selection
 				Values.selected_target = null

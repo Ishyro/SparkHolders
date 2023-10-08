@@ -78,10 +78,10 @@ script = ExtResource("2_kskax")
 [node name="Tiles" type="NavigationRegion3D" parent="Map"]
 
 [node name="Floor" type="StaticBody3D" parent="Map/Tiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 collision_mask = 31
 
 [node name="Shape" type="CollisionShape3D" parent="Map/Tiles/Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_rbf50")
 
 [node name="Grid" type="Node3D" parent="Map"]
