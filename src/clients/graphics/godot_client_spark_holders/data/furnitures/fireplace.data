@@ -1,0 +1,12 @@
+name = TXT_FIREPLACE
+type = FURNITURE_SWITCH
+sizeX = 1
+sizeY = 1
+untraversable = true
+opaque = false
+solid = true
+light = 8
+untraversable_off = true
+opaque_off = false
+solid_off = true
+light_off = 0

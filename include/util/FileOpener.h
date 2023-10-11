@@ -26,6 +26,8 @@ namespace FileOpener {
   void EventOpener(std::string fileName, Database * database);
   void GearOpener(std::string fileName, Database * database);
   void ItemOpener(std::string fileName, Database * database);
+  void FurnitureOpener(std::string fileName, Database * database);
+  void addFurnitureToMap(int keyword, std::string command, Map * map, Database * database);
   void MapOpener(std::string fileName, Database * database);
   void ProjectileOpener(std::string fileName, Database * database);
   void QuestOpener(std::string fileName, Database * database);

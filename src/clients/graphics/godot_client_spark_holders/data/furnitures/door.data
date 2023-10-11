@@ -1,0 +1,12 @@
+name = TXT_DOOR
+type = FURNITURE_SWITCH
+sizeX = 1
+sizeY = 1
+untraversable = false
+opaque = false
+solid = false
+light = 0
+untraversable_off = true
+opaque_off = true
+solid_off = true
+light_off = 0

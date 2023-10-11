@@ -1,7 +1,7 @@
 name = TXT_OPEN_GRASSLAND
-width = 25
-height = 25
-depth = 4
+sizeX = 25
+sizeY = 25
+sizeZ = 4
 outside = true
 0 = TXT_GRASS
 !end

@@ -1,6 +1,0 @@
-name = TXT_TORCH_GROUND
-untraversable = false
-opaque = false
-solid = false
-light = 6
-ap_cost = 10.0

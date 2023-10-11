@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://dpirdmcn05prn"]
+
+[ext_resource type="Texture2D" uid="uid://b1cat7it438al" path="res://data/tiles/rock/Color.jpg" id="1_gnje3"]
+[ext_resource type="Texture2D" uid="uid://dqqqiw0exji8s" path="res://data/tiles/rock/AmbientOcclusion.jpg" id="2_hpusa"]
+[ext_resource type="Texture2D" uid="uid://2qcifv26p5h8" path="res://data/tiles/rock/NormalDX.jpg" id="3_yawyf"]
+[ext_resource type="Texture2D" uid="uid://dkgf8ppkskwl0" path="res://data/tiles/rock/Roughness.jpg" id="4_0mfo4"]
+
+[resource]
+albedo_texture = ExtResource("1_gnje3")
+roughness_texture = ExtResource("4_0mfo4")
+normal_enabled = true
+normal_texture = ExtResource("3_yawyf")
+ao_enabled = true
+ao_texture = ExtResource("2_hpusa")

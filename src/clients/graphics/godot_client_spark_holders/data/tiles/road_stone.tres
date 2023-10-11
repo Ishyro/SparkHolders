@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://xh8cug7ansvk"]
+
+[ext_resource type="Texture2D" uid="uid://7gqy4p0qkdbs" path="res://data/tiles/road_stone/Color.jpg" id="1_yrug3"]
+[ext_resource type="Texture2D" uid="uid://ch8rhdrig554y" path="res://data/tiles/road_stone/AmbientOcclusion.jpg" id="2_khgci"]
+[ext_resource type="Texture2D" uid="uid://wc6o2qfspnn6" path="res://data/tiles/road_stone/NormalDX.jpg" id="3_bknir"]
+[ext_resource type="Texture2D" uid="uid://d0u2n0isqornl" path="res://data/tiles/road_stone/Roughness.jpg" id="4_fytg2"]
+
+[resource]
+albedo_texture = ExtResource("1_yrug3")
+roughness_texture = ExtResource("4_fytg2")
+normal_enabled = true
+normal_texture = ExtResource("3_bknir")
+ao_enabled = true
+ao_texture = ExtResource("2_khgci")

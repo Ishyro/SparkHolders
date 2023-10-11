@@ -31,6 +31,30 @@ Tile * Map::getTile(int x, int y) { return allowedCoords(x, y) ? tiles[y - offse
 Tile * Map::getTile(float x, float y) { return allowedCoords(x, y) ? tiles[(int) std::floor(y) - offsetY][(int) std::floor(x) - offsetX] : nullptr; }
 int Map::getLight(int x, int y) { return allowedCoords(x, y) ? std::max(lights[y - offsetY][x - offsetX], light) : -1; }
 int Map::getLight(float x, float y) { return allowedCoords(x, y) ? std::max(lights[(int) std::floor(y) - offsetY][(int) std::floor(x) - offsetX], light) : -1; }
+
+Furniture * Map::getFurniture(int x, int y) {
+  if(allowedCoords(x, y)) {
+    for(Furniture * furniture : furnitures) {
+      if(furniture->getX() == x && furniture->getY() == y) {
+        return furniture;
+      }
+    }
+  }
+  return nullptr;
+}
+Furniture * Map::getFurniture(float x, float y) {
+  if(allowedCoords(x, y)) {
+    int int_x = (int) std::floor(x);
+    int int_y = (int) std::floor(y);
+    for(Furniture * furniture : furnitures) {
+      if(furniture->getX() == int_x && furniture->getY() == int_y) {
+        return furniture;
+      }
+    }
+  }
+  return nullptr;
+}
+
 void Map::applyDayLight(int light) { this->light = light; }
 
 void Map::calculateLights() {
@@ -45,6 +69,16 @@ void Map::calculateLights() {
         lightX[cpt] = x;
         lightY[cpt++] = y;
       }
+    }
+  }
+  for(Furniture * furniture : furnitures) {
+    int light = furniture->getLight();
+    int x = furniture->getX() - offsetX;
+    int y = furniture->getY() - offsetY;
+    if(light > lights[y][x]) {
+      lights[y][x] = light;
+      lightX[cpt] = x;
+      lightY[cpt++] = y;
     }
   }
   for(Character * character : characters) {
@@ -366,6 +400,16 @@ void Map::crumble(int x, int y) {
 
 void Map::addCharacter(Character * c) { characters.push_back(c); }
 void Map::addProjectile(Projectile * p) { projectiles.push_back(p); }
+
+void Map::addFurniture(Furniture * f) {
+  for(Furniture * furniture : furnitures) {
+    if(f->getX() == furniture->getX() && f->getY() == furniture->getY()) {
+      return;
+    }
+  }
+  furnitures.push_back(f);
+}
+
 void Map::addLoot(Loot * l) { loots.push_back(l); }
 
 void Map::removeCharacter(Character * c) { characters.remove(c); }

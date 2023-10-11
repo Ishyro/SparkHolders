@@ -45,6 +45,13 @@
 #include "data/items/AmmunitionItem.h"
 #include "data/items/Gear.h"
 
+#include "data/furnitures/Furniture.h"
+#include "data/furnitures/ContainerFurniture.h"
+#include "data/furnitures/CraftingFurniture.h"
+#include "data/furnitures/LinkedFurniture.h"
+#include "data/furnitures/SkillFurniture.h"
+#include "data/furnitures/SwitchFurniture.h"
+
 #include "data/skills/PseudoSkill.h"
 #include "data/skills/Skill.h"
 
@@ -764,12 +771,66 @@ namespace FileOpener {
     delete effects;
   }
 
+  
+  void FurnitureOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int type = database->getTargetFromMacro(values.at("type"));
+    int sizeX = stoi(values.at("sizeX"));
+    int sizeY = stoi(values.at("sizeY"));
+    std::istringstream is_untraversable(values.at("untraversable"));
+    bool untraversable;
+    is_untraversable >> std::boolalpha >> untraversable;
+    std::istringstream is_opaque(values.at("opaque"));
+    bool opaque;
+    is_opaque >> std::boolalpha >> opaque;
+    std::istringstream is_solid(values.at("solid"));
+    bool solid;
+    is_solid >> std::boolalpha >> solid;
+    int light = stoi(values.at("light"));
+    Furniture * furniture;
+    switch(type) {
+      case FURNITURE_BASIC:
+        furniture = new Furniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        break;
+      case FURNITURE_CONTAINER:
+        furniture = new ContainerFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        break;
+      case FURNITURE_CRAFTING:
+        furniture = new CraftingFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        break;
+      case FURNITURE_LINKED:
+        furniture = new LinkedFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        break;
+      case FURNITURE_SKILL: {
+        Skill * skill = (Skill *) database->getSkill(values.at("skill"));
+        furniture = new SkillFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light, skill);
+        break;
+      }
+      case FURNITURE_SWITCH: {
+        std::istringstream is_untraversable_off(values.at("untraversable_off"));
+        bool untraversable_off;
+        is_untraversable_off >> std::boolalpha >> untraversable_off;
+        std::istringstream is_opaque_off(values.at("opaque_off"));
+        bool opaque_off;
+        is_opaque_off >> std::boolalpha >> opaque_off;
+        std::istringstream is_solid_off(values.at("solid_off"));
+        bool solid_off;
+        is_solid_off >> std::boolalpha >> solid_off;
+        int light_off = stoi(values.at("light_off"));
+        furniture = new SwitchFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light, untraversable_off, opaque_off, solid_off, light_off);
+        break;
+      }
+    }
+    database->addFurniture(furniture);
+  }
+
   void MapOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int sizeX = stoi(values.at("width"));
-    int sizeY = stoi(values.at("height"));
-    int sizeZ = stoi(values.at("depth"));
+    int sizeX = stoi(values.at("sizeX"));
+    int sizeY = stoi(values.at("sizeY"));
+    int sizeZ = stoi(values.at("sizeZ"));
     std::istringstream is(values.at("outside"));
     bool outside;
     is >> std::boolalpha >> outside;
@@ -784,9 +845,10 @@ namespace FileOpener {
       std::cout << "File not found: " + fileName << std::endl;
     }
     // skip lines until we reach the map itself
-    while(getline(file,line) && line != "!end");
+    while(getline(file, line) && line != "!end");
+    // tiles
     for(int y = sizeY - 1; y >= 0; y--) {
-      getline(file,line);
+      getline(file, line);
       std::istringstream is(line);
       for(int x = 0; x < sizeX; x++) {
         std::string tile;
@@ -794,10 +856,73 @@ namespace FileOpener {
         map->setTile(x, y, (Tile *) database->getTile(values.at(tile)));
       }
     }
-
+    // furnitures
+    std::string delimiter = ".";
+    while(getline(file, line)) {
+      while(line != "" && std::isspace(line.at(0))) {
+        line = line.substr(1, line.length());
+      }
+      if(line != "" && line.at(0) != '#') {
+        std::string keyword = line.substr(0, line.find(delimiter));
+        while(std::isspace(keyword.at(keyword.length() - 1))) {
+          keyword = keyword.substr(0, keyword.length() - 1);
+        }
+        std::string command = line.substr(line.find(delimiter) + 1, line.length() - 1);
+        while(std::isspace(command.at(0))) {
+          command = command.substr(1, command.length());
+        }
+        while(std::isspace(command.at(command.length() - 1))) {
+          command = command.substr(0, command.length() - 1);
+        }
+        addFurnitureToMap(database->getTargetFromMacro(keyword), command, map, database);
+      }
+    }
     map->calculateLights();
     file.close();
     database->addMap(map);
+  }
+
+  void addFurnitureToMap(int keyword, std::string command, Map * map, Database * database) {
+    std::stringstream * ss = new std::stringstream(command);
+    std::string name = String::extract(ss);
+    int x = String::extract_int(ss);
+    int y = String::extract_int(ss);
+    int z = 0;
+    float orientation = String::extract_float(ss);
+    if(keyword == FURNITURE_BASIC) {
+      map->addFurniture(new Furniture( (Furniture *) database->getFurniture(name), x, y, z, orientation));
+    }
+    else {
+      bool isLocked = String::extract_bool(ss);
+      std::string key_name = "";
+      if(isLocked) {
+        key_name = String::extract(ss);
+      }
+      if(keyword == FURNITURE_SWITCH) {
+        map->addFurniture(new SwitchFurniture( (SwitchFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_CRAFTING) {
+        map->addFurniture(new CraftingFurniture( (CraftingFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_SKILL) {
+        map->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_CONTAINER) {
+        long gold = String::extract_long(ss);
+        std::stringstream * ss_items = new std::stringstream(String::extract(ss));
+        std::list<Item *> * items = new std::list<Item *>();
+        while(ss_items->rdbuf()->in_avail() != 0) {
+          items->push_back((Item *) database->getItem(String::extract(ss_items)));
+        }
+        map->addFurniture(new ContainerFurniture( (ContainerFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, gold, *items));
+        delete ss_items;
+      }
+      if(keyword == FURNITURE_LINKED) {
+        int linked_x = String::extract_int(ss);
+        int linked_y = String::extract_int(ss);
+        map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
+      }
+    }
   }
 
   void ProjectileOpener(std::string fileName, Database * database) {
@@ -1183,6 +1308,9 @@ namespace FileOpener {
     }
     else if(last_folder == "items") {
       ItemOpener(fileName, database);
+    }
+    else if(last_folder == "furnitures") {
+      FurnitureOpener(fileName, database);
     }
     else if(last_folder == "maps") {
       MapOpener(fileName, database);

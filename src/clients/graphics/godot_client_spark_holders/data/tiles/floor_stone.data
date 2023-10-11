@@ -1,6 +1,0 @@
-name = TXT_FLOOR_STONE
-untraversable = false
-opaque = false
-solid = false
-light = 0
-ap_cost = 10.0

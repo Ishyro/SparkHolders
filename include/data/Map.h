@@ -13,6 +13,13 @@
 #include "data/Tile.h"
 #include "data/World.h"
 
+#include "data/furnitures/Furniture.h"
+#include "data/furnitures/ContainerFurniture.h"
+#include "data/furnitures/CraftingFurniture.h"
+#include "data/furnitures/LinkedFurniture.h"
+#include "data/furnitures/SkillFurniture.h"
+#include "data/furnitures/SwitchFurniture.h"
+
 typedef struct Loot {
   int type;
   float x;
@@ -74,6 +81,7 @@ class Map {
       }
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
+      furnitures = std::list<Furniture *>();
       loots = std::list<Loot *>();
     }
     Map(const Map * map, std::string name, int offsetX, int offsetY, int offsetZ):
@@ -94,6 +102,29 @@ class Map {
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
+      furnitures = std::list<Furniture *>();
+      for(Furniture * furniture : map->furnitures) {
+        switch(furniture->type) {
+          case FURNITURE_BASIC:
+            furnitures.push_back(new Furniture(furniture, this));
+            break;
+          case FURNITURE_CONTAINER:
+            furnitures.push_back(new ContainerFurniture( (ContainerFurniture *) furniture, this));
+            break;
+          case FURNITURE_CRAFTING:
+            furnitures.push_back(new CraftingFurniture( (CraftingFurniture *) furniture, this));
+            break;
+          case FURNITURE_LINKED:
+            furnitures.push_back(new LinkedFurniture( (LinkedFurniture *) furniture, this));
+            break;
+          case FURNITURE_SKILL:
+            furnitures.push_back(new SkillFurniture( (SkillFurniture *) furniture, this));
+            break;
+          case FURNITURE_SWITCH:
+            furnitures.push_back(new SwitchFurniture( (SwitchFurniture *) furniture, this));
+            break;
+        }
+      }
     }
 
     Map(Map * map, Character * player, Database * database, World * world):
@@ -222,6 +253,8 @@ class Map {
     Tile * getTile(float x, float y);
     int getLight(int x, int y);
     int getLight(float x, float y);
+    Furniture * getFurniture(int x, int y);
+    Furniture * getFurniture(float x, float y);
     void calculateLights();
     void propagateLight(int x, int y);
     void applyDayLight(int light);
@@ -232,6 +265,7 @@ class Map {
     void crumble(int x, int y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
+    void addFurniture(Furniture * f);
     void addLoot(Loot * l);
     void removeCharacter(Character * c);
     void killCharacter(Character * killer, Character * victim);
@@ -267,6 +301,7 @@ class Map {
     int mist_nb = 0;
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;
+    std::list<Furniture *> furnitures;
     std::list<Loot *> loots;
     std::vector<std::vector<Tile *>> tiles;
     std::vector<std::vector<int>> lights;

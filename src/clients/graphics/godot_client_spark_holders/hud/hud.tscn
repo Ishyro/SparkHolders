@@ -4,12 +4,16 @@
 [ext_resource type="PackedScene" uid="uid://dgv5p4kojbim" path="res://models/bar.tscn" id="2_8655o"]
 [ext_resource type="Texture2D" uid="uid://ct0d01n0csnmo" path="res://hud/label_background.png" id="2_sc5jq"]
 [ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="3_6r1hr"]
-[ext_resource type="Texture2D" uid="uid://d0q33vsgmvfxb" path="res://data/tiles/lava/Color.jpg" id="4_tsgti"]
-[ext_resource type="Texture2D" uid="uid://b84ksryi2usv1" path="res://data/tiles/soil/Color.jpg" id="5_m8mij"]
 [ext_resource type="Texture2D" uid="uid://dy3xhbt551cgh" path="res://hud/background.png" id="7_p1t0r"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yujpb"]
 font_color = Color(0.386719, 0.195313, 0.109375, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5phbt"]
+load_path = "res://.godot/imported/Color.jpg-af14bccc0d2e2f8ec2505fdb03afb7d1.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_mncm8"]
+load_path = "res://.godot/imported/Color.jpg-f2d3bd399b095e46b6ae395fd1486970.ctex"
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -1220,8 +1224,8 @@ size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
 texture_normal = ExtResource("3_6r1hr")
-texture_pressed = ExtResource("4_tsgti")
-texture_hover = ExtResource("5_m8mij")
+texture_pressed = SubResource("CompressedTexture2D_5phbt")
+texture_hover = SubResource("CompressedTexture2D_mncm8")
 ignore_texture_size = true
 stretch_mode = 1
 
@@ -1384,8 +1388,8 @@ size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
 texture_normal = ExtResource("3_6r1hr")
-texture_pressed = ExtResource("4_tsgti")
-texture_hover = ExtResource("5_m8mij")
+texture_pressed = SubResource("CompressedTexture2D_5phbt")
+texture_hover = SubResource("CompressedTexture2D_mncm8")
 ignore_texture_size = true
 stretch_mode = 1
 

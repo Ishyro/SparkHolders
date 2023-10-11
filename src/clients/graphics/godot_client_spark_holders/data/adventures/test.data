@@ -1,27 +1,17 @@
 # tiles
-data/tiles/door.data
-data/tiles/fireplace.data
-data/tiles/floor_stone.data
+data/tiles/floor_cut_stone.data
+data/tiles/floor_rock.data
 data/tiles/floor_wood.data
 data/tiles/grass.data
 data/tiles/lava.data
 data/tiles/mist.data
 data/tiles/soil.data
-data/tiles/torch_ground.data
-data/tiles/torch_wall.data
-data/tiles/tree.data
+data/tiles/road_stone.data
 data/tiles/void.data
-data/tiles/wall_stone.data
+data/tiles/wall_cut_stone.data
+data/tiles/wall_rock.data
 data/tiles/wall_wood.data
 data/tiles/water.data
-# maps
-data/maps/cave.data
-data/maps/central_square.data
-data/maps/house_north.data
-data/maps/house_east.data
-data/maps/house_south.data
-data/maps/house_west.data
-data/maps/open_grassland.data
 # effects
 data/effects/experience_10.data
 data/effects/satiety_10.data
@@ -147,3 +137,16 @@ data/skills/touch_some_grass.data
 data/ways/professions/ruminant.data
 # attributes with summoning skill
 # gear with special items
+# furnitures
+data/furnitures/door.data
+data/furnitures/fireplace.data
+data/furnitures/torch_ground.data
+data/furnitures/torch_wall.data
+# maps
+data/maps/cave.data
+data/maps/central_square.data
+data/maps/house_north.data
+data/maps/house_east.data
+data/maps/house_south.data
+data/maps/house_west.data
+data/maps/open_grassland.data

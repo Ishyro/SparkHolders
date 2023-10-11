@@ -1,0 +1,12 @@
+name = TXT_TORCH_WALL
+type = FURNITURE_SWITCH
+sizeX = 1
+sizeY = 1
+untraversable = false
+opaque = false
+solid = false
+light = 6
+untraversable_off = false
+opaque_off = false
+solid_off = false
+light_off = 0

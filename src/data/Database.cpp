@@ -13,6 +13,7 @@
 #include "data/Way.h"
 
 #include "data/items/Item.h"
+#include "data/furnitures/Furniture.h"
 
 #include "data/Database.h"
 
@@ -24,6 +25,7 @@ Database::Database() {
   effects = std::map<const std::string, const Effect * >();
   events = std::map<const std::string, const Event * >();
   items = std::map<const std::string, const Item * >();
+  furnitures = std::map<const std::string, const Furniture * >();
   gears = std::map<const std::string, const Gear * >();
   maps = std::map<const std::string, const Map * >();
   projectiles = std::map<const std::string, const Projectile * >();
@@ -118,6 +120,14 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_FOOD", ITEM_FOOD));
   macros.insert(std::make_pair("ITEM_MATERIAL", ITEM_MATERIAL));
   macros.insert(std::make_pair("ITEM_POTION", ITEM_POTION));
+
+  // furniture_type
+  macros.insert(std::make_pair("FURNITURE_BASIC", FURNITURE_BASIC)); 
+  macros.insert(std::make_pair("FURNITURE_CONTAINER", FURNITURE_CONTAINER)); 
+  macros.insert(std::make_pair("FURNITURE_CRAFTING", FURNITURE_CRAFTING)); 
+  macros.insert(std::make_pair("FURNITURE_LINKED", FURNITURE_LINKED)); 
+  macros.insert(std::make_pair("FURNITURE_SWITCH", FURNITURE_SWITCH)); 
+  macros.insert(std::make_pair("FURNITURE_SKILL", FURNITURE_SKILL)); 
 
   // event_type
   macros.insert(std::make_pair("EVENT_CALAMITY", EVENT_CALAMITY));
@@ -242,6 +252,7 @@ const Character * Database::getCharacter(const std::string character) { return c
 const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
 const Event * Database::getEvent(const std::string event) { return events.at(event); }
 const Item * Database::getItem(const std::string item) { return items.at(item); }
+const Furniture * Database::getFurniture(const std::string furniture) { return furnitures.at(furniture); }
 const Gear * Database::getGear(const std::string gear) { return gears.at(gear); }
 const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
@@ -273,6 +284,7 @@ void Database::addCharacter(const Character * character) { characters.insert(std
 void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
 void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
 void Database::addItem(const Item * item) { items.insert(std::make_pair(item->name, item)); }
+void Database::addFurniture(const Furniture * furniture) { furnitures.insert(std::make_pair(furniture->name, furniture)); }
 void Database::addGear(const Gear * gear) { gears.insert(std::make_pair(gear->name, gear)); }
 void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }

@@ -1,0 +1,6 @@
+name = TXT_WALL_CUT_STONE
+untraversable = true
+opaque = true
+solid = true
+light = 0
+ap_cost = 10.0

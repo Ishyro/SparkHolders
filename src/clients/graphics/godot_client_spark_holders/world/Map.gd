@@ -145,8 +145,6 @@ func set_navigation_mesh(character_id: int):
 
 func select_character(character_id: int):
 	var offset = Values.link.getOffsets(character_id)
-	var size = Values.link.getSizes(character_id)
-	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
 	Values.mode = Values.ACTION_MODE_MOVE
 	if n_floor.transform.origin.y + 0.5 != round_float(characters_data[character_id]["z"]):
 		var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))

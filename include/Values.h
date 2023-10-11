@@ -36,6 +36,13 @@ class ArmorItem;
 class WeaponItem;
 class SerialItem;
 class AmmunitionItem;
+class Furniture;
+class ActivableFurniture;
+class ContainerFurniture;
+class CraftingFurniture;
+class LinkedFurniture;
+class SkillFurniture;
+class SwitchFurniture;
 typedef struct CharacterDisplay CharacterDisplay;
 typedef struct Loot Loot;
 typedef struct MapLink MapLink;
@@ -135,6 +142,15 @@ class SpeechManager;
 #define ITEM_FOOD 1
 #define ITEM_MATERIAL 2
 #define ITEM_POTION 3
+
+// furniture_type
+
+#define FURNITURE_BASIC 1
+#define FURNITURE_CONTAINER 2
+#define FURNITURE_CRAFTING 3
+#define FURNITURE_LINKED 4
+#define FURNITURE_SWITCH 5
+#define FURNITURE_SKILL 6
 
 // event_type
 
