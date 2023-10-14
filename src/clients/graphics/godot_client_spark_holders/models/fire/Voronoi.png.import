@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5mv643dv037a"
-path.s3tc="res://.godot/imported/Flare00.PNG-feae70f0159f3b7baf09bbf0b6951320.s3tc.ctex"
+uid="uid://bqa3lex3vy7jo"
+path.s3tc="res://.godot/imported/Voronoi.png-fab9f2a1c8c2d03cd26e2e86d4b826b3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://models/fire/Flare00.PNG"
-dest_files=["res://.godot/imported/Flare00.PNG-feae70f0159f3b7baf09bbf0b6951320.s3tc.ctex"]
+source_file="res://models/fire/Voronoi.png"
+dest_files=["res://.godot/imported/Voronoi.png-fab9f2a1c8c2d03cd26e2e86d4b826b3.s3tc.ctex"]
 
 [params]
 

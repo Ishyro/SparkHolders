@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8nyibf0xr4f4"
-path.s3tc="res://.godot/imported/Flame02.png-df76ffdbadbc7d9de5216f671c401982.s3tc.ctex"
+path.s3tc="res://.godot/imported/Flame.png-38495bd4e83342cd72eba384258a0101.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://models/fire/Flame02.png"
-dest_files=["res://.godot/imported/Flame02.png-df76ffdbadbc7d9de5216f671c401982.s3tc.ctex"]
+source_file="res://models/fire/Flame.png"
+dest_files=["res://.godot/imported/Flame.png-38495bd4e83342cd72eba384258a0101.s3tc.ctex"]
 
 [params]
 
