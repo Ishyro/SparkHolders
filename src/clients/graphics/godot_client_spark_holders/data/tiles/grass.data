@@ -1,5 +1,5 @@
 name = TXT_GRASS
-untraversable = false
+unwalkable = false
 opaque = false
 solid = false
 light = 0

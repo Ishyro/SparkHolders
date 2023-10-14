@@ -6,21 +6,21 @@
 class Tile {
   public:
     const std::string name;
-    const bool untraversable;
+    const bool unwalkable;
     const bool opaque;
     const bool solid;
     const int light;
     const float ap_cost;
     Tile(
       std::string name,
-      bool untraversable,
+      bool unwalkable,
       bool opaque,
       bool solid,
       int light,
       float ap_cost
     ):
       name(name),
-      untraversable(untraversable),
+      unwalkable(unwalkable),
       opaque(opaque),
       solid(solid),
       light(light),

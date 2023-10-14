@@ -74,13 +74,13 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
   std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
   MapUtil::Pair next = MapUtil::Pair();
   if(startY > map->offsetY) {
-    if(!map->getTile(startX, startY - 1)->untraversable) {
+    if(!map->getTile(startX, startY - 1)->unwalkable) {
       next.x = startX;
       next.y = startY - 1;
       result.push_back(next);
     }
     if(startY < map->sizeY + map->offsetY - 1) {
-      if(!map->getTile(startX, startY + 1)->untraversable) {
+      if(!map->getTile(startX, startY + 1)->unwalkable) {
         next.x = startX;
         next.y = startY + 1;
         result.push_back(next);
@@ -88,26 +88,26 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
     }
   }
   if(startX > map->offsetX) {
-    if(!map->getTile(startX - 1, startY)->untraversable) {
+    if(!map->getTile(startX - 1, startY)->unwalkable) {
       next.x = startX - 1;
       next.y = startY;
       result.push_back(next);
     }
     if(startX < map->sizeX + map->offsetX - 1) {
-      if(!map->getTile(startX + 1, startY)->untraversable) {
+      if(!map->getTile(startX + 1, startY)->unwalkable) {
         next.x = startX + 1;
         next.y = startY;
         result.push_back(next);
       }
       if(startY > map->offsetY) {
-        if(!map->getTile(startX + 1, startY - 1)->untraversable) {
+        if(!map->getTile(startX + 1, startY - 1)->unwalkable) {
           next.x = startX + 1;
           next.y = startY - 1;
           result.push_back(next);
         }
       }
       if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getTile(startX + 1, startY + 1)->untraversable) {
+        if(!map->getTile(startX + 1, startY + 1)->unwalkable) {
           next.x = startX + 1;
           next.y = startY + 1;
           result.push_back(next);
@@ -117,13 +117,13 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
   }
   if(startX > map->offsetX) {
     if(startY > map->offsetY) {
-      if(!map->getTile(startX - 1, startY - 1)->untraversable) {
+      if(!map->getTile(startX - 1, startY - 1)->unwalkable) {
         next.x = startX - 1;
         next.y = startY - 1;
         result.push_back(next);
       }
       if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getTile(startX - 1, startY + 1)->untraversable) {
+        if(!map->getTile(startX - 1, startY + 1)->unwalkable) {
           next.x = startX - 1;
           next.y = startY + 1;
           result.push_back(next);

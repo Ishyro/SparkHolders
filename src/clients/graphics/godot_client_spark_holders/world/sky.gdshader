@@ -16,7 +16,7 @@ void sky() {
 	vec3 finalColor = mix(horizonColor, skyColor, col);
 	vec3 clouds = texture(cloud_texture, sky_uv * cloud_scale + TIME * cloud_direction).rgb - texture(cloud_texture2, sky_uv * cloud_scale + TIME * cloud_direction2).rgb;
 	if(EYEDIR.y <= 0.) {
-		COLOR = finalColor;
+		COLOR = finalColor * LIGHT0_ENERGY;
 	}
 	else {
 		COLOR = mix(finalColor * LIGHT0_ENERGY, clouds, 0.1);

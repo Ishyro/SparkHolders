@@ -26,6 +26,7 @@ Database::Database() {
   events = std::map<const std::string, const Event * >();
   items = std::map<const std::string, const Item * >();
   furnitures = std::map<const std::string, const Furniture * >();
+  furnituresFiles = std::map<const std::string, const std::string >();
   gears = std::map<const std::string, const Gear * >();
   maps = std::map<const std::string, const Map * >();
   projectiles = std::map<const std::string, const Projectile * >();
@@ -34,7 +35,7 @@ Database::Database() {
   pseudoSkills = std::map<const std::string, const PseudoSkill * >();
   speechs = std::map<const std::string, const Speech * >();
   tiles = std::map<const std::string, const Tile * >();
-  tilesRes = std::map<const std::string, const std::string >();
+  tilesFiles = std::map<const std::string, const std::string >();
   ways = std::map<const std::string, const Way * >();
   relations = std::map<const std::string, std::map<const std::string, int>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
@@ -253,6 +254,7 @@ const Effect * Database::getEffect(const std::string effect) { return effects.at
 const Event * Database::getEvent(const std::string event) { return events.at(event); }
 const Item * Database::getItem(const std::string item) { return items.at(item); }
 const Furniture * Database::getFurniture(const std::string furniture) { return furnitures.at(furniture); }
+const std::string Database::getFurnitureFile(const std::string furniture) { return furnituresFiles.at(furniture); }
 const Gear * Database::getGear(const std::string gear) { return gears.at(gear); }
 const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
@@ -262,7 +264,7 @@ const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { re
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
 std::map<const std::string, const Tile *> Database::getAvaillableTiles() { return tiles; }
-const std::string Database::getTileRes(const std::string tile) { return tilesRes.at(tile); }
+const std::string Database::getTileFile(const std::string tile) { return tilesFiles.at(tile); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
   if(team1 == team2) {
@@ -285,6 +287,7 @@ void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(
 void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
 void Database::addItem(const Item * item) { items.insert(std::make_pair(item->name, item)); }
 void Database::addFurniture(const Furniture * furniture) { furnitures.insert(std::make_pair(furniture->name, furniture)); }
+void Database::addFurnitureFile(const std::string furniture, const std::string path) { furnituresFiles.insert(std::make_pair(furniture, path)); }
 void Database::addGear(const Gear * gear) { gears.insert(std::make_pair(gear->name, gear)); }
 void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
@@ -293,7 +296,7 @@ void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skil
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
-void Database::addTileRes(const std::string tile, const std::string path) { tilesRes.insert(std::make_pair(tile, path)); }
+void Database::addTileFile(const std::string tile, const std::string path) { tilesFiles.insert(std::make_pair(tile, path)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addRelation(const std::string team1, const std::string team2, int relation) {
   if(relations.find(team1) == relations.end()) {

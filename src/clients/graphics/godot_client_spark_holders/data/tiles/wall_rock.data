@@ -1,5 +1,5 @@
 name = TXT_WALL_ROCK
-untraversable = true
+unwalkable = true
 opaque = true
 solid = true
 light = 0

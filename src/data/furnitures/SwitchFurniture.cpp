@@ -1,11 +1,11 @@
 #include "data/furnitures/SwitchFurniture.h"
 
-bool SwitchFurniture::getUntraversable() { 
+bool SwitchFurniture::getUnwalkable() { 
     if(isOn) {
-        return untraversable;
+        return unwalkable;
     }
     else {
-        return untraversable_off;
+        return unwalkable_off;
     }
 }
 bool SwitchFurniture::getOpaque() { 

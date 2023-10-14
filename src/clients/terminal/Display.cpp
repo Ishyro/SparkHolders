@@ -98,7 +98,7 @@ namespace Display {
       for(int x = map->offsetX; x < map->sizeX + map->offsetX; x++) {
         std::string to_print = "·";
         if(map->getTile(x, y) != nullptr && map->getTile(x, y)->name != "TXT_VOID") {
-          if(map->getTile(x, y)->untraversable) {
+          if(map->getTile(x, y)->unwalkable) {
             to_print = "#";
           }
           if(map->getTile(x, y)->name == "TXT_MIST") { // unseen

@@ -89,7 +89,10 @@ func _process(_delta):
 			if Values.selected_projectile:
 				hud.display_projectile(Values.selected_projectile, map.projectiles_data[Values.selected_projectile.id])
 			if Values.selected_target:
-				hud.display_target(Values.selected_target, map.characters_data[Values.selected_target.id])
+				if map.characters_data.has(Values.selected_target.id):
+					hud.display_target(Values.selected_target, map.characters_data[Values.selected_target.id])
+				else:
+					Values.selected_target = null
 			if Values.selected_team:
 				hud.display_team(Values.selected_team, map.characters_data[Values.selected_team.id])
 			if Values.selected_tile:

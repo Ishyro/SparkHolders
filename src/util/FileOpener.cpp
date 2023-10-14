@@ -772,15 +772,15 @@ namespace FileOpener {
   }
 
   
-  void FurnitureOpener(std::string fileName, Database * database) {
+  std::string FurnitureOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
     int sizeX = stoi(values.at("sizeX"));
     int sizeY = stoi(values.at("sizeY"));
-    std::istringstream is_untraversable(values.at("untraversable"));
-    bool untraversable;
-    is_untraversable >> std::boolalpha >> untraversable;
+    std::istringstream is_unwalkable(values.at("unwalkable"));
+    bool unwalkable;
+    is_unwalkable >> std::boolalpha >> unwalkable;
     std::istringstream is_opaque(values.at("opaque"));
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
@@ -788,29 +788,39 @@ namespace FileOpener {
     bool solid;
     is_solid >> std::boolalpha >> solid;
     int light = stoi(values.at("light"));
+    float fire_size = 0.F;
+    float fire_posX = 0.F;
+    float fire_posY = 0.F;
+    float fire_posZ = 0.F;
+    if(light != 0) {
+      fire_size = stof(values.at("fire_size"));
+      fire_posX = stof(values.at("fire_posX"));
+      fire_posY = stof(values.at("fire_posY"));
+      fire_posZ = stof(values.at("fire_posZ"));
+    }
     Furniture * furniture;
     switch(type) {
       case FURNITURE_BASIC:
-        furniture = new Furniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        furniture = new Furniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CONTAINER:
-        furniture = new ContainerFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        furniture = new ContainerFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CRAFTING:
-        furniture = new CraftingFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        furniture = new CraftingFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_LINKED:
-        furniture = new LinkedFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light);
+        furniture = new LinkedFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_SKILL: {
         Skill * skill = (Skill *) database->getSkill(values.at("skill"));
-        furniture = new SkillFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light, skill);
+        furniture = new SkillFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ, skill);
         break;
       }
       case FURNITURE_SWITCH: {
-        std::istringstream is_untraversable_off(values.at("untraversable_off"));
-        bool untraversable_off;
-        is_untraversable_off >> std::boolalpha >> untraversable_off;
+        std::istringstream is_unwalkable_off(values.at("unwalkable_off"));
+        bool unwalkable_off;
+        is_unwalkable_off >> std::boolalpha >> unwalkable_off;
         std::istringstream is_opaque_off(values.at("opaque_off"));
         bool opaque_off;
         is_opaque_off >> std::boolalpha >> opaque_off;
@@ -818,11 +828,19 @@ namespace FileOpener {
         bool solid_off;
         is_solid_off >> std::boolalpha >> solid_off;
         int light_off = stoi(values.at("light_off"));
-        furniture = new SwitchFurniture(name, type, sizeX, sizeY, untraversable, opaque, solid, light, untraversable_off, opaque_off, solid_off, light_off);
+        // case where the light source is off when the furniture is on
+        if(light == 0 && light_off > 0) {
+          fire_size = stof(values.at("fire_size"));
+          fire_posX = stof(values.at("fire_posX"));
+          fire_posY = stof(values.at("fire_posY"));
+          fire_posZ = stof(values.at("fire_posZ"));
+        }
+        furniture = new SwitchFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ, unwalkable_off, opaque_off, solid_off, light_off);
         break;
       }
     }
     database->addFurniture(furniture);
+    return name;
   }
 
   void MapOpener(std::string fileName, Database * database) {
@@ -1147,9 +1165,9 @@ namespace FileOpener {
   std::string TileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::istringstream is_untraversable(values.at("untraversable"));
-    bool untraversable;
-    is_untraversable >> std::boolalpha >> untraversable;
+    std::istringstream is_unwalkable(values.at("unwalkable"));
+    bool unwalkable;
+    is_unwalkable >> std::boolalpha >> unwalkable;
     std::istringstream is_opaque(values.at("opaque"));
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
@@ -1158,7 +1176,7 @@ namespace FileOpener {
     is_solid >> std::boolalpha >> solid;
     int light = stoi(values.at("light"));
     float ap_cost = _stof(values.at("ap_cost"));
-    Tile * tile = new Tile(name, untraversable, opaque, solid, light, ap_cost);
+    Tile * tile = new Tile(name, unwalkable, opaque, solid, light, ap_cost);
     database->addTile(tile);
     return name;
   }
@@ -1310,7 +1328,10 @@ namespace FileOpener {
       ItemOpener(fileName, database);
     }
     else if(last_folder == "furnitures") {
-      FurnitureOpener(fileName, database);
+      std::string furniture_name = FurnitureOpener(fileName, database);
+      if(!isServer) {
+        database->addFurnitureFile(furniture_name, std::regex_replace(fileName, std::regex(".data"), ".glb"));
+      }
     }
     else if(last_folder == "maps") {
       MapOpener(fileName, database);
@@ -1333,7 +1354,7 @@ namespace FileOpener {
     else if(last_folder == "tiles") {
       std::string tile_name = TileOpener(fileName, database);
       if(!isServer) {
-        database->addTileRes(tile_name, std::regex_replace(fileName, std::regex(".data"), ".tres"));
+        database->addTileFile(tile_name, std::regex_replace(fileName, std::regex(".data"), ".tres"));
       }
     }
     else if((last_folder == "ways") ||

@@ -121,7 +121,7 @@ Array GodotLink::getControlledParty() {
 Dictionary GodotLink::getCharacters() {
   Dictionary result = Dictionary();
   for(CharacterDisplay * character : state->characters) {
-    result[ (int64_t) character->id] = getDataFromCharacter(character->id);
+    result[ (int64_t) character->id] = getDataFromCharacter(character);
   }
   return result;
 }
@@ -129,7 +129,17 @@ Dictionary GodotLink::getCharacters() {
 Dictionary GodotLink::getProjectiles() {
   Dictionary result = Dictionary();
   for(ProjectileDisplay * projectile : state->projectiles) {
-    result[ (int64_t) projectile->id] = getDataFromProjectile(projectile->id);
+    result[ (int64_t) projectile->id] = getDataFromProjectile(projectile);
+  }
+  return result;
+}
+
+Dictionary GodotLink::getFurnitures() {
+  Dictionary result = Dictionary();
+  for(auto pair : state->maps) {
+    for(Furniture * furniture : pair.second->getFurnitures()) {
+      result[Vector3(furniture->getY(), furniture->getZ(), furniture->getX())] = getDataFromFurniture(furniture);
+    }
   }
   return result;
 }
@@ -170,81 +180,99 @@ int64_t GodotLink::getMapFromCoords(Vector3 coords) {
 Dictionary GodotLink::getDataFromTile(String tile_name) {
   Dictionary result = Dictionary();
   Tile * tile = (Tile *) link->getAdventure()->getDatabase()->getTile(std::string(tile_name.utf8().get_data()));
-  result["untraversable"] = tile->untraversable;
+  result["unwalkable"] = tile->unwalkable;
   result["opaque"] = tile->opaque;
   result["solid"] = tile->solid;
   result["light"] = tile->light;
   result["ap_cost"] = tile->ap_cost;
-  result["path"] = link->getAdventure()->getDatabase()->getTileRes(std::string(tile_name.utf8().get_data())).c_str();
+  result["path"] = link->getAdventure()->getDatabase()->getTileFile(std::string(tile_name.utf8().get_data())).c_str();
   return result;
 }
 
-Dictionary GodotLink::getDataFromCharacter(long id) {
+Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   Dictionary result = Dictionary();
-  for(CharacterDisplay * character : state->characters) {
-    if(character->id == id) {
-      result["name"] = character->name.c_str();
-      result["hp"] = character->hp;
-      result["maxHp"] = character->maxHp;
-      result["mana"] = character->mana;
-      result["maxMana"] = character->maxMana;
-      result["stamina"] = character->stamina;
-      result["satiety"] = character->satiety;
-      result["soulBurn"] = character->soulBurn;
-      result["soulBurnTreshold"] = character->soulBurnTreshold;
-      result["flow"] = character->flow;
-      result["player_character"] = character->player_character;
-      result["type"] = character->type;
-      result["x"] = character->x;
-      result["y"] = character->y;
-      result["z"] = character->z;
-      result["size"] = character->size;
-      result["orientation"] = character->orientation;
-      result["team"] = character->team.c_str();
-      result["armor"] = character->armor;
-      result["xp"] = character->xp;
-      result["level"] = character->level;
-      Array damage_reductions = Array();
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damage_reductions.push_back(character->damage_reductions[i]);
-      }
-      result["damage_reductions"] = damage_reductions;
-      Array damages = Array();
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damages.push_back(character->damages[i]);
-      }
-      result["damages"] = damages;
-      result["teamRelation"] = character->teamRelation;
-      break;
-    }
+  result["name"] = character->name.c_str();
+  result["hp"] = character->hp;
+  result["maxHp"] = character->maxHp;
+  result["mana"] = character->mana;
+  result["maxMana"] = character->maxMana;
+  result["stamina"] = character->stamina;
+  result["satiety"] = character->satiety;
+  result["soulBurn"] = character->soulBurn;
+  result["soulBurnTreshold"] = character->soulBurnTreshold;
+  result["flow"] = character->flow;
+  result["player_character"] = character->player_character;
+  result["type"] = character->type;
+  result["x"] = character->x;
+  result["y"] = character->y;
+  result["z"] = character->z;
+  result["size"] = character->size;
+  result["orientation"] = character->orientation;
+  result["team"] = character->team.c_str();
+  result["armor"] = character->armor;
+  result["xp"] = character->xp;
+  result["level"] = character->level;
+  Array damage_reductions = Array();
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damage_reductions.push_back(character->damage_reductions[i]);
   }
+  result["damage_reductions"] = damage_reductions;
+  Array damages = Array();
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damages.push_back(character->damages[i]);
+  }
+  result["damages"] = damages;
+  result["teamRelation"] = character->teamRelation;
   return result;
 }
 
-Dictionary GodotLink::getDataFromProjectile(long id) {
+Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   Dictionary result = Dictionary();
-  for(ProjectileDisplay * projectile : state->projectiles) {
-    if(projectile->id == id) {
-      result["name"] = projectile->name.c_str();
-      result["projectile_type"] = projectile->projectile_type;
-      result["size"] = projectile->size;
-      result["x"] = projectile->x;
-      result["y"] = projectile->y;
-      result["z"] = projectile->z;
-      result["orientation"] = projectile->orientation;
-      Array damages = Array();
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damages.push_back(projectile->damages[i]);
-      }
-      result["damages"] = damages;
-      result["speed"] = projectile->speed;
-      result["area"] = projectile->area;
-      result["waste_per_tick"] = projectile->waste_per_tick;
-      result["waste_per_area"] = projectile->waste_per_area;
-      result["waste_per_hit"] = projectile->waste_per_hit;
-      break;
-    }
+  result["name"] = projectile->name.c_str();
+  result["projectile_type"] = projectile->projectile_type;
+  result["size"] = projectile->size;
+  result["x"] = projectile->x;
+  result["y"] = projectile->y;
+  result["z"] = projectile->z;
+  result["orientation"] = projectile->orientation;
+  Array damages = Array();
+  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    damages.push_back(projectile->damages[i]);
   }
+  result["damages"] = damages;
+  result["speed"] = projectile->speed;
+  result["area"] = projectile->area;
+  result["waste_per_tick"] = projectile->waste_per_tick;
+  result["waste_per_area"] = projectile->waste_per_area;
+  result["waste_per_hit"] = projectile->waste_per_hit;
+  return result;
+}
+
+Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
+  Dictionary result = Dictionary();
+  result["name"] = furniture->name.c_str();
+  result["type"] = furniture->type;
+  result["sizeX"] = furniture->sizeX;
+  result["sizeY"] = furniture->sizeY;
+  result["orientation"] = furniture->getOrientation();
+  result["opaque"] = furniture->getOpaque();
+  result["solid"] = furniture->getSolid();
+  result["unwalkable"] = furniture->getUnwalkable();
+  result["light"] = furniture->getLight();
+  if(furniture->getLight() != 0) {
+    result["fire_type"] = 0; // unused
+    result["fire_pos"] = Vector3(furniture->fire_posX, furniture->fire_posY, furniture->fire_posZ);
+    result["fire_size"] = furniture->fire_size;
+  }
+  String path = link->getAdventure()->getDatabase()->getFurnitureFile(furniture->name).c_str();
+  if(furniture->type == FURNITURE_SWITCH) {
+    result["isOn"] = ((SwitchFurniture *) furniture)->getIsOn();
+    result["path_off"] = path.replace(".glb", "_off.glb");
+  }
+  else {
+    result["isOn"] = true;
+  }
+  result["path"] = path;
   return result;
 }
 
@@ -360,6 +388,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
+  ClassDB::bind_method(D_METHOD("getFurnitures"), &GodotLink::getFurnitures);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getCurrentRegions"), &GodotLink::getCurrentRegions);
   ClassDB::bind_method(D_METHOD("getMapFromCoords", "coords"), &GodotLink::getMapFromCoords);

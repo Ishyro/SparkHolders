@@ -15,20 +15,28 @@ class ContainerFurniture : public ActivableFurniture  {
       const int type,
       const int sizeX,
       const int sizeY,
-      const bool untraversable,
+      const bool unwalkable,
       const bool opaque,
       const bool solid,
-      const int light
+      const int light,
+      const float fire_size,
+      const float fire_posX,
+      const float fire_posY,
+      const float fire_posZ
     ):
       ActivableFurniture(
         name,
         type,
         sizeX,
         sizeY,
-        untraversable,
+        unwalkable,
         opaque,
         solid,
-        light
+        light,
+        fire_size,
+        fire_posX,
+        fire_posY,
+        fire_posZ
       )
     {}
     ContainerFurniture(

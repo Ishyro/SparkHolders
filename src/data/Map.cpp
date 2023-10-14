@@ -19,6 +19,7 @@
 
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
+std::list<Furniture *> Map::getFurnitures() { return furnitures; }
 std::list<Loot *> Map::getLoots() { return loots; }
 bool Map::allowedCoords(int x, int y) { return y >= offsetY && y < sizeY + offsetY && x >= offsetX && x < sizeX + offsetX; }
 bool Map::allowedCoords(float x, float y) {
@@ -53,6 +54,42 @@ Furniture * Map::getFurniture(float x, float y) {
     }
   }
   return nullptr;
+}
+
+bool Map::isOpaque(int x, int y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->opaque) || (furniture != nullptr && furniture->getOpaque());
+}
+
+bool Map::isOpaque(float x, float y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->opaque) || (furniture != nullptr && furniture->getOpaque());
+}
+
+bool Map::isSolid(int x, int y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->solid) || (furniture != nullptr && furniture->getSolid());
+}
+
+bool Map::isSolid(float x, float y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->solid) || (furniture != nullptr && furniture->getSolid());
+}
+
+bool Map::isUnwalkable(int x, int y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->unwalkable) || (furniture != nullptr && furniture->getUnwalkable());
+}
+
+bool Map::isUnwalkable(float x, float y) {
+  Tile * tile = getTile(x, y);
+  Furniture * furniture = getFurniture(x, y);
+  return (tile != nullptr && tile->unwalkable) || (furniture != nullptr && furniture->getUnwalkable());
 }
 
 void Map::applyDayLight(int light) { this->light = light; }
@@ -173,17 +210,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   return true;
 }
 
-int Map::canSee(
-  Character * watcher,
-  Tile * mist,
-  int offsetX,
-  int offsetY,
-  int offsetZ,
-  int sizeX,
-  int sizeY,
-  std::vector<std::vector<Tile *>>& tiles,
-  std::vector<std::vector<int>>& lights
-) {
+int Map::canSee(Character * watcher, Tile * mist) {
   int mist_nb = 0;
   std::vector<std::vector<Tile *>> old_tiles = tiles;
   int range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
@@ -202,7 +229,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -221,7 +248,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -240,7 +267,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -259,7 +286,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -278,7 +305,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -297,7 +324,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -316,7 +343,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -335,7 +362,7 @@ int Map::canSee(
         tiles[j][i] = mist;
         mist_nb++;
       }
-      if(tiles[j][i]->opaque) {
+      if(isOpaque(i + offsetX, j + offsetY)) {
         unseen = true;
       }
       if(lights[j][i] < 0 - watcher->getVisionPower()) {
@@ -708,7 +735,7 @@ bool Map::tryMove(Character * c, float destX, float destY) {
   if(c->isEtheral()) {
     return true;
   }
-  if(getTile(destX, destY)->solid || (getTile(destX, destY)->untraversable && !c->isFlying())) {
+  if(getTile(destX, destY)->solid || (getTile(destX, destY)->unwalkable && !c->isFlying())) {
     return false;
   }
   for(Character * other : characters) {
@@ -729,7 +756,7 @@ float Map::move(Character * c, float destX, float destY, World * world) {
   float range = MapUtil::distance(c->getX(), c->getY(), x, y);
   std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), range);
   for(MapUtil::Pair pair : path) {
-    if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getTile(pair.x, pair.y)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->untraversable)) {
+    if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getTile(pair.x, pair.y)->solid || (!c->isFlying() && getTile(pair.y, pair.x)->unwalkable)) {
       break;
     }
     x = pair.x;
@@ -769,7 +796,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   MapLink * link = nullptr;
   std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
   for(MapUtil::Pair pair : path) {
-    if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getTile(pair.x, pair.y)->solid || (!c->isFlying() && getTile(pair.x, pair.y)->untraversable)) {
+    if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getTile(pair.x, pair.y)->solid || (!c->isFlying() && getTile(pair.x, pair.y)->unwalkable)) {
       break;
     }
     link = world->getMapLink(pair.y, pair.x, id);
@@ -914,7 +941,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   }
   next_x = MapUtil::round(next_x);
   next_y = MapUtil::round(next_y);
-  if(next_x < offsetX || std::floor(next_x) >= sizeX + offsetX || next_y < offsetY || std::floor(next_y) >= sizeY + offsetY || getTile(next_x, next_y)->solid || (!c->isFlying() && getTile(next_x, next_y)->untraversable)) {
+  if(next_x < offsetX || std::floor(next_x) >= sizeX + offsetX || next_y < offsetY || std::floor(next_y) >= sizeY + offsetY || getTile(next_x, next_y)->solid || (!c->isFlying() && getTile(next_x, next_y)->unwalkable)) {
     c->move(lim_x, lim_y, offsetZ, orientation, world);
     return -1;
   }
@@ -980,7 +1007,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           next_dx = (next_dx == low_limit ? high_limit : low_limit);
           next_dy = (next_dy == low_limit ? high_limit : low_limit);
         }
-        if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(next_x, next_y)->solid || (!c->isFlying() && next_map->getTile(next_x, next_y)->untraversable)) {
+        if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(next_x, next_y)->solid || (!c->isFlying() && next_map->getTile(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_y, lim_x)) {
             if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
               c->move(destX, destY, next_map->offsetZ, orientation, world);
@@ -1063,7 +1090,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         while(dest_orientation >= 360.F) {
           dest_orientation -= 360.F;
         }
-        if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(next_x, next_y)->solid || (!c->isFlying() && next_map->getTile(next_x, next_y)->untraversable)) {
+        if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getTile(next_x, next_y)->solid || (!c->isFlying() && next_map->getTile(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_x, lim_y)) {
             if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
               c->move(destX, destY, offsetZ, orientation, world);

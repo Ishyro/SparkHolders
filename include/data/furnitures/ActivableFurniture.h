@@ -7,13 +7,8 @@
 
 #include "Values.h"
 
-namespace furniture {
-  static long id_cpt = 0;
-}
-
 class ActivableFurniture : public Furniture {
   public:
-    const long id;
     const bool isLocked;
     const std::string key_name;
     
@@ -22,22 +17,29 @@ class ActivableFurniture : public Furniture {
       const int type,
       const int sizeX,
       const int sizeY,
-      const bool untraversable,
+      const bool unwalkable,
       const bool opaque,
       const bool solid,
-      const int light
+      const int light,
+      const float fire_size,
+      const float fire_posX,
+      const float fire_posY,
+      const float fire_posZ
     ):
       Furniture(
         name,
         type,
         sizeX,
         sizeY,
-        untraversable,
+        unwalkable,
         opaque,
         solid,
-        light
+        light,
+        fire_size,
+        fire_posX,
+        fire_posY,
+        fire_posZ
       ),
-      id(0),
       isLocked(false),
       key_name("")
     {}
@@ -57,14 +59,12 @@ class ActivableFurniture : public Furniture {
         z,
         orientation
       ),
-      id(0),
       isLocked(isLocked),
       key_name(key_name)
     {}
     
     ActivableFurniture(ActivableFurniture * furniture, Map * map):
       Furniture(furniture, map),
-      id(++furniture::id_cpt),
       isLocked(furniture->isLocked),
       key_name(furniture->key_name)
     {}

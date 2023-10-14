@@ -21,6 +21,7 @@ class Database {
     const Item * getItem(const std::string item);
     const Gear * getGear(const std::string gear);
     const Furniture * getFurniture(const std::string furniture);
+    const std::string getFurnitureFile(const std::string furniture);
     const Map * getMap(const std::string map);
     const Projectile * getProjectile(const std::string projectile);
     const Quest * getQuest(const std::string quest);
@@ -28,7 +29,7 @@ class Database {
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
     const Tile * getTile(const std::string tile);
-    const std::string getTileRes(const std::string tile);
+    const std::string getTileFile(const std::string tile);
     std::map<const std::string, const Tile *> getAvaillableTiles();
     const Way * getWay(const std::string way);
     const int getRelation(const std::string team1, const std::string team2);
@@ -41,6 +42,7 @@ class Database {
     void addEvent(const Event * event);
     void addItem(const Item * item);
     void addFurniture(const Furniture * furniture);
+    void addFurnitureFile(const std::string furniture, const std::string path);
     void addGear(const Gear * gear);
     void addMap(const Map * map);
     void addProjectile(const Projectile * projectile);
@@ -49,7 +51,7 @@ class Database {
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
     void addTile(const Tile * tile);
-    void addTileRes(const std::string tile, const std::string path);
+    void addTileFile(const std::string tile, const std::string path);
     void addWay(const Way * way);
     void addRelation(const std::string team1, const std::string team2, int relation);
     void addWayImcompatibility(const std::string way1, const std::string way2);
@@ -64,6 +66,7 @@ class Database {
     std::map<const std::string, const Event * > events;
     std::map<const std::string, const Item * > items;
     std::map<const std::string, const Furniture * > furnitures;
+    std::map<const std::string, const std::string> furnituresFiles;
     std::map<const std::string, const Gear * > gears;
     std::map<const std::string, const Map * > maps;
     std::map<const std::string, const Projectile * > projectiles;
@@ -72,7 +75,7 @@ class Database {
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
     std::map<const std::string, const Tile * > tiles;
-    std::map<const std::string, const std::string> tilesRes;
+    std::map<const std::string, const std::string> tilesFiles;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, std::map<const std::string, int>> relations;
     std::list<std::pair<const std::string, const std::string>> waysIncompatibilities;

@@ -1,5 +1,5 @@
 name = TXT_LAVA
-untraversable = true
+unwalkable = true
 opaque = false
 solid = false
 light = 5

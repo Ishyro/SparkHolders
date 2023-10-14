@@ -52,7 +52,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
       removePlayer(c);
     }
   }
-  if(map->getTile(x, y)->untraversable) {
+  if(map->getTile(x, y)->unwalkable) {
     world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
     delete character;
     return;

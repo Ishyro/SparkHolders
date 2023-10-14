@@ -22,12 +22,16 @@ var furnitures = {}
 var tiles_data = {}
 var characters_data = {}
 var projectiles_data = {}
+var furnitures_data = {}
+var base_furnitures = {}
+var base_furnitures_off = {}
 var materials = {}
 
 var tiles_img = {}
 
 var board_material = preload("res://world/board_material.tres")
 var phantom_material = preload("res://models/phantom.tres")
+var base_fire = preload("res://models/fire.tscn")
 var grid_material = StandardMaterial3D.new()
 var light_0 = StandardMaterial3D.new()
 var light_1 = StandardMaterial3D.new()
@@ -105,6 +109,7 @@ func _ready():
 	for character_id in owned_characters:
 		init_tiles(character_id)
 	regions = Values.link.getCurrentRegions()
+	furnitures_data = Values.link.getFurnitures()
 	display_map()
 	var map_rid = get_world_3d().get_navigation_map()
 	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
@@ -179,12 +184,17 @@ func state_updater():
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
+			var update = false
 			for character_id in owned_characters:
 				if Values.link.needTilesUpdate(character_id):
 					init_tiles(character_id)
 				else:
 					create_tiles(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
-			display_map()
+				if floor(next_characters_data[character_id]["y"]) != floor(characters_data[character_id]["y"]) || floor(next_characters_data[character_id]["x"]) != floor(characters_data[character_id]["x"]):
+					update = true
+			if update:
+				furnitures_data = Values.link.getFurnitures()
+				display_map()
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
@@ -354,12 +364,19 @@ func display_map():
 				var coord = Vector3.ZERO
 				if tiles_data[tile_type]["solid"]:
 					coord = Vector3(tile.x + 0.5, tile.y + 1.5, tile.z + 0.5)
-				elif tiles_data[tile_type]["untraversable"]:
+				elif tiles_data[tile_type]["unwalkable"]:
 					coord = Vector3(tile.x + 0.5, tile.y + 0.4, tile.z + 0.5)
 				else:
 					coord = Vector3(tile.x + 0.5, tile.y + 0.5, tile.z + 0.5)
 				multiMeshInstances[tile_type].multimesh.set_instance_transform(tile_current[tile_type], Transform3D.IDENTITY.translated(coord))
 				tile_current[tile_type] = tile_current[tile_type] + 1
+	# clear furnitures
+	for coord in furnitures.keys():
+		var furniture = furnitures[coord]
+		n_furnitures.remove_child(furniture)
+		furnitures.erase(furniture)
+	for coord in furnitures_data:
+		add_furniture(furnitures_data[coord], coord)
 
 func initialize_tile(tile: String):
 	if tile != "TXT_MIST" && tile != "TXT_VOID":
@@ -371,7 +388,7 @@ func initialize_tile(tile: String):
 		var mesh = BoxMesh.new()
 		if tiles_data[tile]["solid"]:
 			mesh.set_size(Vector3(1, 3, 1))
-		elif tiles_data[tile]["untraversable"]:
+		elif tiles_data[tile]["unwalkable"]:
 			mesh = BoxMesh.new()
 			mesh.set_size(Vector3(1, 0.8, 1))
 		else:
@@ -386,6 +403,29 @@ func initialize_tile(tile: String):
 		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE":
 			var img = materials[tile].albedo_texture.get_image()
 			tiles_img[tile] = ImageTexture.create_from_image(img)
+
+func add_furniture(furniture_data: Dictionary, coords: Vector3):
+	if !base_furnitures.has(furniture_data["name"]):
+		base_furnitures[furniture_data["name"]] = load(furniture_data["path"])
+		if furniture_data.has("path_off"):
+			base_furnitures_off[furniture_data["name"]] = load(furniture_data["path_off"])
+	var furniture
+	if  furniture_data["isOn"]:
+		furniture = base_furnitures[furniture_data["name"]].instantiate()
+	else:
+		furniture = base_furnitures_off[furniture_data["name"]].instantiate()
+	
+	if furniture_data["light"] > 0:
+		furniture.add_child(add_fire(furniture_data["fire_pos"], furniture_data["fire_size"], furniture_data["light"]))
+	furniture.transform.origin = Vector3(coords.x + 0.5, coords.y + 1, coords.z + 0.5)
+	furniture.rotation_degrees = Vector3(0, furniture_data["orientation"], 0)
+	furnitures[coords] = furniture
+	n_furnitures.add_child(furniture)
+		
+func add_fire(coords: Vector3, size: float, light_power: int):
+	var fire = base_fire.instantiate()
+	fire.initialize(coords, size, light_power)
+	return fire
 
 func get_color(character_data: Dictionary):
 	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):

@@ -1,5 +1,5 @@
 name = TXT_VOID
-untraversable = true
+unwalkable = true
 opaque = true
 solid = true
 light = 0

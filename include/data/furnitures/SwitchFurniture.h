@@ -14,11 +14,15 @@ class SwitchFurniture : public ActivableFurniture  {
       const int type,
       const int sizeX,
       const int sizeY,
-      const bool untraversable_on,
+      const bool unwalkable_on,
       const bool opaque_on,
       const bool solid_on,
       const int light_on,
-      const bool untraversable_off,
+      const float fire_size,
+      const float fire_posX,
+      const float fire_posY,
+      const float fire_posZ,
+      const bool unwalkable_off,
       const bool opaque_off,
       const bool solid_off,
       const int light_off
@@ -28,15 +32,20 @@ class SwitchFurniture : public ActivableFurniture  {
         type,
         sizeX,
         sizeY,
-        untraversable_on,
+        unwalkable_on,
         opaque_on,
         solid_on,
-        light_on
+        light_on,
+        fire_size,
+        fire_posX,
+        fire_posY,
+        fire_posZ
       ),
-      untraversable_off(untraversable_off),
+      unwalkable_off(unwalkable_off),
       opaque_off(opaque_off),
       solid_off(solid_off),
-      light_off(light_off)
+      light_off(light_off),
+      isOn(true)
     {}
     SwitchFurniture(
       SwitchFurniture * furniture,
@@ -56,22 +65,23 @@ class SwitchFurniture : public ActivableFurniture  {
         isLocked,
         key_name
       ),
-      untraversable_off(furniture->untraversable_off),
+      unwalkable_off(furniture->unwalkable_off),
       opaque_off(furniture->opaque_off),
       solid_off(furniture->solid_off),
-      light_off(furniture->light_off)
+      light_off(furniture->light_off),
+      isOn(furniture->isOn)
     {}
     SwitchFurniture(SwitchFurniture * furniture, Map * map):
       ActivableFurniture(furniture, map),
       orientation_off(furniture->orientation_off),
-      untraversable_off(furniture->untraversable_off),
+      unwalkable_off(furniture->unwalkable_off),
       opaque_off(furniture->opaque_off),
       solid_off(furniture->solid_off),
       light_off(furniture->light_off),
       isOn(furniture->isOn)
     {}
     float getOrientation();
-    bool getUntraversable();
+    bool getUnwalkable();
     bool getOpaque();
     bool getSolid();
     int getLight();
@@ -80,11 +90,11 @@ class SwitchFurniture : public ActivableFurniture  {
 
   private:
     float orientation_off;
-    bool untraversable_off;
+    bool unwalkable_off;
     bool opaque_off;
     bool solid_off;
     int light_off;
-    bool isOn = true;
+    bool isOn;
 };
 
 #endif // _SWITCH_FURNITURE_H_

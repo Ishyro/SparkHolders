@@ -20,6 +20,8 @@
 #include "data/furnitures/SkillFurniture.h"
 #include "data/furnitures/SwitchFurniture.h"
 
+#include <iostream>
+
 typedef struct Loot {
   int type;
   float x;
@@ -168,10 +170,24 @@ class Map {
           }
         }
       }
-      mist_nb = canSee(player, (Tile *) database->getTile("TXT_MIST"), offsetX, offsetY, offsetZ, sizeX, sizeY, tiles, lights);
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
+      furnitures = std::list<Furniture *>();
+      for(int used_map_id : ids) {
+        Map * used_map = world->getMap(used_map_id);
+        for(Furniture * f : used_map->furnitures) {
+          if(f->getX() - offsetX >= 0 && f->getX() - offsetX < sizeX && f->getY() - offsetY >= 0 && f->getY() - offsetY < sizeY) {
+            furnitures.push_back(f);
+          }
+        }
+      }
       loots = std::list<Loot *>();
+      mist_nb = canSee(player, (Tile *) database->getTile("TXT_MIST"));
+      for(Furniture * f : furnitures) {
+        if(getTile(f->getX(), f->getY())->name == "TXT_MIST") {
+          furnitures.remove(f);
+        }
+      }
       for(int used_map_id : ids) {
         Map * used_map = world->getMap(used_map_id);
         for(Character * c : used_map->characters) {
@@ -246,6 +262,7 @@ class Map {
     }
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
+    std::list<Furniture *> getFurnitures();
     std::list<Loot *> getLoots();
     bool allowedCoords(int x, int y);
     bool allowedCoords(float x, float y);
@@ -255,10 +272,17 @@ class Map {
     int getLight(float x, float y);
     Furniture * getFurniture(int x, int y);
     Furniture * getFurniture(float x, float y);
+    bool isOpaque(int x, int y);
+    bool isOpaque(float x, float y);
+    bool isSolid(int x, int y);
+    bool isSolid(float x, float y);
+    bool isUnwalkable(int x, int y);
+    bool isUnwalkable(float x, float y);
     void calculateLights();
     void propagateLight(int x, int y);
     void applyDayLight(int light);
     bool canSee(Character * watcher, Character * target);
+    int canSee(Character * watcher, Tile * mist);
     int getMistNb();
     void setTile(int x, int y, Tile * tile);
     void setTile(float x, float y, Tile * tile);
@@ -283,17 +307,6 @@ class Map {
     std::string tile_to_string(int x, int y);
     static std::string target_to_string(Target * target);
     static Target * target_from_string(std::string to_read);
-    static int canSee(
-      Character * watcher,
-      Tile * mist,
-      int offsetX,
-      int offsetY,
-      int offsetZ,
-      int sizeX,
-      int sizeY,
-      std::vector<std::vector<Tile *>>& tiles,
-      std::vector<std::vector<int>>& lights
-    );
     bool operator == (const Map& m) const { return id == m.id; }
     bool operator != (const Map& m) const { return !operator==(m); }
   private:

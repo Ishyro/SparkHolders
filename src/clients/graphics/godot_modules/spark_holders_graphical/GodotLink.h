@@ -47,12 +47,14 @@ public:
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
+  Dictionary getFurnitures();
   String getRelation(String team1, String team2);
   Dictionary getCurrentRegions();
   int64_t getMapFromCoords(Vector3 coords);
   Dictionary getDataFromTile(String tile_name);
-  Dictionary getDataFromCharacter(long id);
-  Dictionary getDataFromProjectile(long id);
+  Dictionary getDataFromCharacter(CharacterDisplay * character);
+  Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
+  Dictionary getDataFromFurniture(Furniture * furniture);
   void send_actions(Dictionary actions);
   void close();
 
