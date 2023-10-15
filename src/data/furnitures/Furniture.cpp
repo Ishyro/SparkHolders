@@ -12,7 +12,3 @@ int Furniture::getX() { return x; }
 int Furniture::getY() { return y; }
 int Furniture::getZ() { return z; }
 float Furniture::getOrientation() { return orientation; }
-bool Furniture::getUnwalkable() { return unwalkable; }
-bool Furniture::getOpaque() { return opaque; }
-bool Furniture::getSolid() { return solid; }
-int Furniture::getLight() { return light; }

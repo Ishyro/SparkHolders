@@ -6,6 +6,7 @@ unwalkable = true
 opaque = true
 solid = true
 light = 0
+activation_time = 10
 unwalkable_off = false
 opaque_off = false
 solid_off = false

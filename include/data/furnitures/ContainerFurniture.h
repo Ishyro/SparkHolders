@@ -19,6 +19,7 @@ class ContainerFurniture : public ActivableFurniture  {
       const bool opaque,
       const bool solid,
       const int light,
+      const float activation_time,
       const float fire_size,
       const float fire_posX,
       const float fire_posY,
@@ -33,6 +34,7 @@ class ContainerFurniture : public ActivableFurniture  {
         opaque,
         solid,
         light,
+        activation_time,
         fire_size,
         fire_posX,
         fire_posY,
@@ -76,6 +78,10 @@ class ContainerFurniture : public ActivableFurniture  {
         this->loot.push_back(item);
       }
     }
+    bool getUnwalkable();
+    bool getOpaque();
+    bool getSolid();
+    int getLight();
     void activate(Character * user, bool remote);
 
   private:

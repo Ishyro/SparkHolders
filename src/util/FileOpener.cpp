@@ -46,6 +46,7 @@
 #include "data/items/Gear.h"
 
 #include "data/furnitures/Furniture.h"
+#include "data/furnitures/BasicFurniture.h"
 #include "data/furnitures/ContainerFurniture.h"
 #include "data/furnitures/CraftingFurniture.h"
 #include "data/furnitures/LinkedFurniture.h"
@@ -798,23 +799,27 @@ namespace FileOpener {
       fire_posY = stof(values.at("fire_posY"));
       fire_posZ = stof(values.at("fire_posZ"));
     }
+    float activation_time = 0;
+    if(type != FURNITURE_BASIC) {
+      activation_time = stof(values.at("activation_time"));
+    }
     Furniture * furniture;
     switch(type) {
       case FURNITURE_BASIC:
-        furniture = new Furniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new BasicFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CONTAINER:
-        furniture = new ContainerFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new ContainerFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CRAFTING:
-        furniture = new CraftingFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new CraftingFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_LINKED:
-        furniture = new LinkedFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new LinkedFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_SKILL: {
         Skill * skill = (Skill *) database->getSkill(values.at("skill"));
-        furniture = new SkillFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ, skill);
+        furniture = new SkillFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, skill);
         break;
       }
       case FURNITURE_SWITCH: {
@@ -835,7 +840,7 @@ namespace FileOpener {
           fire_posY = stof(values.at("fire_posY"));
           fire_posZ = stof(values.at("fire_posZ"));
         }
-        furniture = new SwitchFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ, unwalkable_off, opaque_off, solid_off, light_off);
+        furniture = new SwitchFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, unwalkable_off, opaque_off, solid_off, light_off);
         break;
       }
     }
@@ -908,7 +913,7 @@ namespace FileOpener {
     int z = 0;
     float orientation = String::extract_float(ss);
     if(keyword == FURNITURE_BASIC) {
-      map->addFurniture(new Furniture( (Furniture *) database->getFurniture(name), x, y, z, orientation));
+      map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation));
     }
     else {
       bool isLocked = String::extract_bool(ss);

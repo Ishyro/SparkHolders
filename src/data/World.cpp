@@ -124,9 +124,25 @@ std::list<Character *> World::getCharacters() {
 
 Character * World::getCharacter(long id) {
   if(id != 0) {
-    for(Character * c : getCharacters()) {
-      if(id == c->id) {
-        return c;
+    for (auto pair : maps) {
+      for (Character * character : pair.second->getCharacters()) {
+        if(character->id == id) {
+          return character;
+        }
+      }
+    }
+  }
+  return nullptr;
+}
+
+
+Furniture * World::getFurniture(long id) {
+  if(id != 0) {
+    for (auto pair : maps) {
+      for (Furniture * furniture : pair.second->getFurnitures()) {
+        if(furniture->id == id) {
+          return furniture;
+        }
       }
     }
   }

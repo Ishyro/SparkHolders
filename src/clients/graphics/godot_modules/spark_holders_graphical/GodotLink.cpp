@@ -259,6 +259,9 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   result["solid"] = furniture->getSolid();
   result["unwalkable"] = furniture->getUnwalkable();
   result["light"] = furniture->getLight();
+  if(furniture->type != FURNITURE_BASIC) {
+    result["activation_time"] = ((ActivableFurniture *) furniture)->activation_time;
+  }
   if(furniture->getLight() != 0) {
     result["fire_type"] = 0; // unused
     result["fire_pos"] = Vector3(furniture->fire_posX, furniture->fire_posY, furniture->fire_posZ);
@@ -309,7 +312,8 @@ void GodotLink::send_actions(Dictionary actions) {
         case ACTION_MOVE:
         case ACTION_STRIKE:
         case ACTION_HEAVY_STRIKE:
-        case ACTION_SHOOT: {
+        case ACTION_SHOOT:
+        case ACTION_ACTIVATION: {
           Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           Target * target = new Target();
           target->type = (int) (int64_t) target_ori["type"];

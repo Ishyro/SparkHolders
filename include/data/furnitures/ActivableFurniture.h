@@ -9,6 +9,7 @@
 
 class ActivableFurniture : public Furniture {
   public:
+    const float activation_time;
     const bool isLocked;
     const std::string key_name;
     
@@ -21,6 +22,7 @@ class ActivableFurniture : public Furniture {
       const bool opaque,
       const bool solid,
       const int light,
+      const float activation_time,
       const float fire_size,
       const float fire_posX,
       const float fire_posY,
@@ -40,6 +42,7 @@ class ActivableFurniture : public Furniture {
         fire_posY,
         fire_posZ
       ),
+      activation_time(activation_time),
       isLocked(false),
       key_name("")
     {}
@@ -59,12 +62,14 @@ class ActivableFurniture : public Furniture {
         z,
         orientation
       ),
+      activation_time(furniture->activation_time),
       isLocked(isLocked),
       key_name(key_name)
     {}
     
     ActivableFurniture(ActivableFurniture * furniture, Map * map):
       Furniture(furniture, map),
+      activation_time(furniture->activation_time),
       isLocked(furniture->isLocked),
       key_name(furniture->key_name)
     {}

@@ -170,26 +170,31 @@ func _on_move_pressed():
 
 func _on_attack_pressed():
 	Values.mode = Values.ACTION_MODE_ATTACK
+	map.phantoms[Values.selected_team.id].visible = false
 	map.characters[Values.selected_team.id].range_mesh.visible = true
 
-func _on_loot_pressed():
-	Values.mode = Values.ACTION_MODE_LOOT
+func _on_interact_pressed():
+	Values.mode = Values.ACTION_MODE_ACTIVATION
+	map.phantoms[Values.selected_team.id].visible = false
 	map.characters[Values.selected_team.id].range_mesh.visible = false
 
 func _on_wait_pressed():
 	Values.mode = Values.ACTION_MODE_WAIT
+	map.phantoms[Values.selected_team.id].visible = false
 	map.characters[Values.selected_team.id].range_mesh.visible = false
 
 func _on_speak_pressed():
+	map.phantoms[Values.selected_team.id].visible = false
 	map.characters[Values.selected_team.id].range_mesh.visible = false
 	pass
 
 func _on_inventory_pressed():
-	pass # Replace with function body.
+	pass
 
 func _on_sleep_pressed():
+	map.phantoms[Values.selected_team.id].visible = false
 	map.characters[Values.selected_team.id].range_mesh.visible = false
-	pass # Replace with function body.
+	pass
 
 func _on_breakpoint_pressed():
-	pass # Replace with function body.
+	pass

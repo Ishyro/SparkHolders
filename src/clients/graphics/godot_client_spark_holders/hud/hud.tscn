@@ -1304,28 +1304,24 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-toggle_mode = true
 text = "Move"
 
 [node name="Attack" type="Button" parent="ActionsSelection/Selection"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-toggle_mode = true
 text = "Attack"
 
-[node name="Loot" type="Button" parent="ActionsSelection/Selection"]
+[node name="Interact" type="Button" parent="ActionsSelection/Selection"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-toggle_mode = true
-text = "Loot"
+text = "Interact"
 
 [node name="Wait" type="Button" parent="ActionsSelection/Selection"]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-toggle_mode = true
 text = "Wait"
 
 [node name="Speak" type="Button" parent="ActionsSelection/Selection"]
@@ -1342,7 +1338,6 @@ text = "Inventory"
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
-toggle_mode = true
 text = "Sleep"
 
 [node name="Breakpoint" type="Button" parent="ActionsSelection/Selection"]
@@ -1817,7 +1812,7 @@ vertical_alignment = 1
 [connection signal="toggled" from="MapOptions/Options/Furnitures" to="." method="_on_furnitures_toggled"]
 [connection signal="pressed" from="ActionsSelection/Selection/Move" to="." method="_on_move_pressed"]
 [connection signal="pressed" from="ActionsSelection/Selection/Attack" to="." method="_on_attack_pressed"]
-[connection signal="pressed" from="ActionsSelection/Selection/Loot" to="." method="_on_loot_pressed"]
+[connection signal="pressed" from="ActionsSelection/Selection/Interact" to="." method="_on_interact_pressed"]
 [connection signal="pressed" from="ActionsSelection/Selection/Wait" to="." method="_on_wait_pressed"]
 [connection signal="pressed" from="ActionsSelection/Selection/Speak" to="." method="_on_speak_pressed"]
 [connection signal="pressed" from="ActionsSelection/Selection/Inventory" to="." method="_on_inventory_pressed"]

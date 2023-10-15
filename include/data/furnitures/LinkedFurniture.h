@@ -18,6 +18,7 @@ class LinkedFurniture : public ActivableFurniture  {
       const bool opaque,
       const bool solid,
       const int light,
+      const float activation_time,
       const float fire_size,
       const float fire_posX,
       const float fire_posY,
@@ -32,6 +33,7 @@ class LinkedFurniture : public ActivableFurniture  {
         opaque,
         solid,
         light,
+        activation_time,
         fire_size,
         fire_posX,
         fire_posY,
@@ -65,6 +67,10 @@ class LinkedFurniture : public ActivableFurniture  {
       init(map, furniture->linked_furniture);
     }
     void init(Map * map, ActivableFurniture * linked_furniture);
+    bool getUnwalkable();
+    bool getOpaque();
+    bool getSolid();
+    int getLight();
     Furniture * getLinkedFurniture();
     void setLinkedFurniture(ActivableFurniture * linked_furniture);
     void activate(Character * user, bool remote);

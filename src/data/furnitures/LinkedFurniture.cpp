@@ -2,6 +2,11 @@
 
 #include "data/furnitures/LinkedFurniture.h"
 
+bool LinkedFurniture::getUnwalkable() { return unwalkable; }
+bool LinkedFurniture::getOpaque() { return opaque; }
+bool LinkedFurniture::getSolid() { return solid; }
+int LinkedFurniture::getLight() { return light; }
+
 void LinkedFurniture::init(Map * map, ActivableFurniture * linked_furniture) {
     this->linked_furniture = (ActivableFurniture *) map->getFurniture(linked_furniture->getX(), linked_furniture->getY());
 }

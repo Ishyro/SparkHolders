@@ -91,6 +91,7 @@ class Adventure {
     void removeQuest(Quest * quest);
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
+    Furniture * getFurniture(long id);
     std::list<Projectile *> getProjectiles();
     void getNPCsActions();
     void mergeActions(std::list<Action *> to_add);

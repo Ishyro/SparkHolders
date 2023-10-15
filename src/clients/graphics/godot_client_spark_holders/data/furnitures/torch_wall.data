@@ -6,6 +6,7 @@ unwalkable = false
 opaque = false
 solid = false
 light = 6
+activation_time = 25
 fire_size = 0.25
 fire_posX = 0.
 fire_posY = 1.5

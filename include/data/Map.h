@@ -14,6 +14,7 @@
 #include "data/World.h"
 
 #include "data/furnitures/Furniture.h"
+#include "data/furnitures/BasicFurniture.h"
 #include "data/furnitures/ContainerFurniture.h"
 #include "data/furnitures/CraftingFurniture.h"
 #include "data/furnitures/LinkedFurniture.h"
@@ -108,7 +109,7 @@ class Map {
       for(Furniture * furniture : map->furnitures) {
         switch(furniture->type) {
           case FURNITURE_BASIC:
-            furnitures.push_back(new Furniture(furniture, this));
+            furnitures.push_back(new BasicFurniture( (BasicFurniture *) furniture, this));
             break;
           case FURNITURE_CONTAINER:
             furnitures.push_back(new ContainerFurniture( (ContainerFurniture *) furniture, this));
@@ -183,7 +184,7 @@ class Map {
       }
       loots = std::list<Loot *>();
       mist_nb = canSee(player, (Tile *) database->getTile("TXT_MIST"));
-      for(Furniture * f : furnitures) {
+      for(Furniture * f : std::list<Furniture *>(furnitures)) {
         if(getTile(f->getX(), f->getY())->name == "TXT_MIST") {
           furnitures.remove(f);
         }

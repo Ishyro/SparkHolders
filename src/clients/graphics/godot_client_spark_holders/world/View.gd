@@ -60,19 +60,6 @@ func update_mouse_coordinates():
 				Values.selected_projectile = null
 				Values.selected_target = null
 				Values.selected_tile = selection
-		if Input.is_action_pressed("action"):
-			var _selection = result["collider"]
-			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
-				Values.mode = Values.ACTION_MODE_NONE
-				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
-				var is_first = true
-				map.clear_actions(Values.selected_team.id)
-				for vec in map.characters[Values.selected_team.id].nav.get_current_navigation_path():
-					if is_first:
-						is_first = false
-					else:
-						vec = map.round_vec(vec)
-						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.characters_data[Values.selected_team.id]["z"]))
 	if not pause_state:
 		var ap_cost = ""
 		if(Values.selected_team and Values.mode == Values.ACTION_MOVE and not Values.updating_state):
@@ -164,6 +151,20 @@ func _unhandled_input(event):
 			hud.set_skill_tab(10)
 		if event.is_action_pressed("skill_tab_12"):
 			hud.set_skill_tab(11)
+		if event.is_action_pressed("action"):
+			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
+				Values.mode = Values.ACTION_MODE_NONE
+				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
+				var is_first = true
+				map.clear_actions(Values.selected_team.id)
+				for vec in map.characters[Values.selected_team.id].nav.get_current_navigation_path():
+					if is_first:
+						is_first = false
+					else:
+						vec = map.round_vec(vec)
+						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.characters_data[Values.selected_team.id]["z"]))
+			if Values.mode == Values.ACTION_MODE_ACTIVATION:
+				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_TILE, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), map.characters_data[Values.selected_team.id]["z"]))
 		if event.is_action_pressed("send_actions"):
 			Values.link.send_actions(Values.actions)
 			map.init_actions()

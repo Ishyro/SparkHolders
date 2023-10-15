@@ -1,15 +1,16 @@
-#ifndef _CRAFTING_FURNITURE_H_
-#define _CRAFTING_FURNITURE_H_
+#ifndef _BASIC_FURNITURE_H_
+#define _BASIC_FURNITURE_H_
 
 #include <string>
 
-#include "data/furnitures/ActivableFurniture.h"
+#include "data/furnitures/Furniture.h"
 
 #include "Values.h"
 
-class CraftingFurniture : public ActivableFurniture  {
+class BasicFurniture : public Furniture {
   public:
-    CraftingFurniture(
+    
+    BasicFurniture(
       const std::string name,
       const int type,
       const int sizeX,
@@ -18,13 +19,12 @@ class CraftingFurniture : public ActivableFurniture  {
       const bool opaque,
       const bool solid,
       const int light,
-      const float activation_time,
       const float fire_size,
       const float fire_posX,
       const float fire_posY,
       const float fire_posZ
     ):
-      ActivableFurniture(
+      Furniture(
         name,
         type,
         sizeX,
@@ -33,40 +33,35 @@ class CraftingFurniture : public ActivableFurniture  {
         opaque,
         solid,
         light,
-        activation_time,
         fire_size,
         fire_posX,
         fire_posY,
         fire_posZ
       )
     {}
-    CraftingFurniture(
-      CraftingFurniture * furniture,
+    BasicFurniture(
+      BasicFurniture * furniture,
       const int x,
       const int y,
       const int z,
-      const float orientation,
-      const bool isLocked,
-      const std::string key_name
+      const float orientation
     ):
-      ActivableFurniture(
+      Furniture(
         furniture,
         x,
         y,
         z,
-        orientation,
-        isLocked,
-        key_name
+        orientation
       )
     {}
-    CraftingFurniture(CraftingFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map)
+    
+    BasicFurniture(BasicFurniture * furniture, Map * map):
+      Furniture(furniture, map)
     {}
     bool getUnwalkable();
     bool getOpaque();
     bool getSolid();
     int getLight();
-    void activate(Character * user, bool remote);
 };
 
-#endif // _CRAFTING_FURNITURE_H_
+#endif // _BASIC_FURNITURE_H_

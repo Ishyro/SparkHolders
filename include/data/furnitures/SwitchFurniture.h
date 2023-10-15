@@ -18,6 +18,7 @@ class SwitchFurniture : public ActivableFurniture  {
       const bool opaque_on,
       const bool solid_on,
       const int light_on,
+      const float activation_time,
       const float fire_size,
       const float fire_posX,
       const float fire_posY,
@@ -36,6 +37,7 @@ class SwitchFurniture : public ActivableFurniture  {
         opaque_on,
         solid_on,
         light_on,
+        activation_time,
         fire_size,
         fire_posX,
         fire_posY,
@@ -86,6 +88,7 @@ class SwitchFurniture : public ActivableFurniture  {
     bool getSolid();
     int getLight();
     bool getIsOn();
+    void setIsOn(bool isOn);
     void activate(Character * user, bool remote);
 
   private:

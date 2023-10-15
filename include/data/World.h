@@ -38,6 +38,7 @@ class World {
     MapLink * getMapLink(int x, int y, long mapId);
     std::list<Character *> getCharacters();
     Character * getCharacter(long id);
+    Furniture * getFurniture(long id);
     Map * getMap(int x, int y, int z);
     Map * getMap(float x, float y, float z);
     Tile * getTile(int x, int y, int z);

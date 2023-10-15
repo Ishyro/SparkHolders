@@ -65,6 +65,7 @@ namespace Server {
       case ACTION_MOVE:
       case ACTION_STRIKE:
       case ACTION_HEAVY_STRIKE:
+      case ACTION_ACTIVATION:
       case ACTION_SHOOT: {
         Target * target = Map::target_from_string(String::extract(ss));
         action = new TargetedAction(type, adventure, nullptr, user, target);

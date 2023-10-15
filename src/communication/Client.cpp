@@ -65,6 +65,7 @@ namespace Client {
       case ACTION_STRIKE:
       case ACTION_HEAVY_STRIKE:
       case ACTION_SHOOT:
+      case ACTION_ACTIVATION:
         return writeTargetedAction(type, (Target *) arg1);
         break;
       case ACTION_RELOAD:

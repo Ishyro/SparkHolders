@@ -95,10 +95,10 @@ class Furniture {
     int getY();
     int getZ();
     float getOrientation();
-    bool getUnwalkable();
-    bool getOpaque();
-    bool getSolid();
-    int getLight();
+    virtual bool getUnwalkable() = 0;
+    virtual bool getOpaque() = 0;
+    virtual bool getSolid() = 0;
+    virtual int getLight() = 0;
 
   protected:
     int x;

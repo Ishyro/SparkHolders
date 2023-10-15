@@ -7,6 +7,8 @@
 #include "data/World.h"
 #include "data/Tile.h"
 #include "data/Character.h"
+#include "data/furnitures/Furniture.h"
+#include "data/furnitures/SwitchFurniture.h"
 #include "data/Quest.h"
 #include "data/Event.h"
 #include "data/Save.h"
@@ -119,6 +121,11 @@ std::list<Character *> Adventure::getCharacters() {
 Character * Adventure::getCharacter(long id) {
   return world->getCharacter(id);
 }
+
+Furniture * Adventure::getFurniture(long id) {
+  return world->getFurniture(id);
+}
+
 
 std::list<Projectile *> Adventure::getProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();
@@ -326,6 +333,7 @@ std::string Adventure::state_to_string(std::map<const long, Character *> players
   std::stringstream * ss_characters = new std::stringstream();
   std::stringstream * ss_projectiles = new std::stringstream();
   std::stringstream * ss_loots = new std::stringstream();
+  std::stringstream * ss_furnitures = new std::stringstream();
   std::stringstream * ss_speeches = new std::stringstream();
   String::insert_long(ss, round);
   String::insert_int(ss, tick);
@@ -357,6 +365,12 @@ std::string Adventure::state_to_string(std::map<const long, Character *> players
       String::insert_float(ss_loots, loot->y);
       String::insert_float(ss_loots, loot->size);
     }
+    for(Furniture * furniture : visionMap->getFurnitures()) {
+      if(furniture->type == FURNITURE_SWITCH) {
+        String::insert_long(ss_furnitures, furniture->id);
+        String::insert_bool(ss_furnitures, ( (SwitchFurniture *) furniture)->getIsOn());
+      }
+    }
   }
   String::insert(ss, ss_tiles->str());
   delete ss_tiles;
@@ -366,6 +380,8 @@ std::string Adventure::state_to_string(std::map<const long, Character *> players
   delete ss_projectiles;
   String::insert(ss, ss_loots->str());
   delete ss_loots;
+  String::insert(ss, ss_furnitures->str());
+  delete ss_furnitures;
   for(Speech * speech : SpeechManager::get()) {
     String::insert(ss_speeches, speech->to_string());
   }
@@ -415,6 +431,12 @@ StateDisplay * Adventure::update_state(std::string to_read) {
     display->loots.push_back(loot);
   }
   delete ss_loots;
+  std::stringstream * ss_furnitures = new std::stringstream(String::extract(ss));
+  while(ss_furnitures->rdbuf()->in_avail() != 0) {
+    SwitchFurniture * furniture = (SwitchFurniture *) getFurniture(String::extract_long(ss_furnitures));
+    furniture->setIsOn(String::extract_bool(ss_furnitures));
+  }
+  delete ss_furnitures;
   std::stringstream * ss_speeches = new std::stringstream(String::extract(ss));
   while(ss_speeches->rdbuf()->in_avail() != 0) {
     display->speeches.push_back(Speech::from_string(String::extract(ss_speeches)));

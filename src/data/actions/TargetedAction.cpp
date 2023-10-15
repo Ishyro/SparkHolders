@@ -91,6 +91,13 @@ Action * TargetedAction::execute(Adventure * adventure) {
       }
       break;
     }
+    case ACTION_ACTIVATION: {
+      Furniture * furniture = user->getCurrentMap()->getFurniture(target->x, target->y);
+      if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
+        ((ActivableFurniture *) furniture)->activate(user, false);
+      }
+      break;
+    }
     default: ;
   }
   if(previous != nullptr) {
@@ -126,6 +133,13 @@ void TargetedAction::computeTime(Adventure * adventure) {
     case ACTION_HEAVY_STRIKE:
       time = user->getStrikeTime() * 5;
       break;
+    case ACTION_ACTIVATION: {
+      Furniture * furniture = user->getCurrentMap()->getFurniture(target->x, target->y);
+      if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
+        time = user->getHandActionTimeModifier() * ((ActivableFurniture *) furniture)->activation_time;
+      }
+      break;
+    }
     default:
       time = 0.F;
   }
