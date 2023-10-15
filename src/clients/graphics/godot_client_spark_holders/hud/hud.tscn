@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://hud/hud.gd" id="1_wlfo0"]
 [ext_resource type="PackedScene" uid="uid://dgv5p4kojbim" path="res://models/bar.tscn" id="2_8655o"]
 [ext_resource type="Texture2D" uid="uid://ct0d01n0csnmo" path="res://hud/label_background.png" id="2_sc5jq"]
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="3_6r1hr"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/materials/grass/Color.jpg" id="4_qi6r6"]
 [ext_resource type="Texture2D" uid="uid://dy3xhbt551cgh" path="res://hud/background.png" id="7_p1t0r"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yujpb"]
@@ -1223,7 +1223,7 @@ layout_mode = 2
 size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
-texture_normal = ExtResource("3_6r1hr")
+texture_normal = ExtResource("4_qi6r6")
 texture_pressed = SubResource("CompressedTexture2D_5phbt")
 texture_hover = SubResource("CompressedTexture2D_mncm8")
 ignore_texture_size = true
@@ -1387,7 +1387,7 @@ layout_mode = 2
 size_flags_vertical = 6
 toggle_mode = true
 action_mode = 0
-texture_normal = ExtResource("3_6r1hr")
+texture_normal = ExtResource("4_qi6r6")
 texture_pressed = SubResource("CompressedTexture2D_5phbt")
 texture_hover = SubResource("CompressedTexture2D_mncm8")
 ignore_texture_size = true

@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://bfvj57vwlveba"]
 
 [ext_resource type="Script" path="res://models/phantom.gd" id="1_8ucbl"]
-[ext_resource type="Material" uid="uid://dk3ukop3owkep" path="res://models/phantom.tres" id="1_k5wc6"]
+[ext_resource type="Material" uid="uid://dk3ukop3owkep" path="res://data/materials/phantom.tres" id="1_k5wc6"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_gh3fj"]
 height = 0.2

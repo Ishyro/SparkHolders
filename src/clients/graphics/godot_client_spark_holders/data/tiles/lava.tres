@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://dqpelo0c0qip4"]
 
-[ext_resource type="Texture2D" uid="uid://dwdqlarbgyove" path="res://data/tiles/lava/Color.jpg" id="1_gnkkd"]
-[ext_resource type="Texture2D" uid="uid://bfcb0mbphngua" path="res://data/tiles/lava/Emission.jpg" id="2_6k5ux"]
-[ext_resource type="Texture2D" uid="uid://d2x2rohf2knlh" path="res://data/tiles/lava/NormalDX.jpg" id="3_fu8pk"]
-[ext_resource type="Texture2D" uid="uid://bvficbouqtdk7" path="res://data/tiles/lava/Roughness.jpg" id="4_kq10q"]
+[ext_resource type="Texture2D" uid="uid://dwdqlarbgyove" path="res://data/materials/lava/Color.jpg" id="1_gnkkd"]
+[ext_resource type="Texture2D" uid="uid://bfcb0mbphngua" path="res://data/materials/lava/Emission.jpg" id="2_6k5ux"]
+[ext_resource type="Texture2D" uid="uid://d2x2rohf2knlh" path="res://data/materials/lava/NormalDX.jpg" id="3_fu8pk"]
+[ext_resource type="Texture2D" uid="uid://bvficbouqtdk7" path="res://data/materials/lava/Roughness.jpg" id="4_kq10q"]
 
 [resource]
 albedo_texture = ExtResource("1_gnkkd")

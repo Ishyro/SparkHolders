@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cw3l1q414ycnf"]
 
 [ext_resource type="Script" path="res://menus/main_menu.gd" id="1_vnb7q"]
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_5fb1q"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/materials/grass/Color.jpg" id="2_5fb1q"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3

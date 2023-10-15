@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://duti34vxoswq3"]
 
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="1_grass"]
-[ext_resource type="Texture2D" uid="uid://bsw5ym6ra1kxc" path="res://data/tiles/grass/AmbientOcclusion.jpg" id="2_grass"]
-[ext_resource type="Texture2D" uid="uid://1ebcnsg8lpk3" path="res://data/tiles/grass/Roughness.jpg" id="3_grass"]
-[ext_resource type="Texture2D" uid="uid://8kwii45yrv5i" path="res://data/tiles/grass/NormalGL.jpg" id="3_oqwf8"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/materials/grass/Color.jpg" id="1_grass"]
+[ext_resource type="Texture2D" uid="uid://bsw5ym6ra1kxc" path="res://data/materials/grass/AmbientOcclusion.jpg" id="2_grass"]
+[ext_resource type="Texture2D" uid="uid://1ebcnsg8lpk3" path="res://data/materials/grass/Roughness.jpg" id="3_grass"]
+[ext_resource type="Texture2D" uid="uid://8kwii45yrv5i" path="res://data/materials/grass/NormalGL.jpg" id="3_oqwf8"]
 
 [resource]
 albedo_texture = ExtResource("1_grass")

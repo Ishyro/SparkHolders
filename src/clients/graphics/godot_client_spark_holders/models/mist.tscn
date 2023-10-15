@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bstif0y78sa7d"]
-
-[ext_resource type="Material" uid="uid://b0085qngf1ph" path="res://models/mist.tres" id="1_ed4dc"]
-
-[node name="Mist" type="FogVolume"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-size = Vector3(1, 1, 1)
-material = ExtResource("1_ed4dc")

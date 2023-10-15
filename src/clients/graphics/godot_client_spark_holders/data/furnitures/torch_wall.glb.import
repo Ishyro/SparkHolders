@@ -28,5 +28,16 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 import_script/path=""
-_subresources={}
+_subresources={
+"materials": {
+"Metal": {
+"use_external/enabled": true,
+"use_external/path": "res://data/materials/metal.tres"
+},
+"Wood": {
+"use_external/enabled": true,
+"use_external/path": "res://data/materials/board_material.tres"
+}
+}
+}
 gltf/embedded_image_handling=1

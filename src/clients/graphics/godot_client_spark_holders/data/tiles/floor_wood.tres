@@ -1,10 +1,10 @@
 [gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://bmbwnhm1y44do"]
 
-[ext_resource type="Texture2D" uid="uid://bdpv6q4s7l0yj" path="res://data/tiles/wood/Color.jpg" id="1_bajxg"]
-[ext_resource type="Texture2D" uid="uid://dysdc7wjb1rho" path="res://data/tiles/wood/AmbientOcclusion.jpg" id="2_51n28"]
-[ext_resource type="Texture2D" uid="uid://cqtixv14ruu6h" path="res://data/tiles/wood/Metalness.jpg" id="3_1e5kd"]
-[ext_resource type="Texture2D" uid="uid://bocao5xw6fds8" path="res://data/tiles/wood/NormalDX.jpg" id="4_x6lwf"]
-[ext_resource type="Texture2D" uid="uid://di6uwq2ussxd2" path="res://data/tiles/wood/Roughness.jpg" id="5_7mtud"]
+[ext_resource type="Texture2D" uid="uid://bdpv6q4s7l0yj" path="res://data/materials/wood/Color.jpg" id="1_bajxg"]
+[ext_resource type="Texture2D" uid="uid://dysdc7wjb1rho" path="res://data/materials/wood/AmbientOcclusion.jpg" id="2_51n28"]
+[ext_resource type="Texture2D" uid="uid://cqtixv14ruu6h" path="res://data/materials/wood/Metalness.jpg" id="3_1e5kd"]
+[ext_resource type="Texture2D" uid="uid://bocao5xw6fds8" path="res://data/materials/wood/NormalDX.jpg" id="4_x6lwf"]
+[ext_resource type="Texture2D" uid="uid://di6uwq2ussxd2" path="res://data/materials/wood/Roughness.jpg" id="5_7mtud"]
 
 [resource]
 albedo_texture = ExtResource("1_bajxg")

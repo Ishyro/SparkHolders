@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://by115lditjx20"]
 
 [ext_resource type="Script" path="res://menus/singleplayer.gd" id="1_6xlc5"]
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/tiles/grass/Color.jpg" id="2_fpy6k"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/materials/grass/Color.jpg" id="2_fpy6k"]
 
 [node name="SinglePlayer" type="Control"]
 layout_mode = 3

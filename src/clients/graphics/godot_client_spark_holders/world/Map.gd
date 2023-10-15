@@ -29,8 +29,8 @@ var materials = {}
 
 var tiles_img = {}
 
-var board_material = preload("res://world/board_material.tres")
-var phantom_material = preload("res://models/phantom.tres")
+var board_material = preload("res://data/materials/board_material.tres")
+var phantom_material = preload("res://data/materials/phantom.tres")
 var base_fire = preload("res://models/fire.tscn")
 var grid_material = StandardMaterial3D.new()
 var light_0 = StandardMaterial3D.new()
@@ -53,7 +53,6 @@ var light_f = StandardMaterial3D.new()
 var base_character = preload("res://models/character.tscn")
 var base_phantom = preload("res://models/phantom.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
-var base_tile = preload("res://world/tile.tscn")
 
 @onready var n_view = $"../View"
 @onready var n_tiles = $Tiles
@@ -406,9 +405,14 @@ func initialize_tile(tile: String):
 
 func add_furniture(furniture_data: Dictionary, coords: Vector3):
 	if !base_furnitures.has(furniture_data["name"]):
-		base_furnitures[furniture_data["name"]] = load(furniture_data["path"])
+		var model = load(furniture_data["path"])
+		base_furnitures[furniture_data["name"]] = model
 		if furniture_data.has("path_off"):
-			base_furnitures_off[furniture_data["name"]] = load(furniture_data["path_off"])
+			var model_off = load(furniture_data["path_off"])
+			if model_off != null:
+				base_furnitures_off[furniture_data["name"]] = model_off
+			else:
+				base_furnitures_off[furniture_data["name"]] = model
 	var furniture
 	if  furniture_data["isOn"]:
 		furniture = base_furnitures[furniture_data["name"]].instantiate()

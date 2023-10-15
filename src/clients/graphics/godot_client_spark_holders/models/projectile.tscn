@@ -1,27 +1,27 @@
 [gd_scene load_steps=10 format=3 uid="uid://dub4lpblwslgm"]
 
 [ext_resource type="Script" path="res://models/projectile.gd" id="1_1nc2d"]
-[ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://world/board_material.tres" id="1_g87n8"]
-[ext_resource type="Material" uid="uid://sfaxlaj2qitk" path="res://models/metal.tres" id="2_vghix"]
+[ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://data/materials/board_material.tres" id="2_67bs4"]
+[ext_resource type="Material" uid="uid://sfaxlaj2qitk" path="res://data/materials/metal.tres" id="3_rw4oi"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6a6lm"]
 height = 0.2
 radius = 1.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_aiw6e"]
-material = ExtResource("1_g87n8")
+material = ExtResource("2_67bs4")
 top_radius = 1.0
 bottom_radius = 1.0
 height = 0.1
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_wo18n"]
-material = ExtResource("1_g87n8")
+material = ExtResource("2_67bs4")
 top_radius = 0.3
 bottom_radius = 0.9
 height = 0.25
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_6pvux"]
-material = ExtResource("2_vghix")
+material = ExtResource("3_rw4oi")
 top_radius = 0.15
 bottom_radius = 0.15
 
