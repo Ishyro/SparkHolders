@@ -31,7 +31,6 @@ class WeaponItem : public GearItem {
       bool consumable,
       int use_time,
       std::list<Effect *> effects,
-      int armor,
       int swap_time,
       float range,
       int strike_time,
@@ -57,7 +56,6 @@ class WeaponItem : public GearItem {
         consumable,
         use_time,
         effects,
-        armor,
         swap_time
       ),
       range(range),

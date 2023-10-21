@@ -24,18 +24,10 @@ int Race::getBaseMana(std::list<Race *> race_modifiers) {
   return result;
 }
 
-int Race::getBaseArmor(std::list<Race *> race_modifiers) {
-  int result = baseArmor;
+int Race::getBaseShield(std::list<Race *> race_modifiers) {
+  int result = baseShield;
   for(Race * modifier : race_modifiers) {
-    result += modifier->baseArmor;
-  }
-  return result;
-}
-
-int Race::getBaseArmorMult(std::list<Race *> race_modifiers) {
-  int result = baseArmorMult;
-  for(Race * modifier : race_modifiers) {
-    result += modifier->baseArmorMult;
+    result += modifier->baseShield;
   }
   return result;
 }
@@ -104,10 +96,10 @@ int Race::getManaIncr(std::list<Race *> race_modifiers) {
   return result;
 }
 
-int Race::getArmorMultIncr(std::list<Race *> race_modifiers) {
-  int result = armorMultIncr;
+int Race::getShieldIncr(std::list<Race *> race_modifiers) {
+  int result = shieldIncr;
   for(Race * modifier : race_modifiers) {
-    result += modifier->armorMultIncr;
+    result += modifier->shieldIncr;
   }
   return result;
 }

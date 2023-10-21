@@ -52,7 +52,13 @@ public:
   Dictionary getCurrentRegions();
   int64_t getMapFromCoords(Vector3 coords);
   Dictionary getDataFromTile(String tile_name);
+  Dictionary getDataFromClass(String class_name);
+  Dictionary getDataFromRace(String race_name);
+  Dictionary getDataFromWay(String way_name);
   Dictionary getDataFromCharacter(CharacterDisplay * character);
+  Dictionary getStatsFromCharacter(int64_t character_id);
+  Dictionary getInventoryFromCharacter(int64_t character_id);
+  Dictionary getSkillsFromCharacter(int64_t character_id);
   Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
   Dictionary getDataFromFurniture(Furniture * furniture);
   void send_actions(Dictionary actions);

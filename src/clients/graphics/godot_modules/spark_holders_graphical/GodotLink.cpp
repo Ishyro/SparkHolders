@@ -1,7 +1,11 @@
 #include "GodotLink.h"
 
+#include "data/Attributes.h"
+#include "data/Character.h"
 #include "data/Database.h"
 #include "data/Map.h"
+#include "data/Race.h"
+#include "data/Way.h"
 
 #include "util/FileOpener.h"
 #include "util/MapUtil.h"
@@ -189,6 +193,85 @@ Dictionary GodotLink::getDataFromTile(String tile_name) {
   return result;
 }
 
+
+Dictionary GodotLink::getDataFromClass(String class_name) {
+  Dictionary result = Dictionary();
+  Attributes * attributes = (Attributes *) link->getAdventure()->getDatabase()->getAttributes(std::string(class_name.utf8().get_data()));
+  result["name"] = attributes->name.c_str();
+  result["tier"] = attributes->tier;
+  result["baseHp"] = attributes->baseHp;
+  result["baseMana"] = attributes->baseMana;
+  result["baseShield"] = attributes->baseShield;
+  result["baseDamageMult"] = attributes->baseDamageMult;
+  result["baseSoulBurn"] = attributes->baseSoulBurn;
+  result["baseFlow"] = attributes->baseFlow;
+  result["baseVisionRange"] = attributes->baseVisionRange;
+  result["baseVisionPower"] = attributes->baseVisionPower;
+  result["baseDetectionRange"] = attributes->baseDetectionRange;
+  result["hpIncr"] = attributes->hpIncr;
+  result["manaIncr"] = attributes->manaIncr;
+  result["shieldIncr"] = attributes->shieldIncr;
+  result["damageMultIncr"] = attributes->damageMultIncr;
+  result["soulBurnIncr"] = attributes->soulBurnIncr;
+  result["flowIncr"] = attributes->flowIncr;
+  return result;
+}
+Dictionary GodotLink::getDataFromRace(String race_name) {
+  Dictionary result = Dictionary();
+  Race * race = (Race *) link->getAdventure()->getDatabase()->getWay(std::string(race_name.utf8().get_data()));
+  result["name"] = race->name.c_str();
+  result["type"] = race->type;
+  result["tier"] = race->tier;
+  result["baseHp"] = race->baseHp;
+  result["baseMana"] = race->baseMana;
+  result["baseShield"] = race->baseShield;
+  result["baseDamageMult"] = race->baseDamageMult;
+  result["baseSoulBurn"] = race->baseSoulBurn;
+  result["baseFlow"] = race->baseFlow;
+  result["baseVisionRange"] = race->baseVisionRange;
+  result["baseVisionPower"] = race->baseVisionPower;
+  result["baseDetectionRange"] = race->baseDetectionRange;
+  result["hpIncr"] = race->hpIncr;
+  result["manaIncr"] = race->manaIncr;
+  result["shieldIncr"] = race->shieldIncr;
+  result["damageMultIncr"] = race->damageMultIncr;
+  result["soulBurnIncr"] = race->soulBurnIncr;
+  result["flowIncr"] = race->flowIncr;
+  result["size"] = race->size;
+  result["need_to_eat"] = race->need_to_eat;
+  result["can_eat_food"] = race->can_eat_food;
+  result["need_to_sleep"] = race->need_to_sleep;
+  result["has_soulspark"] = race->has_soulspark;
+  result["action_time_modifier"] = race->action_time_modifier;
+  result["strike_time_modifier"] = race->strike_time_modifier;
+  result["skill_time_modifier"] = race->skill_time_modifier;
+  result["movement_time_modifier"] = race->movement_time_modifier;
+  return result;
+}
+Dictionary GodotLink::getDataFromWay(String way_name) {
+  Dictionary result = Dictionary();
+  Way * way = (Way *) link->getAdventure()->getDatabase()->getWay(std::string(way_name.utf8().get_data()));
+  result["name"] = way->name.c_str();
+  result["type"] = way->type;
+  result["tier"] = way->tier;
+  result["baseHp"] = way->baseHp;
+  result["baseMana"] = way->baseMana;
+  result["baseShield"] = way->baseShield;
+  result["baseDamageMult"] = way->baseDamageMult;
+  result["baseSoulBurn"] = way->baseSoulBurn;
+  result["baseFlow"] = way->baseFlow;
+  result["baseVisionRange"] = way->baseVisionRange;
+  result["baseVisionPower"] = way->baseVisionPower;
+  result["baseDetectionRange"] = way->baseDetectionRange;
+  result["hpIncr"] = way->hpIncr;
+  result["manaIncr"] = way->manaIncr;
+  result["shieldIncr"] = way->shieldIncr;
+  result["damageMultIncr"] = way->damageMultIncr;
+  result["soulBurnIncr"] = way->soulBurnIncr;
+  result["flowIncr"] = way->flowIncr;
+  return result;
+}
+
 Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   Dictionary result = Dictionary();
   result["name"] = character->name.c_str();
@@ -196,6 +279,8 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["maxHp"] = character->maxHp;
   result["mana"] = character->mana;
   result["maxMana"] = character->maxMana;
+  result["shield"] = character->shield;
+  result["maxShield"] = character->maxShield;
   result["stamina"] = character->stamina;
   result["satiety"] = character->satiety;
   result["soulBurn"] = character->soulBurn;
@@ -209,7 +294,6 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["size"] = character->size;
   result["orientation"] = character->orientation;
   result["team"] = character->team.c_str();
-  result["armor"] = character->armor;
   result["xp"] = character->xp;
   result["level"] = character->level;
   Array damage_reductions = Array();
@@ -225,6 +309,64 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["teamRelation"] = character->teamRelation;
   return result;
 }
+
+Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
+  Dictionary result = Dictionary();
+  Character * character = link->getPlayer( (long) character_id);
+  result["name"] = character->name.c_str();
+  result["maxHp"] = character->getMaxHp();
+  result["maxMana"] = character->getMaxMana();
+  result["maxShield"] = character->getMaxShield();
+  result["soulBurnThreshold"] = character->getSoulBurnThreshold();
+  result["hp"] = character->getHp();
+  result["mana"] = character->getMana();
+  result["shield"] = character->getShield();
+  result["currentSoulBurn"] = character->getCurrentSoulBurn();
+  result["strengthening"] = (int64_t) std::floor(character->getDamageMultiplier() * 100.F);
+  result["flow"] = character->getFlow();
+  result["visionRange"] = character->getVisionRange();
+  result["visionPower"] = character->getVisionPower();
+  result["detectionRange"] = character->getDetectionRange();
+  result["stamina"] = character->getStamina();
+  result["satiety"] = character->getSatiety();
+  //result["channeledMana"] = character->getChanneledMana();
+  result["size"] = character->getSize();
+  result["xp"] = (int64_t) character->getXP();
+  result["level"] = character->getLevel();
+  result["rawPower"] = (int64_t) character->getRawPower();
+  result["main_class"] = character->getAttributes()->name.c_str();
+  result["sub_class"] = character->getSecondAttributes()->name.c_str();
+  result["spec_class"] = "";
+  result["race"] = character->getRace()->name.c_str();
+  Array race_modifiers = Array();
+  for(Race * race : character->getRaceModifiers()) {
+    race_modifiers.push_back(race->name.c_str());
+  }
+  result["race_modifiers"] = race_modifiers;
+  result["origin"] = character->getOrigin()->name.c_str();
+  result["culture"] = character->getCulture()->name.c_str();
+  result["religion"] = character->getReligion()->name.c_str();
+  result["profession"] = character->getProfession()->name.c_str();
+  Array titles = Array();
+  for(Way * title : character->getTitles()) {
+    titles.push_back(title->name.c_str());
+  }
+  result["titles"] = titles;
+  return result;
+}
+
+Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
+  Dictionary result = Dictionary();
+
+  return result;
+}
+
+Dictionary GodotLink::getSkillsFromCharacter(int64_t character_id) {
+  Dictionary result = Dictionary();
+
+  return result;
+}
+
 
 Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   Dictionary result = Dictionary();
@@ -397,6 +539,10 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getCurrentRegions"), &GodotLink::getCurrentRegions);
   ClassDB::bind_method(D_METHOD("getMapFromCoords", "coords"), &GodotLink::getMapFromCoords);
   ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
+  ClassDB::bind_method(D_METHOD("getDataFromClass", "class"), &GodotLink::getDataFromClass);
+  ClassDB::bind_method(D_METHOD("getDataFromRace", "race"), &GodotLink::getDataFromRace);
+  ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);
+  ClassDB::bind_method(D_METHOD("getStatsFromCharacter", "id"), &GodotLink::getStatsFromCharacter);
   ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

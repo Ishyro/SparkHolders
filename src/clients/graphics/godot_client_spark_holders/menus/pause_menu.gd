@@ -2,9 +2,9 @@ extends Control
 
 @onready var continueButton = $Menu/Continue
 
-@onready var map = $"../Map"
-@onready var view = $"../View"
-@onready var hud = $"../HUD"
+@onready var map = $"../../Map"
+@onready var view = $"../../View"
+@onready var hud = $"../../HUD"
 
 func _on_continue_pressed():
 	view.pause_state = false

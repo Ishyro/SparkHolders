@@ -9,7 +9,8 @@ var pause_state = false
 
 @onready var camera = $Camera3D
 @onready var camera_attributes = camera.attributes
-@onready var pause = $"../Pause"
+@onready var pause = $"../Menus/Pause"
+@onready var character_sheet = $"../Menus/CharacterSheet"
 @onready var hud = $"../HUD"
 @onready var map = $"../Map"
 @onready var grid = $"../Map/Grid"
@@ -109,8 +110,11 @@ func _physics_process(_delta):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("pause"):
-		pause_state = not pause_state
-		pause.visible = pause_state
+		if character_sheet.visible:
+			character_sheet.visible = false
+		else:
+			pause_state = not pause_state
+			pause.visible = pause_state
 	if not pause_state:
 		if event.is_action_pressed("rotate_up_down") and event.double_click:
 				camera.rotation_degrees = Vector3(-60, camera.rotation_degrees.y, 0)
@@ -151,6 +155,11 @@ func _unhandled_input(event):
 			hud.set_skill_tab(10)
 		if event.is_action_pressed("skill_tab_12"):
 			hud.set_skill_tab(11)
+		if event.is_action_pressed("display_stats"):
+			if !character_sheet.visible:
+				character_sheet.display_stats()
+			else:
+				character_sheet.visible = false
 		if event.is_action_pressed("action"):
 			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
 				Values.mode = Values.ACTION_MODE_NONE

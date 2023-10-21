@@ -14,7 +14,6 @@ class Race : public Way {
   public:
     const int race_type;
     const float size;
-    const int baseArmor;
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
@@ -26,9 +25,10 @@ class Race : public Way {
     Race(
       std::string name,
       int type,
+      int tier,
       int baseHp,
       int baseMana,
-      int baseArmorMult,
+      int baseShield,
       int baseDamageMult,
       int baseSoulBurn,
       int baseFlow,
@@ -37,7 +37,7 @@ class Race : public Way {
       int baseDetectionRange,
       int hpIncr,
       int manaIncr,
-      int armorMultIncr,
+      int shieldIncr,
       int damageMultIncr,
       int soulBurnIncr,
       int flowIncr,
@@ -45,7 +45,6 @@ class Race : public Way {
       std::list<Skill *> skills,
       int race_type,
       float size,
-      int baseArmor,
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
@@ -59,9 +58,10 @@ class Race : public Way {
       Way(
         name,
         type,
+        tier,
         baseHp,
         baseMana,
-        baseArmorMult,
+        baseShield,
         baseDamageMult,
         baseSoulBurn,
         baseFlow,
@@ -70,7 +70,7 @@ class Race : public Way {
         baseDetectionRange,
         hpIncr,
         manaIncr,
-        armorMultIncr,
+        shieldIncr,
         damageMultIncr,
         soulBurnIncr,
         flowIncr,
@@ -79,7 +79,6 @@ class Race : public Way {
       ),
       race_type(race_type),
       size(size),
-      baseArmor(baseArmor),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
@@ -97,8 +96,7 @@ class Race : public Way {
     int getType(std::list<Race *> race_modifiers);
     int getBaseHp(std::list<Race *> race_modifiers);
     int getBaseMana(std::list<Race *> race_modifiers);
-    int getBaseArmor(std::list<Race *> race_modifiers);
-    int getBaseArmorMult(std::list<Race *> race_modifiers);
+    int getBaseShield(std::list<Race *> race_modifiers);
     int getBaseDamageMult(std::list<Race *> race_modifiers);
     int getBaseSoulBurn(std::list<Race *> race_modifiers);
     int getBaseFlow(std::list<Race *> race_modifiers);
@@ -107,7 +105,7 @@ class Race : public Way {
     int getBaseDetectionRange(std::list<Race *> race_modifiers);
     int getHpIncr(std::list<Race *> race_modifiers);
     int getManaIncr(std::list<Race *> race_modifiers);
-    int getArmorMultIncr(std::list<Race *> race_modifiers);
+    int getShieldIncr(std::list<Race *> race_modifiers);
     int getDamageMultIncr(std::list<Race *> race_modifiers);
     int getSoulBurnIncr(std::list<Race *> race_modifiers);
     int getFlowIncr(std::list<Race *> race_modifiers);

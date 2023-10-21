@@ -68,33 +68,34 @@ class SpeechManager;
 #define EFFECT_MANA 2
 #define EFFECT_HP_MAX 3
 #define EFFECT_MANA_MAX 4
-#define EFFECT_STAMINA 5
-#define EFFECT_SATIETY 6
-#define EFFECT_ARMOR 7
-#define EFFECT_ARMOR_MULTIPLIER 8
-#define EFFECT_SOULBURNTRESHOLD 9
-#define EFFECT_FLOW 10
-#define EFFECT_VISION_RANGE 11
-#define EFFECT_VISION_POWER 12
-#define EFFECT_DETECTION_RANGE 13
-#define EFFECT_EXPERIENCE 14
-#define EFFECT_DAMAGE 15
-#define EFFECT_DAMAGE_BUFF 16
-#define EFFECT_DAMAGE_REDUCTION 17
-#define EFFECT_DAMAGE_MULTIPLIER 18
-#define EFFECT_CHANNELING 19
-#define EFFECT_STUNNED 20
-#define EFFECT_SLEEPING 21
-#define EFFECT_FLY 22
-#define EFFECT_LIGHT 23
-#define EFFECT_CLOAKED 24
-#define EFFECT_INVISIBLE 25
-#define EFFECT_ETHERAL 26
-#define EFFECT_INVULNERABLE 27
-#define EFFECT_ACTION_TIME_MODIFIER 28
-#define EFFECT_HAND_ACTION_TIME_MODIFIER 29
-#define EFFECT_SKILL_TIME_MODIFIER 30
-#define EFFECT_MOVEMENT_TIME_MODIFIER 31
+#define EFFECT_SHIELD 5
+#define EFFECT_SHIELD_MAX 6
+#define EFFECT_STAMINA 7
+#define EFFECT_SATIETY 8
+#define EFFECT_SHIELD_MULTIPLIER 9
+#define EFFECT_SOULBURNTRESHOLD 10 
+#define EFFECT_FLOW 11 
+#define EFFECT_VISION_RANGE 12 
+#define EFFECT_VISION_POWER 13 
+#define EFFECT_DETECTION_RANGE 14 
+#define EFFECT_EXPERIENCE 15 
+#define EFFECT_DAMAGE 16 
+#define EFFECT_DAMAGE_BUFF 17 
+#define EFFECT_DAMAGE_REDUCTION 18 
+#define EFFECT_DAMAGE_MULTIPLIER 19 
+#define EFFECT_CHANNELING 20 
+#define EFFECT_STUNNED 21 
+#define EFFECT_SLEEPING 22 
+#define EFFECT_FLY 23 
+#define EFFECT_LIGHT 24 
+#define EFFECT_CLOAKED 25 
+#define EFFECT_INVISIBLE 26 
+#define EFFECT_ETHERAL 27 
+#define EFFECT_INVULNERABLE 28 
+#define EFFECT_ACTION_TIME_MODIFIER 29 
+#define EFFECT_HAND_ACTION_TIME_MODIFIER 30 
+#define EFFECT_SKILL_TIME_MODIFIER 31 
+#define EFFECT_MOVEMENT_TIME_MODIFIER 32
 
 
 // item_type
@@ -124,7 +125,7 @@ class SpeechManager;
 #define ITEM_PISTOL 15
 #define ITEM_SLING 16
 
-// armor_type
+// shield_type
 
 #define ITEM_HEAD 1
 #define ITEM_ARMS 2
@@ -235,8 +236,8 @@ class SpeechManager;
 #define DAMAGE_LIGHTNING 4
 #define DAMAGE_FROST 5
 #define DAMAGE_POISON 6
-#define DAMAGE_ACID 7 // unaffected by damage reductions, but still by armor
-#define DAMAGE_MIND 8 // unaffected by armor, but still by damage reductions
+#define DAMAGE_ACID 7 // unaffected by damage reductions, but still by shield
+#define DAMAGE_MIND 8 // unaffected by shield, but still by damage reductions
 #define DAMAGE_TRUE 9 // health damage
 #define DAMAGE_SOUL 10 // mana damage
 

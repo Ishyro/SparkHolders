@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=16 format=3 uid="uid://0fnxik7j4q84"]
 
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
+[ext_resource type="PackedScene" uid="uid://csp4utnaq7gbx" path="res://menus/character_sheet.tscn" id="3_efm1y"]
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
 [ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://hud/hud.tscn" id="5_feur5"]
 [ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
@@ -52,6 +53,7 @@ process_mode = 3
 background_mode = 2
 sky = SubResource("Sky_2fky8")
 ambient_light_source = 3
+ambient_light_energy = 0.0
 volumetric_fog_enabled = true
 volumetric_fog_sky_affect = 0.0
 
@@ -59,9 +61,23 @@ volumetric_fog_sky_affect = 0.0
 
 [node name="HUD" parent="." instance=ExtResource("5_feur5")]
 
-[node name="Pause" parent="." instance=ExtResource("4_0dq18")]
+[node name="Menus" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Pause" parent="Menus" instance=ExtResource("4_0dq18")]
 visible = false
 visibility_layer = 524288
+layout_mode = 1
+
+[node name="CharacterSheet" parent="Menus" instance=ExtResource("3_efm1y")]
+visible = false
+layout_mode = 1
 
 [node name="View" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
@@ -101,5 +117,6 @@ environment = SubResource("Environment_1nh6o")
 
 [node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 50, 0)
+light_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.04

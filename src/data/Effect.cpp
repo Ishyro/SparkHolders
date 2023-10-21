@@ -15,20 +15,23 @@ void Effect::activate(Character * target) {
       case EFFECT_MANA:
         target->manaHeal(power);
         break;
+      case EFFECT_SHIELD:
+        target->shieldRestore(power);
+        break;
       case EFFECT_HP_MAX:
         target->incrMaxHp();
         break;
       case EFFECT_MANA_MAX:
         target->incrMaxMana();
         break;
+      case EFFECT_SHIELD_MAX:
+        target->incrMaxShield();
+        break;
       case EFFECT_STAMINA:
         target->addStamina((float) power);
         break;
       case EFFECT_SATIETY:
         target->addSatiety((float) power);
-        break;
-      case EFFECT_ARMOR_MULTIPLIER:
-        target->incrArmorMultiplier();
         break;
       case EFFECT_SOULBURNTRESHOLD:
         target->incrSoulBurnTreshold();
@@ -65,6 +68,8 @@ bool Effect::tick(Character * target) {
       break;
     case EFFECT_MANA:
       target->manaHeal(power);
+    case EFFECT_SHIELD:
+      target->shieldRestore(power);
       break;
     case EFFECT_STAMINA:
       target->addStamina((float) power);

@@ -179,29 +179,6 @@ float Gear::getWeight() {
   return std::max(1.F, weight);
 }
 
-int Gear::getArmor() {
-  int armor = 0.F;
-  if(head != nullptr) {
-    armor += head->armor;
-  }
-  if(arms != nullptr) {
-    armor += arms->armor;
-  }
-  if(body != nullptr) {
-    armor += body->armor;
-  }
-  if(legs != nullptr) {
-    armor += legs->armor;
-  }
-  if(lantern != nullptr) {
-    armor += lantern->armor;
-  }
-  if(weapon != nullptr) {
-    armor += weapon->armor;
-  }
-  return std::max(0, armor);
-}
-
 std::string Gear::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);

@@ -79,7 +79,6 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
   Item * result;
   switch(type) {
     case ITEM_WEAPON: {
-      int armor = String::extract_int(ss);
       int swap_time = String::extract_int(ss);
       float range = String::extract_float(ss);
       int strike_time = String::extract_int(ss);
@@ -111,7 +110,6 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         consumable,
         use_time,
         *effects,
-        armor,
         swap_time,
         range,
         strike_time,
@@ -126,7 +124,6 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_ARMOR: {
-      int armor = String::extract_int(ss);
       int swap_time = String::extract_int(ss);
       float damage_reductions[DAMAGE_TYPE_NUMBER];
       for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
@@ -146,7 +143,6 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         consumable,
         use_time,
         *effects,
-        armor,
         swap_time,
         damage_reductions
       );

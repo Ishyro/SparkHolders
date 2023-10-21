@@ -24,7 +24,6 @@ class ArmorItem : public GearItem {
       bool consumable,
       int use_time,
       std::list<Effect *> effects,
-      int armor,
       int swap_time,
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
@@ -42,7 +41,6 @@ class ArmorItem : public GearItem {
         consumable,
         use_time,
         effects,
-        armor,
         swap_time
       )
     {

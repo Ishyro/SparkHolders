@@ -107,7 +107,6 @@ std::string WeaponItem::to_string() {
   }
   String::insert(ss, ss_effects->str());
   delete ss_effects;
-  String::insert_int(ss, armor);
   String::insert_int(ss, swap_time);
   String::insert_float(ss, range);
   String::insert_int(ss, strike_time);

@@ -42,38 +42,38 @@ void Character::initializeCharacter(Gear * gear) {
   }
   maxMana = attributes->baseMana + race->getBaseMana(race_modifiers) + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
   for(Way * way : titles) {
-    maxHp += way->baseMana;
+    maxMana += way->baseMana;
+  }
+  maxShield = race->getBaseShield(race_modifiers) + attributes->baseShield + origin->baseShield + culture->baseShield + religion->baseShield + profession->baseShield;
+  for(Way * way : titles) {
+    maxShield += way->baseShield;
   }
   hp = maxHp;
   mana = maxMana;
-  armor = race->getBaseArmor(race_modifiers);
-  armor_multiplier = attributes->baseArmorMult + race->getBaseArmorMult(race_modifiers) + origin->baseArmorMult + culture->baseArmorMult + religion->baseArmorMult + profession->baseArmorMult;
-  for(Way * way : titles) {
-    maxHp += way->baseArmorMult;
-  }
+  shield = maxShield;
   damage_multiplier = attributes->baseDamageMult + race->getBaseDamageMult(race_modifiers) + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
   for(Way * way : titles) {
-    maxHp += way->baseDamageMult;
+    damage_multiplier += way->baseDamageMult;
   }
   soulBurnTreshold = attributes->baseSoulBurn + race->getBaseSoulBurn(race_modifiers) + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
   for(Way * way : titles) {
-    maxHp += way->baseSoulBurn;
+    soulBurnTreshold += way->baseSoulBurn;
   }
   flow = attributes->baseFlow + race->getBaseFlow(race_modifiers) + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
   for(Way * way : titles) {
-    maxHp += way->baseFlow;
+    flow += way->baseFlow;
   }
   visionRange = attributes->baseVisionRange + race->getBaseVisionRange(race_modifiers) + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
   for(Way * way : titles) {
-    maxHp += way->baseVisionRange;
+    visionRange += way->baseVisionRange;
   }
   visionPower = attributes->baseVisionPower + race->getBaseVisionPower(race_modifiers) + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
   for(Way * way : titles) {
-    maxHp += way->baseVisionPower;
+    visionPower += way->baseVisionPower;
   }
   detectionRange = attributes->baseDetectionRange + race->getBaseDetectionRange(race_modifiers) + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
   for(Way * way : titles) {
-    maxHp += way->baseDetectionRange;
+    detectionRange += way->baseDetectionRange;
   }
   currentSoulBurn = 0;
   currentFlowOut = 0;
@@ -253,28 +253,19 @@ int Character::getMaxMana() {
 
 float Character::getStamina() { return stamina; }
 float Character::getSatiety() { return satiety; }
+int Character::getShield() { return shield; }
 
-int Character::getArmor() {
-  int result = (int) std::ceil( (float) (armor + gear->getArmor()) * getArmorMultiplier());
+int Character::getMaxShield() {
+  int bonus = 0;
   for(Effect * e : effects) {
-    if(e->type == EFFECT_ARMOR) {
-      result += e->power;
+    if(e->type == EFFECT_SHIELD_MAX) {
+      bonus += e->power;
     }
   }
-  return std::max(result, 0);
+  return std::max(maxShield + bonus, 0);
 }
 
-float Character::getArmorMultiplier() {
-  int result = armor_multiplier;
-  for(Effect * e : effects) {
-    if(e->type == EFFECT_ARMOR_MULTIPLIER) {
-      result += e->power;
-    }
-  }
-  return std::max(0.F, 1.F + ((float) result) / 100.F);
-}
-
-int Character::getSoulBurnTreshold() {
+int Character::getSoulBurnThreshold() {
   int bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_SOULBURNTRESHOLD) {
@@ -294,6 +285,10 @@ int Character::getFlow() {
     }
   }
   return std::max(flow + bonus, 0);
+}
+
+long Character::getRawPower() {
+  return getMaxHp() + getMaxMana() + getMaxShield() + getSoulBurnThreshold() + 5 * (getFlow());
 }
 
 int Character::getVisionRange() {
@@ -341,7 +336,7 @@ float Character::getDamageMultiplier() {
 }
 
 int Character::getPowerScore() {
-  return getMaxHp() + getMaxMana() + 5 * (getFlow() + getSoulBurnTreshold() + getArmor() + getDamageMultiplier());
+  return getMaxHp() + getMaxMana() + 5 * (getFlow() + getSoulBurnThreshold() + getShield() + getDamageMultiplier());
 }
 
 bool Character::needToSend() { return need_to_send; }
@@ -465,6 +460,7 @@ std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
 Attributes * Character::getAttributes() { return attributes; }
 Attributes * Character::getSecondAttributes() { return second_attributes; }
 Race * Character::getRace() { return race; }
+std::list<Race *> Character::getRaceModifiers() { return race_modifiers; }
 Way * Character::getOrigin() { return origin; }
 Way * Character::getCulture() { return culture; }
 Way * Character::getReligion() { return religion; }
@@ -532,6 +528,25 @@ void Character::incrMaxMana() {
 }
 
 void Character::setMana(int mana) { this->mana = mana; }
+void Character::shieldRestore(int shield) { this->shield = std::min(getMaxShield(), this->shield + shield); }
+void Character::setShield(int shield) { this->shield = shield; }
+void Character::incrMaxShield() {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  int incr = 0;
+  incr += attributes->shieldIncr;
+  incr += second_attributes->shieldIncr;
+  incr += race->getShieldIncr(race_modifiers);
+  incr += origin->shieldIncr;
+  incr += culture->shieldIncr;
+  incr += religion->shieldIncr;
+  incr += profession->shieldIncr;
+  for(Way * title : titles) {
+    incr += title->shieldIncr;
+  }
+  maxShield += std::max(incr, 0);
+}
 void Character::addStamina(float stamina) { this->stamina = std::min(100.F, this->stamina + stamina); }
 void Character::addSatiety(float satiety) { this->satiety = std::min(100.F, this->satiety + satiety); }
 void Character::removeStamina(float stamina) { this->stamina = std::max(0.F, this->stamina - stamina); }
@@ -539,23 +554,6 @@ void Character::removeSatiety(float satiety) { this->satiety = std::max(0.F, thi
 void Character::setStamina(float stamina) { this->stamina = stamina; }
 void Character::setSatiety(float satiety) { this->satiety = satiety; }
 
-void Character::incrArmorMultiplier() {
-  if(player_character) {
-    setNeedToSend(true);
-  }
-  int incr = 0;
-  incr += attributes->armorMultIncr;
-  incr += second_attributes->armorMultIncr;
-  incr += race->getArmorMultIncr(race_modifiers);
-  incr += origin->armorMultIncr;
-  incr += culture->armorMultIncr;
-  incr += religion->armorMultIncr;
-  incr += profession->armorMultIncr;
-  for(Way * title : titles) {
-    incr += title->armorMultIncr;
-  }
-  armor += std::max(incr, 0);
-}
 void Character::incrDamageMultiplier() {
   if(player_character) {
     setNeedToSend(true);
@@ -722,11 +720,13 @@ void Character::gainLevel() {
     level++;
     int old_max_mana = getMaxMana();
     int old_max_hp = getMaxHp();
+    int old_max_shield = getMaxHp();
     incrMaxHp();
     hpHeal(getMaxHp() - old_max_hp);
     incrMaxMana();
     manaHeal(getMaxMana() - old_max_mana);
-    incrArmorMultiplier();
+    incrMaxShield();
+    shieldRestore(getMaxShield() - old_max_shield);
     incrDamageMultiplier();
     incrSoulBurnTreshold();
     incrFlow();
@@ -1271,10 +1271,16 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation
       }
     }
     if(type == ACTION_HEAVY_STRIKE) {
-      hp -= (std::max(0, damage - getArmor())) * 1.5;
+      damage = (int) std::floor(std::max(0.F, (float) damage * 1.5F));
+      int leftover = damage - shield;
+      shield -= damage;
+      hp -= std::max(0, leftover);
     }
     else {
-      hp -= std::max(0, damage - getArmor());
+      damage = std::max(0, damage);
+      int leftover = damage - shield;
+      shield -= damage;
+      hp -= std::max(0, leftover);
     }
   }
 }
@@ -1313,10 +1319,16 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
       }
     }
     if(type == ACTION_HEAVY_STRIKE) {
-      hp -= (std::max(0, damage - getArmor())) * 1.5;
+      damage = (int) std::floor(std::max(0.F, (float) damage * 1.5F));
+      int leftover = damage - shield;
+      shield -= damage;
+      hp -= std::max(0, leftover);
     }
     else {
-      hp -= std::max(0, damage - getArmor());
+      damage = std::max(0, damage);
+      int leftover = damage - shield;
+      shield -= damage;
+      hp -= std::max(0, leftover);
     }
   }
 }
@@ -1345,10 +1357,10 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) 
     }
   }
   if(type == ACTION_HEAVY_STRIKE) {
-    return (trueDamage + std::max(0, damage - getArmor())) * 1.5;
+    return (trueDamage + std::max(0, damage - getShield())) * 1.5;
   }
   else {
-    return trueDamage + std::max(0, damage - getArmor());
+    return trueDamage + std::max(0, damage - getShield());
   }
 }
 
@@ -1406,10 +1418,12 @@ std::string Character::to_string() {
   String::insert_int(ss, getMaxHp());
   String::insert_int(ss, mana);
   String::insert_int(ss, getMaxMana());
+  String::insert_int(ss, shield);
+  String::insert_int(ss, getMaxShield());
   String::insert_float(ss, getStamina());
   String::insert_float(ss, getSatiety());
   String::insert_int(ss, getCurrentSoulBurn());
-  String::insert_int(ss, getSoulBurnTreshold());
+  String::insert_int(ss, getSoulBurnThreshold());
   String::insert_int(ss, getFlow());
   String::insert_bool(ss, player_character);
   String::insert_int(ss, race->getType(race_modifiers));
@@ -1419,7 +1433,6 @@ std::string Character::to_string() {
   String::insert_float(ss, getSize());
   String::insert_float(ss, orientation);
   String::insert(ss, team);
-  String::insert_int(ss, getArmor());
   String::insert_int(ss, xp);
   String::insert_int(ss, level);
   if(talking_speech != nullptr) {
@@ -1448,6 +1461,8 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->maxHp = String::extract_int(ss);
   display->mana = String::extract_int(ss);
   display->maxMana = String::extract_int(ss);
+  display->shield = String::extract_int(ss);
+  display->maxShield = String::extract_int(ss);
   display->stamina = String::extract_float(ss);
   display->satiety = String::extract_float(ss);
   display->soulBurn = String::extract_int(ss);
@@ -1461,7 +1476,6 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->size = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
   display->team = String::extract(ss);
-  display->armor = String::extract_int(ss);
   display->xp = String::extract_int(ss);
   display->level = String::extract_int(ss);
   std::string talking_speech_str = String::extract(ss);
@@ -1483,10 +1497,10 @@ std::string Character::full_to_string(Adventure * adventure) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, maxHp);
   String::insert_int(ss, maxMana);
+  String::insert_int(ss, maxShield);
   String::insert_int(ss, hp);
   String::insert_int(ss, mana);
-  String::insert_int(ss, armor);
-  String::insert_int(ss, armor_multiplier);
+  String::insert_int(ss, shield);
   String::insert_int(ss, damage_multiplier);
   String::insert_int(ss, soulBurnTreshold);
   String::insert_int(ss, flow);
@@ -1595,10 +1609,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   std::stringstream * ss = new std::stringstream(to_read);
   int maxHp = String::extract_int(ss);
   int maxMana = String::extract_int(ss);
+  int maxShield = String::extract_int(ss);
   int hp = String::extract_int(ss);
   int mana = String::extract_int(ss);
-  int armor = String::extract_int(ss);
-  int armor_multiplier = String::extract_int(ss);
+  int shield = String::extract_int(ss);
   int damage_multiplier = String::extract_int(ss);
   int soulBurnTreshold = String::extract_int(ss);
   int flow = String::extract_int(ss);
@@ -1698,10 +1712,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   Character * result = new Character(
     maxHp,
     maxMana,
+    maxShield,
     hp,
     mana,
-    armor,
-    armor_multiplier,
+    shield,
     damage_multiplier,
     soulBurnTreshold,
     flow,

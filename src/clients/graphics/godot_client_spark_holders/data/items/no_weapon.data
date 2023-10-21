@@ -8,7 +8,6 @@ droppable = false
 usable = false
 consumable = false
 effects =
-armor = 0
 swap_time = 0
 range = 1.0
 strike_time = 5

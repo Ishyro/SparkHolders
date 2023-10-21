@@ -53,8 +53,8 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_MANA_MAX", EFFECT_MANA_MAX));
   macros.insert(std::make_pair("EFFECT_STAMINA", EFFECT_STAMINA));
   macros.insert(std::make_pair("EFFECT_SATIETY", EFFECT_SATIETY));
-  macros.insert(std::make_pair("EFFECT_ARMOR", EFFECT_ARMOR));
-  macros.insert(std::make_pair("EFFECT_ARMOR_MULTIPLIER", EFFECT_ARMOR_MULTIPLIER));
+  macros.insert(std::make_pair("EFFECT_SHIELD", EFFECT_SHIELD));
+  macros.insert(std::make_pair("EFFECT_SHIELD_MULTIPLIER", EFFECT_SHIELD_MULTIPLIER));
   macros.insert(std::make_pair("EFFECT_SOULBURNTRESHOLD", EFFECT_SOULBURNTRESHOLD));
   macros.insert(std::make_pair("EFFECT_FLOW", EFFECT_FLOW));
   macros.insert(std::make_pair("EFFECT_VISION_RANGE", EFFECT_VISION_RANGE));
@@ -104,7 +104,7 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_PISTOL", ITEM_PISTOL));
   macros.insert(std::make_pair("ITEM_SLING", ITEM_SLING));
 
-  // armor_type
+  // shield_type
   macros.insert(std::make_pair("ITEM_HEAD", ITEM_HEAD));
   macros.insert(std::make_pair("ITEM_ARMS", ITEM_ARMS));
   macros.insert(std::make_pair("ITEM_BODY", ITEM_BODY));

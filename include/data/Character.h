@@ -24,6 +24,8 @@ typedef struct CharacterDisplay {
   int maxHp;
   int mana;
   int maxMana;
+  int shield;
+  int maxShield;
   float stamina;
   float satiety;
   int soulBurn;
@@ -37,7 +39,6 @@ typedef struct CharacterDisplay {
   float size;
   float orientation;
   std::string team;
-  int armor;
   int xp;
   int level;
   Speech * talking_speech;
@@ -145,10 +146,10 @@ class Character {
     Character(
       int maxHp,
       int maxMana,
+      int maxShield,
       int hp,
       int mana,
-      int armor,
-      int armor_multiplier,
+      int shield,
       int damage_multiplier,
       int soulBurnTreshold,
       int flow,
@@ -196,10 +197,10 @@ class Character {
     ):
       maxHp(maxHp),
       maxMana(maxMana),
+      maxShield(maxShield),
       hp(hp),
       mana(mana),
-      armor(armor),
-      armor_multiplier(armor_multiplier),
+      shield(shield),
       damage_multiplier(damage_multiplier),
       soulBurnTreshold(soulBurnTreshold),
       flow(flow),
@@ -267,13 +268,14 @@ class Character {
     int getMana();
     int getAvaillableMana(bool overflow);
     int getMaxMana();
+    int getShield();
+    int getMaxShield();
     float getStamina();
     float getSatiety();
-    int getArmor();
-    float getArmorMultiplier();
-    int getSoulBurnTreshold();
+    int getSoulBurnThreshold();
     int getCurrentSoulBurn();
     int getFlow();
+    long getRawPower();
     int getVisionRange();
     int getVisionPower();
     int getDetectionRange();
@@ -335,13 +337,15 @@ class Character {
     void manaHeal(int mana);
     void incrMaxMana();
     void setMana(int mana);
+    void shieldRestore(int shield);
+    void setShield(int shield);
+    void incrMaxShield();
     void addStamina(float stamina);
     void addSatiety(float satiety);
     void removeStamina(float stamina);
     void removeSatiety(float satiety);
     void setStamina(float stamina);
     void setSatiety(float satiety);
-    void incrArmorMultiplier();
     void incrDamageMultiplier();
     void incrSoulBurnTreshold();
     void setCurrentSoulBurn(int soulBurn);
@@ -433,8 +437,8 @@ class Character {
     float savedHpRegen;
     float savedManaRegen;
     int channeledMana;
-    int armor;
-    int armor_multiplier;
+    int shield;
+    int maxShield;
     int damage_multiplier;
     int soulBurnTreshold;
     int currentSoulBurn;

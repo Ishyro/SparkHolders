@@ -36,7 +36,6 @@ std::string ArmorItem::to_string() {
   }
   String::insert(ss, ss_effects->str());
   delete ss_effects;
-  String::insert_int(ss, armor);
   String::insert_int(ss, swap_time);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, damage_reductions[i]);

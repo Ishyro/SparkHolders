@@ -101,6 +101,7 @@ void Link::receiveState(std::string msg) {
         pair.second->move(display->x, display->y, display->z, display->orientation, adventure->getWorld());
         pair.second->setHp(display->hp);
         pair.second->setMana(display->mana);
+        pair.second->setShield(display->shield);
         pair.second->setStamina(display->stamina);
         pair.second->setSatiety(display->satiety);
         pair.second->setCurrentSoulBurn(display->soulBurn);

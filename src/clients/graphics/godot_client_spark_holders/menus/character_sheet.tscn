@@ -1,0 +1,419 @@
+[gd_scene load_steps=7 format=3 uid="uid://csp4utnaq7gbx"]
+
+[ext_resource type="Script" path="res://menus/character_sheet.gd" id="1_cowgy"]
+[ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://data/materials/paper/Color.jpg" id="1_m6bt1"]
+[ext_resource type="LabelSettings" uid="uid://bhfby7nb070i8" path="res://hud/police/BigText.tres" id="2_rrtlv"]
+[ext_resource type="LabelSettings" uid="uid://lhfmbkrdk0jr" path="res://hud/police/Numbers.tres" id="3_i53mo"]
+[ext_resource type="Texture2D" uid="uid://cjl5okoqk75mo" path="res://menus/exp.png" id="5_626cv"]
+[ext_resource type="Texture2D" uid="uid://dtwvlyipq5myu" path="res://menus/character_sheet_foreground.png" id="6_fucs0"]
+
+[node name="CharacterSheet" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cowgy")
+
+[node name="Background" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_m6bt1")
+
+[node name="Mutable" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Classes" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainClassTier" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.04
+anchor_top = 0.111
+anchor_right = 0.04
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubClassTier" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.117
+anchor_top = 0.111
+anchor_right = 0.117
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SpecClassTier" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.194
+anchor_top = 0.111
+anchor_right = 0.194
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RaceTier" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.272
+anchor_top = 0.111
+anchor_right = 0.272
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainClass" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.04
+anchor_top = 0.111
+anchor_right = 0.04
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubClass" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.117
+anchor_top = 0.111
+anchor_right = 0.117
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SpecClass" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.194
+anchor_top = 0.111
+anchor_right = 0.194
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Race" type="TextureRect" parent="Mutable/Classes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.272
+anchor_top = 0.111
+anchor_right = 0.272
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainNode" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Name" type="Label" parent="Mutable/MainNode"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.037
+anchor_right = 0.5
+anchor_bottom = 0.037
+grow_horizontal = 2
+grow_vertical = 2
+text = "Shayal Kahazar"
+label_settings = ExtResource("2_rrtlv")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level" type="Label" parent="Mutable/MainNode"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.135
+anchor_right = 0.5
+anchor_bottom = 0.135
+grow_horizontal = 2
+grow_vertical = 2
+text = "666"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ways" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OriginTier" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.731
+anchor_top = 0.111
+anchor_right = 0.731
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CultureTier" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.808
+anchor_top = 0.111
+anchor_right = 0.808
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ReligionTier" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.885
+anchor_top = 0.111
+anchor_right = 0.885
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProfessionTier" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.962
+anchor_top = 0.111
+anchor_right = 0.962
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Origin" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.731
+anchor_top = 0.111
+anchor_right = 0.731
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Culture" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.807
+anchor_top = 0.111
+anchor_right = 0.807
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Religion" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.885
+anchor_top = 0.111
+anchor_right = 0.885
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Profession" type="TextureRect" parent="Mutable/Ways"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.962
+anchor_top = 0.111
+anchor_right = 0.962
+anchor_bottom = 0.111
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainStats" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Concentration" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.378
+anchor_top = 0.351
+anchor_right = 0.378
+anchor_bottom = 0.351
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SoulBurnThreshold" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.501
+anchor_top = 0.335
+anchor_right = 0.501
+anchor_bottom = 0.335
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Strengthening" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.623
+anchor_top = 0.354
+anchor_right = 0.623
+anchor_bottom = 0.354
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Shield" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.633
+anchor_top = 0.57
+anchor_right = 0.633
+anchor_bottom = 0.57
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Meditation" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.622
+anchor_top = 0.787
+anchor_right = 0.622
+anchor_bottom = 0.787
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Mana" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.805
+anchor_right = 0.5
+anchor_bottom = 0.805
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Flow" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.379
+anchor_top = 0.784
+anchor_right = 0.379
+anchor_bottom = 0.784
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Health" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.368
+anchor_top = 0.57
+anchor_right = 0.368
+anchor_bottom = 0.57
+grow_horizontal = 2
+grow_vertical = 2
+text = "750"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RawPower" type="Label" parent="Mutable/MainStats"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.57
+anchor_right = 0.5
+anchor_bottom = 0.57
+grow_horizontal = 2
+grow_vertical = 2
+text = "9000"
+label_settings = ExtResource("3_i53mo")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubStats" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Competences" type="Control" parent="Mutable"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Experience" type="TextureProgressBar" parent="Mutable"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.947
+anchor_right = 0.1
+anchor_bottom = 0.947
+offset_right = 1536.0
+offset_bottom = 26.0
+max_value = 1000.0
+value = 500.0
+nine_patch_stretch = true
+texture_progress = ExtResource("5_626cv")
+
+[node name="Foreground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_fucs0")

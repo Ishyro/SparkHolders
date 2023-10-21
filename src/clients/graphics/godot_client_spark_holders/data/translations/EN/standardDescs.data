@@ -1,6 +1,6 @@
 Hp = Your health points. You die when they reach 0.%
 Mana = Your mana points. Each spell you cast will cost mana. You die when they reach 0.%
-Armor = The flat damage reduction you have against all damage types except TRUE and SOUL.%
+Shield = The flat damage reduction you have against all damage types except TRUE and SOUL.%
 Soulburn = Everytime you use mana (receiving SOUL damage count as well), it will be converted into Soulburn.
 Every round, you will lose the max between 10 percent of this Threshold value and your current Soulburn.
 If you have more Soulburn than this Threshold, losing any amount of Soulburn will result in receiving the same amount of TRUE damage.%
@@ -16,7 +16,7 @@ RELIGION = RELIGION%
 PROFESSION = PROFESSION%
 CHARACTER = Hp: Your health points. You die when they reach 0.
 Mana: Your mana points. Each spell you cast will cost mana. You die when they reach 0.
-Armor: The flat damage reduction you have against all damage types except TRUE and SOUL.
+Shield: The flat damage reduction you have against all damage types except TRUE and SOUL.
 Soulburn: Everytime you use mana (receiving SOUL damage count as well), it will be converted into Soulburn.
 Every round, you will lose the max between 10 percent of this Threshold value and your current Soulburn.
 If you have more Soulburn than this Threshold, losing any amount of Soulburn will result in receiving the same amount of TRUE damage.

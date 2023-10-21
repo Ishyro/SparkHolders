@@ -8,7 +8,6 @@ droppable = true
 usable = false
 consumable = false
 effects =
-armor = 5
 swap_time = 10
 
 SLASH_REDUCTION = 0.3

@@ -10,7 +10,6 @@
 
 class GearItem : public Item {
   public:
-    const int armor;
     const int swap_time;
     GearItem(
       std::string name,
@@ -26,7 +25,6 @@ class GearItem : public Item {
       bool consumable,
       int use_time,
       std::list<Effect *> effects,
-      int armor,
       int swap_time
     ):
       Item(
@@ -44,12 +42,10 @@ class GearItem : public Item {
         use_time,
         effects
       ),
-      armor(armor),
       swap_time(swap_time)
     {}
     GearItem(GearItem * item, int tier):
       Item(item, tier),
-      armor(item->armor),
       swap_time(item->swap_time)
     {}
     virtual std::string to_string() = 0;

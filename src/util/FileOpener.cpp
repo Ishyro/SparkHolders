@@ -378,9 +378,10 @@ namespace FileOpener {
     if(archetype_str != "none") {
       archetype = (Attributes *) database->getAttributes(archetype_str);
     }
+    int tier = stoi(values.at("tier"));
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
-    int baseArmorMult = stoi(values.at("baseArmorMult"));
+    int baseShield = stoi(values.at("baseShield"));
     int baseDamageMult = stoi(values.at("baseDamageMult"));
     int baseSoulBurn = stoi(values.at("baseSoulBurn"));
     int baseFlow = stoi(values.at("baseFlow"));
@@ -389,7 +390,7 @@ namespace FileOpener {
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
-    int armorMultIncr = stoi(values.at("armorMultIncr"));
+    int shieldIncr = stoi(values.at("shieldIncr"));
     int damageMultIncr = stoi(values.at("damageMultIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
@@ -408,9 +409,10 @@ namespace FileOpener {
     Attributes * attributes = new Attributes(
       name,
       archetype,
+      tier,
       baseHp,
       baseMana,
-      baseArmorMult,
+      baseShield,
       baseDamageMult,
       baseSoulBurn,
       baseFlow,
@@ -419,7 +421,7 @@ namespace FileOpener {
       baseDetectionRange,
       hpIncr,
       manaIncr,
-      armorMultIncr,
+      shieldIncr,
       damageMultIncr,
       soulBurnIncr,
       flowIncr,
@@ -637,7 +639,6 @@ namespace FileOpener {
     }
     Item * item;
     if(type == ITEM_ARMOR) {
-      int armor = stoi(values.at("armor"));
       int swap_time = stoi(values.at("swap_time"));
       float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
@@ -665,13 +666,11 @@ namespace FileOpener {
         consumable,
         use_time,
         *effects,
-        armor,
         swap_time,
         damage_reductions
       );
     }
     if(type == ITEM_WEAPON) {
-      int armor = stoi(values.at("armor"));
       int swap_time = stoi(values.at("swap_time"));
       float range = _stof(values.at("range"));
       int strike_time = stoi(values.at("strike_time"));
@@ -717,7 +716,6 @@ namespace FileOpener {
         consumable,
         use_time,
         *effects,
-        armor,
         swap_time,
         range,
         strike_time,
@@ -1190,9 +1188,10 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
+    int tier = stoi(values.at("tier"));
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
-    int baseArmorMult = stoi(values.at("baseArmorMult"));
+    int baseShield = stoi(values.at("baseShield"));
     int baseDamageMult = stoi(values.at("baseDamageMult"));
     int baseSoulBurn = stoi(values.at("baseSoulBurn"));
     int baseFlow = stoi(values.at("baseFlow"));
@@ -1201,7 +1200,7 @@ namespace FileOpener {
     int baseDetectionRange = stoi(values.at("baseDetectionRange"));
     int hpIncr = stoi(values.at("hpIncr"));
     int manaIncr = stoi(values.at("manaIncr"));
-    int armorMultIncr = stoi(values.at("armorMultIncr"));
+    int shieldIncr = stoi(values.at("shieldIncr"));
     int damageMultIncr = stoi(values.at("damageMultIncr"));
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
@@ -1219,7 +1218,6 @@ namespace FileOpener {
     }
     if(type == WAY_RACE) {
       int race_type = database->getTargetFromMacro(values.at("race_type"));
-      int baseArmor = stoi(values.at("baseArmor"));
       float size = _stof(values.at("size"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
       bool need_to_eat;
@@ -1246,9 +1244,10 @@ namespace FileOpener {
       Way * way = new Race(
         name,
         type,
+        tier,
         baseHp,
         baseMana,
-        baseArmorMult,
+        baseShield,
         baseDamageMult,
         baseSoulBurn,
         baseFlow,
@@ -1257,7 +1256,7 @@ namespace FileOpener {
         baseDetectionRange,
         hpIncr,
         manaIncr,
-        armorMultIncr,
+        shieldIncr,
         damageMultIncr,
         soulBurnIncr,
         flowIncr,
@@ -1265,7 +1264,6 @@ namespace FileOpener {
         *skills,
         race_type,
         size,
-        baseArmor,
         need_to_eat,
         can_eat_food,
         need_to_sleep,
@@ -1285,9 +1283,10 @@ namespace FileOpener {
       Way * way = new Way(
         name,
         type,
+        tier,
         baseHp,
         baseMana,
-        baseArmorMult,
+        baseShield,
         baseDamageMult,
         baseSoulBurn,
         baseFlow,
@@ -1296,7 +1295,7 @@ namespace FileOpener {
         baseDetectionRange,
         hpIncr,
         manaIncr,
-        armorMultIncr,
+        shieldIncr,
         damageMultIncr,
         soulBurnIncr,
         flowIncr,

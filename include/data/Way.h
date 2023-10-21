@@ -10,9 +10,10 @@ class Way {
   public:
     const std::string name;
     const int type;
+    const int tier;
     const int baseHp;
     const int baseMana;
-    const int baseArmorMult;
+    const int baseShield;
     const int baseDamageMult;
     const int baseSoulBurn;
     const int baseFlow;
@@ -21,16 +22,17 @@ class Way {
     const int baseDetectionRange;
     const int hpIncr;
     const int manaIncr;
-    const int armorMultIncr;
+    const int shieldIncr;
     const int damageMultIncr;
     const int soulBurnIncr;
     const int flowIncr;
     Way(
       std::string name,
       int type,
+      int tier,
       int baseHp,
       int baseMana,
-      int baseArmorMult,
+      int baseShield,
       int baseDamageMult,
       int baseSoulBurn,
       int baseFlow,
@@ -39,7 +41,7 @@ class Way {
       int baseDetectionRange,
       int hpIncr,
       int manaIncr,
-      int armorMultIncr,
+      int shieldIncr,
       int damageMultIncr,
       int soulBurnIncr,
       int flowIncr,
@@ -48,9 +50,10 @@ class Way {
     ):
       name(name),
       type(type),
+      tier(tier),
       baseHp(baseHp),
       baseMana(baseMana),
-      baseArmorMult(baseArmorMult),
+      baseShield(baseShield),
       baseDamageMult(baseDamageMult),
       baseSoulBurn(baseSoulBurn),
       baseFlow(baseFlow),
@@ -59,7 +62,7 @@ class Way {
       baseDetectionRange(baseDetectionRange),
       hpIncr(hpIncr),
       manaIncr(manaIncr),
-      armorMultIncr(armorMultIncr),
+      shieldIncr(shieldIncr),
       damageMultIncr(damageMultIncr),
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
