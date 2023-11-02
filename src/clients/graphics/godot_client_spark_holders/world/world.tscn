@@ -117,6 +117,5 @@ environment = SubResource("Environment_1nh6o")
 
 [node name="Sun" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 50, 0)
-light_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.04

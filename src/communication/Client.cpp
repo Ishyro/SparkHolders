@@ -45,7 +45,7 @@ namespace Client {
   ) {
     std::stringstream * ss = new std::stringstream();
     String::insert_long(ss, id);
-    for(int i = 0; i < types.size(); i++) {
+    for(int i = 0; i < (int) types.size(); i++) {
       String::insert(ss, writeAction(types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
     }
     std::string result = ss->str();
@@ -53,7 +53,7 @@ namespace Client {
     return result;
   }
 
-  std::string writeAction(int type, void * arg1 = nullptr, void * arg2 = nullptr, int overcharge_power = 1, int overcharge_duration = 1, int overcharge_range = 1) {
+  std::string writeAction(int type, void * arg1, void * arg2, int overcharge_power, int overcharge_duration, int overcharge_range) {
     switch(type) {
       case ACTION_IDLE:
       case ACTION_RESPITE:
@@ -83,6 +83,7 @@ namespace Client {
         break;
       default: ;
     }
+    return "";
   }
   
   std::string writeBaseAction(int type) {

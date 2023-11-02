@@ -25,6 +25,8 @@ std::string ArmorItem::to_string() {
   String::insert_int(ss, tier);
   String::insert_int(ss, max_tier);
   String::insert_float(ss, weight);
+  String::insert_int(ss, sizeX);
+  String::insert_int(ss, sizeY);
   String::insert_int(ss, gold_value);
   String::insert_bool(ss, droppable);
   String::insert_bool(ss, usable);

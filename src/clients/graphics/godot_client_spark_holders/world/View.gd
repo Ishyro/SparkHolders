@@ -155,6 +155,14 @@ func _unhandled_input(event):
 			hud.set_skill_tab(10)
 		if event.is_action_pressed("skill_tab_12"):
 			hud.set_skill_tab(11)
+		if event.is_action_pressed("action_move"):
+			hud.move.set_pressed(true)
+		if event.is_action_pressed("action_attack"):
+			hud.attack.set_pressed(true)
+		if event.is_action_pressed("action_interact"):
+			hud.interact.set_pressed(true)
+		if event.is_action_pressed("action_rest"):
+			hud.rest.set_pressed(true)
 		if event.is_action_pressed("display_stats"):
 			if !character_sheet.visible:
 				character_sheet.display_stats()
@@ -174,7 +182,10 @@ func _unhandled_input(event):
 						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.characters_data[Values.selected_team.id]["z"]))
 			if Values.mode == Values.ACTION_MODE_ACTIVATION:
 				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_TILE, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), map.characters_data[Values.selected_team.id]["z"]))
+			if Values.mode == Values.ACTION_MODE_ATTACK:
+				map.add_targeted_action(Values.selected_team.id, Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
 		if event.is_action_pressed("send_actions"):
 			Values.link.send_actions(Values.actions)
 			map.init_actions()
-			Values.mode = Values.ACTION_MODE_NONE
+			if Values.mode == Values.ACTION_MODE_NONE:
+				Values.mode = Values.ACTION_MODE_MOVE

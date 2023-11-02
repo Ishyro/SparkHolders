@@ -82,9 +82,10 @@ Database::Database() {
   // item_type
   macros.insert(std::make_pair("ITEM_WEAPON", ITEM_WEAPON));
   macros.insert(std::make_pair("ITEM_ARMOR", ITEM_ARMOR));
-  macros.insert(std::make_pair("ITEM_MISCELLANEOUS", ITEM_MISCELLANEOUS));
-  macros.insert(std::make_pair("ITEM_CONSUMABLE", ITEM_CONSUMABLE));
+  macros.insert(std::make_pair("ITEM_BASIC", ITEM_BASIC));
+  macros.insert(std::make_pair("ITEM_SERIAL", ITEM_SERIAL));
   macros.insert(std::make_pair("ITEM_AMMUNITION", ITEM_AMMUNITION));
+  macros.insert(std::make_pair("ITEM_CONTAINER", ITEM_CONTAINER));
 
   // weapon_type
   macros.insert(std::make_pair("ITEM_LONG_SWORD", ITEM_LONG_SWORD));
@@ -104,23 +105,24 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_PISTOL", ITEM_PISTOL));
   macros.insert(std::make_pair("ITEM_SLING", ITEM_SLING));
 
-  // shield_type
-  macros.insert(std::make_pair("ITEM_HEAD", ITEM_HEAD));
-  macros.insert(std::make_pair("ITEM_ARMS", ITEM_ARMS));
-  macros.insert(std::make_pair("ITEM_BODY", ITEM_BODY));
-  macros.insert(std::make_pair("ITEM_LEGS", ITEM_LEGS));
+  // armor_type
+  macros.insert(std::make_pair("ITEM_MANTLE", ITEM_MANTLE));
+  macros.insert(std::make_pair("ITEM_HELMET", ITEM_HELMET));
+  macros.insert(std::make_pair("ITEM_GAUNTLETS", ITEM_GAUNTLETS));
+  macros.insert(std::make_pair("ITEM_CUIRASS", ITEM_CUIRASS));
+  macros.insert(std::make_pair("ITEM_BOOTS", ITEM_BOOTS));
   macros.insert(std::make_pair("ITEM_LANTERN", ITEM_LANTERN));
-  macros.insert(std::make_pair("ITEM_FULL_BODY", ITEM_FULL_BODY));
-  macros.insert(std::make_pair("ITEM_RING", ITEM_RING));
   macros.insert(std::make_pair("ITEM_AMULET", ITEM_AMULET));
-
-  macros.insert(std::make_pair("ITEM_LEFT_RING", ITEM_LEFT_RING));
-  macros.insert(std::make_pair("ITEM_RIGHT_RING", ITEM_RIGHT_RING));
+  macros.insert(std::make_pair("ITEM_RING", ITEM_RING));
 
   // other_items_type
   macros.insert(std::make_pair("ITEM_FOOD", ITEM_FOOD));
   macros.insert(std::make_pair("ITEM_MATERIAL", ITEM_MATERIAL));
   macros.insert(std::make_pair("ITEM_POTION", ITEM_POTION));
+  macros.insert(std::make_pair("ITEM_BAG", ITEM_BAG));
+  macros.insert(std::make_pair("ITEM_BELT", ITEM_BELT));
+  macros.insert(std::make_pair("ITEM_POUCH", ITEM_POUCH));
+  macros.insert(std::make_pair("ITEM_MAGIC_BOX", ITEM_MAGIC_BOX));
 
   // furniture_type
   macros.insert(std::make_pair("FURNITURE_BASIC", FURNITURE_BASIC)); 

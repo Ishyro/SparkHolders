@@ -10,6 +10,7 @@
 
 class SerialItem : public Item {
   public:
+    const int max;
     SerialItem(
       std::string name,
       long id,
@@ -18,13 +19,16 @@ class SerialItem : public Item {
       int tier,
       int max_tier,
       float weight,
+      int sizeX,
+      int sizeY,
       int gold_value,
       bool droppable,
       bool usable,
       bool consumable,
       int use_time,
       std::list<Effect *> effects,
-      int number
+      int number,
+      int max
     ):
       Item(
         name,
@@ -34,6 +38,8 @@ class SerialItem : public Item {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -41,16 +47,18 @@ class SerialItem : public Item {
         use_time,
         effects
       ),
-      number(number)
+      number(number),
+      max(max)
     {}
     SerialItem(SerialItem * item, int tier, int number):
       Item(item, tier),
+      max(item->max),
       number(number)
     {}
-    bool isFood();
     int getNumber();
     int add(int number);
     int reduce(int number);
+    float getWeight();
     std::string to_string();
   protected:
     int number;

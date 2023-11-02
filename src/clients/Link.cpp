@@ -82,7 +82,7 @@ void Link::sendActions(
   ) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, SOCKET_MSG_ACTION);
-    for(int i = 0; i < ids.size(); i++) {
+    for(int i = 0; i < (int) ids.size(); i++) {
       String::insert(ss, Client::writeActions(ids[i], types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
     }
     try {

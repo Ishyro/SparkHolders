@@ -1,8 +1,10 @@
 name = TXT_IRON_BOOTS
 type = ITEM_ARMOR
-type2 = ITEM_LEGS
+type2 = ITEM_BOOTS
 tier = 10
 weight = 5.0
+sizeX = 2
+sizeY = 2
 gold_value = 10
 droppable = true
 usable = false

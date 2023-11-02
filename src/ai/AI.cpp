@@ -114,9 +114,9 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     return nullptr;
   }
   if(self->getRace()->can_eat_food) {
-    for(Item * item : self->getItems()) {
-      if(item->type == ITEM_CONSUMABLE && ((SerialItem *) item)->isFood()) {
-        return new GearAction(ACTION_USE_ITEM, adventure, nullptr, self, item->id);
+    for(ItemSlot * slot : self->getGear()->getBag()->getItems()) {
+      if(slot->item->consumable && slot->item->isFood()) {
+        return new GearAction(ACTION_USE_ITEM, adventure, nullptr, self, slot, nullptr);
       }
     }
     return trackPrey(adventure, self);
@@ -215,7 +215,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
       if(distance <= max_distance_prey && distance < distance_corpse) {
         bool isFood = false;
         for(Item * item : loot->items) {
-          if(item->type == ITEM_CONSUMABLE && ((SerialItem *) item)->isFood()) {
+          if(item->consumable && item->isFood()) {
             isFood = true;
             break;
           }
@@ -234,7 +234,8 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   }
   else {
     if(distance_corpse == 0) {
-      return new GearAction(ACTION_GRAB, adventure, nullptr, self, GRAB_FOOD);
+      // TODO
+      return new GearAction(ACTION_GRAB, adventure, nullptr, self, nullptr, nullptr);
     }
     else {
       Target * target = new Target();
@@ -277,7 +278,7 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
           maxDamage = rawDamage;
         }
       }
-      else if(pair.first == nullptr && self->getGear()->getWeapon()->range >= range) {
+      else if(pair.first == nullptr && self->getGear()->getWeapon_1()->range >= range) {
         int rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
         if(rawDamage > maxDamage) {
           skill = pair.first;
@@ -285,7 +286,7 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
         }
       }
     }
-    if(skill != nullptr || self->getGear()->getWeapon()->range >= range) {
+    if(skill != nullptr || self->getGear()->getWeapon_1()->range >= range) {
       bestDamageSkills.insert(std::make_pair(threat, skill));
     }
   }
@@ -314,34 +315,46 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     if(skill != nullptr) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
-    if(!self->getGear()->getWeapon()->use_projectile) {
+    if(!self->getGear()->getWeapon_1()->use_projectile) {
       return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
     }
-    if(!self->getGear()->getWeapon()->use_ammo || self->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+    if(!self->getGear()->getWeapon_1()->use_ammo || self->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
       return new TargetedAction(ACTION_SHOOT, adventure, nullptr, self, t);
     }
-    AmmunitionItem * ammo = nullptr;
-    ammo = self->canReload();
-    if(ammo != nullptr) {
-      return new GearAction(ACTION_RELOAD, adventure, nullptr, self, ammo->id);
+    ItemSlot * slot = nullptr;
+    slot = self->canReload(ITEM_SLOT_WEAPON_1);
+    if(slot != nullptr) {
+      return new GearAction(ACTION_RELOAD, adventure, nullptr, self, slot, nullptr);
     }
     WeaponItem * weapon = nullptr;
-    weapon = self->swapMelee();
+    weapon = self->getGear()->getBackupWeapon_1();
     if(weapon != nullptr) {
-      return new GearAction(ACTION_RELOAD, adventure, nullptr, self, weapon->id);
+      slot->slot = ITEM_SLOT_WEAPON_3;
+      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
+    }
+    weapon = self->getGear()->getBackupWeapon_2();
+    if(weapon != nullptr) {
+      slot->slot = ITEM_SLOT_WEAPON_4;
+      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
     }
   }
 
-  if(self->getGear()->getWeapon()->use_ammo && self->getGear()->getWeapon()->getCurrentCapacity() == 0) {
-    AmmunitionItem * ammo = nullptr;
-    ammo = self->canReload();
-    if(ammo != nullptr) {
-      return new GearAction(ACTION_RELOAD, adventure, nullptr, self, ammo->id);
+  if(self->getGear()->getWeapon_1()->use_ammo && self->getGear()->getWeapon_1()->getCurrentCapacity() == 0) {
+    ItemSlot * slot = nullptr;
+    slot = self->canReload(ITEM_SLOT_WEAPON_1);
+    if(slot != nullptr) {
+      return new GearAction(ACTION_RELOAD, adventure, nullptr, self, slot, nullptr);
     }
     WeaponItem * weapon = nullptr;
-    weapon = self->swapMelee();
+    weapon = self->getGear()->getBackupWeapon_1();
     if(weapon != nullptr) {
-      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, weapon->id);
+      slot->slot = ITEM_SLOT_WEAPON_3;
+      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
+    }
+    weapon = self->getGear()->getBackupWeapon_2();
+    if(weapon != nullptr) {
+      slot->slot = ITEM_SLOT_WEAPON_4;
+      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
     }
   }
   max = 0;

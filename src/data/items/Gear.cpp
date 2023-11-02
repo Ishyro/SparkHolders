@@ -6,138 +6,180 @@
 #include "data/items/WeaponItem.h"
 #include "data/items/Gear.h"
 
+#include "data/Effect.h"
+
 #include "util/String.h"
 
-std::list<GearItem *> Gear::equip(GearItem * new_item) {
-  std::list<GearItem *> unequip = std::list<GearItem *>();
-  if(new_item->type == ITEM_WEAPON) {
-      unequip.push_back(weapon);
-      weapon = (WeaponItem *) new_item;
+void Gear::equip(GearItem * item, int slot) {
+  switch(slot) {
+    case ITEM_SLOT_MANTLE:
+      mantle = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_HELMET:
+      helmet = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_GAUNTLETS:
+      gauntlets = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_ARMOR:
+      armor = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_BOOTS:
+      boots = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_LANTERN:
+      lantern = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_AMULET:
+      amulet = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_RING_1:
+      ring_1 = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_RING_2:
+      ring_2 = (ArmorItem *) item;
+      break;
+    case ITEM_SLOT_WEAPON_1:
+      weapon_1 = (WeaponItem *) item;
+      break;
+    case ITEM_SLOT_WEAPON_2:
+      weapon_2 = (WeaponItem *) item;
+      break;
+    case ITEM_SLOT_WEAPON_3:
+      backup_weapon_1 = (WeaponItem *) item;
+      break;
+    case ITEM_SLOT_WEAPON_4:
+      backup_weapon_2 = (WeaponItem *) item;
+      break;
+    case ITEM_SLOT_BAG:
+      bag = (ContainerItem *) item;
+      break;
+    case ITEM_SLOT_BELT:
+      belt = (ContainerItem *) item;
+      break;
   }
-  else if(new_item->type == ITEM_ARMOR) {
-    switch(new_item->type2) {
-      case ITEM_HEAD:
-        unequip.push_back(head);
-        head = (ArmorItem *) new_item;
-        break;
-      case ITEM_ARMS:
-        unequip.push_back(arms);
-        arms = (ArmorItem *) new_item;
-        break;
-      case ITEM_BODY:
-        unequip.push_back(body);
-        body = (ArmorItem *) new_item;
-        break;
-      case ITEM_LEGS:
-        unequip.push_back(legs);
-        legs = (ArmorItem *) new_item;
-        break;
-      case ITEM_FULL_BODY:
-        unequip.push_back(head);
-        unequip.push_back(body);
-        unequip.push_back(arms);
-        unequip.push_back(legs);
-        head = nullptr;
-        arms = nullptr;
-        legs = nullptr;
-        body = (ArmorItem *) new_item;
-        break;
-      case ITEM_LANTERN:
-        unequip.push_back(lantern);
-        lantern = (ArmorItem *) new_item;
-        break;
-      case ITEM_RING:
-        if(left_ring == nullptr) {
-          left_ring = (ArmorItem *) new_item;
-        }
-        else if(right_ring == nullptr) {
-          right_ring = (ArmorItem *) new_item;
-        }
-        else {
-          unequip.push_back(left_ring);
-          left_ring = (ArmorItem *) new_item;
-        }
-        break;
-      case ITEM_AMULET:
-        unequip.push_back(amulet);
-        amulet = (ArmorItem *) new_item;
-        break;
-    }
-  }
-  return unequip;
 }
 
-GearItem * Gear::unequip(int type, int type2) {
-  GearItem * old_item;
-  if(type == ITEM_WEAPON) {
-      old_item = weapon;
-      weapon = nullptr;
-  }
-  else if(type == ITEM_ARMOR) {
-    switch(type2) {
-      case ITEM_HEAD:
-        old_item = head;
-        head = nullptr;
-        break;
-      case ITEM_ARMS:
-        old_item = arms;
-        arms = nullptr;
-        break;
-      case ITEM_BODY:
-        old_item = body;
-        body = nullptr;
-        break;
-      case ITEM_LEGS:
-        old_item = legs;
-        legs = nullptr;
-        break;
-      case ITEM_FULL_BODY:
-        old_item = body;
-        body = nullptr;
-        break;
-      case ITEM_LANTERN:
-        old_item = lantern;
-        lantern = nullptr;
-        break;
-      case ITEM_LEFT_RING:
-        old_item = left_ring;
-        left_ring = nullptr;
-        break;
-      case ITEM_RIGHT_RING:
-        old_item = right_ring;
-        right_ring = nullptr;
-        break;
-      case ITEM_AMULET:
-        old_item = amulet;
-        amulet = nullptr;
-        break;
-    }
+GearItem * Gear::unequip(int slot) {
+  GearItem * old_item = nullptr;
+  switch(slot) {
+    case ITEM_SLOT_MANTLE:
+      old_item = mantle;
+      mantle = nullptr;
+      return old_item;
+    case ITEM_SLOT_HELMET:
+      old_item = helmet;
+      helmet = nullptr;
+      return old_item;
+    case ITEM_SLOT_GAUNTLETS:
+      old_item = gauntlets;
+      gauntlets = nullptr;
+      return old_item;
+    case ITEM_SLOT_ARMOR:
+      old_item = armor;
+      armor = nullptr;
+      return old_item;
+    case ITEM_SLOT_BOOTS:
+      old_item = boots;
+      boots = nullptr;
+      return old_item;
+    case ITEM_SLOT_LANTERN:
+      old_item = lantern;
+      lantern = nullptr;
+      return old_item;
+    case ITEM_SLOT_AMULET:
+      old_item = amulet;
+      amulet = nullptr;
+      return old_item;
+    case ITEM_SLOT_RING_1:
+      old_item = ring_1;
+      ring_1 = nullptr;
+      return old_item;
+    case ITEM_SLOT_RING_2:
+      old_item = ring_2;
+      ring_2 = nullptr;
+      return old_item;
+    case ITEM_SLOT_WEAPON_1:
+      old_item = weapon_1;
+      weapon_1 = nullptr;
+      return old_item;
+    case ITEM_SLOT_WEAPON_2:
+      old_item = weapon_2;
+      weapon_2 = nullptr;
+      return old_item;
+    case ITEM_SLOT_WEAPON_3:
+      old_item = backup_weapon_1;
+      backup_weapon_1 = nullptr;
+      return old_item;
+    case ITEM_SLOT_WEAPON_4:
+      old_item = backup_weapon_2;
+      backup_weapon_2 = nullptr;
+      return old_item;
+    case ITEM_SLOT_BAG:
+      old_item = bag;
+      bag = nullptr;
+      return old_item;
+    case ITEM_SLOT_BELT:
+      old_item = belt;
+      belt = nullptr;
+      return old_item;
   }
   return old_item;
 }
 
+void Gear::swap(int slot1, int slot2) {
+  WeaponItem * temp;
+  if(slot1 == ITEM_SLOT_WEAPON_1) {
+    if(slot2 == ITEM_SLOT_WEAPON_3) {
+      temp = weapon_1;
+      weapon_1 = backup_weapon_1;
+      backup_weapon_1 = temp;
+    }
+    else if(slot2 == ITEM_SLOT_WEAPON_4) {
+      temp = weapon_1;
+      weapon_1 = backup_weapon_2;
+      backup_weapon_2 = temp;
+    }
+  }
+  else if(slot1 == ITEM_SLOT_WEAPON_2) {
+    if(slot2 == ITEM_SLOT_WEAPON_3) {
+      temp = weapon_2;
+      weapon_2 = backup_weapon_1;
+      backup_weapon_1 = temp;
+    }
+    else if(slot2 == ITEM_SLOT_WEAPON_4) {
+      temp = weapon_2;
+      weapon_2 = backup_weapon_2;
+      backup_weapon_2 = temp;
+    }
+  }
+}
+
 float Gear::getDamageReductionFromType(int damage_type) {
   float resistance = 0.;
-  if(head != nullptr) {
-    resistance += head->getDamageReductionFromType(damage_type);
+  if(mantle != nullptr) {
+    resistance += mantle->getDamageReductionFromType(damage_type);
   }
-  if(arms != nullptr) {
-    resistance += arms->getDamageReductionFromType(damage_type);
+  if(helmet != nullptr) {
+    resistance += helmet->getDamageReductionFromType(damage_type);
   }
-  if(body != nullptr) {
-    resistance += body->getDamageReductionFromType(damage_type);
+  if(gauntlets != nullptr) {
+    resistance += gauntlets->getDamageReductionFromType(damage_type);
   }
-  if(legs != nullptr) {
-    resistance += legs->getDamageReductionFromType(damage_type);
+  if(boots != nullptr) {
+    resistance += boots->getDamageReductionFromType(damage_type);
+  }
+  if(armor != nullptr) {
+    resistance += armor->getDamageReductionFromType(damage_type);
   }
   if(lantern != nullptr) {
     resistance += lantern->getDamageReductionFromType(damage_type);
   }
-  if(left_ring != nullptr) {
-    resistance += left_ring->getDamageReductionFromType(damage_type);
+  if(ring_1 != nullptr) {
+    resistance += ring_1->getDamageReductionFromType(damage_type);
   }
-  if(right_ring != nullptr) {
-    resistance += right_ring->getDamageReductionFromType(damage_type);
+  if(ring_2 != nullptr) {
+    resistance += ring_2->getDamageReductionFromType(damage_type);
   }
   if(amulet != nullptr) {
     resistance += amulet->getDamageReductionFromType(damage_type);
@@ -145,63 +187,267 @@ float Gear::getDamageReductionFromType(int damage_type) {
   return resistance;
 }
 
-ArmorItem * Gear::getHead() { return head; }
-ArmorItem * Gear::getArms() { return arms; }
-ArmorItem * Gear::getLegs() { return legs; }
-ArmorItem * Gear::getBody() { return body; }
+ArmorItem * Gear::getMantle() { return mantle; }
+ArmorItem * Gear::getHelmet() { return helmet; }
+ArmorItem * Gear::getArmor() { return armor; }
+ArmorItem * Gear::getGauntlets() { return gauntlets; }
+ArmorItem * Gear::getBoots() { return boots; }
 ArmorItem * Gear::getLantern() { return lantern; }
-ArmorItem * Gear::getLeft_ring() { return left_ring; }
-ArmorItem * Gear::getRight_ring() { return right_ring; }
 ArmorItem * Gear::getAmulet() { return amulet; }
-WeaponItem * Gear::getWeapon() { return weapon; }
-std::list<Item *> Gear::getItems() { return items; }
+ArmorItem * Gear::getRing_1() { return ring_1; }
+ArmorItem * Gear::getRing_2() { return ring_2; }
+WeaponItem * Gear::getWeapon_1() { return weapon_1; }
+WeaponItem * Gear::getWeapon_2() { return weapon_2; }
+WeaponItem * Gear::getBackupWeapon_1() { return backup_weapon_1; }
+WeaponItem * Gear::getBackupWeapon_2() { return backup_weapon_2; }
+ContainerItem * Gear::getBag() { return bag; }
+ContainerItem * Gear::getBelt() { return belt; }
 
 float Gear::getWeight() {
   float weight = 0.F;
-  if(head != nullptr) {
-    weight += head->weight;
+  if(mantle != nullptr) {
+    weight += mantle->getWeight();
   }
-  if(arms != nullptr) {
-    weight += arms->weight;
+  if(helmet != nullptr) {
+    weight += helmet->getWeight();
   }
-  if(body != nullptr) {
-    weight += body->weight;
+  if(gauntlets != nullptr) {
+    weight += gauntlets->getWeight();
   }
-  if(legs != nullptr) {
-    weight += legs->weight;
+  if(boots != nullptr) {
+    weight += boots->getWeight();
+  }
+  if(armor != nullptr) {
+    weight += armor->getWeight();
   }
   if(lantern != nullptr) {
-    weight += lantern->weight;
+    weight += lantern->getWeight();
   }
-  if(weapon != nullptr) {
-    weight += weapon->weight;
+  if(ring_1 != nullptr) {
+    weight += ring_1->getWeight();
   }
-  return std::max(1.F, weight);
+  if(ring_2 != nullptr) {
+    weight += ring_2->getWeight();
+  }
+  if(amulet != nullptr) {
+    weight += amulet->getWeight();
+  }
+  if(weapon_1 != nullptr) {
+    weight += weapon_1->getWeight();
+  }
+  if(weapon_2 != nullptr) {
+    weight += weapon_2->getWeight();
+  }
+  if(backup_weapon_1 != nullptr) {
+    weight += backup_weapon_1->getWeight();
+  }
+  if(backup_weapon_2 != nullptr) {
+    weight += backup_weapon_2->getWeight();
+  }
+  if(bag != nullptr) {
+    weight += bag->getWeight();
+  }
+  if(belt != nullptr) {
+    weight += belt->getWeight();
+  }
+  return weight;
+}
+
+void Gear::useItem(int x, int y, int slot, Character * user) {
+  Item * item;
+  switch(slot) {
+    case ITEM_SLOT_BAG:
+      item = bag->remove(x, y);
+      if(!item->usable) {
+        bag->add(item, x, y);
+      }
+      else {
+        for(Effect * effect : item->effects) {
+          effect->activate(user);
+        }
+        delete item;
+      }
+      break;
+    case ITEM_SLOT_BELT:
+      item = bag->remove(x, y);
+      if(!item->usable) {
+        bag->add(item, x, y);
+      }
+      else {
+        for(Effect * effect : item->effects) {
+          effect->activate(user);
+        }
+        delete item;
+      }
+    default: ;
+  }
+}
+
+void Gear::reload(ItemSlot * ammo, int slot_weapon) {
+
+}
+
+
+std::list<ItemSlot *> Gear::getItems() {
+  std::list<ItemSlot *> items = std::list<ItemSlot *>();
+  if(mantle != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_MANTLE;
+    slot->item = mantle;
+    items.push_back(slot);
+  }
+  if(helmet != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_HELMET;
+    slot->item = helmet;
+    items.push_back(slot);
+  }
+  if(gauntlets != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_GAUNTLETS;
+    slot->item = gauntlets;
+    items.push_back(slot);
+  }
+  if(boots != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_BOOTS;
+    slot->item = boots;
+    items.push_back(slot);
+  }
+  if(armor != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_ARMOR;
+    slot->item = armor;
+    items.push_back(slot);
+  }
+  if(lantern != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_LANTERN;
+    slot->item = lantern;
+    items.push_back(slot);
+  }
+  if(ring_1 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_RING_1;
+    slot->item = ring_1;
+    items.push_back(slot);
+  }
+  if(ring_2 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_RING_2;
+    slot->item = ring_2;
+    items.push_back(slot);
+  }
+  if(amulet != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_AMULET;
+    slot->item = amulet;
+    items.push_back(slot);
+  }
+  if(weapon_1 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_WEAPON_1;
+    slot->item = weapon_1;
+    items.push_back(slot);
+  }
+  if(weapon_2 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_WEAPON_2;
+    slot->item = weapon_2;
+    items.push_back(slot);
+  }
+  if(backup_weapon_1 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_WEAPON_3;
+    slot->item = backup_weapon_1;
+    items.push_back(slot);
+  }
+  if(backup_weapon_2 != nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_WEAPON_4;
+    slot->item = backup_weapon_2;
+    items.push_back(slot);
+  }
+  if(belt !=nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_BELT;
+    slot->item = belt;
+    items.push_back(slot);
+    for(ItemSlot * slot : belt->getItems()) {
+      items.push_back(slot);
+    }
+  }
+  if(bag !=nullptr) {
+    ItemSlot * slot = new ItemSlot();
+    slot->x = 0;
+    slot->y = 0;
+    slot->slot = ITEM_SLOT_BAG;
+    slot->item = bag;
+    items.push_back(slot);
+    for(ItemSlot * slot : bag->getItems()) {
+      items.push_back(slot);
+    }
+  }
+  return items;
 }
 
 std::string Gear::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
-  if(head != nullptr) {
-    String::insert(ss, head->to_string());
+  if(mantle != nullptr) {
+    String::insert(ss, mantle->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  if(arms != nullptr) {
-    String::insert(ss, arms->to_string());
+  if(helmet != nullptr) {
+    String::insert(ss, helmet->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  if(legs != nullptr) {
-    String::insert(ss, legs->to_string());
+  if(gauntlets != nullptr) {
+    String::insert(ss, gauntlets->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  if(body != nullptr) {
-    String::insert(ss, body->to_string());
+  if(boots != nullptr) {
+    String::insert(ss, boots->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
+  if(armor != nullptr) {
+    String::insert(ss, armor->to_string());
   }
   else {
     String::insert(ss, "none");
@@ -212,14 +458,14 @@ std::string Gear::to_string() {
   else {
     String::insert(ss, "none");
   }
-  if(left_ring != nullptr) {
-    String::insert(ss, left_ring->to_string());
+  if(ring_1 != nullptr) {
+    String::insert(ss, ring_1->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  if(right_ring != nullptr) {
-    String::insert(ss, right_ring->to_string());
+  if(ring_2 != nullptr) {
+    String::insert(ss, ring_2->to_string());
   }
   else {
     String::insert(ss, "none");
@@ -230,18 +476,42 @@ std::string Gear::to_string() {
   else {
     String::insert(ss, "none");
   }
-  if(weapon != nullptr) {
-    String::insert(ss, weapon->to_string());
+  if(weapon_1 != nullptr) {
+    String::insert(ss, weapon_1->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  std::stringstream * ss_items = new std::stringstream();
-  for(Item * item : items) {
-    String::insert(ss_items, item->to_string());
+  if(weapon_2 != nullptr) {
+    String::insert(ss, weapon_2->to_string());
   }
-  String::insert(ss, ss_items->str());
-  delete ss_items;
+  else {
+    String::insert(ss, "none");
+  }
+  if(backup_weapon_1 != nullptr) {
+    String::insert(ss, backup_weapon_1->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
+  if(backup_weapon_2 != nullptr) {
+    String::insert(ss, backup_weapon_2->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
+  if(bag != nullptr) {
+    String::insert(ss, bag->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
+  if(belt != nullptr) {
+    String::insert(ss, belt->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
   std::string result = ss->str();
   delete ss;
   return result;
@@ -250,35 +520,40 @@ std::string Gear::to_string() {
 Gear * Gear::from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
-  ArmorItem * head = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * arms = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * legs = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * body = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * mantle = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * helmet = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * gauntlets = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * boots = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * armor = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * lantern = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * left_ring = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * right_ring = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * ring_1 = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * ring_2 = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * amulet = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  WeaponItem * weapon = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
-  std::stringstream * ss_items = new std::stringstream(String::extract(ss));
-  std::list<Item *> * items = new std::list<Item *>();
-  while(ss_items->rdbuf()->in_avail() != 0) {
-    items->push_back(Item::from_string(String::extract(ss_items), adventure));
-  }
-  delete ss_items;
+  WeaponItem * weapon_1 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
+  WeaponItem * weapon_2 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
+  WeaponItem * backup_weapon_1 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
+  WeaponItem * backup_weapon_2 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
+  ContainerItem * bag = (ContainerItem *) Item::from_string(String::extract(ss), adventure);
+  ContainerItem * belt = (ContainerItem *) Item::from_string(String::extract(ss), adventure);
   delete ss;
   Gear * result = new Gear(
     name,
-    head,
-    arms,
-    legs,
-    body,
+    mantle,
+    helmet,
+    gauntlets,
+    boots,
+    armor,
     lantern,
-    left_ring,
-    right_ring,
+    ring_1,
+    ring_2,
     amulet,
-    weapon,
-    *items
+    weapon_1,
+    weapon_2,
+    backup_weapon_1,
+    backup_weapon_2,
+    bag,
+    belt,
+    std::list<Item *>()
   );
-  delete items;
   return result;
 }

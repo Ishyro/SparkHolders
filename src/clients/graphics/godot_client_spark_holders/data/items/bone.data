@@ -1,8 +1,10 @@
 name = TXT_BONE
-type = ITEM_MISCELLANEOUS
+type = ITEM_BASIC
 type2 = ITEM_MATERIAL
 tier = 0
 weight = 0.5
+sizeX = 1
+sizeY = 2
 gold_value = 15
 droppable = true
 usable = false

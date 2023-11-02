@@ -55,6 +55,7 @@ var base_phantom = preload("res://models/phantom.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
 
 @onready var n_view = $"../View"
+@onready var n_hud = $"../HUD"
 @onready var n_tiles = $Tiles
 @onready var n_floor = $Tiles/Floor
 @onready var n_grid = $Grid
@@ -132,7 +133,11 @@ func _ready():
 			navigations[character_size].agent_max_climb = 0.0
 			navigations[character_size].agent_max_slope = 0.02
 			navigations[character_size].agent_radius = character_size
+	
+	Values.selected_team = characters[owned_characters[0]]
+	select_character(owned_characters[0])
 	bake_navigation_meshes()
+	n_hud.move.set_pressed(true)
 	thread.start(state_updater, Thread.PRIORITY_LOW)
 	
 func bake_navigation_meshes():
@@ -149,20 +154,22 @@ func set_navigation_mesh(character_id: int):
 
 func select_character(character_id: int):
 	var offset = Values.link.getOffsets(character_id)
-	Values.mode = Values.ACTION_MODE_MOVE
 	if n_floor.transform.origin.y + 0.5 != round_float(characters_data[character_id]["z"]):
 		var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
 		var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
 		n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
 	n_floor.transform.origin = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"] + 0.5, characters_data[character_id]["x"])
-	phantoms[character_id].visible = true
 	bake_navigation_meshes()
 	set_navigation_mesh(character_id)
+	n_hud.display_team(characters[character_id], characters_data[character_id])
 
 func state_updater():
 	var running = true
 	while running:
 		while (Values.updating_state || !Values.link.hasState()):
+			if !Values.updating_state && !Values.link.hasState():
+				bake_navigation_meshes()
+				set_navigation_mesh(Values.selected_team.id)
 			await get_tree().create_timer(0.001).timeout
 		mutex.lock()
 		running = Values.link.getState()
@@ -462,6 +469,7 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 
 func update_phantom(character_id: int):
 	var offset = Values.link.getOffsets(character_id)
+	phantoms[character_id].visible = true
 	phantoms[character_id].transform.origin = Vector3(Values.coord.x, offset.y + 1, Values.coord.z) 
 	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
 	characters[character_id].nav.get_next_path_position()

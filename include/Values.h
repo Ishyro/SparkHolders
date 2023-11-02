@@ -31,11 +31,13 @@ class Way;
 class Race;
 class World;
 class Item;
+class BasicItem;
 class GearItem;
 class ArmorItem;
 class WeaponItem;
 class SerialItem;
 class AmmunitionItem;
+class ContainerItem;
 class Furniture;
 class ActivableFurniture;
 class ContainerFurniture;
@@ -44,6 +46,7 @@ class LinkedFurniture;
 class SkillFurniture;
 class SwitchFurniture;
 typedef struct CharacterDisplay CharacterDisplay;
+typedef struct ItemSlot ItemSlot;
 typedef struct Loot Loot;
 typedef struct MapLink MapLink;
 typedef struct ProjectileDisplay ProjectileDisplay;
@@ -102,9 +105,10 @@ class SpeechManager;
 
 #define ITEM_WEAPON 1
 #define ITEM_ARMOR 2
-#define ITEM_MISCELLANEOUS 3
-#define ITEM_CONSUMABLE 4
+#define ITEM_BASIC 3
+#define ITEM_SERIAL 4
 #define ITEM_AMMUNITION 5
+#define ITEM_CONTAINER 6
 
 // weapon_type
 
@@ -125,24 +129,44 @@ class SpeechManager;
 #define ITEM_PISTOL 15
 #define ITEM_SLING 16
 
-// shield_type
+// armor_type
 
-#define ITEM_HEAD 1
-#define ITEM_ARMS 2
-#define ITEM_BODY 3
-#define ITEM_LEGS 4
-#define ITEM_LANTERN 5
-#define ITEM_FULL_BODY 6
-#define ITEM_RING 7
-#define ITEM_AMULET 8
-#define ITEM_LEFT_RING 9
-#define ITEM_RIGHT_RING 10
+#define ITEM_MANTLE 1
+#define ITEM_HELMET 2
+#define ITEM_GAUNTLETS 3
+#define ITEM_CUIRASS 4
+#define ITEM_BOOTS 5
+#define ITEM_LANTERN 6
+#define ITEM_AMULET 7
+#define ITEM_RING 8
+
+// item_slot_type
+
+#define ITEM_SLOT_MANTLE 1
+#define ITEM_SLOT_HELMET 2
+#define ITEM_SLOT_GAUNTLETS 3
+#define ITEM_SLOT_ARMOR 4
+#define ITEM_SLOT_BOOTS 5
+#define ITEM_SLOT_LANTERN 6
+#define ITEM_SLOT_AMULET 7
+#define ITEM_SLOT_RING_1 8
+#define ITEM_SLOT_RING_2 9
+#define ITEM_SLOT_WEAPON_1 10
+#define ITEM_SLOT_WEAPON_2 11
+#define ITEM_SLOT_WEAPON_3 12
+#define ITEM_SLOT_WEAPON_4 13
+#define ITEM_SLOT_BAG 14
+#define ITEM_SLOT_BELT 15
 
 // other_items_type
 
 #define ITEM_FOOD 1
 #define ITEM_MATERIAL 2
 #define ITEM_POTION 3
+#define ITEM_BAG 4
+#define ITEM_BELT 5
+#define ITEM_POUCH 6
+#define ITEM_MAGIC_BOX 7
 
 // furniture_type
 

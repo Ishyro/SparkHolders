@@ -19,6 +19,8 @@ class Item {
     const int tier;
     const int max_tier;
     const float weight;
+    const int sizeX;
+    const int sizeY;
     const int gold_value;
     const bool droppable;
     const bool usable;
@@ -34,6 +36,8 @@ class Item {
       int tier,
       int max_tier,
       float weight,
+      int sizeX,
+      int sizeY,
       int gold_value,
       bool droppable,
       bool usable,
@@ -48,6 +52,8 @@ class Item {
       tier(tier),
       max_tier(max_tier),
       weight(weight),
+      sizeX(sizeX),
+      sizeY(sizeY),
       gold_value(gold_value),
       droppable(droppable),
       usable(usable),
@@ -63,6 +69,8 @@ class Item {
       tier(std::min(tier, item->max_tier)),
       max_tier(item->max_tier),
       weight(item->weight),
+      sizeX(item->sizeX),
+      sizeY(item->sizeY),
       gold_value(item->gold_value),
       droppable(item->droppable),
       usable(item->usable),
@@ -71,6 +79,8 @@ class Item {
       effects(item->effects)
     {}
     virtual std::string to_string() = 0;
+    bool isFood();
+    virtual float getWeight() = 0;
     static Item * init(const Item * item, int tier, int number);
     static Item * from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Item& i) const { return id == i.id; }

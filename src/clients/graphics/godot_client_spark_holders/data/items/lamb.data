@@ -1,8 +1,10 @@
 name = TXT_LAMB
-type = ITEM_CONSUMABLE
+type = ITEM_BASIC
 type2 = ITEM_FOOD
 tier = 0
 weight = 0.5
+sizeX = 2
+sizeY = 2
 gold_value = 10
 droppable = true
 usable = true

@@ -18,6 +18,8 @@ class AmmunitionItem : public SerialItem {
       int tier,
       int max_tier,
       float weight,
+      int sizeX,
+      int sizeY,
       int gold_value,
       bool droppable,
       bool usable,
@@ -25,6 +27,7 @@ class AmmunitionItem : public SerialItem {
       int use_time,
       std::list<Effect *> effects,
       int number,
+      int max,
       Projectile * projectile
     ):
       SerialItem(
@@ -35,13 +38,16 @@ class AmmunitionItem : public SerialItem {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
         consumable,
         use_time,
         effects,
-        number
+        number,
+        max
       ),
       projectile(projectile)
     {}

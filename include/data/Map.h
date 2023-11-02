@@ -28,7 +28,6 @@ typedef struct Loot {
   float x;
   float y;
   float size;
-  long gold;
   std::list<Item *> items;
 } Loot;
 

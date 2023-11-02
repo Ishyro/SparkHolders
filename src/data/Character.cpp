@@ -84,16 +84,6 @@ void Character::initializeCharacter(Gear * gear) {
   savedManaRegen = 0.;
   channeledMana = 0;
   this->gear = new Gear(gear);
-  for(Item * item : gear->getItems()) {
-    Item * toadd;
-    if(item->type == ITEM_MISCELLANEOUS || item->type == ITEM_CONSUMABLE || item->type == ITEM_AMMUNITION) {
-      toadd = Item::init(item, item->tier, ((SerialItem *) item)->getNumber());
-    }
-    else {
-      toadd = Item::init(item, item->tier, 1);
-    }
-    items.push_back(toadd);
-  }
   initSkillsAndEffects();
 }
 void Character::initSkillsAndEffects() {
@@ -211,7 +201,7 @@ void Character::initEffects(std::list<Effect *> effects) {
 
 bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isMarkedDead() { return dead; }
-bool Character::markDead(bool dead) { this->dead = dead; }
+void Character::markDead(bool dead) { this->dead = dead; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 float Character::getX() { return x; }
 float Character::getY() { return y; }
@@ -288,7 +278,7 @@ int Character::getFlow() {
 }
 
 long Character::getRawPower() {
-  return getMaxHp() + getMaxMana() + getMaxShield() + getSoulBurnThreshold() + 5 * (getFlow());
+  return getMaxHp() + getMaxMana() + getMaxShield() + getSoulBurnThreshold() + 5 * (getFlow() + (getDamageMultiplier() - 1.F) * 100.F);
 }
 
 int Character::getVisionRange() {
@@ -394,24 +384,60 @@ float Character::getMovementTimeModifier() {
   return result * getActionTimeModifier();
 }
 
-float Character::getStrikeTime() {
-  return (float) gear->getWeapon()->strike_time / getHandActionTimeModifier();
+float Character::getStrikeTime(int slot) {
+  if(slot == ITEM_SLOT_WEAPON_1) {
+    return (float) gear->getWeapon_1()->strike_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_2) {
+    return (float) gear->getWeapon_2()->strike_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_3) {
+    return (float) gear->getBackupWeapon_1()->strike_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_4) {
+    return (float) gear->getBackupWeapon_2()->strike_time / getHandActionTimeModifier();
+  }
+  return 0.F;
 }
 
-float Character::getReloadTime() {
-  return (float) gear->getWeapon()->reload_time / getHandActionTimeModifier();
+float Character::getReloadTime(int slot) {
+  if(slot == ITEM_SLOT_WEAPON_1) {
+    return (float) gear->getWeapon_1()->reload_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_2) {
+    return (float) gear->getWeapon_2()->reload_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_3) {
+    return (float) gear->getBackupWeapon_1()->reload_time / getHandActionTimeModifier();
+  }
+  else if(slot == ITEM_SLOT_WEAPON_4) {
+    return (float) gear->getBackupWeapon_2()->reload_time / getHandActionTimeModifier();
+  }
+  return 0.F;
 }
 
-float Character::getSwapTime(long item_id) {
-  return (float) gear->getWeapon()->swap_time / getHandActionTimeModifier();
-}
-
-float Character::getUseTime(long item_id) {
-  for(Item * item : items) {
-    if(item->id == item_id) {
-      return (float) item->use_time / getHandActionTimeModifier();
+float Character::getSwapTime(int slot1, int slot2) {
+  if(slot1 == ITEM_SLOT_WEAPON_1) {
+    if(slot2 == ITEM_SLOT_WEAPON_3) {
+      return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon_1()->swap_time) / getHandActionTimeModifier();
+    }
+    else if(slot2 == ITEM_SLOT_WEAPON_4) {
+      return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon_2()->swap_time) / getHandActionTimeModifier();
     }
   }
+  else if(slot1 == ITEM_SLOT_WEAPON_2) {
+    if(slot2 == ITEM_SLOT_WEAPON_3) {
+      return ((float) gear->getWeapon_2()->swap_time + gear->getBackupWeapon_1()->swap_time) / getHandActionTimeModifier();
+    }
+    else if(slot2 == ITEM_SLOT_WEAPON_4) {
+      return ((float) gear->getWeapon_2()->swap_time + gear->getBackupWeapon_2()->swap_time) / getHandActionTimeModifier();
+    }
+  }
+  return 0.F;
+}
+
+float Character::getUseTime(Item * item) {
+  return (float) item->use_time / getHandActionTimeModifier();
 }
 
 int Character::getLight() {
@@ -423,7 +449,6 @@ int Character::getLight() {
   }
   return light;
 }
-std::list<Item *> Character::getItems() { return items; }
 std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
@@ -447,7 +472,7 @@ std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> Character::getDamageSkill
   }
   std::array<int, DAMAGE_TYPE_NUMBER> damages;
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] = getDamageFromType(i);
+    damages[i] = getDamageFromType(i, ITEM_SLOT_WEAPON_1);
   }
   result.insert(std::make_pair(nullptr, damages));
   return result;
@@ -860,36 +885,36 @@ void Character::setTalkingSpeech(std::string option, Database * database) {
   SpeechManager::add(talking_speech);
 }
 
-void Character::equip(GearItem * to_equip) {
+void Character::add(Item * item, int slot, int x, int y) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(to_equip != nullptr) {
-    this->items.remove(to_equip);
-    std::list<GearItem *> items = gear->equip(to_equip);
-    for(GearItem * item : items) {
-      for(Effect * e : item->effects) {
-        removeEffect(e);
-      }
-      this->items.push_back(item);
-    }
-    for(Effect * e : to_equip->effects) {
-      addEffect(e);
-    }
+  if(slot == ITEM_SLOT_BAG) {
+    gear->getBag()->add(item, x, y);
+  }
+  else if(slot == ITEM_SLOT_BELT) {
+    gear->getBelt()->add(item, x, y);
   }
 }
 
-void Character::unequip(int type, int type2) {
+Item * Character::remove(int slot, int x, int y) {
   if(player_character) {
     setNeedToSend(true);
   }
-  Item * old_item = gear->unequip(type, type2);
-  if(old_item != nullptr) {
-    for(Effect * e : old_item->effects) {
-      removeEffect(e);
-    }
-    items.push_back(old_item);
+  Item * item = nullptr;
+  if(slot == ITEM_SLOT_BAG) {
+    item = gear->getBag()->remove(x, y);
   }
+  else if(slot == ITEM_SLOT_BELT) {
+    item = gear->getBelt()->remove(x, y);
+  }
+  return item;
+}
+
+float Character::swap(int slot1, int slot2) {
+  float time = getSwapTime(slot1, slot2);
+  gear->swap(slot1, slot2);
+  return time;
 }
 
 void Character::addEffect(Effect * e) {
@@ -998,53 +1023,32 @@ void Character::setWay(Way * way) {
   }
 }
 
-void Character::addItem(Item * i) {
+void Character::addItem(Item * i, int x, int y, int slot) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(i->type == ITEM_MISCELLANEOUS || i->type == ITEM_CONSUMABLE || i->type == ITEM_AMMUNITION) {
-    for(Item * item : items) {
-      if(i->name == item->name && i->tier == item->tier) {
-        ( (SerialItem *) item)->add(( (SerialItem *) i)->getNumber());
-        delete i;
-        break;
-      }
-    }
+  if(slot == ITEM_SLOT_BAG) {
+    gear->getBag()->add(i, x, y);
   }
-  else {
-    items.push_back(i);
+  else if(slot == ITEM_SLOT_BELT) {
+    gear->getBag()->add(i, x, y);
   }
 }
 
-void Character::removeItem(Item * i) {
+void Character::removeItem(int x, int y, int slot) {
   if(player_character) {
     setNeedToSend(true);
   }
-  items.remove(i);
+  if(slot == ITEM_SLOT_BAG) {
+    gear->getBag()->remove(x, y);
+  }
+  else if(slot == ITEM_SLOT_BELT) {
+    gear->getBag()->remove(x, y);
+  }
 }
 
-void Character::useItem(long item_id) {
-  Item * to_remove = nullptr;
-  for(Item * i : items) {
-    if(i->id == item_id && i->usable) {
-      if(player_character) {
-        setNeedToSend(true);
-      }
-      if(i->type == ITEM_CONSUMABLE && !((SerialItem *) i)->isFood() || race->getCanEatFood(race_modifiers)) {
-        for(Effect * e : i->effects) {
-          e->activate(this);
-        }
-        if(((SerialItem *) i)->reduce(1) == 0) {
-          to_remove = i;
-        }
-        break;
-      }
-    }
-  }
-  if(to_remove != nullptr) {
-    removeItem(to_remove);
-    delete to_remove;
-  }
+void Character::useItem(int x, int y, int slot) {
+  gear->useItem(x, y, slot, this);
 }
 
 bool Character::isFlying() {
@@ -1144,10 +1148,17 @@ void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, 
   skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
 }
 
-int Character::getDamageFromType(int damage_type) {
+int Character::getDamageFromType(int damage_type, int slot) {
   int damage = 0;
-  if(gear->getWeapon() != nullptr) {
-    damage = gear->getWeapon()->getDamageFromType(damage_type);
+  if(slot == ITEM_SLOT_WEAPON_1) {
+    if(gear->getWeapon_1() != nullptr) {
+      damage = gear->getWeapon_1()->getDamageFromType(damage_type);
+    }
+  }
+  else if(slot == ITEM_SLOT_WEAPON_1) {
+    if(gear->getWeapon_2() != nullptr) {
+      damage = gear->getWeapon_2()->getDamageFromType(damage_type);
+    }
   }
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_BUFF) {
@@ -1167,19 +1178,19 @@ float Character::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
-Projectile * Character::shoot(Target * target, Adventure * adventure) {
-  if(gear->getWeapon()->use_projectile && gear->getWeapon()->range >= std::max(abs(x - target->x), abs(y - target->y))) {
-    if(!gear->getWeapon()->use_ammo || gear->getWeapon()->getCurrentCapacity() > 0) {
+Projectile * Character::shoot(Target * target, Adventure * adventure, int slot) {
+  if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(x - target->x), abs(y - target->y))) {
+    if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-        realDamages[damage_type] = getDamageFromType(damage_type);
+        realDamages[damage_type] = getDamageFromType(damage_type, slot);
       }
-      Projectile * base_projectile = (Projectile *) gear->getWeapon()->getAmmo()->getProjectile();
-      if(gear->getWeapon()->use_ammo) {
+      Projectile * base_projectile = (Projectile *) gear->getWeapon_1()->getAmmo()->getProjectile();
+      if(gear->getWeapon_1()->use_ammo) {
         if(player_character) {
           setNeedToSend(true);
         }
-        gear->getWeapon()->useAmmo();
+        gear->getWeapon_1()->useAmmo();
       }
       return new Projectile(base_projectile, realDamages, adventure->getWorld(), current_map->id, target, this, 1, 1, 1, true);
     }
@@ -1187,57 +1198,77 @@ Projectile * Character::shoot(Target * target, Adventure * adventure) {
   return nullptr;
 }
 
-void Character::attack(Character * target, int type) {
-  if(!gear->getWeapon()->use_projectile && gear->getWeapon()->range >= std::max(abs(x - target->getX()), abs(y - target->getY()))) {
-    int realDamages[DAMAGE_TYPE_NUMBER];
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      realDamages[damage_type] = getDamageFromType(damage_type);
-    }
-    target->receiveAttack(realDamages, orientation, type);
+void Character::attack(Character * target, Adventure * adventure, int type) {
+  mainAttack(target, adventure, type);
+  if(gear->getWeapon_2() != nullptr) {
+    subAttack(target, adventure, type);
   }
 }
 
-void Character::reload(AmmunitionItem * ammo) {
+void Character::mainAttack(Character * target, Adventure * adventure, int type) {
+  if(gear->getWeapon_1()->range >= MapUtil::distance(x, y, target->getX(), target->getY())) {
+    if(gear->getWeapon_1()->use_projectile) {
+      Target * t_target = new Target();
+      t_target->type = TARGET_CHARACTER;
+      t_target->id = target->id;
+      shoot(t_target, adventure, ITEM_SLOT_WEAPON_1);
+    }
+    else {
+      int realDamages[DAMAGE_TYPE_NUMBER];
+      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+        realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_1);
+      }
+      target->receiveAttack(realDamages, orientation, type);
+    }
+  }
+}
+
+void Character::subAttack(Character * target, Adventure * adventure, int type) {
+  if(gear->getWeapon_2()->range >= MapUtil::distance(x, y, target->getX(), target->getY())) {
+    if(gear->getWeapon_2()->use_projectile) {
+      Target * t_target = new Target();
+      t_target->type = TARGET_CHARACTER;
+      t_target->id = target->id;
+      shoot(t_target, adventure, ITEM_SLOT_WEAPON_2);
+    }
+    else {
+      int realDamages[DAMAGE_TYPE_NUMBER];
+      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+        realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_2);
+      }
+      target->receiveAttack(realDamages, orientation, type);
+    }
+  }
+}
+
+void Character::reload(ItemSlot * ammo, int slot_weapon) {
   if(player_character) {
     setNeedToSend(true);
   }
-  AmmunitionItem * oldAmmo = gear->getWeapon()->reload(ammo);
-  if(ammo->getNumber() == 0) {
-    items.remove(ammo);
-    delete ammo;
-    ammo = nullptr;
-  }
-  if(oldAmmo != nullptr) {
-    items.push_back(oldAmmo);
-  }
+  gear->reload(ammo, slot_weapon);
 }
 
 
-AmmunitionItem * Character::canReload() {
-  AmmunitionItem * ammo = nullptr;
+ItemSlot * Character::canReload(int slot) {
+  ItemSlot * ammo = nullptr;
   int number = 0;
-  for(Item * current : items) {
-    if(current->type == ITEM_AMMUNITION && gear->getWeapon()->ammo_type == current->type2 && ( (AmmunitionItem *) current)->getNumber() > number) {
-      ammo = (AmmunitionItem *) current;
-      number = ((AmmunitionItem *) current)->getNumber();
-    }
-  }
-  return ammo;
-}
-
-WeaponItem * Character::swapMelee() {
-  WeaponItem * weapon = nullptr;
-  int rawDamage = 0;
-  for(Item * current : items) {
-    if(current->type == ITEM_WEAPON) {
-      int currentRawDamage = ( (WeaponItem *) current)->getRawDamage();
-      if(currentRawDamage > rawDamage) {
-        weapon = (WeaponItem *) current;
-        rawDamage = currentRawDamage;
+  if(slot == ITEM_SLOT_WEAPON_1) {
+    for(ItemSlot * current : gear->getBelt()->getItems()) {
+      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_1()->ammo_type == current->item->type2 && ( (AmmunitionItem *) current->item)->getNumber() > number) {
+        ammo = current;
+        number = ((AmmunitionItem *) current->item)->getNumber();
       }
     }
   }
-  return weapon;
+  else if(slot == ITEM_SLOT_WEAPON_2) {
+    for(ItemSlot * current : gear->getBelt()->getItems()) {
+      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_2()->ammo_type == current->item->type2 && ( (AmmunitionItem *) current->item)->getNumber() > number) {
+        ammo = current;
+        number = ((AmmunitionItem *) current->item)->getNumber();
+      }
+    }
+  }
+  return ammo;
 }
 
 void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type) {
@@ -1372,7 +1403,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
         if(item->name == object_name) {
           price = (int) std::ceil((float) item->gold_value * price_modifier);
           if(buyer->getGold() >= price) {
-            buyer->addItem(item);
+            //buyer->addItem(item);
             buyer->loseGold(price);
             sellable_items.remove(item);
             gainGold(price);
@@ -1445,7 +1476,7 @@ std::string Character::to_string() {
     String::insert_float(ss, getDamageReductionFromType(i));
   }
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_int(ss, getDamageFromType(i));
+    String::insert_int(ss, getDamageFromType(i, ITEM_SLOT_WEAPON_1));
   }
   std::string result = ss->str();
   delete ss;
@@ -1539,12 +1570,6 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, level);
   String::insert(ss, team);
   String::insert(ss, gear->to_string());
-  std::stringstream * ss_items = new std::stringstream();
-  for(Item * item : items) {
-    String::insert(ss_items, item->to_string());
-  }
-  String::insert(ss, ss_items->str());
-  delete ss_items;
   std::stringstream * ss_effects = new std::stringstream();
   for(Effect * effect : effects) {
     String::insert(ss_effects, effect->to_string());
@@ -1649,12 +1674,6 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   int level = String::extract_int(ss);
   std::string team = String::extract(ss);
   Gear * gear = Gear::from_string(String::extract(ss), adventure);
-  std::stringstream * ss_items = new std::stringstream(String::extract(ss));
-  std::list<Item *> * items = new std::list<Item *>();
-  while(ss_items->rdbuf()->in_avail() != 0) {
-    items->push_back(Item::from_string(String::extract(ss_items), adventure));
-  }
-  delete ss_items;
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));
   std::list<Effect *> * effects = new std::list<Effect *>();
   while(ss_effects->rdbuf()->in_avail() != 0) {
@@ -1745,7 +1764,6 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     level,
     team,
     gear,
-    *items,
     *effects,
     *skills,
     *sellable_items,
@@ -1761,7 +1779,6 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     profession,
     *titles
   );
-  delete items;
   delete effects;
   delete skills;
   delete sellable_items;

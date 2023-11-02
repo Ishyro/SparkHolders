@@ -1,8 +1,10 @@
 name = TXT_IRON_CUIRASS
 type = ITEM_ARMOR
-type2 = ITEM_BODY
+type2 = ITEM_CUIRASS
 tier = 10
 weight = 10.0
+sizeX = 2
+sizeY = 3
 gold_value = 25
 droppable = true
 usable = false

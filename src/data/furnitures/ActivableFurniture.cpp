@@ -6,8 +6,8 @@
 bool ActivableFurniture::tryActivate(Character * user) {
   if(isLocked) {
     bool hasKey = false;
-    for(Item * item: user->getItems()) {
-      if(item->name == key_name) {
+    for(ItemSlot * slot: user->getGear()->getItems()) {
+      if(slot->item->name == key_name) {
         hasKey = true;
         break;
       }

@@ -1,11 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://csp4utnaq7gbx"]
+[gd_scene load_steps=11 format=3 uid="uid://csp4utnaq7gbx"]
 
 [ext_resource type="Script" path="res://menus/character_sheet.gd" id="1_cowgy"]
 [ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://data/materials/paper/Color.jpg" id="1_m6bt1"]
 [ext_resource type="LabelSettings" uid="uid://bhfby7nb070i8" path="res://hud/police/BigText.tres" id="2_rrtlv"]
 [ext_resource type="LabelSettings" uid="uid://lhfmbkrdk0jr" path="res://hud/police/Numbers.tres" id="3_i53mo"]
+[ext_resource type="LabelSettings" uid="uid://21v7e3lc7vnt" path="res://hud/police/Text.tres" id="3_lkxxx"]
 [ext_resource type="Texture2D" uid="uid://cjl5okoqk75mo" path="res://menus/exp.png" id="5_626cv"]
+[ext_resource type="Texture2D" uid="uid://c3v37wfum4yv0" path="res://menus/arabesque.png" id="5_er84u"]
 [ext_resource type="Texture2D" uid="uid://dtwvlyipq5myu" path="res://menus/character_sheet_foreground.png" id="6_fucs0"]
+[ext_resource type="LabelSettings" uid="uid://bfkw6t3d0nqc2" path="res://hud/police/SmallText.tres" id="6_v7syj"]
+[ext_resource type="Texture2D" uid="uid://ggnsrfledgik" path="res://menus/separator.png" id="7_bhdlf"]
 
 [node name="CharacterSheet" type="Control"]
 layout_mode = 3
@@ -139,7 +143,7 @@ anchor_bottom = 0.037
 grow_horizontal = 2
 grow_vertical = 2
 text = "Shayal Kahazar"
-label_settings = ExtResource("2_rrtlv")
+label_settings = ExtResource("3_lkxxx")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -379,13 +383,271 @@ label_settings = ExtResource("3_i53mo")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SubStats" type="Control" parent="Mutable"]
+[node name="SubStats" type="VBoxContainer" parent="Mutable"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.007
+anchor_top = 0.236
+anchor_right = 0.3
+anchor_bottom = 0.882
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Resources" type="VBoxContainer" parent="Mutable/SubStats"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Title" type="HBoxContainer" parent="Mutable/SubStats/Resources"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Left" type="TextureRect" parent="Mutable/SubStats/Resources/Title"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_er84u")
+
+[node name="Label" type="Label" parent="Mutable/SubStats/Resources/Title"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Resources"
+label_settings = ExtResource("2_rrtlv")
+
+[node name="Right" type="TextureRect" parent="Mutable/SubStats/Resources/Title"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_er84u")
+
+[node name="Content" type="HBoxContainer" parent="Mutable/SubStats/Resources"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Names" type="VBoxContainer" parent="Mutable/SubStats/Resources/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Shield" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Shield"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Health" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Health"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Mana" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Mana"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Soulburn" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Soulburn"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Satiety" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Satiety"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Stamina" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Stamina
+"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Values" type="VBoxContainer" parent="Mutable/SubStats/Resources/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Shield" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "750 / 750"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Health" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "750 / 750"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Mana" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "750 / 750"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Soulburn" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "750 / 750"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Satiety" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Stamina" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Secondary" type="VBoxContainer" parent="Mutable/SubStats"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Title" type="HBoxContainer" parent="Mutable/SubStats/Secondary"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Left" type="TextureRect" parent="Mutable/SubStats/Secondary/Title"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_er84u")
+
+[node name="Label" type="Label" parent="Mutable/SubStats/Secondary/Title"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Secondary"
+label_settings = ExtResource("2_rrtlv")
+
+[node name="Right" type="TextureRect" parent="Mutable/SubStats/Secondary/Title"]
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_er84u")
+
+[node name="Content" type="HBoxContainer" parent="Mutable/SubStats/Secondary"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Names1" type="VBoxContainer" parent="Mutable/SubStats/Secondary/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Size" type="Label" parent="Mutable/SubStats/Secondary/Content/Names1"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Size"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Cloaking" type="Label" parent="Mutable/SubStats/Secondary/Content/Names1"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Cloaking"
+label_settings = ExtResource("6_v7syj")
+
+[node name="GlobalSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Names1"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Global Speed"
+label_settings = ExtResource("6_v7syj")
+
+[node name="MovementSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Names1"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Movement Speed"
+label_settings = ExtResource("6_v7syj")
+
+[node name="HandActionSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Names1"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Hand Speed"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Values1" type="VBoxContainer" parent="Mutable/SubStats/Secondary/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Size" type="Label" parent="Mutable/SubStats/Secondary/Content/Values1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0.3"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Cloaking" type="Label" parent="Mutable/SubStats/Secondary/Content/Values1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+label_settings = ExtResource("6_v7syj")
+
+[node name="GlobalSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Values1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("6_v7syj")
+
+[node name="MovementSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Values1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("6_v7syj")
+
+[node name="HandActionSpeed" type="Label" parent="Mutable/SubStats/Secondary/Content/Values1"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Separator" type="TextureRect" parent="Mutable/SubStats/Secondary/Content"]
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("7_bhdlf")
+
+[node name="Names2" type="VBoxContainer" parent="Mutable/SubStats/Secondary/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VisionPower" type="Label" parent="Mutable/SubStats/Secondary/Content/Names2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Vision Power"
+label_settings = ExtResource("6_v7syj")
+
+[node name="VisionRange" type="Label" parent="Mutable/SubStats/Secondary/Content/Names2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Vision Range"
+label_settings = ExtResource("6_v7syj")
+
+[node name="DetectionRange" type="Label" parent="Mutable/SubStats/Secondary/Content/Names2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Detection Range"
+label_settings = ExtResource("6_v7syj")
+
+[node name="Values2" type="VBoxContainer" parent="Mutable/SubStats/Secondary/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VisionPower" type="Label" parent="Mutable/SubStats/Secondary/Content/Values2"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+label_settings = ExtResource("6_v7syj")
+
+[node name="VisionRange" type="Label" parent="Mutable/SubStats/Secondary/Content/Values2"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+label_settings = ExtResource("6_v7syj")
+
+[node name="DetectionRange" type="Label" parent="Mutable/SubStats/Secondary/Content/Values2"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+label_settings = ExtResource("6_v7syj")
 
 [node name="Competences" type="Control" parent="Mutable"]
 layout_mode = 1
@@ -417,3 +679,4 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("6_fucs0")
+expand_mode = 1

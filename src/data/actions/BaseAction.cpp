@@ -40,7 +40,7 @@ void BaseAction::computeTime(Adventure * adventure) {
       time = 1.F;
       break;
     case ACTION_RESPITE:
-      time = user->getStrikeTime() * 2;
+      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1) * 2;
       break;
     case ACTION_REST:
       time = 1.F;

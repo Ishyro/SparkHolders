@@ -116,7 +116,6 @@ class Character {
       merchant(from_database->merchant),
       team(team),
       ai(ai),
-      items(std::list<Item *>()),
       effects(std::list<Effect *>()),
       skills(from_database->skills),
       sellable_items(std::list<Item *>()),
@@ -179,7 +178,6 @@ class Character {
       int level,
       std::string team,
       Gear * gear,
-      std::list<Item *> items,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       std::list<Item *> sellable_items,
@@ -231,7 +229,6 @@ class Character {
       ai(nullptr),
       team(team),
       gear(gear),
-      items(items),
       effects(effects),
       skills(skills),
       sellable_items(sellable_items),
@@ -255,7 +252,7 @@ class Character {
     ~Character();
     
     bool isMarkedDead();
-    bool markDead(bool dead);
+    void markDead(bool dead);
     bool isAlive();
     bool isSoulBurning();
     float getX();
@@ -302,12 +299,11 @@ class Character {
     float getHandActionTimeModifier();
     float getSkillTimeModifier();
     float getMovementTimeModifier();
-    float getStrikeTime();
-    float getReloadTime();
-    float getSwapTime(long item_id);
-    float getUseTime(long item_id);
+    float getStrikeTime(int slot);
+    float getReloadTime(int slot);
+    float getSwapTime(int slot1, int slot2);
+    float getUseTime(Item * item);
     int getLight();
-    std::list<Item *> getItems();
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
@@ -373,8 +369,9 @@ class Character {
     void setDeathSpeech(std::string option, Database * database);
     void setTalkingSpeech(std::string option, Database * database);
 
-    void equip(GearItem * to_equip);
-    void unequip(int type, int type2);
+    void add(Item * item, int slot, int x, int y);
+    Item * remove(int slot, int x, int y);
+    float swap(int slot1, int slot2);
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
@@ -384,9 +381,9 @@ class Character {
 
     void setWay(Way * way);
 
-    void addItem(Item * i);
-    void removeItem(Item * i);
-    void useItem(long item_id);
+    void addItem(Item * i, int x, int y, int slot);
+    void removeItem(int x, int y, int slot);
+    void useItem(int x, int y, int slot);
 
     bool isFlying();
     bool isChanneling();
@@ -400,13 +397,14 @@ class Character {
     bool isInWeakState();
 
     void useSkill(Skill * skill, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range);
-    int getDamageFromType(int damage_type);
+    int getDamageFromType(int damage_type, int slot);
     float getDamageReductionFromType(int damage_type);
-    Projectile * shoot(Target * target, Adventure * adventure);
-    void reload(AmmunitionItem * ammo);
-    void attack(Character * target, int type);
-    AmmunitionItem * canReload();
-    WeaponItem * swapMelee();
+    Projectile * shoot(Target * target, Adventure * adventure, int slot);
+    void reload(ItemSlot * ammo, int slot_weapon);
+    void attack(Character * target, Adventure * adventure, int type);
+    void mainAttack(Character * target, Adventure * adventure, int type);
+    void subAttack(Character * target, Adventure * adventure, int type);
+    ItemSlot * canReload(int slot);
     void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type);
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
     int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
@@ -462,7 +460,6 @@ class Character {
     Speech * talking_speech;
 
     Gear * gear;
-    std::list<Item *> items;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 

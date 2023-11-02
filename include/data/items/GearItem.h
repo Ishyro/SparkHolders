@@ -19,6 +19,8 @@ class GearItem : public Item {
       int tier,
       int max_tier,
       float weight,
+      int sizeX,
+      int sizeY,
       int gold_value,
       bool droppable,
       bool usable,
@@ -35,6 +37,8 @@ class GearItem : public Item {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -48,6 +52,7 @@ class GearItem : public Item {
       Item(item, tier),
       swap_time(item->swap_time)
     {}
+    float getWeight();
     virtual std::string to_string() = 0;
 };
 

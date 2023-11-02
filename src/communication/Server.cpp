@@ -37,7 +37,7 @@ namespace Server {
       while(ss_actions->rdbuf()->in_avail() != 0) {
         actions.push_back(readAction(String::extract(ss_actions), characters.at(id), adventure));
       }
-      for(int i = 1; i < actions.size(); i++) {
+      for(int i = 1; i < (int) actions.size(); i++) {
         actions[i-1]->setNext(actions[i]);
         actions[i]->setPrevious(actions[i-1]);
       }
@@ -72,11 +72,25 @@ namespace Server {
         break;
       }
       case ACTION_RELOAD:
-      case ACTION_SWAP_GEAR:
       case ACTION_GRAB:
       case ACTION_USE_ITEM: {
-        long item_id = String::extract_long(ss);
-        action = new GearAction(type, adventure, nullptr, user, item_id);
+        ItemSlot * slot = new ItemSlot();
+        slot->x = String::extract_int(ss);
+        slot->y = String::extract_int(ss);
+        slot->slot = String::extract_int(ss);
+        action = new GearAction(type, adventure, nullptr, user, slot, nullptr);
+        break;
+      }
+      case ACTION_SWAP_GEAR: {
+        ItemSlot * slot1 = new ItemSlot();
+        slot1->x = String::extract_int(ss);
+        slot1->y = String::extract_int(ss);
+        slot1->slot = String::extract_int(ss);
+        ItemSlot * slot2 = new ItemSlot();
+        slot2->x = String::extract_int(ss);
+        slot2->y = String::extract_int(ss);
+        slot2->slot = String::extract_int(ss);
+        action = new GearAction(type, adventure, nullptr, user, slot1, slot2);
         break;
       }
       case ACTION_USE_SKILL: {

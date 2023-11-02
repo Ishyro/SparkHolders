@@ -383,7 +383,7 @@ namespace Display {
         mvwprintw(screen, i++, 5, (t->getEffectName(effect->name)).c_str());
       }
     }
-    if(item->type == ITEM_AMMUNITION || item->type == ITEM_MISCELLANEOUS || item->type == ITEM_CONSUMABLE) {
+    if(item->type == ITEM_AMMUNITION || item->type == ITEM_SERIAL) {
       SerialItem * serial = (SerialItem *) item;
       mvwprintw(screen, i++, 1, (t->getStandardName("Number") + std::string(": ") + std::to_string(serial->getNumber())).c_str());
     }
@@ -1273,16 +1273,16 @@ namespace Display {
             case 'c':
             case 'C':
               type = ACTION_REST;
-              if(!link->getPlayer(id)->getGear()->getWeapon()->use_projectile) {
+              if(!link->getPlayer(id)->getGear()->getWeapon_1()->use_projectile) {
                 type = ACTION_STRIKE;
               }
-              else if(!link->getPlayer(id)->getGear()->getWeapon()->use_ammo || link->getPlayer(id)->getGear()->getWeapon()->getCurrentCapacity() > 0) {
+              else if(!link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo || link->getPlayer(id)->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
                 type = ACTION_SHOOT;
               }
               if(type == ACTION_SHOOT || type == ACTION_STRIKE) {
-                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon()->range, target_id, target_x, target_y, orientation, t)) {
-                  if(link->getPlayer(id)->getGear()->getWeapon()->use_ammo) {
-                    link->getPlayer(id)->getGear()->getWeapon()->useAmmo();
+                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
+                  if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
+                    link->getPlayer(id)->getGear()->getWeapon_1()->useAmmo();
                   }
                   done = true;
                 }
@@ -1293,12 +1293,12 @@ namespace Display {
               type = ACTION_SWAP_GEAR;
               object = selectItem(displayScreen, targetScreen, link->getPlayer(id), object_type, object_id, t);
               if(object != "") {
-                for(Item * item : link->getPlayer(id)->getItems()) {
-                  if(item->id == object_id) {
-                    if(item->usable) {
+                for(ItemSlot * slot : link->getPlayer(id)->getGear()->getItems()) {
+                  if(slot->item->id == object_id) {
+                    if(slot->item->usable) {
                       type = ACTION_USE_ITEM;
                     }
-                    if(item->type == ITEM_AMMUNITION) {
+                    if(slot->item->type == ITEM_AMMUNITION) {
                       type = ACTION_RELOAD;
                     }
                   }
@@ -1309,11 +1309,11 @@ namespace Display {
             case 'r':
             case 'R':
               type = ACTION_RELOAD;
-              if(link->getPlayer(id)->getGear()->getWeapon()->use_ammo) {
+              if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
                 object = selectAmmo(displayScreen, targetScreen, link->getPlayer(id), t);
-                if(object != "" && (link->getPlayer(id)->getGear()->getWeapon()->getAmmo() == nullptr
-                || link->getPlayer(id)->getGear()->getWeapon()->getAmmo()->getProjectile()->name != object
-                || link->getPlayer(id)->getGear()->getWeapon()->getCurrentCapacity() < link->getPlayer(id)->getGear()->getWeapon()->capacity)) {
+                if(object != "" && (link->getPlayer(id)->getGear()->getWeapon_1()->getAmmo() == nullptr
+                || link->getPlayer(id)->getGear()->getWeapon_1()->getAmmo()->getProjectile()->name != object
+                || link->getPlayer(id)->getGear()->getWeapon_1()->getCurrentCapacity() < link->getPlayer(id)->getGear()->getWeapon_1()->capacity)) {
                   done = true;
                 }
               }
@@ -1732,7 +1732,7 @@ namespace Display {
         int sizeX = 0;
         int maxY = 0;
         int color = WHITE;
-        for (Item * item : player->getItems()) {
+        for (ItemSlot * slot : player->getGear()->getItems()) {
           if(currentY >= lines - 4) {
             offset += sizeX + 3;
             maxY = currentY - 1;
@@ -1745,12 +1745,12 @@ namespace Display {
           else {
             color = WHITE;
           }
-          std::string to_print = t->getItemName(item->name);
+          std::string to_print = t->getItemName(slot->item->name);
           if(color == BLUE) {
-            result = item->name;
-            object_id = item->id;
+            result = slot->item->name;
+            object_id = slot->item->id;
             object_type = OBJECT_ITEM;
-            tempScreen = displayItem(item, targetScreen, t);
+            tempScreen = displayItem(slot->item, targetScreen, t);
           }
           sizeX = std::max(sizeX, (int) to_print.length());
           wattron(displayScreen, COLOR_PAIR(color));
@@ -1835,9 +1835,9 @@ namespace Display {
       int sizeX = 0;
       int maxY = 0;
       int color = WHITE;
-      for (Item * item : player->getItems()) {
-        if(item->type == ITEM_AMMUNITION) {
-          AmmunitionItem * ammo = (AmmunitionItem *) item;
+      for (ItemSlot * slot : player->getGear()->getItems()) {
+        if(slot->item->type == ITEM_AMMUNITION) {
+          AmmunitionItem * ammo = (AmmunitionItem *) slot->item;
           if(currentY >= lines - 4) {
             offset += sizeX + 3;
             maxY = currentY - 1;

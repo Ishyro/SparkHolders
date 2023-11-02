@@ -7,13 +7,13 @@
 
 class GearAction : public Action {
   public:
-    const long item_id;
     GearAction(
       const int type,
       Adventure * adventure,
       const Action * previous,
       Character * user,
-      const long item_id
+      ItemSlot * slot1,
+      ItemSlot * slot2
     ):
       Action(
         type,
@@ -21,10 +21,14 @@ class GearAction : public Action {
         previous,
         user
       ),
-      item_id(item_id)
+      slot1(slot1),
+      slot2(slot2)
     {}
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
+  private:
+    ItemSlot * slot1;
+    ItemSlot * slot2;
 };
 
 #endif // _GEAR_ACTION_H_

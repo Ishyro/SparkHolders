@@ -11,20 +11,23 @@ extends Control
 @onready var projectiles_button = $MapOptions/Options/Projectiles
 @onready var furnitures_button = $MapOptions/Options/Furnitures
 
-@onready var mouse_box = $MouseBox
-@onready var mouse_label = $MouseBox/Label
+@onready var move = $ActionButtons/Move
+@onready var attack = $ActionButtons/Attack
+@onready var interact = $ActionButtons/Interact
+@onready var rest = $ActionButtons/Rest
 
 @onready var shield = $Orbs/Shield
 @onready var health = $Orbs/Health
 @onready var mana = $Orbs/Mana
 @onready var soulburn = $Orbs/SoulBurn
 
+@onready var shield_label = $Orbs/Shield/Label
+@onready var health_label = $Orbs/Health/Label
+@onready var mana_label = $Orbs/Mana/Label
+@onready var soulburn_label = $Orbs/SoulBurn/Label
 
-var shield_fluid = preload("res://data/materials/black_bile.tres")
-#var shield_fluid = preload("res://data/materials/lava.tres")
-var health_fluid = preload("res://data/materials/blood.tres")
-var mana_fluid = preload("res://data/materials/phlegm.tres")
-var soulburn_fluid = preload("res://data/materials/yellow_bile.tres")
+@onready var mouse_box = $MouseBox
+@onready var mouse_label = $MouseBox/Label
 
 var numbers = preload("res://hud/police/Numbers.tres")
 var small_numbers = preload("res://hud/police/SmallNumbers.tres")
@@ -43,16 +46,25 @@ func _ready():
 		big_tiers.push_back(load("res://hud/tiers/" + str(i + 1) + "_big.png"))
 		small_tiers.push_back(load("res://hud/tiers/" + str(i + 1) + "_small.png"))
 
-func change_amount(type: String, value: float):
+func change_amount(type: String, current_value: float, max_value: float):
 	if type == "SHIELD":
-		shield.material.set_shader_parameter("level", value)
+		shield.material.set_shader_parameter("level", current_value / max_value)
+		shield_label.text = str(current_value)
 	if type == "HEALTH":
-		health.material.set_shader_parameter("level", value)
+		health.material.set_shader_parameter("level", current_value / max_value)
+		health_label.text = str(current_value)
 	if type == "MANA":
-		mana.material.set_shader_parameter("level", value)
+		mana.material.set_shader_parameter("level", current_value / max_value)
+		mana_label.text = str(current_value)
 	if type == "SOULBURN":
-		soulburn.material.set_shader_parameter("level", value)
+		soulburn.material.set_shader_parameter("level", current_value / max_value)
+		soulburn_label.text = str(current_value)
 
+func hide_phantom(character_id: int):
+	map.phantoms[Values.selected_team.id].visible = false
+	if map.phantom_lines.has(character_id):
+		for phantom_line in map.phantom_lines[character_id]:
+			phantom_line.visible = false
 
 func set_skill_tab(n: int):
 	$Skills/Tabs.set_current_tab(n)
@@ -64,16 +76,16 @@ func _process(_delta):
 func display_projectile(_projectile, _projectile_data: Dictionary):
 	pass
 
-func display_target(character, character_data: Dictionary):
+func display_target(character, _character_data: Dictionary):
 	character.select()
-	change_amount("SHIELD", character_data["shield"] / character_data["maxShield"])
-	change_amount("HEALTH", character_data["hp"] / character_data["maxHp"])
-	change_amount("MANA", character_data["mana"] / character_data["maxMana"])
-	change_amount("SOULBURN", character_data["currentSoulBurn"] / character_data["soulBurnThreshold"])
 	tile.visible = false
 
 func display_team(character, character_data: Dictionary):
 	character.select()
+	change_amount("SHIELD", character_data["shield"], character_data["maxShield"])
+	change_amount("HEALTH", character_data["hp"], character_data["maxHp"])
+	change_amount("MANA", character_data["mana"], character_data["maxMana"])
+	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
 
 func display_inventory():
 	pass
@@ -106,41 +118,48 @@ func _on_projectiles_toggled(_button_pressed):
 func _on_furnitures_toggled(_button_pressed):
 	map.n_furnitures.visible = !map.n_furnitures.visible
 
-# Actions
-func _on_move_pressed():
-	Values.mode = Values.ACTION_MODE_MOVE
-	map.phantoms[Values.selected_team.id].visible = true
-	map.characters[Values.selected_team.id].range_mesh.visible = false
-	map.bake_navigation_meshes()
-	map.set_navigation_mesh(Values.selected_team.id)
+func _on_move_toggled(button_pressed):
+	if button_pressed:
+		attack.set_pressed_no_signal(false)
+		interact.set_pressed_no_signal(false)
+		rest.set_pressed_no_signal(false)
+		Values.mode = Values.ACTION_MODE_MOVE
+		map.phantoms[Values.selected_team.id].visible = true
+		map.characters[Values.selected_team.id].range_mesh.visible = false
+		map.set_navigation_mesh(Values.selected_team.id)
+	else:
+		move.set_pressed_no_signal(true)
 
-func _on_attack_pressed():
-	Values.mode = Values.ACTION_MODE_ATTACK
-	map.phantoms[Values.selected_team.id].visible = false
-	map.characters[Values.selected_team.id].range_mesh.visible = true
+func _on_attack_toggled(button_pressed):
+	if button_pressed:
+		move.set_pressed_no_signal(false)
+		interact.set_pressed_no_signal(false)
+		rest.set_pressed_no_signal(false)
+		Values.mode = Values.ACTION_MODE_ATTACK
+		hide_phantom(Values.selected_team.id)
+		map.characters[Values.selected_team.id].range_mesh.visible = true
+	else:
+		map.characters[Values.selected_team.id].range_mesh.visible = false
+		move.set_pressed(true)
 
-func _on_interact_pressed():
-	Values.mode = Values.ACTION_MODE_ACTIVATION
-	map.phantoms[Values.selected_team.id].visible = false
-	map.characters[Values.selected_team.id].range_mesh.visible = false
+func _on_interact_toggled(button_pressed):
+	if button_pressed:
+		move.set_pressed_no_signal(false)
+		attack.set_pressed_no_signal(false)
+		rest.set_pressed_no_signal(false)
+		Values.mode = Values.ACTION_MODE_ACTIVATION
+		hide_phantom(Values.selected_team.id)
+		map.characters[Values.selected_team.id].range_mesh.visible = false
+	else:
+		move.set_pressed(true)
 
-func _on_wait_pressed():
-	Values.mode = Values.ACTION_MODE_WAIT
-	map.phantoms[Values.selected_team.id].visible = false
-	map.characters[Values.selected_team.id].range_mesh.visible = false
-
-func _on_speak_pressed():
-	map.phantoms[Values.selected_team.id].visible = false
-	map.characters[Values.selected_team.id].range_mesh.visible = false
-	pass
-
-func _on_inventory_pressed():
-	pass
-
-func _on_sleep_pressed():
-	map.phantoms[Values.selected_team.id].visible = false
-	map.characters[Values.selected_team.id].range_mesh.visible = false
-	pass
-
-func _on_breakpoint_pressed():
-	pass
+func _on_rest_toggled(button_pressed):
+	if button_pressed:
+		move.set_pressed_no_signal(false)
+		attack.set_pressed_no_signal(false)
+		interact.set_pressed_no_signal(false)
+		Values.mode = Values.ACTION_MODE_WAIT
+		hide_phantom(Values.selected_team.id)
+		map.characters[Values.selected_team.id].range_mesh.visible = false
+	else:
+		move.set_pressed(true)

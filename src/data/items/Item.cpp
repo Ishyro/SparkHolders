@@ -5,52 +5,41 @@
 #include "data/Effect.h"
 
 #include "data/items/Item.h"
+#include "data/items/BasicItem.h"
 #include "data/items/ArmorItem.h"
 #include "data/items/WeaponItem.h"
 #include "data/items/SerialItem.h"
 #include "data/items/AmmunitionItem.h"
+#include "data/items/ContainerItem.h"
 
 #include "util/String.h"
 
 Item * Item::init(const Item * item, int tier, int number) {
     switch(item->type) {
-      case ITEM_WEAPON:
-        return new WeaponItem( (WeaponItem *) item, tier);
+      case ITEM_BASIC:
+        return new BasicItem( (BasicItem *) item, tier);
       case ITEM_ARMOR:
         return new ArmorItem( (ArmorItem *) item, tier);
-      case ITEM_MISCELLANEOUS:
-      case ITEM_CONSUMABLE:
+      case ITEM_WEAPON:
+        return new WeaponItem( (WeaponItem *) item, tier);
+      case ITEM_SERIAL:
         return new SerialItem( (SerialItem *) item, tier, number);
       case ITEM_AMMUNITION:
         return new AmmunitionItem( (AmmunitionItem *) item, tier, number);
+      case ITEM_CONTAINER:
+        return new ContainerItem( (ContainerItem *) item, tier);
       default:
         return nullptr;
     }
 }
 
-std::string Item::to_string() {
-  std::stringstream * ss = new std::stringstream();
-  String::insert(ss, name);
-  String::insert_long(ss, id);
-  String::insert_int(ss, type);
-  String::insert_int(ss, type2);
-  String::insert_int(ss, tier);
-  String::insert_int(ss, max_tier);
-  String::insert_float(ss, weight);
-  String::insert_int(ss, gold_value);
-  String::insert_bool(ss, droppable);
-  String::insert_bool(ss, usable);
-  String::insert_bool(ss, consumable);
-  String::insert_int(ss, use_time);
-  std::stringstream * ss_effects = new std::stringstream();
+bool Item::isFood() {
   for(Effect * effect : effects) {
-    String::insert(ss_effects, effect->to_string());
+    if(effect->type == EFFECT_SATIETY) {
+      return true;
+    }
   }
-  String::insert(ss, ss_effects->str());
-  delete ss_effects;
-  std::string result = ss->str();
-  delete ss;
-  return result;
+  return false;
 }
 
 Item * Item::from_string(std::string to_read, Adventure * adventure) {
@@ -65,6 +54,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
   int tier = String::extract_int(ss);
   int max_tier = String::extract_int(ss);
   float weight = String::extract_float(ss);
+  int sizeX = String::extract_int(ss);
+  int sizeY = String::extract_int(ss);
   int gold_value = String::extract_int(ss);
   bool droppable = String::extract_bool(ss);
   bool usable = String::extract_bool(ss);
@@ -78,6 +69,26 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
   delete ss_effects;
   Item * result;
   switch(type) {
+    case ITEM_BASIC: {
+      result = new BasicItem(
+        name,
+        id,
+        type,
+        type2,
+        tier,
+        max_tier,
+        weight,
+        sizeX,
+        sizeY,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects
+      );
+      break;
+    }
     case ITEM_WEAPON: {
       int swap_time = String::extract_int(ss);
       float range = String::extract_float(ss);
@@ -104,6 +115,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -137,6 +150,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -148,9 +163,9 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       );
       break;
     }
-    case ITEM_MISCELLANEOUS:
-    case ITEM_CONSUMABLE: {
+    case ITEM_SERIAL: {
       int number = String::extract_int(ss);
+      int max = String::extract_int(ss);
       result = new SerialItem(
         name,
         id,
@@ -159,18 +174,22 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
         consumable,
         use_time,
         *effects,
-        number
+        number,
+        max
       );
       break;
     }
     case ITEM_AMMUNITION: {
       int number = String::extract_int(ss);
+      int max = String::extract_int(ss);
       Projectile * projectile = (Projectile *) adventure->getDatabase()->getProjectile(String::extract(ss));
       result = new AmmunitionItem(
         name,
@@ -180,6 +199,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         tier,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -187,8 +208,51 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         use_time,
         *effects,
         number,
+        max,
         projectile
       );
+      break;
+    }
+    case ITEM_CONTAINER: {
+      int swap_time = String::extract_int(ss);
+      bool can_take_from = String::extract_bool(ss);
+      bool repercute_weight = String::extract_bool(ss);
+      bool limited = String::extract_bool(ss);
+      int limit_type = String::extract_int(ss);
+      int contentX = String::extract_int(ss);
+      int contentY = String::extract_int(ss);
+      result = new ContainerItem(
+        name,
+        id,
+        type,
+        type2,
+        tier,
+        max_tier,
+        weight,
+        sizeX,
+        sizeY,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        swap_time,
+        can_take_from,
+        repercute_weight,
+        limited,
+        limit_type,
+        contentX,
+        contentY
+      );
+      std::stringstream * ss_items = new std::stringstream(String::extract(ss));
+      while(ss_items->rdbuf()->in_avail() != 0) {
+        int x = String::extract_int(ss_items);
+        int y = String::extract_int(ss_items);
+        Item * item = Item::from_string(String::extract(ss_items), adventure);
+        ( (ContainerItem *) result)->add(item, x, y);
+      }
+      delete ss_items;
       break;
     }
     default:

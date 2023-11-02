@@ -7,6 +7,7 @@
 #include "data/World.h"
 
 #include "data/items/Item.h"
+#include "data/items/BasicItem.h"
 #include "data/items/WeaponItem.h"
 #include "data/items/SerialItem.h"
 
@@ -452,10 +453,9 @@ void Map::killCharacter(Character * killer, Character * victim) {
   loot->items = std::list<Item *>();
   loot->x = victim->getX();
   loot->y = victim->getY();
-  loot->gold = victim->getGold();
-  for(Item * i : victim->getItems()) {
-    if(i->droppable) {
-      loot->items.push_back(i);
+  for(ItemSlot * slot : victim->getGear()->getItems()) {
+    if(slot->item->droppable) {
+      loot->items.push_back(slot->item);
     }
   }
   for(Item * i : victim->getLoot()) {
@@ -474,10 +474,10 @@ void Map::killCharacter(Character * killer, Character * victim) {
     Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new SerialItem("TXT_PERL_OF_WISDOM", ++item::id_cpt, ITEM_CONSUMABLE, ITEM_POTION, xp, xp, 1.F, xp * 10, true, true, true, 5, *effects, 1));
+    loot->items.push_back(new BasicItem("TXT_PERL_OF_WISDOM", ++item::id_cpt, ITEM_BASIC, ITEM_POTION, xp, xp, 1.F, 1, 1, xp * 10, true, true, true, 5, *effects));
     delete effects;
   }
-  if(loot->gold == 0 && loot->items.empty()) {
+  if(loot->items.empty()) {
     delete loot;
   }
   else {
@@ -502,13 +502,15 @@ void Map::destroyLoot(Loot * l) {
 }
 
 void Map::takeLoot(Character * c, int mode) {
+  return;
+  /*
   std::list<Loot *> to_delete = std::list<Loot *>();
   switch(mode) {
     case GRAB_FOOD: {
       for(Loot * l : loots) {
         if(l != nullptr && l->x == c->getX() && l->y == c->getY()) {
           for(Item * i : l->items) {
-            if(i->type == ITEM_CONSUMABLE && ( (SerialItem *) i)->isFood()) {
+            if(i->consumable && ( (SerialItem *) i)->isFood()) {
               c->addItem(i);
               l->items.remove(i);
               break;
@@ -538,6 +540,7 @@ void Map::takeLoot(Character * c, int mode) {
     destroyLoot(l);
   }
   to_delete.clear();
+  */
 }
 
 float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y) {

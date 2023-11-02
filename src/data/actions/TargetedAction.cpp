@@ -36,7 +36,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       break;
     }
     case ACTION_SHOOT: {
-      Projectile * projectile = user->shoot(target, adventure);
+      Projectile * projectile = user->shoot(target, adventure, ITEM_SLOT_WEAPON_1);
       if(projectile != nullptr) {
         adventure->getWorld()->getMap(user->getCurrentMap()->id)->addProjectile(projectile);
       }
@@ -45,7 +45,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
     case ACTION_STRIKE: {
       if(target->type == TARGET_CHARACTER) {
         Character * other = adventure->getCharacter(target->id); 
-        user->attack(other, ACTION_STRIKE);
+        user->attack(other, adventure, ACTION_STRIKE);
         if(!other->isAlive()) {
           adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
         }
@@ -71,7 +71,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
     case ACTION_HEAVY_STRIKE: {
       if(target->type == TARGET_CHARACTER) {
         Character * other = adventure->getCharacter(target->id); 
-        user->attack(other, ACTION_HEAVY_STRIKE);
+        user->attack(other, adventure, ACTION_HEAVY_STRIKE);
         if(!other->isAlive()) {
           adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
         }
@@ -125,13 +125,13 @@ void TargetedAction::computeTime(Adventure * adventure) {
       time = 1.F;
       break;
     case ACTION_SHOOT:
-      time = user->getStrikeTime();
+      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_STRIKE:
-      time = user->getStrikeTime();
+      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_HEAVY_STRIKE:
-      time = user->getStrikeTime() * 5;
+      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1) * 5;
       break;
     case ACTION_ACTIVATION: {
       Furniture * furniture = user->getCurrentMap()->getFurniture(target->x, target->y);
@@ -178,5 +178,6 @@ float TargetedAction::rangeFromTarget(Adventure * adventure) {
     Character * other = adventure->getCharacter(target->id);
     return MapUtil::distance(user->getX(), user->getY(), other->getX(), other->getY());
   }
+  return 0.F;
 }
 

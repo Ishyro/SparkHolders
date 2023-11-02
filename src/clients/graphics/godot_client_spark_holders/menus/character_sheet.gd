@@ -1,5 +1,6 @@
 extends Control
 
+@onready var map = $"../../Map"
 
 @onready var concentrationMax = $Mutable/MainStats/Concentration
 @onready var soulBurnThreshold = $Mutable/MainStats/SoulBurnThreshold
@@ -34,10 +35,28 @@ extends Control
 
 @onready var experience_bar = $Mutable/Experience
 
+@onready var res_shield = $Mutable/SubStats/Resources/Content/Values/Shield
+@onready var res_health = $Mutable/SubStats/Resources/Content/Values/Health
+@onready var res_mana = $Mutable/SubStats/Resources/Content/Values/Mana
+@onready var res_soulburn = $Mutable/SubStats/Resources/Content/Values/Soulburn
+@onready var res_satiety = $Mutable/SubStats/Resources/Content/Values/Satiety
+@onready var res_stamina = $Mutable/SubStats/Resources/Content/Values/Stamina
+
+@onready var sec_size = $Mutable/SubStats/Secondary/Content/Values1/Size
+@onready var sec_cloaking = $Mutable/SubStats/Secondary/Content/Values1/Cloaking
+@onready var sec_global_speed = $Mutable/SubStats/Secondary/Content/Values1/GlobalSpeed
+@onready var sec_movement_speed = $Mutable/SubStats/Secondary/Content/Values1/MovementSpeed
+@onready var sec_hand_action_speed = $Mutable/SubStats/Secondary/Content/Values1/HandActionSpeed
+
+@onready var sec_vision_power = $Mutable/SubStats/Secondary/Content/Values2/VisionPower
+@onready var sec_vision_range = $Mutable/SubStats/Secondary/Content/Values2/VisionRange
+@onready var sec_detection_range = $Mutable/SubStats/Secondary/Content/Values2/DetectionRange
+
 var numbers = preload("res://hud/police/Numbers.tres")
 var small_numbers = preload("res://hud/police/SmallNumbers.tres")
-var text = preload("res://hud/police/Text.tres")
 var big_text = preload("res://hud/police/BigText.tres")
+var text = preload("res://hud/police/Text.tres")
+var small_text = preload("res://hud/police/SmallText.tres")
 
 var big_tiers = []
 var small_tiers = []
@@ -79,7 +98,8 @@ func display_stats():
 	#specClass = Values.link.getDataFromClass(character_stats["spec_class"])
 	race = Values.link.getDataFromRace(character_stats["race"])
 
-	set_value(sheet_name, character_stats["name"], 15, big_text, text)
+	# Main
+	set_value(sheet_name, character_stats["name"], 15, text, small_text)
 	set_value(sheet_level, str(character_stats["level"]), 4, small_numbers, numbers)
 	#set_value(concentrationMax, str(character_stats["concentration"]), 4, small_numbers, numbers)
 	set_value(concentrationMax, str(0), 4, small_numbers, numbers)
@@ -113,3 +133,22 @@ func display_stats():
 	n_religion.texture = load("")
 	n_professionTier.texture = big_tiers[profession["tier"] - 1]
 	n_profession.texture = load("")
+	
+	# Resources
+	res_shield.text = str(character_stats["shield"]) + " / " + str(character_stats["maxShield"])
+	res_health.text = str(character_stats["hp"]) + " / " + str(character_stats["maxHp"])
+	res_mana.text = str(character_stats["mana"]) + " / " + str(character_stats["maxMana"])
+	res_soulburn.text = str(character_stats["currentSoulBurn"]) + " / " + str(character_stats["soulBurnThreshold"])
+	res_satiety.text = str(map.round_float(character_stats["satiety"])) + "%"
+	res_stamina.text = str(map.round_float(character_stats["stamina"])) + "%"
+
+	# Secondaries
+	sec_size.text = str(map.round_float(character_stats["size"]))
+	sec_cloaking.text = str(0)
+	sec_global_speed.text = str(character_stats["globalSpeed"] * 100) + "%"
+	sec_movement_speed.text = str(character_stats["movementSpeed"] * 100) + "%"
+	sec_hand_action_speed.text = str(character_stats["handActionSpeed"] * 100) + "%"
+
+	sec_vision_power.text = str(character_stats["visionPower"])
+	sec_vision_range.text = str(character_stats["visionRange"])
+	sec_detection_range.text = str(character_stats["detectionRange"])

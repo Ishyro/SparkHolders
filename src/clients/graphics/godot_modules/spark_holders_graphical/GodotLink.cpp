@@ -283,8 +283,8 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["maxShield"] = character->maxShield;
   result["stamina"] = character->stamina;
   result["satiety"] = character->satiety;
-  result["soulBurn"] = character->soulBurn;
-  result["soulBurnTreshold"] = character->soulBurnTreshold;
+  result["currentSoulBurn"] = character->soulBurn;
+  result["soulBurnThreshold"] = character->soulBurnTreshold;
   result["flow"] = character->flow;
   result["player_character"] = character->player_character;
   result["type"] = character->type;
@@ -322,8 +322,9 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   result["mana"] = character->getMana();
   result["shield"] = character->getShield();
   result["currentSoulBurn"] = character->getCurrentSoulBurn();
-  result["strengthening"] = (int64_t) std::floor(character->getDamageMultiplier() * 100.F);
+  result["strengthening"] = (int64_t) std::floor((character->getDamageMultiplier() - 1.F) * 100.F);
   result["flow"] = character->getFlow();
+  result["cloaking"] = character->cloakPower();
   result["visionRange"] = character->getVisionRange();
   result["visionPower"] = character->getVisionPower();
   result["detectionRange"] = character->getDetectionRange();
@@ -334,6 +335,9 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   result["xp"] = (int64_t) character->getXP();
   result["level"] = character->getLevel();
   result["rawPower"] = (int64_t) character->getRawPower();
+  result["globalSpeed"] = character->getActionTimeModifier();
+  result["handActionSpeed"] = character->getHandActionTimeModifier();
+  result["movementSpeed"] = character->getMovementTimeModifier();
   result["main_class"] = character->getAttributes()->name.c_str();
   result["sub_class"] = character->getSecondAttributes()->name.c_str();
   result["spec_class"] = "";

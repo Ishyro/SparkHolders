@@ -41,8 +41,10 @@
 #include "data/items/Item.h"
 #include "data/items/ArmorItem.h"
 #include "data/items/WeaponItem.h"
+#include "data/items/BasicItem.h"
 #include "data/items/SerialItem.h"
 #include "data/items/AmmunitionItem.h"
+#include "data/items/ContainerItem.h"
 #include "data/items/Gear.h"
 
 #include "data/furnitures/Furniture.h"
@@ -547,41 +549,65 @@ namespace FileOpener {
   void GearOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    std::string head_str = values.at("head");
-    ArmorItem * head = head_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(head_str.substr(0, head_str.find('|'))), stoi(head_str.substr(head_str.find('|') + 1, head_str.length())), 1
+    std::string mantle_str = values.at("mantle");
+    ArmorItem * mantle = mantle_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(mantle_str.substr(0, mantle_str.find('|'))), stoi(mantle_str.substr(mantle_str.find('|') + 1, mantle_str.length())), 1
     ) : nullptr;
-    std::string arms_str = values.at("arms");
-    ArmorItem * arms = arms_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(arms_str.substr(0, arms_str.find('|'))), stoi(arms_str.substr(arms_str.find('|') + 1, arms_str.length())), 1
+    std::string helmet_str = values.at("helmet");
+    ArmorItem * helmet = helmet_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(helmet_str.substr(0, helmet_str.find('|'))), stoi(helmet_str.substr(helmet_str.find('|') + 1, helmet_str.length())), 1
     ) : nullptr;
-    std::string legs_str = values.at("legs");
-    ArmorItem * legs = legs_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(legs_str.substr(0, legs_str.find('|'))), stoi(legs_str.substr(legs_str.find('|') + 1, legs_str.length())), 1
+    std::string armor_str = values.at("armor");
+    ArmorItem * armor = armor_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(armor_str.substr(0, armor_str.find('|'))), stoi(armor_str.substr(armor_str.find('|') + 1, armor_str.length())), 1
     ) : nullptr;
-    std::string body_str = values.at("body");
-    ArmorItem * body = body_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(body_str.substr(0, body_str.find('|'))), stoi(body_str.substr(body_str.find('|') + 1, body_str.length())), 1
+    std::string gauntlets_str = values.at("gauntlets");
+    ArmorItem * gauntlets = gauntlets_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(gauntlets_str.substr(0, gauntlets_str.find('|'))), stoi(gauntlets_str.substr(gauntlets_str.find('|') + 1, gauntlets_str.length())), 1
+    ) : nullptr;
+    std::string boots_str = values.at("boots");
+    ArmorItem * boots = boots_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(boots_str.substr(0, boots_str.find('|'))), stoi(boots_str.substr(boots_str.find('|') + 1, boots_str.length())), 1
     ) : nullptr;
     std::string lantern_str = values.at("lantern");
     ArmorItem * lantern = lantern_str != "none" ? (ArmorItem *) Item::init(
       database->getItem(lantern_str.substr(0, lantern_str.find('|'))), stoi(lantern_str.substr(lantern_str.find('|') + 1, lantern_str.length())), 1
     ) : nullptr;
-    std::string left_ring_str = values.at("left_ring");
-    ArmorItem * left_ring = left_ring_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(left_ring_str.substr(0, left_ring_str.find('|'))), stoi(left_ring_str.substr(left_ring_str.find('|') + 1, left_ring_str.length())), 1
-    ) : nullptr;
-    std::string right_ring_str = values.at("right_ring");
-    ArmorItem * right_ring = right_ring_str != "none" ? (ArmorItem *) Item::init(
-      database->getItem(right_ring_str.substr(0, right_ring_str.find('|'))), stoi(right_ring_str.substr(right_ring_str.find('|') + 1, right_ring_str.length())), 1
-    ) : nullptr;
     std::string amulet_str = values.at("amulet");
     ArmorItem * amulet = amulet_str != "none" ? (ArmorItem *) Item::init(
       database->getItem(amulet_str.substr(0, amulet_str.find('|'))), stoi(amulet_str.substr(amulet_str.find('|') + 1, amulet_str.length())), 1
     ) : nullptr;
-    std::string weapon_str = values.at("weapon");
-    WeaponItem * current_weapon = weapon_str != "none" ? (WeaponItem *) Item::init(
-      database->getItem(weapon_str.substr(0, weapon_str.find('|'))), stoi(weapon_str.substr(weapon_str.find('|') + 1, weapon_str.length())), 1
+    std::string ring_1_str = values.at("ring_1");
+    ArmorItem * ring_1 = ring_1_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(ring_1_str.substr(0, ring_1_str.find('|'))), stoi(ring_1_str.substr(ring_1_str.find('|') + 1, ring_1_str.length())), 1
+    ) : nullptr;
+    std::string ring_2_str = values.at("ring_2");
+    ArmorItem * ring_2 = ring_2_str != "none" ? (ArmorItem *) Item::init(
+      database->getItem(ring_2_str.substr(0, ring_2_str.find('|'))), stoi(ring_2_str.substr(ring_2_str.find('|') + 1, ring_2_str.length())), 1
+    ) : nullptr;
+    std::string weapon_1_str = values.at("weapon_1");
+    WeaponItem * weapon_1 = weapon_1_str != "none" ? (WeaponItem *) Item::init(
+      database->getItem(weapon_1_str.substr(0, weapon_1_str.find('|'))), stoi(weapon_1_str.substr(weapon_1_str.find('|') + 1, weapon_1_str.length())), 1
+    ) : nullptr;
+    std::string weapon_2_str = values.at("weapon_2");
+    WeaponItem * weapon_2 = weapon_2_str != "none" ? (WeaponItem *) Item::init(
+      database->getItem(weapon_2_str.substr(0, weapon_2_str.find('|'))), stoi(weapon_2_str.substr(weapon_2_str.find('|') + 1, weapon_2_str.length())), 1
+    ) : nullptr;
+    std::string weapon_3_str = values.at("backup_weapon_1");
+    WeaponItem * backup_weapon_1 = weapon_3_str != "none" ? (WeaponItem *) Item::init(
+      database->getItem(weapon_3_str.substr(0, weapon_3_str.find('|'))), stoi(weapon_3_str.substr(weapon_3_str.find('|') + 1, weapon_3_str.length())), 1
+    ) : nullptr;
+    std::string weapon_4_str = values.at("backup_weapon_2");
+    WeaponItem * backup_weapon_2 = weapon_4_str != "none" ? (WeaponItem *) Item::init(
+      database->getItem(weapon_4_str.substr(0, weapon_4_str.find('|'))), stoi(weapon_4_str.substr(weapon_4_str.find('|') + 1, weapon_4_str.length())), 1
+    ) : nullptr;
+    std::string bag_str = values.at("bag");
+    ContainerItem * bag = bag_str != "none" ? (ContainerItem *) Item::init(
+      database->getItem(bag_str.substr(0, bag_str.find('|'))), stoi(bag_str.substr(bag_str.find('|') + 1, bag_str.length())), 1
+    ) : nullptr;
+    std::string belt_str = values.at("belt");
+    ContainerItem * belt = belt_str != "none" ? (ContainerItem *) Item::init(
+      database->getItem(belt_str.substr(0, belt_str.find('|'))), stoi(belt_str.substr(belt_str.find('|') + 1, belt_str.length())), 1
     ) : nullptr;
     std::list<Item *> * items = new std::list<Item *>();
     std::istringstream is_items(values.at("items"));
@@ -595,15 +621,21 @@ namespace FileOpener {
     }
     Gear * gear = new Gear(
       name,
-      head,
-      arms,
-      legs,
-      body,
+      mantle,
+      helmet,
+      gauntlets,
+      boots,
+      armor,
       lantern,
-      left_ring,
-      right_ring,
       amulet,
-      current_weapon,
+      ring_1,
+      ring_2,
+      weapon_1,
+      weapon_2,
+      backup_weapon_1,
+      backup_weapon_2,
+      bag,
+      belt,
       *items
     );
     database->addGear(gear);
@@ -611,12 +643,14 @@ namespace FileOpener {
   }
 
   void ItemOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::map<const std::string, std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
     int type2 = database->getTargetFromMacro(values.at("type2"));
     int max_tier = stoi(values.at("tier"));
     float weight = _stof(values.at("weight"));
+    int sizeX = stoi(values.at("sizeX"));
+    int sizeY = stoi(values.at("sizeY"));
     int gold_value = stoi(values.at("gold_value"));
     std::istringstream is_droppable(values.at("droppable"));
     bool droppable;
@@ -660,6 +694,8 @@ namespace FileOpener {
         0,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -710,6 +746,8 @@ namespace FileOpener {
         0,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -728,7 +766,27 @@ namespace FileOpener {
         damages
       );
     }
-    if(type == ITEM_MISCELLANEOUS || type == ITEM_CONSUMABLE) {
+    if(type == ITEM_BASIC) {
+      item = new BasicItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        sizeX,
+        sizeY,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects
+      );
+    }
+    if(type == ITEM_SERIAL) {
+      int max_stack = stoi(values.at("max_stack"));
       item = new SerialItem(
         name,
         0,
@@ -737,16 +795,20 @@ namespace FileOpener {
         0,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
         consumable,
         use_time,
         *effects,
-        0
+        0,
+        max_stack
       );
     }
     if(type == ITEM_AMMUNITION) {
+      int max_stack = stoi(values.at("max_stack"));
       Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
       item = new AmmunitionItem(
         name,
@@ -756,6 +818,8 @@ namespace FileOpener {
         0,
         max_tier,
         weight,
+        sizeX,
+        sizeY,
         gold_value,
         droppable,
         usable,
@@ -763,7 +827,47 @@ namespace FileOpener {
         use_time,
         *effects,
         0,
+        max_stack,
         projectile
+      );
+    }
+    if(type == ITEM_CONTAINER) {
+      int swap_time = stoi(values.at("swap_time"));
+      std::istringstream is_can_take_from(values.at("can_take_from"));
+      bool can_take_from;
+      is_can_take_from >> std::boolalpha >> can_take_from;
+      std::istringstream is_repercute_weight(values.at("repercute_weight"));
+      bool repercute_weight;
+      is_repercute_weight >> std::boolalpha >> repercute_weight;
+      std::istringstream is_limited(values.at("limited"));
+      bool limited;
+      is_limited >> std::boolalpha >> limited;
+      int limit_type = stoi(values.at("limit_type"));
+      int contentX = stoi(values.at("contentX"));
+      int contentY = stoi(values.at("contentY"));
+      item = new ContainerItem(
+        name,
+        0,
+        type,
+        type2,
+        0,
+        max_tier,
+        weight,
+        sizeX,
+        sizeY,
+        gold_value,
+        droppable,
+        usable,
+        consumable,
+        use_time,
+        *effects,
+        swap_time,
+        can_take_from,
+        repercute_weight,
+        limited,
+        limit_type,
+        contentX,
+        contentY
       );
     }
     database->addItem(item);

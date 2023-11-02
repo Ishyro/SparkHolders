@@ -1,8 +1,10 @@
 name = TXT_WOLF_HIDE
-type = ITEM_MISCELLANEOUS
+type = ITEM_BASIC
 type2 = ITEM_MATERIAL
 tier = 0
 weight = 0.5
+sizeX = 2
+sizeY = 2
 gold_value = 25
 droppable = true
 usable = false

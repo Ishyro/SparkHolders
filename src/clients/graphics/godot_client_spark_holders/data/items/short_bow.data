@@ -1,6 +1,8 @@
 name = TXT_SHORT_BOW
 type = ITEM_WEAPON
 type2 = ITEM_BOW
+sizeX = 2
+sizeY = 3
 tier = 10
 weight = 5.0
 gold_value = 50
