@@ -63,3 +63,4 @@ var selected_projectile = null
 var selected_tile = null
 
 var actions = {}
+var action_muxtex = Mutex.new()

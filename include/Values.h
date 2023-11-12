@@ -157,6 +157,8 @@ class SpeechManager;
 #define ITEM_SLOT_WEAPON_4 13
 #define ITEM_SLOT_BAG 14
 #define ITEM_SLOT_BELT 15
+#define ITEM_SLOT_INSIDE_BAG 16
+#define ITEM_SLOT_INSIDE_BELT 17
 
 // other_items_type
 

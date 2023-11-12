@@ -1344,11 +1344,35 @@ namespace Display {
             break;
           }
           case ACTION_RELOAD:
-          case ACTION_SWAP_GEAR:
           case ACTION_GRAB:
-          case ACTION_USE_ITEM:
-            sendAction(link, id, type, (void *) object_id, nullptr, 0, 0, 0);
+          case ACTION_USE_ITEM: {
+            ItemSlot * slot = new ItemSlot();
+            for(ItemSlot * item : link->getPlayer(id)->getGear()->getItems()) {
+              if(item->item->id == object_id) {
+                slot->x = item->x;
+                slot->y = item->y;
+                slot->slot = item->slot;
+              }
+            }
+            sendAction(link, id, type, (void *) slot, nullptr, 0, 0, 0);
             break;
+          }
+          case ACTION_SWAP_GEAR: {
+            ItemSlot * slot = new ItemSlot();
+            ItemSlot * dummy = new ItemSlot();
+            for(ItemSlot * item : link->getPlayer(id)->getGear()->getItems()) {
+              if(item->item->id == object_id) {
+                slot->x = item->x;
+                slot->y = item->y;
+                slot->slot = item->slot;
+              }
+            }
+            dummy->x = 0;
+            dummy->y = 0;
+            dummy->slot = 0;
+            sendAction(link, id, type, (void *) slot, (void *) dummy, 0, 0, 0);
+            break;
+          }
           case ACTION_TALKING:
           case ACTION_ECONOMICS:
             break;

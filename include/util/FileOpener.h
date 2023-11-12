@@ -20,12 +20,12 @@ namespace FileOpener {
   Adventure * AdventureOpener(std::string fileName, bool isServer);
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer);
 
-  void AttributesOpener(std::string fileName, Database * database);
+  std::string AttributesOpener(std::string fileName, Database * database);
   void CharacterOpener(std::string fileName, Database * database);
   void EffectOpener(std::string fileName, Database * database);
   void EventOpener(std::string fileName, Database * database);
   void GearOpener(std::string fileName, Database * database);
-  void ItemOpener(std::string fileName, Database * database);
+  std::string ItemOpener(std::string fileName, Database * database);
   std::string FurnitureOpener(std::string fileName, Database * database);
   void addFurnitureToMap(int keyword, std::string command, Map * map, Database * database);
   void MapOpener(std::string fileName, Database * database);
@@ -37,7 +37,7 @@ namespace FileOpener {
   void PseudoSkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);
   std::string TileOpener(std::string fileName, Database * database);
-  void WayOpener(std::string fileName, Database * database);
+  std::string WayOpener(std::string fileName, Database * database);
 
   void FileOpener(std::string fileName, Database * database, bool isServer);
   Database * DatabaseOpener(std::string fileName, bool isServer);

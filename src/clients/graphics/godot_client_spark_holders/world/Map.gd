@@ -64,6 +64,8 @@ var base_projectile = preload("res://models/projectile.tscn")
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
 
+@onready var n_inventory = n_hud.inventory
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	light_0.albedo_color = "000000"
@@ -162,14 +164,19 @@ func select_character(character_id: int):
 	bake_navigation_meshes()
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
+	n_inventory.update_inventories(owned_characters)
 
 func state_updater():
 	var running = true
 	while running:
 		while (Values.updating_state || !Values.link.hasState()):
 			if !Values.updating_state && !Values.link.hasState():
+				# waiting player actions, we can update our data now
 				bake_navigation_meshes()
 				set_navigation_mesh(Values.selected_team.id)
+				n_inventory.update_inventories(owned_characters)
+				# do nothing is not all characters have at least 1 action ready
+				send_actions()
 			await get_tree().create_timer(0.001).timeout
 		mutex.lock()
 		running = Values.link.getState()
@@ -380,7 +387,7 @@ func display_map():
 	for coord in furnitures.keys():
 		var furniture = furnitures[coord]
 		n_furnitures.remove_child(furniture)
-		furnitures.erase(furniture)
+		furnitures.erase(coord)
 	for coord in furnitures_data:
 		add_furniture(furnitures_data[coord], coord)
 
@@ -496,7 +503,7 @@ func update_phantom(character_id: int):
 			n_characters.add_child(phantom_line)
 			previous_vec = vec
 	phantoms[character_id].rotation_degrees = last_angle
-	return String.num(ap_cost, 3)
+	return String.num(ap_cost, 3) + " ap"
 
 func round_float(number: float):
 	var value = int(number * 1000. + 0.5)
@@ -521,6 +528,19 @@ func init_actions():
 		Values.actions["overcharge_power"][id] = []
 		Values.actions["overcharge_duration"][id] = []
 		Values.actions["overcharge_range"][id] = []
+
+func send_actions():
+	#do not send if at least 1 character doesn't have any action set
+	Values.action_muxtex.lock()
+	for id in owned_characters:
+		if Values.actions["types"][id].is_empty():
+			Values.action_muxtex.unlock()
+			return
+	Values.link.send_actions(Values.actions)
+	init_actions()
+	if Values.mode == Values.ACTION_MODE_NONE:
+		Values.mode = Values.ACTION_MODE_MOVE
+	Values.action_muxtex.unlock()
 
 func clear_actions(id):
 	Values.actions["types"][id] = []

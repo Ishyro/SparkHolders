@@ -181,6 +181,69 @@ int64_t GodotLink::getMapFromCoords(Vector3 coords) {
   return (int64_t) link->getAdventure()->getWorld()->getMap(coords.z, coords.x, coords.y)->id;
 }
 
+Dictionary GodotLink::getDataFromItem(Item * item) {
+  Dictionary result = Dictionary();
+  if(item == nullptr) {
+    return result;
+  }
+  result["name"] = item->name.c_str();
+  result["id"] = (int64_t) item->id;
+  result["type"] = item->type;
+  result["type2"] = item->type2;
+  result["tier"] = item->tier;
+  result["max_tier"] = item->max_tier;
+  result["weight"] = item->weight;
+  result["sizeX"] = item->sizeX;
+  result["sizeY"] = item->sizeY;
+  result["gold_value"] = item->gold_value;
+  result["droppable"] = item->droppable;
+  result["usable"] = item->usable;
+  result["consumable"] = item->consumable;
+  result["use_time"] = item->use_time;
+  if(item->type == ITEM_SERIAL || item->type == ITEM_AMMUNITION) {
+    result["number"] = ((SerialItem *) item)->getNumber();
+    result["max"] = ((SerialItem *) item)->max;
+  }
+  if(item->type == ITEM_AMMUNITION) {
+    result["projectile"] = "";//((ItemAmmunition *) item)->projectile;
+  }
+  if(item->type == ITEM_ARMOR || item->type == ITEM_WEAPON || item->type == ITEM_CONTAINER) {
+    result["swap_time"] = ((GearItem *) item)->swap_time;
+  }
+  if(item->type == ITEM_ARMOR) {
+    Array damage_reductions = Array();
+    for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      damage_reductions.push_back(((ArmorItem *) item)->getDamageReductionFromType(i));
+    }
+    result["damage_reductions"] = damage_reductions;
+  }
+  if(item->type == ITEM_WEAPON) {
+    result["range"] = ((WeaponItem *) item)->range;
+    result["strike_time"] = ((WeaponItem *) item)->strike_time;
+    result["use_projectile"] = ((WeaponItem *) item)->use_projectile;
+    result["use_ammo"] = ((WeaponItem *) item)->use_ammo;
+    result["ammo_type"] = ((WeaponItem *) item)->ammo_type;
+    result["capacity"] = ((WeaponItem *) item)->capacity;
+    result["reload_time"] = ((WeaponItem *) item)->reload_time;
+    Array damages = Array();
+    for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      damages.push_back(((WeaponItem *) item)->getDamageFromType(i));
+    }
+    result["damages"] = damages;
+  }
+  if(item->type == ITEM_CONTAINER) {
+    result["canTakeFrom"] = ((ContainerItem *) item)->canTakeFrom;
+    result["repercuteWeight"] = ((ContainerItem *) item)->repercuteWeight;
+    result["isLimited"] = ((ContainerItem *) item)->isLimited;
+    result["limit_type"] = ((ContainerItem *) item)->limit_type;
+    result["contentX"] = ((ContainerItem *) item)->contentX;
+    result["contentY"] = ((ContainerItem *) item)->contentY;
+  }
+  String path = link->getAdventure()->getDatabase()->getItemFile(item->name).c_str();
+  result["path"] = path;
+  return result;
+}
+
 Dictionary GodotLink::getDataFromTile(String tile_name) {
   Dictionary result = Dictionary();
   Tile * tile = (Tile *) link->getAdventure()->getDatabase()->getTile(std::string(tile_name.utf8().get_data()));
@@ -196,6 +259,9 @@ Dictionary GodotLink::getDataFromTile(String tile_name) {
 
 Dictionary GodotLink::getDataFromClass(String class_name) {
   Dictionary result = Dictionary();
+  if(class_name == "") {
+    return result;
+  }
   Attributes * attributes = (Attributes *) link->getAdventure()->getDatabase()->getAttributes(std::string(class_name.utf8().get_data()));
   result["name"] = attributes->name.c_str();
   result["tier"] = attributes->tier;
@@ -214,10 +280,14 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
   result["damageMultIncr"] = attributes->damageMultIncr;
   result["soulBurnIncr"] = attributes->soulBurnIncr;
   result["flowIncr"] = attributes->flowIncr;
+  result["path"] = link->getAdventure()->getDatabase()->getAttributesFile(attributes->name).c_str();
   return result;
 }
 Dictionary GodotLink::getDataFromRace(String race_name) {
   Dictionary result = Dictionary();
+  if(race_name == "") {
+    return result;
+  }
   Race * race = (Race *) link->getAdventure()->getDatabase()->getWay(std::string(race_name.utf8().get_data()));
   result["name"] = race->name.c_str();
   result["type"] = race->type;
@@ -246,10 +316,16 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   result["strike_time_modifier"] = race->strike_time_modifier;
   result["skill_time_modifier"] = race->skill_time_modifier;
   result["movement_time_modifier"] = race->movement_time_modifier;
+  String path = link->getAdventure()->getDatabase()->getWayFile(race->name).c_str();
+  result["path"] = path;
+  result["path_3d"] = path.replace(".png", ".glb");
   return result;
 }
 Dictionary GodotLink::getDataFromWay(String way_name) {
   Dictionary result = Dictionary();
+  if(way_name == "") {
+    return result;
+  }
   Way * way = (Way *) link->getAdventure()->getDatabase()->getWay(std::string(way_name.utf8().get_data()));
   result["name"] = way->name.c_str();
   result["type"] = way->type;
@@ -269,6 +345,7 @@ Dictionary GodotLink::getDataFromWay(String way_name) {
   result["damageMultIncr"] = way->damageMultIncr;
   result["soulBurnIncr"] = way->soulBurnIncr;
   result["flowIncr"] = way->flowIncr;
+  result["path"] = link->getAdventure()->getDatabase()->getWayFile(way->name).c_str();
   return result;
 }
 
@@ -338,8 +415,20 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   result["globalSpeed"] = character->getActionTimeModifier();
   result["handActionSpeed"] = character->getHandActionTimeModifier();
   result["movementSpeed"] = character->getMovementTimeModifier();
-  result["main_class"] = character->getAttributes()->name.c_str();
-  result["sub_class"] = character->getSecondAttributes()->name.c_str();
+  Attributes * main_class = character->getAttributes();
+  if(main_class != nullptr) {
+    result["main_class"] = main_class->name.c_str();
+  }
+  else {
+    result["main_class"] = "";
+  }
+  Attributes * sub_class = character->getSecondAttributes();
+  if(sub_class != nullptr) {
+    result["sub_class"] = sub_class->name.c_str();
+  }
+  else {
+    result["sub_class"] = "";
+  }
   result["spec_class"] = "";
   result["race"] = character->getRace()->name.c_str();
   Array race_modifiers = Array();
@@ -361,7 +450,34 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
 
 Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
   Dictionary result = Dictionary();
-
+  Gear * gear = link->getPlayer( (long) character_id)->getGear();
+  result["mantle"] = getDataFromItem(gear->getMantle());
+  result["helmet"] = getDataFromItem(gear->getHelmet());
+  result["armor"] = getDataFromItem(gear->getArmor());
+  result["gauntlets"] = getDataFromItem(gear->getGauntlets());
+  result["boots"] = getDataFromItem(gear->getBoots());
+  result["lantern"] = getDataFromItem(gear->getLantern());
+  result["amulet"] = getDataFromItem(gear->getAmulet());
+  result["ring_1"] = getDataFromItem(gear->getRing_1());
+  result["ring_2"] = getDataFromItem(gear->getRing_2());
+  result["weapon_1"] = getDataFromItem(gear->getWeapon_1());
+  result["weapon_2"] = getDataFromItem(gear->getWeapon_2());
+  result["backup_weapon_1"] = getDataFromItem(gear->getBackupWeapon_1());
+  result["backup_weapon_2"] = getDataFromItem(gear->getBackupWeapon_2());
+  result["bag"] = getDataFromItem(gear->getBag());
+  result["belt"] = getDataFromItem(gear->getBelt());
+  Dictionary belt_content = Dictionary();
+  for(ItemSlot * slot : gear->getBelt()->getItems()) {
+    Vector2 vec = Vector2(slot->x, slot->y);
+    belt_content[vec] = getDataFromItem(slot->item);
+  }
+  result["belt_content"] = belt_content;
+  Dictionary bag_content = Dictionary();
+  for(ItemSlot * slot : gear->getBag()->getItems()) {
+    Vector2 vec = Vector2(slot->x, slot->y);
+    bag_content[vec] = getDataFromItem(slot->item);
+  }
+  result["bag_content"] = bag_content;
   return result;
 }
 
@@ -472,11 +588,29 @@ void GodotLink::send_actions(Dictionary actions) {
           break;
         }
         case ACTION_RELOAD:
-        case ACTION_SWAP_GEAR:
         case ACTION_GRAB:
         case ACTION_USE_ITEM: {
-          long item_id = (long) (int64_t) ( (Array) ( (Dictionary) actions["arg2"])[id])[i];
-          arg1 = (void *) item_id;
+          Dictionary slot_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
+          ItemSlot * slot = new ItemSlot();
+          slot->x = (int) (int64_t) slot_ori["x"];
+          slot->y = (int) (int64_t) slot_ori["y"];
+          slot->slot = (int) (int64_t) slot_ori["slot"];
+          arg1 = (void *) slot;
+          break;
+        }
+        case ACTION_SWAP_GEAR: {
+          Dictionary slot1_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
+          ItemSlot * slot1 = new ItemSlot();
+          slot1->x = (int) (int64_t) slot1_ori["x"];
+          slot1->y = (int) (int64_t) slot1_ori["y"];
+          slot1->slot = (int) (int64_t) slot1_ori["slot"];
+          arg1 = (void *) slot1;
+          Dictionary slot2_ori = ( (Array) ( (Dictionary) actions["arg2"])[id])[i];
+          ItemSlot * slot2 = new ItemSlot();
+          slot2->x = (int) (int64_t) slot2_ori["x"];
+          slot2->y = (int) (int64_t) slot2_ori["y"];
+          slot2->slot = (int) (int64_t) slot2_ori["slot"];
+          arg2 = (void *) slot2;
           break;
         }
         case ACTION_USE_SKILL: {
@@ -547,6 +681,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getDataFromRace", "race"), &GodotLink::getDataFromRace);
   ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);
   ClassDB::bind_method(D_METHOD("getStatsFromCharacter", "id"), &GodotLink::getStatsFromCharacter);
+  ClassDB::bind_method(D_METHOD("getInventoryFromCharacter", "id"), &GodotLink::getInventoryFromCharacter);
   ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

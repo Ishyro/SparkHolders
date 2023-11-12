@@ -889,10 +889,10 @@ void Character::add(Item * item, int slot, int x, int y) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(slot == ITEM_SLOT_BAG) {
+  if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->add(item, x, y);
   }
-  else if(slot == ITEM_SLOT_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BELT) {
     gear->getBelt()->add(item, x, y);
   }
 }
@@ -902,10 +902,10 @@ Item * Character::remove(int slot, int x, int y) {
     setNeedToSend(true);
   }
   Item * item = nullptr;
-  if(slot == ITEM_SLOT_BAG) {
+  if(slot == ITEM_SLOT_INSIDE_BAG) {
     item = gear->getBag()->remove(x, y);
   }
-  else if(slot == ITEM_SLOT_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BELT) {
     item = gear->getBelt()->remove(x, y);
   }
   return item;
@@ -913,7 +913,7 @@ Item * Character::remove(int slot, int x, int y) {
 
 float Character::swap(int slot1, int slot2) {
   float time = getSwapTime(slot1, slot2);
-  gear->swap(slot1, slot2);
+  gear->swapWeapon(slot1, slot2);
   return time;
 }
 
@@ -1027,10 +1027,10 @@ void Character::addItem(Item * i, int x, int y, int slot) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(slot == ITEM_SLOT_BAG) {
+  if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->add(i, x, y);
   }
-  else if(slot == ITEM_SLOT_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BELT) {
     gear->getBag()->add(i, x, y);
   }
 }
@@ -1039,10 +1039,10 @@ void Character::removeItem(int x, int y, int slot) {
   if(player_character) {
     setNeedToSend(true);
   }
-  if(slot == ITEM_SLOT_BAG) {
+  if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->remove(x, y);
   }
-  else if(slot == ITEM_SLOT_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BELT) {
     gear->getBag()->remove(x, y);
   }
 }

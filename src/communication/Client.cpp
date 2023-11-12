@@ -72,7 +72,7 @@ namespace Client {
       case ACTION_SWAP_GEAR:
       case ACTION_GRAB:
       case ACTION_USE_ITEM:
-        return writeGearAction(type, (long) arg1);
+        return writeGearAction(type, (ItemSlot *) arg1, (ItemSlot *) arg2);
         break;
       case ACTION_USE_SKILL:
         return writeSkillAction(type, (Target *) arg1, (Skill *) arg2, overcharge_power, overcharge_duration, overcharge_range);
@@ -94,10 +94,17 @@ namespace Client {
     return result;
   }
 
-  std::string writeGearAction(int type, long item_id) {
+  std::string writeGearAction(int type, ItemSlot * slot1, ItemSlot * slot2) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert_long(ss, item_id);
+    String::insert_int(ss, slot1->x);
+    String::insert_int(ss, slot1->y);
+    String::insert_int(ss, slot1->slot);
+    if(slot2 != nullptr) {
+      String::insert_int(ss, slot2->x);
+      String::insert_int(ss, slot2->y);
+      String::insert_int(ss, slot2->slot);
+    }
     std::string result = ss->str();
     delete ss;
     return result;

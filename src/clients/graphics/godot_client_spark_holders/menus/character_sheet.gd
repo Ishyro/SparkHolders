@@ -52,11 +52,11 @@ extends Control
 @onready var sec_vision_range = $Mutable/SubStats/Secondary/Content/Values2/VisionRange
 @onready var sec_detection_range = $Mutable/SubStats/Secondary/Content/Values2/DetectionRange
 
-var numbers = preload("res://hud/police/Numbers.tres")
-var small_numbers = preload("res://hud/police/SmallNumbers.tres")
-var big_text = preload("res://hud/police/BigText.tres")
-var text = preload("res://hud/police/Text.tres")
-var small_text = preload("res://hud/police/SmallText.tres")
+var numbers = preload("res://menus/hud/police/Numbers.tres")
+var small_numbers = preload("res://menus/hud/police/SmallNumbers.tres")
+var big_text = preload("res://menus/hud/police/BigText.tres")
+var text = preload("res://menus/hud/police/Text.tres")
+var small_text = preload("res://menus/hud/police/SmallText.tres")
 
 var big_tiers = []
 var small_tiers = []
@@ -75,8 +75,8 @@ var race
 
 func _ready():
 	for i in range(0, 10):
-		big_tiers.push_back(load("res://hud/tiers/" + str(i + 1) + "_big.png"))
-		small_tiers.push_back(load("res://hud/tiers/" + str(i + 1) + "_small.png"))
+		big_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_big.png"))
+		small_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_small.png"))
 
 func set_value(label, value, str_size, font_small, font_big):
 	label.text = value
@@ -94,8 +94,8 @@ func display_stats():
 	profession = Values.link.getDataFromWay(character_stats["profession"])
 
 	mainClass = Values.link.getDataFromClass(character_stats["main_class"])
-	#subClass = Values.link.getDataFromClass(character_stats["sub_class"])
-	#specClass = Values.link.getDataFromClass(character_stats["spec_class"])
+	subClass = Values.link.getDataFromClass(character_stats["sub_class"])
+	specClass = Values.link.getDataFromClass(character_stats["spec_class"])
 	race = Values.link.getDataFromRace(character_stats["race"])
 
 	# Main
@@ -118,21 +118,23 @@ func display_stats():
 	experience_bar.value = character_stats["xp"]
 	
 	n_mainClassTier.texture = big_tiers[mainClass["tier"] - 1]
-	n_mainClass.texture = load("")
-	#n_subClassTier.texture = big_tiers[subClass["tier"] - 1]
-	n_subClass.texture = load("")
-	#n_specClassTier.texture = big_tiers[specClass["tier"] - 1]
-	n_specClass.texture = load("")
+	n_mainClass.texture = load(mainClass["path"])
+	if !subClass.is_empty():
+		n_subClassTier.texture = big_tiers[subClass["tier"] - 1]
+		n_subClass.texture = load(subClass["path"])
+	if !specClass.is_empty():
+		n_specClassTier.texture = big_tiers[specClass["tier"] - 1]
+		n_specClass.texture = load("")
 	n_raceTier.texture = big_tiers[race["tier"] - 1]
-	n_race.texture = load("")
+	n_race.texture = load(race["path"])
 	n_originTier.texture = big_tiers[origin["tier"] - 1]
-	n_origin.texture = load("")
+	n_origin.texture = load(origin["path"])
 	n_cultureTier.texture = big_tiers[culture["tier"] - 1]
-	n_culture.texture = load("")
+	n_culture.texture = load(culture["path"])
 	n_religionTier.texture = big_tiers[religion["tier"] - 1]
-	n_religion.texture = load("")
+	n_religion.texture = load(religion["path"])
 	n_professionTier.texture = big_tiers[profession["tier"] - 1]
-	n_profession.texture = load("")
+	n_profession.texture = load(profession["path"])
 	
 	# Resources
 	res_shield.text = str(character_stats["shield"]) + " / " + str(character_stats["maxShield"])

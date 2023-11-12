@@ -3,6 +3,8 @@
 
 #include "data/actions/Action.h"
 
+#include "data/items/ContainerItem.h"
+
 #include "Values.h"
 
 class GearAction : public Action {
@@ -23,7 +25,16 @@ class GearAction : public Action {
       ),
       slot1(slot1),
       slot2(slot2)
-    {}
+    {
+      for(ItemSlot * slot : user->getGear()->getItems()) {
+        if(slot->slot == slot1->slot && slot->x == slot1->x && slot->y == slot1->y) {
+          slot1->item = slot->item;
+        }
+        else if(slot2 != nullptr && slot->slot == slot2->slot && slot->x == slot2->x && slot->y == slot2->y) {
+          slot2->item = slot->item;
+        }
+      }
+    }
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
   private:

@@ -74,26 +74,26 @@ class Gear {
       if(gear->helmet != nullptr) {
         helmet = new ArmorItem(gear->helmet, gear->helmet->tier);
       }
+      if(gear->armor != nullptr) {
+        armor = new ArmorItem(gear->armor, gear->armor->tier);
+      }
       if(gear->gauntlets != nullptr) {
         gauntlets = new ArmorItem(gear->gauntlets, gear->gauntlets->tier);
       }
       if(gear->boots != nullptr) {
         boots = new ArmorItem(gear->boots, gear->boots->tier);
       }
-      if(gear->armor != nullptr) {
-        armor = new ArmorItem(gear->armor, gear->armor->tier);
-      }
       if(gear->lantern != nullptr) {
         lantern = new ArmorItem(gear->lantern, gear->lantern->tier);
+      }
+      if(gear->amulet != nullptr) {
+        amulet = new ArmorItem(gear->amulet, gear->amulet->tier);
       }
       if(gear->ring_1 != nullptr) {
         ring_1 = new ArmorItem(gear->ring_1, gear->ring_1->tier);
       }
       if(gear->ring_2 != nullptr) {
         ring_2 = new ArmorItem(gear->ring_2, gear->ring_2->tier);
-      }
-      if(gear->amulet != nullptr) {
-        amulet = new ArmorItem(gear->amulet, gear->amulet->tier);
       }
       if(gear->weapon_1 != nullptr) {
         weapon_1 = new WeaponItem(gear->weapon_1, gear->weapon_1->tier);
@@ -149,7 +149,10 @@ class Gear {
     {}
     void equip(GearItem * new_item, int slot);
     GearItem * unequip(int slot);
-    void swap(int slot1, int slot2);
+    void swapWeapon(int slot1, int slot2);
+    Item * takeItem(ItemSlot * slot);
+    void putItem(ItemSlot * slot);
+    void swapItem(ItemSlot * slot1, ItemSlot * slot2);
 
     float getDamageReductionFromType(int damage_type);
 

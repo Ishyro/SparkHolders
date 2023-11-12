@@ -168,7 +168,13 @@ func _unhandled_input(event):
 				character_sheet.display_stats()
 			else:
 				character_sheet.visible = false
-		if event.is_action_pressed("action"):
+		if event.is_action_pressed("inventory"):
+			if !hud.inventory.visible:
+				hud.inventory.display_inventory()
+			else:
+				hud.inventory.visible = false
+		if event.is_action_pressed("action") && !Values.updating_state && !Values.link.hasState():
+			Values.action_muxtex.lock()
 			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
 				Values.mode = Values.ACTION_MODE_NONE
 				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
@@ -184,8 +190,6 @@ func _unhandled_input(event):
 				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_TILE, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), map.characters_data[Values.selected_team.id]["z"]))
 			if Values.mode == Values.ACTION_MODE_ATTACK:
 				map.add_targeted_action(Values.selected_team.id, Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
+			Values.action_muxtex.unlock()
 		if event.is_action_pressed("send_actions"):
-			Values.link.send_actions(Values.actions)
-			map.init_actions()
-			if Values.mode == Values.ACTION_MODE_NONE:
-				Values.mode = Values.ACTION_MODE_MOVE
+			map.send_actions()

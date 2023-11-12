@@ -372,7 +372,7 @@ namespace FileOpener {
     delete ss;
   }
 
-  void AttributesOpener(std::string fileName, Database * database) {
+  std::string AttributesOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     Attributes * archetype = nullptr;
@@ -433,6 +433,7 @@ namespace FileOpener {
     database->addAttributes(attributes);
     delete effects;
     delete skills;
+    return name;
   }
 
   void CharacterOpener(std::string fileName, Database * database) {
@@ -623,9 +624,9 @@ namespace FileOpener {
       name,
       mantle,
       helmet,
+      armor,
       gauntlets,
       boots,
-      armor,
       lantern,
       amulet,
       ring_1,
@@ -642,7 +643,7 @@ namespace FileOpener {
     delete items;
   }
 
-  void ItemOpener(std::string fileName, Database * database) {
+  std::string ItemOpener(std::string fileName, Database * database) {
     std::map<const std::string, std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
@@ -872,6 +873,7 @@ namespace FileOpener {
     }
     database->addItem(item);
     delete effects;
+    return name;
   }
 
   
@@ -1288,7 +1290,7 @@ namespace FileOpener {
     return name;
   }
 
-  void WayOpener(std::string fileName, Database * database) {
+  std::string WayOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int type = database->getTargetFromMacro(values.at("type"));
@@ -1410,6 +1412,7 @@ namespace FileOpener {
       delete effects;
       delete skills;
     }
+    return name;
   }
 
   void FileOpener(std::string fileName, Database * database, bool isServer) {
@@ -1418,7 +1421,10 @@ namespace FileOpener {
     std::string dirname = fileName.substr(0, fileName.rfind(delimiter));
     std::string last_folder = dirname.substr(dirname.rfind(delimiter) + 1, dirname.length() - 1);
     if(last_folder == "attributes") {
-      AttributesOpener(fileName, database);
+      std::string attributes_name = AttributesOpener(fileName, database);
+      if(!isServer) {
+        database->addAttributesFile(attributes_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+      }
     }
     else if(last_folder == "characters") {
       CharacterOpener(fileName, database);
@@ -1433,7 +1439,10 @@ namespace FileOpener {
       GearOpener(fileName, database);
     }
     else if(last_folder == "items") {
-      ItemOpener(fileName, database);
+      std::string item_name = ItemOpener(fileName, database);
+      if(!isServer) {
+        database->addItemFile(item_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+      }
     }
     else if(last_folder == "furnitures") {
       std::string furniture_name = FurnitureOpener(fileName, database);
@@ -1472,7 +1481,10 @@ namespace FileOpener {
             (last_folder == "religions") ||
             (last_folder == "professions") ||
             (last_folder == "titles")) {
-      WayOpener(fileName, database);
+      std::string way_name = WayOpener(fileName, database);
+      if(!isServer) {
+        database->addWayFile(way_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+      }
     }
   }
 

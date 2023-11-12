@@ -1,0 +1,780 @@
+[gd_scene load_steps=6 format=3 uid="uid://b30mlwpi6n8ni"]
+
+[ext_resource type="Script" path="res://menus/hud/inventory.gd" id="1_3afm8"]
+[ext_resource type="Texture2D" uid="uid://65euyudog4pe" path="res://menus/hud/inventory_background.png" id="2_bxr27"]
+[ext_resource type="Texture2D" uid="uid://cjl5okoqk75mo" path="res://menus/exp.png" id="3_gxoh5"]
+[ext_resource type="Texture2D" uid="uid://digduyvtj7ft5" path="res://menus/hud/closed_slot.png" id="4_4j7rq"]
+[ext_resource type="Texture2D" uid="uid://cer52h5wpm1h3" path="res://menus/hud/inventory_foreground.png" id="5_3yetr"]
+
+[node name="Inventory" type="Control"]
+layout_mode = 3
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+script = ExtResource("1_3afm8")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bxr27")
+
+[node name="Slots" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Mantle" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.154
+anchor_top = 0.143
+anchor_right = 0.243
+anchor_bottom = 0.206
+
+[node name="Helmet" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.284
+anchor_top = 0.143
+anchor_right = 0.372
+anchor_bottom = 0.207
+
+[node name="Armor" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.284
+anchor_top = 0.235
+anchor_right = 0.372
+anchor_bottom = 0.329
+
+[node name="Gauntlets" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.026
+anchor_top = 0.357
+anchor_right = 0.114
+anchor_bottom = 0.42
+
+[node name="Boots" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.283
+anchor_top = 0.357
+anchor_right = 0.373
+anchor_bottom = 0.421
+
+[node name="Lantern" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.542
+anchor_top = 0.357
+anchor_right = 0.63
+anchor_bottom = 0.42
+
+[node name="Amulet" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.433
+anchor_top = 0.158
+anchor_right = 0.479
+anchor_bottom = 0.191
+
+[node name="Ring1" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.176
+anchor_top = 0.372
+anchor_right = 0.221
+anchor_bottom = 0.405
+
+[node name="Ring2" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.433
+anchor_top = 0.372
+anchor_right = 0.479
+anchor_bottom = 0.405
+
+[node name="Weapon1" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.026
+anchor_top = 0.235
+anchor_right = 0.114
+anchor_bottom = 0.329
+
+[node name="Weapon2" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.541
+anchor_top = 0.235
+anchor_right = 0.63
+anchor_bottom = 0.329
+
+[node name="Weapon3" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.155
+anchor_top = 0.235
+anchor_right = 0.243
+anchor_bottom = 0.329
+
+[node name="Weapon4" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.413
+anchor_top = 0.235
+anchor_right = 0.501
+anchor_bottom = 0.329
+
+[node name="Bag" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.026
+anchor_top = 0.638
+anchor_right = 0.115
+anchor_bottom = 0.701
+
+[node name="Belt" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.026
+anchor_top = 0.479
+anchor_right = 0.114
+anchor_bottom = 0.512
+
+[node name="BagContent" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.155
+anchor_top = 0.546
+anchor_right = 0.845
+anchor_bottom = 0.793
+
+[node name="BeltContent" type="Control" parent="Slots"]
+layout_mode = 1
+anchor_left = 0.154
+anchor_top = 0.479
+anchor_right = 0.846
+anchor_bottom = 0.513
+
+[node name="Weight" type="TextureProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.018
+anchor_top = 0.104
+anchor_right = 0.981
+anchor_bottom = 0.133
+max_value = 1000.0
+value = 999.0
+nine_patch_stretch = true
+texture_progress = ExtResource("3_gxoh5")
+
+[node name="BeltContent" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.155
+anchor_top = 0.48
+anchor_right = 0.844
+anchor_bottom = 0.513
+theme_override_constants/h_separation = -2
+theme_override_constants/v_separation = -2
+columns = 16
+
+[node name="Box1" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box2" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box3" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box4" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box5" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box6" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box7" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box8" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box9" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box10" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box11" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box12" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box13" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box14" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box15" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box16" type="TextureRect" parent="BeltContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="BagContent" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.155
+anchor_top = 0.546
+anchor_right = 0.845
+anchor_bottom = 0.793
+theme_override_constants/h_separation = -2
+theme_override_constants/v_separation = -2
+columns = 16
+
+[node name="Box1" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box2" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box3" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box4" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box5" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box6" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box7" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box8" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box9" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box10" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box11" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box12" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box13" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box14" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box15" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box16" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box17" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box18" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box19" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box20" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box21" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box22" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box23" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box24" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box25" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box26" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box27" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box28" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box29" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box30" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box31" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box32" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box33" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box34" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box35" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box36" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box37" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box38" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box39" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box40" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box41" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box42" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box43" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box44" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box45" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box46" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box47" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box48" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box49" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box50" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box51" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box52" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box53" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box54" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box55" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box56" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box57" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box58" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box59" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box60" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box61" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box62" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box63" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box64" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box65" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box66" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box67" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box68" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box69" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box70" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box71" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box72" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box73" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box74" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box75" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box76" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box77" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box78" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box79" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box80" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box81" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box82" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box83" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box84" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box85" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box86" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box87" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box88" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box89" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box90" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box91" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box92" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box93" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box94" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box95" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box96" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box97" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box98" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box99" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box100" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box101" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box102" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box103" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box104" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box105" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box106" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box107" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box108" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box109" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box110" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box111" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box112" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box113" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box114" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box115" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box116" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box117" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box118" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box119" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box120" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box121" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box122" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box123" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box124" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box125" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box126" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box127" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Box128" type="TextureRect" parent="BagContent"]
+layout_mode = 2
+texture = ExtResource("4_4j7rq")
+
+[node name="Items" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Foreground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_3yetr")

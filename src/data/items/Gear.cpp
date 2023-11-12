@@ -127,7 +127,7 @@ GearItem * Gear::unequip(int slot) {
   return old_item;
 }
 
-void Gear::swap(int slot1, int slot2) {
+void Gear::swapWeapon(int slot1, int slot2) {
   WeaponItem * temp;
   if(slot1 == ITEM_SLOT_WEAPON_1) {
     if(slot2 == ITEM_SLOT_WEAPON_3) {
@@ -152,6 +152,169 @@ void Gear::swap(int slot1, int slot2) {
       weapon_2 = backup_weapon_2;
       backup_weapon_2 = temp;
     }
+  }
+}
+
+Item * Gear::takeItem(ItemSlot * slot) {
+  if(slot->slot == ITEM_SLOT_INSIDE_BAG) {
+    return bag->remove(slot->x, slot->y);
+  }
+  else if(slot->slot == ITEM_SLOT_INSIDE_BELT) {
+    return belt->remove(slot->x, slot->y);
+  }
+  else {
+    return unequip(slot->slot);
+  }
+}
+
+void Gear::putItem(ItemSlot * slot) {
+  if(slot->slot == ITEM_SLOT_INSIDE_BAG) {
+    bag->add(slot->item, slot->x, slot->y);
+  }
+  else if(slot->slot == ITEM_SLOT_INSIDE_BELT) {
+    belt->add(slot->item, slot->x, slot->y);
+  }
+  else {
+    equip((GearItem *) slot->item, slot->slot);
+  }
+}
+
+void Gear::swapItem(ItemSlot * slot1, ItemSlot * slot2) {
+  Item * temp = nullptr;
+  switch(slot2->slot) {
+    case ITEM_SLOT_MANTLE:
+      temp = mantle;
+      mantle = (ArmorItem *) takeItem(slot1);
+      if(mantle->type != ITEM_MANTLE) {
+        mantle = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_HELMET:
+      temp = helmet;
+      helmet = (ArmorItem *) takeItem(slot1);
+      if(helmet->type != ITEM_HELMET) {
+        helmet = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_ARMOR:
+      temp = armor;
+      armor = (ArmorItem *) takeItem(slot1);
+      if(armor->type != ITEM_CUIRASS) {
+        armor = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_GAUNTLETS:
+      temp = gauntlets;
+      gauntlets = (ArmorItem *) takeItem(slot1);
+      if(gauntlets->type != ITEM_GAUNTLETS) {
+        gauntlets = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_BOOTS:
+      temp = boots;
+      boots = (ArmorItem *) takeItem(slot1);
+      if(boots->type != ITEM_BOOTS) {
+        boots = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_LANTERN:
+      temp = lantern;
+      lantern = (ArmorItem *) takeItem(slot1);
+      if(lantern->type != ITEM_LANTERN) {
+        lantern = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_AMULET:
+      temp = amulet;
+      amulet = (ArmorItem *) takeItem(slot1);
+      if(amulet->type != ITEM_AMULET) {
+        amulet = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_RING_1:
+      temp = ring_1;
+      ring_1 = (ArmorItem *) takeItem(slot1);
+      if(ring_1->type != ITEM_RING) {
+        ring_1 = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_RING_2:
+      temp = ring_2;
+      ring_2 = (ArmorItem *) takeItem(slot1);
+      if(ring_2->type != ITEM_RING) {
+        ring_2 = (ArmorItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_WEAPON_1:
+      temp = weapon_1;
+      weapon_1 = (WeaponItem *) takeItem(slot1);
+      if(weapon_1->type != ITEM_WEAPON) {
+        weapon_1 = (WeaponItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_WEAPON_2:
+      temp = weapon_2;
+      weapon_2 = (WeaponItem *) takeItem(slot1);
+      if(weapon_2->type != ITEM_WEAPON) {
+        weapon_2 = (WeaponItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_WEAPON_3:
+      temp = backup_weapon_1;
+      backup_weapon_1 = (WeaponItem *) takeItem(slot1);
+      if(backup_weapon_1->type != ITEM_WEAPON) {
+        backup_weapon_1 = (WeaponItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_WEAPON_4:
+      temp = backup_weapon_2;
+      backup_weapon_2 = (WeaponItem *) takeItem(slot1);
+      if(backup_weapon_2->type != ITEM_WEAPON) {
+        backup_weapon_2 = (WeaponItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_BAG:
+      temp = bag;
+      bag = (ContainerItem *) takeItem(slot1);
+      if(bag->type != ITEM_BAG) {
+        bag = (ContainerItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_BELT:
+      temp = belt;
+      belt = (ContainerItem *) takeItem(slot1);
+      if(belt->type != ITEM_BELT) {
+        belt = (ContainerItem *) temp;
+        return;
+      }
+      break;
+    case ITEM_SLOT_INSIDE_BAG:
+      temp = bag->remove(slot2->x, slot2->y);
+      bag->add(takeItem(slot1), slot2->x, slot2->y);
+      break;
+    case ITEM_SLOT_INSIDE_BELT:
+      temp = belt->remove(slot2->x, slot2->y);
+      belt->add(takeItem(slot1), slot2->x, slot2->y);
+      break;
+    default: ;
+  }
+  if(temp != nullptr) {
+    slot1->item = temp;
+    putItem(slot1);
   }
 }
 
@@ -256,7 +419,7 @@ float Gear::getWeight() {
 void Gear::useItem(int x, int y, int slot, Character * user) {
   Item * item;
   switch(slot) {
-    case ITEM_SLOT_BAG:
+    case ITEM_SLOT_INSIDE_BAG:
       item = bag->remove(x, y);
       if(!item->usable) {
         bag->add(item, x, y);
@@ -268,10 +431,10 @@ void Gear::useItem(int x, int y, int slot, Character * user) {
         delete item;
       }
       break;
-    case ITEM_SLOT_BELT:
-      item = bag->remove(x, y);
+    case ITEM_SLOT_INSIDE_BELT:
+      item = belt->remove(x, y);
       if(!item->usable) {
-        bag->add(item, x, y);
+        belt->add(item, x, y);
       }
       else {
         for(Effect * effect : item->effects) {
@@ -434,6 +597,12 @@ std::string Gear::to_string() {
   else {
     String::insert(ss, "none");
   }
+  if(armor != nullptr) {
+    String::insert(ss, armor->to_string());
+  }
+  else {
+    String::insert(ss, "none");
+  }
   if(gauntlets != nullptr) {
     String::insert(ss, gauntlets->to_string());
   }
@@ -446,14 +615,14 @@ std::string Gear::to_string() {
   else {
     String::insert(ss, "none");
   }
-  if(armor != nullptr) {
-    String::insert(ss, armor->to_string());
+  if(lantern != nullptr) {
+    String::insert(ss, lantern->to_string());
   }
   else {
     String::insert(ss, "none");
   }
-  if(lantern != nullptr) {
-    String::insert(ss, lantern->to_string());
+  if(amulet != nullptr) {
+    String::insert(ss, amulet->to_string());
   }
   else {
     String::insert(ss, "none");
@@ -466,12 +635,6 @@ std::string Gear::to_string() {
   }
   if(ring_2 != nullptr) {
     String::insert(ss, ring_2->to_string());
-  }
-  else {
-    String::insert(ss, "none");
-  }
-  if(amulet != nullptr) {
-    String::insert(ss, amulet->to_string());
   }
   else {
     String::insert(ss, "none");
@@ -522,13 +685,13 @@ Gear * Gear::from_string(std::string to_read, Adventure * adventure) {
   std::string name = String::extract(ss);
   ArmorItem * mantle = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * helmet = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * armor = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * gauntlets = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * boots = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * armor = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * lantern = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
+  ArmorItem * amulet = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * ring_1 = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   ArmorItem * ring_2 = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
-  ArmorItem * amulet = (ArmorItem *) Item::from_string(String::extract(ss), adventure);
   WeaponItem * weapon_1 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
   WeaponItem * weapon_2 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
   WeaponItem * backup_weapon_1 = (WeaponItem *) Item::from_string(String::extract(ss), adventure);
@@ -540,13 +703,13 @@ Gear * Gear::from_string(std::string to_read, Adventure * adventure) {
     name,
     mantle,
     helmet,
+    armor,
     gauntlets,
     boots,
-    armor,
+    amulet,
     lantern,
     ring_1,
     ring_2,
-    amulet,
     weapon_1,
     weapon_2,
     backup_weapon_1,

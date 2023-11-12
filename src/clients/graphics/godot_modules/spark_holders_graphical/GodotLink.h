@@ -51,6 +51,7 @@ public:
   String getRelation(String team1, String team2);
   Dictionary getCurrentRegions();
   int64_t getMapFromCoords(Vector3 coords);
+  Dictionary getDataFromItem(Item * item);
   Dictionary getDataFromTile(String tile_name);
   Dictionary getDataFromClass(String class_name);
   Dictionary getDataFromRace(String race_name);

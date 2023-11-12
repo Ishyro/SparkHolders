@@ -23,6 +23,13 @@ Action * GearAction::execute(Adventure * adventure) {
       user->reload(slot1, ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_SWAP_GEAR:
+      if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3 || slot1->slot == ITEM_SLOT_WEAPON_4) &&
+        (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3 || slot2->slot == ITEM_SLOT_WEAPON_4)) {
+        user->getGear()->swapWeapon(slot1->slot, slot2->slot);
+      }
+      else {
+        user->getGear()->swapItem(slot1, slot2);
+      }
       break;
     case ACTION_GRAB:
       //adventure->getWorld()->getMap(user->getCurrentMap()->id)->takeLoot(user, item_id);
@@ -53,7 +60,10 @@ void GearAction::computeTime(Adventure * adventure) {
       time = user->getReloadTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_SWAP_GEAR:
-      time = user->getSwapTime(ITEM_SLOT_WEAPON_1, ITEM_SLOT_WEAPON_3);
+      if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3 || slot1->slot == ITEM_SLOT_WEAPON_4) &&
+        (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3 || slot2->slot == ITEM_SLOT_WEAPON_4)) {
+        time = user->getSwapTime(slot1->slot, slot2->slot);
+      }
       break;
     case ACTION_USE_ITEM:
       time = user->getUseTime(slot1->item); //(float) ( (Item *) adventure->getDatabase()->getItem(piece->name))->use_time / user->getHandActionTimeModifier();

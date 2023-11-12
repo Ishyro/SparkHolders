@@ -19,10 +19,10 @@ bool ContainerItem::add(Item * item, int x, int y) {
   toadd->x = x;
   toadd->y = y;
   if(type2 == ITEM_BAG) {
-    toadd->slot = ITEM_SLOT_BAG;
+    toadd->slot = ITEM_SLOT_INSIDE_BAG;
   }
   else if(type2 == ITEM_BELT) {
-    toadd->slot = ITEM_SLOT_BELT;
+    toadd->slot = ITEM_SLOT_INSIDE_BELT;
   }
   toadd->item = item;
   if(y > contentY - item->sizeY || x > contentX - item->sizeX) {
@@ -42,10 +42,10 @@ bool ContainerItem::add(Item * item, int x, int y) {
 void ContainerItem::add_all(std::list<Item *> items) {
   int slot_type;
   if(type2 == ITEM_BAG) {
-    slot_type = ITEM_SLOT_BAG;
+    slot_type = ITEM_SLOT_INSIDE_BAG;
   }
   else if(type2 == ITEM_BELT) {
-    slot_type = ITEM_SLOT_BELT;
+    slot_type = ITEM_SLOT_INSIDE_BELT;
   }
   int current_x = 0;
   int current_y = 0;
