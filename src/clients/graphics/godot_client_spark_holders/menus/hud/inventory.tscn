@@ -22,6 +22,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_bxr27")
+expand_mode = 1
 
 [node name="Slots" type="Control" parent="."]
 layout_mode = 1
@@ -176,67 +177,115 @@ columns = 16
 
 [node name="Box1" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box2" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box3" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box4" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box5" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box6" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box7" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box8" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box9" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box10" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box11" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box12" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box13" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box14" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box15" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box16" type="TextureRect" parent="BeltContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="BagContent" type="GridContainer" parent="."]
 layout_mode = 1
@@ -251,515 +300,899 @@ columns = 16
 
 [node name="Box1" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box2" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box3" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box4" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box5" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box6" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box7" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box8" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box9" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box10" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box11" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box12" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box13" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box14" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box15" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box16" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box17" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box18" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box19" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box20" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box21" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box22" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box23" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box24" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box25" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box26" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box27" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box28" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box29" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box30" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box31" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box32" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box33" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box34" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box35" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box36" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box37" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box38" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box39" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box40" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box41" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box42" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box43" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box44" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box45" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box46" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box47" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box48" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box49" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box50" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box51" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box52" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box53" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box54" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box55" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box56" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box57" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box58" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box59" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box60" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box61" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box62" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box63" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box64" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box65" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box66" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box67" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box68" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box69" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box70" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box71" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box72" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box73" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box74" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box75" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box76" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box77" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box78" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box79" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box80" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box81" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box82" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box83" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box84" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box85" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box86" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box87" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box88" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box89" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box90" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box91" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box92" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box93" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box94" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box95" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box96" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box97" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box98" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box99" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box100" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box101" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box102" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box103" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box104" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box105" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box106" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box107" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box108" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box109" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box110" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box111" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box112" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box113" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box114" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box115" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box116" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box117" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box118" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box119" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box120" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box121" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box122" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box123" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box124" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box125" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box126" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box127" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Box128" type="TextureRect" parent="BagContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 texture = ExtResource("4_4j7rq")
+expand_mode = 1
 
 [node name="Items" type="Control" parent="."]
 layout_mode = 1
@@ -778,3 +1211,4 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_3yetr")
+expand_mode = 1

@@ -37,7 +37,7 @@ void GodotLink::initialize(String ip) {
   }
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
-  link->sendChoices("test", "TXT_DUELIST", "TXT_HUMAN", "TXT_ARMYTHAS", "TXT_TAGRAN", "TXT_BEASTIONA_FOLLOWER", "TXT_SOLDIER");
+  link->sendChoices("test", "TXT_ELEMENTALIST", "TXT_HUMAN", "TXT_ARMYTHAS", "TXT_TAGRAN", "TXT_LAXITO", "TXT_SOLDIER");
   link->sendReady();
 }
 

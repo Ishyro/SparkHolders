@@ -70,13 +70,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="CharacterSheet" parent="Menus" instance=ExtResource("3_efm1y")]
+visible = false
+z_index = 3
+layout_mode = 1
+
 [node name="Pause" parent="Menus" instance=ExtResource("4_0dq18")]
 visible = false
 visibility_layer = 524288
-layout_mode = 1
-
-[node name="CharacterSheet" parent="Menus" instance=ExtResource("3_efm1y")]
-visible = false
+z_index = 5
 layout_mode = 1
 
 [node name="View" type="Node3D" parent="."]

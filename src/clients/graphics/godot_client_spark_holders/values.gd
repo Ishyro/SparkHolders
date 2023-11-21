@@ -1,7 +1,8 @@
 extends Node
 
-
 # Constants
+const BASE_RESOLUTION = Vector2(1920, 1080)
+
 const DAMAGE_TYPE_NUMBER = 11
 const DAMAGE_SLASH = 0
 const DAMAGE_PUNCTURE = 1
@@ -50,6 +51,7 @@ const TARGET_PERMISSIVE = 5
 const TARGET_MULTIPLE = 6
 
 # Variables
+var CURRENT_RESOLUTION = BASE_RESOLUTION
 var server_pid = -1
 var link = GodotLink.new()
 var updating_state = false

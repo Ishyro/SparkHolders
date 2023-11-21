@@ -422,9 +422,8 @@ func add_furniture(furniture_data: Dictionary, coords: Vector3):
 		var model = load(furniture_data["path"])
 		base_furnitures[furniture_data["name"]] = model
 		if furniture_data.has("path_off"):
-			var model_off = load(furniture_data["path_off"])
-			if model_off != null:
-				base_furnitures_off[furniture_data["name"]] = model_off
+			if FileAccess.file_exists(furniture_data["path_off"]):
+				base_furnitures_off[furniture_data["name"]] = load(furniture_data["path_off"])
 			else:
 				base_furnitures_off[furniture_data["name"]] = model
 	var furniture

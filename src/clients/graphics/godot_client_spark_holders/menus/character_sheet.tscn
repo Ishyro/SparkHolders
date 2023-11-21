@@ -45,85 +45,49 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MainClassTier" type="TextureRect" parent="Mutable/Classes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.04
-anchor_top = 0.111
-anchor_right = 0.04
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SubClassTier" type="TextureRect" parent="Mutable/Classes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.117
-anchor_top = 0.111
-anchor_right = 0.117
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SpecClassTier" type="TextureRect" parent="Mutable/Classes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.194
-anchor_top = 0.111
-anchor_right = 0.194
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="RaceTier" type="TextureRect" parent="Mutable/Classes"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.272
-anchor_top = 0.111
-anchor_right = 0.272
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="MainClass" type="TextureRect" parent="Mutable/Classes"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.04
-anchor_top = 0.111
-anchor_right = 0.04
-anchor_bottom = 0.111
+anchor_left = 0.003
+anchor_top = 0.046
+anchor_right = 0.077
+anchor_bottom = 0.176
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="SubClass" type="TextureRect" parent="Mutable/Classes"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.117
-anchor_top = 0.111
-anchor_right = 0.117
-anchor_bottom = 0.111
+anchor_left = 0.08
+anchor_top = 0.046
+anchor_right = 0.154
+anchor_bottom = 0.177
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="SpecClass" type="TextureRect" parent="Mutable/Classes"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.194
-anchor_top = 0.111
-anchor_right = 0.194
-anchor_bottom = 0.111
+anchor_left = 0.157
+anchor_top = 0.045
+anchor_right = 0.231
+anchor_bottom = 0.177
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="Race" type="TextureRect" parent="Mutable/Classes"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.272
-anchor_top = 0.111
-anchor_right = 0.272
-anchor_bottom = 0.111
+anchor_left = 0.235
+anchor_top = 0.046
+anchor_right = 0.308
+anchor_bottom = 0.176
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="MainNode" type="Control" parent="Mutable"]
 layout_mode = 1
@@ -169,85 +133,49 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="OriginTier" type="TextureRect" parent="Mutable/Ways"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.731
-anchor_top = 0.111
-anchor_right = 0.731
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="CultureTier" type="TextureRect" parent="Mutable/Ways"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.808
-anchor_top = 0.111
-anchor_right = 0.808
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ReligionTier" type="TextureRect" parent="Mutable/Ways"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.885
-anchor_top = 0.111
-anchor_right = 0.885
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ProfessionTier" type="TextureRect" parent="Mutable/Ways"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.962
-anchor_top = 0.111
-anchor_right = 0.962
-anchor_bottom = 0.111
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="Origin" type="TextureRect" parent="Mutable/Ways"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.731
-anchor_top = 0.111
-anchor_right = 0.731
-anchor_bottom = 0.111
+anchor_left = 0.694
+anchor_top = 0.046
+anchor_right = 0.768
+anchor_bottom = 0.177
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="Culture" type="TextureRect" parent="Mutable/Ways"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.807
-anchor_top = 0.111
-anchor_right = 0.807
-anchor_bottom = 0.111
+anchor_left = 0.771
+anchor_top = 0.046
+anchor_right = 0.845
+anchor_bottom = 0.176
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="Religion" type="TextureRect" parent="Mutable/Ways"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.885
-anchor_top = 0.111
-anchor_right = 0.885
-anchor_bottom = 0.111
+anchor_left = 0.848
+anchor_top = 0.046
+anchor_right = 0.922
+anchor_bottom = 0.176
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="Profession" type="TextureRect" parent="Mutable/Ways"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.962
-anchor_top = 0.111
-anchor_right = 0.962
-anchor_bottom = 0.111
+anchor_left = 0.925
+anchor_top = 0.046
+anchor_right = 0.999
+anchor_bottom = 0.177
 grow_horizontal = 2
 grow_vertical = 2
+expand_mode = 1
 
 [node name="MainStats" type="Control" parent="Mutable"]
 layout_mode = 1

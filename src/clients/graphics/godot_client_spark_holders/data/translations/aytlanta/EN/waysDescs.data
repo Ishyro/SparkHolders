@@ -24,8 +24,8 @@ TXT_BARBARIAN = Believing in strength before everything, the Barbarian learned a
 
 TXT_BATTLEMAGE = Using your Soul Spark for a bit of everything on the battlefield, you became a jack-of-all-trades of anything related to magical warfare.%
 
-TXT_BEASTIONA_FOLLOWER = Beastiona is the Goddess of Nature, Avatar of Tenacity. Her assiocated damage and metal are Poison and Copper.
-Her Herald is the Relentless Hunter. Mostly revered by Beastmen and Elves, her High Temple is the Sanctuary of Scranem.%
+TXT_BEASTIONA_FOLLOWER = Beastiona is the Goddess of Nature, Avatar of Tenacity. Her assiocated damage and metal are Poison and Tin.
+Her Herald is the Relentless Hunter. Mostly revered by Beastmen and Elves, her High Temple is the Sanctuary of Scranem. Her associated class is the Guardian, her Moon is Green.%
 
 TXT_PANTHORID = Strong and fierce, Panthorids are children of Scranem. They are feared and hunted by Humans for their savagery and cannibalism.
 Their Knights consider all living beings as equal, and refuse to submit to the Laws that would hinder their Justice.
@@ -36,7 +36,8 @@ TXT_BIRPHAN = Birph is a Kindgom of the Old Lands, always at war with his neighb
 TXT_BRIDGE_TOWN = Built over the Bridge linking Yllia to the Ancestral Lands, Bridge Town is a cosmopolitan city where all races are welcomed.
 She is also the home base for all the Expeditions of the Endless Sea.%
 
-TXT_CAELIA_FOLLOWER = Caelia is the Goddess of Wind, Avatar of Freedom. Her Herald is the Winds' Shepherd. Her assiocated damage and metal are Lightning and Quicksilver.%
+TXT_CAELIA_FOLLOWER = Caelia is the Goddess of Wind, Avatar of Freedom. Her Herald is the Winds' Shepherd. Her assiocated damage and metal are Lightning and Quicksilver.
+Her associated class is the Specialist, her Moon is Red.%
 
 TXT_CELESTIA = The city of angels. At the top of a mountain west to Aether Forest, no road leads to her gates.%
 
@@ -45,7 +46,7 @@ TXT_COUNTRYSIDE = Wherever they are, small settlements will always be the same.%
 TXT_DARKAY_FOLLOWER = Darkay is the God of Dusk and Death, Avatar of the Law. His Herald is the Unbidden.
 His assiocated damage and metal are Mind and Silver.
 Seen as a merciless god, Darkay's dedicated followers aren't as numerous as the other gods, but everyone offers him a prayer from time to time.
-This is especially true for the elderly.%
+This is especially true for the elderly. His associated class is the Spiritualist, his Moon is White.%
 
 TXT_MURIDAID = Small but strong, Muridaids are born to mine mountains, and harvest their gems. This is what they do.%
 
@@ -67,11 +68,13 @@ TXT_TAUROID = Tauroids are stronger than the other races, but they weren't able 
 Following the revolt of Khorak Gaalk, they were able to found multiple Enclaves in the New Lands where they can live in peace.%
 
 TXT_PHILLA_FOLLOWER = Philla is the Goddess of Life and Dawn, Avatar of Loyalty. Her Herald is the Golden Lion. Her assiocated damage and metal are True and Gold.
-Her cult his mostly find in human cities, she is the godess with the highest number of followers.%
+Her cult his mostly find in human cities, she is the godess with the highest number of followers. Her associated class is the Mender, her Moon is the Sun.%
 
-TXT_PYRRA_FOLLOWER = Pyrra is the Goddess of Fire, Avatar of Victory. Her Herald is the Red Ribbon. Her assiocated damage and metal are Fire and Iron.%
+TXT_PYRRA_FOLLOWER = Pyrra is the Goddess of Fire, Avatar of Victory. Her Herald is the Red Ribbon. Her assiocated damage and metal are Fire and Iron. Her associated class is the Vanguard,
+her Moon is Yellow.%
 
-TXT_RAGARD_FOLLOWER = Ragard is the God of Rain, Avatar of Strength. His Herald is the Last Flake. His assiocated damage and metal are Frost and Lead.%
+TXT_RAGARD_FOLLOWER = Ragard is the God of Rain, Avatar of Willpower. His Herald is the Last Flake. His assiocated damage and metal are Frost and Lead.
+His associated class is the Elementalist, his Moon is Blue.%
 
 TXT_RUMINANT = Ruminant%
 TXT_SCHOLAR = Living safely in an Academy, you dedicated your Soul Spark to the Arcanes and the research of new spells.
@@ -94,7 +97,7 @@ You have seen so much you don't really remember back home.%
 TXT_WOODLAND = Scranem, the Aether Forest, the Everlasting Greenlands... Living in a forest is considered a peculiar thing by the non-followers of Beastiona.%
 
 TXT_YARGLEY_FOLLOWER = Yargley is the God of Evolution, the Everlasting Cycle, Avatar of Order. Prominent among nobles and their court, his Herald is the Executioner.
-His assiocated damage and metal are Acid and Copper.%
+His associated damage and metal are Acid and Copper. His associated class is the Shadow, his Moon is Black.%
 
 TXT_YLLIAN = Yllia is a island west of the Old Lands. Neighbor to the Ancestral Lands colonized be Men only recently,
 Yllia is known for her powerfull mages, who where able to build the huge bridge linking the two islands.%

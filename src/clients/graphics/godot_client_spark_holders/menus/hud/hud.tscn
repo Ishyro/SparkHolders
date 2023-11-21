@@ -1,24 +1,29 @@
-[gd_scene load_steps=20 format=3 uid="uid://c4dl1848sgldd"]
+[gd_scene load_steps=25 format=3 uid="uid://c4dl1848sgldd"]
 
 [ext_resource type="Script" path="res://menus/hud/hud.gd" id="1_3lirh"]
+[ext_resource type="LabelSettings" uid="uid://c2gsmrocc1xgt" path="res://menus/hud/police/NumbersBox.tres" id="2_7gdju"]
 [ext_resource type="Texture2D" uid="uid://b1p14jbv2ak60" path="res://menus/hud/hud_background.png" id="2_prq3t"]
 [ext_resource type="Texture2D" uid="uid://rmmfrv4i0pre" path="res://menus/hud/buttons/move_off.png" id="3_cfs4o"]
 [ext_resource type="Texture2D" uid="uid://b6pfjcv5pmbih" path="res://menus/hud/buttons/move_on.png" id="4_8mdo8"]
 [ext_resource type="Texture2D" uid="uid://ro7e3idj0o3u" path="res://menus/hud/buttons/attack_off.png" id="5_2do4i"]
+[ext_resource type="Texture2D" uid="uid://c7jc24r6vpqgh" path="res://menus/hud/buttons/skill_tab_off.png" id="5_ju7nf"]
+[ext_resource type="Texture2D" uid="uid://clo40sp7e0fqa" path="res://menus/hud/buttons/skill_tab_on.png" id="6_adgrr"]
 [ext_resource type="Texture2D" uid="uid://bss2ck0kxf1fy" path="res://menus/hud/buttons/attack_on.png" id="6_j18b4"]
+[ext_resource type="Texture2D" uid="uid://ww1wrg5ph4vl" path="res://data/skills/fireball.png" id="7_2car6"]
 [ext_resource type="Texture2D" uid="uid://xgquc76wky1d" path="res://menus/hud/buttons/interact_off.png" id="7_56fup"]
+[ext_resource type="PackedScene" uid="uid://c20ma3knuf8ju" path="res://menus/hud/skill.tscn" id="7_v3d5r"]
 [ext_resource type="Texture2D" uid="uid://br453refjy76l" path="res://menus/hud/buttons/interact_on.png" id="8_6toxf"]
 [ext_resource type="Texture2D" uid="uid://dqqi0ckew5y7i" path="res://menus/hud/buttons/rest_off.png" id="9_aj8mv"]
+[ext_resource type="Texture2D" uid="uid://bbdus2qj8ipwr" path="res://data/skills/dash.png" id="9_k5s1c"]
 [ext_resource type="Texture2D" uid="uid://cxyqp5rt3s31m" path="res://menus/hud/buttons/rest_on.png" id="10_ps6tb"]
 [ext_resource type="Material" uid="uid://c0upoied008dr" path="res://data/materials/black_bile.tres" id="11_n82ac"]
 [ext_resource type="Texture2D" uid="uid://c6ekhyiju77rn" path="res://menus/hud/dummy_orb.png" id="12_q4tkw"]
-[ext_resource type="LabelSettings" uid="uid://dpf5xv4lmcttw" path="res://menus/hud/police/Numbers_White.tres" id="13_ols3i"]
 [ext_resource type="Material" uid="uid://dp5seolsaa5k4" path="res://data/materials/blood.tres" id="14_nuaf7"]
 [ext_resource type="Material" uid="uid://bbaqwnu5hbnpu" path="res://data/materials/phlegm.tres" id="15_5058j"]
 [ext_resource type="Material" uid="uid://bumtjtlc6t75w" path="res://data/materials/yellow_bile.tres" id="16_tpiog"]
 [ext_resource type="Texture2D" uid="uid://c8b2q7iqf8fr6" path="res://menus/hud/hud_foreground.png" id="17_w7ok1"]
 [ext_resource type="PackedScene" uid="uid://b30mlwpi6n8ni" path="res://menus/hud/inventory.tscn" id="18_e5u86"]
-[ext_resource type="LabelSettings" uid="uid://c2gsmrocc1xgt" path="res://menus/hud/police/Numbers_Box.tres" id="19_7tg8u"]
+[ext_resource type="LabelSettings" uid="uid://dpf5xv4lmcttw" path="res://menus/hud/police/NumbersWhite.tres" id="20_codan"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -44,7 +49,7 @@ theme_override_constants/margin_top = 16
 layout_mode = 2
 size_flags_vertical = 1
 text = "(0 , 0)"
-label_settings = ExtResource("19_7tg8u")
+label_settings = ExtResource("2_7gdju")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -63,836 +68,211 @@ mouse_filter = 2
 texture = ExtResource("2_prq3t")
 expand_mode = 1
 
-[node name="Skills" type="MarginContainer" parent="."]
-visible = false
-layout_mode = 0
-offset_left = 414.0
-offset_top = 985.0
-offset_right = 1510.0
-offset_bottom = 1080.0
+[node name="Skills" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
-[node name="Tabs" type="TabContainer" parent="Skills"]
-layout_mode = 2
-mouse_filter = 0
-
-[node name="1" type="HBoxContainer" parent="Skills/Tabs"]
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/1"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="2" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/2"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="3" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/3"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="4" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/4"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="5" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/5"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="6" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Skillbar" type="Control" parent="Skills"]
+layout_mode = 1
+anchor_left = 0.268
+anchor_top = 0.9
+anchor_right = 0.733
+anchor_bottom = 1.0
+mouse_filter = 2
 
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/6"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="7" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/7"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="8" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/8"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="9" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/9"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="10" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/10"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="11" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/11"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/11"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Tabs" type="HBoxContainer" parent="Skills/Skillbar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.053
+anchor_top = 0.036
+anchor_right = 0.946
+anchor_bottom = 0.353
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 33
 
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button1" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button2" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button3" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button4" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button5" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button6" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button7" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button8" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button9" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button10" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button11" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/11"]
+[node name="Button12" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+texture_normal = ExtResource("5_ju7nf")
+texture_pressed = ExtResource("6_adgrr")
+ignore_texture_size = true
+stretch_mode = 0
 
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/11"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/11"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="12" type="HBoxContainer" parent="Skills/Tabs"]
-visible = false
-layout_mode = 2
-
-[node name="Skill1" type="TextureRect" parent="Skills/Tabs/12"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill2" type="TextureRect" parent="Skills/Tabs/12"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Skill3" type="TextureRect" parent="Skills/Tabs/12"]
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Slots" type="HBoxContainer" parent="Skills/Skillbar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.262
+anchor_right = 1.0
+anchor_bottom = 0.866
+mouse_filter = 2
 
-[node name="Skill4" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill1" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
+texture = ExtResource("7_2car6")
 
-[node name="Skill5" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill2" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
+texture = ExtResource("9_k5s1c")
 
-[node name="Skill6" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill3" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill7" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill4" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill8" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill5" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill9" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill6" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill10" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill7" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill11" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill8" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill12" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill9" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill13" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill10" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill14" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill11" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill15" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill12" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Skill16" type="TextureRect" parent="Skills/Tabs/12"]
+[node name="Skill13" parent="Skills/Skillbar/Slots" instance=ExtResource("7_v3d5r")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Background" type="TextureRect" parent="Skills"]
-layout_mode = 2
+[node name="SkillBook" type="Control" parent="Skills"]
+anchors_preset = 0
+offset_left = 514.56
+offset_top = 972.0
+offset_right = 554.56
+offset_bottom = 1012.0
 mouse_filter = 2
 
 [node name="MapOptions" type="MarginContainer" parent="."]
@@ -992,55 +372,63 @@ mouse_filter = 2
 [node name="Move" type="TextureButton" parent="ActionButtons"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.235
-anchor_top = 0.857
-anchor_right = 0.235
-anchor_bottom = 0.857
+anchor_left = 0.226
+anchor_top = 0.841
+anchor_right = 0.244
+anchor_bottom = 0.873
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
 texture_normal = ExtResource("3_cfs4o")
 texture_pressed = ExtResource("4_8mdo8")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Attack" type="TextureButton" parent="ActionButtons"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.245
-anchor_top = 0.891
-anchor_right = 0.245
-anchor_bottom = 0.891
+anchor_left = 0.236
+anchor_top = 0.875
+anchor_right = 0.254
+anchor_bottom = 0.907
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
 action_mode = 0
 texture_normal = ExtResource("5_2do4i")
 texture_pressed = ExtResource("6_j18b4")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Interact" type="TextureButton" parent="ActionButtons"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.245
-anchor_top = 0.928
-anchor_right = 0.245
-anchor_bottom = 0.928
+anchor_left = 0.236
+anchor_top = 0.912
+anchor_right = 0.254
+anchor_bottom = 0.943
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
 texture_normal = ExtResource("7_56fup")
 texture_pressed = ExtResource("8_6toxf")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Rest" type="TextureButton" parent="ActionButtons"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.235
-anchor_top = 0.961
-anchor_right = 0.235
-anchor_bottom = 0.961
+anchor_left = 0.226
+anchor_top = 0.946
+anchor_right = 0.244
+anchor_bottom = 0.976
 grow_horizontal = 2
 grow_vertical = 2
 toggle_mode = true
 texture_normal = ExtResource("9_aj8mv")
 texture_pressed = ExtResource("10_ps6tb")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Orbs" type="Control" parent="."]
 layout_mode = 1
@@ -1055,15 +443,17 @@ mouse_filter = 2
 material = ExtResource("11_n82ac")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.079
-anchor_top = 0.909
-anchor_right = 0.079
-anchor_bottom = 0.909
+anchor_left = 0.026
+anchor_top = 0.815
+anchor_right = 0.134
+anchor_bottom = 1.004
+offset_right = -1.92
+offset_bottom = -1.08008
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("12_q4tkw")
-stretch_mode = 1
+expand_mode = 1
 
 [node name="Label" type="Label" parent="Orbs/Shield"]
 layout_mode = 1
@@ -1079,7 +469,7 @@ offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "750"
-label_settings = ExtResource("13_ols3i")
+label_settings = ExtResource("20_codan")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1087,14 +477,15 @@ vertical_alignment = 1
 material = ExtResource("14_nuaf7")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.182
-anchor_top = 0.909
-anchor_right = 0.182
-anchor_bottom = 0.909
+anchor_left = 0.129
+anchor_top = 0.815
+anchor_right = 0.235
+anchor_bottom = 1.003
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("12_q4tkw")
+expand_mode = 1
 
 [node name="Label" type="Label" parent="Orbs/Health"]
 layout_mode = 1
@@ -1110,7 +501,7 @@ offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "750"
-label_settings = ExtResource("13_ols3i")
+label_settings = ExtResource("20_codan")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1118,14 +509,15 @@ vertical_alignment = 1
 material = ExtResource("15_5058j")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.819
-anchor_top = 0.909
-anchor_right = 0.819
-anchor_bottom = 0.909
+anchor_left = 0.766
+anchor_top = 0.816
+anchor_right = 0.872
+anchor_bottom = 1.003
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("12_q4tkw")
+expand_mode = 1
 
 [node name="Label" type="Label" parent="Orbs/Mana"]
 layout_mode = 1
@@ -1141,7 +533,7 @@ offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "750"
-label_settings = ExtResource("13_ols3i")
+label_settings = ExtResource("20_codan")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1149,14 +541,15 @@ vertical_alignment = 1
 material = ExtResource("16_tpiog")
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.921
-anchor_top = 0.909
-anchor_right = 0.921
-anchor_bottom = 0.909
+anchor_left = 0.868
+anchor_top = 0.815
+anchor_right = 0.974
+anchor_bottom = 1.003
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("12_q4tkw")
+expand_mode = 1
 
 [node name="Label" type="Label" parent="Orbs/SoulBurn"]
 layout_mode = 1
@@ -1172,7 +565,7 @@ offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "750"
-label_settings = ExtResource("13_ols3i")
+label_settings = ExtResource("20_codan")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1200,6 +593,18 @@ offset_bottom = 40.0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button1" to="." method="_on_button_1_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button2" to="." method="_on_button_2_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button3" to="." method="_on_button_3_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button4" to="." method="_on_button_4_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button5" to="." method="_on_button_5_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button6" to="." method="_on_button_6_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button7" to="." method="_on_button_7_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button8" to="." method="_on_button_8_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button9" to="." method="_on_button_9_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button10" to="." method="_on_button_10_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button11" to="." method="_on_button_11_toggled"]
+[connection signal="toggled" from="Skills/Skillbar/Tabs/Button12" to="." method="_on_button_12_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Grid" to="." method="_on_grid_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Lights" to="." method="_on_lights_toggled"]
 [connection signal="toggled" from="MapOptions/Options/Characters" to="." method="_on_characters_toggled"]

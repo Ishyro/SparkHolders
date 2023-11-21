@@ -19,7 +19,7 @@ extends Control
 @onready var slot_belt_content = $Slots/BeltContent
 @onready var n_items = $Items
 
-@onready var SLOT_SIZE = Vector2(33, 33)
+var SLOT_SIZE
 
 var slots = []
 
@@ -38,6 +38,10 @@ var bag_content = {}
 var belt_content = {}
 
 func _ready():
+	SLOT_SIZE = Vector2(33, 33) #* Values.CURRENT_RESOLUTION / Values.BASE_RESOLUTION
+	print(SLOT_SIZE)
+	print(Values.CURRENT_RESOLUTION)
+	print(Values.BASE_RESOLUTION)
 	slots.push_back(slot_mantle)
 	slots.push_back(slot_helmet)
 	slots.push_back(slot_armor)
@@ -126,6 +130,7 @@ func update_inventories(ids):
 		inventories[id]["belt_content"] = inventory["belt_content"]
 
 func display_inventory():
+	SLOT_SIZE = Vector2(33, 33) #*  Values.CURRENT_RESOLUTION / Values.BASE_RESOLUTION
 	var id = Values.selected_team.id
 	for item in items:
 		n_items.remove_child(item)

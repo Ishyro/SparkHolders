@@ -12,19 +12,11 @@ extends Control
 @onready var healthMax = $Mutable/MainStats/Health
 @onready var rawPower = $Mutable/MainStats/RawPower
 
-@onready var n_mainClassTier = $Mutable/Classes/MainClassTier
-@onready var n_subClassTier = $Mutable/Classes/SubClassTier
-@onready var n_specClassTier = $Mutable/Classes/SpecClassTier
-@onready var n_raceTier = $Mutable/Classes/RaceTier
 @onready var n_mainClass = $Mutable/Classes/MainClass
 @onready var n_subClass = $Mutable/Classes/SubClass
 @onready var n_specClass = $Mutable/Classes/SpecClass
 @onready var n_race = $Mutable/Classes/Race
 
-@onready var n_originTier = $Mutable/Ways/OriginTier
-@onready var n_cultureTier = $Mutable/Ways/CultureTier
-@onready var n_religionTier = $Mutable/Ways/ReligionTier
-@onready var n_professionTier = $Mutable/Ways/ProfessionTier
 @onready var n_origin = $Mutable/Ways/Origin
 @onready var n_culture = $Mutable/Ways/Culture
 @onready var n_religion = $Mutable/Ways/Religion
@@ -58,9 +50,6 @@ var big_text = preload("res://menus/hud/police/BigText.tres")
 var text = preload("res://menus/hud/police/Text.tres")
 var small_text = preload("res://menus/hud/police/SmallText.tres")
 
-var big_tiers = []
-var small_tiers = []
-
 var character_stats
 
 var origin
@@ -74,9 +63,7 @@ var specClass
 var race
 
 func _ready():
-	for i in range(0, 10):
-		big_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_big.png"))
-		small_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_small.png"))
+	pass
 
 func set_value(label, value, str_size, font_small, font_big):
 	label.text = value
@@ -117,23 +104,15 @@ func display_stats():
 	experience_bar.max_value = 1000 * (character_stats["level"]) * (character_stats["level"])
 	experience_bar.value = character_stats["xp"]
 	
-	n_mainClassTier.texture = big_tiers[mainClass["tier"] - 1]
 	n_mainClass.texture = load(mainClass["path"])
 	if !subClass.is_empty():
-		n_subClassTier.texture = big_tiers[subClass["tier"] - 1]
 		n_subClass.texture = load(subClass["path"])
 	if !specClass.is_empty():
-		n_specClassTier.texture = big_tiers[specClass["tier"] - 1]
 		n_specClass.texture = load("")
-	n_raceTier.texture = big_tiers[race["tier"] - 1]
 	n_race.texture = load(race["path"])
-	n_originTier.texture = big_tiers[origin["tier"] - 1]
 	n_origin.texture = load(origin["path"])
-	n_cultureTier.texture = big_tiers[culture["tier"] - 1]
 	n_culture.texture = load(culture["path"])
-	n_religionTier.texture = big_tiers[religion["tier"] - 1]
 	n_religion.texture = load(religion["path"])
-	n_professionTier.texture = big_tiers[profession["tier"] - 1]
 	n_profession.texture = load(profession["path"])
 	
 	# Resources

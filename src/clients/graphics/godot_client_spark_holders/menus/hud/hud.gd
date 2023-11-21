@@ -31,22 +31,61 @@ extends Control
 
 @onready var inventory = $Inventory
 
-var numbers = preload("res://menus/hud/police/Numbers.tres")
+@onready var skill_button_1 = $Skills/Skillbar/Tabs/Button1
+@onready var skill_button_2 = $Skills/Skillbar/Tabs/Button2
+@onready var skill_button_3 = $Skills/Skillbar/Tabs/Button3
+@onready var skill_button_4 = $Skills/Skillbar/Tabs/Button4
+@onready var skill_button_5 = $Skills/Skillbar/Tabs/Button5
+@onready var skill_button_6 = $Skills/Skillbar/Tabs/Button6
+@onready var skill_button_7 = $Skills/Skillbar/Tabs/Button7
+@onready var skill_button_8 = $Skills/Skillbar/Tabs/Button8
+@onready var skill_button_9 = $Skills/Skillbar/Tabs/Button9
+@onready var skill_button_10 = $Skills/Skillbar/Tabs/Button10
+@onready var skill_button_11 = $Skills/Skillbar/Tabs/Button11
+@onready var skill_button_12 = $Skills/Skillbar/Tabs/Button12
+
+var skill_slots = []
+
 var small_numbers = preload("res://menus/hud/police/SmallNumbers.tres")
+var numbers = preload("res://menus/hud/police/Numbers.tres")
+var numbers_box = preload("res://menus/hud/police/NumbersBox.tres")
+var numbers_white = preload("res://menus/hud/police/NumbersWhite.tres")
+var small_text = preload("res://menus/hud/police/SmallText.tres")
 var text = preload("res://menus/hud/police/Text.tres")
 var big_text = preload("res://menus/hud/police/BigText.tres")
 
 var big_tiers = []
 var small_tiers = []
 
+var base_skill = preload("res://menus/hud/skill.tscn")
+
+var skills = {}
+var current_skills = []
+var selected_skill
+var current_skill_slot = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	characters_button.set_pressed_no_signal(true)
 	projectiles_button.set_pressed_no_signal(true)
 	furnitures_button.set_pressed_no_signal(true)
-	for i in range(0, 10):
-		big_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_big.png"))
-		small_tiers.push_back(load("res://menus/hud/tiers/" + str(i + 1) + "_small.png"))
+	skill_button_1.set_pressed_no_signal(true)
+	for i in range(1, 11):
+		big_tiers.push_back(load("res://menus/hud/tiers/" + str(i) + "_big.png"))
+		small_tiers.push_back(load("res://menus/hud/tiers/" + str(i) + "_small.png"))
+	for i in range(0, 12):
+		current_skills.push_back([])
+		for j in range(0, 13):
+			current_skills[i].push_back(base_skill.instantiate())
+	for i in range(1, 14):
+		skill_slots.push_back(get_node("Skills/Skillbar/Slots/Skill" + str(i)))
+		skill_slots[i - 1].pos = i - 1
+	current_skills[0][0].texture = $Skills/Skillbar/Slots/Skill1.texture
+	current_skills[0][0].data = $Skills/Skillbar/Slots/Skill1.data
+	current_skills[0][1].texture = $Skills/Skillbar/Slots/Skill2.texture
+	current_skills[0][1].data = $Skills/Skillbar/Slots/Skill2.data
+	
+	#$Skills/Skillbar/Tabs.add_theme_constant_override("separation", 33 * Values.CURRENT_RESOLUTION.x / Values.BASE_RESOLUTION.x)
 
 func change_amount(type: String, current_value: float, max_value: float):
 	if type == "SHIELD":
@@ -68,13 +107,6 @@ func hide_phantom(character_id: int):
 		for phantom_line in map.phantom_lines[character_id]:
 			phantom_line.visible = false
 
-func set_skill_tab(n: int):
-	$Skills/Tabs.set_current_tab(n)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
-
 func display_projectile(_projectile, _projectile_data: Dictionary):
 	pass
 
@@ -88,9 +120,6 @@ func display_team(character, character_data: Dictionary):
 	change_amount("HEALTH", character_data["hp"], character_data["maxHp"])
 	change_amount("MANA", character_data["mana"], character_data["maxMana"])
 	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
-
-func display_inventory():
-	pass
 
 func display_tile(_tile_object, _tile_data: Dictionary):
 	#target.visible = false
@@ -165,3 +194,319 @@ func _on_rest_toggled(button_pressed):
 		map.characters[Values.selected_team.id].range_mesh.visible = false
 	else:
 		move.set_pressed(true)
+
+# Skills
+func _get_drag_data(at_position):
+	for skill in skills:
+		if skills[skill].get_global_rect().has_point(at_position):
+			var preview = Control.new()
+			var preview_skill = base_skill.instantiate()
+			preview_skill.texture = skills[skill].texture
+			preview_skill.size = skills[skill].size
+			preview_skill.data = skills[skill].data
+			preview.add_child(preview_skill)
+			set_drag_preview(preview)
+			return preview_skill
+	for skill in skill_slots:
+		if skill.get_global_rect().has_point(at_position):
+			selected_skill = skill
+			var preview = Control.new()
+			var preview_skill = base_skill.instantiate()
+			preview_skill.texture = skill.texture
+			preview_skill.size = skill.size
+			preview_skill.data = skill.data
+			preview.add_child(preview_skill)
+			set_drag_preview(preview)
+			return preview_skill
+
+func _can_drop_data(at_position, data):
+	var current_slot = null
+	for slot in skill_slots:
+		if slot.get_global_rect().has_point(at_position):
+			current_slot = slot
+			break
+	return current_slot != null
+
+func _drop_data(at_position, data):
+	for slot in skill_slots:
+		if slot.get_global_rect().has_point(at_position):
+			if slot.texture != null && selected_skill != null:
+				selected_skill.texture = slot.texture
+				selected_skill.data = slot.data
+				current_skills[current_skill_slot][selected_skill.pos].texture = selected_skill.texture
+				current_skills[current_skill_slot][selected_skill.pos].data = selected_skill.data
+			elif selected_skill != null:
+				selected_skill.texture = null
+				selected_skill.data = {}
+				current_skills[current_skill_slot][selected_skill.pos].texture = null
+				current_skills[current_skill_slot][selected_skill.pos].data = {}
+				selected_skill = null
+			slot.texture = data.texture
+			slot.data = data.data
+			current_skills[current_skill_slot][slot.pos].texture = slot.texture
+			current_skills[current_skill_slot][slot.pos].data = slot.data
+			return
+
+func _on_button_1_toggled(button_pressed):
+	if button_pressed:
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 0
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_1.set_pressed_no_signal(true)
+
+func _on_button_2_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 1
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_2.set_pressed_no_signal(true)
+		
+func _on_button_3_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 2
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_3.set_pressed_no_signal(true)
+
+func _on_button_4_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 3
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_4.set_pressed_no_signal(true)
+
+func _on_button_5_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 4
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_5.set_pressed_no_signal(true)
+
+func _on_button_6_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 5
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_6.set_pressed_no_signal(true)
+
+func _on_button_7_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 6
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_7.set_pressed_no_signal(true)
+
+func _on_button_8_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 7
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_8.set_pressed_no_signal(true)
+
+func _on_button_9_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 8
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_9.set_pressed_no_signal(true)
+
+func _on_button_10_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 9
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_10.set_pressed_no_signal(true)
+
+func _on_button_11_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_12.set_pressed_no_signal(false)
+		current_skill_slot = 10
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_11.set_pressed_no_signal(true)
+
+func _on_button_12_toggled(button_pressed):
+	if button_pressed:
+		skill_button_1.set_pressed_no_signal(false)
+		skill_button_2.set_pressed_no_signal(false)
+		skill_button_3.set_pressed_no_signal(false)
+		skill_button_4.set_pressed_no_signal(false)
+		skill_button_5.set_pressed_no_signal(false)
+		skill_button_6.set_pressed_no_signal(false)
+		skill_button_7.set_pressed_no_signal(false)
+		skill_button_8.set_pressed_no_signal(false)
+		skill_button_9.set_pressed_no_signal(false)
+		skill_button_10.set_pressed_no_signal(false)
+		skill_button_11.set_pressed_no_signal(false)
+		current_skill_slot = 11
+		var i = 0
+		for skill in current_skills[current_skill_slot]:
+			skill_slots[i].texture = skill.texture
+			skill_slots[i].data = skill.data
+			i += 1
+	else:
+		skill_button_12.set_pressed_no_signal(true)
