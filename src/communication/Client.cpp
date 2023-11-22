@@ -1,12 +1,15 @@
 #include <sstream>
 
 #include "data/Adventure.h"
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Map.h"
-#include "data/Way.h"
 
 #include "data/skills/Skill.h"
+
+#include "data/items/ContainerItem.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
 
 #include "communication/Socket.h"
 #include "communication/Client.h"

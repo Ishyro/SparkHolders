@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfslygp1oa2f"
-path="res://.godot/imported/duelist.png-6a357167332eaaf433707d45ea969362.ctex"
+uid="uid://k163utmaa8c2"
+path="res://.godot/imported/camelidan.png-efa59722f2d80a1f87f72232bb09197f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/attributes/duelist.png"
-dest_files=["res://.godot/imported/duelist.png-6a357167332eaaf433707d45ea969362.ctex"]
+source_file="res://data/ways/races/camelidan.png"
+dest_files=["res://.godot/imported/camelidan.png-efa59722f2d80a1f87f72232bb09197f.ctex"]
 
 [params]
 

@@ -4,19 +4,18 @@
 #include "communication/Client.h"
 #include "communication/Socket.h"
 
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Tile.h"
-#include "data/Way.h"
 
 #include "data/items/Item.h"
 #include "data/items/ArmorItem.h"
 #include "data/items/WeaponItem.h"
 #include "data/items/SerialItem.h"
 #include "data/items/AmmunitionItem.h"
+#include "data/items/Gear.h"
 
 #include "data/skills/Skill.h"
 #include "data/skills/PseudoSkill.h"
@@ -31,6 +30,9 @@
 #include "data/skills/TeamChangerSkill.h"
 #include "data/skills/TeleportSkill.h"
 #include "data/skills/TileSwapSkill.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
 
 #include "clients/Translator.h"
 
@@ -238,7 +240,7 @@ namespace Display {
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    std::string to_print = player->name + ", " + t->getAttributesName(player->getAttributes()->name);
+    std::string to_print = player->name + ", " + t->getAttributesName(player->getMainClass()->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
     mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());

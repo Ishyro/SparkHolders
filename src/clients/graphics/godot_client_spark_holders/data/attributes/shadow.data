@@ -1,5 +1,5 @@
 name = TXT_SHADOW
-archetype = TXT_VANGUARD
+type = WAY_CLASS
 tier = 10
 baseHp = 200
 baseMana = 150
@@ -18,3 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
+tags = shadow%nubilo%warrior%caster%
+and_requirements = 
+or_requirements = 
+not_requirements = 

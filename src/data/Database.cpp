@@ -1,6 +1,5 @@
 #include <stdexcept>
 
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
@@ -10,10 +9,14 @@
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
-#include "data/Way.h"
+
 
 #include "data/items/Item.h"
+#include "data/items/Gear.h"
 #include "data/furnitures/Furniture.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
 
 #include "data/Database.h"
 
@@ -223,6 +226,7 @@ Database::Database() {
   macros.insert(std::make_pair("QUEST_TALK", QUEST_TALK));
 
   // way_type
+  macros.insert(std::make_pair("WAY_CLASS", WAY_CLASS));
   macros.insert(std::make_pair("WAY_RACE", WAY_RACE));
   macros.insert(std::make_pair("WAY_ORIGIN", WAY_ORIGIN));
   macros.insert(std::make_pair("WAY_CULTURE", WAY_CULTURE));

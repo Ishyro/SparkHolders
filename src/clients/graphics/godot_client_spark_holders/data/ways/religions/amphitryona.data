@@ -1,4 +1,4 @@
-name = TXT_AKOTA
+name = TXT_AMPHITRYONA
 type = WAY_RELIGION
 tier = 7
 baseHp = 0
@@ -18,3 +18,4 @@ soulBurnIncr = 3
 flowIncr = 3
 effects =
 skills =
+tags = religious%amphitryona%

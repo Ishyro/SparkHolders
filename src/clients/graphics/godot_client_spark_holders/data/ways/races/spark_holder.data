@@ -29,3 +29,4 @@ movement_time_modifier = 1.0
 loot =
 effects =
 skills =
+tags = spark_holder%magus%

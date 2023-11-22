@@ -3,6 +3,7 @@
 
 #include "data/actions/Action.h"
 
+#include "data/items/Gear.h"
 #include "data/items/ContainerItem.h"
 
 #include "Values.h"

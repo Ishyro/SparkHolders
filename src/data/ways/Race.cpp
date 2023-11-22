@@ -1,4 +1,4 @@
-#include "data/Race.h"
+#include "data/ways/Race.h"
 
 int Race::getType(std::list<Race *> race_modifiers) {
   int result = race_type;

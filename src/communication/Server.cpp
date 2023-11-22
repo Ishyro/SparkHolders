@@ -1,12 +1,9 @@
 #include <string>
 
 #include "data/Adventure.h"
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Map.h"
 #include "data/Tile.h"
-#include "data/Way.h"
-#include "data/Race.h"
 #include "data/World.h"
 
 #include "data/actions/Action.h"
@@ -16,6 +13,10 @@
 #include "data/actions/SkillAction.h"
 #include "data/actions/TalkingAction.h"
 #include "data/actions/TargetedAction.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
+#include "data/ways/Race.h"
 
 #include "communication/Socket.h"
 

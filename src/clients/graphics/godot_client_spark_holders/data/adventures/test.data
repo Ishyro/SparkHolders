@@ -103,8 +103,8 @@ data/ways/cultures/traveler.data
 data/ways/cultures/woodland.data
 data/ways/cultures/yllian.data
 data/ways/religions/aerina.data
-data/ways/religions/akota.data
 data/ways/religions/alba.data
+data/ways/religions/amphitryona.data
 data/ways/religions/atheist.data
 data/ways/religions/beastiona.data
 data/ways/religions/godless.data
@@ -118,15 +118,16 @@ data/ways/professions/battlemage.data
 data/ways/professions/no_profession.data
 data/ways/professions/scholar.data
 data/ways/professions/soldier.data
-# attributes archetype
-data/attributes/elementalist.data
+# attributes without summoning skill
 data/attributes/vanguard.data
 data/attributes/guardian.data
-# attributes without summoning skill
+data/attributes/elementalist.data
+data/attributes/shadow.data
+data/attributes/mender.data
+data/attributes/homunculist.data
+data/attributes/specialist.data
 data/attributes/no_attributes.data
 data/attributes/sheep.data
-data/attributes/duelist.data
-data/attributes/shadow.data
 data/attributes/wolf.data
 # characters
 data/characters/grass_fairy.data

@@ -4,12 +4,16 @@
 #include <list>
 #include <string>
 #include <map>
+#include <set>
 #include <array>
 #include <cmath>
 #include <algorithm>
 
-#include "data/Attributes.h"
 #include "data/Projectile.h"
+
+#include "data/items/Item.h"
+
+#include "data/ways/Attributes.h"
 
 #include "Values.h"
 
@@ -89,8 +93,9 @@ class Character {
       Map * current_map,
       std::string team,
       AI * ai,
-      Attributes * attributes,
-      Attributes * second_attributes,
+      Attributes * main_class,
+      Attributes * second_class,
+      Attributes * spec_class,
       Gear * gear,
       Race * race,
       std::list<Race *> race_modifiers,
@@ -121,8 +126,9 @@ class Character {
       sellable_items(std::list<Item *>()),
       sellable_effects(from_database->sellable_effects),
       sellable_skills(from_database->sellable_skills),
-      attributes(attributes),
-      second_attributes(second_attributes),
+      main_class(main_class),
+      second_class(second_class),
+      spec_class(spec_class),
       race(race),
       origin(origin),
       culture(culture),
@@ -183,8 +189,9 @@ class Character {
       std::list<Item *> sellable_items,
       std::list<Effect *> sellable_effects,
       std::list<Skill *> sellable_skills,
-      Attributes * attributes,
-      Attributes * second_attributes,
+      Attributes * main_class,
+      Attributes * second_class,
+      Attributes * spec_class,
       Race * race,
       std::list<Race *> race_modifiers,
       Way * origin,
@@ -234,8 +241,9 @@ class Character {
       sellable_items(sellable_items),
       sellable_effects(sellable_effects),
       sellable_skills(sellable_skills),
-      attributes(attributes),
-      second_attributes(second_attributes),
+      main_class(main_class),
+      second_class(second_class),
+      spec_class(spec_class),
       race(race),
       race_modifiers(race_modifiers),
       origin(origin),
@@ -314,8 +322,9 @@ class Character {
     std::list<Skill *> getSellableSkills();
     std::list<Way *> getSellableTitles();
 
-    Attributes * getAttributes();
-    Attributes * getSecondAttributes();
+    Attributes * getMainClass();
+    Attributes * getSecondClass();
+    Attributes * getSpecClass();
     Race * getRace();
     std::list<Race *> getRaceModifiers();
     Way * getOrigin();
@@ -409,6 +418,7 @@ class Character {
     void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
     int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
     void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
+    std::set<std::string> getTags();
     std::string to_string();
     std::string full_to_string(Adventure * adventure);
     static CharacterDisplay * from_string(std::string to_read);
@@ -468,8 +478,9 @@ class Character {
     std::list<Effect *> sellable_effects;
     std::list<Skill *> sellable_skills;
 
-    Attributes * attributes;
-    Attributes * second_attributes;
+    Attributes * main_class;
+    Attributes * second_class;
+    Attributes * spec_class;
     Race * race;
     std::list<Race *> race_modifiers;
     Way * origin;

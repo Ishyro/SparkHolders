@@ -1,5 +1,5 @@
 name = TXT_VANGUARD
-archetype = none
+type = WAY_CLASS
 tier = 10
 baseHp = 250
 baseMana = 200
@@ -18,3 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills = TXT_DASH%
+tags = vanguard%alba%warrior%
+and_requirements = 
+or_requirements = 
+not_requirements = 

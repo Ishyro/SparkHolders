@@ -1,5 +1,5 @@
 name = TXT_ELEMENTALIST
-archetype = none
+type = WAY_CLASS
 tier = 10
 baseHp = 150
 baseMana = 350
@@ -18,3 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
+tags = elementalist%hibero%caster%
+and_requirements = 
+or_requirements = 
+not_requirements = 

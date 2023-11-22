@@ -4,6 +4,7 @@
 #include <list>
 
 #include "data/items/Item.h"
+#include "data/items/GearItem.h"
 
 #include "Values.h"
 

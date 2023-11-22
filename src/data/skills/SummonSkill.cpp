@@ -40,6 +40,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     ai,
     attributes,
     nullptr,
+    nullptr,
     (Gear *) adventure->getDatabase()->getGear("TXT_NO_GEAR"),
     race,
     race_modifiers,

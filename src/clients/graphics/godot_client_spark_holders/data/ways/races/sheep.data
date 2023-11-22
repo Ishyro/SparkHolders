@@ -29,3 +29,4 @@ movement_time_modifier = 1.0
 loot = TXT_LAMB%TXT_LAMB%TXT_LAMB%TXT_LAMB%TXT_LAMB%
 effects =
 skills =
+tags = sheep%plain_dweller%farmland_dweller%herbivorous%

@@ -29,3 +29,4 @@ movement_time_modifier = 1.0
 loot = TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%
 effects =
 skills =
+tags = caeleran%amphitryona%winged%mountain_dweller%omnivorous%

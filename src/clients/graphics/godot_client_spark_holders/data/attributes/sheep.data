@@ -1,5 +1,5 @@
 name = TXT_SHEEP
-archetype = none
+type = WAY_CLASS
 tier = 1
 baseHp = 50
 baseMana = 10
@@ -18,3 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
+tags = herbivorous%
+and_requirements = 
+or_requirements = 
+not_requirements = 

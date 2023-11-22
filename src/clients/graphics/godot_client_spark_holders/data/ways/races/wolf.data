@@ -29,3 +29,4 @@ movement_time_modifier = 1.0
 loot = TXT_WOLF_HIDE%
 effects =
 skills =
+tags = wolf%forest_dweller%mountain_dweller%steppe_dweller%used_to_cold%man_eater%carnivorous%

@@ -6,8 +6,8 @@
 #include "data/skills/Skill.h"
 #include "data/Settings.h"
 #include "data/Speech.h"
-#include "data/Way.h"
-#include "data/Race.h"
+#include "data/ways/Way.h"
+#include "data/ways/Race.h"
 #include "data/World.h"
 
 #include "data/items/Gear.h"
@@ -36,42 +36,42 @@ Character::~Character() {
 
 void Character::initializeCharacter(Gear * gear) {
   size = race->getSize(race_modifiers);
-  maxHp = attributes->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
+  maxHp = main_class->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
     maxHp += way->baseHp;
   }
-  maxMana = attributes->baseMana + race->getBaseMana(race_modifiers) + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
+  maxMana = main_class->baseMana + race->getBaseMana(race_modifiers) + origin->baseMana + culture->baseMana + religion->baseMana + profession->baseMana;
   for(Way * way : titles) {
     maxMana += way->baseMana;
   }
-  maxShield = race->getBaseShield(race_modifiers) + attributes->baseShield + origin->baseShield + culture->baseShield + religion->baseShield + profession->baseShield;
+  maxShield = main_class->baseShield + race->getBaseShield(race_modifiers) + origin->baseShield + culture->baseShield + religion->baseShield + profession->baseShield;
   for(Way * way : titles) {
     maxShield += way->baseShield;
   }
   hp = maxHp;
   mana = maxMana;
   shield = maxShield;
-  damage_multiplier = attributes->baseDamageMult + race->getBaseDamageMult(race_modifiers) + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
+  damage_multiplier = main_class->baseDamageMult + race->getBaseDamageMult(race_modifiers) + origin->baseDamageMult + culture->baseDamageMult + religion->baseDamageMult + profession->baseDamageMult;
   for(Way * way : titles) {
     damage_multiplier += way->baseDamageMult;
   }
-  soulBurnTreshold = attributes->baseSoulBurn + race->getBaseSoulBurn(race_modifiers) + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
+  soulBurnTreshold = main_class->baseSoulBurn + race->getBaseSoulBurn(race_modifiers) + origin->baseSoulBurn + culture->baseSoulBurn + religion->baseSoulBurn + profession->baseSoulBurn;
   for(Way * way : titles) {
     soulBurnTreshold += way->baseSoulBurn;
   }
-  flow = attributes->baseFlow + race->getBaseFlow(race_modifiers) + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
+  flow = main_class->baseFlow + race->getBaseFlow(race_modifiers) + origin->baseFlow + culture->baseFlow + religion->baseFlow + profession->baseFlow;
   for(Way * way : titles) {
     flow += way->baseFlow;
   }
-  visionRange = attributes->baseVisionRange + race->getBaseVisionRange(race_modifiers) + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
+  visionRange = main_class->baseVisionRange + race->getBaseVisionRange(race_modifiers) + origin->baseVisionRange + culture->baseVisionRange + religion->baseVisionRange + profession->baseVisionRange;
   for(Way * way : titles) {
     visionRange += way->baseVisionRange;
   }
-  visionPower = attributes->baseVisionPower + race->getBaseVisionPower(race_modifiers) + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
+  visionPower = main_class->baseVisionPower + race->getBaseVisionPower(race_modifiers) + origin->baseVisionPower + culture->baseVisionPower + religion->baseVisionPower + profession->baseVisionPower;
   for(Way * way : titles) {
     visionPower += way->baseVisionPower;
   }
-  detectionRange = attributes->baseDetectionRange + race->getBaseDetectionRange(race_modifiers) + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
+  detectionRange = main_class->baseDetectionRange + race->getBaseDetectionRange(race_modifiers) + origin->baseDetectionRange + culture->baseDetectionRange + religion->baseDetectionRange + profession->baseDetectionRange;
   for(Way * way : titles) {
     detectionRange += way->baseDetectionRange;
   }
@@ -87,36 +87,34 @@ void Character::initializeCharacter(Gear * gear) {
   initSkillsAndEffects();
 }
 void Character::initSkillsAndEffects() {
-  for(Skill * skill : attributes->getSkills()) {
+  for(Skill * skill : main_class->getSkills()) {
     if(skill->level == 0) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : attributes->getEffects()) {
+  for(Effect * effect : main_class->getEffects()) {
     if(effect->level == 0) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
     }
   }
-  if(attributes->getArchetype() != nullptr) {
-    for(Skill * skill : attributes->getArchetype()->getSkills()) {
-      if(skill->level == 0) {
-        addSkill(skill);
-      }
-    }
-    for(Effect * effect : attributes->getArchetype()->getEffects()) {
-      if(effect->level == 0) {
-        Effect * toadd = new Effect(effect, 1, 1);
-        toadd->activate(this);
-      }
-    }
-  }
-  for(Skill * skill : second_attributes->getSkills()) {
+  for(Skill * skill : second_class->getSkills()) {
     if(skill->level == 0) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : second_attributes->getEffects()) {
+  for(Effect * effect : second_class->getEffects()) {
+    if(effect->level == 0) {
+      Effect * toadd = new Effect(effect, 1, 1);
+      toadd->activate(this);
+    }
+  }
+  for(Skill * skill : spec_class->getSkills()) {
+    if(skill->level == 0) {
+      addSkill(skill);
+    }
+  }
+  for(Effect * effect : spec_class->getEffects()) {
     if(effect->level == 0) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
@@ -482,8 +480,9 @@ std::list<Item *> Character::getSellableItems() { return sellable_items; }
 std::list<Effect *> Character::getSellableEffects() { return sellable_effects; }
 std::list<Skill *> Character::getSellableSkills() { return sellable_skills; }
 
-Attributes * Character::getAttributes() { return attributes; }
-Attributes * Character::getSecondAttributes() { return second_attributes; }
+Attributes * Character::getMainClass() { return main_class; }
+Attributes * Character::getSecondClass() { return second_class; }
+Attributes * Character::getSpecClass() { return spec_class; }
 Race * Character::getRace() { return race; }
 std::list<Race *> Character::getRaceModifiers() { return race_modifiers; }
 Way * Character::getOrigin() { return origin; }
@@ -513,8 +512,9 @@ void Character::incrMaxHp() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->hpIncr;
-  incr += second_attributes->hpIncr;
+  incr += main_class->hpIncr;
+  incr += second_class->hpIncr;
+  incr += spec_class->hpIncr;
   incr += race->getHpIncr(race_modifiers);
   incr += origin->hpIncr;
   incr += culture->hpIncr;
@@ -539,8 +539,9 @@ void Character::incrMaxMana() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->manaIncr;
-  incr += second_attributes->manaIncr;
+  incr += main_class->manaIncr;
+  incr += second_class->manaIncr;
+  incr += spec_class->manaIncr;
   incr += race->getManaIncr(race_modifiers);
   incr += origin->manaIncr;
   incr += culture->manaIncr;
@@ -560,8 +561,9 @@ void Character::incrMaxShield() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->shieldIncr;
-  incr += second_attributes->shieldIncr;
+  incr += main_class->shieldIncr;
+  incr += second_class->shieldIncr;
+  incr += spec_class->shieldIncr;
   incr += race->getShieldIncr(race_modifiers);
   incr += origin->shieldIncr;
   incr += culture->shieldIncr;
@@ -584,8 +586,9 @@ void Character::incrDamageMultiplier() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->damageMultIncr;
-  incr += second_attributes->damageMultIncr;
+  incr += main_class->damageMultIncr;
+  incr += second_class->damageMultIncr;
+  incr += spec_class->damageMultIncr;
   incr += race->getDamageMultIncr(race_modifiers);
   incr += origin->damageMultIncr;
   incr += culture->damageMultIncr;
@@ -601,8 +604,9 @@ void Character::incrSoulBurnTreshold() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->soulBurnIncr;
-  incr += second_attributes->soulBurnIncr;
+  incr += main_class->soulBurnIncr;
+  incr += second_class->soulBurnIncr;
+  incr += spec_class->soulBurnIncr;
   incr += race->getSoulBurnIncr(race_modifiers);
   incr += origin->soulBurnIncr;
   incr += culture->soulBurnIncr;
@@ -619,8 +623,9 @@ void Character::incrFlow() {
     setNeedToSend(true);
   }
   int incr = 0;
-  incr += attributes->flowIncr;
-  incr += second_attributes->flowIncr;
+  incr += main_class->flowIncr;
+  incr += second_class->flowIncr;
+  incr += spec_class->flowIncr;
   incr += race->getFlowIncr(race_modifiers);
   incr += origin->flowIncr;
   incr += culture->flowIncr;
@@ -757,42 +762,29 @@ void Character::gainLevel() {
     incrFlow();
     newSkillsAndEffects();
     if(level == 10) {
-      selectSecondAttributes();
+     //selectSecondAttributes();
     }
   }
 }
 
 void Character::newSkillsAndEffects() {
-  for(Skill * skill : attributes->getSkills()) {
+  for(Skill * skill : main_class->getSkills()) {
     if(level == 5 * skill->level) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : attributes->getEffects()) {
+  for(Effect * effect : main_class->getEffects()) {
     if(level == 5 * effect->level) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
     }
   }
-  if(attributes->getArchetype() != nullptr) {
-    for(Skill * skill : attributes->getArchetype()->getSkills()) {
-      if(level == 5 * skill->level) {
-        addSkill(skill);
-      }
-    }
-    for(Effect * effect : attributes->getArchetype()->getEffects()) {
-      if(level == 5 * effect->level) {
-        Effect * toadd = new Effect(effect, 1, 1);
-        toadd->activate(this);
-      }
-    }
-  }
-  for(Skill * skill : second_attributes->getSkills()) {
+  for(Skill * skill : second_class->getSkills()) {
     if(level == 5 * skill->level) {
       addSkill(skill);
     }
   }
-  for(Effect * effect : second_attributes->getEffects()) {
+  for(Effect * effect : second_class->getEffects()) {
     if(level == 5 * effect->level) {
       Effect * toadd = new Effect(effect, 1, 1);
       toadd->activate(this);
@@ -866,10 +858,6 @@ void Character::newSkillsAndEffects() {
       }
     }
   }
-}
-
-void Character::selectSecondAttributes() {
-
 }
 
 void Character::setAI(AI * ai) { this->ai = ai; }
@@ -1413,7 +1401,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case OBJECT_SKILL:
       for(Skill * skill : sellable_skills) {
-        if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->attributes->name == skill->attributes)) {
+        if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->main_class->name == skill->attributes)) {
           price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             buyer->addSkill(skill);
@@ -1425,7 +1413,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
       break;
     case OBJECT_EFFECT:
       for(Effect * effect : sellable_effects) {
-        if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->attributes->name == effect->attributes)) {
+        if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->main_class->name == effect->attributes)) {
           price = (int) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             Effect * toadd = new Effect(effect, 1, 1);
@@ -1439,6 +1427,46 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
     default:
       break;
   }
+}
+
+
+std::set<std::string> Character::getTags() {
+  std::set<std::string> result = std::set<std::string>();
+  for(std::string tag : main_class->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : second_class->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : spec_class->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : race->getTags()) {
+    result.insert(tag);
+  }
+  for(Race * modifier : race_modifiers) {
+    for(std::string tag : modifier->getTags()) {
+      result.insert(tag);
+    }
+  }
+  for(std::string tag : origin->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : culture->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : religion->getTags()) {
+    result.insert(tag);
+  }
+  for(std::string tag : profession->getTags()) {
+    result.insert(tag);
+  }
+  for(Way * title : titles) {
+    for(std::string tag : title->getTags()) {
+      result.insert(tag);
+    }
+  }
+  return result;
 }
 
 std::string Character::to_string() {
@@ -1601,9 +1629,15 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, ss_sellable_skills->str());
   delete ss_sellable_skills;
 
-  String::insert(ss, attributes->name);
-  if(second_attributes != nullptr) {
-    String::insert(ss, ((Attributes *) second_attributes)->name);
+  String::insert(ss, main_class->name);
+  if(second_class != nullptr) {
+    String::insert(ss, ((Attributes *) second_class)->name);
+  }
+  else {
+    String::insert(ss, "none");
+  }
+  if(spec_class != nullptr) {
+    String::insert(ss, ((Attributes *) spec_class)->name);
   }
   else {
     String::insert(ss, "none");
@@ -1704,11 +1738,16 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     sellable_skills->push_back( (Skill *) adventure->getDatabase()->getSkill(String::extract(ss_sellable_skills)));
   }
   delete ss_sellable_skills;
-  Attributes * attributes = (Attributes *) adventure->getDatabase()->getAttributes(String::extract(ss));
+  Attributes * main_class = (Attributes *) adventure->getDatabase()->getAttributes(String::extract(ss));
   std::string second_attributes_str = String::extract(ss);
-  Attributes * second_attributes = nullptr;
+  Attributes * second_class = nullptr;
   if(second_attributes_str != "none") {
-    second_attributes = (Attributes *) adventure->getDatabase()->getAttributes(second_attributes_str);
+    second_class = (Attributes *) adventure->getDatabase()->getAttributes(second_attributes_str);
+  }
+  std::string spec_attributes_str = String::extract(ss);
+  Attributes * spec_class = nullptr;
+  if(spec_attributes_str != "none") {
+    spec_class = (Attributes *) adventure->getDatabase()->getAttributes(spec_attributes_str);
   }
   Race * race = (Race *) adventure->getDatabase()->getWay(String::extract(ss));
   std::stringstream * ss_race_modifiers = new std::stringstream(String::extract(ss));
@@ -1769,8 +1808,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     *sellable_items,
     *sellable_effects,
     *sellable_skills,
-    attributes,
-    second_attributes,
+    main_class,
+    second_class,
+    spec_class,
     race,
     *race_modifiers,
     origin,

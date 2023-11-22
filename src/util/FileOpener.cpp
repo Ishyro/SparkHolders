@@ -22,7 +22,6 @@
 #include "ai/RoamerAI.h"
 
 #include "data/Adventure.h"
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
@@ -33,8 +32,6 @@
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
-#include "data/Way.h"
-#include "data/Race.h"
 #include "data/World.h"
 #include "data/Database.h"
 
@@ -68,6 +65,10 @@
 #include "data/skills/TeamChangerSkill.h"
 #include "data/skills/TeleportSkill.h"
 #include "data/skills/TileSwapSkill.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Race.h"
+#include "data/ways/Attributes.h"
 
 #include "data/Settings.h"
 #include "data/ClientSettings.h"
@@ -202,8 +203,9 @@ namespace FileOpener {
       Map * map = world->getMap(x, y, z);
       std::string team = String::extract(ss);
       std::string ai_str = String::extract(ss);
-      Attributes * attributes = (Attributes *) database->getAttributes(String::extract(ss));
-      Attributes * second_attributes = (Attributes *) database->getAttributes(String::extract(ss));
+      Attributes * main_class = (Attributes *) database->getAttributes(String::extract(ss));
+      Attributes * second_class = (Attributes *) database->getAttributes(String::extract(ss));
+      Attributes * spec_class = (Attributes *) database->getAttributes(String::extract(ss));
       Gear * gear = (Gear *) database->getGear(String::extract(ss));
 
       Race * race = (Race *) database->getWay(String::extract(ss));
@@ -256,8 +258,9 @@ namespace FileOpener {
         nullptr,
         team,
         ai,
-        attributes,
-        second_attributes,
+        main_class,
+        second_class,
+        spec_class,
         gear,
         race,
         *race_modifiers,
@@ -375,11 +378,7 @@ namespace FileOpener {
   std::string AttributesOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    Attributes * archetype = nullptr;
-    std::string archetype_str = values.at("archetype");
-    if(archetype_str != "none") {
-      archetype = (Attributes *) database->getAttributes(archetype_str);
-    }
+    int type = database->getTargetFromMacro(values.at("type"));
     int tier = stoi(values.at("tier"));
     int baseHp = stoi(values.at("baseHp"));
     int baseMana = stoi(values.at("baseMana"));
@@ -408,9 +407,31 @@ namespace FileOpener {
     while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
+    std::list<std::string> * tags = new std::list<std::string>();
+    std::istringstream is_tags(values.at("tags"));
+    std::string tag;
+    while(getline(is_tags, tag, '%')) {
+      tags->push_back(tag);
+    }
+    std::list<std::string> * and_requirements = new std::list<std::string>();
+    std::istringstream is_and_requirements(values.at("and_requirements"));
+    std::string requirement;
+    while(getline(is_and_requirements, requirement, '%')) {
+      and_requirements->push_back(requirement);
+    }
+    std::list<std::string> * or_requirements = new std::list<std::string>();
+    std::istringstream is_or_requirements(values.at("or_requirements"));
+    while(getline(is_or_requirements, requirement, '%')) {
+      or_requirements->push_back(requirement);
+    }
+    std::list<std::string> * not_requirements = new std::list<std::string>();
+    std::istringstream is_not_requirements(values.at("not_requirements"));
+    while(getline(is_not_requirements, requirement, '%')) {
+      not_requirements->push_back(requirement);
+    }
     Attributes * attributes = new Attributes(
       name,
-      archetype,
+      type,
       tier,
       baseHp,
       baseMana,
@@ -428,11 +449,19 @@ namespace FileOpener {
       soulBurnIncr,
       flowIncr,
       *effects,
-      *skills
+      *skills,
+      *tags,
+      *and_requirements,
+      *or_requirements,
+      *not_requirements
     );
     database->addAttributes(attributes);
     delete effects;
     delete skills;
+    delete tags;
+    delete and_requirements;
+    delete or_requirements;
+    delete not_requirements;
     return name;
   }
 
@@ -1311,16 +1340,22 @@ namespace FileOpener {
     int soulBurnIncr = stoi(values.at("soulBurnIncr"));
     int flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
-    std::istringstream is_1(values.at("effects"));
+    std::istringstream is_effects(values.at("effects"));
     std::string effect;
-    while(getline(is_1, effect, '%')) {
+    while(getline(is_effects, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
     std::list<Skill *> * skills = new std::list<Skill *>();
-    std::istringstream is_2(values.at("skills"));
+    std::istringstream is_skills(values.at("skills"));
     std::string skill;
-    while(getline(is_2, skill, '%')) {
+    while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
+    }
+    std::list<std::string> * tags = new std::list<std::string>();
+    std::istringstream is_tags(values.at("tags"));
+    std::string tag;
+    while(getline(is_tags, tag, '%')) {
+      tags->push_back(tag);
     }
     if(type == WAY_RACE) {
       int race_type = database->getTargetFromMacro(values.at("race_type"));
@@ -1368,6 +1403,7 @@ namespace FileOpener {
         flowIncr,
         *effects,
         *skills,
+        *tags,
         race_type,
         size,
         need_to_eat,
@@ -1384,6 +1420,7 @@ namespace FileOpener {
       delete loots;
       delete effects;
       delete skills;
+      delete tags;
     }
     else {
       Way * way = new Way(
@@ -1406,11 +1443,13 @@ namespace FileOpener {
         soulBurnIncr,
         flowIncr,
         *effects,
-        *skills
+        *skills,
+        *tags
       );
       database->addWay(way);
       delete effects;
       delete skills;
+      delete tags;
     }
     return name;
   }

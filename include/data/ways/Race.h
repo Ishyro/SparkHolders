@@ -6,7 +6,7 @@
 
 #include "data/items/Item.h"
 
-#include "data/Way.h"
+#include "data/ways/Way.h"
 
 #include "Values.h"
 
@@ -43,6 +43,7 @@ class Race : public Way {
       int flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      std::list<std::string> tags,
       int race_type,
       float size,
       bool need_to_eat,
@@ -75,7 +76,8 @@ class Race : public Way {
         soulBurnIncr,
         flowIncr,
         effects,
-        skills
+        skills,
+        tags
       ),
       race_type(race_type),
       size(size),

@@ -1,5 +1,4 @@
 #include "data/Adventure.h"
-#include "data/Attributes.h"
 #include "data/Effect.h"
 #include "data/Event.h"
 #include "data/Map.h"
@@ -7,13 +6,15 @@
 #include "data/Quest.h"
 #include "data/Speech.h"
 #include "data/Tile.h"
-#include "data/Way.h"
 #include "data/World.h"
 #include "data/Database.h"
 
 #include "data/items/Item.h"
 
 #include "data/actions/Action.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
 
 #include "util/MapUtil.h"
 #include "util/String.h"

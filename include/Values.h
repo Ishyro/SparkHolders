@@ -286,13 +286,14 @@ class SpeechManager;
 
 // way_type
 
-#define WAY_RACE 1
-#define WAY_ORIGIN 2
-#define WAY_CULTURE 3
-#define WAY_RELIGION 4
-#define WAY_PROFESSION 5
-#define WAY_RACE_MODIFIER 6
-#define WAY_TITLE 7
+#define WAY_CLASS 1
+#define WAY_RACE 2
+#define WAY_ORIGIN 3
+#define WAY_CULTURE 4
+#define WAY_RELIGION 5
+#define WAY_PROFESSION 6
+#define WAY_RACE_MODIFIER 7
+#define WAY_TITLE 8
 
 // speech_type
 

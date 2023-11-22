@@ -1,11 +1,14 @@
 #include "GodotLink.h"
 
-#include "data/Attributes.h"
 #include "data/Character.h"
 #include "data/Database.h"
 #include "data/Map.h"
-#include "data/Race.h"
-#include "data/Way.h"
+
+#include "data/items/Gear.h"
+
+#include "data/ways/Way.h"
+#include "data/ways/Attributes.h"
+#include "data/ways/Race.h"
 
 #include "util/FileOpener.h"
 #include "util/MapUtil.h"
@@ -37,7 +40,7 @@ void GodotLink::initialize(String ip) {
   }
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
-  link->sendChoices("test", "TXT_ELEMENTALIST", "TXT_HUMAN", "TXT_ARMYTHAS", "TXT_TAGRAN", "TXT_LAXITO", "TXT_SOLDIER");
+  link->sendChoices("test", "TXT_HOMUNCULIST", "TXT_LEPIDOPTERAN", "TXT_GREEN_TOWN", "TXT_WOODLAND", "TXT_HIBERO", "TXT_SCHOLAR");
   link->sendReady();
 }
 
@@ -264,6 +267,7 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
   }
   Attributes * attributes = (Attributes *) link->getAdventure()->getDatabase()->getAttributes(std::string(class_name.utf8().get_data()));
   result["name"] = attributes->name.c_str();
+  result["type"] = attributes->type;
   result["tier"] = attributes->tier;
   result["baseHp"] = attributes->baseHp;
   result["baseMana"] = attributes->baseMana;
@@ -415,21 +419,27 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   result["globalSpeed"] = character->getActionTimeModifier();
   result["handActionSpeed"] = character->getHandActionTimeModifier();
   result["movementSpeed"] = character->getMovementTimeModifier();
-  Attributes * main_class = character->getAttributes();
+  Attributes * main_class = character->getMainClass();
   if(main_class != nullptr) {
     result["main_class"] = main_class->name.c_str();
   }
   else {
     result["main_class"] = "";
   }
-  Attributes * sub_class = character->getSecondAttributes();
+  Attributes * sub_class = character->getSecondClass();;
   if(sub_class != nullptr) {
     result["sub_class"] = sub_class->name.c_str();
   }
   else {
     result["sub_class"] = "";
   }
-  result["spec_class"] = "";
+  Attributes * spec_class = character->getSpecClass();;
+  if(spec_class != nullptr) {
+    result["spec_class"] = spec_class->name.c_str();
+  }
+  else {
+    result["spec_class"] = "";
+  }
   result["race"] = character->getRace()->name.c_str();
   Array race_modifiers = Array();
   for(Race * race : character->getRaceModifiers()) {

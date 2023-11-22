@@ -46,7 +46,8 @@ class Way {
       int soulBurnIncr,
       int flowIncr,
       std::list<Effect *> effects,
-      std::list<Skill *> skills
+      std::list<Skill *> skills,
+      std::list<std::string> tags
     ):
       name(name),
       type(type),
@@ -67,16 +68,19 @@ class Way {
       soulBurnIncr(soulBurnIncr),
       flowIncr(flowIncr),
       effects(effects),
-      skills(skills)
+      skills(skills),
+      tags(tags)
     {}
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    std::list<std::string> getTags();
+    bool hasTag(std::string tag);
     bool operator == (const Way& w) const { return name == w.name; }
     bool operator != (const Way& w) const { return !operator==(w); }
   protected:
     std::list<Effect *> effects;
     std::list<Skill *> skills;
-    // race only
+    std::list<std::string> tags;
 };
 
 #endif // _WAY_H_

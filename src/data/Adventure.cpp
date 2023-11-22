@@ -254,6 +254,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     new PlayerAI(),
     attr,
     (Attributes *) database->getAttributes("TXT_NO_ATTRIBUTES"),
+    (Attributes *) database->getAttributes("TXT_NO_ATTRIBUTES"),
     (Gear *) database->getGear("TXT_LIGHT_STARTING_GEAR"),
     race,
     *race_modifiers,
