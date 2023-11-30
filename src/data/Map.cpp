@@ -411,6 +411,7 @@ int Map::canSee(Character * watcher, Tile * mist) {
 }
 
 int Map::getMistNb() { return mist_nb; }
+int Map::getRotation() { return rotation; }
 
 void Map::setTile(int x, int y, Tile * tile) { tiles[y - offsetY][x - offsetX] = tile; }
 void Map::setTile(float x, float y, Tile * tile) { tiles[(int) std::floor(y) - offsetY][(int) std::floor(x) - offsetX] = tile; }

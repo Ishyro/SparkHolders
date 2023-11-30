@@ -139,8 +139,7 @@ namespace FileOpener {
 
   Adventure * AdventureOpener(std::string fileName, bool isServer) {
     std::string delimiter = ".";
-    std::string dataFile = std::regex_replace(fileName, std::regex(".commands"), ".data");
-    Database * database = DatabaseOpener(dataFile, isServer);
+    Database * database = DatabaseOpener(fileName, isServer);
     if(isServer) {
       SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
     }
@@ -152,6 +151,12 @@ namespace FileOpener {
     }
     std::string line;
     std::string name;
+    // skip the database
+    while(getline(file, line)) {
+      if(line == "!end") {
+        break;
+      }
+    }
     // first line is the adventure name
     do {
       getline(file, name);
@@ -284,8 +289,9 @@ namespace FileOpener {
       int offsetX = String::extract_int(ss);
       int offsetY = String::extract_int(ss);
       int offsetZ = String::extract_int(ss);
-      Map * map = new Map(database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ);
-      world->addMap(map);
+      int rotation = String::extract_int(ss);
+      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation);
+      world->addMap(map, (Tile *) database->getTile("TXT_VOID"));
     }
     else if(keyword == "MapLink") {
       MapLink * link = new MapLink();
@@ -1456,73 +1462,65 @@ namespace FileOpener {
 
   void FileOpener(std::string fileName, Database * database, bool isServer) {
     std::fstream file;
-    char delimiter = '/';
-    std::string dirname = fileName.substr(0, fileName.rfind(delimiter));
-    std::string last_folder = dirname.substr(dirname.rfind(delimiter) + 1, dirname.length() - 1);
-    if(last_folder == "attributes") {
+    std::string resFileName = std::regex_replace(fileName, std::regex("data/"), "resources/");
+    if(fileName.find("/attributes/") != std::string::npos) {
       std::string attributes_name = AttributesOpener(fileName, database);
       if(!isServer) {
-        database->addAttributesFile(attributes_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+        database->addAttributesFile(attributes_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
-    else if(last_folder == "characters") {
+    else if(fileName.find("/characters/") != std::string::npos) {
       CharacterOpener(fileName, database);
     }
-    else if(last_folder == "effects") {
+    else if(fileName.find("/effects/") != std::string::npos) {
       EffectOpener(fileName, database);
     }
-    else if(last_folder == "events") {
+    else if(fileName.find("/events/") != std::string::npos) {
       EventOpener(fileName, database);
     }
-    else if(last_folder == "gears") {
+    else if(fileName.find("/gears/") != std::string::npos) {
       GearOpener(fileName, database);
     }
-    else if(last_folder == "items") {
+    else if(fileName.find("/items/") != std::string::npos) {
       std::string item_name = ItemOpener(fileName, database);
       if(!isServer) {
-        database->addItemFile(item_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+        database->addItemFile(item_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
-    else if(last_folder == "furnitures") {
+    else if(fileName.find("/furnitures/") != std::string::npos) {
       std::string furniture_name = FurnitureOpener(fileName, database);
       if(!isServer) {
-        database->addFurnitureFile(furniture_name, std::regex_replace(fileName, std::regex(".data"), ".glb"));
+        database->addFurnitureFile(furniture_name, std::regex_replace(resFileName, std::regex(".data"), ".glb"));
       }
     }
-    else if(last_folder == "maps") {
+    else if(fileName.find("/maps/") != std::string::npos) {
       MapOpener(fileName, database);
     }
-    else if(last_folder == "projectiles") {
+    else if(fileName.find("/projectiles/") != std::string::npos) {
       ProjectileOpener(fileName, database);
     }
-    else if(last_folder == "quests") {
+    else if(fileName.find("/quests/") != std::string::npos) {
       QuestOpener(fileName, database);
     }
-    else if(last_folder == "skills") {
+    else if(fileName.find("/skills/") != std::string::npos) {
       SkillOpener(fileName, database);
     }
-    else if(last_folder == "pseudoskills") {
+    else if(fileName.find("/pseudoskills/") != std::string::npos) {
       PseudoSkillOpener(fileName, database);
     }
-    else if(last_folder == "speechs") {
+    else if(fileName.find("/speechs/") != std::string::npos) {
       SpeechOpener(fileName, database);
     }
-    else if(last_folder == "tiles") {
+    else if(fileName.find("/tiles/") != std::string::npos) {
       std::string tile_name = TileOpener(fileName, database);
       if(!isServer) {
-        database->addTileFile(tile_name, std::regex_replace(fileName, std::regex(".data"), ".tres"));
+        database->addTileFile(tile_name, std::regex_replace(resFileName, std::regex(".data"), ".tres"));
       }
     }
-    else if((last_folder == "ways") ||
-            (last_folder == "races") ||
-            (last_folder == "origins") ||
-            (last_folder == "cultures") ||
-            (last_folder == "religions") ||
-            (last_folder == "professions") ||
-            (last_folder == "titles")) {
+    else if(fileName.find("/ways/") != std::string::npos) {
       std::string way_name = WayOpener(fileName, database);
       if(!isServer) {
-        database->addWayFile(way_name, std::regex_replace(fileName, std::regex(".data"), ".png"));
+        database->addWayFile(way_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
   }

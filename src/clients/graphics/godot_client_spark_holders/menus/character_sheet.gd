@@ -108,7 +108,7 @@ func display_stats():
 	if !subClass.is_empty():
 		n_subClass.texture = load(subClass["path"])
 	if !specClass.is_empty():
-		n_specClass.texture = load("")
+		n_specClass.texture = load(specClass["path"])
 	n_race.texture = load(race["path"])
 	n_origin.texture = load(origin["path"])
 	n_culture.texture = load(culture["path"])

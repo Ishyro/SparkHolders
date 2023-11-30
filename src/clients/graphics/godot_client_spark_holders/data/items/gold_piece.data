@@ -1,0 +1,13 @@
+name = TXT_GOLD_PIECE
+type = ITEM_SERIAL
+type2 = ITEM_MATERIAL
+tier = 0
+weight = 0.01
+sizeX = 1
+sizeY = 1
+gold_value = 1
+droppable = true
+usable = false
+consumable = false
+effects =
+max_stack = 500

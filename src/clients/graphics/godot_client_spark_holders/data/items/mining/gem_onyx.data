@@ -1,0 +1,12 @@
+name = TXT_ONYX
+type = ITEM_BASIC
+type2 = ITEM_MATERIAL
+tier = 10
+weight = 1
+sizeX = 1
+sizeY = 1
+gold_value = 50
+droppable = true
+usable = false
+consumable = false
+effects =

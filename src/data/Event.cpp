@@ -10,7 +10,7 @@
 
 void Event::activate(Adventure * adventure) {
   for(Map * map : maps) {
-    adventure->getWorld()->addMap(map);
+    adventure->getWorld()->addMap(map, (Tile *) adventure->getDatabase()->getTile("TXT_VOID"));
   }
   for(MapLink * link : links) {
     adventure->getWorld()->addMapLink(link);

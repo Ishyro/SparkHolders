@@ -9,7 +9,7 @@
 
 #include "data/World.h"
 
-void World::addMap(Map * map) {
+void World::addMap(Map * map, Tile * hole) {
   std::set<long> region = std::set<long>();
   std::set<long> neighbours_group = std::set<long>();
   region.insert(map->id);
@@ -18,11 +18,10 @@ void World::addMap(Map * map) {
   neighbours.insert(std::make_pair(map->id, neighbours_group));
   for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
     for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
-      if(map->getTile(x, y)->name == "TXT_VOID") {
-        Map * to_add = getMap(x, y, map->offsetZ);
-        if(to_add != nullptr) {
-          regions.at(map->id).insert(to_add->id);
-        }
+      Map * to_add = getMap(x, y, map->offsetZ);
+      if(to_add != nullptr && to_add != map) {
+        to_add->setTile(x, y, hole);
+        regions.at(map->id).insert(to_add->id);
       }
       // Border
       if(y == map->offsetY || y == map->offsetY + map->sizeY - 1 || x == map->offsetX || x == map->offsetX + map->sizeX - 1) {
@@ -83,7 +82,7 @@ std::set<long> World::getNeighbours(long map_id) {
 Map * World::getMap(long map_id) { return maps.at(map_id); }
 
 Map * World::getMap(std::string name) {
-    for (auto pair = maps.begin(); pair != maps.end(); pair++) {
+    for(auto pair = maps.begin(); pair != maps.end(); pair++) {
       if(pair->second->name == name) {
         return pair->second;
       }
@@ -111,8 +110,8 @@ MapLink * World::getMapLink(int x, int y, long mapId) {
 
 std::list<Character *> World::getCharacters() {
   std::list<Character *> characters = std::list<Character *>();
-  for (auto pair : maps) {
-    for (Character * character : pair.second->getCharacters()) {
+  for(auto pair : maps) {
+    for(Character * character : pair.second->getCharacters()) {
       // no check on player_character, because we want mind controlled players to act as npc
       // this imply that the player AI needs to send nullptr when asked for an Action
       // otherwise players will have 2 Actions per round
@@ -124,8 +123,8 @@ std::list<Character *> World::getCharacters() {
 
 Character * World::getCharacter(long id) {
   if(id != 0) {
-    for (auto pair : maps) {
-      for (Character * character : pair.second->getCharacters()) {
+    for(auto pair : maps) {
+      for(Character * character : pair.second->getCharacters()) {
         if(character->id == id) {
           return character;
         }
@@ -138,8 +137,8 @@ Character * World::getCharacter(long id) {
 
 Furniture * World::getFurniture(long id) {
   if(id != 0) {
-    for (auto pair : maps) {
-      for (Furniture * furniture : pair.second->getFurnitures()) {
+    for(auto pair : maps) {
+      for(Furniture * furniture : pair.second->getFurnitures()) {
         if(furniture->id == id) {
           return furniture;
         }
@@ -150,7 +149,7 @@ Furniture * World::getFurniture(long id) {
 }
 
 Map * World::getMap(int x, int y, int z) {
-  for (auto pair : maps) {
+  for(auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Tile * tile = pair.second->getTile(x, y);
       if(tile != nullptr && tile->name != "TXT_VOID") {
@@ -162,7 +161,7 @@ Map * World::getMap(int x, int y, int z) {
 }
 
 Map * World::getMap(float x, float y, float z) {
-  for (auto pair : maps) {
+  for(auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Tile * tile = pair.second->getTile(x, y);
       if(tile != nullptr && tile->name != "TXT_VOID") {
@@ -174,7 +173,7 @@ Map * World::getMap(float x, float y, float z) {
 }
 
 Tile * World::getTile(int x, int y, int z) {
-  for (auto pair : maps) {
+  for(auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Tile * tile = pair.second->getTile(x, y);
       if(tile != nullptr && tile->name != "TXT_VOID") {
@@ -186,7 +185,7 @@ Tile * World::getTile(int x, int y, int z) {
 }
 
 Tile * World::getTile(float x, float y, float z) {
-  for (auto pair : maps) {
+  for(auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Tile * tile = pair.second->getTile(x, y);
       if(tile != nullptr && tile->name != "TXT_VOID") {
@@ -196,6 +195,7 @@ Tile * World::getTile(float x, float y, float z) {
   }
   return nullptr;
 }
+
 int World::getLight(int x, int y, int z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {

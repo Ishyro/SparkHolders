@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bbaqwnu5hbnpu"]
+
+[ext_resource type="Shader" path="res://resources/materials/fluid/fluid.gdshader" id="1_w3dj1"]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_w3dj1")
+shader_parameter/back_fluid_color = Color(0.0627451, 0.0627451, 0.501961, 1)
+shader_parameter/front_fluid_color = Color(0.12549, 0.12549, 0.611765, 1)
+shader_parameter/fresnel_color = Color(0.3, 0, 0.5, 1)
+shader_parameter/level = 0.75

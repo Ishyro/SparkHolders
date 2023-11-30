@@ -29,8 +29,8 @@ var materials = {}
 
 var tiles_img = {}
 
-var board_material = preload("res://data/materials/board_material.tres")
-var phantom_material = preload("res://data/materials/phantom.tres")
+var board_material = preload("res://resources/materials/board_material.tres")
+var phantom_material = preload("res://resources/materials/phantom.tres")
 var base_fire = preload("res://models/fire.tscn")
 var grid_material = StandardMaterial3D.new()
 var light_0 = StandardMaterial3D.new()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://csp4utnaq7gbx"]
 
 [ext_resource type="Script" path="res://menus/character_sheet.gd" id="1_cowgy"]
-[ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://data/materials/paper/Color.jpg" id="1_m6bt1"]
+[ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="1_m6bt1"]
 [ext_resource type="LabelSettings" uid="uid://21v7e3lc7vnt" path="res://menus/hud/police/Text.tres" id="3_hth0a"]
 [ext_resource type="LabelSettings" uid="uid://lhfmbkrdk0jr" path="res://menus/hud/police/Numbers.tres" id="4_b202a"]
 [ext_resource type="Texture2D" uid="uid://cjl5okoqk75mo" path="res://menus/exp.png" id="5_626cv"]

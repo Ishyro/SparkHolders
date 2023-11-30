@@ -27,7 +27,7 @@ class World {
       neighbours = std::map<const long, std::set<long>>();
       links = std::list<MapLink *>();
     }
-    void addMap(Map * map);
+    void addMap(Map * map, Tile * hole);
     void addMapLink(MapLink * link);
     void addToNeighbours(long map_id1, long map_id2);
     std::set<long> getRegion(long map_id);
