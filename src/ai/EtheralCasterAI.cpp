@@ -16,6 +16,9 @@
 #include "ai/EtheralCasterAI.h"
 
 Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  /*
+  Action * result;
   if(casted) {
     adventure->getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
   }
@@ -25,10 +28,14 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
-    return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
+    result = new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
+    c->setCurrentAction(result);
+    return result;
   }
   if(++current_round < target_round) {
-    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+    result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+    c->setCurrentAction(result);
+    return result;
   }
   else {
     casted = true;
@@ -38,6 +45,9 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     target->x = origin_x;
     target->y = origin_y;
     // EhteralCasters should have only one skill
-    return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
+    result = new SkillAction(ACTION_USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
+    c->setCurrentAction(result);
+    return result;
   }
+  */
 }

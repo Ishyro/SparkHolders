@@ -2,26 +2,30 @@
 
 #include "data/Map.h"
 
-void Furniture::init(Map * map, int x, int y) {
-  this->z = map->offsetZ; 
+void Furniture::init(Map * map, MapUtil::Vector3i coord) {
+  this->coord.z = map->offsetZ; 
   switch(map->getRotation()) {
     case 0:
-      this->x = x + map->offsetX;
-      this->y = y + map->offsetY;
+      this->coord.x = coord.x + map->offsetX;
+      this->coord.y = coord.y + map->offsetY;
+      this->coord.z = coord.z + map->offsetZ;
       break;
     case 90:
-      this->x = map->sizeY - 1 - y + map->offsetX;
-      this->y = x + map->offsetY;
+      this->coord.x = map->sizeY - 1 - coord.y + map->offsetX;
+      this->coord.y = coord.x + map->offsetY;
+      this->coord.z = coord.z + map->offsetZ;
       orientation += 90.F;
       break;
     case 180:
-      this->x = map->sizeX - 1 - x + map->offsetX;
-      this->y = map->sizeY - 1 - y + map->offsetY;
+      this->coord.x = map->sizeX - 1 - coord.x + map->offsetX;
+      this->coord.y = map->sizeY - 1 - coord.y + map->offsetY;
+      this->coord.z = coord.z + map->offsetZ;
       orientation += 180.F;
       break;
     case 270:
-      this->x = y + map->offsetX;
-      this->y = map->sizeX - 1 - x + map->offsetY;
+      this->coord.x = coord.y + map->offsetX;
+      this->coord.y = map->sizeX - 1 - coord.x + map->offsetY;
+      this->coord.z = coord.z + map->offsetZ;
       orientation += 270.F;
       break;
     default: ;
@@ -29,7 +33,5 @@ void Furniture::init(Map * map, int x, int y) {
   orientation = orientation >= 360.F ? orientation - 360.F : orientation;
 }
 
-int Furniture::getX() { return x; }
-int Furniture::getY() { return y; }
-int Furniture::getZ() { return z; }
+MapUtil::Vector3i Furniture::getCoord() { return coord; }
 float Furniture::getOrientation() { return orientation; }

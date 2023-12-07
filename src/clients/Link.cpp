@@ -98,7 +98,7 @@ void Link::receiveState(std::string msg) {
   for(CharacterDisplay * display : game_state->characters) {
     for(auto pair : characters) {
       if(pair.second->id == display->id) {
-        pair.second->move(display->x, display->y, display->z, display->orientation, adventure->getWorld());
+        pair.second->move(MapUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
         pair.second->setHp(display->hp);
         pair.second->setMana(display->mana);
         pair.second->setShield(display->shield);
@@ -110,9 +110,10 @@ void Link::receiveState(std::string msg) {
     }
   }
   for(auto pair : characters) {
-    Map * map = new Map(adventure->getWorld()->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ()), pair.second, adventure->getDatabase(), adventure->getWorld());
-    game_state->maps.erase(pair.first);
-    game_state->maps.insert(std::make_pair(pair.first, map));
+    adventure->getWorld()->changeRegion(pair.second);
+    //Map * map = new Map(adventure->getWorld()->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ()), pair.second, adventure->getDatabase(), adventure->getWorld());
+    //game_state->maps.erase(pair.first);
+    //game_state->maps.insert(std::make_pair(pair.first, map));
   }
   state_pile.push_back(game_state);
 }
@@ -150,6 +151,15 @@ std::list<long> Link::getPlayersId() {
   }
   return result;
 }
+
+std::list<Character *> Link::getPlayers() {
+  std::list<Character *> result = std::list<Character *>();
+  for(auto pair : characters) {
+    result.push_back(pair.second);
+  }
+  return result;
+}
+
 Adventure * Link::getAdventure() { return adventure; }
 bool Link::hasState() { return closed || !state_pile.empty(); }
 

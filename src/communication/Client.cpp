@@ -62,12 +62,11 @@ namespace Client {
       case ACTION_RESPITE:
       case ACTION_REST:
       case ACTION_BREAKPOINT:
+      case ACTION_CHANNEL:
         return writeBaseAction(type);
         break;
       case ACTION_MOVE:
       case ACTION_STRIKE:
-      case ACTION_HEAVY_STRIKE:
-      case ACTION_SHOOT:
       case ACTION_ACTIVATION:
         return writeTargetedAction(type, (Target *) arg1);
         break;

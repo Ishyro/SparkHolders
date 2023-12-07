@@ -30,9 +30,9 @@ class Database {
     const Skill * getSkill(const std::string skill);
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
-    const Tile * getTile(const std::string tile);
-    const std::string getTileFile(const std::string tile);
-    std::map<const std::string, const Tile *> getAvaillableTiles();
+    const Block * getBlock(const std::string block);
+    const std::string getBlockFile(const std::string block);
+    std::map<const std::string, const Block *> getAvaillableBlocks();
     const Way * getWay(const std::string way);
     const std::string getWayFile(const std::string way);
     const int getRelation(const std::string team1, const std::string team2);
@@ -55,8 +55,8 @@ class Database {
     void addSkill(const Skill * skill);
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
-    void addTile(const Tile * tile);
-    void addTileFile(const std::string tile, const std::string path);
+    void addBlock(const Block * block);
+    void addBlockFile(const std::string block, const std::string path);
     void addWay(const Way * way);
     void addWayFile(const std::string way, const std::string path);
     void addRelation(const std::string team1, const std::string team2, int relation);
@@ -82,7 +82,7 @@ class Database {
     std::map<const std::string, const Skill * > skills;
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
-    std::map<const std::string, const Tile * > tiles;
+    std::map<const std::string, const Block * > tiles;
     std::map<const std::string, const std::string> tilesFiles;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, const std::string> waysFiles;

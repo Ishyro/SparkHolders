@@ -3,7 +3,7 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Map.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 #include "data/World.h"
 
 #include "data/actions/Action.h"
@@ -43,7 +43,7 @@ namespace Server {
         actions[i]->setPrevious(actions[i-1]);
       }
       actions[0]->computeTime(adventure);
-      characters.at(id)->setNeedToUpdateActions(false);
+      characters.at(id)->setCurrentAction(nullptr);
       result.push_back(actions[0]);
       delete ss_actions;
     }
@@ -61,13 +61,12 @@ namespace Server {
       case ACTION_RESPITE:
       case ACTION_REST:
       case ACTION_BREAKPOINT:
+      case ACTION_CHANNEL:
         action = new BaseAction(type, adventure, nullptr, user);
         break;
       case ACTION_MOVE:
       case ACTION_STRIKE:
-      case ACTION_HEAVY_STRIKE:
-      case ACTION_ACTIVATION:
-      case ACTION_SHOOT: {
+      case ACTION_ACTIVATION: {
         Target * target = Map::target_from_string(String::extract(ss));
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;

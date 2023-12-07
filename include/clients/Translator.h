@@ -26,8 +26,8 @@ class Translator {
     const std::string getSpeechDesc(std::string to_translate);
     const std::string getSkillName(std::string to_translate);
     const std::string getSkillDesc(std::string to_translate);
-    const std::string getTileName(std::string to_translate);
-    const std::string getTileDesc(std::string to_translate);
+    const std::string getBlockName(std::string to_translate);
+    const std::string getBlockDesc(std::string to_translate);
     const std::string getWayName(std::string to_translate);
     const std::string getWayDesc(std::string to_translate);
     const std::string getWeaponName(std::string to_translate);

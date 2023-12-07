@@ -3,6 +3,7 @@
 #include "data/Character.h"
 #include "data/Database.h"
 #include "data/Map.h"
+#include "data/Region.h"
 
 #include "data/items/Gear.h"
 
@@ -55,58 +56,35 @@ bool GodotLink::getState() {
 }
 
 float GodotLink::getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY) {
-  float result = state->maps.at((long) character_id)->getMoveCost(link->getPlayer((long) character_id), oriX, oriY, destX, destY);
-  return result;
+  return 0.F;
+  //float result = state->maps.at((long) character_id)->getMoveCost(link->getPlayer((long) character_id), oriX, oriY, destX, destY);
+  //return result;
 }
 
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   return MapUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
-bool GodotLink::needTilesUpdate(int64_t character_id) {
-  bool result = true;
-  if(mist_nbs.count(character_id) > 0) {
-    result = mist_nbs.at(character_id) > state->maps.at((long) character_id)->getMistNb();
-    mist_nbs.erase(character_id);
-  }
-  mist_nbs.insert(std::make_pair(character_id, state->maps.at((long) character_id)->getMistNb()));
-  return result;
-}
-
-Vector3 GodotLink::getSizes(int64_t character_id) {
-  Map * map = state->maps.at((long) character_id);
-  return Vector3(map->sizeY, map->sizeZ, map->sizeX);
-}
-
-Vector3 GodotLink::getOffsets(int64_t character_id) {
-  Map * map = state->maps.at((long) character_id);
-  return Vector3(map->offsetY, map->offsetZ, map->offsetX);
-}
-
-Array GodotLink::getAvaillableTiles() {
+Array GodotLink::getAvaillableBlocks() {
   Array result = Array();
-  for(auto pair : link->getAdventure()->getDatabase()->getAvaillableTiles()) {
+  for(auto pair : link->getAdventure()->getDatabase()->getAvaillableBlocks()) {
     result.push_back(pair.first.c_str());
   }
   return result;
 }
 
-Array GodotLink::getTiles(int64_t character_id) {
-  Map * map = state->maps.at((long) character_id);
-  Array result = Array();
-  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
-    Array result_y = Array();
-    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
-      result_y.push_back(map->getTile(x, y)->name.c_str());
-    }
-    result.push_back(result_y);
+Dictionary GodotLink::getBlocks(int64_t character_id) {
+  Dictionary result = Dictionary();
+  for(auto pair : link->getPlayer((long) character_id)->getRegion()->getBlocks()) {
+    result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
   }
   return result;
 }
 
 Array GodotLink::getLights(int64_t character_id) {
-  Map * map = state->maps.at((long) character_id);
+  //Map * map = state->maps.at((long) character_id);
   Array result = Array();
+  /*
   for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
     Array result_y = Array();
     for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
@@ -114,6 +92,7 @@ Array GodotLink::getLights(int64_t character_id) {
     }
     result.push_back(result_y);
   }
+  */
   return result;
 }
 
@@ -143,9 +122,9 @@ Dictionary GodotLink::getProjectiles() {
 
 Dictionary GodotLink::getFurnitures() {
   Dictionary result = Dictionary();
-  for(auto pair : state->maps) {
-    for(Furniture * furniture : pair.second->getFurnitures()) {
-      result[Vector3(furniture->getY(), furniture->getZ(), furniture->getX())] = getDataFromFurniture(furniture);
+  for(Character * player : link->getPlayers()) {
+    for(Furniture * furniture : player->getRegion()->getFurnitures(player)) {
+      result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
     }
   }
   return result;
@@ -162,26 +141,6 @@ String GodotLink::getRelation(String team1, String team2) {
     case TEAM_ENEMY:
       return "ENEMY";
   }
-}
-
-Dictionary GodotLink::getCurrentRegions() {
-  Dictionary result = Dictionary();
-  for(auto pair : state->maps) {
-    for(long region_id : link->getAdventure()->getWorld()->getRegion(pair.second->id)) {
-      result[(int64_t) region_id] = (int64_t) 0;
-      for(long neighbour_id : link->getAdventure()->getWorld()->getNeighbours(region_id)) {
-         result[(int64_t) neighbour_id] = (int64_t) 0;
-        for(long neighbour_region_id : link->getAdventure()->getWorld()->getRegion(neighbour_id)) {
-          result[(int64_t) neighbour_region_id] = (int64_t) 0;
-        }
-      }
-    }
-  }
-  return result;
-}
-
-int64_t GodotLink::getMapFromCoords(Vector3 coords) {
-  return (int64_t) link->getAdventure()->getWorld()->getMap(coords.z, coords.x, coords.y)->id;
 }
 
 Dictionary GodotLink::getDataFromItem(Item * item) {
@@ -247,15 +206,15 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
   return result;
 }
 
-Dictionary GodotLink::getDataFromTile(String tile_name) {
+Dictionary GodotLink::getDataFromBlock(String tile_name) {
   Dictionary result = Dictionary();
-  Tile * tile = (Tile *) link->getAdventure()->getDatabase()->getTile(std::string(tile_name.utf8().get_data()));
-  result["unwalkable"] = tile->unwalkable;
-  result["opaque"] = tile->opaque;
-  result["solid"] = tile->solid;
-  result["light"] = tile->light;
-  result["ap_cost"] = tile->ap_cost;
-  result["path"] = link->getAdventure()->getDatabase()->getTileFile(std::string(tile_name.utf8().get_data())).c_str();
+  Block * block = (Block *) link->getAdventure()->getDatabase()->getBlock(std::string(tile_name.utf8().get_data()));
+  result["unwalkable"] = block->unwalkable;
+  result["opaque"] = block->opaque;
+  result["allow_vertical"] = block->allow_vertical;
+  result["light"] = block->light;
+  result["ap_cost"] = block->ap_cost;
+  result["path"] = link->getAdventure()->getDatabase()->getBlockFile(std::string(tile_name.utf8().get_data())).c_str();
   return result;
 }
 
@@ -580,11 +539,10 @@ void GodotLink::send_actions(Dictionary actions) {
         case ACTION_RESPITE:
         case ACTION_REST:
         case ACTION_BREAKPOINT:
+        case ACTION_CHANNEL:
           break;
         case ACTION_MOVE:
         case ACTION_STRIKE:
-        case ACTION_HEAVY_STRIKE:
-        case ACTION_SHOOT:
         case ACTION_ACTIVATION: {
           Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           Target * target = new Target();
@@ -673,20 +631,15 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "oriX", "oriY", "destX", "destY"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
-  ClassDB::bind_method(D_METHOD("needTilesUpdate", "id"), &GodotLink::needTilesUpdate);
-  ClassDB::bind_method(D_METHOD("getSizes", "id"), &GodotLink::getSizes);
-  ClassDB::bind_method(D_METHOD("getOffsets", "id"), &GodotLink::getOffsets);
-  ClassDB::bind_method(D_METHOD("getAvaillableTiles"), &GodotLink::getAvaillableTiles);
-  ClassDB::bind_method(D_METHOD("getTiles", "id"), &GodotLink::getTiles);
+  ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
+  ClassDB::bind_method(D_METHOD("getBlocks", "id"), &GodotLink::getBlocks);
   ClassDB::bind_method(D_METHOD("getLights", "id"), &GodotLink::getLights);
   ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getFurnitures"), &GodotLink::getFurnitures);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
-  ClassDB::bind_method(D_METHOD("getCurrentRegions"), &GodotLink::getCurrentRegions);
-  ClassDB::bind_method(D_METHOD("getMapFromCoords", "coords"), &GodotLink::getMapFromCoords);
-  ClassDB::bind_method(D_METHOD("getDataFromTile", "tile"), &GodotLink::getDataFromTile);
+  ClassDB::bind_method(D_METHOD("getDataFromBlock", "block"), &GodotLink::getDataFromBlock);
   ClassDB::bind_method(D_METHOD("getDataFromClass", "class"), &GodotLink::getDataFromClass);
   ClassDB::bind_method(D_METHOD("getDataFromRace", "race"), &GodotLink::getDataFromRace);
   ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);

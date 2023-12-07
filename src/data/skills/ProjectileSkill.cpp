@@ -17,7 +17,7 @@ void ProjectileSkill::activate(Character * owner, Target * target, Adventure * a
     projectile,
     realDamages,
     adventure->getWorld(),
-    owner->getCurrentMap()->id,
+    0,
     target,
     owner,
     overcharge_power,
@@ -25,7 +25,7 @@ void ProjectileSkill::activate(Character * owner, Target * target, Adventure * a
     overcharge_range,
     true
   );
-  adventure->getWorld()->getMap(owner->getCurrentMap()->id)->addProjectile(to_add);
+  adventure->getWorld()->getMap(0)->addProjectile(to_add);
 }
 
 bool ProjectileSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {

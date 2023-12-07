@@ -1,82 +1,38 @@
 #include "data/Character.h"
 #include "data/Projectile.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 #include "data/Map.h"
 
 #include "data/items/Item.h"
 
-#include "util/MapUtil.h"
-
 #include "data/World.h"
 
-void World::addMap(Map * map, Tile * hole) {
-  std::set<long> region = std::set<long>();
-  std::set<long> neighbours_group = std::set<long>();
-  region.insert(map->id);
-  regions.insert(std::make_pair(map->id, region));
-  neighbours_group.insert(map->id);
-  neighbours.insert(std::make_pair(map->id, neighbours_group));
-  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
-    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
-      Map * to_add = getMap(x, y, map->offsetZ);
-      if(to_add != nullptr && to_add != map) {
-        to_add->setTile(x, y, hole);
-        regions.at(map->id).insert(to_add->id);
-      }
-      // Border
-      if(y == map->offsetY || y == map->offsetY + map->sizeY - 1 || x == map->offsetX || x == map->offsetX + map->sizeX - 1) {
-        if(!(map->getTile(x, y)->opaque && map->getTile(x, y)->solid)) {
-          if(y == map->offsetY) {
-            Map * to_add = getMap(x, y - 1, map->offsetZ);
-            if(to_add != nullptr) {
-              neighbours.at(map->id).insert(to_add->id);
-              neighbours.at(to_add->id).insert(map->id);
-            }
-          }
-          if(y == map->offsetY + map->sizeY - 1) {
-            Map * to_add = getMap(x, y + 1, map->offsetZ);
-            if(to_add != nullptr) {
-              neighbours.at(map->id).insert(to_add->id);
-              neighbours.at(to_add->id).insert(map->id);
-            }
-          }
-          if(x == map->offsetX) {
-            Map * to_add = getMap(x - 1, y, map->offsetZ);
-            if(to_add != nullptr) {
-              neighbours.at(map->id).insert(to_add->id);
-              neighbours.at(to_add->id).insert(map->id);
-            }
-          }
-          if(x == map->offsetX + map->sizeX - 1) {
-            Map * to_add = getMap(x + 1, y, map->offsetZ);
-            if(to_add != nullptr) {
-              neighbours.at(map->id).insert(to_add->id);
-              neighbours.at(to_add->id).insert(map->id);
-            }
-          }
-        }
+#include "data/BlocksChunk.h"
+#include "data/Region.h"
+
+#include <iostream>
+
+void World::addMap(Map * map) {
+  MapUtil::Vector3i coord = MapUtil::Vector3i();
+  for(coord.z = map->offsetZ; coord.z < map->offsetZ + map->sizeZ; coord.z++) {
+    for(coord.y = map->offsetY; coord.y < map->offsetY + map->sizeY; coord.y++) {
+      for(coord.x = map->offsetX; coord.x < map->offsetX + map->sizeX; coord.x++) {
+        Block * block = map->getBlock(coord);
+        setBlock(coord, block);
       }
     }
   }
-  for(long id1 : regions.at(map->id)) {
-    for(long id2 : regions.at(map->id)) {
-      regions.at(id1).insert(id2);
-      regions.at(id2).insert(id1);
-    }
+  for(Furniture * furniture : map->getFurnitures()) {
+    getChunk(furniture->getCoord())->addFurniture(furniture);
   }
-  maps.insert(std::pair<int, Map *>(map->id, map));
+}
+
+void World::setBlock(MapUtil::Vector3i coord, Block * block) {
+  getChunk(coord)->setBlock(coord, block);
 }
 
 void World::addMapLink(MapLink * link) {
   links.push_back(link);
-}
-
-std::set<long> World::getRegion(long map_id) {
-  return regions.at(map_id);
-}
-
-std::set<long> World::getNeighbours(long map_id) {
-  return neighbours.at(map_id);
 }
 
 Map * World::getMap(long map_id) { return maps.at(map_id); }
@@ -109,6 +65,7 @@ MapLink * World::getMapLink(int x, int y, long mapId) {
 }
 
 std::list<Character *> World::getCharacters() {
+  /*
   std::list<Character *> characters = std::list<Character *>();
   for(auto pair : maps) {
     for(Character * character : pair.second->getCharacters()) {
@@ -118,12 +75,13 @@ std::list<Character *> World::getCharacters() {
       characters.push_back(character);
     }
   }
+  */
   return characters;
 }
 
 Character * World::getCharacter(long id) {
   if(id != 0) {
-    for(auto pair : maps) {
+    for(auto pair : regions) {
       for(Character * character : pair.second->getCharacters()) {
         if(character->id == id) {
           return character;
@@ -134,10 +92,9 @@ Character * World::getCharacter(long id) {
   return nullptr;
 }
 
-
 Furniture * World::getFurniture(long id) {
   if(id != 0) {
-    for(auto pair : maps) {
+    for(auto pair : chunks) {
       for(Furniture * furniture : pair.second->getFurnitures()) {
         if(furniture->id == id) {
           return furniture;
@@ -148,59 +105,69 @@ Furniture * World::getFurniture(long id) {
   return nullptr;
 }
 
-Map * World::getMap(int x, int y, int z) {
-  for(auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
-        return pair.second;
-      }
-    }
-  }
-  return nullptr;
+Block * World::getBlock(MapUtil::Vector3i coord) {
+  return getChunk(coord)->getBlock(coord);
 }
 
-Map * World::getMap(float x, float y, float z) {
-  for(auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
-        return pair.second;
-      }
-    }
+BlocksChunk * World::getChunk(MapUtil::Vector3 ori) {
+  MapUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
+  std::map<const MapUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
+  if(it != chunks.end()) {
+    return it->second;
   }
-  return nullptr;
+  else {
+    BlocksChunk * chunk = new BlocksChunk(coord, this);
+    chunks.insert(std::make_pair(coord, chunk));
+    return chunk;
+  }
 }
 
-Tile * World::getTile(int x, int y, int z) {
-  for(auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
-        return tile;
-      }
-    }
+BlocksChunk * World::getChunk(MapUtil::Vector3i ori) {
+  MapUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
+  std::map<const MapUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
+  if(it != chunks.end()) {
+    return it->second;
   }
-  return nullptr;
+  else {
+    BlocksChunk * chunk = new BlocksChunk(coord, this);
+    chunks.insert(std::make_pair(coord, chunk));
+    return chunk;
+  }
 }
 
-Tile * World::getTile(float x, float y, float z) {
-  for(auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
-        return tile;
+void World::changeRegion(Character * character) {
+  Region * old_region = character->getRegion();
+  if(old_region != nullptr && old_region->removeCharacter(character)) {
+    regions.erase(old_region->id);
+  }
+  MapUtil::Vector3i coord = BlocksChunk::getChunkId(character->getCoord());
+  std::map<const MapUtil::Vector3i, Region *>::iterator it = regions.find(coord);
+  if(it != regions.end()) {
+    it->second->addCharacter(character);
+  }
+  else {
+    std::array<BlocksChunk *, 27> result;
+    MapUtil::Vector3i current;
+    int n = 0;
+    for(current.z = coord.z - CHUNK_SIZE; current.z <= coord.z + CHUNK_SIZE; current.z += CHUNK_SIZE) {
+      for(current.y = coord.y - CHUNK_SIZE; current.y <= coord.y + CHUNK_SIZE; current.y += CHUNK_SIZE) {
+        for(current.x = coord.x - CHUNK_SIZE; current.x <= coord.x + CHUNK_SIZE; current.x += CHUNK_SIZE) {
+          result[n++] = getChunk(current);
+        }
       }
     }
+    Region * region = new Region(coord, result);
+    region->addCharacter(character);
+    regions.insert(std::make_pair(coord, region));
   }
-  return nullptr;
 }
 
+/*
 int World::getLight(int x, int y, int z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
+      Block * block = pair.second->getBlock(x, y);
+      if(block != nullptr && block->name != "TXT_VOID") {
         return pair.second->getLight(x, y);
       }
     }
@@ -210,8 +177,8 @@ int World::getLight(int x, int y, int z) {
 int World::getLight(float x, float y, float z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {
-      Tile * tile = pair.second->getTile(x, y);
-      if(tile != nullptr && tile->name != "TXT_VOID") {
+      Block * block = pair.second->getBlock(x, y);
+      if(block != nullptr && block->name != "TXT_VOID") {
         return pair.second->getLight(x, y);
       }
     }
@@ -219,8 +186,9 @@ int World::getLight(float x, float y, float z) {
   return 0;
 }
 
+*/
 
-float World::setPathToTarget(long map_id, float x, float y, Target * target) {
+float World::setPathToTarget(Region * region, float x, float y, Target * target) {
   float target_x;
   float target_y;
   switch(target->type) {
@@ -234,8 +202,8 @@ float World::setPathToTarget(long map_id, float x, float y, Target * target) {
       break;
     case TARGET_CHARACTER: {
       Character * other = getCharacter(target->id);
-      target_x = other->getX();
-      target_y = other->getY();
+      target_x = other->getCoord().x;
+      target_y = other->getCoord().y;
       break;
     }
     default: ;

@@ -62,7 +62,7 @@ var selection_changed = false
 var selected_team = null
 var selected_target = null
 var selected_projectile = null
-var selected_tile = null
+var selected_block = null
 
 var actions = {}
 var action_muxtex = Mutex.new()

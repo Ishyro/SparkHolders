@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <cmath>
+#include <tuple>
 
 #include "Values.h"
 
@@ -13,13 +14,33 @@ namespace MapUtil {
     float y;
     int score;
     bool operator < (const Pair& p) const { return score < p.score; }
-    bool operator == (const Pair& p) const { return  std::floor(x) == std::floor(p.x) && std::floor(y == p.y); }
+    bool operator == (const Pair& p) const { return std::floor(x) == std::floor(p.x) && std::floor(y == p.y); }
     bool operator != (const Pair& p) const { return std::floor(x) != std::floor(p.x) || std::floor(y) != std::floor(p.y); }
   } Pair;
+
+  typedef struct Vector3 {
+    float x;
+    float y;
+    float z;
+  } Vector3;
+  
+  typedef struct Vector3i {
+    int x;
+    int y;
+    int z;
+    bool operator < (const Vector3i& v) const { return std::tie(z, y, x) < std::tie(v.z, v.y, v.x); }
+    bool operator == (const Vector3i& v) const { return z == v.z && y == v.y && x == v.x; }
+  } Vector3i;
+
+  Vector3 makeVector3(float x, float y, float z);
+  Vector3 makeVector3(Vector3 coord_int);
+  Vector3i makeVector3i(int x, int y, int z);
+  Vector3i makeVector3i(Vector3 coord_float);
 
   float round(float var);
   float distanceSquare(float x1, float y1, float x2, float y2);
   float distance(float x1, float y1, float x2, float y2);
+  float distance(Vector3 coord1, Vector3 coord2);
   float getOrientationToTarget(float x1, float y1, float x2, float y2);
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int offsetX, int offsetY);

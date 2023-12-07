@@ -28,7 +28,7 @@ namespace Display {
 
   void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print);
   void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Translator * t);
-  void displayTileMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t);
+  void displayBlockMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t);
   void displayLightMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t);
   void displayStats(Character * player, WINDOW * screen, Translator * t);
   WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t);

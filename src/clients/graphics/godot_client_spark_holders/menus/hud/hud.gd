@@ -2,8 +2,8 @@ extends Control
 
 @onready var map = $"../Map"
 
-@onready var tile = $Tile
-@onready var tile_description = $Tile/Description
+@onready var block = $Block
+@onready var block_description = $Block/Description
 
 @onready var grid_button = $MapOptions/Options/Grid
 @onready var lights_button = $MapOptions/Options/Lights
@@ -112,7 +112,7 @@ func display_projectile(_projectile, _projectile_data: Dictionary):
 
 func display_target(character, _character_data: Dictionary):
 	character.select()
-	tile.visible = false
+	block.visible = false
 
 func display_team(character, character_data: Dictionary):
 	character.select()
@@ -121,9 +121,9 @@ func display_team(character, character_data: Dictionary):
 	change_amount("MANA", character_data["mana"], character_data["maxMana"])
 	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
 
-func display_tile(_tile_object, _tile_data: Dictionary):
+func display_block(_block_object, _block_data: Dictionary):
 	#target.visible = false
-	tile.visible = true
+	block.visible = true
 	
 func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	mouse_box._set_position(Vector2(mouse_coord.x - mouse_box.get_size().x / 2.0, mouse_coord.y))
@@ -138,7 +138,7 @@ func _on_grid_toggled(_button_pressed):
 
 func _on_lights_toggled(_button_pressed):
 	map.n_lights.visible = !map.n_lights.visible
-	map.n_tiles.visible = !map.n_tiles.visible
+	map.n_blocks.visible = !map.n_blocks.visible
 
 func _on_characters_toggled(_button_pressed):
 	map.n_characters.visible = !map.n_characters.visible

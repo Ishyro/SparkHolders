@@ -8,7 +8,7 @@
 #include "data/Quest.h"
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 
 
 #include "data/items/Item.h"
@@ -38,7 +38,7 @@ Database::Database() {
   skills = std::map<const std::string, const Skill * >();
   pseudoSkills = std::map<const std::string, const PseudoSkill *>();
   speechs = std::map<const std::string, const Speech * >();
-  tiles = std::map<const std::string, const Tile *>();
+  tiles = std::map<const std::string, const Block *>();
   tilesFiles = std::map<const std::string, const std::string>();
   ways = std::map<const std::string, const Way *>();
   waysFiles = std::map<const std::string, const std::string>();
@@ -272,9 +272,9 @@ const Quest * Database::getQuest(const std::string quest) { return quests.at(que
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
-const Tile * Database::getTile(const std::string tile) { return tiles.at(tile); }
-std::map<const std::string, const Tile *> Database::getAvaillableTiles() { return tiles; }
-const std::string Database::getTileFile(const std::string tile) { return tilesFiles.at(tile); }
+const Block * Database::getBlock(const std::string block) { return tiles.at(block); }
+std::map<const std::string, const Block *> Database::getAvaillableBlocks() { return tiles; }
+const std::string Database::getBlockFile(const std::string block) { return tilesFiles.at(block); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const std::string Database::getWayFile(const std::string way) { return waysFiles.at(way); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
@@ -308,8 +308,8 @@ void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(ques
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
-void Database::addTile(const Tile * tile) { tiles.insert(std::make_pair(tile->name, tile)); }
-void Database::addTileFile(const std::string tile, const std::string path) { tilesFiles.insert(std::make_pair(tile, path)); }
+void Database::addBlock(const Block * block) { tiles.insert(std::make_pair(block->name, block)); }
+void Database::addBlockFile(const std::string block, const std::string path) { tilesFiles.insert(std::make_pair(block, path)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addWayFile(const std::string way, const std::string path) { waysFiles.insert(std::make_pair(way, path)); }
 void Database::addRelation(const std::string team1, const std::string team2, int relation) {

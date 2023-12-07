@@ -14,21 +14,19 @@ void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int ov
     this->effects.push_back(toadd);
   }
   lost = false;
-  orientation = world->setPathToTarget(current_map_id, owner->getX(), owner->getY(), target);
+  orientation = world->setPathToTarget(current_map_id, owner->getCoord().x, owner->getCoord().y, target);
   if(change_owner_orientation) {
     owner->setOrientation(orientation);
   }
   if(!teleport) {
-    x = owner->getX() + (owner->getSize() + size) * std::cos(orientation * 3.141593F / 180.F);
-    y = owner->getY() + (owner->getSize() + size) * std::sin(orientation * 3.141593F / 180.F);
-    z = owner->getZ();
+    coord.x = owner->getCoord().x + (owner->getSize() + size) * std::cos(orientation * 3.141593F / 180.F);
+    coord.y = owner->getCoord().y + (owner->getSize() + size) * std::sin(orientation * 3.141593F / 180.F);
+    coord.z = owner->getCoord().z;
   }
 }
 
 int Projectile::getCurrentMapId() { return current_map_id; }
-float Projectile::getX() { return x; }
-float Projectile::getY() { return y; }
-float Projectile::getZ() { return z; }
+MapUtil::Vector3 Projectile::getCoord() { return coord; }
 float Projectile::getDestX() {
   return target->x;
 }
@@ -57,7 +55,7 @@ Target * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
 bool Projectile::isAtDest() {
-  return x == getDestX() && y == getDestY();
+  return coord.x == getDestX() && coord.y == getDestY();
 }
 
 int Projectile::getLight() {
@@ -75,8 +73,8 @@ std::list<Effect *> Projectile::getEffects() { return effects; }
 
 bool Projectile::noDamage() { return getRawDamage() <= 0; }
 
-void Projectile::setX(float x) { this->x = x; }
-void Projectile::setY(float y) { this->y = y; }
+void Projectile::setX(float x) { coord.x = x; }
+void Projectile::setY(float y) { coord.y = y; }
 void Projectile::setOrientation(float orientation) { this->orientation = orientation; }
 void Projectile::setSpeed(float speed) { this->speed = speed; }
 void Projectile::setArea(float area) { this->area = area; }
@@ -93,10 +91,8 @@ void Projectile::markDestroyed() {
   }
 }
 
-void::Projectile::move(float x, float y, float z, float orientation) {
-  this->x = x;
-  this->y = y;
-  this->z = z;
+void::Projectile::move(MapUtil::Vector3 coord, float orientation) {
+  this->coord = coord;
   this->orientation = orientation;
 }
 
@@ -136,10 +132,10 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
         float range;
         if(target == nullptr) {
           // exploding on targeted zone
-          range = MapUtil::distance(x, y, c->getX(), c->getY());
+          range = MapUtil::distance(coord, c->getCoord());
         }
         else {
-          range = MapUtil::distance(target->getX(), target->getY(), c->getX(), c->getY());
+          range = MapUtil::distance(target->getCoord(), c->getCoord());
         }
         if(range <= area - c->getSize()) {
           int reducedDamages[DAMAGE_TYPE_NUMBER];
@@ -191,9 +187,9 @@ std::string Projectile::to_string() {
   String::insert_long(ss, id);
   String::insert_int(ss, projectile_type);
   String::insert_float(ss, size);
-  String::insert_float(ss, x);
-  String::insert_float(ss, y);
-  String::insert_float(ss, z);
+  String::insert_float(ss, coord.x);
+  String::insert_float(ss, coord.y);
+  String::insert_float(ss, coord.z);
   String::insert_float(ss, orientation);
   for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, current_damages[i]);
@@ -216,9 +212,9 @@ std::string Projectile::full_to_string() {
   String::insert_float(ss, size);
   String::insert_bool(ss, homing);
   String::insert_int(ss, current_map_id);
-  String::insert_float(ss, x);
-  String::insert_float(ss, y);
-  String::insert_float(ss, z);
+  String::insert_float(ss, coord.x);
+  String::insert_float(ss, coord.y);
+  String::insert_float(ss, coord.z);
   if(skill != nullptr) {
     String::insert(ss, skill->name);
   }

@@ -18,22 +18,31 @@
 #include <random>
 
 Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  /*
+  Action * result;
   Map * visionMap = updateMap(adventure, c);
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
   float orientation = 0.F;
   if(!threats.empty()) {
-    return attack(adventure, threats, c);
+    result = attack(adventure, threats, c);
+    c->setCurrentAction(result);
+    return result;
   }
   selectHungriness(c);
   selectTiredness(c);
   if(hungry) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
-      return eat_food;
+      result = eat_food;
+      c->setCurrentAction(result);
+      return result;
     }
   }
   if(sleepy && adventure->getLight() < 4) {
-    return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+    result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+    c->setCurrentAction(result);
+    return result;
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
@@ -42,10 +51,15 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
-    return new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
+    result = new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
+    c->setCurrentAction(result);
+    return result;
   }
   // we are at destination
   origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeX;
   origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeY;
-  return new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
+  c->setCurrentAction(result);
+  return result;
+  */
 }

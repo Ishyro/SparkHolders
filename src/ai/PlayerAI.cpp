@@ -6,5 +6,8 @@
 #include "ai/PlayerAI.h"
 
 Action * PlayerAI::getActions(Adventure * adventure, Character * c) {
-  return nullptr;
+  Action * result;
+  result = nullptr;
+  c->setCurrentAction(result);
+  return result;
 }

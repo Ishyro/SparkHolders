@@ -20,12 +20,15 @@ bool Quest::stepDone(Adventure * adventure) {
       result = current_step->goal_item != nullptr;
       break;
     case QUEST_DISCOVER:
+      /*
       for(Character * c : adventure->getParty()) {
         if(c->getCurrentMap()->id == current_step->discover_map_id) {
           result = true;
           break;
         }
       }
+      */
+      return true;
       break;
     case QUEST_TALK:
       // TODO

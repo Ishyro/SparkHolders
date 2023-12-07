@@ -13,7 +13,6 @@ var pause_state = false
 @onready var character_sheet = $"../Menus/CharacterSheet"
 @onready var hud = $"../HUD"
 @onready var map = $"../Map"
-@onready var grid = $"../Map/Grid"
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
@@ -46,7 +45,7 @@ func update_mouse_coordinates():
 				if !owned:
 					Values.selected_target = selection
 				Values.selected_projectile = null
-				Values.selected_tile = null
+				Values.selected_block = null
 			if "phantom" in selection:
 				Values.selected_team = map.characters[selection.id]
 				map.clear_actions(Values.selected_team.id)
@@ -56,11 +55,11 @@ func update_mouse_coordinates():
 			if "projectile" in selection:
 				Values.selected_projectile = selection
 				Values.selected_target = null
-				Values.selected_tile = null
-			if "tile" in selection:
+				Values.selected_block = null
+			if "block" in selection:
 				Values.selected_projectile = null
 				Values.selected_target = null
-				Values.selected_tile = selection
+				Values.selected_block = selection
 	if not pause_state:
 		var ap_cost = ""
 		if(Values.selected_team and Values.mode == Values.ACTION_MOVE and not Values.updating_state):
@@ -83,10 +82,10 @@ func _process(_delta):
 					Values.selected_target = null
 			if Values.selected_team:
 				hud.display_team(Values.selected_team, map.characters_data[Values.selected_team.id])
-			if Values.selected_tile:
-				if map.tiles_img.has(Values.selected_tile.tile):
-					$"../HUD/Tile/Picture".texture = map.tiles_img[Values.selected_tile.tile]
-					hud.display_tile(Values.selected_tile, map.tiles_data[Values.selected_tile.tile])
+			if Values.selected_block:
+				if map.tiles_img.has(Values.selected_block.block):
+					$"../HUD/Block/Picture".texture = map.tiles_img[Values.selected_block.block]
+					hud.display_block(Values.selected_block, map.tiles_data[Values.selected_block.block])
 
 func _physics_process(_delta):
 	if(not pause_state):

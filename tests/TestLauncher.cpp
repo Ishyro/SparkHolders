@@ -13,6 +13,8 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/World.h"
+#include "data/Region.h"
+#include "data/BlocksChunk.h"
 #include "data/Map.h"
 
 #include "data/Settings.h"
@@ -50,12 +52,19 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
   adventure->applyDayLight();
   for(int tick = 0; tick < ticks; tick++) {
+    /*
     adventure->applyIteration();
     SpeechManager::clear();
     adventure->getNPCsActions();
     adventure->executeActions();
     adventure->actAllProjectiles();
     adventure->incrTick();
+    */
+  }
+  for(int y = 0; y < 10; y++) {
+    for(int x = 0; x < 10; x++) {
+      std::cout << adventure->getWorld()->getBlock(MapUtil::makeVector3i(x, y, -1))->name << std::endl;
+    }
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;

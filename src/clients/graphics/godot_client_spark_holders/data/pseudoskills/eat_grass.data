@@ -1,7 +1,7 @@
 name = TXT_EAT_GRASS
 skill_type = SKILL_TILE_SWAP
 target_type = TARGET_TILE
-current_tile = TXT_GRASS
-new_tile = TXT_SOIL
+current_block = TXT_GRASS
+new_block = TXT_SOIL
 mana_cost = 0
 effects =

@@ -11,15 +11,14 @@ var phantom_lines = {}
 var navigations = {}
 var multiMeshInstances = {}
 var maps = {}
-var tiles_count = {}
+var current_blocks = {}
+var blocks_count = {}
 
-var grid = []
-var regions = {}
 var lights = {}
 var characters = {}
 var projectiles = {}
 var furnitures = {}
-var tiles_data = {}
+var blocks_data = {}
 var characters_data = {}
 var projectiles_data = {}
 var furnitures_data = {}
@@ -27,7 +26,7 @@ var base_furnitures = {}
 var base_furnitures_off = {}
 var materials = {}
 
-var tiles_img = {}
+var blocks_img = {}
 
 var board_material = preload("res://resources/materials/board_material.tres")
 var phantom_material = preload("res://resources/materials/phantom.tres")
@@ -56,9 +55,8 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 @onready var n_view = $"../View"
 @onready var n_hud = $"../HUD"
-@onready var n_tiles = $Tiles
-@onready var n_floor = $Tiles/Floor
-@onready var n_grid = $Grid
+@onready var n_blocks = $Blocks
+@onready var n_floor = $Blocks/Floor
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
@@ -101,16 +99,13 @@ func _ready():
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
 		add_projectile(projectile_id, projectiles_data[projectile_id])
-	var offset = Values.link.getOffsets(owned_characters[0])
-	var size = Values.link.getSizes(owned_characters[0])
-	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
-	n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
-	for tile in Values.link.getAvaillableTiles():
-		initialize_tile(tile)
-	create_grid()
+	#var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
+	#n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
+	for block in Values.link.getAvaillableBlocks():
+		initialize_block(block)
 	for character_id in owned_characters:
-		init_tiles(character_id)
-	regions = Values.link.getCurrentRegions()
+		create_blocks(character_id)
+	
 	furnitures_data = Values.link.getFurnitures()
 	display_map()
 	var map_rid = get_world_3d().get_navigation_map()
@@ -146,20 +141,20 @@ func bake_navigation_meshes():
 	if !baking_done:
 		for size in navigations:
 			var data = NavigationMeshSourceGeometryData3D.new()
-			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_tiles)
+			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_blocks)
 			NavigationMeshGenerator.bake_from_source_geometry_data(navigations[size], data)
-		n_tiles.set_navigation_mesh(null)
+		n_blocks.set_navigation_mesh(null)
 		baking_done = true
 
 func set_navigation_mesh(character_id: int):
-	n_tiles.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
+	n_blocks.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
 
 func select_character(character_id: int):
-	var offset = Values.link.getOffsets(character_id)
+	#var offset = Values.link.getOffsets(character_id)
 	if n_floor.transform.origin.y + 0.5 != round_float(characters_data[character_id]["z"]):
 		var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
 		var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-		n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
+		#n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
 	n_floor.transform.origin = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"] + 0.5, characters_data[character_id]["x"])
 	bake_navigation_meshes()
 	set_navigation_mesh(character_id)
@@ -175,7 +170,7 @@ func state_updater():
 				bake_navigation_meshes()
 				set_navigation_mesh(Values.selected_team.id)
 				n_inventory.update_inventories(owned_characters)
-				# do nothing is not all characters have at least 1 action ready
+				# do nothing if not all characters have at least 1 action ready
 				send_actions()
 			await get_tree().create_timer(0.001).timeout
 		mutex.lock()
@@ -186,23 +181,24 @@ func state_updater():
 				if !next_characters_data.has(character_id):
 					n_characters.remove_child(characters[character_id])
 					characters.erase(character_id)
-			var new_regions = Values.link.getCurrentRegions()
-			for map_id in new_regions:
-				if !regions.has(map_id):
-					baking_done = false
-			for map_id in regions:
-				if !new_regions.has(map_id):
-					baking_done = false
-			regions = new_regions
+			#var new_regions = Values.link.getCurrentRegions()
+			#for map_id in new_regions:
+			#	if !regions.has(map_id):
+			#		baking_done = false
+			#for map_id in regions:
+			#	if !new_regions.has(map_id):
+			#		baking_done = false
+			#regions = new_regions
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 			var update = false
 			for character_id in owned_characters:
-				if Values.link.needTilesUpdate(character_id):
-					init_tiles(character_id)
-				else:
-					create_tiles(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
+				create_blocks(character_id)
+				#if Values.link.needBlocksUpdate(character_id):
+				#	init_blocks(character_id)
+				#else:
+				#	create_blocks(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
 				if floor(next_characters_data[character_id]["y"]) != floor(characters_data[character_id]["y"]) || floor(next_characters_data[character_id]["x"]) != floor(characters_data[character_id]["x"]):
 					update = true
 			if update:
@@ -258,29 +254,7 @@ func _physics_process(delta):
 				done = done && (projectiles[projectile_id].transform.origin == dest)
 			Values.updating_state = !done
 		mutex.unlock()
-	
-func create_grid():
-	var offset = Values.link.getOffsets(owned_characters[0])
-	var size = Values.link.getSizes(owned_characters[0])
-	var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
-	var pos = Vector3(offset.x + mid_size.x, offset.y, offset.z + mid_size.z)
-	for x in range(0, size.x + 1):
-		var line = MeshInstance3D.new()
-		line.mesh = BoxMesh.new()
-		line.mesh.set_size(Vector3(0.05, 0.001, size.z))
-		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(x - mid_size.x, offset.y + 1.001, 0)
-		grid.append(line)
-		n_grid.add_child(line)
-	for z in range(0, size.z + 1):
-		var line = MeshInstance3D.new()
-		line.mesh = BoxMesh.new()
-		line.mesh.set_size(Vector3(size.x, 0.001, 0.05))
-		line.set_surface_override_material(0, grid_material)
-		line.transform.origin = pos + Vector3(0, offset.y + 1.001, z - mid_size.z)
-		grid.append(line)
-		n_grid.add_child(line)
-	
+
 func get_light(light: int):
 	match light:
 		0: return light_0
@@ -300,89 +274,55 @@ func get_light(light: int):
 		14: return light_e
 		15: return light_f
 
-func init_tiles(character_id: int):
-	var current_tiles = Values.link.getTiles(character_id)
-	var current_lights = Values.link.getLights(character_id)
-	var offset = Values.link.getOffsets(character_id)
-	var size = Values.link.getSizes(character_id)
-	for x in range(0, size.x):
-		for z in range(0, size.z):
-			baking_done = add_tile(offset, x, z, current_tiles, current_lights) && baking_done
+func create_blocks(character_id: int):
+	current_blocks = Values.link.getBlocks(character_id)
+	#var current_lights = Values.link.getLights(character_id)
+	for coord in current_blocks:
+		baking_done = add_block(coord, current_blocks, {}) && baking_done
 
-func create_tiles(character_id: int, x_direction: int, z_direction: int):
-	if x_direction == 0 && z_direction == 0:
-		return
-	var current_tiles = Values.link.getTiles(character_id)
-	var current_lights = Values.link.getLights(character_id)
-	var offset = Values.link.getOffsets(character_id)
-	var size = Values.link.getSizes(character_id)
-	if x_direction > 0:
-		for z in range(0, size.z):
-			baking_done = add_tile(offset, size.x - 1, z, current_tiles, current_lights) && baking_done
-	if x_direction < 0:
-		for z in range(0, size.z):
-			baking_done = add_tile(offset, 0, z, current_tiles, current_lights) && baking_done
-	if z_direction > 0:
-		for x in range(0, size.x):
-			baking_done = add_tile(offset, x, size.z - 1, current_tiles, current_lights) && baking_done
-	if z_direction < 0:
-		for x in range(0, size.x):
-			baking_done = add_tile(offset, x, 0, current_tiles, current_lights) && baking_done
-
-func add_tile(offset: Vector3, x: int, z: int, current_tiles: Array, current_lights: Array):
-	if current_tiles[x][z] == "TXT_MIST" || current_tiles[x][z] == "TXT_VOID":
+func add_block(coord: Vector3, current_blocks: Dictionary, current_lights: Dictionary):
+	if current_blocks[coord] == "TXT_MIST" || current_blocks[coord] == "TXT_VOID":
 		return true
-	var global_x = x + offset.x
-	var global_z = z + offset.z
-	var id = Vector3(global_x, offset.y, global_z)
-	var map_id = Values.link.getMapFromCoords(id)
-	if lights.has(id):
-		n_lights.remove_child(lights[id])
-	var light = MeshInstance3D.new()
-	light.mesh = BoxMesh.new()
-	light.set_surface_override_material(0, get_light(current_lights[x][z]))
-	if tiles_data[current_tiles[x][z]]["solid"]:
-		light.mesh.set_size(Vector3(1, 3, 1))
-		light.transform.origin = Vector3(global_x + 0.5, offset.y + 1.5, global_z + 0.5)
-	else:
-		light.mesh.set_size(Vector3.ONE)
-		light.transform.origin = Vector3(global_x + 0.5, offset.y + 0.5, global_z + 0.5)
-	lights[id] = light
-	n_lights.add_child(light)
-	if !maps.has(map_id):
-		maps[map_id] = {}
-	if !maps[map_id].has(id):
-		maps[map_id][id] = current_tiles[x][z]
-		if !tiles_count[current_tiles[x][z]].has(map_id):
-			tiles_count[current_tiles[x][z]][map_id] = 1
-		else:
-			tiles_count[current_tiles[x][z]][map_id] = tiles_count[current_tiles[x][z]][map_id] + 1
-		return false
+	#if lights.has(id):
+	#	n_lights.remove_child(lights[id])
+	#var light = MeshInstance3D.new()
+	#light.mesh = BoxMesh.new()
+	#light.set_surface_override_material(0, get_light(current_lights[x][z]))
+	#light.mesh.set_size(Vector3.ONE)
+	#light.transform.origin = Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)
+	#lights[coord] = light
+	#n_lights.add_child(light)
+	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
+	#if !maps.has(map_id):
+	#	maps[map_id] = {}
+	#if !maps[map_id].has(id):
+	#	maps[map_id][id] = current_blocks[x][z]
+	#	if !blocks_count[current_blocks[x][z]].has(map_id):
+	#		blocks_count[current_blocks[x][z]][map_id] = 1
+	#	else:
+	#		blocks_count[current_blocks[x][z]][map_id] = blocks_count[current_blocks[x][z]][map_id] + 1
+	#	return false
 	return true
 
+func reset_map():
+	for block_type in multiMeshInstances:
+		blocks_count[block_type] = 0
+
 func display_map():
-	var tile_current = {}
-	for tile_type in multiMeshInstances:
-		var total = 0
-		tile_current[tile_type] = 0
-		for map_id in regions:
-			if tiles_count[tile_type].has(map_id):
-				total = total + tiles_count[tile_type][map_id]
-		multiMeshInstances[tile_type].multimesh.set_instance_count(total)
-	for map_id in regions:
-		if maps.has(map_id):
-			var map = maps[map_id]
-			for tile in map:
-				var tile_type = map[tile]
-				var coord = Vector3.ZERO
-				if tiles_data[tile_type]["solid"]:
-					coord = Vector3(tile.x + 0.5, tile.y + 1.5, tile.z + 0.5)
-				elif tiles_data[tile_type]["unwalkable"]:
-					coord = Vector3(tile.x + 0.5, tile.y + 0.4, tile.z + 0.5)
-				else:
-					coord = Vector3(tile.x + 0.5, tile.y + 0.5, tile.z + 0.5)
-				multiMeshInstances[tile_type].multimesh.set_instance_transform(tile_current[tile_type], Transform3D.IDENTITY.translated(coord))
-				tile_current[tile_type] = tile_current[tile_type] + 1
+	var block_current = {}
+	for block_type in multiMeshInstances:
+		multiMeshInstances[block_type].multimesh.set_instance_count(blocks_count[block_type])
+		blocks_count[block_type] = 0
+		block_current[block_type] = 0
+	for block in current_blocks:
+		var block_type = current_blocks[block]
+		var coord = Vector3.ZERO
+		if blocks_data[block_type]["unwalkable"]:
+			coord = Vector3(block.x + 0.5, block.y + 0.4, block.z + 0.5)
+		else:
+			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord))
+		block_current[block_type] = block_current[block_type] + 1
 	# clear furnitures
 	for coord in furnitures.keys():
 		var furniture = furnitures[coord]
@@ -391,31 +331,29 @@ func display_map():
 	for coord in furnitures_data:
 		add_furniture(furnitures_data[coord], coord)
 
-func initialize_tile(tile: String):
-	if tile != "TXT_MIST" && tile != "TXT_VOID":
-		tiles_data[tile] = Values.link.getDataFromTile(tile)
-		tiles_count[tile] = {}
-		materials[tile] = load(tiles_data[tile]["path"])
+func initialize_block(block: String):
+	if block != "TXT_MIST" && block != "TXT_VOID":
+		blocks_data[block] = Values.link.getDataFromBlock(block)
+		blocks_count[block] = 0
+		materials[block] = load(blocks_data[block]["path"])
 		var multimeshinstance = MultiMeshInstance3D.new()
 		var multimesh = MultiMesh.new()
 		var mesh = BoxMesh.new()
-		if tiles_data[tile]["solid"]:
-			mesh.set_size(Vector3(1, 3, 1))
-		elif tiles_data[tile]["unwalkable"]:
+		if blocks_data[block]["unwalkable"]:
 			mesh = BoxMesh.new()
 			mesh.set_size(Vector3(1, 0.8, 1))
 		else:
 			mesh.set_size(Vector3.ONE)
-		mesh.surface_set_material(0, materials[tile])
+		mesh.surface_set_material(0, materials[block])
 		multimesh.set_mesh(mesh)
 		multimesh.transform_format = MultiMesh.TRANSFORM_3D
 		multimeshinstance.set_multimesh(multimesh)
-		multiMeshInstances[tile] = multimeshinstance
-		n_tiles.add_child(multimeshinstance)
+		multiMeshInstances[block] = multimeshinstance
+		n_blocks.add_child(multimeshinstance)
 		
-		if tile == "TXT_GRASS" || tile == "TXT_FLOOR_STONE" || tile == "TXT_WALL_STONE":
-			var img = materials[tile].albedo_texture.get_image()
-			tiles_img[tile] = ImageTexture.create_from_image(img)
+		if block == "TXT_GRASS" || block == "TXT_FLOOR_STONE" || block == "TXT_WALL_STONE":
+			var img = materials[block].albedo_texture.get_image()
+			blocks_img[block] = ImageTexture.create_from_image(img)
 
 func add_furniture(furniture_data: Dictionary, coords: Vector3):
 	if !base_furnitures.has(furniture_data["name"]):
@@ -455,7 +393,7 @@ func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
 	character.scale_object_local(Vector3(character_data["size"], character_data["size"], character_data["size"]))
 	character.set_color(get_color(character_data))
-	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 1, character_data["x"])
+	character.transform.origin = Vector3(character_data["y"], character_data["z"], character_data["x"])
 	character.rotation_degrees = Vector3(0, character_data["orientation"], 0)
 	characters[character_id] = character
 	character.id = character_id
@@ -474,9 +412,10 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	n_projectiles.add_child(projectile)
 
 func update_phantom(character_id: int):
-	var offset = Values.link.getOffsets(character_id)
+	return ""
+	#var offset = Values.link.getOffsets(character_id)
 	phantoms[character_id].visible = true
-	phantoms[character_id].transform.origin = Vector3(Values.coord.x, offset.y + 1, Values.coord.z) 
+	phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y + 1, Values.coord.z) 
 	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
 	characters[character_id].nav.get_next_path_position()
 	if phantom_lines.has(character_id):
@@ -496,7 +435,7 @@ func update_phantom(character_id: int):
 			phantom_line.mesh.set_size(Vector3(0.1, 0.01, distance))
 			last_angle = Vector3(0, Values.link.getOrientationToTarget(Vector2(previous_vec.z, previous_vec.x), Vector2(vec.z, vec.x)), 0)
 			phantom_line.rotation_degrees = last_angle
-			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, offset.y + 1.001, (vec.z + previous_vec.z) / 2)
+			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, Values.coord.y + 1.001, (vec.z + previous_vec.z) / 2)
 			phantom_line.set_surface_override_material(0, phantom_material)
 			phantom_lines[character_id].push_back(phantom_line)
 			n_characters.add_child(phantom_line)

@@ -14,6 +14,7 @@ class Race : public Way {
   public:
     const int race_type;
     const float size;
+    const float height;
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
@@ -46,6 +47,7 @@ class Race : public Way {
       std::list<std::string> tags,
       int race_type,
       float size,
+      float height,
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
@@ -81,6 +83,7 @@ class Race : public Way {
       ),
       race_type(race_type),
       size(size),
+      height(height),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
@@ -112,6 +115,7 @@ class Race : public Way {
     int getSoulBurnIncr(std::list<Race *> race_modifiers);
     int getFlowIncr(std::list<Race *> race_modifiers);
     float getSize(std::list<Race *> race_modifiers);
+    float getHeight(std::list<Race *> race_modifiers);
     bool getNeedToEat(std::list<Race *> race_modifiers);
     bool getCanEatFood(std::list<Race *> race_modifiers);
     bool getNeedToSleep(std::list<Race *> race_modifiers);

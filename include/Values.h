@@ -23,10 +23,12 @@ class Map;
 class Projectile;
 class PseudoSkill;
 class Quest;
+class Region;
 class Save;
 class Skill;
 class Speech;
-class Tile;
+class Block;
+class BlocksChunk;
 class Way;
 class Race;
 class World;
@@ -314,19 +316,18 @@ class SpeechManager;
 #define ACTION_IDLE 0
 #define ACTION_MOVE 1
 #define ACTION_STRIKE 2
-#define ACTION_HEAVY_STRIKE 3
+#define ACTION_RESPITE 3
 #define ACTION_ACTIVATION 4
-#define ACTION_RESPITE 5
-#define ACTION_SHOOT 6
-#define ACTION_RELOAD 7
-#define ACTION_GRAB 8
-#define ACTION_SWAP_GEAR 9
-#define ACTION_USE_ITEM 10
-#define ACTION_USE_SKILL 11
-#define ACTION_REST 12
-#define ACTION_TALKING 13
-#define ACTION_ECONOMICS 14
-#define ACTION_BREAKPOINT 15
+#define ACTION_CHANNEL 5
+#define ACTION_USE_SKILL 6
+#define ACTION_USE_ITEM 7
+#define ACTION_RELOAD 8
+#define ACTION_GRAB 9
+#define ACTION_SWAP_GEAR 10
+#define ACTION_REST 11
+#define ACTION_TALKING 12
+#define ACTION_ECONOMICS 13
+#define ACTION_BREAKPOINT 14
 
 // teams relations
 

@@ -26,14 +26,9 @@ Action * AI::getActions(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
-Map * AI::updateMap(Adventure * adventure, Character * c) {
-  Map * map = new Map(adventure->getWorld()->getMap(c->getX(), c->getY(), c->getZ()), c, adventure->getDatabase(), adventure->getWorld());
-  c->setCurrentMap(map);
-  return map;
-}
-
 float AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getOrientationToTarget(self->getX(), self->getY(), (float) x + 0.5F, (float) y + 0.5F);
+  //return MapUtil::getOrientationToTarget(self->getX(), self->getY(), (float) x + 0.5F, (float) y + 0.5F);
+  return 0.F;
 }
 
 float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
@@ -46,7 +41,8 @@ float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int
 }
 
 std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
-  return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getCurrentMap()->id), self->getX(), self->getY(), x, y, false);
+  //return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getRegion()), self->getX(), self->getY(), x, y, false);
+  return std::vector<MapUtil::Pair>();
 }
 
 void AI::selectHungriness(Character * self) {
@@ -68,6 +64,8 @@ void AI::selectTiredness(Character * self) {
 }
 
 Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, int target_y) {
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
+  /*
   int range = (int) MapUtil::distance(self->getX(), self->getY(), target_x, target_y);
   if(range == 0) {
     return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
@@ -107,9 +105,12 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
   }
   Action * action = new BaseAction(ACTION_IDLE, adventure, nullptr, self);
   return action;
+  */
 }
 
 Action * AI::eat(Adventure * adventure, Character * self) {
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
+  /*
   if(!self->getRace()->need_to_eat) {
     return nullptr;
   }
@@ -124,7 +125,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
   }
   else {
     Map * map = self->getCurrentMap();
-    Tile * target = nullptr;
+    Block * target = nullptr;
     Skill * skill = nullptr;
     for(Skill * s : self->getSkills()) {
       skill = s;
@@ -132,13 +133,13 @@ Action * AI::eat(Adventure * adventure, Character * self) {
         break;
       }
     }
-    bool correct_tile = false;
+    bool correct_block = false;
     int power = -1; // power = 0 in first loop turn
     int k = 0;
     int i;
     int j;
     // TODO // infinite loop
-    while(!correct_tile && (power <= map->sizeX || power <= map->sizeY)) {
+    while(!correct_block && (power <= map->sizeX || power <= map->sizeY)) {
       if(k % 8 == 0) {
         power++;
       }
@@ -174,7 +175,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
           i -= power;
           break;
       }
-      if(!(j >= map->offsetY && j < map->sizeY + map->offsetY) || !(i >= map->offsetX && i < map->sizeX + map->offsetX) || (correct_tile = map->getTile(i, j) == target )) {
+      if(!(j >= map->offsetY && j < map->sizeY + map->offsetY) || !(i >= map->offsetX && i < map->sizeX + map->offsetX) || (correct_block = map->getBlock(i, j) == target )) {
         continue;
       }
     }
@@ -191,9 +192,12 @@ Action * AI::eat(Adventure * adventure, Character * self) {
       return new TargetedAction(ACTION_MOVE, adventure, nullptr, self, t);
     }
   }
+  */
 }
 
 Action * AI::trackPrey(Adventure * adventure, Character * self) {
+  return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
+  /*
   Map * map = self->getCurrentMap();
   Character * prey = nullptr;
   Loot * corpse = nullptr;
@@ -248,6 +252,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
     }
   }
   return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
+  */
 }
 
 std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Character * self, int range) {
@@ -256,7 +261,7 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
     if(adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == TEAM_ENEMY) {
       threats.push_front(other);
     }
-    else if(MapUtil::distance(self->getX(), self->getY(), other->getX(), other->getY()) <= range
+    else if(MapUtil::distance(self->getCoord(), other->getCoord()) <= range
       && adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == TEAM_NEUTRAL) {
       threats.push_front(other);
     }
@@ -267,7 +272,7 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
 std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
   std::map<Character *, Skill *> bestDamageSkills = std::map<Character *, Skill *>();
   for(Character * threat : threats) {
-    float range = MapUtil::distance(self->getX(), self->getY(), threat->getX(), threat->getY());
+    float range = MapUtil::distance(self->getCoord(), threat->getCoord());
     Skill * skill = nullptr;
     int maxDamage = 0;
     for(auto pair : skills) {
@@ -319,7 +324,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
     }
     if(!self->getGear()->getWeapon_1()->use_ammo || self->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
-      return new TargetedAction(ACTION_SHOOT, adventure, nullptr, self, t);
+      return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
     }
     ItemSlot * slot = nullptr;
     slot = self->canReload(ITEM_SLOT_WEAPON_1);
@@ -365,5 +370,5 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       max = powerScore;
     }
   }
-  return moveTowards(adventure, self, target->getX(), target->getY());
+  return moveTowards(adventure, self, target->getCoord().x, target->getCoord().y);
 }

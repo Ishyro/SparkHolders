@@ -218,7 +218,7 @@ const std::string Translator::getSkillDesc(std::string to_translate) {
   }
 }
 
-const std::string Translator::getTileName(std::string to_translate) {
+const std::string Translator::getBlockName(std::string to_translate) {
   try {
     return tilesNames.at(to_translate);
   } catch (const std::out_of_range &e) {
@@ -226,7 +226,7 @@ const std::string Translator::getTileName(std::string to_translate) {
   }
 }
 
-const std::string Translator::getTileDesc(std::string to_translate) {
+const std::string Translator::getBlockDesc(std::string to_translate) {
   try {
     return tilesDescs.at(to_translate);
   } catch (const std::out_of_range &e) {

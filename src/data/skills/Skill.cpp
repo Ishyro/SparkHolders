@@ -2,7 +2,7 @@
 
 #include "data/skills/Skill.h"
 
-#include "data/skills/TileSwapSkill.h"
+#include "data/skills/BlockSwapSkill.h"
 
 #include "util/String.h"
 
@@ -13,16 +13,8 @@ void Skill::activate(Character * owner, Target * target, Adventure * adventure, 
   }
 }
 bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
-  // using mana beyond flow is forbidden for instant skills
-  if(is_instant) {
-    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getAvaillableMana(false)) {
-      return false;
-    }
-  }
-  else {
-    if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) >= owner->getAvaillableMana(true)) {
-      return false;
-    }
+  if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getChanneledMana()) {
+    return false;
   }
   for(PseudoSkill * skill : skills) {
     if(!skill->canCast(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range)) {
@@ -64,12 +56,12 @@ float Skill::getDamageReductionFromType(int damage_type, int overcharge_power) {
   return reduction;
 }
 
-Tile * Skill::isEatingSkill() {
+Block * Skill::isEatingSkill() {
   bool is_eating_skill = false;
-  Tile * target = nullptr;
+  Block * target = nullptr;
   for(PseudoSkill * s : skills) {
     if(s->skill_type == SKILL_TILE_SWAP) {
-      target = ( (TileSwapSkill *) s)->getCurrentTile();
+      target = ( (BlockSwapSkill *) s)->getCurrentBlock();
     }
     if(s->skill_type == SKILL_SIMPLE) {
       for(Effect * effect : s->effects) {

@@ -4,13 +4,14 @@
 #include <algorithm>
 #include <list>
 #include <set>
+#include <map>
 #include <vector>
 #include <string>
 
 #include "data/Character.h"
 #include "data/Database.h"
 #include "data/Projectile.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 #include "data/World.h"
 
 #include "data/furnitures/Furniture.h"
@@ -20,6 +21,8 @@
 #include "data/furnitures/LinkedFurniture.h"
 #include "data/furnitures/SkillFurniture.h"
 #include "data/furnitures/SwitchFurniture.h"
+
+#include "util/MapUtil.h"
 
 #include <iostream>
 
@@ -73,63 +76,14 @@ class Map {
       sizeY(sizeY),
       sizeZ(sizeZ),
       outside(outside),
-      tiles(sizeY),
-      lights(sizeY),
+      blocks(std::map<const MapUtil::Vector3i, Block *>()),
       light(0),
       rotation(0)
     {
-      for(int i = 0; i < sizeY; i++) {
-        tiles[i] = std::vector<Tile *>(sizeX);
-        lights[i] = std::vector<int>(sizeX);
-      }
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       furnitures = std::list<Furniture *>();
       loots = std::list<Loot *>();
-    }
-    // rotation = 0
-    Map(const Map * map, std::string name, int offsetX, int offsetY, int offsetZ):
-      name(name),
-      baseName(map->name),
-      id(++map::id_cpt),
-      offsetX(offsetX),
-      offsetY(offsetY),
-      offsetZ(offsetZ),
-      sizeX(map->sizeX),
-      sizeY(map->sizeY),
-      sizeZ(map->sizeZ),
-      outside(map->outside),
-      tiles(map->tiles),
-      lights(map->lights),
-      light(map->light),
-      rotation(0)
-    {
-      characters = std::list<Character *>();
-      projectiles = std::list<Projectile *>();
-      loots = std::list<Loot *>();
-      furnitures = std::list<Furniture *>();
-      for(Furniture * furniture : map->furnitures) {
-        switch(furniture->type) {
-          case FURNITURE_BASIC:
-            furnitures.push_back(new BasicFurniture( (BasicFurniture *) furniture, this));
-            break;
-          case FURNITURE_CONTAINER:
-            furnitures.push_back(new ContainerFurniture( (ContainerFurniture *) furniture, this));
-            break;
-          case FURNITURE_CRAFTING:
-            furnitures.push_back(new CraftingFurniture( (CraftingFurniture *) furniture, this));
-            break;
-          case FURNITURE_LINKED:
-            furnitures.push_back(new LinkedFurniture( (LinkedFurniture *) furniture, this));
-            break;
-          case FURNITURE_SKILL:
-            furnitures.push_back(new SkillFurniture( (SkillFurniture *) furniture, this));
-            break;
-          case FURNITURE_SWITCH:
-            furnitures.push_back(new SwitchFurniture( (SwitchFurniture *) furniture, this));
-            break;
-        }
-      }
     }
 
     Map(Map * map, std::string name, int offsetX, int offsetY, int offsetZ, int rotation):
@@ -143,7 +97,7 @@ class Map {
       sizeY(rotation == 0 || rotation == 180 ? map->sizeY : map->sizeX),
       sizeZ(map->sizeZ),
       outside(map->outside),
-      tiles(this->sizeY),
+      blocks(std::map<const MapUtil::Vector3i, Block *>()),
       lights(this->sizeY),
       light(map->light),
       rotation(rotation)
@@ -151,26 +105,34 @@ class Map {
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
-      for(int y = 0; y < this->sizeY; y++) {
-        tiles[y] = std::vector<Tile *>(this->sizeX);
-        lights[y] = std::vector<int>(this->sizeX);
-        for(int x = 0; x < this->sizeX; x++) {
-          switch(rotation) {
-            case 0:
-              tiles[y][x] = map->tiles[y][x];
-              break;
-            case 90:
-              tiles[y][x] = map->tiles[sizeX - 1 - x][y];
-              break;
-            case 180:
-              tiles[y][x] = map->tiles[sizeY - 1 - y][sizeX - 1 - x];
-              break;
-            case 270:
-              tiles[y][x] = map->tiles[x][sizeY - 1 - y];
-              break;
-            default:;
-          }
+      for(auto pair : map->blocks) {
+        MapUtil::Vector3i coord = pair.first;
+        MapUtil::Vector3i new_coord;
+        Block * block = pair.second;
+        switch(rotation) {
+          case 0:
+            new_coord.x = coord.x + offsetX;
+            new_coord.y = coord.y + offsetY;
+            new_coord.z = coord.z + offsetZ;
+            break;
+          case 90:
+            new_coord.x = coord.y + offsetX;
+            new_coord.y = sizeX - 1 - coord.x + offsetY;
+            new_coord.z = coord.z + offsetZ;
+            break;
+          case 180:
+            new_coord.x = sizeX - 1 - coord.x + offsetX;
+            new_coord.y = sizeY - 1 - coord.y + offsetY;
+            new_coord.z = coord.z + offsetZ;
+            break;
+          case 270:
+            new_coord.x = sizeY - 1 - coord.y + offsetX;
+            new_coord.y = coord.x + offsetY;
+            new_coord.z = coord.z + offsetZ;
+            break;
+          default:;
         }
+        setBlock(new_coord, block);
       }
       furnitures = std::list<Furniture *>();
       for(Furniture * furniture : map->furnitures) {
@@ -197,6 +159,7 @@ class Map {
       }
     }
 
+/*
     Map(Map * map, Character * player, Database * database, World * world):
       name(map->name),
       baseName(map->name),
@@ -209,27 +172,23 @@ class Map {
       sizeZ(map->sizeZ),
       outside(map->outside),
       lights(sizeY),
-      tiles(sizeY),
+      tiles(std::map<Vector3, Block *>()),
       light(map->light),
       rotation(0)
     {
       std::set<long> ids = std::set<long>();
       ids.insert(id);
-      for(int i = 0; i < sizeY; i++) {
-        lights[i] = std::vector<int>(sizeX);
-        tiles[i] = std::vector<Tile *>(sizeX);
-      }
       for(int y = 0; y < sizeY; y++) {
         for(int x = 0; x < sizeX; x++) {
-          Tile * tile = map->getTile(x + offsetX, y + offsetY); 
-          if(tile != nullptr && tile->name != "TXT_VOID") {
-            tiles[y][x] = tile;
+          Block * block = map->getBlock(x + offsetX, y + offsetY); 
+          if(block != nullptr && block->name != "TXT_VOID") {
+            tiles[y][x] = block;
             lights[y][x] = map->getLight(x + offsetX, y + offsetY);
           }
           else {
-            tiles[y][x] = world->getTile(x + offsetX, y + offsetY, offsetZ);
+            tiles[y][x] = world->getBlock(x + offsetX, y + offsetY, offsetZ);
             if(tiles[y][x] == nullptr) {
-              tiles[y][x] = (Tile *) database->getTile("TXT_VOID");
+              tiles[y][x] = (Block *) database->getBlock("TXT_VOID");
               lights[y][x] = 0;
             }
             else {
@@ -251,9 +210,9 @@ class Map {
         }
       }
       loots = std::list<Loot *>();
-      mist_nb = canSee(player, (Tile *) database->getTile("TXT_MIST"));
+      mist_nb = canSee(player, (Block *) database->getBlock("TXT_MIST"));
       for(Furniture * f : std::list<Furniture *>(furnitures)) {
-        if(getTile(f->getX(), f->getY())->name == "TXT_MIST") {
+        if(getBlock(f->getX(), f->getY())->name == "TXT_MIST") {
           furnitures.remove(f);
         }
       }
@@ -281,7 +240,9 @@ class Map {
         }
       }
     }
+*/
 
+/*
     Map(Map * map, Projectile * projectile, Database * database, World * world):
       name(map->name),
       baseName(map->name),
@@ -301,18 +262,18 @@ class Map {
       std::set<int> ids = std::set<int>();
       ids.insert(id);
       for(int i = 0; i < sizeY; i++) {
-        tiles[i] = std::vector<Tile *>(sizeX);
+        tiles[i] = std::vector<Block *>(sizeX);
       }
       for(int y = 0; y < sizeY; y++) {
         for(int x = 0; x < sizeX; x++) {
-          Tile * tile = map->getTile(x + offsetX, y + offsetY); 
-          if(tile != nullptr && tile->name != "TXT_VOID") {
-            tiles[y][x] = tile;
+          Block * block = map->getBlock(x + offsetX, y + offsetY); 
+          if(block != nullptr && block->name != "TXT_VOID") {
+            tiles[y][x] = block;
           }
           else {
-            tiles[y][x] = world->getTile(x + offsetX, y + offsetY, offsetZ);
+            tiles[y][x] = world->getBlock(x + offsetX, y + offsetY, offsetZ);
             if(tiles[y][x] == nullptr) {
-              tiles[y][x] = (Tile *) database->getTile("TXT_VOID");
+              tiles[y][x] = (Block *) database->getBlock("TXT_VOID");
             }
             else {
               ids.insert(world->getMap(x + offsetX, y + offsetY, offsetZ)->id);
@@ -330,14 +291,14 @@ class Map {
         }
       }
     }
+    */
     std::list<Character *> getCharacters();
     std::list<Projectile *> getProjectiles();
     std::list<Furniture *> getFurnitures();
     std::list<Loot *> getLoots();
     bool allowedCoords(int x, int y);
     bool allowedCoords(float x, float y);
-    Tile * getTile(int x, int y);
-    Tile * getTile(float x, float y);
+    Block * getBlock(const MapUtil::Vector3i coord);
     int getLight(int x, int y);
     int getLight(float x, float y);
     Furniture * getFurniture(int x, int y);
@@ -352,11 +313,10 @@ class Map {
     void propagateLight(int x, int y);
     void applyDayLight(int light);
     bool canSee(Character * watcher, Character * target);
-    int canSee(Character * watcher, Tile * mist);
+    int canSee(Character * watcher, Block * mist);
     int getMistNb();
     int getRotation();
-    void setTile(int x, int y, Tile * tile);
-    void setTile(float x, float y, Tile * tile);
+    void setBlock(const MapUtil::Vector3i coord, Block * block);
     void crumble(int x, int y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
@@ -375,7 +335,7 @@ class Map {
     float move(Character * c, float orientation, float destX, float destY, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
-    std::string tile_to_string(int x, int y);
+    std::string block_to_string(int x, int y);
     static std::string target_to_string(Target * target);
     static Target * target_from_string(std::string to_read);
     bool operator == (const Map& m) const { return id == m.id; }
@@ -388,7 +348,7 @@ class Map {
     std::list<Projectile *> projectiles;
     std::list<Furniture *> furnitures;
     std::list<Loot *> loots;
-    std::vector<std::vector<Tile *>> tiles;
+    std::map<const MapUtil::Vector3i, Block *> blocks;
     std::vector<std::vector<int>> lights;
 };
 

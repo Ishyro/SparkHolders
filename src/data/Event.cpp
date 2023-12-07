@@ -10,7 +10,7 @@
 
 void Event::activate(Adventure * adventure) {
   for(Map * map : maps) {
-    adventure->getWorld()->addMap(map, (Tile *) adventure->getDatabase()->getTile("TXT_VOID"));
+    adventure->getWorld()->addMap(map);
   }
   for(MapLink * link : links) {
     adventure->getWorld()->addMapLink(link);
@@ -18,12 +18,12 @@ void Event::activate(Adventure * adventure) {
   switch(character_apparition_type) {
     case APPARITION_SOFT:
       for(Character * c : characters) {
-        adventure->softMoveCharacterToMap(c, c->getCurrentMap()->id, c->getX(), c->getY(), c->getZ());
+        adventure->softMoveCharacterToMap(c, c->getCoord());
       }
       break;
     case APPARITION_HARD:
       for(Character * c : characters) {
-        adventure->softMoveCharacterToMap(c, c->getCurrentMap()->id, c->getX(), c->getY(), c->getZ());
+        adventure->hardMoveCharacterToMap(c, c->getCoord());
       }
       break;
   }

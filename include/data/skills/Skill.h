@@ -54,7 +54,7 @@ class Skill {
     int getPower();
     int getDamageFromType(int dammage_type, int overcharge_power);
     float getDamageReductionFromType(int dammage_type, int overcharge_power);
-    Tile * isEatingSkill();
+    Block * isEatingSkill();
     int isTeleportSkill();
 };
 

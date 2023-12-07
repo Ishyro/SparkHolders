@@ -9,7 +9,7 @@
 #include "data/skills/SummonSkill.h"
 #include "data/skills/TeamChangerSkill.h"
 #include "data/skills/TeleportSkill.h"
-#include "data/skills/TileSwapSkill.h"
+#include "data/skills/BlockSwapSkill.h"
 
 #include "util/String.h"
 

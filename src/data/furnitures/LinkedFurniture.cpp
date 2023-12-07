@@ -8,7 +8,7 @@ bool LinkedFurniture::getSolid() { return solid; }
 int LinkedFurniture::getLight() { return light; }
 
 void LinkedFurniture::init(Map * map, ActivableFurniture * linked_furniture) {
-    this->linked_furniture = (ActivableFurniture *) map->getFurniture(linked_furniture->getX(), linked_furniture->getY());
+    this->linked_furniture = (ActivableFurniture *) map->getFurniture(linked_furniture->getCoord().x, linked_furniture->getCoord().y);
 }
 
 Furniture * LinkedFurniture::getLinkedFurniture() { return linked_furniture; }

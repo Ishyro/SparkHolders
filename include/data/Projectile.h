@@ -5,6 +5,8 @@
 #include <list>
 #include <cmath>
 
+#include "util/MapUtil.h"
+
 #include "Values.h"
 
 typedef struct ProjectileDisplay {
@@ -68,9 +70,7 @@ class Projectile {
     {
       lost = false;
       current_map_id = 0;
-      x = 0.F;
-      y = 0.F;
-      z = 0.F;
+      coord = MapUtil::makeVector3(0.F, 0.F, 0.F);
       target = nullptr;
       owner = nullptr;
       orientation = 0.F;
@@ -145,9 +145,7 @@ class Projectile {
       size(projectile->size),
       homing(projectile->homing),
       current_map_id(current_map_id),
-      x(x),
-      y(y),
-      z(z),
+      coord(MapUtil::makeVector3(x, y, z)),
       skill(projectile->skill),
       effects(std::list<Effect *>()),
       target(target),
@@ -203,9 +201,7 @@ class Projectile {
       size(size),
       homing(homing),
       current_map_id(current_map_id),
-      x(x),
-      y(y),
-      z(z),
+      coord(MapUtil::makeVector3(x, y, z)),
       skill(skill),
       effects(effects),
       target(target),
@@ -232,9 +228,7 @@ class Projectile {
     }
     void init(std::list<Effect *> effects, int overcharge_power, int overcharge_duration, World * world, bool teleport, bool change_owner_orientation);
     int getCurrentMapId();
-    float getX();
-    float getY();
-    float getZ();
+    MapUtil::Vector3 getCoord();
     float getDestX();
     float getDestY();
     float getOrientation();
@@ -268,7 +262,7 @@ class Projectile {
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(float x, float y, float z, float orientation);
+    void move(MapUtil::Vector3 coord, float orientation);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -282,9 +276,7 @@ class Projectile {
     bool operator != (const Projectile& p) const { return !operator==(p); }
   private:
     int current_map_id;
-    float x;
-    float y;
-    float z;
+    MapUtil::Vector3 coord;
     int target_type;
     bool lost;
     Skill * skill;

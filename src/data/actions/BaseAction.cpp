@@ -16,7 +16,9 @@ Action * BaseAction::execute(Adventure * adventure) {
       user->rest();
       break;
     case ACTION_BREAKPOINT:
-        break;
+      break;
+    case ACTION_CHANNEL:
+      user->channel(-1);
     default: ;
   }
   if(previous != nullptr) {
@@ -29,13 +31,14 @@ Action * BaseAction::execute(Adventure * adventure) {
     next->computeTick(1 - tick);
   }
   else {
-    user->setNeedToUpdateActions(true);
+    user->setCurrentAction(nullptr);
   }
   return next;
 }
 
 void BaseAction::computeTime(Adventure * adventure) {
   switch(type) {
+    case ACTION_CHANNEL:
     case ACTION_IDLE:
       time = 1.F;
       break;

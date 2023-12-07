@@ -8,7 +8,9 @@
 #include "data/Effect.h"
 #include "data/Map.h"
 #include "data/Projectile.h"
-#include "data/Tile.h"
+#include "data/Block.h"
+#include "data/BlocksChunk.h"
+#include "data/Region.h"
 
 #include "data/items/Item.h"
 #include "data/items/ArmorItem.h"
@@ -29,7 +31,7 @@
 #include "data/skills/SummonSkill.h"
 #include "data/skills/TeamChangerSkill.h"
 #include "data/skills/TeleportSkill.h"
-#include "data/skills/TileSwapSkill.h"
+#include "data/skills/BlockSwapSkill.h"
 
 #include "data/ways/Way.h"
 #include "data/ways/Attributes.h"
@@ -92,21 +94,20 @@ namespace Display {
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    Map * map = display->maps.at(player->id);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(map->name).length() / 2, t->getMapName(map->name).c_str());
-    mvwprintw(screen, 2, cols / 2, std::to_string(map->offsetX).c_str());
-    mvwprintw(screen, 3, cols / 2, std::to_string(map->offsetY).c_str());
-    for(int y = map->offsetY + map->sizeY - 1; y >= map->offsetY; y--) {
-      for(int x = map->offsetX; x < map->sizeX + map->offsetX; x++) {
+    Region * region = player->getRegion();
+    //mvwprintw(screen, 1, cols / 2 - t->getMapName(map->name).length() / 2, t->getMapName(map->name).c_str());
+    for(int y = region->id.y + CHUNK_SIZE * 3 - 1; y >= region->id.y; y--) {
+      for(int x = region->id.x; x < region->id.x + CHUNK_SIZE * 3; x++) {
         std::string to_print = "·";
-        if(map->getTile(x, y) != nullptr && map->getTile(x, y)->name != "TXT_VOID") {
-          if(map->getTile(x, y)->unwalkable) {
+        Block * block = region->getBlock(MapUtil::makeVector3i(x, y, -1));
+        if(block != nullptr) {
+          if(block->unwalkable) {
             to_print = "#";
           }
-          if(map->getTile(x, y)->name == "TXT_MIST") { // unseen
+          if(block->name == "TXT_MIST") { // unseen
             to_print = "~";
           }
-          mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (y - map->offsetY), (x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
+          mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (y - region->id.y), (x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
         }
       }
     }
@@ -132,7 +133,7 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(character->y - map->offsetY), (int) std::floor(character->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(character->y - region->id.y), (int) std::floor(character->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
@@ -167,21 +168,21 @@ namespace Display {
           break;
       }
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(projectile->y - map->offsetY), (int) std::floor(projectile->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(projectile->y - region->id.y), (int) std::floor(projectile->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
       std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
-      mvwprintw(screen, lines / 2 - map->sizeY / 2 + map->sizeY - 1 - (int) std::floor(loot->y - map->offsetY), (int) std::floor(loot->x - map->offsetX) + cols / 2 - map->sizeX / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(loot->y - region->id.y), (int) std::floor(loot->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
     std::string to_print = std::to_string(player->getOrientation());
     // player position
     mvwprintw(screen, lines - 4, 1, to_print.c_str());
-    to_print = std::string("X: ") + std::to_string(player->getX());
+    to_print = std::string("X: ") + std::to_string(player->getCoord().x);
     mvwprintw(screen, lines - 3, 1, to_print.c_str());
-    to_print = std::string("Y: ") + std::to_string(player->getY());
+    to_print = std::string("Y: ") + std::to_string(player->getCoord().y);
     mvwprintw(screen, lines - 2, 1, to_print.c_str());
     // time
     std::stringstream * ss = new std::stringstream(adventure->getTime());
@@ -195,42 +196,6 @@ namespace Display {
     delete ss;
     mvwprintw(screen, lines - 2, cols - 2 - to_print.length(), to_print.c_str());
 
-    wrefresh(screen);
-  }
-
-  void displayTileMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
-    getmaxyx(screen, lines, cols);
-    wclear(screen);
-    box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->maps.at(player->id)->name).length() / 2, t->getMapName(display->maps.at(player->id)->name).c_str());
-    for(int y = display->maps.at(player->id)->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->maps.at(player->id)->sizeX; x++) {
-        std::string to_print;
-        char ch = t->getTileName(display->maps.at(player->id)->getTile(x, y)->name).at(0);
-        to_print = ch;
-        mvwprintw(screen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY -1 - y, x + cols / 2 - display->maps.at(player->id)->sizeX / 2, to_print.c_str());
-      }
-    }
-    wrefresh(screen);
-  }
-
-  void displayLightMap(StateDisplay * display, Character * player, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
-    getmaxyx(screen, lines, cols);
-    wclear(screen);
-    box(screen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(screen, 1, cols / 2 - t->getMapName(display->maps.at(player->id)->name).length() / 2, t->getMapName(display->maps.at(player->id)->name).c_str());
-    for(int y = display->maps.at(player->id)->sizeY - 1; y >= 0 ; y--) {
-      for(int x = 0; x < display->maps.at(player->id)->sizeX; x++) {
-        std::string to_print;
-        char ch = std::to_string(display->maps.at(player->id)->getLight(y, x)).at(0);
-        to_print = ch;
-        mvwprintw(screen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY -1 - y, x + cols / 2 - display->maps.at(player->id)->sizeX / 2, to_print.c_str());
-      }
-    }
     wrefresh(screen);
   }
 
@@ -1204,6 +1169,7 @@ namespace Display {
     long id = link->getPlayersId().front();
     while(true) {
       StateDisplay * display = link->getState();
+      Region * region = link->getPlayer(id)->getRegion();
       if(display->need_to_send_actions) {
         displayMap(display, link->getAdventure(), link->getPlayer(id), mapScreen, t);
         displayStats(link->getPlayer(id), statsScreen, t);
@@ -1229,8 +1195,8 @@ namespace Display {
           orientation = link->getPlayer(id)->getOrientation();
           skill = nullptr;
           target_id = 0;
-          target_x = (int) std::floor(link->getPlayer(id)->getX()) - display->maps.at(id)->offsetX;
-          target_y = (int) std::floor(link->getPlayer(id)->getY()) - display->maps.at(id)->offsetY;
+          target_x = (int) std::floor(link->getPlayer(id)->getCoord().x) - region->id.x;
+          target_y = (int) std::floor(link->getPlayer(id)->getCoord().y) - region->id.y;
           overcharge_power = 1;
           overcharge_duration = 1;
           overcharge_range = 1;
@@ -1274,20 +1240,12 @@ namespace Display {
               break;
             case 'c':
             case 'C':
-              type = ACTION_REST;
-              if(!link->getPlayer(id)->getGear()->getWeapon_1()->use_projectile) {
-                type = ACTION_STRIKE;
-              }
-              else if(!link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo || link->getPlayer(id)->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
-                type = ACTION_SHOOT;
-              }
-              if(type == ACTION_SHOOT || type == ACTION_STRIKE) {
-                if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
-                  if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
-                    link->getPlayer(id)->getGear()->getWeapon_1()->useAmmo();
-                  }
-                  done = true;
+              type = ACTION_STRIKE;
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
+                if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
+                  link->getPlayer(id)->getGear()->getWeapon_1()->useAmmo();
                 }
+                done = true;
               }
               break;
             case 'i':
@@ -1333,12 +1291,10 @@ namespace Display {
             break;
           case ACTION_MOVE:
           case ACTION_STRIKE:
-          case ACTION_HEAVY_STRIKE:
-          case ACTION_SHOOT:
           case ACTION_USE_SKILL: {
             Target * target = new Target();
             ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
-            ((Target *) target)->id = (target_id == 0 ? display->maps.at(id)->id : target_id);
+            ((Target *) target)->id = (target_id == 0 ? 0 : target_id);
             ((Target *) target)->x = target_x + 0.5;
             ((Target *) target)->y = target_y + 0.5;
             ((Target *) target)->next = nullptr;
@@ -1630,14 +1586,15 @@ namespace Display {
     int cols2 = 0;
     getmaxyx(targetScreen, lines2, cols2);
     cchar_t *wch_old = new cchar_t();
-    mvwin_wch(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2, wch_old);
+    mvwin_wch(mapScreen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - target_y, target_x + cols / 2 - CHUNK_SIZE * 3 / 2, wch_old);
+    Region * region = player->getRegion();
     while(!done) {
       flushinp();
       int keyPressed = getch();
       target_id = 0;
       int previous_x = target_x;
       int previous_y = target_y;
-      wmove(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2);
+      wmove(mapScreen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - target_y, target_x + cols / 2 - CHUNK_SIZE * 3 / 2);
       wecho_wchar(mapScreen, wch_old);
       switch(keyPressed) {
         case '4':
@@ -1647,20 +1604,20 @@ namespace Display {
           }
           break;
         case '7':
-          if(target_x > 0 && target_y < display->maps.at(player->id)->sizeY - 1) {
+          if(target_x > 0 && target_y < CHUNK_SIZE * 3 - 1) {
             target_x--;
             target_y++;
           }
           break;
         case '8':
         case KEY_UP: {
-          if(target_y < display->maps.at(player->id)->sizeY - 1) {
+          if(target_y < CHUNK_SIZE * 3 - 1) {
             target_y++;
           }
           break;
         }
         case '9': {
-          if(target_x < display->maps.at(player->id)->sizeX - 1 && target_y < display->maps.at(player->id)->sizeY - 1) {
+          if(target_x < CHUNK_SIZE * 3 - 1 && target_y < CHUNK_SIZE * 3 - 1) {
             target_x++;
             target_y++;
           }
@@ -1668,12 +1625,12 @@ namespace Display {
         }
         case '6':
         case KEY_RIGHT:
-          if(target_x < display->maps.at(player->id)->sizeX - 1) {
+          if(target_x < CHUNK_SIZE * 3 - 1) {
             target_x++;
           }
           break;
         case '3':
-          if(target_x < display->maps.at(player->id)->sizeX - 1 && target_y > 0) {
+          if(target_x < CHUNK_SIZE * 3 - 1 && target_y > 0) {
             target_x++;
             target_y--;
           }
@@ -1693,7 +1650,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + display->maps.at(player->id)->offsetX, target_y + display->maps.at(player->id)->offsetY);
+          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + region->id.x, target_y + region->id.y);
           break;
         }
         case ' ': {
@@ -1713,25 +1670,25 @@ namespace Display {
       wclear(targetScreen);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
       wrefresh(targetScreen);
-      std::string to_print = "x= " + std::to_string(target_x + display->maps.at(player->id)->offsetX) + " y= " + std::to_string(target_y + display->maps.at(player->id)->offsetY);
+      std::string to_print = "x= " + std::to_string(target_x + region->id.x) + " y= " + std::to_string(target_y + region->id.y);
       mvwprintw(targetScreen, lines2 / 2, cols2 / 2 - to_print.length() / 2, to_print.c_str());
       wrefresh(targetScreen);
       for(CharacterDisplay * character : display->characters) {
-        if((int) std::floor(character->x) == target_x + display->maps.at(player->id)->offsetX && (int) std::floor(character->y) == target_y + display->maps.at(player->id)->offsetY) {
+        if((int) std::floor(character->x) == target_x + region->id.x && (int) std::floor(character->y) == target_y + region->id.y) {
           target_id = character->id;
           displayTarget(character, targetScreen, t);
           break;
         }
       }
-      wmove(mapScreen, lines / 2 - display->maps.at(player->id)->sizeY / 2 + display->maps.at(player->id)->sizeY - 1 - target_y, target_x + cols / 2 - display->maps.at(player->id)->sizeX / 2);
+      wmove(mapScreen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - target_y, target_x + cols / 2 - CHUNK_SIZE * 3 / 2);
       win_wch(mapScreen, wch_old);
       wattron(mapScreen, COLOR_PAIR(BACK_RED));
       wprintw(mapScreen, "X");
       wattroff(mapScreen, COLOR_PAIR(BACK_RED));
       wrefresh(mapScreen);
     }
-    target_x += display->maps.at(player->id)->offsetX;
-    target_y += display->maps.at(player->id)->offsetY;
+    target_x += region->id.x;
+    target_y += region->id.y;
     delete wch_old;
     return true;
   }

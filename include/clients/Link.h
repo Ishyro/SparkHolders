@@ -31,6 +31,7 @@ class Link {
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
     Character * getPlayer(long id);
     std::list<long> getPlayersId();
+    std::list<Character *> getPlayers();
     Adventure * getAdventure();
     bool hasState();
     StateDisplay * getState();

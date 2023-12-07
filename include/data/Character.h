@@ -15,6 +15,8 @@
 
 #include "data/ways/Attributes.h"
 
+#include "util/MapUtil.h"
+
 #include "Values.h"
 
 namespace character {
@@ -41,6 +43,7 @@ typedef struct CharacterDisplay {
   float y;
   float z;
   float size;
+  float height;
   float orientation;
   std::string team;
   int xp;
@@ -90,7 +93,7 @@ class Character {
       int y,
       int z,
       float orientation,
-      Map * current_map,
+      Region * region,
       std::string team,
       AI * ai,
       Attributes * main_class,
@@ -113,11 +116,9 @@ class Character {
       gold(gold),
       xp(xp),
       level(1),
-      x(x + 0.5F),
-      y(y + 0.5F),
-      z(z),
+      coord(MapUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
       orientation(orientation),
-      current_map(current_map),
+      region(region),
       merchant(from_database->merchant),
       team(team),
       ai(ai),
@@ -172,12 +173,11 @@ class Character {
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      float x,
-      float y,
-      float z,
+      MapUtil::Vector3 coord,
       float size,
+      float height,
       float orientation,
-      Map * current_map,
+      Region * region,
       bool merchant,
       long gold,
       long xp,
@@ -223,12 +223,11 @@ class Character {
       player_character(player_character),
       death_speech(death_speech),
       talking_speech(talking_speech),
-      x(x),
-      y(y),
-      z(z),
+      coord(coord),
       size(size),
+      height(height),
       orientation(orientation),
-      current_map(current_map),
+      region(region),
       merchant(merchant),
       gold(gold),
       xp(xp),
@@ -251,11 +250,7 @@ class Character {
       religion(religion),
       profession(profession),
       titles(titles)
-    {
-      // should always be 0 at round start
-      currentFlowOut = 0;
-      currentFlowIn = 0;
-    }
+    {}
 
     ~Character();
     
@@ -263,15 +258,14 @@ class Character {
     void markDead(bool dead);
     bool isAlive();
     bool isSoulBurning();
-    float getX();
-    float getY();
-    float getZ();
+    MapUtil::Vector3 getCoord();
     float getOrientation();
     float getSize();
+    float getHeight();
     int getHp();
     int getMaxHp();
     int getMana();
-    int getAvaillableMana(bool overflow);
+    int getChanneledMana();
     int getMaxMana();
     int getShield();
     int getMaxShield();
@@ -284,7 +278,8 @@ class Character {
     int getVisionRange();
     int getVisionPower();
     int getDetectionRange();
-    Map * getCurrentMap();
+    Region * getRegion();
+    Action * getCurrentAction();
     long getGold();
     long getXP();
     int getLevel();
@@ -293,8 +288,6 @@ class Character {
 
     bool needToSend();
     void setNeedToSend(bool need_to_send);
-    bool getNeedToUpdateActions();
-    void setNeedToUpdateActions(bool need_to_update_actions);
 
     AI * getAI();
     std::string getTeam();
@@ -335,7 +328,7 @@ class Character {
 
     void setOrientation(float orientation);
     void setSize(float size);
-    void move(float x, float y, float z, float orientation, World * world);
+    void move(MapUtil::Vector3 coord, float orientation, World * world);
     void hpHeal(int hp);
     void incrMaxHp();
     void setHp(int hp);
@@ -358,9 +351,12 @@ class Character {
     void incrVisionRange();
     void incrVisionPower();
     void incrDetectionRange();
-    void setCurrentMap(Map * map);
+    void setRegion(Region * region);
+    void setCurrentAction(Action * action);
 
     void applySoulBurn();
+    void applyManaWaste();
+    void channel(int cost);
     void applyTiredness();
     void applyHunger();
     void applyEffects();
@@ -430,12 +426,12 @@ class Character {
     void initializeCharacter(Gear * gear);
     void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
-    float x;
-    float y;
-    float z = 0;
+    MapUtil::Vector3 coord;
     float size;
+    float height;
     float orientation;
-    Map * current_map;
+    Region * region;
+    Action * current_action;
     int hp;
     int maxHp;
     int mana;
@@ -451,13 +447,10 @@ class Character {
     int soulBurnTreshold;
     int currentSoulBurn;
     int flow;
-    int currentFlowOut;
-    int currentFlowIn;
     int visionRange;
     int visionPower;
     int detectionRange;
     bool need_to_send = false;
-    bool need_to_update_actions = true;
     bool dead = false;
 
     long gold;

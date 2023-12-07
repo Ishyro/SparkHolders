@@ -31,7 +31,7 @@
 #include "data/Settings.h"
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 #include "data/World.h"
 #include "data/Database.h"
 
@@ -64,7 +64,7 @@
 #include "data/skills/SummonSkill.h"
 #include "data/skills/TeamChangerSkill.h"
 #include "data/skills/TeleportSkill.h"
-#include "data/skills/TileSwapSkill.h"
+#include "data/skills/BlockSwapSkill.h"
 
 #include "data/ways/Way.h"
 #include "data/ways/Race.h"
@@ -205,7 +205,6 @@ namespace FileOpener {
       std::string coord = String::extract(ss);
       int x, y, z;
       getCoordinates(coord, x, y, z);
-      Map * map = world->getMap(x, y, z);
       std::string team = String::extract(ss);
       std::string ai_str = String::extract(ss);
       Attributes * main_class = (Attributes *) database->getAttributes(String::extract(ss));
@@ -275,8 +274,7 @@ namespace FileOpener {
         profession,
         *titles
       );
-      map->addCharacter(c);
-      c->setCurrentMap(new Map(map, c, database, world));
+      world->changeRegion(c);
       delete race_modifiers;
       delete titles;
     }
@@ -291,7 +289,7 @@ namespace FileOpener {
       int offsetZ = String::extract_int(ss);
       int rotation = String::extract_int(ss);
       Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation);
-      world->addMap(map, (Tile *) database->getTile("TXT_VOID"));
+      world->addMap(map);
     }
     else if(keyword == "MapLink") {
       MapLink * link = new MapLink();
@@ -300,8 +298,8 @@ namespace FileOpener {
       coord = String::extract(ss);
       getCoordinates(coord, link->x2, link->y2, link->z2);
       link->type = database->getTargetFromMacro(String::extract(ss));
-      link->map1 = world->getMap(link->x1, link->y1, link->z1);
-      link->map2 = world->getMap(link->x2, link->y2, link->z2);
+      //link->map1 = world->getMap(link->x1, link->y1, link->z1);
+      //link->map2 = world->getMap(link->x2, link->y2, link->z2);
       world->addMapLink(link);
       world->addMapLink(link);
     }
@@ -1009,13 +1007,19 @@ namespace FileOpener {
     // skip lines until we reach the map itself
     while(getline(file, line) && line != "!end");
     // tiles
-    for(int y = sizeY - 1; y >= 0; y--) {
+    for(int z = 0; z < sizeZ; z++) {
+      // skip line
       getline(file, line);
-      std::istringstream is(line);
-      for(int x = 0; x < sizeX; x++) {
-        std::string tile;
-        getline(is, tile, ' ');
-        map->setTile(x, y, (Tile *) database->getTile(values.at(tile)));
+      for(int y = sizeY - 1; y >= 0; y--) {
+        getline(file, line);
+        std::istringstream is(line);
+        for(int x = 0; x < sizeX; x++) {
+          std::string block;
+          getline(is, block, ' ');
+          if(values.at(block) != "TXT_VOID") {
+            map->setBlock(MapUtil::makeVector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
+          }
+        }
       }
     }
     // furnitures
@@ -1039,7 +1043,7 @@ namespace FileOpener {
         addFurnitureToMap(database->getTargetFromMacro(keyword), command, map, database);
       }
     }
-    map->calculateLights();
+    //map->calculateLights();
     file.close();
     database->addMap(map);
   }
@@ -1220,9 +1224,9 @@ namespace FileOpener {
         break;
       }
       case SKILL_TILE_SWAP: {
-        Tile * current_tile = (Tile *) database->getTile(values.at("current_tile"));
-        Tile * new_tile = (Tile *) database->getTile(values.at("new_tile"));
-        pseudoSkill = new TileSwapSkill(name, skill_type, target_type, mana_cost, *effects, current_tile, new_tile);
+        Block * current_block = (Block *) database->getBlock(values.at("current_block"));
+        Block * new_block = (Block *) database->getBlock(values.at("new_block"));
+        pseudoSkill = new BlockSwapSkill(name, skill_type, target_type, mana_cost, *effects, current_block, new_block);
         break;
       }
       case SKILL_SUMMON: {
@@ -1306,7 +1310,7 @@ namespace FileOpener {
     delete options;
   }
 
-  std::string TileOpener(std::string fileName, Database * database) {
+  std::string BlockOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     std::istringstream is_unwalkable(values.at("unwalkable"));
@@ -1315,13 +1319,13 @@ namespace FileOpener {
     std::istringstream is_opaque(values.at("opaque"));
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
-    std::istringstream is_solid(values.at("solid"));
-    bool solid;
-    is_solid >> std::boolalpha >> solid;
+    std::istringstream is_allow_vertical(values.at("allow_vertical"));
+    bool allow_vertical;
+    is_allow_vertical >> std::boolalpha >> allow_vertical;
     int light = stoi(values.at("light"));
     float ap_cost = _stof(values.at("ap_cost"));
-    Tile * tile = new Tile(name, unwalkable, opaque, solid, light, ap_cost);
-    database->addTile(tile);
+    Block * block = new Block(name, unwalkable, opaque, allow_vertical, light, ap_cost);
+    database->addBlock(block);
     return name;
   }
 
@@ -1366,6 +1370,7 @@ namespace FileOpener {
     if(type == WAY_RACE) {
       int race_type = database->getTargetFromMacro(values.at("race_type"));
       float size = _stof(values.at("size"));
+      float height = _stof(values.at("height"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
       bool need_to_eat;
       is_need_to_eat >> std::boolalpha >> need_to_eat;
@@ -1412,6 +1417,7 @@ namespace FileOpener {
         *tags,
         race_type,
         size,
+        height,
         need_to_eat,
         can_eat_food,
         need_to_sleep,
@@ -1469,6 +1475,12 @@ namespace FileOpener {
         database->addAttributesFile(attributes_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
+    else if(fileName.find("/blocks/") != std::string::npos) {
+      std::string tile_name = BlockOpener(fileName, database);
+      if(!isServer) {
+        database->addBlockFile(tile_name, std::regex_replace(resFileName, std::regex(".data"), ".tres"));
+      }
+    }
     else if(fileName.find("/characters/") != std::string::npos) {
       CharacterOpener(fileName, database);
     }
@@ -1510,12 +1522,6 @@ namespace FileOpener {
     }
     else if(fileName.find("/speechs/") != std::string::npos) {
       SpeechOpener(fileName, database);
-    }
-    else if(fileName.find("/tiles/") != std::string::npos) {
-      std::string tile_name = TileOpener(fileName, database);
-      if(!isServer) {
-        database->addTileFile(tile_name, std::regex_replace(resFileName, std::regex(".data"), ".tres"));
-      }
     }
     else if(fileName.find("/ways/") != std::string::npos) {
       std::string way_name = WayOpener(fileName, database);

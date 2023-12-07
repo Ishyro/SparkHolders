@@ -86,7 +86,7 @@ void Link::sendState() {
         if(pair.second->needToSend()) {
           Server::sendCharacter(s, pair.second, adventure);
         }
-        need_to_send |= pair.second->getNeedToUpdateActions();
+        need_to_send |= pair.second->getCurrentAction() == nullptr;
       }
       Server::sendState(s, characters, need_to_send, adventure);
     } catch (const CloseException &e) {
@@ -122,7 +122,7 @@ std::list<Action *> Link::getActions() {
 bool Link::getNeedToUpdateActions() {
   bool result = false;
   for(auto pair : characters) {
-    result |= pair.second->getNeedToUpdateActions();
+    result |= pair.second->getCurrentAction() == nullptr;
   }
   return result;
 }

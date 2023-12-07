@@ -9,7 +9,7 @@
 #include "ai/EtheralCasterAI.h"
 
 void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
-  // Target will be a Tile
+  // Target will be a Block
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
     ai = new DiurnalPassiveAI(target->x, target->y);
@@ -50,13 +50,11 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     profession,
     titles
   );
-  c->setCurrentMap(new Map(adventure->getWorld()->getMap(target->x, target->y, target->z), c, adventure->getDatabase(), adventure->getWorld()));
-  adventure->getWorld()->getMap(target->id)->addCharacter(c);
   if(apparition_type == APPARITION_SOFT) {
-    adventure->softMoveCharacterToMap(c, target->id, target->x, target->y, target->z);
+    adventure->softMoveCharacterToMap(c, MapUtil::makeVector3(target->x, target->y, target->z));
   }
   else {
-    adventure->hardMoveCharacterToMap(c, target->id, target->x, target->y, target->z);
+    adventure->hardMoveCharacterToMap(c, MapUtil::makeVector3(target->x, target->y, target->z));
   }
 }
 

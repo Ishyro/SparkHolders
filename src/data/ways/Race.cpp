@@ -136,6 +136,14 @@ float Race::getSize(std::list<Race *> race_modifiers) {
   return result;
 }
 
+float Race::getHeight(std::list<Race *> race_modifiers) {
+  float result = height;
+  for(Race * modifier : race_modifiers) {
+    result = std::max(result, modifier->height);
+  }
+  return result;
+}
+
 bool Race::getNeedToEat(std::list<Race *> race_modifiers) {
   bool result = need_to_eat;
   for(Race * modifier : race_modifiers) {

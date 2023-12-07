@@ -18,7 +18,7 @@
 #include "clients/terminal/Display.h"
 
 #include "data/Map.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 
 void listener(void * param) {
   Link * link = (Link *) param;

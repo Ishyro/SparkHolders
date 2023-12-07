@@ -18,6 +18,7 @@ damageMultIncr = 10
 soulBurnIncr = 10
 flowIncr = 10
 size = 2.5
+height = 15.
 need_to_eat = true
 can_eat_food = true
 need_to_sleep = true

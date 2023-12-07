@@ -49,7 +49,7 @@ Action * GearAction::execute(Adventure * adventure) {
     next->computeTick(1 - tick);
   }
   else {
-    user->setNeedToUpdateActions(true);
+    user->setCurrentAction(nullptr);
   }
   return next;
 }

@@ -5,7 +5,7 @@
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/Speech.h"
-#include "data/Tile.h"
+#include "data/Block.h"
 #include "data/World.h"
 #include "data/Database.h"
 

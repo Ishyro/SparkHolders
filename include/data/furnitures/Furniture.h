@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "util/MapUtil.h"
+
 #include "Values.h"
 
 namespace furniture {
@@ -67,9 +69,7 @@ class Furniture {
       fire_posX(furniture->fire_posX),
       fire_posY(furniture->fire_posY),
       fire_posZ(furniture->fire_posZ),
-      x(x),
-      y(y),
-      z(z),
+      coord(MapUtil::makeVector3i(x, y, z)),
       orientation(orientation)
     {}
     Furniture(Furniture * furniture, Map * map):
@@ -88,12 +88,10 @@ class Furniture {
       fire_posY(furniture->fire_posY),
       fire_posZ(furniture->fire_posZ)
     {
-      init(map, furniture->x, furniture->y);
+      init(map, furniture->coord);
     }
-    void init(Map * map, int x, int y);
-    int getX();
-    int getY();
-    int getZ();
+    void init(Map * map, MapUtil::Vector3i coord);
+    MapUtil::Vector3i getCoord();
     float getOrientation();
     virtual bool getUnwalkable() = 0;
     virtual bool getOpaque() = 0;
@@ -101,9 +99,7 @@ class Furniture {
     virtual int getLight() = 0;
 
   protected:
-    int x;
-    int y;
-    int z;
+    MapUtil::Vector3i coord;
     float orientation;
     bool unwalkable;
     bool opaque;

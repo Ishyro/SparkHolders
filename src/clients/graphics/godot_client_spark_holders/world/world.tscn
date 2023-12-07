@@ -91,17 +91,14 @@ fov = 90.0
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("2_kskax")
 
-[node name="Tiles" type="NavigationRegion3D" parent="Map"]
+[node name="Blocks" type="NavigationRegion3D" parent="Map"]
 
-[node name="Floor" type="StaticBody3D" parent="Map/Tiles"]
+[node name="Floor" type="StaticBody3D" parent="Map/Blocks"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 collision_mask = 31
 
-[node name="Shape" type="CollisionShape3D" parent="Map/Tiles/Floor"]
+[node name="Shape" type="CollisionShape3D" parent="Map/Blocks/Floor"]
 shape = SubResource("BoxShape3D_rbf50")
-
-[node name="Grid" type="Node3D" parent="Map"]
-visible = false
 
 [node name="Lights" type="Node3D" parent="Map"]
 visible = false

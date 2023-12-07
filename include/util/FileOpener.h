@@ -36,7 +36,7 @@ namespace FileOpener {
   void SkillOpener(std::string fileName, Database * database);
   void PseudoSkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);
-  std::string TileOpener(std::string fileName, Database * database);
+  std::string BlockOpener(std::string fileName, Database * database);
   std::string WayOpener(std::string fileName, Database * database);
 
   void FileOpener(std::string fileName, Database * database, bool isServer);

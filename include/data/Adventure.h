@@ -7,6 +7,9 @@
 #include <algorithm>
 
 #include "data/Settings.h"
+
+#include "util/MapUtil.h"
+
 #include "Values.h"
 
 typedef struct Spawn {
@@ -16,7 +19,6 @@ typedef struct Spawn {
 } Spawn;
 
 typedef struct StateDisplay {
-  std::map<const long, Map *> maps;
   std::list<CharacterDisplay *> characters;
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
@@ -70,14 +72,14 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, int mapId, float x, float y, float z);
-    void hardMoveCharacterToMap(Character * character, int mapId, float x, float y, float z);
+    void softMoveCharacterToMap(Character * character, MapUtil::Vector3 coord);
+    void hardMoveCharacterToMap(Character * character, MapUtil::Vector3 coord);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
-    void resurrect(Character * player, int map_id, float x, float y, float z);
+    void resurrect(Character * player, MapUtil::Vector3 coord);
     long getRound();
     int getTick();
     void incrTick();

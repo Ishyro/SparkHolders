@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 #include <set>
+#include <array>
+
+#include "util/MapUtil.h"
 
 typedef struct MapLink {
     int x1;
@@ -23,15 +26,13 @@ class World {
     const std::string name;
     World(std::string name):name(name) {
       maps = std::map<const long, Map *>();
-      regions = std::map<const long, std::set<long>>();
-      neighbours = std::map<const long, std::set<long>>();
+      chunks = std::map<const MapUtil::Vector3i, BlocksChunk *>();
+      regions = std::map<const MapUtil::Vector3i, Region *>();
       links = std::list<MapLink *>();
     }
-    void addMap(Map * map, Tile * hole);
+    void addMap(Map * map);
+    void setBlock(MapUtil::Vector3i coord, Block * block);
     void addMapLink(MapLink * link);
-    void addToNeighbours(long map_id1, long map_id2);
-    std::set<long> getRegion(long map_id);
-    std::set<long> getNeighbours(long map_id);
     Map * getMap(long map_id);
     Map * getMap(std::string name);
     std::list<Map *> getMaps();
@@ -41,16 +42,22 @@ class World {
     Furniture * getFurniture(long id);
     Map * getMap(int x, int y, int z);
     Map * getMap(float x, float y, float z);
-    Tile * getTile(int x, int y, int z);
-    Tile * getTile(float x, float y, float z);
+    Block * getBlock(MapUtil::Vector3i coord);
+    BlocksChunk * getChunk(MapUtil::Vector3 coord);
+    BlocksChunk * getChunk(MapUtil::Vector3i ori);
+    void changeRegion(Character * character);
     int getLight(int x, int y, int z);
     int getLight(float x, float y, float z);
-    float setPathToTarget(long map_id, float x, float y, Target * target);
+    float setPathToTarget(Region * region, float x, float y, Target * target);
     float distance(long map_id, float x, float y, Target * target);
   private:
     std::map<const long, Map *> maps;
-    std::map<const long, std::set<long>> regions;
-    std::map<const long, std::set<long>> neighbours;
+    std::map<const MapUtil::Vector3i, BlocksChunk *> chunks;
+    std::map<const MapUtil::Vector3i, Region *> regions;
+    std::list<Character *> characters;
+    std::list<Projectile *> projectiles;
+    std::list<Furniture *> furnitures;
+    std::list<Loot *> loots;
     std::list<MapLink *> links;
 };
 

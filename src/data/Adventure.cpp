@@ -5,7 +5,8 @@
 
 #include "data/Map.h"
 #include "data/World.h"
-#include "data/Tile.h"
+#include "data/Region.h"
+#include "data/Block.h"
 #include "data/Character.h"
 #include "data/furnitures/Furniture.h"
 #include "data/furnitures/SwitchFurniture.h"
@@ -24,9 +25,8 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, int map_id, float x, float y, float z) {
-  Map * map = world->getMap(map_id);
-  world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
+void Adventure::softMoveCharacterToMap(Character * character, MapUtil::Vector3 coord) {
+  /*
   for(Projectile * p : world->getMap(character->getCurrentMap()->id)->getProjectiles()) {
     if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
       p->setLost(true);
@@ -36,11 +36,13 @@ void Adventure::softMoveCharacterToMap(Character * character, int map_id, float 
       p->setOrientation(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
     }
   }
-  map->addCharacter(character);
-  character->move(x, y, z, character->getOrientation(), world);
+  */
+  character->move(coord, character->getOrientation(), world);
+  world->changeRegion(character);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float x, float y, float z) {
+void Adventure::hardMoveCharacterToMap(Character * character, MapUtil::Vector3 coord) {
+  /*
   Map * map = world->getMap(map_id);
   for(Character * c : map->getCharacters()) {
     if(c->getX() == x && c->getY() == y) {
@@ -54,7 +56,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
       removePlayer(c);
     }
   }
-  if(map->getTile(x, y)->unwalkable) {
+  if(map->getBlock(x, y)->unwalkable) {
     world->getMap(character->getCurrentMap()->id)->removeCharacter(character);
     delete character;
     return;
@@ -71,6 +73,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, int map_id, float 
   }
   map->addCharacter(character);
   character->move(x, y, z, character->getOrientation(), world);
+  */
 }
 
 void Adventure::addPlayer(Character * player) { party.push_back(player); }
@@ -83,9 +86,9 @@ std::list<Character *> Adventure::getParty() { return party; }
 
 std::list<Character *> Adventure::getPreservedPlayers() { return preserved_players; }
 
-void Adventure::resurrect(Character * player, int map_id, float x, float y, float z) {
+void Adventure::resurrect(Character * player, MapUtil::Vector3 coord) {
   if(std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
-    softMoveCharacterToMap(player, map_id, x, y, z);
+    softMoveCharacterToMap(player, coord);
   }
 }
 
@@ -160,7 +163,7 @@ void Adventure::incrDayLight() {
 
 void Adventure::getNPCsActions() {
   for(Character * npc : getCharacters()) {
-    if(!npc->player_character && npc->getNeedToUpdateActions()) {
+    if(!npc->player_character && npc->getCurrentAction() == nullptr) {
       Action * action = npc->getAI()->getActions(this, npc);
       action->computeTime(this);
       if(action != nullptr) {
@@ -176,7 +179,7 @@ void Adventure::getNPCsActions() {
           delete to_remove;
         }
         actions.push_back(action);
-        npc->setNeedToUpdateActions(false);
+        npc->setCurrentAction(nullptr);
       }
     }
   }
@@ -211,6 +214,7 @@ void Adventure::executeActions() {
 
 void Adventure::actAllProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();
+  /*
   for(Map * map : world->getMaps()) {
     for(Projectile * p : map->getProjectiles()) {
       projectiles.push_back(p);
@@ -233,6 +237,7 @@ void Adventure::actAllProjectiles() {
       world->getMap(p->getX(), p->getY(), p->getZ())->addProjectile(p);
     }
   }
+  */
 }
 
 Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession) {
@@ -264,9 +269,10 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     profession,
     *titles
   );
-  Map * map = world->getMap(spawn->y, spawn->x, spawn->z);
-  player->setCurrentMap(new Map(map, player, database, world));
-  map->addCharacter(player);
+  world->changeRegion(player);
+  for(auto pair : player->getRegion()->getBlocks()) {
+    ;
+  }
   delete spawn;
   delete race_modifiers;
   delete titles;
@@ -284,7 +290,7 @@ void Adventure::applyIteration() {
         c->applyHunger();
       }
       if(!c->isAlive()) {
-        getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
+        //getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
       }
     }
     if(!c->isAlive()) {
@@ -330,7 +336,7 @@ std::string Adventure::getTime() {
 
 std::string Adventure::state_to_string(std::map<const long, Character *> players) {
   std::stringstream * ss = new std::stringstream();
-  std::stringstream * ss_tiles = new std::stringstream();
+  std::stringstream * ss_blocks = new std::stringstream();
   std::stringstream * ss_characters = new std::stringstream();
   std::stringstream * ss_projectiles = new std::stringstream();
   std::stringstream * ss_loots = new std::stringstream();
@@ -340,41 +346,46 @@ std::string Adventure::state_to_string(std::map<const long, Character *> players
   String::insert_int(ss, tick);
   String::insert_int(ss, light);
   for(auto pair : players) {
+    Region * region = pair.second->getRegion();
+    /*
     Map * map = world->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ());
     Map * baseMap = (Map *) database->getMap(map->baseName);
     Map * visionMap = new Map(map, pair.second, database, world);
     pair.second->setCurrentMap(visionMap);
     for(int y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
       for(int x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
-        if(visionMap->getTile(x, y) != nullptr && visionMap->getTile(x, y)->name != "TXT_MIST" &&
-          world->getTile(x, y, visionMap->offsetZ) != baseMap->getTile(x + map->offsetX, y + map->offsetY)) {
+        if(visionMap->getBlock(x, y) != nullptr && visionMap->getBlock(x, y)->name != "TXT_MIST" &&
+          world->getBlock(x, y, visionMap->offsetZ) != baseMap->getBlock(x + map->offsetX, y + map->offsetY)) {
           // TODO
-          // String::insert(ss_tiles, map->tile_to_string(y, x));
+          // String::insert(ss_blocks, map->tile_to_string(y, x));
         }
       }
     }
-    for(Character * character : visionMap->getCharacters()) {
+    */
+    for(Character * character : region->getCharacters(pair.second)) {
       String::insert(ss_characters, character->to_string());
       String::insert_int(ss_characters, database->getRelation(character->getTeam(), pair.second->getTeam()));
     }
-    for(Projectile * projectile : visionMap->getProjectiles()) {
+    /*
+    for(Projectile * projectile : region->getProjectiles()) {
       String::insert(ss_projectiles, projectile->to_string());
     }
-    for(Loot * loot : visionMap->getLoots()) {
+    for(Loot * loot : region->getLoots()) {
       String::insert_int(ss_loots, loot->type);
       String::insert_float(ss_loots, loot->x);
       String::insert_float(ss_loots, loot->y);
       String::insert_float(ss_loots, loot->size);
     }
-    for(Furniture * furniture : visionMap->getFurnitures()) {
+    */
+    for(Furniture * furniture : region->getFurnitures(pair.second)) {
       if(furniture->type == FURNITURE_SWITCH) {
         String::insert_long(ss_furnitures, furniture->id);
         String::insert_bool(ss_furnitures, ( (SwitchFurniture *) furniture)->getIsOn());
       }
     }
   }
-  String::insert(ss, ss_tiles->str());
-  delete ss_tiles;
+  String::insert(ss, ss_blocks->str());
+  delete ss_blocks;
   String::insert(ss, ss_characters->str());
   delete ss_characters;
   String::insert(ss, ss_projectiles->str());
@@ -400,16 +411,16 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   tick = String::extract_int(ss);
   light = String::extract_int(ss);
   applyDayLight();
-  std::stringstream * ss_tiles = new std::stringstream(String::extract(ss));
-  while(ss_tiles->rdbuf()->in_avail() != 0) {
-    std::stringstream * ss_tile = new std::stringstream(String::extract(ss_tiles));
-    long id = String::extract_long(ss_tile);
-    int x = String::extract_int(ss_tile);
-    int y = String::extract_int(ss_tile);
-    world->getMap(id)->setTile(x, y, (Tile *) database->getTile(String::extract(ss_tile)));
-    delete ss_tile;
+  std::stringstream * ss_blocks = new std::stringstream(String::extract(ss));
+  while(ss_blocks->rdbuf()->in_avail() != 0) {
+    std::stringstream * ss_block = new std::stringstream(String::extract(ss_blocks));
+    int x = String::extract_int(ss_block);
+    int y = String::extract_int(ss_block);
+    int z = String::extract_int(ss_block);
+    world->setBlock(MapUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)));
+    delete ss_block;
   }
-  delete ss_tiles;
+  delete ss_blocks;
   std::stringstream * ss_characters = new std::stringstream(String::extract(ss));
   while(ss_characters->rdbuf()->in_avail() != 0) {
     CharacterDisplay * characterDisplay = Character::from_string(String::extract(ss_characters));

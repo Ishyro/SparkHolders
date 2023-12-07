@@ -323,7 +323,7 @@ focus_mode = 0
 toggle_mode = true
 text = "Furnitures"
 
-[node name="Tile" type="Control" parent="."]
+[node name="Block" type="Control" parent="."]
 visible = false
 layout_mode = 2
 anchors_preset = 0
@@ -333,7 +333,7 @@ offset_right = 1918.0
 offset_bottom = 1080.0
 mouse_filter = 2
 
-[node name="Picture" type="TextureRect" parent="Tile"]
+[node name="Picture" type="TextureRect" parent="Block"]
 custom_minimum_size = Vector2(160, 160)
 layout_mode = 0
 offset_left = 90.0
@@ -344,7 +344,7 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 1
 
-[node name="Description" type="RichTextLabel" parent="Tile"]
+[node name="Description" type="RichTextLabel" parent="Block"]
 layout_mode = 0
 offset_top = 180.0
 offset_right = 342.0
