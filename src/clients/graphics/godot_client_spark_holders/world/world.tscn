@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
 
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
@@ -8,9 +8,6 @@
 [ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_rbf50"]
-size = Vector3(1000, 1, 1000)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pulsa"]
 noise_type = 3
@@ -92,13 +89,6 @@ fov = 90.0
 script = ExtResource("2_kskax")
 
 [node name="Blocks" type="NavigationRegion3D" parent="Map"]
-
-[node name="Floor" type="StaticBody3D" parent="Map/Blocks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-collision_mask = 31
-
-[node name="Shape" type="CollisionShape3D" parent="Map/Blocks/Floor"]
-shape = SubResource("BoxShape3D_rbf50")
 
 [node name="Lights" type="Node3D" parent="Map"]
 visible = false

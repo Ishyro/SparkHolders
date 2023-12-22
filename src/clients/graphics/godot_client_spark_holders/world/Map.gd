@@ -10,10 +10,10 @@ var phantom_lines = {}
 
 var navigations = {}
 var multiMeshInstances = {}
-var maps = {}
 var current_blocks = {}
 var blocks_count = {}
 
+var block_colliders = {}
 var lights = {}
 var characters = {}
 var projectiles = {}
@@ -56,7 +56,6 @@ var base_projectile = preload("res://models/projectile.tscn")
 @onready var n_view = $"../View"
 @onready var n_hud = $"../HUD"
 @onready var n_blocks = $Blocks
-@onready var n_floor = $Blocks/Floor
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
@@ -123,7 +122,8 @@ func _ready():
 		if !navigations.has(character_size):
 			navigations[character_size] = NavigationMesh.new()
 			navigations[character_size].sample_partition_type = NavigationMesh.SAMPLE_PARTITION_LAYERS
-			navigations[character_size].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_MESH_INSTANCES
+			navigations[character_size].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+			navigations[character_size].geometry_collision_mask = 0x10
 			navigations[character_size].cell_size = 0.05
 			navigations[character_size].cell_height = 0.05
 			navigations[character_size].agent_height = 0.0
@@ -151,11 +151,9 @@ func set_navigation_mesh(character_id: int):
 
 func select_character(character_id: int):
 	#var offset = Values.link.getOffsets(character_id)
-	if n_floor.transform.origin.y + 0.5 != round_float(characters_data[character_id]["z"]):
-		var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-		var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-		#n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
-	n_floor.transform.origin = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"] + 0.5, characters_data[character_id]["x"])
+	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
+	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
+	#n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
 	bake_navigation_meshes()
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
@@ -278,11 +276,22 @@ func create_blocks(character_id: int):
 	current_blocks = Values.link.getBlocks(character_id)
 	#var current_lights = Values.link.getLights(character_id)
 	for coord in current_blocks:
-		baking_done = add_block(coord, current_blocks, {}) && baking_done
+		baking_done = add_block(coord, current_blocks, {})
+	baking_done = false
 
 func add_block(coord: Vector3, current_blocks: Dictionary, current_lights: Dictionary):
 	if current_blocks[coord] == "TXT_MIST" || current_blocks[coord] == "TXT_VOID":
 		return true
+	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
+	var collider = StaticBody3D.new()
+	collider.collision_layer = 0x11
+	collider.collision_mask = 0x1f
+	collider.call_deferred("set_transform", Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
+	var shape = CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	collider.call_deferred("add_child", shape)
+	n_blocks.call_deferred("add_child", collider)
+	block_colliders[collider] = current_blocks[coord]
 	#if lights.has(id):
 	#	n_lights.remove_child(lights[id])
 	#var light = MeshInstance3D.new()
@@ -292,7 +301,6 @@ func add_block(coord: Vector3, current_blocks: Dictionary, current_lights: Dicti
 	#light.transform.origin = Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)
 	#lights[coord] = light
 	#n_lights.add_child(light)
-	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
 	#if !maps.has(map_id):
 	#	maps[map_id] = {}
 	#if !maps[map_id].has(id):
@@ -302,11 +310,13 @@ func add_block(coord: Vector3, current_blocks: Dictionary, current_lights: Dicti
 	#	else:
 	#		blocks_count[current_blocks[x][z]][map_id] = blocks_count[current_blocks[x][z]][map_id] + 1
 	#	return false
-	return true
 
 func reset_map():
 	for block_type in multiMeshInstances:
 		blocks_count[block_type] = 0
+	for collider in block_colliders:
+		block_colliders.remove(collider)
+		n_blocks.remove_child(collider)
 
 func display_map():
 	var block_current = {}
@@ -412,15 +422,14 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	n_projectiles.add_child(projectile)
 
 func update_phantom(character_id: int):
-	return ""
 	#var offset = Values.link.getOffsets(character_id)
 	phantoms[character_id].visible = true
-	phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y + 1, Values.coord.z) 
+	phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y, Values.coord.z) 
 	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
 	characters[character_id].nav.get_next_path_position()
 	if phantom_lines.has(character_id):
 		for phantom_line in phantom_lines[character_id]:
-			n_characters.remove_child(phantom_line)
+			n_characters.call_deferred("remove_child", phantom_line)
 	phantom_lines[character_id] = []
 	var previous_vec = characters[character_id].transform.origin + Vector3(0, 0.1, 0)
 	var last_angle = Vector3.ZERO
@@ -429,16 +438,16 @@ func update_phantom(character_id: int):
 		vec = round_vec(vec)
 		var distance = previous_vec.distance_to(vec)
 		if distance != 0.:
-			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec.z, previous_vec.x, vec.z, vec.x)
+			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
 			var phantom_line = MeshInstance3D.new()
 			phantom_line.mesh = BoxMesh.new()
 			phantom_line.mesh.set_size(Vector3(0.1, 0.01, distance))
 			last_angle = Vector3(0, Values.link.getOrientationToTarget(Vector2(previous_vec.z, previous_vec.x), Vector2(vec.z, vec.x)), 0)
 			phantom_line.rotation_degrees = last_angle
-			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, Values.coord.y + 1.001, (vec.z + previous_vec.z) / 2)
+			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, Values.coord.y + 0.001, (vec.z + previous_vec.z) / 2)
 			phantom_line.set_surface_override_material(0, phantom_material)
 			phantom_lines[character_id].push_back(phantom_line)
-			n_characters.add_child(phantom_line)
+			n_characters.call_deferred("add_child", phantom_line)
 			previous_vec = vec
 	phantoms[character_id].rotation_degrees = last_angle
 	return String.num(ap_cost, 3) + " ap"
