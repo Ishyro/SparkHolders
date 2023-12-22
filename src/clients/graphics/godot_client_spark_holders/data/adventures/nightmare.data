@@ -1,7 +1,9 @@
 # Database initialization
 
 # blocks
+data/blocks/grass.data
 data/blocks/rock.data
+data/blocks/soil.data
 # effects
 data/effects/experience_10.data
 data/effects/satiety_10.data
@@ -24,7 +26,11 @@ data/items/wolf_hide.data
 data/items/farming/lamb.data
 # pseudoskills without summoning or projectile
 data/pseudoskills/dash.data
+data/pseudoskills/eat_grass.data
+data/pseudoskills/grow_grass.data
+data/pseudoskills/nourish_with_grass.data
 # skills without summoning or projectile
+data/skills/touch_some_soil.data
 data/skills/dash.data
 # projectiles
 data/projectiles/wood_arrow.data
@@ -113,14 +119,20 @@ data/attributes/mender.data
 data/attributes/homunculist.data
 data/attributes/specialist.data
 data/attributes/no_attributes.data
+data/attributes/sheep.data
 data/attributes/wolf.data
 # characters
+data/characters/grass_fairy.data
 data/characters/homo.data
 data/characters/player.data
+data/characters/sheep.data
 data/characters/wolf.data
 # pseudoskills with summoning
+data/pseudoskills/summon_grass_fairy.data
 # skills with summoning
+data/skills/touch_some_grass.data
 # ways with summoning skill
+data/ways/professions/ruminant.data
 # attributes with summoning skill
 # gear with special items
 # furnitures
@@ -314,4 +326,5 @@ TeamRelation.{TEAM_ENEMY}{Aho'z}{bandit}
 TeamRelation.{TEAM_ENEMY}{Scranem}{bandit}
 TeamRelation.{TEAM_ENEMY}{predator}{bandit}
 TeamRelation.{TEAM_ENEMY}{undead}{bandit}
-# add characters
+# add character
+Character.{TXT_SHEEP}{{3}{4}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}

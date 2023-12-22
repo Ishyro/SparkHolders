@@ -55,10 +55,9 @@ bool GodotLink::getState() {
   return state != nullptr;
 }
 
-float GodotLink::getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY) {
-  return 0.F;
-  //float result = state->maps.at((long) character_id)->getMoveCost(link->getPlayer((long) character_id), oriX, oriY, destX, destY);
-  //return result;
+float GodotLink::getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest) {
+  float result = link->getPlayer((long) character_id)->getRegion()->getMoveCost(link->getPlayer((long) character_id), MapUtil::makeVector3(ori.y, ori.z, ori.x), MapUtil::makeVector3(dest.y, dest.z, dest.x));
+  return result;
 }
 
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
@@ -629,7 +628,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
-  ClassDB::bind_method(D_METHOD("getMoveCost", "id", "oriX", "oriY", "destX", "destY"), &GodotLink::getMoveCost);
+  ClassDB::bind_method(D_METHOD("getMoveCost", "id", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
   ClassDB::bind_method(D_METHOD("getBlocks", "id"), &GodotLink::getBlocks);

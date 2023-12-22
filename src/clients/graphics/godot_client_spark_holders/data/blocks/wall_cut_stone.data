@@ -1,6 +1,6 @@
 name = TXT_WALL_CUT_STONE
 unwalkable = true
 opaque = true
-solid = true
+allow_vertical = false
 light = 0
 ap_cost = 10.0

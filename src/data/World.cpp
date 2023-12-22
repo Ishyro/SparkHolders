@@ -64,20 +64,7 @@ MapLink * World::getMapLink(int x, int y, long mapId) {
   return nullptr;
 }
 
-std::list<Character *> World::getCharacters() {
-  /*
-  std::list<Character *> characters = std::list<Character *>();
-  for(auto pair : maps) {
-    for(Character * character : pair.second->getCharacters()) {
-      // no check on player_character, because we want mind controlled players to act as npc
-      // this imply that the player AI needs to send nullptr when asked for an Action
-      // otherwise players will have 2 Actions per round
-      characters.push_back(character);
-    }
-  }
-  */
-  return characters;
-}
+std::list<Character *> World::getCharacters() { return characters; }
 
 Character * World::getCharacter(long id) {
   if(id != 0) {
@@ -133,6 +120,11 @@ BlocksChunk * World::getChunk(MapUtil::Vector3i ori) {
     chunks.insert(std::make_pair(coord, chunk));
     return chunk;
   }
+}
+
+void World::addCharacter(Character * character) {
+  characters.push_back(character);
+  changeRegion(character);
 }
 
 void World::changeRegion(Character * character) {

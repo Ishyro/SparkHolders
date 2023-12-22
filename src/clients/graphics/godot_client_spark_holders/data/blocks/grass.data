@@ -1,6 +1,6 @@
 name = TXT_GRASS
 unwalkable = false
 opaque = false
-solid = false
+allow_vertical = false
 light = 0
 ap_cost = 10.0

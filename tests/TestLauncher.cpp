@@ -61,9 +61,14 @@ int main(int argc, char ** argv) {
     adventure->incrTick();
     */
   }
-  for(int y = 0; y < 10; y++) {
-    for(int x = 0; x < 10; x++) {
-      std::cout << adventure->getWorld()->getBlock(MapUtil::makeVector3i(x, y, -1))->name << std::endl;
+  Character * dasheep = adventure->getWorld()->getCharacters().front();
+  for(float y = 0.F; y < 10.F; y += 0.001) {
+    for(float x = 0.F; x < 10.F; x += 0.001) {
+      float cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dasheep->getCoord(), MapUtil::makeVector3(x, y, 0)));
+      float expected = MapUtil::round(MapUtil::distance(dasheep->getCoord(), MapUtil::makeVector3(x, y, 0)) * 10.F / dasheep->getMovementTimeModifier());
+      if(cost != expected) {
+        std::cout << "coord: " << x << " " << y << " cost: " << cost << " expected: " << expected << std::endl;
+      }
     }
   }
   auto end = std::chrono::system_clock::now();

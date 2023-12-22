@@ -13,7 +13,7 @@ MapUtil::Vector3 MapUtil::makeVector3(float x, float y, float z) {
   return coord;
 }
 
-MapUtil::Vector3 MapUtil::makeVector3(MapUtil::Vector3 coord_int) {
+MapUtil::Vector3 MapUtil::makeVector3(MapUtil::Vector3i coord_int) {
   MapUtil::Vector3 coord = MapUtil::Vector3();
   coord.x = coord_int.x;
   coord.y = coord_int.y;

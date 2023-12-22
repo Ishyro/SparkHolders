@@ -1,6 +1,6 @@
 name = TXT_LAVA
 unwalkable = true
 opaque = false
-solid = false
+allow_vertical = true
 light = 5
 ap_cost = 10.0

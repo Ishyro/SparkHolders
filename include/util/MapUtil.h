@@ -22,6 +22,7 @@ namespace MapUtil {
     float x;
     float y;
     float z;
+    bool operator == (const Vector3& v) const { return z == v.z && y == v.y && x == v.x; }
   } Vector3;
   
   typedef struct Vector3i {
@@ -33,7 +34,7 @@ namespace MapUtil {
   } Vector3i;
 
   Vector3 makeVector3(float x, float y, float z);
-  Vector3 makeVector3(Vector3 coord_int);
+  Vector3 makeVector3(Vector3i coord_int);
   Vector3i makeVector3i(int x, int y, int z);
   Vector3i makeVector3i(Vector3 coord_float);
 

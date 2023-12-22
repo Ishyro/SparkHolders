@@ -45,6 +45,7 @@ class World {
     Block * getBlock(MapUtil::Vector3i coord);
     BlocksChunk * getChunk(MapUtil::Vector3 coord);
     BlocksChunk * getChunk(MapUtil::Vector3i ori);
+    void addCharacter(Character * character);
     void changeRegion(Character * character);
     int getLight(int x, int y, int z);
     int getLight(float x, float y, float z);

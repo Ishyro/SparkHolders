@@ -1,6 +1,6 @@
 name = TXT_WATER
 unwalkable = true
 opaque = false
-solid = false
+allow_vertical = true
 light = 0
 ap_cost = 10.0

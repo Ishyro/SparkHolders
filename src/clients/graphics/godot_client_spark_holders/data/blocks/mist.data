@@ -1,6 +1,6 @@
 name = TXT_MIST
 unwalkable = false
 opaque = true
-solid = false
+allow_vertical = false
 light = 0
 ap_cost = 10.0

@@ -274,7 +274,7 @@ namespace FileOpener {
         profession,
         *titles
       );
-      world->changeRegion(c);
+      world->addCharacter(c);
       delete race_modifiers;
       delete titles;
     }

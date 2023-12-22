@@ -36,7 +36,7 @@ public:
   void initialize(String ip);
   bool hasState();
   bool getState();
-  float getMoveCost(int64_t character_id, float oriX, float oriY, float destX, float destY);
+  float getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest);
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
   Dictionary getBlocks(int64_t character_id);

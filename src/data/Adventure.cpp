@@ -269,7 +269,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     profession,
     *titles
   );
-  world->changeRegion(player);
+  world->addCharacter(player);
   for(auto pair : player->getRegion()->getBlocks()) {
     ;
   }
