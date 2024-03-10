@@ -35,7 +35,7 @@ class Region {
     std::map<const MapUtil::Vector3i, Block *> getBlocks();
     float getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 dest);
     bool tryMove(Character * c, MapUtil::Vector3 dest);
-    float move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world);
+    bool move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters();
     std::list<Character *> getCharacters(Character * character);

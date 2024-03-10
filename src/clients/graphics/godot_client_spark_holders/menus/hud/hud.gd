@@ -128,9 +128,9 @@ func display_block(_block_object, _block_data: Dictionary):
 func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	mouse_box._set_position(Vector2(mouse_coord.x - mouse_box.get_size().x / 2.0, mouse_coord.y))
 	if Values.selected_team:
-		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ")\n" + ap_cost
+		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")\n" + ap_cost
 	else:
-		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ")"
+		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
 
 # Map options
 func _on_grid_toggled(_button_pressed):

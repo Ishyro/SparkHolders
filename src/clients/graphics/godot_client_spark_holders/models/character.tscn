@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cu02blmr4xp8t" path="res://chess/Kingpiece.1.glb" id="3_r3sm8"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_o6018"]
-height = 0.2
+height = 5.4
 radius = 1.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lwiiu"]
@@ -49,7 +49,7 @@ collision_mask = 19
 script = ExtResource("1_au3f8")
 
 [node name="Shape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
 shape = SubResource("CylinderShape3D_o6018")
 
 [node name="LowerBasement" type="MeshInstance3D" parent="."]
@@ -70,7 +70,7 @@ transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.
 mesh = SubResource("TextMesh_3uq5c")
 
 [node name="Placeholder" parent="." instance=ExtResource("3_r3sm8")]
-transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0.05, 0)
+transform = Transform3D(0.66, 0, 0, 0, 0.66, 0, 0, 0, 0.66, 0, 0.15, 0)
 
 [node name="Selection" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -78,7 +78,9 @@ visible = false
 mesh = SubResource("TorusMesh_js08s")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.15
 radius = 0.3
+debug_enabled = true
 
 [node name="AttackRange" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)

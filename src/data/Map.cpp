@@ -1439,9 +1439,9 @@ std::string Map::target_to_string(Target * target) {
       String::insert_long(ss, target->id);
     }
     else {
-      String::insert_float(ss, target->x);
-      String::insert_float(ss, target->y);
-      String::insert_float(ss, target->z);
+      String::insert_float(ss, target->coord.x);
+      String::insert_float(ss, target->coord.y);
+      String::insert_float(ss, target->coord.z);
     }
   }
   if(target->next != nullptr) {
@@ -1464,9 +1464,10 @@ Target * Map::target_from_string(std::string to_read) {
       target->id = String::extract_long(ss);
     }
     else {
-      target->x = String::extract_float(ss);
-      target->y = String::extract_float(ss);
-      target->z = String::extract_float(ss);
+      float x = String::extract_float(ss);
+      float y = String::extract_float(ss);
+      float z = String::extract_float(ss);
+      target->coord = MapUtil::makeVector3(x, y, z);
     }
   }
   if(target->type != TARGET_NONE) {

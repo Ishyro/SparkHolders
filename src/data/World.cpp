@@ -127,6 +127,14 @@ void World::addCharacter(Character * character) {
   changeRegion(character);
 }
 
+void World::checkRegion(Character * character, MapUtil::Vector3 ori, MapUtil::Vector3 dest) {
+  if(floor(ori.x / CHUNK_SIZE) != floor(dest.x / CHUNK_SIZE) ||
+  floor(ori.y / CHUNK_SIZE) != floor(dest.y / CHUNK_SIZE) ||
+  floor(ori.z / CHUNK_SIZE) != floor(dest.z / CHUNK_SIZE)) {
+    changeRegion(character);
+  }
+}
+
 void World::changeRegion(Character * character) {
   Region * old_region = character->getRegion();
   if(old_region != nullptr && old_region->removeCharacter(character)) {
@@ -185,12 +193,12 @@ float World::setPathToTarget(Region * region, float x, float y, Target * target)
   float target_y;
   switch(target->type) {
     case TARGET_TILE:
-      target_x = target->x + 0.5F;
-      target_y = target->y + 0.5F;
+      target_x = target->coord.x + 0.5F;
+      target_y = target->coord.y + 0.5F;
       break;
     case TARGET_COORDINATES:
-      target_x = target->x;
-      target_y = target->y;
+      target_x = target->coord.x;
+      target_y = target->coord.y;
       break;
     case TARGET_CHARACTER: {
       Character * other = getCharacter(target->id);

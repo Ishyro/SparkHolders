@@ -28,10 +28,10 @@ void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int ov
 int Projectile::getCurrentMapId() { return current_map_id; }
 MapUtil::Vector3 Projectile::getCoord() { return coord; }
 float Projectile::getDestX() {
-  return target->x;
+  return target->coord.x;
 }
 float Projectile::getDestY() {
-  return target->y;
+  return target->coord.y;
 }
 
 float Projectile::getOrientation() { return orientation; }

@@ -13,7 +13,7 @@ var multiMeshInstances = {}
 var current_blocks = {}
 var blocks_count = {}
 
-var block_colliders = {}
+var colliders = {}
 var lights = {}
 var characters = {}
 var projectiles = {}
@@ -31,7 +31,6 @@ var blocks_img = {}
 var board_material = preload("res://resources/materials/board_material.tres")
 var phantom_material = preload("res://resources/materials/phantom.tres")
 var base_fire = preload("res://models/fire.tscn")
-var grid_material = StandardMaterial3D.new()
 var light_0 = StandardMaterial3D.new()
 var light_1 = StandardMaterial3D.new()
 var light_2 = StandardMaterial3D.new()
@@ -56,6 +55,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 @onready var n_view = $"../View"
 @onready var n_hud = $"../HUD"
 @onready var n_blocks = $Blocks
+@onready var n_ground = $Blocks/GroundColliders
 @onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
@@ -89,7 +89,6 @@ func _ready():
 	mutex = Mutex.new()
 	Values.link.initialize(ip)
 	Values.link.getState()
-	grid_material.albedo_color = "000000"
 	owned_characters = Values.link.getControlledParty()
 	init_actions()
 	characters_data = Values.link.getCharacters()
@@ -98,8 +97,6 @@ func _ready():
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
 		add_projectile(projectile_id, projectiles_data[projectile_id])
-	#var mid_size = Vector3(size.x / 2.0, size.y / 2.0, size.z / 2.0)
-	#n_view.transform.origin = Vector3(offset.x + mid_size.x - 5, offset.y + n_view.transform.origin.y, offset.z + mid_size.z)
 	for block in Values.link.getAvaillableBlocks():
 		initialize_block(block)
 	for character_id in owned_characters:
@@ -133,15 +130,15 @@ func _ready():
 	
 	Values.selected_team = characters[owned_characters[0]]
 	select_character(owned_characters[0])
-	bake_navigation_meshes()
+	n_view.transform.origin = Vector3(characters_data[owned_characters[0]]["y"] - 5, characters_data[owned_characters[0]]["z"] + n_view.transform.origin.y, characters_data[owned_characters[0]]["x"])
 	n_hud.move.set_pressed(true)
-	thread.start(state_updater, Thread.PRIORITY_LOW)
+	#thread.start(state_updater2, Thread.PRIORITY_LOW)
 	
 func bake_navigation_meshes():
 	if !baking_done:
 		for size in navigations:
 			var data = NavigationMeshSourceGeometryData3D.new()
-			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_blocks)
+			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_ground)
 			NavigationMeshGenerator.bake_from_source_geometry_data(navigations[size], data)
 		n_blocks.set_navigation_mesh(null)
 		baking_done = true
@@ -150,11 +147,10 @@ func set_navigation_mesh(character_id: int):
 	n_blocks.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
 
 func select_character(character_id: int):
-	#var offset = Values.link.getOffsets(character_id)
 	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
 	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-	#n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, offset.y + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
-	bake_navigation_meshes()
+	n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
+	#bake_navigation_meshes()
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
 	n_inventory.update_inventories(owned_characters)
@@ -162,43 +158,48 @@ func select_character(character_id: int):
 func state_updater():
 	var running = true
 	while running:
-		while (Values.updating_state || !Values.link.hasState()):
-			if !Values.updating_state && !Values.link.hasState():
-				# waiting player actions, we can update our data now
-				bake_navigation_meshes()
-				set_navigation_mesh(Values.selected_team.id)
-				n_inventory.update_inventories(owned_characters)
-				# do nothing if not all characters have at least 1 action ready
-				send_actions()
-			await get_tree().create_timer(0.001).timeout
-		mutex.lock()
-		running = Values.link.getState()
-		if running:
+		if mutex.try_lock():
+			while !Values.next_state_ready && Values.link.hasState():
+				running = Values.link.getState()
+				await get_tree().create_timer(0.1).timeout
+			Values.next_state_ready = true
+			mutex.unlock()
+		#
+
+func state_updater2():
+	var running = true
+	while running:
+		if mutex.try_lock():
+			if !Values.next_state_ready:
+				mutex.unlock()
+				running = Values.link.getState()
+				mutex.lock()
+				Values.next_state_ready = true
+			mutex.unlock()
+		#await get_tree().create_timer(0.001).timeout
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	if mutex.try_lock():
+		var count = 0
+		while Values.link.hasState():
+			count += 1
+			Values.link.getState()
+			Values.next_state_ready = true
+		if Values.next_state_ready:
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():
 				if !next_characters_data.has(character_id):
 					n_characters.remove_child(characters[character_id])
 					characters.erase(character_id)
-			#var new_regions = Values.link.getCurrentRegions()
-			#for map_id in new_regions:
-			#	if !regions.has(map_id):
-			#		baking_done = false
-			#for map_id in regions:
-			#	if !new_regions.has(map_id):
-			#		baking_done = false
-			#regions = new_regions
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 			var update = false
 			for character_id in owned_characters:
-				create_blocks(character_id)
-				#if Values.link.needBlocksUpdate(character_id):
-				#	init_blocks(character_id)
-				#else:
-				#	create_blocks(character_id, floor(next_characters_data[character_id]["y"]) - floor(characters_data[character_id]["y"]), floor(next_characters_data[character_id]["x"]) - floor(characters_data[character_id]["x"]))
-				if floor(next_characters_data[character_id]["y"]) != floor(characters_data[character_id]["y"]) || floor(next_characters_data[character_id]["x"]) != floor(characters_data[character_id]["x"]):
+				if floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16):
 					update = true
+					create_blocks(character_id)
 			if update:
 				furnitures_data = Values.link.getFurnitures()
 				display_map()
@@ -212,27 +213,27 @@ func state_updater():
 				if !projectiles_data.has(projectile_id):
 					add_projectile(projectile_id, next_projectiles_data[projectile_id])
 			projectiles_data = next_projectiles_data
-		Values.updating_state = true
+			Values.updating_state = true
+		mutex.unlock()
+	if mutex.try_lock():
+		if !Values.updating_state: #&& !Values.link.hasState():
+			# waiting player actions, we can update our data now
+			bake_navigation_meshes()
+			set_navigation_mesh(Values.selected_team.id)
+			n_inventory.update_inventories(owned_characters)
+			# do nothing if not all characters have at least 1 action ready
+			send_actions()
 		mutex.unlock()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
-	
 func _physics_process(delta):
 	if mutex.try_lock():
 		if Values.updating_state:
 			var done = true
 			for character_id in characters_data:
-				var dest = Vector3(characters_data[character_id]["y"], characters[character_id].transform.origin.y, characters_data[character_id]["x"])
-				var movement = (dest - characters[character_id].transform.origin).normalized() * 10
-				characters[character_id].collision_layer = 0x0000
-				characters[character_id].collision_mask = 0x0000
-				characters[character_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-				characters[character_id].collision_layer = 0x0002
-				characters[character_id].collision_mask = 0x0013
-				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)	
-				if characters[character_id].transform.origin.distance_to(dest) < 1:#0.05:
+				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
+				characters[character_id].move_towards(dest, delta)
+				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
+				if characters[character_id].nav.is_target_reached(): #transform.origin.distance_to(dest) <= 0.05:
 					characters[character_id].transform.origin = dest
 					if phantoms.has(character_id):
 						if phantom_lines.has(character_id):
@@ -242,15 +243,16 @@ func _physics_process(delta):
 						phantoms[character_id].transform.origin = dest
 						phantoms[character_id].visible = false
 				done = done && (characters[character_id].transform.origin == dest)
-			for projectile_id in projectiles_data:
-				var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
-				var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
-				projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-				projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
-				if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
-					projectiles[projectile_id].transform.origin = dest
-				done = done && (projectiles[projectile_id].transform.origin == dest)
+			#for projectile_id in projectiles_data:
+			#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
+			#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
+			#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+			#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
+			#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
+			#		projectiles[projectile_id].transform.origin = dest
+			#	done = done && (projectiles[projectile_id].transform.origin == dest)
 			Values.updating_state = !done
+			Values.next_state_ready = !done
 		mutex.unlock()
 
 func get_light(light: int):
@@ -273,50 +275,37 @@ func get_light(light: int):
 		15: return light_f
 
 func create_blocks(character_id: int):
+	reset_map()
 	current_blocks = Values.link.getBlocks(character_id)
 	#var current_lights = Values.link.getLights(character_id)
 	for coord in current_blocks:
-		baking_done = add_block(coord, current_blocks, {})
+		add_block(coord, {})
 	baking_done = false
 
-func add_block(coord: Vector3, current_blocks: Dictionary, current_lights: Dictionary):
+func add_block(coord: Vector3, current_lights: Dictionary):
 	if current_blocks[coord] == "TXT_MIST" || current_blocks[coord] == "TXT_VOID":
-		return true
+		return
 	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
 	var collider = StaticBody3D.new()
-	collider.collision_layer = 0x11
+	
+	if blocks_data[current_blocks[coord]]["unwalkable"]:
+		collider.collision_layer = 0x21
+	else:
+		collider.collision_layer = 0x11
 	collider.collision_mask = 0x1f
-	collider.call_deferred("set_transform", Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
+	collider.set_transform(Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
 	var shape = CollisionShape3D.new()
 	shape.shape = BoxShape3D.new()
-	collider.call_deferred("add_child", shape)
-	n_blocks.call_deferred("add_child", collider)
-	block_colliders[collider] = current_blocks[coord]
-	#if lights.has(id):
-	#	n_lights.remove_child(lights[id])
-	#var light = MeshInstance3D.new()
-	#light.mesh = BoxMesh.new()
-	#light.set_surface_override_material(0, get_light(current_lights[x][z]))
-	#light.mesh.set_size(Vector3.ONE)
-	#light.transform.origin = Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)
-	#lights[coord] = light
-	#n_lights.add_child(light)
-	#if !maps.has(map_id):
-	#	maps[map_id] = {}
-	#if !maps[map_id].has(id):
-	#	maps[map_id][id] = current_blocks[x][z]
-	#	if !blocks_count[current_blocks[x][z]].has(map_id):
-	#		blocks_count[current_blocks[x][z]][map_id] = 1
-	#	else:
-	#		blocks_count[current_blocks[x][z]][map_id] = blocks_count[current_blocks[x][z]][map_id] + 1
-	#	return false
+	collider.add_child(shape)
+	n_ground.add_child(collider)
+	colliders[coord] = collider
 
 func reset_map():
 	for block_type in multiMeshInstances:
 		blocks_count[block_type] = 0
-	for collider in block_colliders:
-		block_colliders.remove(collider)
-		n_blocks.remove_child(collider)
+	for coord in colliders.keys():
+		n_ground.remove_child(colliders[coord])
+		colliders.erase(coord)
 
 func display_map():
 	var block_current = {}
@@ -403,7 +392,7 @@ func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
 	character.scale_object_local(Vector3(character_data["size"], character_data["size"], character_data["size"]))
 	character.set_color(get_color(character_data))
-	character.transform.origin = Vector3(character_data["y"], character_data["z"], character_data["x"])
+	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 0, character_data["x"])
 	character.rotation_degrees = Vector3(0, character_data["orientation"], 0)
 	characters[character_id] = character
 	character.id = character_id
@@ -422,20 +411,22 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	n_projectiles.add_child(projectile)
 
 func update_phantom(character_id: int):
-	#var offset = Values.link.getOffsets(character_id)
+	if !baking_done:
+		return ""
 	phantoms[character_id].visible = true
 	phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y, Values.coord.z) 
 	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
 	characters[character_id].nav.get_next_path_position()
 	if phantom_lines.has(character_id):
 		for phantom_line in phantom_lines[character_id]:
-			n_characters.call_deferred("remove_child", phantom_line)
+			n_characters.remove_child(phantom_line)
 	phantom_lines[character_id] = []
-	var previous_vec = characters[character_id].transform.origin + Vector3(0, 0.1, 0)
+	var previous_vec = characters[character_id].transform.origin
 	var last_angle = Vector3.ZERO
 	var ap_cost = 0.
 	for vec in characters[character_id].nav.get_current_navigation_path():
-		vec = round_vec(vec)
+		# we need round y 
+		vec = round_vec(vec - Vector3(0, 0.1, 0))
 		var distance = previous_vec.distance_to(vec)
 		if distance != 0.:
 			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
@@ -447,7 +438,7 @@ func update_phantom(character_id: int):
 			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, Values.coord.y + 0.001, (vec.z + previous_vec.z) / 2)
 			phantom_line.set_surface_override_material(0, phantom_material)
 			phantom_lines[character_id].push_back(phantom_line)
-			n_characters.call_deferred("add_child", phantom_line)
+			n_characters.add_child(phantom_line)
 			previous_vec = vec
 	phantoms[character_id].rotation_degrees = last_angle
 	return String.num(ap_cost, 3) + " ap"

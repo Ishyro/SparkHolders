@@ -56,7 +56,7 @@ bool GodotLink::getState() {
 }
 
 float GodotLink::getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest) {
-  float result = link->getPlayer((long) character_id)->getRegion()->getMoveCost(link->getPlayer((long) character_id), MapUtil::makeVector3(ori.y, ori.z, ori.x), MapUtil::makeVector3(dest.y, dest.z, dest.x));
+  float result = link->getPlayer((long) character_id)->getRegion()->getMoveCost(link->getPlayer((long) character_id), MapUtil::makeVector3(ori.z, ori.x, ori.y), MapUtil::makeVector3(dest.z, dest.x, dest.y));
   return result;
 }
 
@@ -548,9 +548,7 @@ void GodotLink::send_actions(Dictionary actions) {
           target->type = (int) (int64_t) target_ori["type"];
           target->id = (long) (int64_t) target_ori["id"];
           Vector3 pos = (Vector3) target_ori["pos"];
-          target->x = pos.x;
-          target->y = pos.y;
-          target->z = pos.z;
+          target->coord = MapUtil::makeVector3(pos.x, pos.y, pos.z);
           arg1 = (void *) target;
           break;
         }
@@ -586,9 +584,7 @@ void GodotLink::send_actions(Dictionary actions) {
           target->type = (int) (int64_t) target_ori["type"];
           target->id = (long) (int64_t) target_ori["id"];
           Vector3 pos = (Vector3) target_ori["pos"];
-          target->x = pos.x;
-          target->y = pos.y;
-          target->z = pos.z;
+          target->coord = MapUtil::makeVector3(pos.x, pos.y, pos.z);
           arg1 = (void *) target;
           Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) ( (Array) ( (Dictionary) actions["arg2"])[id])[i]).utf8().get_data()));
           arg2 = (void *) skill;

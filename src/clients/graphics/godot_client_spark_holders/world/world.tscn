@@ -90,6 +90,8 @@ script = ExtResource("2_kskax")
 
 [node name="Blocks" type="NavigationRegion3D" parent="Map"]
 
+[node name="GroundColliders" type="Node3D" parent="Map/Blocks"]
+
 [node name="Lights" type="Node3D" parent="Map"]
 visible = false
 

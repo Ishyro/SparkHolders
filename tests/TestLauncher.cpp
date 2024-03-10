@@ -62,13 +62,15 @@ int main(int argc, char ** argv) {
     */
   }
   Character * dasheep = adventure->getWorld()->getCharacters().front();
-  for(float y = 0.F; y < 10.F; y += 0.001) {
-    for(float x = 0.F; x < 10.F; x += 0.001) {
-      float cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dasheep->getCoord(), MapUtil::makeVector3(x, y, 0)));
-      float expected = MapUtil::round(MapUtil::distance(dasheep->getCoord(), MapUtil::makeVector3(x, y, 0)) * 10.F / dasheep->getMovementTimeModifier());
-      if(cost != expected) {
-        std::cout << "coord: " << x << " " << y << " cost: " << cost << " expected: " << expected << std::endl;
-      }
+  for(float y = 2.F; y < 9.F; y += 0.001) {
+    for(float x = 2.F; x < 9.F; x += 0.001) {
+      MapUtil::Vector3 ori = dasheep->getCoord();
+      MapUtil::Vector3 dest = MapUtil::makeVector3(x, y, 0);
+      float cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, ori, dest));
+      float move_cost = MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y), dest, 1.F, adventure->getWorld()));
+      // move back
+      float back_cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dest, ori));
+      float move_back_cost = MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(dest.x, dest.y, ori.x, ori.y), ori, 1.F, adventure->getWorld()));
     }
   }
   auto end = std::chrono::system_clock::now();

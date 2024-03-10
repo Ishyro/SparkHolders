@@ -37,9 +37,7 @@ typedef struct Loot {
 typedef struct Target {
   int type;
   long id;
-  float x;
-  float y;
-  float z;
+  MapUtil::Vector3 coord;
   Target * next;
 } Target;
 
@@ -116,8 +114,8 @@ class Map {
             new_coord.z = coord.z + offsetZ;
             break;
           case 90:
-            new_coord.x = coord.y + offsetX;
-            new_coord.y = sizeX - 1 - coord.x + offsetY;
+            new_coord.x = sizeY - 1 - coord.y + offsetX;
+            new_coord.y = coord.x + offsetY;
             new_coord.z = coord.z + offsetZ;
             break;
           case 180:
@@ -126,8 +124,8 @@ class Map {
             new_coord.z = coord.z + offsetZ;
             break;
           case 270:
-            new_coord.x = sizeY - 1 - coord.y + offsetX;
-            new_coord.y = coord.x + offsetY;
+            new_coord.x = coord.y + offsetX;
+            new_coord.y = sizeX - 1 - coord.x + offsetY;
             new_coord.z = coord.z + offsetZ;
             break;
           default:;

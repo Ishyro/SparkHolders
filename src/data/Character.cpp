@@ -483,8 +483,10 @@ std::list<Way *> Character::getTitles() { return titles; }
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
 void Character::move(MapUtil::Vector3 coord, float orientation, World * world) {
+  MapUtil::Vector3 ori = this->coord;
   this->coord = coord;
   this->orientation = orientation;
+  world->checkRegion(this, ori, coord);
 }
 
 void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
@@ -636,12 +638,7 @@ void Character::incrDetectionRange() {
 
 void Character::setRegion(Region * region) { this->region = region; }
 
-void Character::setCurrentAction(Action * action) {
-  if(this->current_action != nullptr) {
-    delete this->current_action;
-  }
-  this->current_action = action;
-}
+void Character::setCurrentAction(Action * action) { this->current_action = action; }
 
 void Character::applySoulBurn() {
   int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
@@ -1153,7 +1150,7 @@ float Character::getDamageReductionFromType(int damage_type) {
 }
 
 Projectile * Character::shoot(Target * target, Adventure * adventure, int slot) {
-  if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->x), abs(coord.y - target->y))) {
+  if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
       int realDamages[DAMAGE_TYPE_NUMBER];
       for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {

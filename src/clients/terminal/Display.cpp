@@ -1295,8 +1295,9 @@ namespace Display {
             Target * target = new Target();
             ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
             ((Target *) target)->id = (target_id == 0 ? 0 : target_id);
-            ((Target *) target)->x = target_x + 0.5;
-            ((Target *) target)->y = target_y + 0.5;
+            ((Target *) target)->coord.x = target_x + 0.5;
+            ((Target *) target)->coord.y = target_y + 0.5;
+            ((Target *) target)->coord.z = 0;
             ((Target *) target)->next = nullptr;
             sendAction(link, id, type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
             break;

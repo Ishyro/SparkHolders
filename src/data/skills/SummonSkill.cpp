@@ -12,28 +12,28 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
   // Target will be a Block
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
-    ai = new DiurnalPassiveAI(target->x, target->y);
+    ai = new DiurnalPassiveAI(target->coord.x, target->coord.y);
   }
   else if (ai_str == "NocturnalPassiveAI") {
-    ai = new NocturnalPassiveAI(target->x, target->y);
+    ai = new NocturnalPassiveAI(target->coord.x, target->coord.y);
   }
   else if (ai_str == "DiurnalAgressiveAI") {
-    ai = new DiurnalAgressiveAI(target->x, target->y);
+    ai = new DiurnalAgressiveAI(target->coord.x, target->coord.y);
   }
   else if (ai_str == "NocturnalAgressiveAI") {
-    ai = new NocturnalAgressiveAI(target->x, target->y);
+    ai = new NocturnalAgressiveAI(target->coord.x, target->coord.y);
   }
   else if (ai_str == "EtheralCasterAI") {
-    ai = new EtheralCasterAI(target->x, target->y);
+    ai = new EtheralCasterAI(target->coord.x, target->coord.y);
   }
   Character * c = new Character(
     character,
     character->name,
     xp,
     0,
-    (int) target->x,
-    (int) target->y,
-    (int) target->z,
+    (int) target->coord.x,
+    (int) target->coord.y,
+    (int) target->coord.z,
     owner->getOrientation(),
     nullptr,
     team == "" ? owner->getTeam() : team,
@@ -51,10 +51,10 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     titles
   );
   if(apparition_type == APPARITION_SOFT) {
-    adventure->softMoveCharacterToMap(c, MapUtil::makeVector3(target->x, target->y, target->z));
+    adventure->softMoveCharacterToMap(c, target->coord);
   }
   else {
-    adventure->hardMoveCharacterToMap(c, MapUtil::makeVector3(target->x, target->y, target->z));
+    adventure->hardMoveCharacterToMap(c, target->coord);
   }
 }
 

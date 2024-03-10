@@ -21,20 +21,12 @@ Action * TargetedAction::execute(Adventure * adventure) {
   switch(type) {
     case ACTION_MOVE: {
       float ap = 1.F;
-      while(ap > 0.F) {
-        //ap = user->getCurrentMap()->move(user, user->getOrientation(), target->x, target->y, ap, adventure->getWorld());
-        // we took a MapLink, or maybe got stuck on a wall that wasn't here before, but that would update our Actions anyway
-        if(ap > 0.F && target->next != nullptr) {
-          Target * temp = target;
-          target = target->next;
-          delete temp;
-          setUserOrientationToTarget(adventure);
-        }
-      }
-      if(ap == 0.F && target->next == nullptr && rangeFromTarget(adventure) > 0.01F) {
+      if(user->getRegion()->move(user, user->getOrientation(), target->coord, ap, adventure->getWorld()) 
+      && target->next == nullptr && rangeFromTarget(adventure) > 0.01F) {
         Action * temp = next;
         next = new TargetedAction(ACTION_MOVE, adventure, nullptr, user, target);
         next->setNext(temp);
+        user->setCurrentAction(next);
       }
       break;
     }
@@ -73,7 +65,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       break;
     }
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->x, target->y, 0));
+      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->coord));
       if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
         ((ActivableFurniture *) furniture)->activate(user, false);
       }
@@ -109,7 +101,7 @@ void TargetedAction::computeTime(Adventure * adventure) {
       time = user->getStrikeTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->x, target->y, 0));
+      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->coord));
       if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
         time = user->getHandActionTimeModifier() * ((ActivableFurniture *) furniture)->activation_time;
       }
@@ -125,7 +117,7 @@ Target * TargetedAction::getTarget() { return target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    user->setOrientation(MapUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->x, target->y));
+    user->setOrientation(MapUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = adventure->getCharacter(target->id);
@@ -135,7 +127,7 @@ void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    return MapUtil::distance(user->getCoord(), MapUtil::makeVector3(target->x, target->y, 0));
+    return MapUtil::distance(user->getCoord(), target->coord);
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = adventure->getCharacter(target->id);

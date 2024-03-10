@@ -55,6 +55,7 @@ var CURRENT_RESOLUTION = BASE_RESOLUTION
 var server_pid = -1
 var link = GodotLink.new()
 var updating_state = false
+var next_state_ready = false
 var mode = ACTION_MODE_NONE
 
 var coord = Vector3.ZERO

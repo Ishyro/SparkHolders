@@ -1,18 +1,15 @@
 # Database initialization
 
 # blocks
-data/blocks/floor_cut_stone.data
-data/blocks/floor_rock.data
-data/blocks/floor_wood.data
+data/blocks/cut_stone.data
+data/blocks/rock.data
+data/blocks/wood.data
 data/blocks/grass.data
 data/blocks/lava.data
 data/blocks/mist.data
 data/blocks/soil.data
 data/blocks/road_stone.data
 data/blocks/void.data
-data/blocks/wall_cut_stone.data
-data/blocks/wall_rock.data
-data/blocks/wall_wood.data
 data/blocks/water.data
 # effects
 data/effects/experience_10.data
@@ -178,29 +175,29 @@ Settings.{STARING_HOUR}{4}
 Translation.{data/translations/aytlanta}
 # add maps
 # standard maps
-Map.{TXT_CAVE}{38}{101}{0}{0}
-Map.{TXT_CENTRAL_SQUARE}{0}{0}{0}{0}
-Map.{TXT_OPEN_GRASSLAND#1}{101}{38}{0}{0}
-Map.{TXT_OPEN_GRASSLAND#2}{126}{38}{0}{0}
-Map.{TXT_OPEN_GRASSLAND#3}{126}{13}{0}{0}
-Map.{TXT_OPEN_GRASSLAND#4}{126}{63}{0}{0}
+Map.{TXT_CAVE}{38}{101}{-1}{0}
+Map.{TXT_CENTRAL_SQUARE}{0}{0}{-1}{0}
+Map.{TXT_OPEN_GRASSLAND#1}{101}{38}{-1}{0}
+Map.{TXT_OPEN_GRASSLAND#2}{126}{38}{-1}{0}
+Map.{TXT_OPEN_GRASSLAND#3}{126}{13}{-1}{0}
+Map.{TXT_OPEN_GRASSLAND#4}{126}{63}{-1}{0}
 # included maps
-Map.{TXT_HOUSE#1}{11}{37}{0}{90}
-Map.{TXT_HOUSE#2}{26}{37}{0}{90}
-Map.{TXT_HOUSE#3}{64}{37}{0}{90}
-Map.{TXT_HOUSE#4}{79}{37}{0}{90}
-Map.{TXT_HOUSE#5}{37}{11}{0}{0}
-Map.{TXT_HOUSE#6}{37}{26}{0}{0}
-Map.{TXT_HOUSE#7}{37}{64}{0}{0}
-Map.{TXT_HOUSE#8}{37}{79}{0}{0}
-Map.{TXT_HOUSE#9}{11}{53}{0}{270}
-Map.{TXT_HOUSE#10}{26}{53}{0}{270}
-Map.{TXT_HOUSE#11}{64}{53}{0}{270}
-Map.{TXT_HOUSE#12}{79}{53}{0}{270}
-Map.{TXT_HOUSE#13}{53}{11}{0}{180}
-Map.{TXT_HOUSE#14}{53}{26}{0}{180}
-Map.{TXT_HOUSE#15}{53}{64}{0}{180}
-Map.{TXT_HOUSE#16}{53}{79}{0}{180}
+Map.{TXT_HOUSE#1}{11}{37}{-1}{90}
+Map.{TXT_HOUSE#2}{26}{37}{-1}{90}
+Map.{TXT_HOUSE#3}{64}{37}{-1}{90}
+Map.{TXT_HOUSE#4}{79}{37}{-1}{90}
+Map.{TXT_HOUSE#5}{37}{11}{-1}{0}
+Map.{TXT_HOUSE#6}{37}{26}{-1}{0}
+Map.{TXT_HOUSE#7}{37}{64}{-1}{0}
+Map.{TXT_HOUSE#8}{37}{79}{-1}{0}
+Map.{TXT_HOUSE#9}{11}{53}{-1}{270}
+Map.{TXT_HOUSE#10}{26}{53}{-1}{270}
+Map.{TXT_HOUSE#11}{64}{53}{-1}{270}
+Map.{TXT_HOUSE#12}{79}{53}{-1}{270}
+Map.{TXT_HOUSE#13}{53}{11}{-1}{180}
+Map.{TXT_HOUSE#14}{53}{26}{-1}{180}
+Map.{TXT_HOUSE#15}{53}{64}{-1}{180}
+Map.{TXT_HOUSE#16}{53}{79}{-1}{180}
 # add map links
 #MapLink.{{TXT_CENTRAL_SQUARE}{17}{49}}{{TXT_HOUSE_NORTH#1}{5}{11}}{MAPLINK_THROUGH}
 #MapLink.{{TXT_CENTRAL_SQUARE}{32}{49}}{{TXT_HOUSE_NORTH#2}{5}{11}}{MAPLINK_THROUGH}
@@ -417,8 +414,8 @@ Character.{TXT_HOMO}{{48}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBU
 Character.{TXT_HOMO}{{49}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 Character.{TXT_HOMO}{{50}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 
+Character.{TXT_HOMO}{{53}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 Character.{TXT_HOMO}{{54}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
-Character.{TXT_HOMO}{{55}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 
 Character.{TXT_HOMO}{{41}{116}{0}}{undead}{GuardAI}{TXT_ELEMENTALIST}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_LIGHT}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 

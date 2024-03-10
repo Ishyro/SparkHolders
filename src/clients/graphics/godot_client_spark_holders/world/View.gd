@@ -22,7 +22,8 @@ func update_mouse_coordinates():
 	var from = camera.project_ray_origin(mouse_coords)
 	var to = from + camera.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(from, to, 0xf)
+	#var query = PhysicsRayQueryParameters3D.create(from, to, 0xf)
+	var query = PhysicsRayQueryParameters3D.create(from, to, 0x37)
 	var result = space.intersect_ray(query)
 	if not result.is_empty():
 		Values.coord = result["position"]

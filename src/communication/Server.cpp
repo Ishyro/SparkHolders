@@ -43,7 +43,7 @@ namespace Server {
         actions[i]->setPrevious(actions[i-1]);
       }
       actions[0]->computeTime(adventure);
-      characters.at(id)->setCurrentAction(nullptr);
+      characters.at(id)->setCurrentAction(actions[0]);
       result.push_back(actions[0]);
       delete ss_actions;
     }
