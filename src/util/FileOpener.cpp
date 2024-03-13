@@ -1053,7 +1053,7 @@ namespace FileOpener {
     std::string name = String::extract(ss);
     int x = String::extract_int(ss);
     int y = String::extract_int(ss);
-    int z = 0;
+    int z = String::extract_int(ss);
     float orientation = String::extract_float(ss);
     if(keyword == FURNITURE_BASIC) {
       map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation));

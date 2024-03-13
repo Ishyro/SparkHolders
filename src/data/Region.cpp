@@ -446,6 +446,9 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     }
   }
   if(tryMove(c, current)) {
+    std::cout << "current: " << current.x << " " << current.y << " " << current.z << std::endl;
+    std::cout << "dest: " << dest.x << " " << dest.y << " " << dest.z << std::endl;
+    std::cout << "cost: " << getMoveCost(c, c->getCoord(), current) << std::endl;
     c->move(current, orientation, world);
     return true;
   }

@@ -7,8 +7,13 @@ var _mouse_motion = Vector2.ZERO
 var velocity = Vector3.ZERO
 var pause_state = false
 
-@onready var camera = $Camera3D
-@onready var camera_attributes = camera.attributes
+var perspective3 = true
+var tween
+
+@onready var camera3P = $Camera3P
+@onready var camera1P = $Camera1P
+@onready var camera1P_attributes = camera1P.attributes
+@onready var camera3P_attributes = camera3P.attributes
 @onready var pause = $"../Menus/Pause"
 @onready var character_sheet = $"../Menus/CharacterSheet"
 @onready var hud = $"../HUD"
@@ -16,11 +21,26 @@ var pause_state = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+	camera1P_attributes.dof_blur_far_enabled = true
+	camera1P_attributes.dof_blur_far_distance = 100 * 1.5
+	camera1P_attributes.dof_blur_far_transition = 100 * 0.125
+	
+	camera3P_attributes.dof_blur_far_enabled = true
+	camera3P_attributes.dof_blur_far_distance = 100 * 1.5
+	camera3P_attributes.dof_blur_far_transition = 100 * 0.125
 
 func update_mouse_coordinates():
-	var mouse_coords = camera.get_viewport().get_mouse_position()
-	var from = camera.project_ray_origin(mouse_coords)
-	var to = from + camera.project_ray_normal(mouse_coords) * 1000.0
+	var mouse_coords
+	var from
+	var to
+	if perspective3:
+		mouse_coords = camera3P.get_viewport().get_mouse_position()
+		from = camera3P.project_ray_origin(mouse_coords)
+		to = from + camera3P.project_ray_normal(mouse_coords) * 1000.0
+	else:
+		mouse_coords = camera1P.get_viewport().get_mouse_position()
+		from = camera1P.project_ray_origin(mouse_coords)
+		to = from + camera1P.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
 	#var query = PhysicsRayQueryParameters3D.create(from, to, 0xf)
 	var query = PhysicsRayQueryParameters3D.create(from, to, 0x37)
@@ -66,11 +86,29 @@ func update_mouse_coordinates():
 			ap_cost = map.update_phantom(Values.selected_team.id)
 		hud.update_mouse_box(mouse_coords, ap_cost)
 
+func swap_camera():
+	perspective3 = not perspective3
+	_mouse_motion = Vector2.ZERO
+	if perspective3:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+		map.select_character(Values.selected_team.id)
+		camera1P.clear_current()
+		camera3P.make_current()
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		camera3P.clear_current()
+		camera1P.make_current()
+		
+
 func _process(_delta):
-	if(not pause_state):
+	if not pause_state:
 		# Mouse movement.
-		_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
-		camera.rotation_degrees = Vector3(clamp(camera.rotation_degrees.x + _mouse_motion.y * -0.001, -90, 0), camera.rotation_degrees.y, camera.rotation_degrees.z)
+		if perspective3:
+			_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
+			camera3P.rotation_degrees = Vector3(clamp(camera3P.rotation_degrees.x + _mouse_motion.y * -0.001, -90, 0), camera3P.rotation_degrees.y, camera3P.rotation_degrees.z)
+		else:
+			_mouse_motion.y = clamp(_mouse_motion.y, -1560, 1560)
+			camera1P.transform.basis = Basis.from_euler(Vector3(_mouse_motion.y * -0.001, _mouse_motion.x * -0.001, 0))
 		if Values.selection_changed:
 			Values.selection_changed = false
 			if Values.selected_projectile:
@@ -90,22 +128,21 @@ func _process(_delta):
 func _physics_process(_delta):
 	if(not pause_state):
 		update_mouse_coordinates()
-		camera_attributes.dof_blur_far_enabled = true
-		camera_attributes.dof_blur_far_distance = 100 * 1.5
-		camera_attributes.dof_blur_far_transition = 100 * 0.125
-		
 		# Keyboard movement.
-		var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-		movement_vec2 = movement_vec2.rotated(deg_to_rad(-camera.rotation_degrees.y))
-		var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
-		
-		movement *= MOVEMENT_SPEED * ( 3 + transform.origin.y) / 20
+		if perspective3:
+			var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+			movement_vec2 = movement_vec2.rotated(deg_to_rad(-camera3P.rotation_degrees.y))
+			var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
+			
+			movement *= MOVEMENT_SPEED * ( 3 + camera3P.transform.origin.y) / 20
 
-		velocity += Vector3(movement.x, 0, movement.z)
-		# Apply horizontal friction.
-		velocity.x *= MOVEMENT_FRICTION
-		velocity.z *= MOVEMENT_FRICTION
-		transform.origin += velocity
+			velocity += Vector3(movement.x, 0, movement.z)
+			# Apply horizontal friction.
+			velocity.x *= MOVEMENT_FRICTION
+			velocity.z *= MOVEMENT_FRICTION
+			camera3P.transform.origin += velocity
+		else:
+			camera1P.transform.origin = map.characters[Values.selected_team.id].transform.origin + Vector3(0, 1.6, 0)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("pause"):
@@ -115,21 +152,29 @@ func _unhandled_input(event):
 			pause_state = not pause_state
 			pause.visible = pause_state
 	if not pause_state:
-		if event.is_action_pressed("rotate_up_down") and event.double_click:
-				camera.rotation_degrees = Vector3(-60, camera.rotation_degrees.y, 0)
-		if Input.is_action_pressed("rotate_up_down"):
+		if event.is_action_pressed("swap_perspective"):
+			swap_camera()
+		if event.is_action_pressed("rotate_up_down") and event.double_click and perspective3:
+				camera3P.rotation_degrees = Vector3(-60, camera3P.rotation_degrees.y, 0)
+		if Input.is_action_pressed("rotate_up_down") and perspective3:
 			if event is InputEventMouseMotion:
 				_mouse_motion += event.relative
-		else:
+		elif event is InputEventMouseMotion and !perspective3:
+			_mouse_motion += event.relative
+		if Input.is_action_just_released("rotate_up_down") and perspective3:
 			_mouse_motion = Vector2.ZERO
-		if event.is_action_pressed("zoom_in"):
-			transform.origin = Vector3(transform.origin.x, max(transform.origin.y - 1, 2), transform.origin.z)
-		if event.is_action_pressed("zoom_out"):
-			transform.origin = Vector3(transform.origin.x, min(transform.origin.y + 1, 20), transform.origin.z)
-		if event.is_action_pressed("rotate_left"):
-			camera.rotation_degrees += Vector3(0, 45, 0)
-		if event.is_action_pressed("rotate_right"):
-			camera.rotation_degrees += Vector3(0, -45, 0)
+		if event.is_action_pressed("zoom_in") and perspective3:
+			camera3P.transform.origin = Vector3(camera3P.transform.origin.x, max(camera3P.transform.origin.y - 0.25, map.characters[Values.selected_team.id].transform.origin.y + 1), camera3P.transform.origin.z)
+		if event.is_action_pressed("zoom_out") and perspective3:
+			camera3P.transform.origin = Vector3(camera3P.transform.origin.x, min(camera3P.transform.origin.y + 0.25, map.characters[Values.selected_team.id].transform.origin.y + 10), camera3P.transform.origin.z)
+		if event.is_action_pressed("rotate_left") and perspective3:
+			if not tween or not tween.is_running():
+				tween = get_tree().create_tween().set_trans(Tween.TRANS_CIRC)
+				tween.tween_property(camera3P, "rotation_degrees:y",  + 90, 0.2).as_relative()
+		if event.is_action_pressed("rotate_right") and perspective3:
+			if not tween or not tween.is_running():
+				tween = get_tree().create_tween().set_trans(Tween.TRANS_CIRC)
+				tween.tween_property(camera3P, "rotation_degrees:y", - 90, 0.2).as_relative()
 		if event.is_action_pressed("skill_tab_1"):
 			hud.skill_button_1.set_pressed(true)
 		if event.is_action_pressed("skill_tab_2"):

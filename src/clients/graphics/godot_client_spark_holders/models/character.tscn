@@ -78,9 +78,8 @@ visible = false
 mesh = SubResource("TorusMesh_js08s")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 0.15
+path_desired_distance = 0.11
 radius = 0.3
-debug_enabled = true
 
 [node name="AttackRange" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)

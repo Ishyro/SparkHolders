@@ -175,7 +175,7 @@ Settings.{STARING_HOUR}{4}
 Translation.{data/translations/aytlanta}
 # add maps
 # standard maps
-Map.{TXT_CAVE}{38}{101}{-1}{0}
+Map.{TXT_CAVE}{38}{101}{-2}{0}
 Map.{TXT_CENTRAL_SQUARE}{0}{0}{-1}{0}
 Map.{TXT_OPEN_GRASSLAND#1}{101}{38}{-1}{0}
 Map.{TXT_OPEN_GRASSLAND#2}{126}{38}{-1}{0}

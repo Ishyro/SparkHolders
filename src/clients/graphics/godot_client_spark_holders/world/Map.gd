@@ -52,7 +52,7 @@ var base_character = preload("res://models/character.tscn")
 var base_phantom = preload("res://models/phantom.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
 
-@onready var n_view = $"../View"
+@onready var n_camera3P = $"../View/Camera3P"
 @onready var n_hud = $"../HUD"
 @onready var n_blocks = $Blocks
 @onready var n_ground = $Blocks/GroundColliders
@@ -130,9 +130,8 @@ func _ready():
 	
 	Values.selected_team = characters[owned_characters[0]]
 	select_character(owned_characters[0])
-	n_view.transform.origin = Vector3(characters_data[owned_characters[0]]["y"] - 5, characters_data[owned_characters[0]]["z"] + n_view.transform.origin.y, characters_data[owned_characters[0]]["x"])
+	n_camera3P.transform.origin = Vector3(characters_data[owned_characters[0]]["y"] - 5, characters_data[owned_characters[0]]["z"] + n_camera3P.transform.origin.y, characters_data[owned_characters[0]]["x"])
 	n_hud.move.set_pressed(true)
-	#thread.start(state_updater2, Thread.PRIORITY_LOW)
 	
 func bake_navigation_meshes():
 	if !baking_done:
@@ -147,42 +146,19 @@ func set_navigation_mesh(character_id: int):
 	n_blocks.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
 
 func select_character(character_id: int):
-	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3D".rotation_degrees.y))
-	n_view.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_view.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
+	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
+	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
+	n_camera3P.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_camera3P.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
 	#bake_navigation_meshes()
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
 	n_inventory.update_inventories(owned_characters)
 
-func state_updater():
-	var running = true
-	while running:
-		if mutex.try_lock():
-			while !Values.next_state_ready && Values.link.hasState():
-				running = Values.link.getState()
-				await get_tree().create_timer(0.1).timeout
-			Values.next_state_ready = true
-			mutex.unlock()
-		#
-
-func state_updater2():
-	var running = true
-	while running:
-		if mutex.try_lock():
-			if !Values.next_state_ready:
-				mutex.unlock()
-				running = Values.link.getState()
-				mutex.lock()
-				Values.next_state_ready = true
-			mutex.unlock()
-		#await get_tree().create_timer(0.001).timeout
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if mutex.try_lock():
 		var count = 0
-		while Values.link.hasState():
+		if Values.link.hasState():
 			count += 1
 			Values.link.getState()
 			Values.next_state_ready = true
@@ -317,7 +293,7 @@ func display_map():
 		var block_type = current_blocks[block]
 		var coord = Vector3.ZERO
 		if blocks_data[block_type]["unwalkable"]:
-			coord = Vector3(block.x + 0.5, block.y + 0.4, block.z + 0.5)
+			coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
 		else:
 			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
 		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord))
@@ -339,8 +315,10 @@ func initialize_block(block: String):
 		var multimesh = MultiMesh.new()
 		var mesh = BoxMesh.new()
 		if blocks_data[block]["unwalkable"]:
-			mesh = BoxMesh.new()
-			mesh.set_size(Vector3(1, 0.8, 1))
+			#mesh = BoxMesh.new()
+			mesh = PlaneMesh.new()
+			mesh.orientation = PlaneMesh.FACE_Y
+			mesh.set_size(Vector2(1, 1))
 		else:
 			mesh.set_size(Vector3.ONE)
 		mesh.surface_set_material(0, materials[block])

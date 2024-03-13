@@ -1,49 +1,22 @@
-[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bmxh1bjus8s7n"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dfq7lkv2gshmy"]
 
-[ext_resource type="Shader" path="res://resources/materials/water/water.gdshader" id="1_d7mx2"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_bnjqe"]
-noise_type = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ug3ag"]
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_bnjqe")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_jq5yd"]
-noise_type = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_souqx"]
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_jq5yd")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_a0xop"]
-noise_type = 3
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mi5r2"]
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_a0xop")
+[ext_resource type="Shader" path="res://data/materials/water/Water.gdshader" id="1_dh5bv"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_d7mx2")
-shader_parameter/albedo = Color(0, 0.321569, 0.431373, 1)
-shader_parameter/albedo2 = Color(0, 0.768627, 0.764706, 1)
-shader_parameter/metallic = 0.0
-shader_parameter/roughness = 0.0
-shader_parameter/wave_direction = Vector2(2, 0)
-shader_parameter/wave_direction2 = Vector2(0, 1)
-shader_parameter/time_scale = 0.025
-shader_parameter/noise_scale = 10.0
-shader_parameter/height_scale = 0.15
-shader_parameter/wave = SubResource("NoiseTexture2D_mi5r2")
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_ug3ag")
-shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_souqx")
+shader = ExtResource("1_dh5bv")
+shader_parameter/wave_speed = 0.5
+shader_parameter/wave_a = Vector4(1, 1, 0.35, 3)
+shader_parameter/wave_b = Vector4(1, 0.6, 0.3, 1.55)
+shader_parameter/wave_c = Vector4(1, 1.3, 0.25, 0.9)
+shader_parameter/sampler_scale = Vector2(0.25, 0.25)
+shader_parameter/sampler_direction = Vector2(0.05, 0.04)
+shader_parameter/uv_sampler_scale = Vector2(0.25, 0.25)
+shader_parameter/uv_sampler_strength = 0.04
+shader_parameter/foam_level = 0.5
+shader_parameter/refraction = 0.075
+shader_parameter/color_deep = null
+shader_parameter/color_shallow = null
+shader_parameter/beers_law = 2.0
+shader_parameter/depth_offset = -0.75
+shader_parameter/projector = null
