@@ -18,6 +18,7 @@ class Furniture {
     const int type;
     const int sizeX;
     const int sizeY;
+    const int sizeZ;
     const float fire_size;
     const float fire_posX;
     const float fire_posY;
@@ -27,6 +28,7 @@ class Furniture {
       const int type,
       const int sizeX,
       const int sizeY,
+      const int sizeZ,
       const bool unwalkable,
       const bool opaque,
       const bool solid,
@@ -41,6 +43,8 @@ class Furniture {
       type(type),
       sizeX(sizeX),
       sizeY(sizeY),
+      sizeZ(sizeZ),
+      unwalkable(unwalkable),
       opaque(opaque),
       solid(solid),
       light(light),
@@ -61,6 +65,7 @@ class Furniture {
       type(furniture->type),
       sizeX(furniture->sizeX),
       sizeY(furniture->sizeY),
+      sizeZ(furniture->sizeZ),
       unwalkable(furniture->unwalkable),
       opaque(furniture->opaque),
       solid(furniture->solid),
@@ -78,6 +83,7 @@ class Furniture {
       type(furniture->type),
       sizeX(furniture->sizeX),
       sizeY(furniture->sizeY),
+      sizeZ(furniture->sizeZ),
       orientation(furniture->orientation),
       unwalkable(furniture->unwalkable),
       opaque(furniture->opaque),

@@ -1,0 +1,38 @@
+CLASSES, GODS AND OTHER SYMBOLISMS
+
+(Class - God - Sphere (moon) - Metal - Element - Virtue - Damage type - Divine Object)
+
+Paragon - Alba - Sun (Yellow) - Gold - Spirit - Faith - True - The Magnifing Glass (Light)
+Homonculist - Laxito - White - Silver - Soul - Hope - Mind - The Rule (Length)
+Shadow - Nubilo - Dark (Void) - Copper - Body - Charity - Acid - The Abacus (Mole)
+
+Vanguard - Pyrha - Yellow - Iron - Fire - Strength - Fire - The Anvil (Temperature)
+Elementalist - Hibero - Blue - Lead - Water - Prudence - Cold - The Clock (Time)
+
+Mender - Caela - Red - Quicksilver (Mercury) - Air - Temperance - Lightning - The Compass (Intensity)
+Guardian - Beastiona - Green - Tin - Earth - Justice - Poison - The Scale (Mass)
+
+TAROT
+
+01 - The City (Urbis)
+02 - The Emperor
+03 - The Ground (The Bellow) (3)
+04 - The Sky (The Above) (4)
+05 - The Strength
+06 - The Justice
+07 - The Temple (3 + 4)
+08 - The Hourglass
+09 - The Potter (3 * 3)
+10 - The Star
+11 - The Hermit
+12 - The Snake (3 * 4)
+13 - The Temperance
+14 - The Prudence
+15 - The Path
+16 - The Aether (4 * 4)
+17 - The Faith
+18 - The Hope
+19 - The Charity
+20 - The Herald (The Hierophant)
+21 - The World (Orbis)
+00 - The Fool

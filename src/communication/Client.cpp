@@ -115,7 +115,7 @@ namespace Client {
   std::string writeTargetedAction(int type, Target * target) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert(ss, Map::target_to_string(target));
+    String::insert(ss, MapUtil::target_to_string(target));
     std::string result = ss->str();
     delete ss;
     return result;
@@ -124,7 +124,7 @@ namespace Client {
   std::string writeSkillAction(int type, Target * target, Skill * skill, int overcharge_power, int overcharge_duration, int overcharge_range) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert(ss, Map::target_to_string(target));
+    String::insert(ss, MapUtil::target_to_string(target));
     String::insert(ss, skill->name);
     String::insert_int(ss, overcharge_power);
     String::insert_int(ss, overcharge_duration);

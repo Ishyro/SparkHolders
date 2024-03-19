@@ -2,6 +2,7 @@ name = TXT_TORCH_WALL
 type = FURNITURE_SWITCH
 sizeX = 1
 sizeY = 1
+sizeZ = 1
 unwalkable = false
 opaque = false
 solid = false

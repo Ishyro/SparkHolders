@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <string>
 #include <cmath>
 #include <tuple>
 
@@ -52,6 +53,15 @@ namespace MapUtil {
   float getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying);
   std::list<Pair> getPathFromCartesianEquation(float a, int range);
   std::list<Pair> getPathFromOrientation(float x, float y, float orientation, float size, float range);
+  std::string target_to_string(Target * target);
+  Target * target_from_string(std::string to_read);
 };
+
+typedef struct Target {
+  int type;
+  long id;
+  MapUtil::Vector3 coord;
+  Target * next;
+} Target;
 
 #endif // _MAP_UTIL_H_

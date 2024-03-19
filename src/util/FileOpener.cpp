@@ -916,6 +916,7 @@ namespace FileOpener {
     int type = database->getTargetFromMacro(values.at("type"));
     int sizeX = stoi(values.at("sizeX"));
     int sizeY = stoi(values.at("sizeY"));
+    int sizeZ = stoi(values.at("sizeZ"));
     std::istringstream is_unwalkable(values.at("unwalkable"));
     bool unwalkable;
     is_unwalkable >> std::boolalpha >> unwalkable;
@@ -943,20 +944,20 @@ namespace FileOpener {
     Furniture * furniture;
     switch(type) {
       case FURNITURE_BASIC:
-        furniture = new BasicFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new BasicFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CONTAINER:
-        furniture = new ContainerFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new ContainerFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_CRAFTING:
-        furniture = new CraftingFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new CraftingFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_LINKED:
-        furniture = new LinkedFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
+        furniture = new LinkedFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ);
         break;
       case FURNITURE_SKILL: {
         Skill * skill = (Skill *) database->getSkill(values.at("skill"));
-        furniture = new SkillFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, skill);
+        furniture = new SkillFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, skill);
         break;
       }
       case FURNITURE_SWITCH: {
@@ -977,7 +978,7 @@ namespace FileOpener {
           fire_posY = stof(values.at("fire_posY"));
           fire_posZ = stof(values.at("fire_posZ"));
         }
-        furniture = new SwitchFurniture(name, type, sizeX, sizeY, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, unwalkable_off, opaque_off, solid_off, light_off);
+        furniture = new SwitchFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, activation_time, fire_size, fire_posX, fire_posY, fire_posZ, unwalkable_off, opaque_off, solid_off, light_off);
         break;
       }
     }

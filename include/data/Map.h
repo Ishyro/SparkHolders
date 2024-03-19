@@ -34,13 +34,6 @@ typedef struct Loot {
   std::list<Item *> items;
 } Loot;
 
-typedef struct Target {
-  int type;
-  long id;
-  MapUtil::Vector3 coord;
-  Target * next;
-} Target;
-
 namespace map {
   static long id_cpt = 0;
 }
@@ -334,8 +327,6 @@ class Map {
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
     std::string block_to_string(int x, int y);
-    static std::string target_to_string(Target * target);
-    static Target * target_from_string(std::string to_read);
     bool operator == (const Map& m) const { return id == m.id; }
     bool operator != (const Map& m) const { return !operator==(m); }
   private:

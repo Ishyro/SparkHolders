@@ -484,6 +484,7 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   result["type"] = furniture->type;
   result["sizeX"] = furniture->sizeX;
   result["sizeY"] = furniture->sizeY;
+  result["sizeZ"] = furniture->sizeZ;
   result["orientation"] = furniture->getOrientation();
   result["opaque"] = furniture->getOpaque();
   result["solid"] = furniture->getSolid();

@@ -2,6 +2,7 @@ name = TXT_DOOR
 type = FURNITURE_SWITCH
 sizeX = 1
 sizeY = 1
+sizeZ = 2
 unwalkable = true
 opaque = true
 solid = true

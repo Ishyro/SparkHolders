@@ -67,7 +67,7 @@ namespace Server {
       case ACTION_MOVE:
       case ACTION_STRIKE:
       case ACTION_ACTIVATION: {
-        Target * target = Map::target_from_string(String::extract(ss));
+        Target * target = MapUtil::target_from_string(String::extract(ss));
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
@@ -94,7 +94,7 @@ namespace Server {
         break;
       }
       case ACTION_USE_SKILL: {
-        Target * target = Map::target_from_string(String::extract(ss));
+        Target * target = MapUtil::target_from_string(String::extract(ss));
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
         int overcharge_power = String::extract_int(ss);
         int overcharge_duration = String::extract_int(ss);

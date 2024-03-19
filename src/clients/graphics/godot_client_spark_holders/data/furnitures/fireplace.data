@@ -2,6 +2,7 @@ name = TXT_FIREPLACE
 type = FURNITURE_SWITCH
 sizeX = 1
 sizeY = 1
+sizeZ = 1
 unwalkable = true
 opaque = false
 solid = true

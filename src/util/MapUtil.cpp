@@ -3,6 +3,7 @@
 
 #include "data/Map.h"
 
+#include "util/String.h"
 #include "util/MapUtil.h"
 
 MapUtil::Vector3 MapUtil::makeVector3(float x, float y, float z) {
@@ -491,4 +492,56 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
     }
   }
   return result;
+}
+
+std::string MapUtil::target_to_string(Target * target) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, target->type);
+  if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
+    if(target->type == TARGET_CHARACTER) {
+      String::insert_long(ss, target->id);
+    }
+    else {
+      String::insert_float(ss, target->coord.x);
+      String::insert_float(ss, target->coord.y);
+      String::insert_float(ss, target->coord.z);
+    }
+  }
+  if(target->next != nullptr) {
+    String::insert(ss, target_to_string(target->next));
+  }
+  else if(target->type != TARGET_NONE) {
+    String::insert(ss, "END");
+  }
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+Target * MapUtil::target_from_string(std::string to_read) {
+  std::stringstream * ss = new std::stringstream(to_read);
+  Target * target = new Target();
+  target->type = String::extract_int(ss);
+  if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
+    if(target->type == TARGET_CHARACTER) {
+      target->id = String::extract_long(ss);
+    }
+    else {
+      float x = String::extract_float(ss);
+      float y = String::extract_float(ss);
+      float z = String::extract_float(ss);
+      target->coord = MapUtil::makeVector3(x, y, z);
+    }
+  }
+  if(target->type != TARGET_NONE) {
+    std::string next = String::extract(ss);
+    if(next != "END") {
+      target->next = target_from_string(next);
+    }
+    else {
+      target->next = nullptr;
+    }
+  }
+  delete ss;
+  return target;
 }
