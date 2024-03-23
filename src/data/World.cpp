@@ -192,7 +192,7 @@ float World::setPathToTarget(Region * region, float x, float y, Target * target)
   float target_x;
   float target_y;
   switch(target->type) {
-    case TARGET_TILE:
+    case TARGET_BLOCK:
       target_x = target->coord.x + 0.5F;
       target_y = target->coord.y + 0.5F;
       break;

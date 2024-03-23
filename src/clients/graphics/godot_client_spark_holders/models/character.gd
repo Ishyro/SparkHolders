@@ -33,7 +33,12 @@ func unselect():
 func move_towards(dest: Vector3, delta: float):
 	nav.target_position = dest
 	var checkpoint = nav.get_next_path_position()
-	checkpoint.y = transform.origin.y
+	var space = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(checkpoint, checkpoint + Vector3(0, -10, 0), 0x1)
+	var result = space.intersect_ray(query)
+	if not result.is_empty():
+		checkpoint = result["position"]
+	#global_transform = global_transform.looking_at(checkpoint, Vector3.UP, true).scaled_local(scale)
 	var direction = (checkpoint - transform.origin).normalized()
 	velocity = velocity.lerp(direction * speed, accel * delta)
 	#if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity

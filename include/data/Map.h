@@ -77,7 +77,7 @@ class Map {
       loots = std::list<Loot *>();
     }
 
-    Map(Map * map, std::string name, int offsetX, int offsetY, int offsetZ, int rotation):
+    Map(Map * map, std::string name, int offsetX, int offsetY, int offsetZ, int rotation, Database * database):
       name(name),
       baseName(map->name),
       id(++map::id_cpt),
@@ -123,7 +123,29 @@ class Map {
             break;
           default:;
         }
-        setBlock(new_coord, block);
+        // oriented block
+        if(block->name.find('#') != std::string::npos) {
+          int orientation = rotation + block->orientation;
+          orientation = orientation >= 360.F ? orientation - 360.F : orientation;
+          std::string the_name = std::string(block->name);
+          switch(orientation) {
+            case 0:
+              setBlock(new_coord, (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#EAST"));
+              break;
+            case 90:
+              setBlock(new_coord, (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#NORTH"));
+              break;
+            case 180:
+              setBlock(new_coord, (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#WEST"));
+              break;
+            case 270:
+              setBlock(new_coord, (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#SOUTH"));
+              break;
+          }
+        }
+        else {
+          setBlock(new_coord, block);
+        }
       }
       furnitures = std::list<Furniture *>();
       for(Furniture * furniture : map->furnitures) {

@@ -1,6 +1,8 @@
 name = TXT_LAVA
+type = BLOCK_LIQUID
+material = resources/materials/lava.tres
 unwalkable = true
-opaque = false
-allow_vertical = true
+opaque = true
 light = 5
+orientation = 0
 ap_cost = 10.0

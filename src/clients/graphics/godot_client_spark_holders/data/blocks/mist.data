@@ -1,6 +1,8 @@
 name = TXT_MIST
+type = BLOCK_GAS
+material = resources/materials/mist.tres
 unwalkable = false
 opaque = true
-allow_vertical = false
 light = 0
+orientation = 0
 ap_cost = 10.0

@@ -129,6 +129,15 @@ Dictionary GodotLink::getFurnitures() {
   return result;
 }
 
+Array GodotLink::getUpdatedFurnitures() {
+  Array result = Array();
+  for(Furniture * furniture : state->changed_furnitures) {
+    result.push_back(Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x));
+  }
+  return result;
+}
+
+
 String GodotLink::getRelation(String team1, String team2) {
   switch(link->getAdventure()->getDatabase()->getRelation(std::string(team1.utf8().get_data()), std::string(team2.utf8().get_data()))) {
     case TEAM_SAME:
@@ -208,12 +217,13 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
 Dictionary GodotLink::getDataFromBlock(String tile_name) {
   Dictionary result = Dictionary();
   Block * block = (Block *) link->getAdventure()->getDatabase()->getBlock(std::string(tile_name.utf8().get_data()));
+  result["type"] = block->type;
   result["unwalkable"] = block->unwalkable;
   result["opaque"] = block->opaque;
-  result["allow_vertical"] = block->allow_vertical;
   result["light"] = block->light;
+  result["orientation"] = block->orientation;
   result["ap_cost"] = block->ap_cost;
-  result["path"] = link->getAdventure()->getDatabase()->getBlockFile(std::string(tile_name.utf8().get_data())).c_str();
+  result["material"] = block->material.c_str();
   return result;
 }
 
@@ -634,6 +644,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getFurnitures"), &GodotLink::getFurnitures);
+  ClassDB::bind_method(D_METHOD("getUpdatedFurnitures"), &GodotLink::getUpdatedFurnitures);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getDataFromBlock", "block"), &GodotLink::getDataFromBlock);
   ClassDB::bind_method(D_METHOD("getDataFromClass", "class"), &GodotLink::getDataFromClass);

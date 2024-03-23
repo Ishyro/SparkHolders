@@ -36,13 +36,14 @@ namespace MapUtil {
 
   Vector3 makeVector3(float x, float y, float z);
   Vector3 makeVector3(Vector3i coord_int);
-  Vector3i makeVector3i(int x, int y, int z);
+  Vector3i makeVector3i(float x, float y, float z);
   Vector3i makeVector3i(Vector3 coord_float);
 
   float round(float var);
   float distanceSquare(float x1, float y1, float x2, float y2);
   float distance(float x1, float y1, float x2, float y2);
   float distance(Vector3 coord1, Vector3 coord2);
+  float distance2(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2);
   float getOrientationToTarget(float x1, float y1, float x2, float y2);
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int offsetX, int offsetY);

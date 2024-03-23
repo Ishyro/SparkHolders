@@ -2,15 +2,16 @@
 
 # blocks
 data/blocks/cut_stone.data
-data/blocks/rock.data
-data/blocks/wood.data
+data/blocks/glass.data
 data/blocks/grass.data
 data/blocks/lava.data
 data/blocks/mist.data
-data/blocks/soil.data
 data/blocks/road_stone.data
+data/blocks/rock.data
+data/blocks/soil.data
 data/blocks/void.data
 data/blocks/water.data
+data/blocks/wood.data
 # effects
 data/effects/experience_10.data
 data/effects/satiety_10.data

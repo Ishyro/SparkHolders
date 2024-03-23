@@ -1,8 +1,8 @@
-name = TXT_WOOD
+name = TXT_GLASS
 type = BLOCK_SOLID
-material = resources/materials/wood.tres
+material = resources/materials/glass.tres
 unwalkable = false
-opaque = true
+opaque = false
 light = 0
 orientation = 0
 ap_cost = 10.0

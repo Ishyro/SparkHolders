@@ -8,10 +8,8 @@
 [ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
-auto_exposure_enabled = true
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_b7eew"]
-auto_exposure_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_pulsa"]
 noise_type = 3

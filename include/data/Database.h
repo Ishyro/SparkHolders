@@ -16,6 +16,8 @@ class Database {
 
     const Attributes * getAttributes(const std::string attributes);
     const std::string getAttributesFile(const std::string attributes);
+    const Block * getBlock(const std::string block);
+    std::map<const std::string, const Block *> getAvaillableBlocks();
     const Character * getCharacter(const std::string character);
     const Effect * getEffect(const std::string effect);
     const Event * getEvent(const std::string event);
@@ -30,9 +32,6 @@ class Database {
     const Skill * getSkill(const std::string skill);
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
-    const Block * getBlock(const std::string block);
-    const std::string getBlockFile(const std::string block);
-    std::map<const std::string, const Block *> getAvaillableBlocks();
     const Way * getWay(const std::string way);
     const std::string getWayFile(const std::string way);
     const int getRelation(const std::string team1, const std::string team2);
@@ -41,6 +40,7 @@ class Database {
 
     void addAttributes(const Attributes * attributes);
     void addAttributesFile(const std::string attributes, const std::string path);
+    void addBlock(const Block * block);
     void addCharacter(const Character * character);
     void addEffect(const Effect * effect);
     void addEvent(const Event * event);
@@ -55,8 +55,6 @@ class Database {
     void addSkill(const Skill * skill);
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
-    void addBlock(const Block * block);
-    void addBlockFile(const std::string block, const std::string path);
     void addWay(const Way * way);
     void addWayFile(const std::string way, const std::string path);
     void addRelation(const std::string team1, const std::string team2, int relation);
@@ -68,6 +66,7 @@ class Database {
 
     std::map<const std::string, const Attributes * > attributes;
     std::map<const std::string, const std::string> attributesFiles;
+    std::map<const std::string, const Block * > blocks;
     std::map<const std::string, const Character * > characters;
     std::map<const std::string, const Effect * > effects;
     std::map<const std::string, const Event * > events;
@@ -82,8 +81,6 @@ class Database {
     std::map<const std::string, const Skill * > skills;
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
-    std::map<const std::string, const Block * > tiles;
-    std::map<const std::string, const std::string> tilesFiles;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, const std::string> waysFiles;
     std::map<const std::string, std::map<const std::string, int>> relations;

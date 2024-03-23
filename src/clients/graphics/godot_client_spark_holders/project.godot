@@ -22,8 +22,8 @@ Values="*res://values.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=3840
+window/size/viewport_height=2160
 window/size/borderless=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
@@ -221,3 +221,4 @@ swap_perspective={
 3d_physics/layer_4="Phantoms"
 3d_physics/layer_5="Physical"
 3d_physics/layer_6="Unwalkable"
+3d_physics/layer_7="Furnitures"

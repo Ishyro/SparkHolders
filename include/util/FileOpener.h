@@ -21,6 +21,7 @@ namespace FileOpener {
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer);
 
   std::string AttributesOpener(std::string fileName, Database * database);
+  void BlockOpener(std::string fileName, Database * database);
   void CharacterOpener(std::string fileName, Database * database);
   void EffectOpener(std::string fileName, Database * database);
   void EventOpener(std::string fileName, Database * database);
@@ -36,7 +37,6 @@ namespace FileOpener {
   void SkillOpener(std::string fileName, Database * database);
   void PseudoSkillOpener(std::string fileName, Database * database);
   void SpeechOpener(std::string fileName, Database * database);
-  std::string BlockOpener(std::string fileName, Database * database);
   std::string WayOpener(std::string fileName, Database * database);
 
   void FileOpener(std::string fileName, Database * database, bool isServer);

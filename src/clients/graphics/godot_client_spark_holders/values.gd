@@ -3,6 +3,12 @@ extends Node
 # Constants
 const BASE_RESOLUTION = Vector2(1920, 1080)
 
+const BLOCK_SOLID = 1
+const BLOCK_LIQUID = 2
+const BLOCK_GAS = 3
+const BLOCK_STAIRS = 4
+const BLOCK_SLOPE = 5
+
 const DAMAGE_TYPE_NUMBER = 11
 const DAMAGE_SLASH = 0
 const DAMAGE_PUNCTURE = 1
@@ -46,7 +52,7 @@ const TARGET_NONE = 0
 const TARGET_SELF = 1
 const TARGET_CHARACTER = 2
 const TARGET_COORDINATES = 3
-const TARGET_TILE = 4
+const TARGET_BLOCK = 4
 const TARGET_PERMISSIVE = 5
 const TARGET_MULTIPLE = 6
 

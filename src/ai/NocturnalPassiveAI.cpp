@@ -32,7 +32,7 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
     //else {
       orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
       Target * t = new Target();
-      t->type = TARGET_TILE;
+      t->type = TARGET_BLOCK;
       t->id = c->getCurrentMap()->id;
       t->x = origin_x;
       t->y = origin_y;
@@ -59,7 +59,7 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
   if(orientation != 360.F) {
     Target * t = new Target();
-    t->type = TARGET_TILE;
+    t->type = TARGET_BLOCK;
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;

@@ -84,7 +84,7 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
       int tp_index = std::min(tp_range, range) - 1; // path[0] is at range 1
       MapUtil::Pair tp_target = path[tp_index];
       Target * target = new Target();
-      target->type = TARGET_TILE;
+      target->type = TARGET_BLOCK;
       target->id = self->getCurrentMap()->id;
       target->x = tp_target.x;
       target->y = tp_target.y;
@@ -95,7 +95,7 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
   if(path.size() > 0) {
     MapUtil::Pair next = path[0];
     Target * target = new Target();
-    target->type = TARGET_TILE;
+    target->type = TARGET_BLOCK;
     target->id = self->getCurrentMap()->id;
     target->x = next.x;
     target->y = next.y;
@@ -180,7 +180,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
       }
     }
     Target * t = new Target();
-    t->type = TARGET_TILE;
+    t->type = TARGET_BLOCK;
     t->id = self->getCurrentMap()->id;
     t->x = i;
     t->y = j;
@@ -243,7 +243,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
     }
     else {
       Target * target = new Target();
-      target->type = TARGET_TILE;
+      target->type = TARGET_BLOCK;
       target->id = self->getCurrentMap()->id;
       target->x = corpse->x;
       target->y = corpse->y;

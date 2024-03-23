@@ -6,24 +6,30 @@
 class Block {
   public:
     const std::string name;
+    const int type;
+    const std::string material;
     const bool unwalkable;
     const bool opaque;
-    const bool allow_vertical;
     const int light;
+    const int orientation;
     const float ap_cost;
     Block(
       std::string name,
+      int type,
+      std::string material,
       bool unwalkable,
       bool opaque,
-      bool allow_vertical,
       int light,
+      int orientation,
       float ap_cost
     ):
       name(name),
+      type(type),
+      material(material),
       unwalkable(unwalkable),
       opaque(opaque),
-      allow_vertical(allow_vertical),
       light(light),
+      orientation(orientation),
       ap_cost(ap_cost)
     {}
     std::string to_string();

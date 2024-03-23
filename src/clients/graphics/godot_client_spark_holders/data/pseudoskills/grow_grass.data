@@ -1,6 +1,6 @@
 name = TXT_GROW_GRASS
 skill_type = SKILL_TILE_SWAP
-target_type = TARGET_TILE
+target_type = TARGET_BLOCK
 current_block = TXT_SOIL
 new_block = TXT_GRASS
 mana_cost = 0

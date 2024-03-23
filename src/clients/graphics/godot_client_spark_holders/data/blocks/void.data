@@ -1,6 +1,8 @@
 name = TXT_VOID
+type = BLOCK_GAS
+material = resources/materials/void.tres
 unwalkable = true
 opaque = true
-allow_vertical = true
 light = 0
+orientation = 0
 ap_cost = 10.0

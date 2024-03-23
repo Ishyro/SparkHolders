@@ -8,6 +8,8 @@ extends Control
 
 func _on_continue_pressed():
 	view.pause_state = false
+	if !view.perspective3:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	visible = false
 
 func _on_save_pressed():

@@ -22,11 +22,11 @@ MapUtil::Vector3 MapUtil::makeVector3(MapUtil::Vector3i coord_int) {
   return coord;
 }
 
-MapUtil::Vector3i MapUtil::makeVector3i(int x, int y, int z) {
+MapUtil::Vector3i MapUtil::makeVector3i(float x, float y, float z) {
   MapUtil::Vector3i coord = MapUtil::Vector3i();
-  coord.x = x;
-  coord.y = y;
-  coord.z = z;
+  coord.x = (int) std::floor(x);
+  coord.y = (int) std::floor(y);
+  coord.z = (int) std::floor(z);
   return coord;
 }
 
@@ -54,6 +54,10 @@ float MapUtil::distance(float x1, float y1, float x2, float y2) {
 
 float MapUtil::distance(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
   return round(std::sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y) + (coord1.z - coord2.z) * (coord1.z - coord2.z)));
+}
+
+float MapUtil::distance2(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
+  return round(std::sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y)));
 }
 
 float MapUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {

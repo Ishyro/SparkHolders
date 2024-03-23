@@ -446,7 +446,11 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   std::stringstream * ss_furnitures = new std::stringstream(String::extract(ss));
   while(ss_furnitures->rdbuf()->in_avail() != 0) {
     SwitchFurniture * furniture = (SwitchFurniture *) getFurniture(String::extract_long(ss_furnitures));
-    furniture->setIsOn(String::extract_bool(ss_furnitures));
+    bool isOn = String::extract_bool(ss_furnitures);
+    if(furniture->getIsOn() != isOn) {
+      furniture->setIsOn(isOn);
+      display->changed_furnitures.push_back(furniture);
+    }
   }
   delete ss_furnitures;
   std::stringstream * ss_speeches = new std::stringstream(String::extract(ss));

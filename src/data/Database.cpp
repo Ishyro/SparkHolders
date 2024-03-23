@@ -24,6 +24,7 @@ Database::Database() {
   macros = std::map<const std::string,const int>();
 
   attributes = std::map<const std::string, const Attributes *>();
+  blocks = std::map<const std::string, const Block *>();
   characters = std::map<const std::string, const Character *>();
   effects = std::map<const std::string, const Effect *>();
   events = std::map<const std::string, const Event *>();
@@ -38,13 +39,18 @@ Database::Database() {
   skills = std::map<const std::string, const Skill * >();
   pseudoSkills = std::map<const std::string, const PseudoSkill *>();
   speechs = std::map<const std::string, const Speech * >();
-  tiles = std::map<const std::string, const Block *>();
-  tilesFiles = std::map<const std::string, const std::string>();
   ways = std::map<const std::string, const Way *>();
   waysFiles = std::map<const std::string, const std::string>();
   relations = std::map<const std::string, std::map<const std::string, int>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
   paths = std::list<std::string>();
+
+  // block_type
+  macros.insert(std::make_pair("BLOCK_SOLID", BLOCK_SOLID));
+  macros.insert(std::make_pair("BLOCK_LIQUID", BLOCK_LIQUID));
+  macros.insert(std::make_pair("BLOCK_GAS", BLOCK_GAS));
+  macros.insert(std::make_pair("BLOCK_STAIRS", BLOCK_STAIRS));
+  macros.insert(std::make_pair("BLOCK_SLOPE", BLOCK_SLOPE));
 
   // effect_duration_type
   macros.insert(std::make_pair("DURATION_INSTANT", DURATION_INSTANT));
@@ -155,7 +161,7 @@ Database::Database() {
   macros.insert(std::make_pair("TARGET_SELF", TARGET_SELF));
   macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
   macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
-  macros.insert(std::make_pair("TARGET_TILE", TARGET_TILE));
+  macros.insert(std::make_pair("TARGET_BLOCK", TARGET_BLOCK));
   macros.insert(std::make_pair("TARGET_PERMISSIVE", TARGET_PERMISSIVE));
   macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
 
@@ -258,6 +264,8 @@ const int Database::getTargetFromMacro(const std::string macro) { return macros.
 
 const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
 const std::string Database::getAttributesFile(const std::string attributes) { return attributesFiles.at(attributes); }
+const Block * Database::getBlock(const std::string block) { return blocks.at(block); }
+std::map<const std::string, const Block *> Database::getAvaillableBlocks() { return blocks; }
 const Character * Database::getCharacter(const std::string character) { return characters.at(character); }
 const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
 const Event * Database::getEvent(const std::string event) { return events.at(event); }
@@ -272,9 +280,6 @@ const Quest * Database::getQuest(const std::string quest) { return quests.at(que
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
-const Block * Database::getBlock(const std::string block) { return tiles.at(block); }
-std::map<const std::string, const Block *> Database::getAvaillableBlocks() { return tiles; }
-const std::string Database::getBlockFile(const std::string block) { return tilesFiles.at(block); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const std::string Database::getWayFile(const std::string way) { return waysFiles.at(way); }
 const int Database::getRelation(const std::string team1, const std::string team2) {
@@ -294,6 +299,7 @@ std::list<std::pair<const std::string, const std::string>> Database::getWaysInco
 
 void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
 void Database::addAttributesFile(const std::string attributes, const std::string path) { attributesFiles.insert(std::make_pair(attributes, path)); }
+void Database::addBlock(const Block * block) { blocks.insert(std::make_pair(block->name, block)); }
 void Database::addCharacter(const Character * character) { characters.insert(std::make_pair(character->name, character)); }
 void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
 void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
@@ -308,8 +314,6 @@ void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(ques
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
-void Database::addBlock(const Block * block) { tiles.insert(std::make_pair(block->name, block)); }
-void Database::addBlockFile(const std::string block, const std::string path) { tilesFiles.insert(std::make_pair(block, path)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addWayFile(const std::string way, const std::string path) { waysFiles.insert(std::make_pair(way, path)); }
 void Database::addRelation(const std::string team1, const std::string team2, int relation) {

@@ -1,6 +1,8 @@
 name = TXT_GRASS
+type = BLOCK_SOLID
+material = resources/materials/grass.tres
 unwalkable = false
-opaque = false
-allow_vertical = false
+opaque = true
 light = 0
+orientation = 0
 ap_cost = 10.0

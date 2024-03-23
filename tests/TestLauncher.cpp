@@ -61,16 +61,12 @@ int main(int argc, char ** argv) {
     adventure->incrTick();
     */
   }
-  Character * dasheep = adventure->getWorld()->getCharacters().front();
-  for(float y = 2.F; y < 9.F; y += 0.001) {
-    for(float x = 2.F; x < 9.F; x += 0.001) {
-      MapUtil::Vector3 ori = dasheep->getCoord();
-      MapUtil::Vector3 dest = MapUtil::makeVector3(x, y, 0);
-      float cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, ori, dest));
-      float move_cost = MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y), dest, 1.F, adventure->getWorld()));
-      // move back
-      float back_cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dest, ori));
-      float move_back_cost = MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(dest.x, dest.y, ori.x, ori.y), ori, 1.F, adventure->getWorld()));
+  for(Character * dasheep : adventure->getWorld()->getCharacters()) {
+    for(auto pair : dasheep->getRegion()->getBlocks()) {
+      if(pair.second != dasheep->getRegion()->getBlock(pair.first)) {
+        std::cout << "coord: " << pair.first.x << " " << pair.first.y << " " << pair.first.z << std::endl;
+        std::cout << "block: " << pair.second->name << std::endl;
+      }
     }
   }
   auto end = std::chrono::system_clock::now();

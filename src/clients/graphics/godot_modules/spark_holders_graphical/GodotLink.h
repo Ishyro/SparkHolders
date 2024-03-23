@@ -45,6 +45,7 @@ public:
   Dictionary getCharacters();
   Dictionary getProjectiles();
   Dictionary getFurnitures();
+  Array getUpdatedFurnitures();
   String getRelation(String team1, String team2);
   Dictionary getDataFromItem(Item * item);
   Dictionary getDataFromBlock(String tile_name);

@@ -116,7 +116,7 @@ void TargetedAction::computeTime(Adventure * adventure) {
 Target * TargetedAction::getTarget() { return target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
-  if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
+  if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
     user->setOrientation(MapUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
   }
   else if(target->type == TARGET_CHARACTER) {
@@ -126,8 +126,8 @@ void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
 }
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
-  if(target->type == TARGET_COORDINATES || target->type == TARGET_TILE) {
-    return MapUtil::distance(user->getCoord(), target->coord);
+  if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
+    return MapUtil::distance2(user->getCoord(), target->coord);
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = adventure->getCharacter(target->id);

@@ -61,6 +61,14 @@ typedef struct Target Target;
 
 class SpeechManager;
 
+// block_type
+
+#define BLOCK_SOLID 1
+#define BLOCK_LIQUID 2
+#define BLOCK_GAS 3
+#define BLOCK_STAIRS 4
+#define BLOCK_SLOPE 5
+
 // effect_duration_type
 
 #define DURATION_INSTANT 1
@@ -203,7 +211,7 @@ class SpeechManager;
 #define TARGET_SELF 1
 #define TARGET_CHARACTER 2
 #define TARGET_COORDINATES 3
-#define TARGET_TILE 4
+#define TARGET_BLOCK 4
 #define TARGET_PERMISSIVE 5
 #define TARGET_MULTIPLE 6
 

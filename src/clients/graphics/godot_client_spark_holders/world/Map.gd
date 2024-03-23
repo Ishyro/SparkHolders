@@ -18,6 +18,7 @@ var lights = {}
 var characters = {}
 var projectiles = {}
 var furnitures = {}
+var furnitures_colliders = {}
 var blocks_data = {}
 var characters_data = {}
 var projectiles_data = {}
@@ -118,14 +119,14 @@ func _ready():
 		var character_size = round_float(characters_data[character_id]["size"])
 		if !navigations.has(character_size):
 			navigations[character_size] = NavigationMesh.new()
-			navigations[character_size].sample_partition_type = NavigationMesh.SAMPLE_PARTITION_LAYERS
+			navigations[character_size].sample_partition_type = NavigationMesh.SAMPLE_PARTITION_WATERSHED
 			navigations[character_size].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 			navigations[character_size].geometry_collision_mask = 0x10
 			navigations[character_size].cell_size = 0.05
 			navigations[character_size].cell_height = 0.05
-			navigations[character_size].agent_height = 0.0
-			navigations[character_size].agent_max_climb = 0.0
-			navigations[character_size].agent_max_slope = 0.02
+			navigations[character_size].agent_height = 1.8
+			navigations[character_size].agent_max_climb = 0.25
+			navigations[character_size].agent_max_slope = 60
 			navigations[character_size].agent_radius = character_size
 	
 	Values.selected_team = characters[owned_characters[0]]
@@ -157,9 +158,7 @@ func select_character(character_id: int):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if mutex.try_lock():
-		var count = 0
-		if Values.link.hasState():
-			count += 1
+		while Values.link.hasState():
 			Values.link.getState()
 			Values.next_state_ready = true
 		if Values.next_state_ready:
@@ -176,6 +175,7 @@ func _process(_delta):
 				if floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16):
 					update = true
 					create_blocks(character_id)
+			update_furnitures()
 			if update:
 				furnitures_data = Values.link.getFurnitures()
 				display_map()
@@ -209,7 +209,7 @@ func _physics_process(delta):
 				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
 				characters[character_id].move_towards(dest, delta)
 				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
-				if characters[character_id].nav.is_target_reached(): #transform.origin.distance_to(dest) <= 0.05:
+				if characters[character_id].nav.is_target_reached():
 					characters[character_id].transform.origin = dest
 					if phantoms.has(character_id):
 						if phantom_lines.has(character_id):
@@ -271,7 +271,32 @@ func add_block(coord: Vector3, current_lights: Dictionary):
 	collider.collision_mask = 0x1f
 	collider.set_transform(Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
 	var shape = CollisionShape3D.new()
-	shape.shape = BoxShape3D.new()
+	match blocks_data[current_blocks[coord]]["type"]:
+		Values.BLOCK_SOLID:
+			shape.shape = BoxShape3D.new()
+		Values.BLOCK_LIQUID:
+			shape.shape = BoxShape3D.new()
+		Values.BLOCK_SLOPE:
+			shape.shape = ConvexPolygonShape3D.new()
+			shape.shape.set_points(
+				PackedVector3Array(
+					[
+						Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
+						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
+					]
+				)
+			)
+		Values.BLOCK_STAIRS:
+			shape.shape = ConvexPolygonShape3D.new()
+			shape.shape.set_points(
+				PackedVector3Array(
+					[
+						Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
+						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
+					]
+				)
+			)
+	shape.rotation_degrees = Vector3(0, 90 + blocks_data[current_blocks[coord]]["orientation"], 0)
 	collider.add_child(shape)
 	n_ground.add_child(collider)
 	colliders[coord] = collider
@@ -279,9 +304,22 @@ func add_block(coord: Vector3, current_lights: Dictionary):
 func reset_map():
 	for block_type in multiMeshInstances:
 		blocks_count[block_type] = 0
+	# clear furnitures
+	for coord in furnitures.keys():
+		n_furnitures.remove_child(furnitures[coord])
+		furnitures.erase(coord)
 	for coord in colliders.keys():
 		n_ground.remove_child(colliders[coord])
 		colliders.erase(coord)
+
+func update_furnitures():
+	var updated_furnitures = Values.link.getUpdatedFurnitures()
+	if not updated_furnitures.is_empty():
+		furnitures_data = Values.link.getFurnitures()
+		for coord in updated_furnitures:
+			n_furnitures.remove_child(furnitures[coord])
+			furnitures.erase(coord)
+			add_furniture(furnitures_data[coord], coord)
 
 func display_map():
 	var block_current = {}
@@ -292,17 +330,17 @@ func display_map():
 	for block in current_blocks:
 		var block_type = current_blocks[block]
 		var coord = Vector3.ZERO
-		if blocks_data[block_type]["unwalkable"]:
-			coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
-		else:
-			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
-		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord))
+		match blocks_data[block_type]["type"]:
+			Values.BLOCK_SOLID:
+				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+			Values.BLOCK_LIQUID:
+				coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
+			Values.BLOCK_SLOPE:
+				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+			Values.BLOCK_STAIRS:
+				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(90 + blocks_data[block_type]["orientation"])))
 		block_current[block_type] = block_current[block_type] + 1
-	# clear furnitures
-	for coord in furnitures.keys():
-		var furniture = furnitures[coord]
-		n_furnitures.remove_child(furniture)
-		furnitures.erase(coord)
 	for coord in furnitures_data:
 		add_furniture(furnitures_data[coord], coord)
 
@@ -310,17 +348,86 @@ func initialize_block(block: String):
 	if block != "TXT_MIST" && block != "TXT_VOID":
 		blocks_data[block] = Values.link.getDataFromBlock(block)
 		blocks_count[block] = 0
-		materials[block] = load(blocks_data[block]["path"])
+		materials[block] = load(blocks_data[block]["material"])
 		var multimeshinstance = MultiMeshInstance3D.new()
 		var multimesh = MultiMesh.new()
 		var mesh = BoxMesh.new()
-		if blocks_data[block]["unwalkable"]:
-			#mesh = BoxMesh.new()
-			mesh = PlaneMesh.new()
-			mesh.orientation = PlaneMesh.FACE_Y
-			mesh.set_size(Vector2(1, 1))
-		else:
-			mesh.set_size(Vector3.ONE)
+		match blocks_data[block]["type"]:
+			Values.BLOCK_SOLID:
+				mesh.set_size(Vector3.ONE)
+			Values.BLOCK_LIQUID:
+				mesh = PlaneMesh.new()
+				mesh.orientation = PlaneMesh.FACE_Y
+				mesh.set_size(Vector2(1, 1))
+			Values.BLOCK_SLOPE:
+				mesh = PrismMesh.new()
+				mesh.left_to_right = 0
+			Values.BLOCK_STAIRS:
+				mesh = PrismMesh.new()
+				mesh.left_to_right = 0
+			# TODO
+			Values.BLOCK_STAIRS:
+				mesh = ArrayMesh.new()
+				var vertices = PackedVector3Array(
+					[
+						Vector3(-0.5, -0.5, -0.5), #0
+						Vector3(-0.5, 0.5, -0.5), #1
+						Vector3(-0.5, 0.5, 0.5), #2
+						Vector3(-0.5, -0.5, 0.5), #3
+						Vector3(0.5, -0.5, 0.5), #4
+						Vector3(0.5, -0.5, -0.5), #5
+						Vector3(0.5, 0, -0.5), #6
+						Vector3(0.5, 0, 0.5), #7
+						Vector3(0, 0, 0.5), #8
+						Vector3(0, 0, -0.5), #9
+						Vector3(0, 0.5, -0.5), #10
+						Vector3(0, 0.5, 0.5), #11
+					]
+				)
+				var indexes = PackedInt32Array(
+					[
+						0,1,2,
+						0,2,3,
+						0,3,4,
+						0,4,5,
+						4,5,6,
+						4,6,7,
+						6,8,7,
+						6,9,8,
+						8,9,19,
+						8,10,11,
+						0,1,10,
+						0,10,9,
+						0,9,5,
+						9,6,5,
+						2,11,3,
+						11,8,3,
+						3,8,4,
+						8,7,4
+					]
+				)
+				var normals = PackedVector3Array(
+					[
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD,
+						Vector3.FORWARD
+					]
+				)
+				var arrays = []
+				arrays.resize(Mesh.ARRAY_MAX)
+				arrays[Mesh.ARRAY_VERTEX] = vertices
+				arrays[Mesh.ARRAY_INDEX] = indexes
+				arrays[Mesh.ARRAY_NORMAL] = normals
+				mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 		mesh.surface_set_material(0, materials[block])
 		multimesh.set_mesh(mesh)
 		multimesh.transform_format = MultiMesh.TRANSFORM_3D
@@ -332,7 +439,7 @@ func initialize_block(block: String):
 			var img = materials[block].albedo_texture.get_image()
 			blocks_img[block] = ImageTexture.create_from_image(img)
 
-func add_furniture(furniture_data: Dictionary, coords: Vector3):
+func add_furniture(furniture_data: Dictionary, coord: Vector3):
 	if !base_furnitures.has(furniture_data["name"]):
 		var model = load(furniture_data["path"])
 		base_furnitures[furniture_data["name"]] = model
@@ -349,14 +456,27 @@ func add_furniture(furniture_data: Dictionary, coords: Vector3):
 	
 	if furniture_data["light"] > 0:
 		furniture.add_child(add_fire(furniture_data["fire_pos"], furniture_data["fire_size"], furniture_data["light"]))
-	furniture.transform.origin = Vector3(coords.x + 0.5, coords.y + 1, coords.z + 0.5)
+	furniture.transform.origin = Vector3(coord.x + float(furniture_data["sizeY"]) / 2.0, coord.y + float(furniture_data["sizeZ"]) / 2.0, coord.z + float(furniture_data["sizeX"]) / 2.0)
 	furniture.rotation_degrees = Vector3(0, furniture_data["orientation"], 0)
-	furnitures[coords] = furniture
+	furnitures[coord] = furniture
+	var collider = StaticBody3D.new()
+	
+	if furniture_data["unwalkable"]:
+		collider.collision_layer = 0x50
+	else:
+		collider.collision_layer = 0x40
+	var shape = CollisionShape3D.new()
+	shape.shape = BoxShape3D.new()
+	shape.shape.set_size(Vector3(furniture_data["sizeY"], furniture_data["sizeZ"], furniture_data["sizeX"]))
+	collider.transform.origin = furniture.transform.origin
+	collider.add_child(shape)
+	n_ground.add_child(collider)
+	colliders[coord] = collider
 	n_furnitures.add_child(furniture)
-		
-func add_fire(coords: Vector3, size: float, light_power: int):
+
+func add_fire(coord: Vector3, size: float, light_power: int):
 	var fire = base_fire.instantiate()
-	fire.initialize(coords, size, light_power)
+	fire.initialize(coord, size, light_power)
 	return fire
 
 func get_color(character_data: Dictionary):
@@ -408,16 +528,16 @@ func update_phantom(character_id: int):
 		var distance = previous_vec.distance_to(vec)
 		if distance != 0.:
 			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
-			var phantom_line = MeshInstance3D.new()
-			phantom_line.mesh = BoxMesh.new()
-			phantom_line.mesh.set_size(Vector3(0.1, 0.01, distance))
-			last_angle = Vector3(0, Values.link.getOrientationToTarget(Vector2(previous_vec.z, previous_vec.x), Vector2(vec.z, vec.x)), 0)
-			phantom_line.rotation_degrees = last_angle
-			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, Values.coord.y + 0.001, (vec.z + previous_vec.z) / 2)
-			phantom_line.set_surface_override_material(0, phantom_material)
-			phantom_lines[character_id].push_back(phantom_line)
+			var phantom_line = Decal.new()
+			phantom_line.texture_albedo = preload("res://menus/arabesque.png")
 			n_characters.add_child(phantom_line)
+			phantom_line.transform.origin = previous_vec
+			phantom_line.global_transform = phantom_line.global_transform.looking_at(vec, Vector3.UP, true)
+			last_angle = phantom_line.rotation_degrees
+			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, (vec.y + previous_vec.y) / 2 + 0.001, (vec.z + previous_vec.z) / 2)
+			phantom_line.set_size(Vector3(0.1, 0.25, distance))
 			previous_vec = vec
+			phantom_lines[character_id].push_back(phantom_line)
 	phantoms[character_id].rotation_degrees = last_angle
 	return String.num(ap_cost, 3) + " ap"
 

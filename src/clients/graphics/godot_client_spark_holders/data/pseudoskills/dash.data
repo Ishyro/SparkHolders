@@ -1,6 +1,6 @@
 name = TXT_DASH
 skill_type = SKILL_TELEPORT
-target_type = TARGET_TILE
+target_type = TARGET_BLOCK
 apparition_type = APPARITION_SOFT
 movement_type = MOVEMENT_WALKING
 mana_cost = 25

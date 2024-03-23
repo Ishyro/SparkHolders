@@ -23,6 +23,7 @@ typedef struct StateDisplay {
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
   std::list<Speech *> speeches;
+  std::list<Furniture *> changed_furnitures;
   bool need_to_send_actions;
 } StateDisplay;
 

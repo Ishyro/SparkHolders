@@ -14,7 +14,7 @@ Guardian - Beastiona - Green - Tin - Earth - Justice - Poison - The Scale (Mass)
 
 TAROT
 
-01 - The City (Urbis)
+01 - The City (Urbi)
 02 - The Emperor
 03 - The Ground (The Bellow) (3)
 04 - The Sky (The Above) (4)
@@ -34,5 +34,5 @@ TAROT
 18 - The Hope
 19 - The Charity
 20 - The Herald (The Hierophant)
-21 - The World (Orbis)
+21 - The World (Orbi)
 00 - The Fool

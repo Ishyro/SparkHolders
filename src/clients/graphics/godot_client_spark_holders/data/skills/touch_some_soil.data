@@ -1,7 +1,7 @@
 name = TXT_TOUCH_SOME_SOIL
 level = 0
 attributes =
-target_type = TARGET_TILE
+target_type = TARGET_BLOCK
 is_instant = false
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE

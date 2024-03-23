@@ -1,7 +1,7 @@
 name = TXT_DASH
 level = 2
 attributes =
-target_type = TARGET_TILE
+target_type = TARGET_BLOCK
 is_instant = true
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE

@@ -1,6 +1,8 @@
 name = TXT_WATER
+type = BLOCK_LIQUID
+material = resources/materials/water.tres
 unwalkable = true
 opaque = false
-allow_vertical = true
 light = 0
+orientation = 0
 ap_cost = 10.0

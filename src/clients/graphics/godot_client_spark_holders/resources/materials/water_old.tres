@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bmxh1bjus8s7n"]
 
-[ext_resource type="Shader" path="res://resources/materials/water/water.gdshader" id="1_d7mx2"]
+[ext_resource type="Shader" path="res://resources/materials/water/water_old.gdshader" id="1_au7ou"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bnjqe"]
 noise_type = 3
@@ -34,7 +34,7 @@ noise = SubResource("FastNoiseLite_a0xop")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_d7mx2")
+shader = ExtResource("1_au7ou")
 shader_parameter/albedo = Color(0, 0.321569, 0.431373, 1)
 shader_parameter/albedo2 = Color(0, 0.768627, 0.764706, 1)
 shader_parameter/metallic = 1.0

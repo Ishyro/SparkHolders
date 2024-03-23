@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnbsbssh473o0"
-path.s3tc="res://.godot/imported/Foam.png-a92e942fc09a542425e26ffbf19ea7f5.s3tc.ctex"
+uid="uid://ch1eb1v8e4utn"
+path.s3tc="res://.godot/imported/Water_UV.png-c7506d38037ab8a955744a6a0f6ddf0a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/materials/water/Foam.png"
-dest_files=["res://.godot/imported/Foam.png-a92e942fc09a542425e26ffbf19ea7f5.s3tc.ctex"]
+source_file="res://resources/materials/water/Water_UV.png"
+dest_files=["res://.godot/imported/Water_UV.png-c7506d38037ab8a955744a6a0f6ddf0a.s3tc.ctex"]
 
 [params]
 

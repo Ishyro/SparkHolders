@@ -24,7 +24,7 @@ Block * Region::getBlock(MapUtil::Vector3i coord) {
 
 float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 dest) {
   Block * block = getBlock(MapUtil::makeVector3i(dest));
-  if(block != nullptr && block->unwalkable) {
+  if(block != nullptr && block->type != BLOCK_SLOPE && block->type != BLOCK_STAIRS) {
     return -1.F;
   }
   Block * under = getBlock(MapUtil::makeVector3i(dest.x, dest.y, dest.z - 1));
@@ -54,7 +54,7 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       next.x = std::floor(next.x);
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, next);
+        ap_cost += block->ap_cost * MapUtil::distance2(current, next);
       }
       current.x = next.x;
     }
@@ -63,13 +63,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       if(x_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
       }
       current.x = next.x;
@@ -77,13 +77,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
     if(x_direction == -1) {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MapUtil::distance(current, dest);
+        ap_cost -= block->ap_cost * MapUtil::distance2(current, dest);
       }
     }
     else {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, dest);
+        ap_cost += block->ap_cost * MapUtil::distance2(current, dest);
       }
     }
   }
@@ -92,7 +92,7 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       next.y = std::floor(next.y);
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, next);
+        ap_cost += block->ap_cost * MapUtil::distance2(current, next);
       }
       current.y = next.y;
     }
@@ -101,13 +101,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       if(y_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
       }
       current.y = next.y;
@@ -115,13 +115,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
     if(y_direction == -1) {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MapUtil::distance(current, dest);
+        ap_cost -= block->ap_cost * MapUtil::distance2(current, dest);
       }
     }
     else {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, dest);
+        ap_cost += block->ap_cost * MapUtil::distance2(current, dest);
       }
     }
   }
@@ -134,7 +134,7 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
         next.y = a * next.x + b;
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
         current.x = next.x;
         current.y = next.y;
@@ -145,13 +145,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
         if(x_direction == -1) {
           Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next);
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next);
           }
         }
         else {
           Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next);
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next);
           }
         }
         current.x = next.x;
@@ -160,13 +160,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       if(x_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MapUtil::distance(current, dest);
+          ap_cost -= block->ap_cost * MapUtil::distance2(current, dest);
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, dest);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, dest);
         }
       }
     }
@@ -176,7 +176,7 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
         next.x = (next.y - b) / a;
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next);
         }
         current.x = next.x;
         current.y = next.y;
@@ -187,13 +187,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
         if(y_direction == -1) {
           Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next);
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next);
           }
         }
         else {
           Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next);
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next);
           }
         }
         current.x = next.x;
@@ -202,13 +202,13 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
       if(y_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MapUtil::distance(current, dest);
+          ap_cost -= block->ap_cost * MapUtil::distance2(current, dest);
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, dest);
+          ap_cost += block->ap_cost * MapUtil::distance2(current, dest);
         }
       }
     }
@@ -222,7 +222,14 @@ bool Region::tryMove(Character * c, MapUtil::Vector3 dest) {
   }
   Block * block = getBlock(MapUtil::makeVector3i(dest));
   if(block != nullptr && block->unwalkable) {
-    return false;
+    if(!(block->type == BLOCK_SLOPE || block->type == BLOCK_STAIRS)) {
+      return false;
+    }
+    /*
+    if(dest.z == std::floor(dest.z)) {
+      return false;
+    }
+    */
   }
   for(Character * other : characters) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MapUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
@@ -261,8 +268,8 @@ bool Region::intersect(Character * character, MapUtil::Vector3 dest, Furniture *
   }
   float distX = dest.x - testX;
   float distY = dest.y - testY;
-  float distance = sqrt( (distX*distX) + (distY*distY) );
-  if (distance <= character->getSize()) {
+  float distance2 = sqrt( (distX*distX) + (distY*distY) );
+  if (distance2 <= character->getSize()) {
     return true;
   }
   return false;
@@ -270,7 +277,7 @@ bool Region::intersect(Character * character, MapUtil::Vector3 dest, Furniture *
 
 bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world) {
   Block * block = getBlock(MapUtil::makeVector3i(dest));
-  if(block != nullptr && block->unwalkable) {
+  if(block != nullptr && block->type != BLOCK_SLOPE && block->type != BLOCK_STAIRS) {
     return false;
   }
   Block * under = getBlock(MapUtil::makeVector3i(dest.x, dest.y, dest.z - 1));
@@ -302,7 +309,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       next.x = std::floor(next.x);
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+        ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
       }
       current.x = next.x;
     }
@@ -311,13 +318,13 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       if(x_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
       }
       current.x = next.x;
@@ -325,7 +332,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     if(ap_cost < ap) {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += x_direction* block->ap_cost * MapUtil::distance(current, dest) / c->getMovementTimeModifier();
+        ap_cost += x_direction* block->ap_cost * MapUtil::distance2(current, dest) / c->getMovementTimeModifier();
         current.x = dest.x;
       }
     }
@@ -342,7 +349,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       next.y = std::floor(next.y);
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+        ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
       }
       current.y = next.y;
     }
@@ -351,13 +358,13 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       if(y_direction == -1) {
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
       }
       else {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
       }
       current.y = next.y;
@@ -365,7 +372,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     if(ap_cost < ap) {
       Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
       if(block != nullptr) {
-        ap_cost += y_direction * block->ap_cost * MapUtil::distance(current, dest) / c->getMovementTimeModifier();
+        ap_cost += y_direction * block->ap_cost * MapUtil::distance2(current, dest) / c->getMovementTimeModifier();
         current.y = dest.y;
       }
     }
@@ -386,7 +393,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
         next.y = a * next.x + b;
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
         current.x = next.x;
         current.y = next.y;
@@ -397,13 +404,13 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
         if(x_direction == -1) {
           Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
           }
         }
         else {
           Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
           }
         }
         current.x = next.x;
@@ -412,7 +419,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       if(ap_cost < ap) {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += x_direction * block->ap_cost * MapUtil::distance(current, dest) / c->getMovementTimeModifier();
+          ap_cost += x_direction * block->ap_cost * MapUtil::distance2(current, dest) / c->getMovementTimeModifier();
           current.x = dest.x;
           current.y = dest.y;
         }
@@ -432,7 +439,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
         next.x = (next.y - b) / a;
         Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+          ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
         }
         current.x = next.x;
         current.y = next.y;
@@ -443,13 +450,13 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
         if(y_direction == -1) {
           Block * block = getBlock(MapUtil::makeVector3(next.x, next.y, next.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
           }
         }
         else {
           Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current, next) / c->getMovementTimeModifier();
+            ap_cost += block->ap_cost * MapUtil::distance2(current, next) / c->getMovementTimeModifier();
           }
         }
         current.x = next.x;
@@ -458,7 +465,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       if(ap_cost < ap) {
         Block * block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
         if(block != nullptr) {
-          ap_cost += y_direction * block->ap_cost * MapUtil::distance(current, dest) / c->getMovementTimeModifier();
+          ap_cost += y_direction * block->ap_cost * MapUtil::distance2(current, dest) / c->getMovementTimeModifier();
           current.x = dest.x;
           current.y = dest.y;
         }
@@ -473,6 +480,31 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
       }
     }
   }
+  current = MapUtil::makeVector3(MapUtil::round(current.x), MapUtil::round(current.y), MapUtil::round(current.z)); 
+  // check if we went past the target coords
+  if(MapUtil::distance2(c->getCoord(), current) > MapUtil::distance2(c->getCoord(), dest)) {
+    current = dest;
+  }
+  block = getBlock(current);
+  // we went inside a block after leaving a slope / stairs
+  if(block != nullptr && block->type == BLOCK_SOLID) {
+    current.z = std::floor(current.z) + 1; 
+    block = getBlock(current);
+  }
+  under = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
+  float z_block;
+  std::cout << "asked: " << dest.x << " " << dest.y << " " << dest.z << std::endl;
+  std::cout << "coord: " << current.x << " " << current.y << " " << current.z << std::endl;
+  if(block != nullptr && (block->type == BLOCK_SLOPE || block->type == BLOCK_STAIRS)) {
+    z_block = std::floor(current.z);
+    current.z = dest.z;
+    current = getCoordsOnSlope(c, current, block->orientation, z_block); 
+  }
+  else if(under != nullptr && (under->type == BLOCK_SLOPE || under->type == BLOCK_STAIRS)) {
+    z_block = std::floor(current.z - 1);
+    current.z = dest.z;
+    current = getCoordsOnSlope(c, current, under->orientation, z_block); 
+  }
   if(tryMove(c, current)) {
     c->move(current, orientation, world);
     return true;
@@ -480,6 +512,26 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
   else {
     return false;
   }
+}
+
+MapUtil::Vector3 Region::getCoordsOnSlope(Character * character, MapUtil::Vector3 dest, int orientation, float z) {
+  MapUtil::Vector3 result = MapUtil::makeVector3(dest.x, dest.y, character->getCoord().z);
+  switch(orientation) {
+    case 0:
+      result.z = MapUtil::round(z + (result.x - std::floor(result.x)));
+      break;
+    case 90:
+      result.z = MapUtil::round(z + (result.y - std::floor(result.y)));
+      break;
+    case 180:
+      result.z = MapUtil::round(z + 1 - (result.x - std::floor(result.x)));
+      break;
+    case 270:
+      result.z = MapUtil::round(z + 1 - (result.y - std::floor(result.y)));
+      break;
+  }
+  std::cout << "coord_fixed: " << result.x << " " << result.y << " " << result.z << std::endl;
+  return result;
 }
 
 bool Region::canSee(Character * watcher, Character * target) {
@@ -490,9 +542,9 @@ bool Region::canSee(Character * watcher, Character * target) {
   watcher_head.z += watcher->getHeight();
   MapUtil::Vector3 target_head = target->getCoord();
   target_head.z += target->getHeight();
-  float distance = MapUtil::distance(watcher_head, target_head);
-  MapUtil::Vector3 direction = MapUtil::makeVector3((watcher_head.x - target_head.x) / distance, (watcher_head.y - target_head.y) / distance, (watcher_head.y - target_head.y) / distance);
-  for(int step = 1; step < distance; step++) {
+  float distance2 = MapUtil::distance2(watcher_head, target_head);
+  MapUtil::Vector3 direction = MapUtil::makeVector3((watcher_head.x - target_head.x) / distance2, (watcher_head.y - target_head.y) / distance2, (watcher_head.y - target_head.y) / distance2);
+  for(int step = 1; step < distance2; step++) {
     MapUtil::Vector3 coord = MapUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
     Block * block = getBlock(coord);
     if(block != nullptr && block->opaque) {

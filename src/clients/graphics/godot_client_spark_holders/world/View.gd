@@ -42,11 +42,20 @@ func update_mouse_coordinates():
 		from = camera1P.project_ray_origin(mouse_coords)
 		to = from + camera1P.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
-	#var query = PhysicsRayQueryParameters3D.create(from, to, 0xf)
-	var query = PhysicsRayQueryParameters3D.create(from, to, 0x37)
+	var mask
+	if Values.mode == Values.ACTION_MODE_ACTIVATION:
+		mask = 0x40
+	else:
+		mask = 0x3
+	var query = PhysicsRayQueryParameters3D.create(from, to, mask)
 	var result = space.intersect_ray(query)
 	if not result.is_empty():
-		Values.coord = result["position"]
+		if Values.mode == Values.ACTION_MODE_ACTIVATION:
+			Values.coord = map.colliders.find_key(result["collider"])
+			if not Values.coord:
+				Values.coord = result["position"]
+		else:
+			Values.coord = result["position"]
 		if Input.is_action_pressed("select"):
 			Values.selection_changed = true
 			var selection = result["collider"]
@@ -150,6 +159,11 @@ func _unhandled_input(event):
 			character_sheet.visible = false
 		else:
 			pause_state = not pause_state
+			if !perspective3:
+				if pause_state:
+					Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
+				else:
+					Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 			pause.visible = pause_state
 	if not pause_state:
 		if event.is_action_pressed("swap_perspective"):
@@ -228,12 +242,20 @@ func _unhandled_input(event):
 					if is_first:
 						is_first = false
 					else:
-						vec = map.round_vec(vec)
-						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, map.characters_data[Values.selected_team.id]["z"]))
+						vec = fix_vec(vec)
+						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, vec.y))
 			if Values.mode == Values.ACTION_MODE_ACTIVATION:
-				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_TILE, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), map.characters_data[Values.selected_team.id]["z"]))
+				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
 			if Values.mode == Values.ACTION_MODE_ATTACK:
 				map.add_targeted_action(Values.selected_team.id, Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
 			Values.action_muxtex.unlock()
 		if event.is_action_pressed("send_actions"):
 			map.send_actions()
+
+func fix_vec(vec: Vector3):
+	var space = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(vec, vec + Vector3(0, -10, 0), 0x1)
+	var result = space.intersect_ray(query)
+	if not result.is_empty():
+		vec = result["position"]
+	return map.round_vec(vec)

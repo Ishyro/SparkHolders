@@ -37,6 +37,7 @@ class Region {
     bool tryMove(Character * c, MapUtil::Vector3 dest);
     bool intersect(Character * character, MapUtil::Vector3 dest, Furniture * furniture);
     bool move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world);
+    MapUtil::Vector3 getCoordsOnSlope(Character * character, MapUtil::Vector3 dest, int orientation, float z);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters();
     std::list<Character *> getCharacters(Character * character);

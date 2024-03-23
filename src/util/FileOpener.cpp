@@ -288,7 +288,7 @@ namespace FileOpener {
       int offsetY = String::extract_int(ss);
       int offsetZ = String::extract_int(ss);
       int rotation = String::extract_int(ss);
-      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation);
+      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation, database);
       world->addMap(map);
     }
     else if(keyword == "MapLink") {
@@ -467,6 +467,35 @@ namespace FileOpener {
     delete or_requirements;
     delete not_requirements;
     return name;
+  }
+
+  void BlockOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int type = database->getTargetFromMacro(values.at("type"));
+    std::string material = values.at("material");
+    std::istringstream is_unwalkable(values.at("unwalkable"));
+    bool unwalkable;
+    is_unwalkable >> std::boolalpha >> unwalkable;
+    std::istringstream is_opaque(values.at("opaque"));
+    bool opaque;
+    is_opaque >> std::boolalpha >> opaque;
+    int light = stoi(values.at("light"));
+    int orientation = stoi(values.at("orientation"));
+    float ap_cost = _stof(values.at("ap_cost"));
+    Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation, ap_cost);
+    database->addBlock(block);
+    // add all type of blocks for solids
+    if(type == BLOCK_SOLID) {
+      database->addBlock(new Block(name + "_SLOPE#EAST", BLOCK_SLOPE, material, unwalkable, opaque, light, 0, ap_cost));
+      database->addBlock(new Block(name + "_SLOPE#NORTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 90, ap_cost));
+      database->addBlock(new Block(name + "_SLOPE#WEST", BLOCK_SLOPE, material, unwalkable, opaque, light, 180, ap_cost));
+      database->addBlock(new Block(name + "_SLOPE#SOUTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 270, ap_cost));
+      database->addBlock(new Block(name + "_STAIRS#EAST", BLOCK_STAIRS, material, unwalkable, opaque, light, 0, ap_cost));
+      database->addBlock(new Block(name + "_STAIRS#NORTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 90, ap_cost));
+      database->addBlock(new Block(name + "_STAIRS#WEST", BLOCK_STAIRS, material, unwalkable, opaque, light, 180, ap_cost));
+      database->addBlock(new Block(name + "_STAIRS#SOUTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 270, ap_cost));
+    }
   }
 
   void CharacterOpener(std::string fileName, Database * database) {
@@ -1311,25 +1340,6 @@ namespace FileOpener {
     delete options;
   }
 
-  std::string BlockOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    std::string name = values.at("name");
-    std::istringstream is_unwalkable(values.at("unwalkable"));
-    bool unwalkable;
-    is_unwalkable >> std::boolalpha >> unwalkable;
-    std::istringstream is_opaque(values.at("opaque"));
-    bool opaque;
-    is_opaque >> std::boolalpha >> opaque;
-    std::istringstream is_allow_vertical(values.at("allow_vertical"));
-    bool allow_vertical;
-    is_allow_vertical >> std::boolalpha >> allow_vertical;
-    int light = stoi(values.at("light"));
-    float ap_cost = _stof(values.at("ap_cost"));
-    Block * block = new Block(name, unwalkable, opaque, allow_vertical, light, ap_cost);
-    database->addBlock(block);
-    return name;
-  }
-
   std::string WayOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
@@ -1477,10 +1487,7 @@ namespace FileOpener {
       }
     }
     else if(fileName.find("/blocks/") != std::string::npos) {
-      std::string tile_name = BlockOpener(fileName, database);
-      if(!isServer) {
-        database->addBlockFile(tile_name, std::regex_replace(resFileName, std::regex(".data"), ".tres"));
-      }
+      BlockOpener(fileName, database);
     }
     else if(fileName.find("/characters/") != std::string::npos) {
       CharacterOpener(fileName, database);

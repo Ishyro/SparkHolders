@@ -219,7 +219,7 @@ func _get_drag_data(at_position):
 			set_drag_preview(preview)
 			return preview_skill
 
-func _can_drop_data(at_position, data):
+func _can_drop_data(at_position, _data):
 	var current_slot = null
 	for slot in skill_slots:
 		if slot.get_global_rect().has_point(at_position):
