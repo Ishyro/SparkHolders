@@ -1,8 +1,8 @@
 [gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://dcb4cbrjq2l3c"]
 
-[ext_resource type="Texture2D" uid="uid://ilmg1s2gpru4" path="res://data/materials/bark/Color.jpg" id="1_ecgj7"]
-[ext_resource type="Texture2D" uid="uid://r5bqwrnhje7m" path="res://data/materials/bark/NormalDX.jpg" id="2_1gws2"]
-[ext_resource type="Texture2D" uid="uid://b48pnlhaevhfn" path="res://data/materials/bark/Roughness.jpg" id="3_tffyp"]
+[ext_resource type="Texture2D" uid="uid://ilmg1s2gpru4" path="res://resources/materials/bark/Color.jpg" id="1_ecgj7"]
+[ext_resource type="Texture2D" uid="uid://r5bqwrnhje7m" path="res://resources/materials/bark/NormalDX.jpg" id="2_1gws2"]
+[ext_resource type="Texture2D" uid="uid://b48pnlhaevhfn" path="res://resources/materials/bark/Roughness.jpg" id="3_tffyp"]
 
 [resource]
 albedo_texture = ExtResource("1_ecgj7")

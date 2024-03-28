@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://bxfq0sqbdenp4"]
 
-[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://data/materials/grass/Color.jpg" id="1_nbx01"]
-[ext_resource type="Texture2D" uid="uid://bsw5ym6ra1kxc" path="res://data/materials/grass/AmbientOcclusion.jpg" id="2_gqo47"]
-[ext_resource type="Texture2D" uid="uid://8kwii45yrv5i" path="res://data/materials/grass/NormalGL.jpg" id="3_x31gi"]
-[ext_resource type="Texture2D" uid="uid://1ebcnsg8lpk3" path="res://data/materials/grass/Roughness.jpg" id="4_6cnty"]
+[ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://resources/materials/grass/Color.jpg" id="1_nbx01"]
+[ext_resource type="Texture2D" uid="uid://bsw5ym6ra1kxc" path="res://resources/materials/grass/AmbientOcclusion.jpg" id="2_gqo47"]
+[ext_resource type="Texture2D" uid="uid://8kwii45yrv5i" path="res://resources/materials/grass/NormalGL.jpg" id="3_x31gi"]
+[ext_resource type="Texture2D" uid="uid://1ebcnsg8lpk3" path="res://resources/materials/grass/Roughness.jpg" id="4_6cnty"]
 
 [resource]
 albedo_texture = ExtResource("1_nbx01")

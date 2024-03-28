@@ -1,9 +1,9 @@
 [gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://bi1yjwunkfbd6"]
 
-[ext_resource type="Texture2D" uid="uid://cdxii5wcsoupm" path="res://data/materials/soil/Color.jpg" id="1_wnj7x"]
-[ext_resource type="Texture2D" uid="uid://dh0jsag1ftpa1" path="res://data/materials/soil/AmbientOcclusion.jpg" id="2_8dckb"]
-[ext_resource type="Texture2D" uid="uid://dxcidkmy2kh7h" path="res://data/materials/soil/NormalDX.jpg" id="3_1jx5p"]
-[ext_resource type="Texture2D" uid="uid://tvxdxih3ht0c" path="res://data/materials/soil/Roughness.jpg" id="4_xubsp"]
+[ext_resource type="Texture2D" uid="uid://cdxii5wcsoupm" path="res://resources/materials/soil/Color.jpg" id="1_wnj7x"]
+[ext_resource type="Texture2D" uid="uid://dh0jsag1ftpa1" path="res://resources/materials/soil/AmbientOcclusion.jpg" id="2_8dckb"]
+[ext_resource type="Texture2D" uid="uid://dxcidkmy2kh7h" path="res://resources/materials/soil/NormalDX.jpg" id="3_1jx5p"]
+[ext_resource type="Texture2D" uid="uid://tvxdxih3ht0c" path="res://resources/materials/soil/Roughness.jpg" id="4_xubsp"]
 
 [resource]
 albedo_texture = ExtResource("1_wnj7x")

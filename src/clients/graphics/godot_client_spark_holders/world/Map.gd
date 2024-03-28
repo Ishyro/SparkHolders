@@ -314,12 +314,19 @@ func reset_map():
 
 func update_furnitures():
 	var updated_furnitures = Values.link.getUpdatedFurnitures()
+	var need_to_bake = false
 	if not updated_furnitures.is_empty():
-		furnitures_data = Values.link.getFurnitures()
+		var new_furnitures_data = Values.link.getFurnitures()
 		for coord in updated_furnitures:
+			# interaction with a door or a similar furniture
+			if furnitures_data[coord]["unwalkable"] != new_furnitures_data[coord]["unwalkable"]:
+				need_to_bake = true
 			n_furnitures.remove_child(furnitures[coord])
 			furnitures.erase(coord)
-			add_furniture(furnitures_data[coord], coord)
+			n_ground.remove_child(colliders[coord])
+			colliders.erase(coord)
+			add_furniture(new_furnitures_data[coord], coord)
+		baking_done = not need_to_bake
 
 func display_map():
 	var block_current = {}
@@ -330,16 +337,21 @@ func display_map():
 	for block in current_blocks:
 		var block_type = current_blocks[block]
 		var coord = Vector3.ZERO
+		var angle_offset
 		match blocks_data[block_type]["type"]:
 			Values.BLOCK_SOLID:
 				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+				angle_offset = 90
 			Values.BLOCK_LIQUID:
 				coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
+				angle_offset = 90
 			Values.BLOCK_SLOPE:
 				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+				angle_offset = 90
 			Values.BLOCK_STAIRS:
 				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
-		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(90 + blocks_data[block_type]["orientation"])))
+				angle_offset = 180
+		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(angle_offset + blocks_data[block_type]["orientation"])))
 		block_current[block_type] = block_current[block_type] + 1
 	for coord in furnitures_data:
 		add_furniture(furnitures_data[coord], coord)
@@ -363,72 +375,182 @@ func initialize_block(block: String):
 				mesh = PrismMesh.new()
 				mesh.left_to_right = 0
 			Values.BLOCK_STAIRS:
-				mesh = PrismMesh.new()
-				mesh.left_to_right = 0
-			# TODO
-			Values.BLOCK_STAIRS:
 				mesh = ArrayMesh.new()
 				var vertices = PackedVector3Array(
 					[
-						Vector3(-0.5, -0.5, -0.5), #0
-						Vector3(-0.5, 0.5, -0.5), #1
-						Vector3(-0.5, 0.5, 0.5), #2
-						Vector3(-0.5, -0.5, 0.5), #3
-						Vector3(0.5, -0.5, 0.5), #4
-						Vector3(0.5, -0.5, -0.5), #5
-						Vector3(0.5, 0, -0.5), #6
-						Vector3(0.5, 0, 0.5), #7
-						Vector3(0, 0, 0.5), #8
-						Vector3(0, 0, -0.5), #9
-						Vector3(0, 0.5, -0.5), #10
-						Vector3(0, 0.5, 0.5), #11
+						# front bottom
+						Vector3(-0.5, 0, 0), Vector3(0.5, 0, 0),#0-1
+						Vector3(-0.5, 0, 0.25), Vector3(0.5, 0, 0.25),#2-3
+						Vector3(-0.5, -0.25, 0.25), Vector3(0.5, -0.25, 0.25),#4-5
+						Vector3(-0.5, -0.25, 0.5), Vector3(0.5, -0.25, 0.5),#6-7
+						
+						# x3 for UV
+						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, 0.5),#8-9
+						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, 0.5),#10-11
+						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, 0.5),#12-13
+						
+						# back
+						# x3 for UV
+						Vector3(-0.5, -0.5, -0.5), Vector3(0.5, -0.5, -0.5),#14-15
+						Vector3(-0.5, -0.5, -0.5), Vector3(0.5, -0.5, -0.5),#16-17
+						Vector3(-0.5, -0.5, -0.5), Vector3(0.5, -0.5, -0.5),#18-19
+						
+						# x2 for UV
+						Vector3(-0.5, 0.5, -0.5), Vector3(0.5, 0.5, -0.5),#20-21
+						Vector3(-0.5, 0.5, -0.5), Vector3(0.5, 0.5, -0.5),#22-23
+						
+						#front up
+						Vector3(-0.5, 0.5, -0.25), Vector3(0.5, 0.5, -0.25),#24-25
+						Vector3(-0.5, 0.25, -0.25), Vector3(0.5, 0.25, -0.25),#26-27
+						Vector3(-0.5, 0.25, 0), Vector3(0.5, 0.25, 0),#28-29
+						Vector3(-0.5, 0, 0), Vector3(0.5, 0, 0),#30-31
+						
+						#side right
+						Vector3(-0.5, -0.25, -0.5), Vector3(-0.5, -0.25, 0.25), Vector3(-0.5, -0.25, 0.5), #32-33-34
+						Vector3(-0.5, 0, -0.5), Vector3(-0.5, 0, 0), Vector3(-0.5, 0, 0.25), #35-36-37
+						Vector3(-0.5, 0.25, -0.5), Vector3(-0.5, 0.25, -0.25), Vector3(-0.5, 0.25, 0), #38-39-40
+						Vector3(-0.5, 0.5, -0.5), Vector3(-0.5, 0.5, -0.25), #41-42
+						
+						#side left
+						Vector3(0.5, -0.25, -0.5), Vector3(0.5, -0.25, 0.25), Vector3(0.5, -0.25, 0.5), #43-44-45
+						Vector3(0.5, 0, -0.5), Vector3(0.5, 0, 0), Vector3(0.5, 0, 0.25), #46-47-48
+						Vector3(0.5, 0.25, -0.5), Vector3(0.5, 0.25, -0.25), Vector3(0.5, 0.25, 0), #49-50-51
+						Vector3(0.5, 0.5, -0.5), Vector3(0.5, 0.5, -0.25), #52-53
 					]
 				)
 				var indexes = PackedInt32Array(
 					[
-						0,1,2,
-						0,2,3,
-						0,3,4,
-						0,4,5,
-						4,5,6,
-						4,6,7,
-						6,8,7,
-						6,9,8,
-						8,9,19,
-						8,10,11,
-						0,1,10,
-						0,10,9,
-						0,9,5,
-						9,6,5,
-						2,11,3,
-						11,8,3,
-						3,8,4,
-						8,7,4
+						# front bottom
+						0,1,2, 1,3,2,
+						2,3,4, 3,5,4,
+						4,5,6, 5,7,6,
+						6,7,8, 7,9,8,
+						
+						# bottom
+						10,11,14, 11,15,14,
+						
+						# back
+						16,17,20, 17,21,20,
+						
+						# front top
+						22,23,24, 23,25,24,
+						24,25,26, 25,27,26,
+						26,27,28, 27,29,28,
+						28,29,30, 29,31,30,
+						
+						# side right
+						18,32,12, 12,32,34,
+						32,35,33, 33,35,37,
+						35,38,36, 36,38,40,
+						38,41,39, 39,41,42,
+						
+						# side left
+						19,13,43, 13,45,43,
+						43,44,46, 44,48,46,
+						46,47,49, 47,51,49,
+						49,50,52, 50,53,52,
 					]
 				)
+				# our FRONT is x axis instead of z, so FRONT is LEFT
 				var normals = PackedVector3Array(
 					[
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD,
-						Vector3.FORWARD
+						# front bottom
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#0-1
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#2-3
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#4-5
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#6-7
+						
+						# x3 for UV
+						Vector3.MODEL_FRONT, Vector3.MODEL_FRONT,#8-9
+						Vector3.MODEL_BOTTOM, Vector3.MODEL_BOTTOM,#10-11
+						Vector3.MODEL_RIGHT, Vector3.MODEL_LEFT,#12-13
+						
+						# back
+						# x3 for UV
+						Vector3.MODEL_BOTTOM, Vector3.MODEL_BOTTOM,#14-15
+						Vector3.MODEL_REAR, Vector3.MODEL_REAR,#16-17
+						Vector3.MODEL_RIGHT, Vector3.MODEL_LEFT,#18-19
+						
+						# x2 for UV
+						Vector3.MODEL_REAR, Vector3.MODEL_REAR,#20-21
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#22-23
+						
+						#front up
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#24-25
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#26-27
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#28-29
+						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#30-31
+						
+						#side right
+						Vector3.MODEL_RIGHT, Vector3.MODEL_RIGHT, (Vector3.MODEL_RIGHT + Vector3.MODEL_TOP).normalized(), #32-33-34
+						Vector3.MODEL_RIGHT, Vector3.MODEL_RIGHT, (Vector3.MODEL_RIGHT + Vector3.MODEL_TOP).normalized(), #35-36-37
+						Vector3.MODEL_RIGHT, Vector3.MODEL_RIGHT, (Vector3.MODEL_RIGHT + Vector3.MODEL_TOP).normalized(), #38-39-40
+						Vector3.MODEL_RIGHT, (Vector3.MODEL_RIGHT + Vector3.MODEL_TOP).normalized(), #41-42
+						
+						#side left
+						Vector3.MODEL_LEFT, Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #43-44-45
+						Vector3.MODEL_LEFT, Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #46-47-48
+						Vector3.MODEL_LEFT, Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #49-50-51
+						Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #52-53
 					]
 				)
-				var arrays = []
-				arrays.resize(Mesh.ARRAY_MAX)
-				arrays[Mesh.ARRAY_VERTEX] = vertices
-				arrays[Mesh.ARRAY_INDEX] = indexes
-				arrays[Mesh.ARRAY_NORMAL] = normals
-				mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-		mesh.surface_set_material(0, materials[block])
+				var uvs = PackedVector2Array(
+					[
+						# front bottom
+						Vector2(0, 0), Vector2(1.0 / 3.0, 0),#0-1
+						Vector2(0, 0.125), Vector2(1.0 / 3.0, 0.125),#2-3
+						Vector2(0, 0.25), Vector2(1.0 / 3.0, 0.25),#4-5
+						Vector2(0, 0.375), Vector2(1.0 / 3.0, 0.375),#6-7
+						
+						# x3 for UV
+						Vector2(0, 0.5), Vector2(1.0 / 3.0, 0.5),#8-9
+						Vector2(0, 0), Vector2(1.0 / 3.0, 0),#10-11
+						Vector2(1.0 / 3.0, 0.5), Vector2(1.0 / 3.0, 0.5),#12-13
+						
+						# back
+						# x3 for UV
+						Vector2(0, 0.5), Vector2(1.0 / 3.0, 0.5),#14-15
+						Vector2(0, 0.5), Vector2(1.0 / 3.0, 0.5),#16-17
+						Vector2(0, 0.5), Vector2(0, 0.5),#18-19
+						
+						# x2 for UV
+						Vector2(0, 0), Vector2(1.0 / 3.0, 0),#20-21
+						Vector2(0, 0), Vector2(1.0 / 3.0, 0),#22-23
+						
+						#front up
+						Vector2(0, 0.125), Vector2(1.0 / 3.0, 0.125),#24-25
+						Vector2(0, 0.25), Vector2(1.0 / 3.0, 0.25),#26-27
+						Vector2(0, 0.375), Vector2(1.0 / 3.0, 0.375),#28-29
+						Vector2(0, 0.5), Vector2(1.0 / 3.0, 0.5),#30-31
+						
+						#side left
+						Vector2(0, 0.375), Vector2(0.75 / 3.0, 0.375), Vector2(1.0 / 3.0, 0.375), #32-33-34
+						Vector2(0, 0.25), Vector2(0.5 / 3.0, 0.25), Vector2(0.75 / 3.0, 0.25), #35-36-37
+						Vector2(0, 0.125), Vector2(0.25 / 3.0, 0.125), Vector2(0.5 / 3.0, 0.125), #38-39-40
+						Vector2(0, 0), Vector2(0.25 / 3.0, 0), #41-42
+						
+						#side right
+						Vector2(0, 0.375), Vector2(0.75 / 3.0, 0.375), Vector2(1.0 / 3.0, 0.375), #43-44-45
+						Vector2(0, 0.25), Vector2(0.5 / 3.0, 0.25), Vector2(0.75 / 3.0, 0.25), #46-47-48
+						Vector2(0, 0.125), Vector2(0.25 / 3.0, 0.125), Vector2(0.5 / 3.0, 0.125), #49-50-51
+						Vector2(0, 0), Vector2(0.25 / 3.0, 0), #52-53
+					]
+				)
+				var tool = SurfaceTool.new()
+				tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+				for i in range(vertices.size()):
+					tool.set_uv(uvs[i])
+					tool.set_normal(normals[i])
+					tool.add_vertex(vertices[i])
+				for index in indexes:
+					tool.add_index(index)
+				#tool.generate_normals()
+				tool.generate_tangents()
+				mesh = tool.commit()
+		var material = materials[block]
+		if blocks_data[block]["type"] == Values.BLOCK_SOLID || blocks_data[block]["type"] == Values.BLOCK_STAIRS:
+			material.uv1_scale = Vector3(3.0, 2.0, 1.0)
+		mesh.surface_set_material(0, material)
 		multimesh.set_mesh(mesh)
 		multimesh.transform_format = MultiMesh.TRANSFORM_3D
 		multimeshinstance.set_multimesh(multimesh)
