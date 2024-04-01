@@ -15,15 +15,15 @@
 class PseudoSkill {
   public:
     const std::string name;
-    const int skill_type;
-    const int target_type;
-    const int mana_cost;
+    const int32_t skill_type;
+    const int32_t target_type;
+    const int32_t mana_cost;
     const std::list<Effect *> effects;
     PseudoSkill(
       std::string name,
-      int skill_type,
-      int target_type,
-      int mana_cost,
+      int32_t skill_type,
+      int32_t target_type,
+      int32_t mana_cost,
       std::list<Effect *> effects
     ):
       name(name),
@@ -33,12 +33,12 @@ class PseudoSkill {
       effects(effects)
     {}
 
-    virtual void activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) = 0;
-    virtual bool canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) = 0;
-    virtual int getPower() = 0;
-    virtual int getDamageFromType(int dammage_type, int overcharge_power) = 0;
-    virtual float getDamageReductionFromType(int dammage_type, int overcharge_power) = 0;
-    int getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range);
+    virtual void activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) = 0;
+    virtual bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) = 0;
+    virtual int32_t getPower() = 0;
+    virtual int32_t getDamageFromType(int32_t dammage_type, int32_t overcharge_power) = 0;
+    virtual float getDamageReductionFromType(int32_t dammage_type, int32_t overcharge_power) = 0;
+    int32_t getManaCost(int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
 };
 
 #endif // _PSEUDO_SKILL_H_

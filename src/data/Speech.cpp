@@ -43,7 +43,7 @@ std::string Speech::to_string() {
 Speech * Speech::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
-  int type = String::extract_int(ss);
+  int32_t type = String::extract_int(ss);
   bool empty = String::extract_bool(ss);
   bool constant = String::extract_bool(ss);
   std::stringstream * ss_options = new std::stringstream(String::extract(ss));

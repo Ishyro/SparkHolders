@@ -16,7 +16,7 @@
 #include "data/ways/Way.h"
 #include "data/ways/Attributes.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 #include "util/String.h"
 
 Action * SkillAction::execute(Adventure * adventure) {

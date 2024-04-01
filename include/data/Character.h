@@ -15,30 +15,30 @@
 
 #include "data/ways/Attributes.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include "Values.h"
 
 namespace character {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 typedef struct CharacterDisplay {
   std::string name;
-  long id;
-  int hp;
-  int maxHp;
-  int mana;
-  int maxMana;
-  int shield;
-  int maxShield;
+  int64_t id;
+  int32_t hp;
+  int32_t maxHp;
+  int32_t mana;
+  int32_t maxMana;
+  int32_t shield;
+  int32_t maxShield;
   float stamina;
   float satiety;
-  int soulBurn;
-  int soulBurnTreshold;
-  int flow;
+  int32_t soulBurn;
+  int32_t soulBurnTreshold;
+  int32_t flow;
   bool player_character;
-  int type;
+  int32_t type;
   float x;
   float y;
   float z;
@@ -46,17 +46,17 @@ typedef struct CharacterDisplay {
   float height;
   float orientation;
   std::string team;
-  int xp;
-  int level;
+  int32_t xp;
+  int32_t level;
   Speech * talking_speech;
   float damage_reductions[DAMAGE_TYPE_NUMBER];
-  int damages[DAMAGE_TYPE_NUMBER];
-  int teamRelation;
+  int32_t damages[DAMAGE_TYPE_NUMBER];
+  int32_t teamRelation;
 } CharacterDisplay;
 
 class Character {
   public:
-    const long id;
+    const int64_t id;
     const std::string name;
     const bool player_character;
     // not instancied character constructor
@@ -87,11 +87,11 @@ class Character {
     Character(
       const Character * from_database,
       std::string name,
-      long xp,
-      int gold,
-      int x,
-      int y,
-      int z,
+      int64_t xp,
+      int32_t gold,
+      int32_t x,
+      int32_t y,
+      int32_t z,
       float orientation,
       Region * region,
       std::string team,
@@ -116,7 +116,7 @@ class Character {
       gold(gold),
       xp(xp),
       level(1),
-      coord(MapUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
+      coord(MathUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
       orientation(orientation),
       region(region),
       merchant(from_database->merchant),
@@ -150,38 +150,38 @@ class Character {
       initEffects(from_database->effects);
     }
     Character(
-      int maxHp,
-      int maxMana,
-      int maxShield,
-      int hp,
-      int mana,
-      int shield,
-      int damage_multiplier,
-      int soulBurnTreshold,
-      int flow,
-      int visionRange,
-      int visionPower,
-      int detectionRange,
-      int currentSoulBurn,
+      int32_t maxHp,
+      int32_t maxMana,
+      int32_t maxShield,
+      int32_t hp,
+      int32_t mana,
+      int32_t shield,
+      int32_t damage_multiplier,
+      int32_t soulBurnTreshold,
+      int32_t flow,
+      int32_t visionRange,
+      int32_t visionPower,
+      int32_t detectionRange,
+      int32_t currentSoulBurn,
       float stamina,
       float satiety,
       float savedHpRegen,
       float savedManaRegen,
-      int channeledMana,
+      int32_t channeledMana,
       std::string name,
-      long id,
+      int64_t id,
       bool player_character,
       Speech * death_speech,
       Speech * talking_speech,
-      MapUtil::Vector3 coord,
+      MathUtil::Vector3 coord,
       float size,
       float height,
       float orientation,
       Region * region,
       bool merchant,
-      long gold,
-      long xp,
-      int level,
+      int64_t gold,
+      int64_t xp,
+      int32_t level,
       std::string team,
       Gear * gear,
       std::list<Effect *> effects,
@@ -258,33 +258,33 @@ class Character {
     void markDead(bool dead);
     bool isAlive();
     bool isSoulBurning();
-    MapUtil::Vector3 getCoord();
+    MathUtil::Vector3 getCoord();
     float getOrientation();
     float getSize();
     float getHeight();
-    int getHp();
-    int getMaxHp();
-    int getMana();
-    int getChanneledMana();
-    int getMaxMana();
-    int getShield();
-    int getMaxShield();
+    int32_t getHp();
+    int32_t getMaxHp();
+    int32_t getMana();
+    int32_t getChanneledMana();
+    int32_t getMaxMana();
+    int32_t getShield();
+    int32_t getMaxShield();
     float getStamina();
     float getSatiety();
-    int getSoulBurnThreshold();
-    int getCurrentSoulBurn();
-    int getFlow();
-    long getRawPower();
-    int getVisionRange();
-    int getVisionPower();
-    int getDetectionRange();
+    int32_t getSoulBurnThreshold();
+    int32_t getCurrentSoulBurn();
+    int32_t getFlow();
+    int64_t getRawPower();
+    int32_t getVisionRange();
+    int32_t getVisionPower();
+    int32_t getDetectionRange();
     Region * getRegion();
     Action * getCurrentAction();
-    long getGold();
-    long getXP();
-    int getLevel();
+    int64_t getGold();
+    int64_t getXP();
+    int32_t getLevel();
     float getDamageMultiplier();
-    int getPowerScore();
+    int32_t getPowerScore();
 
     bool needToSend();
     void setNeedToSend(bool need_to_send);
@@ -293,22 +293,22 @@ class Character {
     std::string getTeam();
     Speech * getDeathSpeech();
     Speech * getTalkingSpeech();
-    int getType();
+    int32_t getType();
 
     Gear * getGear();
     float getActionTimeModifier();
     float getHandActionTimeModifier();
     float getSkillTimeModifier();
     float getMovementTimeModifier();
-    float getStrikeTime(int slot);
-    float getReloadTime(int slot);
-    float getSwapTime(int slot1, int slot2);
+    float getStrikeTime(int32_t slot);
+    float getReloadTime(int32_t slot);
+    float getSwapTime(int32_t slot1, int32_t slot2);
     float getUseTime(Item * item);
-    int getLight();
+    int32_t getLight();
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
-    std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> getDamageSkills();
+    std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> getDamageSkills();
 
     std::list<Item *> getSellableItems();
     std::list<Effect *> getSellableEffects();
@@ -328,15 +328,15 @@ class Character {
 
     void setOrientation(float orientation);
     void setSize(float size);
-    void move(MapUtil::Vector3 coord, float orientation, World * world);
-    void hpHeal(int hp);
+    void move(MathUtil::Vector3 coord, float orientation, World * world);
+    void hpHeal(int32_t hp);
     void incrMaxHp();
-    void setHp(int hp);
-    void manaHeal(int mana);
+    void setHp(int32_t hp);
+    void manaHeal(int32_t mana);
     void incrMaxMana();
-    void setMana(int mana);
-    void shieldRestore(int shield);
-    void setShield(int shield);
+    void setMana(int32_t mana);
+    void shieldRestore(int32_t shield);
+    void setShield(int32_t shield);
     void incrMaxShield();
     void addStamina(float stamina);
     void addSatiety(float satiety);
@@ -346,7 +346,7 @@ class Character {
     void setSatiety(float satiety);
     void incrDamageMultiplier();
     void incrSoulBurnTreshold();
-    void setCurrentSoulBurn(int soulBurn);
+    void setCurrentSoulBurn(int32_t soulBurn);
     void incrFlow();
     void incrVisionRange();
     void incrVisionPower();
@@ -356,15 +356,15 @@ class Character {
 
     void applySoulBurn();
     void applyManaWaste();
-    void channel(int cost);
+    void channel(int32_t cost);
     void applyTiredness();
     void applyHunger();
     void applyEffects();
     void rest();
-    void gainGold(long gold);
-    void loseGold(long gold);
-    void payMana(int cost);
-    void gainXP(long xp);
+    void gainGold(int64_t gold);
+    void loseGold(int64_t gold);
+    void payMana(int32_t cost);
+    void gainXP(int64_t xp);
     void gainLevel();
     void newSkillsAndEffects();
     void selectSecondAttributes();
@@ -374,9 +374,9 @@ class Character {
     void setDeathSpeech(std::string option, Database * database);
     void setTalkingSpeech(std::string option, Database * database);
 
-    void add(Item * item, int slot, int x, int y);
-    Item * remove(int slot, int x, int y);
-    float swap(int slot1, int slot2);
+    void add(Item * item, int32_t slot, int32_t x, int32_t y);
+    Item * remove(int32_t slot, int32_t x, int32_t y);
+    float swap(int32_t slot1, int32_t slot2);
 
     void addEffect(Effect * e);
     void addSkill(Skill * s);
@@ -386,9 +386,9 @@ class Character {
 
     void setWay(Way * way);
 
-    void addItem(Item * i, int x, int y, int slot);
-    void removeItem(int x, int y, int slot);
-    void useItem(int x, int y, int slot);
+    void addItem(Item * i, int32_t x, int32_t y, int32_t slot);
+    void removeItem(int32_t x, int32_t y, int32_t slot);
+    void useItem(int32_t x, int32_t y, int32_t slot);
 
     bool isFlying();
     bool isChanneling();
@@ -398,22 +398,22 @@ class Character {
     bool isEtheral();
     bool isInvulnerable();
     bool isSleeping();
-    int cloakPower();
+    int32_t cloakPower();
     bool isInWeakState();
 
-    void useSkill(Skill * skill, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range);
-    int getDamageFromType(int damage_type, int slot);
-    float getDamageReductionFromType(int damage_type);
-    Projectile * shoot(Target * target, Adventure * adventure, int slot);
-    void reload(ItemSlot * ammo, int slot_weapon);
-    void attack(Character * target, Adventure * adventure, int type);
-    void mainAttack(Character * target, Adventure * adventure, int type);
-    void subAttack(Character * target, Adventure * adventure, int type);
-    ItemSlot * canReload(int slot);
-    void receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type);
-    void receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type);
-    int tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type);
-    void trade(Character * buyer, int object_type, std::string object_name, float price_modifier);
+    void useSkill(Skill * skill, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    int32_t getDamageFromType(int32_t damage_type, int32_t slot);
+    float getDamageReductionFromType(int32_t damage_type);
+    Projectile * shoot(Target * target, Adventure * adventure, int32_t slot);
+    void reload(ItemSlot * ammo, int32_t slot_weapon);
+    void attack(Character * target, Adventure * adventure, int32_t type);
+    void mainAttack(Character * target, Adventure * adventure, int32_t type);
+    void subAttack(Character * target, Adventure * adventure, int32_t type);
+    ItemSlot * canReload(int32_t slot);
+    void receiveAttack(int32_t damages[DAMAGE_TYPE_NUMBER], float orientation, int32_t type);
+    void receiveCriticalAttack(int32_t damages[DAMAGE_TYPE_NUMBER], int32_t type);
+    int32_t tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, int32_t type);
+    void trade(Character * buyer, int32_t object_type, std::string object_name, float price_modifier);
     std::set<std::string> getTags();
     std::string to_string();
     std::string full_to_string(Adventure * adventure);
@@ -426,36 +426,36 @@ class Character {
     void initializeCharacter(Gear * gear);
     void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
-    MapUtil::Vector3 coord;
+    MathUtil::Vector3 coord;
     float size;
     float height;
     float orientation;
     Region * region;
     Action * current_action;
-    int hp;
-    int maxHp;
-    int mana;
-    int maxMana;
+    int32_t hp;
+    int32_t maxHp;
+    int32_t mana;
+    int32_t maxMana;
     float stamina;
     float satiety;
     float savedHpRegen;
     float savedManaRegen;
-    int channeledMana;
-    int shield;
-    int maxShield;
-    int damage_multiplier;
-    int soulBurnTreshold;
-    int currentSoulBurn;
-    int flow;
-    int visionRange;
-    int visionPower;
-    int detectionRange;
+    int32_t channeledMana;
+    int32_t shield;
+    int32_t maxShield;
+    int32_t damage_multiplier;
+    int32_t soulBurnTreshold;
+    int32_t currentSoulBurn;
+    int32_t flow;
+    int32_t visionRange;
+    int32_t visionPower;
+    int32_t detectionRange;
     bool need_to_send = false;
     bool dead = false;
 
-    long gold;
-    long xp;
-    int level;
+    int64_t gold;
+    int64_t xp;
+    int32_t level;
 
     AI * ai;
     std::string team;

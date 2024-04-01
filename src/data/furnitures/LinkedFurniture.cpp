@@ -5,7 +5,7 @@
 bool LinkedFurniture::getUnwalkable() { return unwalkable; }
 bool LinkedFurniture::getOpaque() { return opaque; }
 bool LinkedFurniture::getSolid() { return solid; }
-int LinkedFurniture::getLight() { return light; }
+int32_t LinkedFurniture::getLight() { return light; }
 
 void LinkedFurniture::init(Map * map, ActivableFurniture * linked_furniture) {
     this->linked_furniture = (ActivableFurniture *) map->getFurniture(linked_furniture->getCoord().x, linked_furniture->getCoord().y);

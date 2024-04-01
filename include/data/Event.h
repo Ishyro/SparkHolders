@@ -7,23 +7,23 @@
 #include "Values.h"
 
 namespace event {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 
 class Event {
   public:
-    const long id = ++event::id_cpt;
+    const int64_t id = ++event::id_cpt;
     const std::string name;
-    const int type;
-    const int character_apparition_type;
-    const int round;
+    const int32_t type;
+    const int32_t character_apparition_type;
+    const int32_t round;
     const bool hasQuest;
     Event(
       std::string name,
-      int type,
-      int character_apparition_type,
-      int round,
+      int32_t type,
+      int32_t character_apparition_type,
+      int32_t round,
       bool hasQuest,
       Quest * quest,
       std::list<Character *> characters,

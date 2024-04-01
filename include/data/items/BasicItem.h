@@ -12,19 +12,19 @@ class BasicItem : public Item {
   public:
     BasicItem(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects
     ):
       Item(
@@ -45,7 +45,7 @@ class BasicItem : public Item {
         effects
       )
     {}
-    BasicItem(BasicItem * item, int tier):
+    BasicItem(BasicItem * item, int32_t tier):
       Item(item, tier)
     {}
     float getWeight();

@@ -10,21 +10,21 @@ bool Region::removeCharacter(Character * character) {
   return characters.empty();
 }
 
-Block * Region::getBlock(MapUtil::Vector3 coord) {
-  MapUtil::Vector3 asked = coord;
-  return getBlock(MapUtil::makeVector3i(coord));
+Block * Region::getBlock(MathUtil::Vector3 coord) {
+  MathUtil::Vector3 asked = coord;
+  return getBlock(MathUtil::makeVector3i(coord));
 }
 
-Block * Region::getBlock(MapUtil::Vector3i coord) {
-  int a = (int) std::floor( (float) (coord.x - id.x) / (float) CHUNK_SIZE) + 1;
-  int b = (int) std::floor( (float) (coord.y - id.y) / (float) CHUNK_SIZE) + 1;
-  int c = (int) std::floor( (float) (coord.z - id.z) / (float) CHUNK_SIZE) + 1;
-  int chunk_indice = a + b * 3 + c * 9;
+Block * Region::getBlock(MathUtil::Vector3i coord) {
+  int32_t a = (int32_t) std::floor( (float) (coord.x - id.x) / (float) CHUNK_SIZE) + 1;
+  int32_t b = (int32_t) std::floor( (float) (coord.y - id.y) / (float) CHUNK_SIZE) + 1;
+  int32_t c = (int32_t) std::floor( (float) (coord.z - id.z) / (float) CHUNK_SIZE) + 1;
+  int32_t chunk_indice = a + b * 3 + c * 9;
   return chunk_indice >= 0 && chunk_indice < 27 ? chunks[a + b * 3 + c * 9]->getBlock(coord) : nullptr;
 }
 
-float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 dest) {
-  MapUtil::Vector3 the_ori = c->getCoord();
+float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest) {
+  MathUtil::Vector3 the_ori = c->getCoord();
   if(ori == dest) {
     return 0.F;
   }
@@ -32,12 +32,12 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
     return -1.F;
   }
   if(c->isFlying()) {
-    return MapUtil::distance(ori, dest) * 10.F / c->getMovementTimeModifier();
+    return MathUtil::distance(ori, dest) * 10.F / c->getMovementTimeModifier();
   }
   else {
-    MapUtil::Vector3 next = MapUtil::makeVector3(ori.x, ori.y, ori.z);
-    float orientation = MapUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y);
-    float orientation_z = std::abs(std::acos((dest.z - ori.z) / MapUtil::distance(ori, dest))); // colatitude is non oriented
+    MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
+    float orientation = MathUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y);
+    float orientation_z = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
     float cos_long = std::cos(orientation * 3.141593F / 180.F);
     float sin_long = std::sin(orientation * 3.141593F / 180.F);
     float cos_colat = std::cos(orientation_z);
@@ -47,9 +47,9 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
     float factor_y = sin_colat * sin_long;
     float factor_z = cos_colat;
     float ap_cost = 0.F;
-    int x_direction = 1;
-    int y_direction = 1;
-    int z_direction = 1;
+    int32_t x_direction = 1;
+    int32_t y_direction = 1;
+    int32_t z_direction = 1;
     if(orientation > 180.F) {
       y_direction = -1;
     }
@@ -62,34 +62,34 @@ float Region::getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 
     bool done = false;
     while(!done) {
       float range;
-      MapUtil::Vector3 current = MapUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
+      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
       Block * block = getBlock(current);
       if(block == nullptr) {
-        block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
+        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
         // no path
         if(block == nullptr) {
           return -1.F;
         }
       }
-      float current_range = std::min(MapUtil::distance(next, dest), range);
+      float current_range = std::min(MathUtil::distance(next, dest), range);
       if(current_range != range) {
         done = true;
         float range_with_cost = c->getMovementTimeModifier() * current_range / block->ap_cost;
         next.x += factor_x * range_with_cost;
         next.y += factor_y * range_with_cost;
         next.z += factor_z * range_with_cost;
-        next = MapUtil::round(next);
+        next = MathUtil::round(next);
       }
       else {
         next = current;
       }
       ap_cost += current_range * block->ap_cost / c->getMovementTimeModifier();
     }
-    return MapUtil::round(ap_cost);
+    return MathUtil::round(ap_cost);
   }
 }
 
-bool Region::tryMove(Character * c, MapUtil::Vector3 dest) {
+bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   if(c->isEtheral()) {
     return true;
   }
@@ -105,7 +105,7 @@ bool Region::tryMove(Character * c, MapUtil::Vector3 dest) {
     */
   }
   for(Character * other : characters) {
-    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MapUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
+    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
       return false;
     }
   }
@@ -117,7 +117,7 @@ bool Region::tryMove(Character * c, MapUtil::Vector3 dest) {
   return true;
 }
 
-bool Region::intersect(Character * character, MapUtil::Vector3 dest, Furniture * furniture) {
+bool Region::intersect(Character * character, MathUtil::Vector3 dest, Furniture * furniture) {
   if(!furniture->getUnwalkable() || dest.z < furniture->getCoord().z || dest.z > furniture->getCoord().z + furniture->sizeZ) {
     return false;
   }
@@ -148,13 +148,13 @@ bool Region::intersect(Character * character, MapUtil::Vector3 dest, Furniture *
   return false;
 }
 
-bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world) {
-  MapUtil::Vector3 ori = c->getCoord();
+bool Region::move(Character * c, float orientation, MathUtil::Vector3 dest, float ap, World * world) {
+  MathUtil::Vector3 ori = c->getCoord();
   if(ori == dest) {
     return false;
   }
-  MapUtil::Vector3 next = MapUtil::makeVector3(ori.x, ori.y, ori.z);
-  float orientation_z = std::abs(std::acos((dest.z - ori.z) / MapUtil::distance(ori, dest))); // colatitude is non oriented
+  MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
+  float orientation_z = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
   float cos_long = std::cos(orientation * 3.141593F / 180.F);
   float sin_long = std::sin(orientation * 3.141593F / 180.F);
   float cos_colat = std::cos(orientation_z);
@@ -168,12 +168,12 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     next.x += factor_x * range_with_cost;
     next.y += factor_y * range_with_cost;
     next.z += factor_z * range_with_cost;
-    next = MapUtil::round(next);
+    next = MathUtil::round(next);
   }
   else {
-    int x_direction = 1;
-    int y_direction = 1;
-    int z_direction = 1;
+    int32_t x_direction = 1;
+    int32_t y_direction = 1;
+    int32_t z_direction = 1;
     if(orientation > 180.F) {
       y_direction = -1;
     }
@@ -187,10 +187,10 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     bool done = false; 
     while(!done) {
       float range;
-      MapUtil::Vector3 current = MapUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
+      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
       Block * block = getBlock(current);
       if(block == nullptr) {
-        block = getBlock(MapUtil::makeVector3(current.x, current.y, current.z - 1));
+        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
         // no path
         if(block == nullptr) {
           return false;
@@ -204,7 +204,7 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
         next.x += factor_x * range_with_cost;
         next.y += factor_y * range_with_cost;
         next.z += factor_z * range_with_cost;
-        next = MapUtil::round(next);
+        next = MathUtil::round(next);
       }
       else {
         next = current;
@@ -213,8 +213,8 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
     }
   }
   // check if we went too far
-  if(MapUtil::distance(ori, dest) < MapUtil::distance(ori, next)) {
-    next = MapUtil::round(dest);
+  if(MathUtil::distance(ori, dest) < MathUtil::distance(ori, next)) {
+    next = MathUtil::round(dest);
   }
   if(tryMove(c, next)) {
     c->move(next, orientation, world);
@@ -225,20 +225,20 @@ bool Region::move(Character * c, float orientation, MapUtil::Vector3 dest, float
   }
 }
 
-MapUtil::Vector3 Region::getCoordsOnSlope(Character * character, MapUtil::Vector3 dest, int orientation, float z) {
-  MapUtil::Vector3 result = MapUtil::makeVector3(dest.x, dest.y, character->getCoord().z);
+MathUtil::Vector3 Region::getCoordsOnSlope(Character * character, MathUtil::Vector3 dest, int32_t orientation, float z) {
+  MathUtil::Vector3 result = MathUtil::makeVector3(dest.x, dest.y, character->getCoord().z);
   switch(orientation) {
     case 0:
-      result.z = MapUtil::round(z + (result.x - std::floor(result.x)));
+      result.z = MathUtil::round(z + (result.x - std::floor(result.x)));
       break;
     case 90:
-      result.z = MapUtil::round(z + (result.y - std::floor(result.y)));
+      result.z = MathUtil::round(z + (result.y - std::floor(result.y)));
       break;
     case 180:
-      result.z = MapUtil::round(z + 1 - (result.x - std::floor(result.x)));
+      result.z = MathUtil::round(z + 1 - (result.x - std::floor(result.x)));
       break;
     case 270:
-      result.z = MapUtil::round(z + 1 - (result.y - std::floor(result.y)));
+      result.z = MathUtil::round(z + 1 - (result.y - std::floor(result.y)));
       break;
   }
   return result;
@@ -248,14 +248,14 @@ bool Region::canSee(Character * watcher, Character * target) {
   if(target->isInvisible() || target->isEtheral()) {
     return false;
   }
-  MapUtil::Vector3 watcher_head = watcher->getCoord();
+  MathUtil::Vector3 watcher_head = watcher->getCoord();
   watcher_head.z += watcher->getHeight();
-  MapUtil::Vector3 target_head = target->getCoord();
+  MathUtil::Vector3 target_head = target->getCoord();
   target_head.z += target->getHeight();
-  float distance2 = MapUtil::distance2(watcher_head, target_head);
-  MapUtil::Vector3 direction = MapUtil::makeVector3((watcher_head.x - target_head.x) / distance2, (watcher_head.y - target_head.y) / distance2, (watcher_head.y - target_head.y) / distance2);
-  for(int step = 1; step < distance2; step++) {
-    MapUtil::Vector3 coord = MapUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
+  float distance2 = MathUtil::distance2(watcher_head, target_head);
+  MathUtil::Vector3 direction = MathUtil::makeVector3((watcher_head.x - target_head.x) / distance2, (watcher_head.y - target_head.y) / distance2, (watcher_head.y - target_head.y) / distance2);
+  for(int32_t step = 1; step < distance2; step++) {
+    MathUtil::Vector3 coord = MathUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
     Block * block = getBlock(coord);
     if(block != nullptr && block->opaque) {
       return false;
@@ -296,8 +296,8 @@ std::list<Furniture *> Region::getFurnitures(Character * character) {
   return result;
 }
 
-std::map<const MapUtil::Vector3i, Block *> Region::getBlocks() {
-  std::map<const MapUtil::Vector3i, Block *> result = std::map<const MapUtil::Vector3i, Block *>();
+std::map<const MathUtil::Vector3i, Block *> Region::getBlocks() {
+  std::map<const MathUtil::Vector3i, Block *> result = std::map<const MathUtil::Vector3i, Block *>();
   for(BlocksChunk * chunk : chunks) {
     for(auto pair : chunk->getBlocks()) {
       result.insert(pair);
@@ -306,7 +306,7 @@ std::map<const MapUtil::Vector3i, Block *> Region::getBlocks() {
   return result;
 }
 
-Furniture * Region::getFurniture(MapUtil::Vector3i coord) {
+Furniture * Region::getFurniture(MathUtil::Vector3i coord) {
   for(BlocksChunk * chunk : chunks) {
     for(Furniture * furniture : chunk->getFurnitures()) {
       if(furniture->getCoord() == coord) {

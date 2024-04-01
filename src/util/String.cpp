@@ -6,8 +6,8 @@
 std::string String::extract(std::stringstream * ss) {
   std::string to_return = "";
   std::string extracted;
-  int open_count = 0;
-  int close_count = 0;
+  int32_t open_count = 0;
+  int32_t close_count = 0;
   do {
     getline(*ss, extracted, '}');
     // the '}' has been removed by the getline
@@ -29,18 +29,18 @@ bool String::extract_bool(std::stringstream * ss) {
   return result;
 }
 
-int String::extract_int(std::stringstream * ss) {
+int32_t String::extract_int(std::stringstream * ss) {
   return stoi(extract(ss));
 }
 
-long String::extract_long(std::stringstream * ss) {
+int64_t String::extract_long(std::stringstream * ss) {
   return stol(extract(ss));
 }
 
 float String::extract_float(std::stringstream * ss) {
   std::string msg = extract(ss);
   float result = stof(msg);
-  int int_part = (int) result;
+  int32_t int_part = (int32_t) result;
   if(result - int_part == 0.) {
     // float formating is not the same everywhere
     std::replace(msg.begin(), msg.end(), '.', ',');
@@ -51,6 +51,6 @@ float String::extract_float(std::stringstream * ss) {
 
 void String::insert(std::stringstream * ss, std::string data) { *ss << '{' << data << '}'; }
 void String::insert_bool(std::stringstream * ss, bool data) { *ss << '{' << data << '}'; }
-void String::insert_int(std::stringstream * ss, int data) { *ss << '{' << data << '}' ; }
-void String::insert_long(std::stringstream * ss, long data) { *ss << '{' << data << '}' ; }
+void String::insert_int(std::stringstream * ss, int32_t data) { *ss << '{' << data << '}' ; }
+void String::insert_long(std::stringstream * ss, int64_t data) { *ss << '{' << data << '}' ; }
 void String::insert_float(std::stringstream * ss, float data) { *ss << '{' << data << '}'; }

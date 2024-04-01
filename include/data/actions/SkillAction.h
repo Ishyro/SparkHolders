@@ -7,19 +7,19 @@
 
 class SkillAction : public TargetedAction {
   public:
-    const int overcharge_power;
-    const int overcharge_duration;
-    const int overcharge_range;
+    const int32_t overcharge_power;
+    const int32_t overcharge_duration;
+    const int32_t overcharge_range;
     SkillAction(
-      const int type,
+      const int32_t type,
       Adventure * adventure,
       const Action * previous,
       Character * user,
       Target * target,
       Skill * skill,
-      const int overcharge_power,
-      const int overcharge_duration,
-      const int overcharge_range
+      const int32_t overcharge_power,
+      const int32_t overcharge_duration,
+      const int32_t overcharge_range
     ):
       TargetedAction(
         type,
@@ -65,37 +65,37 @@ class SkillAction : public TargetedAction {
 #include "Values.h"
 
 typedef struct Target {
-  int type;
-  int id;
+  int32_t type;
+  int32_t id;
   float x;
   float y;
 } Target;
 
 class Action {
   public:
-    const int type;
+    const int32_t type;
     const float orientation;
     const 
     const Character * target;
-    const int target_x;
-    const int target_y;
+    const int32_t target_x;
+    const int32_t target_y;
     const MapLink * link;
     const std::string object;
     Action(
-      const int type,
+      const int32_t type,
       Adventure * adventure,
       const Action * previous,
       Character * user,
       const float orientation,
       const Skill * skill,
       const Character * target,
-      const int target_x,
-      const int target_y,
+      const int32_t target_x,
+      const int32_t target_y,
       const MapLink * link,
       const std::string object,
-      const int overcharge_power,
-      const int overcharge_duration,
-      const int overcharge_range
+      const int32_t overcharge_power,
+      const int32_t overcharge_duration,
+      const int32_t overcharge_range
     ):
       type(type),
       previous((Action *) previous),
@@ -136,7 +136,7 @@ class Action {
     }
     Action * execute(Adventure * adventure);
     Character * getUser();
-    int getTick();
+    int32_t getTick();
     void setPrevious(Action * action);
     void setNext(Action * action);
     void computeTick(float tick);

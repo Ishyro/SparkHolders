@@ -13,7 +13,7 @@
 #include <iostream>
 
 void World::addMap(Map * map) {
-  MapUtil::Vector3i coord = MapUtil::Vector3i();
+  MathUtil::Vector3i coord = MathUtil::Vector3i();
   for(coord.z = map->offsetZ; coord.z < map->offsetZ + map->sizeZ; coord.z++) {
     for(coord.y = map->offsetY; coord.y < map->offsetY + map->sizeY; coord.y++) {
       for(coord.x = map->offsetX; coord.x < map->offsetX + map->sizeX; coord.x++) {
@@ -27,7 +27,7 @@ void World::addMap(Map * map) {
   }
 }
 
-void World::setBlock(MapUtil::Vector3i coord, Block * block) {
+void World::setBlock(MathUtil::Vector3i coord, Block * block) {
   getChunk(coord)->setBlock(coord, block);
 }
 
@@ -35,7 +35,7 @@ void World::addMapLink(MapLink * link) {
   links.push_back(link);
 }
 
-Map * World::getMap(long map_id) { return maps.at(map_id); }
+Map * World::getMap(int64_t map_id) { return maps.at(map_id); }
 
 Map * World::getMap(std::string name) {
     for(auto pair = maps.begin(); pair != maps.end(); pair++) {
@@ -54,7 +54,7 @@ std::list<Map *> World::getMaps() {
   return to_return;
 }
 
-MapLink * World::getMapLink(int x, int y, long mapId) {
+MapLink * World::getMapLink(int32_t x, int32_t y, int64_t mapId) {
   for(MapLink * link : links) {
     if((link->map1->id == mapId && link->x1 == x && link->y1 == y) ||
       (link->map2->id == mapId && link->x2 == x && link->y2 == y)) {
@@ -66,7 +66,7 @@ MapLink * World::getMapLink(int x, int y, long mapId) {
 
 std::list<Character *> World::getCharacters() { return characters; }
 
-Character * World::getCharacter(long id) {
+Character * World::getCharacter(int64_t id) {
   if(id != 0) {
     for(auto pair : regions) {
       for(Character * character : pair.second->getCharacters()) {
@@ -79,7 +79,7 @@ Character * World::getCharacter(long id) {
   return nullptr;
 }
 
-Furniture * World::getFurniture(long id) {
+Furniture * World::getFurniture(int64_t id) {
   if(id != 0) {
     for(auto pair : chunks) {
       for(Furniture * furniture : pair.second->getFurnitures()) {
@@ -92,13 +92,13 @@ Furniture * World::getFurniture(long id) {
   return nullptr;
 }
 
-Block * World::getBlock(MapUtil::Vector3i coord) {
+Block * World::getBlock(MathUtil::Vector3i coord) {
   return getChunk(coord)->getBlock(coord);
 }
 
-BlocksChunk * World::getChunk(MapUtil::Vector3 ori) {
-  MapUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
-  std::map<const MapUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
+BlocksChunk * World::getChunk(MathUtil::Vector3 ori) {
+  MathUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
+  std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
   if(it != chunks.end()) {
     return it->second;
   }
@@ -109,9 +109,9 @@ BlocksChunk * World::getChunk(MapUtil::Vector3 ori) {
   }
 }
 
-BlocksChunk * World::getChunk(MapUtil::Vector3i ori) {
-  MapUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
-  std::map<const MapUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
+BlocksChunk * World::getChunk(MathUtil::Vector3i ori) {
+  MathUtil::Vector3i coord = BlocksChunk::getChunkId(ori);
+  std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(coord);
   if(it != chunks.end()) {
     return it->second;
   }
@@ -127,7 +127,7 @@ void World::addCharacter(Character * character) {
   changeRegion(character);
 }
 
-void World::checkRegion(Character * character, MapUtil::Vector3 ori, MapUtil::Vector3 dest) {
+void World::checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest) {
   if(floor(ori.x / CHUNK_SIZE) != floor(dest.x / CHUNK_SIZE) ||
   floor(ori.y / CHUNK_SIZE) != floor(dest.y / CHUNK_SIZE) ||
   floor(ori.z / CHUNK_SIZE) != floor(dest.z / CHUNK_SIZE)) {
@@ -140,15 +140,15 @@ void World::changeRegion(Character * character) {
   if(old_region != nullptr && old_region->removeCharacter(character)) {
     regions.erase(old_region->id);
   }
-  MapUtil::Vector3i coord = BlocksChunk::getChunkId(character->getCoord());
-  std::map<const MapUtil::Vector3i, Region *>::iterator it = regions.find(coord);
+  MathUtil::Vector3i coord = BlocksChunk::getChunkId(character->getCoord());
+  std::map<const MathUtil::Vector3i, Region *>::iterator it = regions.find(coord);
   if(it != regions.end()) {
     it->second->addCharacter(character);
   }
   else {
     std::array<BlocksChunk *, 27> result;
-    MapUtil::Vector3i current;
-    int n = 0;
+    MathUtil::Vector3i current;
+    int32_t n = 0;
     for(current.z = coord.z - CHUNK_SIZE; current.z <= coord.z + CHUNK_SIZE; current.z += CHUNK_SIZE) {
       for(current.y = coord.y - CHUNK_SIZE; current.y <= coord.y + CHUNK_SIZE; current.y += CHUNK_SIZE) {
         for(current.x = coord.x - CHUNK_SIZE; current.x <= coord.x + CHUNK_SIZE; current.x += CHUNK_SIZE) {
@@ -163,7 +163,7 @@ void World::changeRegion(Character * character) {
 }
 
 /*
-int World::getLight(int x, int y, int z) {
+int32_t World::getLight(int32_t x, int32_t y, int32_t z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Block * block = pair.second->getBlock(x, y);
@@ -174,7 +174,7 @@ int World::getLight(int x, int y, int z) {
   }
   return 0;
 }
-int World::getLight(float x, float y, float z) {
+int32_t World::getLight(float x, float y, float z) {
   for (auto pair : maps) {
     if(pair.second->offsetZ == z) {
       Block * block = pair.second->getBlock(x, y);
@@ -208,9 +208,9 @@ float World::setPathToTarget(Region * region, float x, float y, Target * target)
     }
     default: ;
   }
-  return MapUtil::getOrientationToTarget(x, y, target_x, target_y);
+  return MathUtil::getOrientationToTarget(x, y, target_x, target_y);
 }
 
-float World::distance(long map_id, float x, float y, Target * target) {
+float World::distance(int64_t map_id, float x, float y, Target * target) {
   return 0.F;
 }

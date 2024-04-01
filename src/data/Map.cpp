@@ -18,7 +18,7 @@
 #include "data/Map.h"
 
 #include "util/String.h"
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include <iostream>
 
@@ -26,15 +26,15 @@ std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Furniture *> Map::getFurnitures() { return furnitures; }
 std::list<Loot *> Map::getLoots() { return loots; }
-bool Map::allowedCoords(int x, int y) { return y >= offsetY && y < sizeY + offsetY && x >= offsetX && x < sizeX + offsetX; }
+bool Map::allowedCoords(int32_t x, int32_t y) { return y >= offsetY && y < sizeY + offsetY && x >= offsetX && x < sizeX + offsetX; }
 bool Map::allowedCoords(float x, float y) {
-  int local_y = (int) std::floor(y) - offsetY;
-  int local_x = (int) std::floor(x) - offsetX;
+  int32_t local_y = (int32_t) std::floor(y) - offsetY;
+  int32_t local_x = (int32_t) std::floor(x) - offsetX;
   return local_y >= 0 && local_y < sizeY && local_x >= 0 && local_x < sizeX;
 }
 
-Block * Map::getBlock(const MapUtil::Vector3i coord) {
-  std::map<const MapUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
+Block * Map::getBlock(const MathUtil::Vector3i coord) {
+  std::map<const MathUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
   if(it != blocks.end()) {
     return it->second;
   }
@@ -43,10 +43,10 @@ Block * Map::getBlock(const MapUtil::Vector3i coord) {
   }
 }
 
-int Map::getLight(int x, int y) { return allowedCoords(x, y) ? std::max(lights[y - offsetY][x - offsetX], light) : -1; }
-int Map::getLight(float x, float y) { return allowedCoords(x, y) ? std::max(lights[(int) std::floor(y) - offsetY][(int) std::floor(x) - offsetX], light) : -1; }
+int32_t Map::getLight(int32_t x, int32_t y) { return allowedCoords(x, y) ? std::max(lights[y - offsetY][x - offsetX], light) : -1; }
+int32_t Map::getLight(float x, float y) { return allowedCoords(x, y) ? std::max(lights[(int32_t) std::floor(y) - offsetY][(int32_t) std::floor(x) - offsetX], light) : -1; }
 
-Furniture * Map::getFurniture(int x, int y) {
+Furniture * Map::getFurniture(int32_t x, int32_t y) {
   if(allowedCoords(x, y)) {
     for(Furniture * furniture : furnitures) {
       if(furniture->getCoord().x == x && furniture->getCoord().y == y) {
@@ -58,8 +58,8 @@ Furniture * Map::getFurniture(int x, int y) {
 }
 Furniture * Map::getFurniture(float x, float y) {
   if(allowedCoords(x, y)) {
-    int int_x = (int) std::floor(x);
-    int int_y = (int) std::floor(y);
+    int32_t int_x = (int32_t) std::floor(x);
+    int32_t int_y = (int32_t) std::floor(y);
     for(Furniture * furniture : furnitures) {
       if(furniture->getCoord().x == int_x && furniture->getCoord().y == int_y) {
         return furniture;
@@ -70,7 +70,7 @@ Furniture * Map::getFurniture(float x, float y) {
 }
 
 /*
-bool Map::isOpaque(int x, int y) {
+bool Map::isOpaque(int32_t x, int32_t y) {
   Block * block = getBlock(x, y);
   Furniture * furniture = getFurniture(x, y);
   return (block != nullptr && block->opaque) || (furniture != nullptr && furniture->getOpaque());
@@ -82,7 +82,7 @@ bool Map::isOpaque(float x, float y) {
   return (block != nullptr && block->opaque) || (furniture != nullptr && furniture->getOpaque());
 }
 
-bool Map::isSolid(int x, int y) {
+bool Map::isSolid(int32_t x, int32_t y) {
   Block * block = getBlock(x, y);
   Furniture * furniture = getFurniture(x, y);
   return (block != nullptr && block->solid) || (furniture != nullptr && furniture->getSolid());
@@ -94,7 +94,7 @@ bool Map::isSolid(float x, float y) {
   return (block != nullptr && block->solid) || (furniture != nullptr && furniture->getSolid());
 }
 
-bool Map::isUnwalkable(int x, int y) {
+bool Map::isUnwalkable(int32_t x, int32_t y) {
   Block * block = getBlock(x, y);
   Furniture * furniture = getFurniture(x, y);
   return (block != nullptr && block->unwalkable) || (furniture != nullptr && furniture->getUnwalkable());
@@ -106,16 +106,16 @@ bool Map::isUnwalkable(float x, float y) {
   return (block != nullptr && block->unwalkable) || (furniture != nullptr && furniture->getUnwalkable());
 }
 */
-void Map::applyDayLight(int light) { this->light = light; }
+void Map::applyDayLight(int32_t light) { this->light = light; }
 
 /*
 void Map::calculateLights() {
   // initialize
-  int lightX[sizeX*sizeY];
-  int lightY[sizeX*sizeY];
-  int cpt = 0;
-  for(int y = 0; y < sizeY; y++) {
-    for(int x = 0; x < sizeX; x++) {
+  int32_t lightX[sizeX*sizeY];
+  int32_t lightY[sizeX*sizeY];
+  int32_t cpt = 0;
+  for(int32_t y = 0; y < sizeY; y++) {
+    for(int32_t x = 0; x < sizeX; x++) {
       lights[y][x] = tiles[y][x]->light;
       if (lights[y][x] > 0) {
         lightX[cpt] = x;
@@ -124,9 +124,9 @@ void Map::calculateLights() {
     }
   }
   for(Furniture * furniture : furnitures) {
-    int light = furniture->getLight();
-    int x = furniture->getX() - offsetX;
-    int y = furniture->getY() - offsetY;
+    int32_t light = furniture->getLight();
+    int32_t x = furniture->getX() - offsetX;
+    int32_t y = furniture->getY() - offsetY;
     if(light > lights[y][x]) {
       lights[y][x] = light;
       lightX[cpt] = x;
@@ -134,9 +134,9 @@ void Map::calculateLights() {
     }
   }
   for(Character * character : characters) {
-    int light = character->getLight();
-    int x = character->getX() - offsetX;
-    int y = character->getY() - offsetY;
+    int32_t light = character->getLight();
+    int32_t x = character->getX() - offsetX;
+    int32_t y = character->getY() - offsetY;
     if(light > lights[y][x]) {
       lights[y][x] = light;
       lightX[cpt] = x;
@@ -144,23 +144,23 @@ void Map::calculateLights() {
     }
   }
   for(Projectile * projectile : projectiles) {
-    int light = projectile->getLight();
-    int x = projectile->getX() - offsetX;
-    int y = projectile->getY() - offsetY;
+    int32_t light = projectile->getLight();
+    int32_t x = projectile->getX() - offsetX;
+    int32_t y = projectile->getY() - offsetY;
     if(light > lights[y][x]) {
       lights[y][x] = light;
       lightX[cpt] = x;
       lightY[cpt++] = y;
     }
   }
-  for(int i = 0; i < cpt; i++) {
+  for(int32_t i = 0; i < cpt; i++) {
     propagateLight(lightX[i],lightY[i]);
   }
   //new_light = false;
 }
 
-void Map::propagateLight(int x, int y) {
-  int light = lights[y][x] - 1;
+void Map::propagateLight(int32_t x, int32_t y) {
+  int32_t light = lights[y][x] - 1;
   if(x > 1 && y > 1 && light > lights[y - 1][x - 1]) {
     lights[y - 1][x - 1] = light;
     if(!tiles[y - 1][x - 1]->opaque) {
@@ -215,7 +215,7 @@ bool Map::canSee(Character * watcher, Character * target) {
   if(target->isInvisible() || target->isEtheral()) {
     return false;
   }
-  float range = MapUtil::distance(watcher->getX(), watcher->getY(), target->getX(), target->getY());
+  float range = MathUtil::distance(watcher->getX(), watcher->getY(), target->getX(), target->getY());
   if(range <= watcher->getDetectionRange()) {
     return true;
   }
@@ -225,18 +225,18 @@ bool Map::canSee(Character * watcher, Character * target) {
   return true;
 }
 
-int Map::canSee(Character * watcher, Block * mist) {
-  int mist_nb = 0;
+int32_t Map::canSee(Character * watcher, Block * mist) {
+  int32_t mist_nb = 0;
   std::vector<std::vector<Block *>> old_blocks = tiles;
-  int range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
-  for(int y = 0; y <= range; y++) {
+  int32_t range = std::max(watcher->getVisionRange(), watcher->getDetectionRange());
+  for(int32_t y = 0; y <= range; y++) {
     float a = (float) y / (float) range;
-    std::list<MapUtil::Pair> path = MapUtil::getPathFromCartesianEquation(a, range);
+    std::list<MathUtil::Pair> path = MathUtil::getPathFromCartesianEquation(a, range);
     bool unseen = false;
     // 8 times the same action with inverted coordinates
-    for(MapUtil::Pair pair : path) {
-      int i = std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
-      int j = std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -253,9 +253,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
-      int j = -std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = -std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -272,9 +272,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = -std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
-      int j = std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = -std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -291,9 +291,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = -std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
-      int j = -std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = -std::floor(pair.x) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = -std::floor(pair.y) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -310,9 +310,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
-      int j = std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -329,9 +329,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = -std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
-      int j = std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = -std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -348,9 +348,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
-      int j = -std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = -std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -367,9 +367,9 @@ int Map::canSee(Character * watcher, Block * mist) {
       }
     }
     unseen = false;
-    for(MapUtil::Pair pair : path) {
-      int i = -std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
-      int j = -std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
+    for(MathUtil::Pair pair : path) {
+      int32_t i = -std::floor(pair.y) + std::floor(watcher->getX()) - offsetX;
+      int32_t j = -std::floor(pair.x) + std::floor(watcher->getY()) - offsetY;
       if(i < 0 || i > sizeX || j < 0 || j > sizeY || tiles[j][i]->name == "TXT_VOID") {
         break;
       }
@@ -387,32 +387,32 @@ int Map::canSee(Character * watcher, Block * mist) {
     }
   }
   // fix artifacts
-  for(int y = watcher->getY() - offsetY + 1; y < sizeY; y++) {
-    for(int x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
+  for(int32_t y = watcher->getY() - offsetY + 1; y < sizeY; y++) {
+    for(int32_t x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
       if(tiles[y][x]->name == "TXT_MIST" && old_blocks[y][x]->opaque && !(tiles[y-1][x]->opaque && tiles[y][x-1]->opaque)) {
         tiles[y][x] = old_blocks[y][x];
         mist_nb--;
       }
     }
   }
-  for(int y = watcher->getY() - offsetY + 1; y < sizeY; y++) {
-    for(int x = watcher->getX() - offsetX - 1; x >= 0; x--) {
+  for(int32_t y = watcher->getY() - offsetY + 1; y < sizeY; y++) {
+    for(int32_t x = watcher->getX() - offsetX - 1; x >= 0; x--) {
       if(tiles[y][x]->name == "TXT_MIST" && old_blocks[y][x]->opaque && !(tiles[y-1][x]->opaque && tiles[y][x+1]->opaque)) {
         tiles[y][x] = old_blocks[y][x];
         mist_nb--;
       }
     }
   }
-  for(int y = watcher->getY() - offsetY - 1; y >= 0; y--) {
-    for(int x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
+  for(int32_t y = watcher->getY() - offsetY - 1; y >= 0; y--) {
+    for(int32_t x = watcher->getX() - offsetX + 1; x < sizeX; x++) {
       if(tiles[y][x]->name == "TXT_MIST" && old_blocks[y][x]->opaque && !(tiles[y+1][x]->opaque && tiles[y][x-1]->opaque)) {
         tiles[y][x] = old_blocks[y][x];
         mist_nb--;
       }
     }
   }
-  for(int y = watcher->getY() - offsetY - 1; y >= 0; y--) {
-    for(int x = watcher->getX() - offsetX - 1; x >= 0; x--) {
+  for(int32_t y = watcher->getY() - offsetY - 1; y >= 0; y--) {
+    for(int32_t x = watcher->getX() - offsetX - 1; x >= 0; x--) {
       if(tiles[y][x]->name == "TXT_MIST" && old_blocks[y][x]->opaque && !(tiles[y+1][x]->opaque && tiles[y][x+1]->opaque)) {
         tiles[y][x] = old_blocks[y][x];
         mist_nb--;
@@ -422,13 +422,13 @@ int Map::canSee(Character * watcher, Block * mist) {
   return mist_nb;
 }
 
-int Map::getMistNb() { return mist_nb; }
+int32_t Map::getMistNb() { return mist_nb; }
 */
 
-int Map::getRotation() { return rotation; }
+int32_t Map::getRotation() { return rotation; }
 
-void Map::setBlock(const MapUtil::Vector3i coord, Block * block) {
-  std::map<const MapUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
+void Map::setBlock(const MathUtil::Vector3i coord, Block * block) {
+  std::map<const MathUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
   if(it != blocks.end()) {
     blocks.erase(it);
   }
@@ -437,7 +437,7 @@ void Map::setBlock(const MapUtil::Vector3i coord, Block * block) {
   }
 }
 
-void Map::crumble(int x, int y) {
+void Map::crumble(int32_t x, int32_t y) {
   for(Character * character : characters) {
     if(character->getCoord().x == x && character->getCoord().y == y) {
       if(character->getType() == RACE_WALL) {
@@ -492,9 +492,9 @@ void Map::killCharacter(Character * killer, Character * victim) {
     killer->gainXP(victim->getXP() / 2);
   }
   else {
-    int damages[DAMAGE_TYPE_NUMBER] = {0};
+    int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
-    int xp = victim->getXP();
+    int32_t xp = victim->getXP();
     Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
@@ -525,7 +525,7 @@ void Map::destroyLoot(Loot * l) {
   l = nullptr;
 }
 
-void Map::takeLoot(Character * c, int mode) {
+void Map::takeLoot(Character * c, int32_t mode) {
   return;
   /*
   std::list<Loot *> to_delete = std::list<Loot *>();
@@ -577,16 +577,16 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
     return 0.F;
   }
   if(c->isFlying()) {
-    return MapUtil::distance(ori_x, ori_y, x, y) * 10.F / c->getMovementTimeModifier();
+    return MathUtil::distance(ori_x, ori_y, x, y) * 10.F / c->getMovementTimeModifier();
   }
-  float orientation = MapUtil::getOrientationToTarget(ori_x, ori_y, x, y);
+  float orientation = MathUtil::getOrientationToTarget(ori_x, ori_y, x, y);
   float ap_cost = 0.F;
   float current_x = ori_x;
   float current_y = ori_y;
   float next_x = current_x;
   float next_y = current_y;
-  int x_direction = 1;
-  int y_direction = 1;
+  int32_t x_direction = 1;
+  int32_t y_direction = 1;
   if(orientation > 180.F) {
     y_direction = -1;
   }
@@ -598,7 +598,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       next_x = std::floor(next_x);
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_x = next_x;
     }
@@ -607,13 +607,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(x_direction == -1) {
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       current_x = next_x;
@@ -621,13 +621,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
     if(x_direction == -1) {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+        ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
       }
     }
     else {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
       }
     }
   }
@@ -636,7 +636,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       next_y = std::floor(next_y);
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_y = next_y;
     }
@@ -645,13 +645,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(y_direction == -1) {
         Block * block = getBlock(next_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       current_y = next_y;
@@ -659,13 +659,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
     if(y_direction == -1) {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+        ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
       }
     }
     else {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
       }
     }
   }
@@ -678,7 +678,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         next_y = a * next_x + b;
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         current_x = next_x;
         current_y = next_y;
@@ -689,13 +689,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         if(x_direction == -1) {
           Block * block = getBlock(next_x, next_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         else {
           Block * block = getBlock(current_x, current_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         current_x = next_x;
@@ -704,13 +704,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(x_direction == -1) {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+          ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
         }
       }
     }
@@ -720,7 +720,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         next_x = (next_y - b) / a;
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         current_x = next_x;
         current_y = next_y;
@@ -731,13 +731,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         if(y_direction == -1) {
           Block * block = getBlock(next_x, next_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         else {
           Block * block = getBlock(current_x, current_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         current_x = next_x;
@@ -746,13 +746,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(y_direction == -1) {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+          ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MapUtil::distance(current_x, current_y, x, y);
+          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
         }
       }
     }
@@ -768,7 +768,7 @@ bool Map::tryMove(Character * c, float destX, float destY) {
     return false;
   }
   for(Character * other : characters) {
-    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MapUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
+    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::distance(destX, destY, other->getX(), other->getY()) <= c->getSize() + other->getSize()) {
       return false;
     }
   }
@@ -776,22 +776,22 @@ bool Map::tryMove(Character * c, float destX, float destY) {
 }
 
 float Map::move(Character * c, float destX, float destY, World * world) {
-  int x = destX;
-  int y = destY;
-  float orientation = MapUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
+  int32_t x = destX;
+  int32_t y = destY;
+  float orientation = MathUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
   if(orientation == 360.F) {
     return 0.F;
   }
-  float range = MapUtil::distance(c->getX(), c->getY(), x, y);
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), range);
-  for(MapUtil::Pair pair : path) {
+  float range = MathUtil::distance(c->getX(), c->getY(), x, y);
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), range);
+  for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid || (!c->isFlying() && getBlock(pair.y, pair.x)->unwalkable)) {
       break;
     }
     x = pair.x;
     y = pair.y;
   }
-  if(MapUtil::distance(c->getX(), c->getY(), x, y) > range) {
+  if(MathUtil::distance(c->getX(), c->getY(), x, y) > range) {
     x = destX;
     y = destY;
   }
@@ -806,16 +806,16 @@ float Map::move(Character * c, float destX, float destY, World * world) {
 }
 
 float Map::move(Character * c, float orientation, float destX, float destY, float ap, World * world) {
-  int lim_x = c->getX();
-  int lim_y = c->getY();
+  int32_t lim_x = c->getX();
+  int32_t lim_y = c->getY();
   float ap_cost = 0.F;
   float current_cost = 0.F;
   float current_x = c->getX();
   float current_y = c->getY();
   float next_x = current_x;
   float next_y = current_y;
-  int x_direction = 1;
-  int y_direction = 1;
+  int32_t x_direction = 1;
+  int32_t y_direction = 1;
   if(orientation > 180.F) {
     y_direction = -1;
   }
@@ -823,8 +823,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     x_direction = -1;
   }
   MapLink * link = nullptr;
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
-  for(MapUtil::Pair pair : path) {
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
+  for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid || (!c->isFlying() && getBlock(pair.x, pair.y)->unwalkable)) {
       break;
     }
@@ -848,7 +848,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     if(orientation == 0.F || orientation == 180.F) {
       if(x_direction == -1) {
         next_x = std::floor(next_x);
-        ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         if(ap_cost <= ap) {
           current_x = next_x;
         }
@@ -859,19 +859,19 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         next_x = std::floor(current_x + x_direction);
         if(next_x == std::floor(lim_x + x_direction)) {
           next_x = lim_x;
-          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         if(x_direction == -1) {
-          ap_cost += getBlock(current_x, next_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, next_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         else {
-          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       if(ap_cost > ap) {
         next_x = current_x + (float) x_direction * (ap - current_cost) / getBlock(current_x, current_y)->ap_cost;
-        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
@@ -880,7 +880,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     else if(orientation == 90.F || orientation == 270.F) {
       if(y_direction == -1) {
         next_y = std::floor(next_y);
-        ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         if(ap_cost <= ap) {
           current_y = next_y;
         }
@@ -891,19 +891,19 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         next_y = std::floor(current_y + y_direction);
         if(next_y == std::floor(lim_y + y_direction)) {
           next_y = lim_y;
-          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         if(y_direction == -1) {
-          ap_cost += getBlock(next_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(next_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         else {
-          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       if(ap_cost > ap) {
         next_y = current_y + (float) y_direction * (ap - current_cost) / getBlock(current_x, current_y)->ap_cost;
-        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
@@ -919,7 +919,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
       float x_y = current_y + sin * range_x;
       float y_x = current_x + cos * range_y;
       float y_y = current_y + sin * range_y;
-      if(MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
+      if(MathUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MathUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
         next_x = x_x;
         next_y = x_y;
         range = range_x;
@@ -940,7 +940,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         x_y = current_y + sin * range_x;
         y_x = current_x + cos * range_y;
         y_y = current_y + sin * range_y;
-        if(MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MapUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
+        if(MathUtil::distanceSquare(lim_x, lim_y, x_x, x_y) < MathUtil::distanceSquare(lim_x, lim_y, x_x, x_y)) {
           next_x = x_x;
           next_y = x_y;
           range = range_x;
@@ -950,10 +950,10 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           next_y = y_y;
           range = range_y;
         }
-        if(MapUtil::distanceSquare(lim_x, lim_y, current_x, current_y) <= 2) {
+        if(MathUtil::distanceSquare(lim_x, lim_y, current_x, current_y) <= 2) {
           next_x = lim_x;
           next_y = lim_y;
-          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
           break;
         }
         ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * range;
@@ -961,15 +961,15 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
       if(ap_cost > ap) {
         next_x = current_x + ((ap - current_cost) / getBlock(current_x, current_y)->ap_cost) * cos;
         next_y = current_y + ((ap - current_cost) / getBlock(current_x, current_y)->ap_cost) * sin;
-        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MapUtil::distance(current_x, current_y, next_x, next_y);
+        current_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       else {
         current_cost = ap_cost;
       }
     }
   }
-  next_x = MapUtil::round(next_x);
-  next_y = MapUtil::round(next_y);
+  next_x = MathUtil::round(next_x);
+  next_y = MathUtil::round(next_y);
   if(next_x < offsetX || std::floor(next_x) >= sizeX + offsetX || next_y < offsetY || std::floor(next_y) >= sizeY + offsetY || getBlock(next_x, next_y)->solid || (!c->isFlying() && getBlock(next_x, next_y)->unwalkable)) {
     c->move(lim_x, lim_y, offsetZ, orientation, world);
     return -1;
@@ -978,12 +978,12 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     Map * next_map;
     float dest_orientation = orientation;
     float diff = 0.F;
-    float next_dx = MapUtil::round(next_x - std::floor(next_x));
-    float next_dy = MapUtil::round(next_y - std::floor(next_y));
+    float next_dx = MathUtil::round(next_x - std::floor(next_x));
+    float next_dy = MathUtil::round(next_y - std::floor(next_y));
     next_x = std::floor(next_x);
     next_y = std::floor(next_y);
-    float high_limit = MapUtil::round(0.999F - c->getSize());
-    float low_limit = MapUtil::round(c->getSize());
+    float high_limit = MathUtil::round(0.999F - c->getSize());
+    float low_limit = MathUtil::round(c->getSize());
     switch(link->type) {
       case MAPLINK_THROUGH:
         if((next_dx == low_limit || next_dx == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y) {
@@ -1038,7 +1038,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         }
         if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(next_x, next_y)->solid || (!c->isFlying() && next_map->getBlock(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_y, lim_x)) {
-            if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+            if(MathUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
               c->move(destX, destY, next_map->offsetZ, orientation, world);
               return -1.F;
             }
@@ -1121,7 +1121,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         }
         if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(next_x, next_y)->solid || (!c->isFlying() && next_map->getBlock(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_x, lim_y)) {
-            if(MapUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+            if(MathUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
               c->move(destX, destY, offsetZ, orientation, world);
               return -1.F;
             }
@@ -1146,7 +1146,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   }
   else {
     if(tryMove(c, next_x, next_y)) {
-      if(MapUtil::distance(c->getX(), c->getY(), next_x, next_y) > MapUtil::distance(c->getX(), c->getY(), destX, destY)) {
+      if(MathUtil::distance(c->getX(), c->getY(), next_x, next_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
         c->move(destX, destY, offsetZ, orientation, world);
         return -1.F;
       }
@@ -1165,15 +1165,15 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
 float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   bool to_destroy = false;
   if(!p->isLost() && p->getTarget()->type == TARGET_CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMap()->id == id) {
-    p->setOrientation(MapUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
+    p->setOrientation(MathUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
-  float x = MapUtil::round(std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX());
-  float y = MapUtil::round(std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY());
+  float x = MathUtil::round(std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX());
+  float y = MathUtil::round(std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY());
   float max_x;
   float max_y;
   MapLink * link = nullptr;
-  std::list<MapUtil::Pair> path = MapUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation(), p->size , speed);
-  for(MapUtil::Pair pair : path) {
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation(), p->size , speed);
+  for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || pair.x >= sizeX + offsetX || pair.y < offsetY || pair.y >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid) {
       to_destroy = true;
       break;
@@ -1238,14 +1238,14 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   }
   // attack targets
   auto rangeSort = [&](Character * a, Character * b) -> bool {
-    return MapUtil::distance(p->getX(), p->getY(), a->getX(), a->getY()) <
-      MapUtil::distance(p->getX(), p->getY(), b->getX(), b->getY());
+    return MathUtil::distance(p->getX(), p->getY(), a->getX(), a->getY()) <
+      MathUtil::distance(p->getX(), p->getY(), b->getX(), b->getY());
   };
   targets.sort(rangeSort);
   for(Character * character : targets) {
     if(!character->isMarkedDead() && !p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
-      MapUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
-      >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
+      MathUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
+      >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
         p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
         p->attack(nullptr, characters, adventure);
@@ -1256,8 +1256,8 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
   }
   if(targets.empty() && !p->isLost() && p->getArea() > 0 && p->getTarget() == nullptr &&
-    MapUtil::distance(p->getX(), p->getY(), x, y)
-    >= MapUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
+    MathUtil::distance(p->getX(), p->getY(), x, y)
+    >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
       // exploding on targeted zone when no other target where found
       p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
       p->attack(nullptr, characters, adventure);
@@ -1284,25 +1284,25 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   else {
     float old_x = x;
     float old_y = y;
-    float range = MapUtil::distance(x, y, p->getX(), p->getY());
+    float range = MathUtil::distance(x, y, p->getX(), p->getY());
     Map * next_map;
     float orientation = p->getOrientation();
     float dest_orientation = orientation;
     float diff = 0.F;
-    int x_direction = 1;
-    int y_direction = 1;
+    int32_t x_direction = 1;
+    int32_t y_direction = 1;
     if(orientation > 180.F) {
       y_direction = -1;
     }
     if(orientation > 90.F && orientation < 270.F) {
       x_direction = -1;
     }
-    float dx = MapUtil::round(x - std::floor(x));
-    float dy = MapUtil::round(y - std::floor(y));
+    float dx = MathUtil::round(x - std::floor(x));
+    float dy = MathUtil::round(y - std::floor(y));
     x = std::floor(x);
     y = std::floor(y);
-    float high_limit = MapUtil::round(0.999F - p->getSize());
-    float low_limit = MapUtil::round(p->getSize());
+    float high_limit = MathUtil::round(0.999F - p->getSize());
+    float low_limit = MathUtil::round(p->getSize());
     switch(link->type) {
       case MAPLINK_THROUGH:
         if((dx == low_limit || dx == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y) {
@@ -1420,12 +1420,12 @@ void Map::clearProjectiles() {
   projectiles.clear();
 }
 
-std::string Map::block_to_string(int x, int y) {
+std::string Map::block_to_string(int32_t x, int32_t y) {
   std::stringstream * ss = new std::stringstream();
   String::insert_long(ss, id);
   String::insert_int(ss, x);
   String::insert_int(ss, y);
-  String::insert(ss, getBlock(MapUtil::makeVector3i(x, y, 0))->name);
+  String::insert(ss, getBlock(MathUtil::makeVector3i(x, y, 0))->name);
   std::string result = ss->str();
   delete ss;
   return result;

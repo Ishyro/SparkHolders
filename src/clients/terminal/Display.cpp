@@ -40,26 +40,26 @@
 
 #include "clients/terminal/Display.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 #include "util/String.h"
 
 namespace Display {
 
-  void print(WINDOW* screen, int offsetY, int offsetX, std::string to_print) {
-    long unsigned int lines = 0;
-    long unsigned int cols = 0;
+  void print(WINDOW* screen, int32_t offsetY, int32_t offsetX, std::string to_print) {
+    uint64_t lines = 0;
+    uint64_t cols = 0;
     getmaxyx(screen, lines, cols);
     std::istringstream stream(to_print);
     std::string line = "";
     std::string word;
-    long unsigned int currentLength = 0;
+    uint64_t currentLength = 0;
     while(getline(stream, word, ' ') && word != "") {
       if(line == "") {
         line = word;
         currentLength = word.length();
         continue;
       }
-      const long unsigned int begin = word.find('\n');
+      const uint64_t begin = word.find('\n');
       if(begin != std::string::npos) {
         if(currentLength == cols) {
           line += word;
@@ -89,17 +89,17 @@ namespace Display {
   }
 
   void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
     Region * region = player->getRegion();
     //mvwprintw(screen, 1, cols / 2 - t->getMapName(map->name).length() / 2, t->getMapName(map->name).c_str());
-    for(int y = region->id.y + CHUNK_SIZE * 3 - 1; y >= region->id.y; y--) {
-      for(int x = region->id.x; x < region->id.x + CHUNK_SIZE * 3; x++) {
+    for(int32_t y = region->id.y + CHUNK_SIZE * 3 - 1; y >= region->id.y; y--) {
+      for(int32_t x = region->id.x; x < region->id.x + CHUNK_SIZE * 3; x++) {
         std::string to_print = "·";
-        Block * block = region->getBlock(MapUtil::makeVector3i(x, y, -1));
+        Block * block = region->getBlock(MathUtil::makeVector3i(x, y, -1));
         if(block != nullptr) {
           if(block->unwalkable) {
             to_print = "#";
@@ -115,7 +115,7 @@ namespace Display {
       std::string to_print;
       char ch = t->getCharacterName(character->name).at(0);
       to_print = ch;
-      int color;
+      int32_t color;
       switch(character->teamRelation) {
         case TEAM_SAME:
           color = BLUE;
@@ -133,12 +133,12 @@ namespace Display {
           color = WHITE;
       }
       wattron(screen, COLOR_PAIR(color));
-      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(character->y - region->id.y), (int) std::floor(character->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int32_t) std::floor(character->y - region->id.y), (int32_t) std::floor(character->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(color));
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
       std::string to_print = "";
-      switch((int) std::floor(projectile->orientation)) {
+      switch((int32_t) std::floor(projectile->orientation)) {
         case 90:
           to_print = "↑";
           break;
@@ -168,13 +168,13 @@ namespace Display {
           break;
       }
       wattron(screen, COLOR_PAIR(RED));
-      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(projectile->y - region->id.y), (int) std::floor(projectile->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int32_t) std::floor(projectile->y - region->id.y), (int32_t) std::floor(projectile->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(RED));
     }
     for(Loot * loot : display->loots) {
       std::string to_print = "*";
       wattron(screen, COLOR_PAIR(YELLOW));
-      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int) std::floor(loot->y - region->id.y), (int) std::floor(loot->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
+      mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int32_t) std::floor(loot->y - region->id.y), (int32_t) std::floor(loot->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
     std::string to_print = std::to_string(player->getOrientation());
@@ -200,8 +200,8 @@ namespace Display {
   }
 
   void displayStats(Character * player, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
@@ -222,9 +222,9 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int overcharge_power, int overcharge_duration, int overcharge_range, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, Translator * t) {
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     wattron(screen, COLOR_PAIR(WHITE));
@@ -236,7 +236,7 @@ namespace Display {
     mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge_power)).c_str());
     mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge_power, overcharge_duration, overcharge_range))).c_str());
     mvwprintw(screen, 7, 1, (t->getStandardName("Time") + std::string(": ") + std::to_string(skill->time)).c_str());
-    int i = 8;
+    int32_t i = 8;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
         case SKILL_PROJECTILE: {
@@ -252,49 +252,49 @@ namespace Display {
           ;
       }
     }
-    int damage_SLASH = skill->getDamageFromType(DAMAGE_SLASH, overcharge_power);
+    int32_t damage_SLASH = skill->getDamageFromType(DAMAGE_SLASH, overcharge_power);
     if(damage_SLASH != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
     }
-    int damage_PUNCTURE = skill->getDamageFromType(DAMAGE_PUNCTURE, overcharge_power);
+    int32_t damage_PUNCTURE = skill->getDamageFromType(DAMAGE_PUNCTURE, overcharge_power);
     if(damage_PUNCTURE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
     }
-    int damage_BLUNT = skill->getDamageFromType(DAMAGE_BLUNT, overcharge_power);
+    int32_t damage_BLUNT = skill->getDamageFromType(DAMAGE_BLUNT, overcharge_power);
     if(damage_BLUNT != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(damage_BLUNT)).c_str());
     }
-    int damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, overcharge_power);
+    int32_t damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, overcharge_power);
     if(damage_FIRE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
     }
-    int damage_LIGHTNING = skill->getDamageFromType(DAMAGE_LIGHTNING, overcharge_power);
+    int32_t damage_LIGHTNING = skill->getDamageFromType(DAMAGE_LIGHTNING, overcharge_power);
     if(damage_LIGHTNING != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("DAMAGE_LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int damage_COLD = skill->getDamageFromType(DAMAGE_FROST, overcharge_power);
+    int32_t damage_COLD = skill->getDamageFromType(DAMAGE_FROST, overcharge_power);
     if(damage_COLD != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
-    int damage_POISON = skill->getDamageFromType(DAMAGE_POISON, overcharge_power);
+    int32_t damage_POISON = skill->getDamageFromType(DAMAGE_POISON, overcharge_power);
     if(damage_POISON != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int damage_NEUTRAL = skill->getDamageFromType(DAMAGE_ACID, overcharge_power);
+    int32_t damage_NEUTRAL = skill->getDamageFromType(DAMAGE_ACID, overcharge_power);
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
-    int damage_TRUE = skill->getDamageFromType(DAMAGE_TRUE, overcharge_power);
+    int32_t damage_TRUE = skill->getDamageFromType(DAMAGE_TRUE, overcharge_power);
     if(damage_TRUE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
     }
-    int damage_SOUL = skill->getDamageFromType(DAMAGE_SOUL, overcharge_power);
+    int32_t damage_SOUL = skill->getDamageFromType(DAMAGE_SOUL, overcharge_power);
     if(damage_SOUL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
-    int separator = (float) LINES * 3 / 5;
+    int32_t separator = (float) LINES * 3 / 5;
     float ratio = 2.25;
     WINDOW * descScreen = subwin(screen, lines - i - 2, cols - 2, separator + i + 1, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 1);
     wattron(descScreen, COLOR_PAIR(WHITE));
@@ -306,8 +306,8 @@ namespace Display {
   }
 
   void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
@@ -335,13 +335,13 @@ namespace Display {
   }
 
   WINDOW * displayItem(Item * item, WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wattron(screen, COLOR_PAIR(WHITE));
     std::string to_print = t->getItemName(item->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-    int i = 3;
+    int32_t i = 3;
     mvwprintw(screen, i++, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("item_type_") + std::to_string(item->type))).c_str());
     mvwprintw(screen, i++, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(item->gold_value)).c_str());
     if(item->consumable) {
@@ -401,7 +401,7 @@ namespace Display {
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
-    int separator = (float) LINES * 3 / 5;
+    int32_t separator = (float) LINES * 3 / 5;
     float ratio = 2.25;
     WINDOW * descScreen = subwin(screen, lines - 3 - 1, cols - 20 - 1, separator + 3, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 20);
     wattron(descScreen, COLOR_PAIR(WHITE));
@@ -413,8 +413,8 @@ namespace Display {
   }
 
   void displayCommands(WINDOW * screen, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
@@ -431,7 +431,7 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displayAttributes(Attributes * attributes, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t) {
+  WINDOW * displayAttributes(Attributes * attributes, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Translator * t) {
     WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_WIDTH, offsetY + 2 + ATTRIBUTES_HEIGHT * place, offsetX + 1);
     wattron(attributesScreen, COLOR_PAIR(color));
     box(attributesScreen, ACS_VLINE, ACS_HLINE);
@@ -449,7 +449,7 @@ namespace Display {
     return attributesScreen;
   }
 
-  WINDOW * displayWay(Way * way, int place, int color, WINDOW * screen, int offsetY, int offsetX, Translator * t) {
+  WINDOW * displayWay(Way * way, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Translator * t) {
     WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_WIDTH, offsetY + 2 + WAY_HEIGHT * place, offsetX + 1);
     wattron(wayScreen, COLOR_PAIR(color));
     box(wayScreen, ACS_VLINE, ACS_HLINE);
@@ -464,17 +464,17 @@ namespace Display {
     return wayScreen;
   }
 
-  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int color, WINDOW * screen, int sizeX, int offsetY, int offsetX, Translator * t) {
-    int lines = 0;
-    int cols = 0;
+  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int32_t color, WINDOW * screen, int32_t sizeX, int32_t offsetY, int32_t offsetX, Translator * t) {
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     WINDOW * characterScreen = subwin(screen, ATTRIBUTES_HEIGHT - 2, sizeX, offsetY, offsetX);
-    int hpIncr = 0;
-    int manaIncr = 0;
-    int shieldIncr = 0;
-    int damageMultIncr = 0;
-    int soulBurnIncr = 0;
-    int flowIncr = 0;
+    int32_t hpIncr = 0;
+    int32_t manaIncr = 0;
+    int32_t shieldIncr = 0;
+    int32_t damageMultIncr = 0;
+    int32_t soulBurnIncr = 0;
+    int32_t flowIncr = 0;
     if(race != nullptr) {
       hpIncr += race->hpIncr;
       manaIncr += race->manaIncr;
@@ -517,7 +517,7 @@ namespace Display {
     }
     wattron(characterScreen, COLOR_PAIR(color));
     box(characterScreen, ACS_VLINE, ACS_HLINE);
-    int space = cols / 2;
+    int32_t space = cols / 2;
     if(attributes != nullptr) {
       mvwprintw(characterScreen, 1, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
       mvwprintw(characterScreen, 2, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
@@ -629,10 +629,10 @@ namespace Display {
       }
     }
     bool done = false;
-    int cursorX = 0;
-    int cursorY = 0;
+    int32_t cursorX = 0;
+    int32_t cursorY = 0;
     clear();
-    int characterWidth = COLS - (ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 5) - 2;
+    int32_t characterWidth = COLS - (ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 5) - 2;
     WINDOW * characterScreen = subwin(stdscr, LINES, characterWidth + 2, 0, 0);
     WINDOW * attributesScreen = subwin(stdscr, LINES, ATTRIBUTES_WIDTH + 2, 0, characterWidth + 2);
     WINDOW * raceScreen = subwin(stdscr, LINES, WAY_WIDTH + 2, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2);
@@ -640,14 +640,14 @@ namespace Display {
     WINDOW * cultureScreen = subwin(stdscr, LINES, WAY_WIDTH + 2, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 2);
     WINDOW * religionScreen = subwin(stdscr, LINES, WAY_WIDTH + 2, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 3);
     WINDOW * professionScreen = subwin(stdscr, LINES, WAY_WIDTH + 2, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 4);
-    int lines = 0;
-    int cols = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(attributesScreen, lines, cols);
-    int numberAttributes = lines / ATTRIBUTES_HEIGHT;
+    int32_t numberAttributes = lines / ATTRIBUTES_HEIGHT;
     getmaxyx(raceScreen, lines, cols);
-    int numberWays = lines / WAY_HEIGHT;
+    int32_t numberWays = lines / WAY_HEIGHT;
     std::list<WINDOW *> screens = std::list<WINDOW *>();
-    int currentPannel = 0;
+    int32_t currentPannel = 0;
     bool nameMode = false;
     while(!done) {
       wclear(attributesScreen);
@@ -664,13 +664,13 @@ namespace Display {
       box(religionScreen, ACS_VLINE, ACS_HLINE);
       box(professionScreen, ACS_VLINE, ACS_HLINE);
       box(characterScreen, ACS_VLINE, ACS_HLINE);
-      int attributesCount = 0;
-      int raceCount = 0;
-      int originCount = 0;
-      int cultureCount = 0;
-      int religionCount = 0;
-      int professionCount = 0;
-      int skip = 0;
+      int32_t attributesCount = 0;
+      int32_t raceCount = 0;
+      int32_t originCount = 0;
+      int32_t cultureCount = 0;
+      int32_t religionCount = 0;
+      int32_t professionCount = 0;
+      int32_t skip = 0;
       std::vector<Way *> availableRaces = std::vector<Way *>(races.size());
       std::vector<Way *> availableOrigins = std::vector<Way *>(origins.size());
       std::vector<Way *> availableCultures = std::vector<Way *>(cultures.size());
@@ -694,7 +694,7 @@ namespace Display {
         if(skip++ < currentPannel * numberAttributes) {
           continue;
         }
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedAttributes != nullptr && selectedAttributes->name == attributes->name) {
           color = GREEN;
         }
@@ -706,7 +706,7 @@ namespace Display {
       wrefresh(attributesScreen);
       skip = 0;
       for(Way * way : races) {
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedRace != nullptr && selectedRace->name == way->name) {
           color = GREEN;
         }
@@ -725,7 +725,7 @@ namespace Display {
       wrefresh(raceScreen);
       skip = 0;
       for(Way * way : origins) {
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedOrigin != nullptr && selectedOrigin->name == way->name) {
           color = GREEN;
         }
@@ -744,7 +744,7 @@ namespace Display {
       wrefresh(originScreen);
       skip = 0;
       for(Way * way : cultures) {
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedCulture != nullptr && selectedCulture->name == way->name) {
           color = GREEN;
         }
@@ -763,7 +763,7 @@ namespace Display {
       wrefresh(cultureScreen);
       skip = 0;
       for(Way * way : religions) {
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedReligion != nullptr && selectedReligion->name == way->name) {
           color = GREEN;
         }
@@ -782,7 +782,7 @@ namespace Display {
       wrefresh(religionScreen);
       skip = 0;
       for(Way * way : professions) {
-        int color = WHITE;
+        int32_t color = WHITE;
         if(selectedProfession != nullptr && selectedProfession->name == way->name) {
           color = GREEN;
         }
@@ -799,7 +799,7 @@ namespace Display {
       }
       availableProfessions.resize(professionCount);
       wrefresh(professionScreen);
-      int color = WHITE;
+      int32_t color = WHITE;
       if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
         && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos) {
         color = GREEN;
@@ -857,7 +857,7 @@ namespace Display {
       bool done2 = false;
       while(!done2) {
         flushinp();
-        int keyPressed = getch();
+        int32_t keyPressed = getch();
         if(!nameMode) {
           switch(keyPressed) {
             case '4':
@@ -867,22 +867,22 @@ namespace Display {
                 cursorY = std::min(cursorY, 2);
               }
               else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1 - currentPannel * numberAttributes);
+                cursorY = std::min(cursorY, (int32_t) startingAttributes.size() - 1 - currentPannel * numberAttributes);
               }
               else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableRaces.size() - 1);
               }
               else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableOrigins.size() - 1);
               }
               else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableCultures.size() - 1);
               }
               else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableReligions.size() - 1);
               }
               else if(cursorX == 6) {
-                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableProfessions.size() - 1);
               }
               if(cursorY < 0) {
                 cursorY = 0;
@@ -959,22 +959,22 @@ namespace Display {
                 cursorY = std::min(cursorY, 2);
               }
               else if(cursorX == 1) {
-                cursorY = std::min(cursorY, (int) startingAttributes.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) startingAttributes.size() - 1);
               }
               else if(cursorX == 2) {
-                cursorY = std::min(cursorY, (int) availableRaces.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableRaces.size() - 1);
               }
               else if(cursorX == 3) {
-                cursorY = std::min(cursorY, (int) availableOrigins.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableOrigins.size() - 1);
               }
               else if(cursorX == 4) {
-                cursorY = std::min(cursorY, (int) availableCultures.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableCultures.size() - 1);
               }
               else if(cursorX == 5) {
-                cursorY = std::min(cursorY, (int) availableReligions.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableReligions.size() - 1);
               }
               else if(cursorX == 6) {
-                cursorY = std::min(cursorY, (int) availableProfessions.size() - 1);
+                cursorY = std::min(cursorY, (int32_t) availableProfessions.size() - 1);
               }
               if(cursorY < 0) {
                 cursorY = 0;
@@ -988,56 +988,56 @@ namespace Display {
                 cursorY = cursorY % 3;
               }
               else if(cursorX == 1) {
-                if(cursorY == numberAttributes && (int) startingAttributes.size() > numberAttributes) {
+                if(cursorY == numberAttributes && (int32_t) startingAttributes.size() > numberAttributes) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) startingAttributes.size()) {
+                else if(cursorY == (int32_t) startingAttributes.size()) {
                   cursorY--;
                 }
               }
               else if(cursorX == 2) {
-                if(cursorY == numberWays && (int) availableRaces.size() > numberWays) {
+                if(cursorY == numberWays && (int32_t) availableRaces.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) availableRaces.size()) {
+                else if(cursorY == (int32_t) availableRaces.size()) {
                   cursorY--;
                 }
               }
               else if(cursorX == 3) {
-                if(cursorY == numberWays && (int) availableOrigins.size() > numberWays) {
+                if(cursorY == numberWays && (int32_t) availableOrigins.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) availableOrigins.size()) {
+                else if(cursorY == (int32_t) availableOrigins.size()) {
                   cursorY--;
                 }
               }
               else if(cursorX == 4) {
-                if(cursorY == numberWays && (int) availableCultures.size() > numberWays) {
+                if(cursorY == numberWays && (int32_t) availableCultures.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) availableCultures.size()) {
+                else if(cursorY == (int32_t) availableCultures.size()) {
                   cursorY--;
                 }
               }
               else if(cursorX == 5) {
-                if(cursorY == numberWays && (int) availableReligions.size() > numberWays) {
+                if(cursorY == numberWays && (int32_t) availableReligions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) availableReligions.size()) {
+                else if(cursorY == (int32_t) availableReligions.size()) {
                   cursorY--;
                 }
               }
               else if(cursorX == 6) {
-                if(cursorY == numberWays && (int) availableProfessions.size() > numberWays) {
+                if(cursorY == numberWays && (int32_t) availableProfessions.size() > numberWays) {
                   cursorY = 0;
                   currentPannel++;
                 }
-                else if(cursorY == (int) availableProfessions.size()) {
+                else if(cursorY == (int32_t) availableProfessions.size()) {
                   cursorY--;
                 }
               }
@@ -1166,7 +1166,7 @@ namespace Display {
     while(!link->isReady()) {
       usleep(1);
     }
-    long id = link->getPlayersId().front();
+    int64_t id = link->getPlayersId().front();
     while(true) {
       StateDisplay * display = link->getState();
       Region * region = link->getPlayer(id)->getRegion();
@@ -1176,18 +1176,18 @@ namespace Display {
         displayCommands(targetScreen, t);
         wrefresh(targetScreen);
         bool done = false;
-        int type;
-        int object_type;
+        int32_t type;
+        int32_t object_type;
         std::string object;
-        int object_id;
+        int32_t object_id;
         float orientation;
         Skill * skill;
-        int target_id;
-        int target_x;
-        int target_y;
-        int overcharge_power;
-        int overcharge_duration;
-        int overcharge_range;
+        int32_t target_id;
+        int32_t target_x;
+        int32_t target_y;
+        int32_t overcharge_power;
+        int32_t overcharge_duration;
+        int32_t overcharge_range;
         while(!done) {
           object_type = 0;
           object = "";
@@ -1195,13 +1195,13 @@ namespace Display {
           orientation = link->getPlayer(id)->getOrientation();
           skill = nullptr;
           target_id = 0;
-          target_x = (int) std::floor(link->getPlayer(id)->getCoord().x) - region->id.x;
-          target_y = (int) std::floor(link->getPlayer(id)->getCoord().y) - region->id.y;
+          target_x = (int32_t) std::floor(link->getPlayer(id)->getCoord().x) - region->id.x;
+          target_y = (int32_t) std::floor(link->getPlayer(id)->getCoord().y) - region->id.y;
           overcharge_power = 1;
           overcharge_duration = 1;
           overcharge_range = 1;
           flushinp();
-          int keyPressed = getch();
+          int32_t keyPressed = getch();
           switch(keyPressed) {
             case '5':
               type = ACTION_IDLE;
@@ -1351,13 +1351,13 @@ namespace Display {
     }
   }
 
-  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t) {
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, Translator * t) {
     Skill * result = nullptr;
     bool done = false;
-    int cursorX = 0;
-    int cursorY = 0;
-    int lines = 0;
-    int cols = 0;
+    int32_t cursorX = 0;
+    int32_t cursorY = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(displayScreen, lines, cols);
     while(!done) {
       WINDOW * tempScreen = nullptr;
@@ -1367,12 +1367,12 @@ namespace Display {
       box(targetScreen, ACS_VLINE, ACS_HLINE);
       std::string to_print = t->getStandardName("SKILLS");
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-      int currentX = 0;
-      int currentY = 0;
-      int offset = 0;
-      int sizeX = 0;
-      int maxY = 0;
-      int color = WHITE;
+      int32_t currentX = 0;
+      int32_t currentY = 0;
+      int32_t offset = 0;
+      int32_t sizeX = 0;
+      int32_t maxY = 0;
+      int32_t color = WHITE;
       for (Skill * skill : player->getSkills()) {
         if(currentY >= lines - 4) {
           offset += sizeX + 3;
@@ -1391,7 +1391,7 @@ namespace Display {
           result = skill;
           tempScreen = displaySkill(skill, targetScreen, 1, 1, 1, t);
         }
-        sizeX = std::max(sizeX, (int) to_print.length());
+        sizeX = std::max(sizeX, (int32_t) to_print.length());
         wattron(displayScreen, COLOR_PAIR(color));
         mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
         wattroff(displayScreen, COLOR_PAIR(color));
@@ -1401,7 +1401,7 @@ namespace Display {
       wrefresh(displayScreen);
       wrefresh(targetScreen);
       flushinp();
-      int keyPressed = getch();
+      int32_t keyPressed = getch();
       switch(keyPressed) {
         case '4':
         case KEY_LEFT:
@@ -1452,12 +1452,12 @@ namespace Display {
     return result;
   }
 
-  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int & overcharge_power, int & overcharge_duration, int & overcharge_range, Translator * t) {
-    int mana_cost = 0;
-    int lines = 0;
-    int cols = 0;
-    int overcharge_type = 1;
-    int color = WHITE;
+  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, Translator * t) {
+    int32_t mana_cost = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
+    int32_t overcharge_type = 1;
+    int32_t color = WHITE;
     getmaxyx(displayScreen, lines, cols);
     while(true) {
       wclear(displayScreen);
@@ -1498,7 +1498,7 @@ namespace Display {
       WINDOW * tempScreen = nullptr;
       tempScreen = displaySkill(skill, targetScreen, overcharge_power, overcharge_duration, overcharge_range, t);
       flushinp();
-      int keyPressed = getch();
+      int32_t keyPressed = getch();
       if(tempScreen != nullptr) {
         wclear(tempScreen);
         delwin(tempScreen);
@@ -1576,25 +1576,25 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int range, int & target_id, int & target_x, int & target_y, float & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Translator * t) {
     bool done = false;
-    int lines = 0;
-    int cols = 0;
-    int player_x = target_x;
-    int player_y = target_y;
+    int32_t lines = 0;
+    int32_t cols = 0;
+    int32_t player_x = target_x;
+    int32_t player_y = target_y;
     getmaxyx(mapScreen, lines, cols);
-    int lines2 = 0;
-    int cols2 = 0;
+    int32_t lines2 = 0;
+    int32_t cols2 = 0;
     getmaxyx(targetScreen, lines2, cols2);
     cchar_t *wch_old = new cchar_t();
     mvwin_wch(mapScreen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - target_y, target_x + cols / 2 - CHUNK_SIZE * 3 / 2, wch_old);
     Region * region = player->getRegion();
     while(!done) {
       flushinp();
-      int keyPressed = getch();
+      int32_t keyPressed = getch();
       target_id = 0;
-      int previous_x = target_x;
-      int previous_y = target_y;
+      int32_t previous_x = target_x;
+      int32_t previous_y = target_y;
       wmove(mapScreen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - target_y, target_x + cols / 2 - CHUNK_SIZE * 3 / 2);
       wecho_wchar(mapScreen, wch_old);
       switch(keyPressed) {
@@ -1651,7 +1651,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MapUtil::getOrientationToTarget(player_x, player_y, target_x + region->id.x, target_y + region->id.y);
+          orientation = MathUtil::getOrientationToTarget(player_x, player_y, target_x + region->id.x, target_y + region->id.y);
           break;
         }
         case ' ': {
@@ -1675,7 +1675,7 @@ namespace Display {
       mvwprintw(targetScreen, lines2 / 2, cols2 / 2 - to_print.length() / 2, to_print.c_str());
       wrefresh(targetScreen);
       for(CharacterDisplay * character : display->characters) {
-        if((int) std::floor(character->x) == target_x + region->id.x && (int) std::floor(character->y) == target_y + region->id.y) {
+        if((int32_t) std::floor(character->x) == target_x + region->id.x && (int32_t) std::floor(character->y) == target_y + region->id.y) {
           target_id = character->id;
           displayTarget(character, targetScreen, t);
           break;
@@ -1694,13 +1694,13 @@ namespace Display {
     return true;
   }
 
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int & object_type, int & object_id, Translator * t) {
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, Translator * t) {
       std::string result = "";
       bool done = false;
-      int cursorX = 0;
-      int cursorY = 0;
-      int lines = 0;
-      int cols = 0;
+      int32_t cursorX = 0;
+      int32_t cursorY = 0;
+      int32_t lines = 0;
+      int32_t cols = 0;
       getmaxyx(displayScreen, lines, cols);
       while(!done) {
         WINDOW * tempScreen = nullptr;
@@ -1710,12 +1710,12 @@ namespace Display {
         box(targetScreen, ACS_VLINE, ACS_HLINE);
         std::string to_print = t->getStandardName("INVENTORY");
         mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-        int currentX = 0;
-        int currentY = 0;
-        int offset = 0;
-        int sizeX = 0;
-        int maxY = 0;
-        int color = WHITE;
+        int32_t currentX = 0;
+        int32_t currentY = 0;
+        int32_t offset = 0;
+        int32_t sizeX = 0;
+        int32_t maxY = 0;
+        int32_t color = WHITE;
         for (ItemSlot * slot : player->getGear()->getItems()) {
           if(currentY >= lines - 4) {
             offset += sizeX + 3;
@@ -1736,7 +1736,7 @@ namespace Display {
             object_type = OBJECT_ITEM;
             tempScreen = displayItem(slot->item, targetScreen, t);
           }
-          sizeX = std::max(sizeX, (int) to_print.length());
+          sizeX = std::max(sizeX, (int32_t) to_print.length());
           wattron(displayScreen, COLOR_PAIR(color));
           mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
           wattroff(displayScreen, COLOR_PAIR(color));
@@ -1746,7 +1746,7 @@ namespace Display {
         wrefresh(displayScreen);
         wrefresh(targetScreen);
         flushinp();
-        int keyPressed = getch();
+        int32_t keyPressed = getch();
         switch(keyPressed) {
           case '4':
           case KEY_LEFT:
@@ -1800,10 +1800,10 @@ namespace Display {
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t) {
     std::string result = "";
     bool done = false;
-    int cursorX = 0;
-    int cursorY = 0;
-    int lines = 0;
-    int cols = 0;
+    int32_t cursorX = 0;
+    int32_t cursorY = 0;
+    int32_t lines = 0;
+    int32_t cols = 0;
     getmaxyx(displayScreen, lines, cols);
     while(!done) {
       WINDOW * tempScreen = nullptr;
@@ -1813,12 +1813,12 @@ namespace Display {
       box(targetScreen, ACS_VLINE, ACS_HLINE);
       std::string to_print = t->getStandardName("AMMUNITION");
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-      int currentX = 0;
-      int currentY = 0;
-      int offset = 0;
-      int sizeX = 0;
-      int maxY = 0;
-      int color = WHITE;
+      int32_t currentX = 0;
+      int32_t currentY = 0;
+      int32_t offset = 0;
+      int32_t sizeX = 0;
+      int32_t maxY = 0;
+      int32_t color = WHITE;
       for (ItemSlot * slot : player->getGear()->getItems()) {
         if(slot->item->type == ITEM_AMMUNITION) {
           AmmunitionItem * ammo = (AmmunitionItem *) slot->item;
@@ -1839,7 +1839,7 @@ namespace Display {
             result = ammo->getProjectile()->name;
             tempScreen = displayItem(ammo, targetScreen, t);
           }
-          sizeX = std::max(sizeX, (int) to_print.length());
+          sizeX = std::max(sizeX, (int32_t) to_print.length());
           wattron(displayScreen, COLOR_PAIR(color));
           mvwprintw(displayScreen, 3 + currentY++, offset + 1, to_print.c_str());
           wattroff(displayScreen, COLOR_PAIR(color));
@@ -1850,7 +1850,7 @@ namespace Display {
       wrefresh(displayScreen);
       wrefresh(targetScreen);
       flushinp();
-      int keyPressed = getch();
+      int32_t keyPressed = getch();
       switch(keyPressed) {
         case '4':
         case KEY_LEFT:
@@ -1902,11 +1902,11 @@ namespace Display {
   }
 }
 
-void Display::sendAction(Link * link, long id, int type, void * arg1, void * arg2, int overcharge_power, int overcharge_duration, int overcharge_range) {
-  std::vector<long> ids = std::vector<long>();
+void Display::sendAction(Link * link, int64_t id, int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  std::vector<int64_t> ids = std::vector<int64_t>();
   ids.push_back(id);
-  std::vector<std::vector<int>> types = std::vector<std::vector<int>>(); 
-  std::vector<int> types_args = std::vector<int>();
+  std::vector<std::vector<int32_t>> types = std::vector<std::vector<int32_t>>(); 
+  std::vector<int32_t> types_args = std::vector<int32_t>();
   types_args.push_back(type);
   types.push_back(types_args);
   std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>(); 
@@ -1917,16 +1917,16 @@ void Display::sendAction(Link * link, long id, int type, void * arg1, void * arg
   std::vector<void *> args2_args = std::vector<void *>();
   args2_args.push_back(arg2);
   args2.push_back(args2_args);
-  std::vector<std::vector<int>> overcharge_powers = std::vector<std::vector<int>>(); 
-  std::vector<int> overcharge_powers_args = std::vector<int>();
+  std::vector<std::vector<int32_t>> overcharge_powers = std::vector<std::vector<int32_t>>(); 
+  std::vector<int32_t> overcharge_powers_args = std::vector<int32_t>();
   overcharge_powers_args.push_back(overcharge_power);
   overcharge_powers.push_back(overcharge_powers_args);
-  std::vector<std::vector<int>> overcharge_durations = std::vector<std::vector<int>>(); 
-  std::vector<int> overcharge_durations_args = std::vector<int>();
+  std::vector<std::vector<int32_t>> overcharge_durations = std::vector<std::vector<int32_t>>(); 
+  std::vector<int32_t> overcharge_durations_args = std::vector<int32_t>();
   overcharge_durations_args.push_back(overcharge_duration);
   overcharge_durations.push_back(overcharge_durations_args);
-  std::vector<std::vector<int>> overcharge_ranges = std::vector<std::vector<int>>(); 
-  std::vector<int> overcharge_ranges_args = std::vector<int>();
+  std::vector<std::vector<int32_t>> overcharge_ranges = std::vector<std::vector<int32_t>>(); 
+  std::vector<int32_t> overcharge_ranges_args = std::vector<int32_t>();
   overcharge_ranges_args.push_back(overcharge_range);
   overcharge_ranges.push_back(overcharge_ranges_args);
   link->sendActions(ids, types, args1, args2, overcharge_powers, overcharge_durations, overcharge_ranges);

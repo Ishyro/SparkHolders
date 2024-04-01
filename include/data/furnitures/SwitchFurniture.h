@@ -11,14 +11,14 @@ class SwitchFurniture : public ActivableFurniture  {
   public:
     SwitchFurniture(
       const std::string name,
-      const int type,
-      const int sizeX,
-      const int sizeY,
-      const int sizeZ,
+      const int32_t type,
+      const int32_t sizeX,
+      const int32_t sizeY,
+      const int32_t sizeZ,
       const bool unwalkable_on,
       const bool opaque_on,
       const bool solid_on,
-      const int light_on,
+      const int32_t light_on,
       const float activation_time,
       const float fire_size,
       const float fire_posX,
@@ -27,7 +27,7 @@ class SwitchFurniture : public ActivableFurniture  {
       const bool unwalkable_off,
       const bool opaque_off,
       const bool solid_off,
-      const int light_off
+      const int32_t light_off
     ):
       ActivableFurniture(
         name,
@@ -53,9 +53,9 @@ class SwitchFurniture : public ActivableFurniture  {
     {}
     SwitchFurniture(
       SwitchFurniture * furniture,
-      const int x,
-      const int y,
-      const int z,
+      const int32_t x,
+      const int32_t y,
+      const int32_t z,
       const float orientation,
       const bool isLocked,
       const std::string key_name
@@ -88,7 +88,7 @@ class SwitchFurniture : public ActivableFurniture  {
     bool getUnwalkable();
     bool getOpaque();
     bool getSolid();
-    int getLight();
+    int32_t getLight();
     bool getIsOn();
     void setIsOn(bool isOn);
     void activate(Character * user, bool remote);
@@ -98,7 +98,7 @@ class SwitchFurniture : public ActivableFurniture  {
     bool unwalkable_off;
     bool opaque_off;
     bool solid_off;
-    int light_off;
+    int32_t light_off;
     bool isOn;
 };
 

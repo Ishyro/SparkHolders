@@ -6,7 +6,7 @@
 bool ContainerFurniture::getUnwalkable() { return unwalkable; }
 bool ContainerFurniture::getOpaque() { return opaque; }
 bool ContainerFurniture::getSolid() { return solid; }
-int ContainerFurniture::getLight() { return light; }
+int32_t ContainerFurniture::getLight() { return light; }
 
 void ContainerFurniture::activate(Character * user, bool remote) {
   if(remote || tryActivate(user)) {

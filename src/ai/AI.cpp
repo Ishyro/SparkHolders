@@ -26,12 +26,12 @@ Action * AI::getActions(Adventure * adventure, Character * c) {
   return nullptr;
 }
 
-float AI::getFollowOrientation(Adventure * adventure, Character * self, int x, int y) {
-  //return MapUtil::getOrientationToTarget(self->getX(), self->getY(), (float) x + 0.5F, (float) y + 0.5F);
+float AI::getFollowOrientation(Adventure * adventure, Character * self, int32_t x, int32_t y) {
+  //return MathUtil::getOrientationToTarget(self->getX(), self->getY(), (float) x + 0.5F, (float) y + 0.5F);
   return 0.F;
 }
 
-float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int y) {
+float AI::getFleeOrientation(Adventure * adventure, Character * self, int32_t x, int32_t y) {
   float orientation = getFollowOrientation(adventure, self, x, y);
   if(orientation == 360.F) {
     return orientation;
@@ -40,9 +40,9 @@ float AI::getFleeOrientation(Adventure * adventure, Character * self, int x, int
   return orientation >= 360.F ? orientation - 360.F : orientation;
 }
 
-std::vector<MapUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int x, int y) {
-  //return MapUtil::getPathToTarget(adventure->getWorld()->getMap(self->getRegion()), self->getX(), self->getY(), x, y, false);
-  return std::vector<MapUtil::Pair>();
+std::vector<MathUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int32_t x, int32_t y) {
+  //return MathUtil::getPathToTarget(adventure->getWorld()->getMap(self->getRegion()), self->getX(), self->getY(), x, y, false);
+  return std::vector<MathUtil::Pair>();
 }
 
 void AI::selectHungriness(Character * self) {
@@ -63,16 +63,16 @@ void AI::selectTiredness(Character * self) {
   }
 }
 
-Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, int target_y) {
+Action * AI::moveTowards(Adventure * adventure, Character * self, int32_t target_x, int32_t target_y) {
   return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
   /*
-  int range = (int) MapUtil::distance(self->getX(), self->getY(), target_x, target_y);
+  int32_t range = (int32_t) MathUtil::distance(self->getX(), self->getY(), target_x, target_y);
   if(range == 0) {
     return new BaseAction(ACTION_IDLE, adventure, nullptr, self);
   }
-  std::vector<MapUtil::Pair> path = getFollowPath(adventure, self, target_x, target_y);
+  std::vector<MathUtil::Pair> path = getFollowPath(adventure, self, target_x, target_y);
   if(path.size() > 2) {
-    int tp_range = 0;
+    int32_t tp_range = 0;
     Skill * skill = nullptr;
     for(Skill * s : self->getSkills()) {
       if( (tp_range = s->isTeleportSkill()) != 0 && s->getManaCost(1, 1, 1) < self->getMana()) {
@@ -81,8 +81,8 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
       }
     }
     if(skill != nullptr) {
-      int tp_index = std::min(tp_range, range) - 1; // path[0] is at range 1
-      MapUtil::Pair tp_target = path[tp_index];
+      int32_t tp_index = std::min(tp_range, range) - 1; // path[0] is at range 1
+      MathUtil::Pair tp_target = path[tp_index];
       Target * target = new Target();
       target->type = TARGET_BLOCK;
       target->id = self->getCurrentMap()->id;
@@ -93,7 +93,7 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
     }
   }
   if(path.size() > 0) {
-    MapUtil::Pair next = path[0];
+    MathUtil::Pair next = path[0];
     Target * target = new Target();
     target->type = TARGET_BLOCK;
     target->id = self->getCurrentMap()->id;
@@ -101,7 +101,7 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int target_x, 
     target->y = next.y;
     target->z = self->getZ();
     return new TargetedAction(ACTION_MOVE, adventure, nullptr, self, target);
-    //return new Action(MOVE, adventure, nullptr, self, MapUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), next.x, next.y, 0.F, 0.F), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
+    //return new Action(MOVE, adventure, nullptr, self, MathUtil::getOrientationToTarget(self->getX(), self->getY(), self->getDX(), self->getDY(), next.x, next.y, 0.F, 0.F), nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
   }
   Action * action = new BaseAction(ACTION_IDLE, adventure, nullptr, self);
   return action;
@@ -134,10 +134,10 @@ Action * AI::eat(Adventure * adventure, Character * self) {
       }
     }
     bool correct_block = false;
-    int power = -1; // power = 0 in first loop turn
-    int k = 0;
-    int i;
-    int j;
+    int32_t power = -1; // power = 0 in first loop turn
+    int32_t k = 0;
+    int32_t i;
+    int32_t j;
     // TODO // infinite loop
     while(!correct_block && (power <= map->sizeX || power <= map->sizeY)) {
       if(k % 8 == 0) {
@@ -185,7 +185,7 @@ Action * AI::eat(Adventure * adventure, Character * self) {
     t->x = i;
     t->y = j;
     t->z = self->getZ();
-    if(i == (int) std::floor(self->getX()) && j == (int) std::floor(self->getY())) {
+    if(i == (int32_t) std::floor(self->getX()) && j == (int32_t) std::floor(self->getY())) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
     else {
@@ -205,7 +205,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   float distance_prey = max_distance_prey;
   for(Character * other : map->getCharacters()) {
     if(other->getTeam() == "prey" || (other->getTeam() != self->getTeam() && self->getSatiety() < 15.F)) {
-      float distance = MapUtil::distance(self->getX(), self->getY(), other->getX(), other->getY());
+      float distance = MathUtil::distance(self->getX(), self->getY(), other->getX(), other->getY());
       if(other != self && distance <= max_distance_prey && distance < distance_prey) {
         prey = other;
         distance_prey = distance;
@@ -215,7 +215,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   float distance_corpse = max_distance_prey;
   for(Loot * loot : map->getLoots()) {
     if(loot->type == LOOT_CORPSE) {
-      float distance = MapUtil::distance(self->getX(), self->getY(), loot->x, loot->y);
+      float distance = MathUtil::distance(self->getX(), self->getY(), loot->x, loot->y);
       if(distance <= max_distance_prey && distance < distance_corpse) {
         bool isFood = false;
         for(Item * item : loot->items) {
@@ -255,13 +255,13 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   */
 }
 
-std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Character * self, int range) {
+std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Character * self, int32_t range) {
   std::list<Character *> threats = std::list<Character *>();
   for(Character * other : map->getCharacters()) {
     if(adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == TEAM_ENEMY) {
       threats.push_front(other);
     }
-    else if(MapUtil::distance(self->getCoord(), other->getCoord()) <= range
+    else if(MathUtil::distance(self->getCoord(), other->getCoord()) <= range
       && adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == TEAM_NEUTRAL) {
       threats.push_front(other);
     }
@@ -269,22 +269,22 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
   return threats;
 }
 
-std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
+std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
   std::map<Character *, Skill *> bestDamageSkills = std::map<Character *, Skill *>();
   for(Character * threat : threats) {
-    float range = MapUtil::distance(self->getCoord(), threat->getCoord());
+    float range = MathUtil::distance(self->getCoord(), threat->getCoord());
     Skill * skill = nullptr;
-    int maxDamage = 0;
+    int32_t maxDamage = 0;
     for(auto pair : skills) {
       if(pair.first != nullptr && pair.first->range >= range) {
-        int rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
+        int32_t rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
         if(rawDamage > maxDamage) {
           skill = pair.first;
           maxDamage = rawDamage;
         }
       }
       else if(pair.first == nullptr && self->getGear()->getWeapon_1()->range >= range) {
-        int rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
+        int32_t rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
         if(rawDamage > maxDamage) {
           skill = pair.first;
           maxDamage = rawDamage;
@@ -299,13 +299,13 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
 }
 
 Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Character * self) {
-  std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> skills = self->getDamageSkills();
+  std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> skills = self->getDamageSkills();
   std::map<Character *, Skill *> bestDamageSkills = getBestDamageSkills(threats, skills, self);
-  int max = 0;
+  int32_t max = 0;
   Skill * skill = nullptr;
   Character * target = nullptr;
   for(auto pair : bestDamageSkills) {
-    int rawDamage = pair.first->tryAttack(skills.at(pair.second), ACTION_STRIKE);
+    int32_t rawDamage = pair.first->tryAttack(skills.at(pair.second), ACTION_STRIKE);
     if(rawDamage > max) {
       skill = pair.second;
       target = pair.first;
@@ -316,7 +316,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     Target * t = new Target();
     t->type = TARGET_CHARACTER;
     t->id = target->id;
-    // float orientation = MapUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
+    // float orientation = MathUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
     if(skill != nullptr) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
     }
@@ -364,7 +364,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
   }
   max = 0;
   for(Character * threat : threats) {
-    int powerScore = threat->getPowerScore();
+    int32_t powerScore = threat->getPowerScore();
     if(powerScore > max) {
       target = threat;
       max = powerScore;

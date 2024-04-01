@@ -26,19 +26,19 @@
 
 namespace Server {
 
-  std::list<Action *> receiveActions(std::string msg, std::map<const long, Character *> characters, Adventure * adventure) {
+  std::list<Action *> receiveActions(std::string msg, std::map<const int64_t, Character *> characters, Adventure * adventure) {
     std::list<Action *> result = std::list<Action *>();
     std::stringstream * ss = new std::stringstream(msg);
     // ignore socket_msg_type
     String::extract(ss);
     while(ss->rdbuf()->in_avail() != 0) {
       std::stringstream * ss_actions = new std::stringstream(String::extract(ss));
-      long id = String::extract_long(ss_actions);
+      int64_t id = String::extract_long(ss_actions);
       std::vector<Action *> actions = std::vector<Action *>();
       while(ss_actions->rdbuf()->in_avail() != 0) {
         actions.push_back(readAction(String::extract(ss_actions), characters.at(id), adventure));
       }
-      for(int i = 1; i < (int) actions.size(); i++) {
+      for(int32_t i = 1; i < (int32_t) actions.size(); i++) {
         actions[i-1]->setNext(actions[i]);
         actions[i]->setPrevious(actions[i-1]);
       }
@@ -54,7 +54,7 @@ namespace Server {
 
   Action * readAction(std::string msg, Character * user, Adventure * adventure) {
     std::stringstream * ss = new std::stringstream(msg);
-    int type = String::extract_int(ss);
+    int32_t type = String::extract_int(ss);
     Action * action;
     switch(type) {
       case ACTION_IDLE:
@@ -67,7 +67,7 @@ namespace Server {
       case ACTION_MOVE:
       case ACTION_STRIKE:
       case ACTION_ACTIVATION: {
-        Target * target = MapUtil::target_from_string(String::extract(ss));
+        Target * target = MathUtil::target_from_string(String::extract(ss));
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
@@ -94,11 +94,11 @@ namespace Server {
         break;
       }
       case ACTION_USE_SKILL: {
-        Target * target = MapUtil::target_from_string(String::extract(ss));
+        Target * target = MathUtil::target_from_string(String::extract(ss));
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
-        int overcharge_power = String::extract_int(ss);
-        int overcharge_duration = String::extract_int(ss);
-        int overcharge_range = String::extract_int(ss);
+        int32_t overcharge_power = String::extract_int(ss);
+        int32_t overcharge_duration = String::extract_int(ss);
+        int32_t overcharge_range = String::extract_int(ss);
         action = new SkillAction(type, adventure, nullptr, user, target, skill, overcharge_power, overcharge_duration, overcharge_range);
         break;
       }
@@ -210,7 +210,7 @@ namespace Server {
     return character;
   }
 
-  void sendState(Socket s, std::map<const long, Character *> characters, bool need_to_send, Adventure * adventure) {
+  void sendState(Socket s, std::map<const int64_t, Character *> characters, bool need_to_send, Adventure * adventure) {
     try {
       std::stringstream * ss = new std::stringstream();
       String::insert_int(ss, SOCKET_MSG_STATE);

@@ -11,38 +11,38 @@
 class WeaponItem : public GearItem {
   public:
     const float range;
-    const int strike_time;
+    const int32_t strike_time;
     const bool use_projectile;
     const bool use_ammo;
-    const int ammo_type;
-    const int capacity;
-    const int reload_time;
+    const int32_t ammo_type;
+    const int32_t capacity;
+    const int32_t reload_time;
     WeaponItem(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects,
-      int swap_time,
+      int32_t swap_time,
       float range,
-      int strike_time,
+      int32_t strike_time,
       bool use_projectile,
       bool use_ammo,
-      int ammo_type,
-      int capacity,
-      int reload_time,
+      int32_t ammo_type,
+      int32_t capacity,
+      int32_t reload_time,
       AmmunitionItem * ammo,
-      int damages[DAMAGE_TYPE_NUMBER]
+      int32_t damages[DAMAGE_TYPE_NUMBER]
     ):
       GearItem(
         name,
@@ -71,11 +71,11 @@ class WeaponItem : public GearItem {
       reload_time(reload_time),
       ammo(ammo)
     {
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
       }
     }
-    WeaponItem(WeaponItem * item, int tier):
+    WeaponItem(WeaponItem * item, int32_t tier):
       GearItem(item, tier),
       range(item->range),
       strike_time(item->strike_time),
@@ -86,20 +86,20 @@ class WeaponItem : public GearItem {
       ammo(item->ammo),
       reload_time(item->reload_time)
     {
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = item->damages[i];
       }
     }
-    int getRawDamage();
-    int getDamageFromType(int damage_type);
-    int getCurrentCapacity();
+    int32_t getRawDamage();
+    int32_t getDamageFromType(int32_t damage_type);
+    int32_t getCurrentCapacity();
     AmmunitionItem * getAmmo();
     void useAmmo();
     AmmunitionItem * reload(AmmunitionItem * ammo);
     std::string to_string();
   private:
     AmmunitionItem * ammo;
-    int damages[DAMAGE_TYPE_NUMBER];
+    int32_t damages[DAMAGE_TYPE_NUMBER];
 };
 
 #endif // _WEAPON_ITEM_H_

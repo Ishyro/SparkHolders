@@ -6,11 +6,11 @@
 
 #include "util/String.h"
 
-int SerialItem::getNumber() { return number; }
+int32_t SerialItem::getNumber() { return number; }
 
-int SerialItem::add(int number) { this->number += number; return this->number; }
+int32_t SerialItem::add(int32_t number) { this->number += number; return this->number; }
 
-int SerialItem::reduce(int number) { this->number -= number; return this->number; }
+int32_t SerialItem::reduce(int32_t number) { this->number -= number; return this->number; }
 
 float SerialItem::getWeight() { return weight * number; }
 

@@ -6,9 +6,9 @@
 #include "data/Projectile.h"
 
 #include "util/String.h"
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
-void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int overcharge_duration, World * world, bool teleport, bool change_owner_orientation) {
+void::Projectile::init(std::list<Effect *> effects, int32_t overcharge_power, int32_t overcharge_duration, World * world, bool teleport, bool change_owner_orientation) {
   for(Effect * effect : effects) {
     Effect * toadd = new Effect(effect, overcharge_power, overcharge_duration);
     this->effects.push_back(toadd);
@@ -25,8 +25,8 @@ void::Projectile::init(std::list<Effect *> effects, int overcharge_power, int ov
   }
 }
 
-int Projectile::getCurrentMapId() { return current_map_id; }
-MapUtil::Vector3 Projectile::getCoord() { return coord; }
+int32_t Projectile::getCurrentMapId() { return current_map_id; }
+MathUtil::Vector3 Projectile::getCoord() { return coord; }
 float Projectile::getDestX() {
   return target->coord.x;
 }
@@ -36,10 +36,10 @@ float Projectile::getDestY() {
 
 float Projectile::getOrientation() { return orientation; }
 bool Projectile::isLost() { return lost; }
-int Projectile::getDamageFromType(int damage_type) { return damages[damage_type]; }
-int Projectile::getRawDamage() {
-  int power = 0;
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+int32_t Projectile::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
+int32_t Projectile::getRawDamage() {
+  int32_t power = 0;
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += current_damages[i];
   }
   return power;
@@ -47,7 +47,7 @@ int Projectile::getRawDamage() {
 float Projectile::getSpeed() { return speed; }
 float Projectile::getArea() { return area; }
 float Projectile::getSize() { return size; }
-int Projectile::getFalloffTimer() { return falloff_timer; }
+int32_t Projectile::getFalloffTimer() { return falloff_timer; }
 float Projectile::getWastePerTick() { return waste_per_tick; }
 float Projectile::getWastePerArea() { return waste_per_area; }
 float Projectile::getWastePerHit() { return waste_per_hit; }
@@ -58,8 +58,8 @@ bool Projectile::isAtDest() {
   return coord.x == getDestX() && coord.y == getDestY();
 }
 
-int Projectile::getLight() {
-  int light = 0;
+int32_t Projectile::getLight() {
+  int32_t light = 0;
   for(Effect * effect : effects) {
     if(effect->type == EFFECT_LIGHT) {
       light += effect->power;
@@ -78,7 +78,7 @@ void Projectile::setY(float y) { coord.y = y; }
 void Projectile::setOrientation(float orientation) { this->orientation = orientation; }
 void Projectile::setSpeed(float speed) { this->speed = speed; }
 void Projectile::setArea(float area) { this->area = area; }
-void Projectile::setFalloffTimer(int falloff_timer) { this->falloff_timer = falloff_timer; }
+void Projectile::setFalloffTimer(int32_t falloff_timer) { this->falloff_timer = falloff_timer; }
 void Projectile::setWastePerTick(float waste_per_tick) { this->waste_per_tick = waste_per_tick; }
 void Projectile::setWastePerArea(float waste_per_area) { this->waste_per_area = waste_per_area; }
 void Projectile::setWastePerHit(float waste_per_hit) { this->waste_per_hit = waste_per_hit; }
@@ -86,27 +86,27 @@ void Projectile::setTarget(Target * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
 void Projectile::markDestroyed() {
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     current_damages[i] = 0;
   }
 }
 
-void::Projectile::move(MapUtil::Vector3 coord, float orientation) {
+void::Projectile::move(MathUtil::Vector3 coord, float orientation) {
   this->coord = coord;
   this->orientation = orientation;
 }
 
 void Projectile::reduceDamageTick() {
   if(current_timer++ >= falloff_timer) {
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      current_damages[damage_type] = (int) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_tick));
+    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      current_damages[damage_type] = (int32_t) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_tick));
     }
   }
 }
 
 void Projectile::reduceDamageHit() {
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    current_damages[damage_type] = (int) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_hit));
+  for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    current_damages[damage_type] = (int32_t) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_hit));
   }
 }
 
@@ -132,15 +132,15 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
         float range;
         if(target == nullptr) {
           // exploding on targeted zone
-          range = MapUtil::distance(coord, c->getCoord());
+          range = MathUtil::distance(coord, c->getCoord());
         }
         else {
-          range = MapUtil::distance(target->getCoord(), c->getCoord());
+          range = MathUtil::distance(target->getCoord(), c->getCoord());
         }
         if(range <= area - c->getSize()) {
-          int reducedDamages[DAMAGE_TYPE_NUMBER];
-          for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-            reducedDamages[i] = (int) ceil( ((float) current_damages[i]) * pow(1 - waste_per_area, range));
+          int32_t reducedDamages[DAMAGE_TYPE_NUMBER];
+          for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+            reducedDamages[i] = (int32_t) ceil( ((float) current_damages[i]) * pow(1 - waste_per_area, range));
           }
           target->receiveAttack(reducedDamages, 360.F, ACTION_STRIKE);
           if(skill != nullptr) {
@@ -191,7 +191,7 @@ std::string Projectile::to_string() {
   String::insert_float(ss, coord.y);
   String::insert_float(ss, coord.z);
   String::insert_float(ss, orientation);
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, current_damages[i]);
   }
   String::insert_float(ss, speed);
@@ -237,7 +237,7 @@ std::string Projectile::full_to_string() {
   String::insert_float(ss, waste_per_tick);
   String::insert_float(ss, waste_per_area);
   String::insert_float(ss, waste_per_hit);
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, damages[i]);
   }
   std::string result = ss->str();
@@ -256,7 +256,7 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   display->y = String::extract_float(ss);
   display->z = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
   }
   display->speed = String::extract_float(ss);
@@ -271,11 +271,11 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
 Projectile * Projectile::full_from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
-  long id = String::extract_long(ss);
-  int projectile_type = String::extract_int(ss);
+  int64_t id = String::extract_long(ss);
+  int32_t projectile_type = String::extract_int(ss);
   float size = String::extract_float(ss);
   bool homing = String::extract_bool(ss);
-  int current_map_id = String::extract_int(ss);
+  int32_t current_map_id = String::extract_int(ss);
   float x = String::extract_float(ss);
   float y = String::extract_float(ss);
   float z = String::extract_float(ss);
@@ -295,15 +295,15 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
   float orientation = String::extract_float(ss);
   float speed = String::extract_float(ss);
   float area = String::extract_float(ss);
-  int overcharge_power = String::extract_int(ss);
-  int overcharge_duration = String::extract_int(ss);
-  int overcharge_range = String::extract_int(ss);
-  int falloff_timer = String::extract_int(ss);
+  int32_t overcharge_power = String::extract_int(ss);
+  int32_t overcharge_duration = String::extract_int(ss);
+  int32_t overcharge_range = String::extract_int(ss);
+  int32_t falloff_timer = String::extract_int(ss);
   float waste_per_tick = String::extract_float(ss);
   float waste_per_area = String::extract_float(ss);
   float waste_per_hit = String::extract_float(ss);
-  int damages[DAMAGE_TYPE_NUMBER];
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  int32_t damages[DAMAGE_TYPE_NUMBER];
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_int(ss);
   }
   delete ss;

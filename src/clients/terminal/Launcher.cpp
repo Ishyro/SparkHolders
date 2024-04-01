@@ -27,7 +27,7 @@ void listener(void * param) {
   }
 }
 
-int main(int argc, char ** argv) {
+int32_t main(int32_t argc, char ** argv) {
   setlocale(LC_ALL, "");
   initscr();
   cbreak();
@@ -38,8 +38,8 @@ int main(int argc, char ** argv) {
   curs_set(0);
   start_color();
   use_default_colors();
-  short int * default_foreground = (short int *) new int(0);
-  short int * default_background = (short int *) new int(0);
+  int16_t * default_foreground = (int16_t *) new int16_t(0);
+  int16_t * default_background = (int16_t *) new int16_t(0);
   pair_content(0, default_foreground, default_background);
   init_pair(BLUE, COLOR_BLUE, *default_background);
   init_pair(GREEN, COLOR_GREEN, *default_background);
@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
       return EXIT_FAILURE;
     }
   }
-  int separator = (float) LINES * 3 / 5;
+  int32_t separator = (float) LINES * 3 / 5;
   float ratio = 2.25;
   WINDOW * mapScreen = subwin(stdscr, separator, COLS, 0, 0);
   WINDOW * statsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, 0);

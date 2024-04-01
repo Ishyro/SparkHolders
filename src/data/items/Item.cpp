@@ -14,7 +14,7 @@
 
 #include "util/String.h"
 
-Item * Item::init(const Item * item, int tier, int number) {
+Item * Item::init(const Item * item, int32_t tier, int32_t number) {
     switch(item->type) {
       case ITEM_BASIC:
         return new BasicItem( (BasicItem *) item, tier);
@@ -48,15 +48,15 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
   }
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
-  long id = String::extract_long(ss);
-  int type = String::extract_int(ss);
-  int type2 = String::extract_int(ss);
-  int tier = String::extract_int(ss);
-  int max_tier = String::extract_int(ss);
+  int64_t id = String::extract_long(ss);
+  int32_t type = String::extract_int(ss);
+  int32_t type2 = String::extract_int(ss);
+  int32_t tier = String::extract_int(ss);
+  int32_t max_tier = String::extract_int(ss);
   float weight = String::extract_float(ss);
-  int sizeX = String::extract_int(ss);
-  int sizeY = String::extract_int(ss);
-  int gold_value = String::extract_int(ss);
+  int32_t sizeX = String::extract_int(ss);
+  int32_t sizeY = String::extract_int(ss);
+  int32_t gold_value = String::extract_int(ss);
   bool droppable = String::extract_bool(ss);
   bool usable = String::extract_bool(ss);
   bool consumable = String::extract_bool(ss);
@@ -90,21 +90,21 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_WEAPON: {
-      int swap_time = String::extract_int(ss);
+      int32_t swap_time = String::extract_int(ss);
       float range = String::extract_float(ss);
-      int strike_time = String::extract_int(ss);
+      int32_t strike_time = String::extract_int(ss);
       bool use_projectile = String::extract_bool(ss);
       bool use_ammo = String::extract_bool(ss);
-      int ammo_type = String::extract_int(ss);
-      int capacity = String::extract_int(ss);
-      int reload_time = String::extract_int(ss);
+      int32_t ammo_type = String::extract_int(ss);
+      int32_t capacity = String::extract_int(ss);
+      int32_t reload_time = String::extract_int(ss);
       AmmunitionItem * ammo = nullptr;
       std::string ammo_str = String::extract(ss);
       if(ammo_str != "none") {
         ammo = (AmmunitionItem *) from_string(ammo_str, adventure);
       }
-      int damages[DAMAGE_TYPE_NUMBER];
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      int32_t damages[DAMAGE_TYPE_NUMBER];
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = String::extract_int(ss);
       }
       result = new WeaponItem(
@@ -137,9 +137,9 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_ARMOR: {
-      int swap_time = String::extract_int(ss);
+      int32_t swap_time = String::extract_int(ss);
       float damage_reductions[DAMAGE_TYPE_NUMBER];
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damage_reductions[i] = String::extract_float(ss);
       }
       result = new ArmorItem(
@@ -164,8 +164,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_SERIAL: {
-      int number = String::extract_int(ss);
-      int max = String::extract_int(ss);
+      int32_t number = String::extract_int(ss);
+      int32_t max = String::extract_int(ss);
       result = new SerialItem(
         name,
         id,
@@ -188,8 +188,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_AMMUNITION: {
-      int number = String::extract_int(ss);
-      int max = String::extract_int(ss);
+      int32_t number = String::extract_int(ss);
+      int32_t max = String::extract_int(ss);
       Projectile * projectile = (Projectile *) adventure->getDatabase()->getProjectile(String::extract(ss));
       result = new AmmunitionItem(
         name,
@@ -214,13 +214,13 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       break;
     }
     case ITEM_CONTAINER: {
-      int swap_time = String::extract_int(ss);
+      int32_t swap_time = String::extract_int(ss);
       bool can_take_from = String::extract_bool(ss);
       bool repercute_weight = String::extract_bool(ss);
       bool limited = String::extract_bool(ss);
-      int limit_type = String::extract_int(ss);
-      int contentX = String::extract_int(ss);
-      int contentY = String::extract_int(ss);
+      int32_t limit_type = String::extract_int(ss);
+      int32_t contentX = String::extract_int(ss);
+      int32_t contentY = String::extract_int(ss);
       result = new ContainerItem(
         name,
         id,
@@ -247,8 +247,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       );
       std::stringstream * ss_items = new std::stringstream(String::extract(ss));
       while(ss_items->rdbuf()->in_avail() != 0) {
-        int x = String::extract_int(ss_items);
-        int y = String::extract_int(ss_items);
+        int32_t x = String::extract_int(ss_items);
+        int32_t y = String::extract_int(ss_items);
         Item * item = Item::from_string(String::extract(ss_items), adventure);
         ( (ContainerItem *) result)->add(item, x, y);
       }

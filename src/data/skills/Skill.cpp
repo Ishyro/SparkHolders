@@ -6,13 +6,13 @@
 
 #include "util/String.h"
 
-void Skill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
+void Skill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
   owner->payMana(getManaCost(overcharge_power, overcharge_duration, overcharge_range));
   for(PseudoSkill * skill : skills) {
     skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range);
   }
 }
-bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
+bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
   if(getManaCost(overcharge_power, overcharge_duration, overcharge_range) > owner->getChanneledMana()) {
     return false;
   }
@@ -24,31 +24,31 @@ bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, i
   return true;
 }
 
-int Skill::getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range) {
-  int mana_cost = 0;
+int32_t Skill::getManaCost(int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  int32_t mana_cost = 0;
   for(PseudoSkill * skill : skills) {
     mana_cost += skill->getManaCost(overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range);
   }
   return mana_cost;
 }
 
-int Skill::getPower() {
-  int power = 0;
+int32_t Skill::getPower() {
+  int32_t power = 0;
   for(PseudoSkill * skill : skills) {
     power += skill->getPower();
   }
   return power;
 }
 
-int Skill::getDamageFromType(int damage_type, int overcharge_power) {
-  int damage = 0;
+int32_t Skill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
+  int32_t damage = 0;
   for(PseudoSkill * s : skills) {
     damage += s->getDamageFromType(damage_type, overcharge_power);
   }
   return damage;
 }
 
-float Skill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float Skill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   float reduction = 0.;
   for(PseudoSkill * s : skills) {
     reduction += s->getDamageReductionFromType(damage_type, overcharge_power);
@@ -78,7 +78,7 @@ Block * Skill::isEatingSkill() {
 }
 
 
-int Skill::isTeleportSkill() {
+int32_t Skill::isTeleportSkill() {
   for(PseudoSkill * s : skills) {
     if(s->skill_type == SKILL_TELEPORT) {
       return range;

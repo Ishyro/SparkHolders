@@ -21,7 +21,7 @@
 #include "data/Database.h"
 
 Database::Database() {
-  macros = std::map<const std::string,const int>();
+  macros = std::map<const std::string,const int32_t>();
 
   attributes = std::map<const std::string, const Attributes *>();
   blocks = std::map<const std::string, const Block *>();
@@ -41,7 +41,7 @@ Database::Database() {
   speechs = std::map<const std::string, const Speech * >();
   ways = std::map<const std::string, const Way *>();
   waysFiles = std::map<const std::string, const std::string>();
-  relations = std::map<const std::string, std::map<const std::string, int>>();
+  relations = std::map<const std::string, std::map<const std::string, int32_t>>();
   waysIncompatibilities = std::list<std::pair<const std::string, const std::string>>();
   paths = std::list<std::string>();
 
@@ -260,7 +260,7 @@ Database::Database() {
   macros.insert(std::make_pair("WINDOW_BORDERLESS", WINDOW_BORDERLESS));
 }
 
-const int Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
+const int32_t Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
 
 const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
 const std::string Database::getAttributesFile(const std::string attributes) { return attributesFiles.at(attributes); }
@@ -282,7 +282,7 @@ const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { re
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const std::string Database::getWayFile(const std::string way) { return waysFiles.at(way); }
-const int Database::getRelation(const std::string team1, const std::string team2) {
+const int32_t Database::getRelation(const std::string team1, const std::string team2) {
   if(team1 == team2) {
     return TEAM_SAME;
   }
@@ -316,14 +316,14 @@ void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.in
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addWayFile(const std::string way, const std::string path) { waysFiles.insert(std::make_pair(way, path)); }
-void Database::addRelation(const std::string team1, const std::string team2, int relation) {
+void Database::addRelation(const std::string team1, const std::string team2, int32_t relation) {
   if(relations.find(team1) == relations.end()) {
-    std::map<const std::string, int> map = std::map<const std::string, int>();
+    std::map<const std::string, int32_t> map = std::map<const std::string, int32_t>();
     relations.insert(std::make_pair(team1, map));
   }
   relations.at(team1).insert(std::make_pair(team2, relation));
   if(relations.find(team2) == relations.end()) {
-    std::map<const std::string, int> map = std::map<const std::string, int>();
+    std::map<const std::string, int32_t> map = std::map<const std::string, int32_t>();
     relations.insert(std::make_pair(team2, map));
   }
   relations.at(team2).insert(std::make_pair(team1, relation));

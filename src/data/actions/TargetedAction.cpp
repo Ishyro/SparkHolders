@@ -8,7 +8,7 @@
 #include "data/actions/BaseAction.h"
 #include "data/actions/TargetedAction.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 Action * TargetedAction::execute(Adventure * adventure) {
   if(next != nullptr) {
@@ -65,7 +65,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       break;
     }
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->coord));
+      Furniture * furniture = user->getRegion()->getFurniture(MathUtil::makeVector3i(target->coord));
       if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
         ((ActivableFurniture *) furniture)->activate(user, false);
       }
@@ -101,7 +101,7 @@ void TargetedAction::computeTime(Adventure * adventure) {
       time = user->getStrikeTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MapUtil::makeVector3i(target->coord));
+      Furniture * furniture = user->getRegion()->getFurniture(MathUtil::makeVector3i(target->coord));
       if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
         time = user->getHandActionTimeModifier() * ((ActivableFurniture *) furniture)->activation_time;
       }
@@ -117,21 +117,21 @@ Target * TargetedAction::getTarget() { return target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
-    user->setOrientation(MapUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
+    user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = adventure->getCharacter(target->id);
-    user->setOrientation(MapUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCoord().x, other->getCoord().y));
+    user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCoord().x, other->getCoord().y));
   }
 }
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
   if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
-    return MapUtil::distance2(user->getCoord(), target->coord);
+    return MathUtil::distance2(user->getCoord(), target->coord);
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = adventure->getCharacter(target->id);
-    return MapUtil::distance(user->getCoord(), other->getCoord());
+    return MathUtil::distance(user->getCoord(), other->getCoord());
   }
   return 0.F;
 }

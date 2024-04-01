@@ -22,7 +22,7 @@ Socket::Socket(){
 }
 
 // tente de se connecter à l'hôte fourni
-void Socket::connect(const std::string & host, int port) {
+void Socket::connect(const std::string & host, int32_t port) {
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
@@ -37,7 +37,7 @@ void Socket::connect(const std::string & host, int port) {
   }
 }
 
-void Socket::connect(in_addr ipv4, int port) {
+void Socket::connect(in_addr ipv4, int32_t port) {
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
@@ -56,16 +56,16 @@ void Socket::write(std::string msg) {
   std::string length = std::to_string(msg.length());
   do {
     #ifndef _WIN32_WINNT
-      int sent = send(fd, (void *) length.c_str(), (ssize_t) length.length() + 1, 0);
+      int32_t sent = send(fd, (void *) length.c_str(), (ssize_t) length.length() + 1, 0);
     #else
-      int sent = send(fd, length.c_str(), (ssize_t) length.length() + 1, 0);
+      int32_t sent = send(fd, length.c_str(), (ssize_t) length.length() + 1, 0);
     #endif
     if (sent == -1) {
         close();
         throw CloseException();
       }
     // always unsigned or -1
-    if(length.length() > (unsigned int) sent) {
+    if(length.length() > (unsigned int32_t) sent) {
       length = length.substr(sent - 1, length.length());
     }
     else {
@@ -93,11 +93,11 @@ void Socket::write(std::string msg) {
       part = msg;
       msg = "";
     }
-    int size = std::min(SOCKET_MESSAGE_SIZE, (int) part.length() + 1);
+    int32_t size = std::min(SOCKET_MESSAGE_SIZE, (int32_t) part.length() + 1);
     #ifndef _WIN32_WINNT
-      int sent = send(fd, (void *) part.c_str(), (ssize_t) size, 0);
+      int32_t sent = send(fd, (void *) part.c_str(), (ssize_t) size, 0);
     #else
-      int sent = send(fd, part.c_str(), (ssize_t) size, 0);
+      int32_t sent = send(fd, part.c_str(), (ssize_t) size, 0);
     #endif
     // it just works
     usleep(1);
@@ -106,7 +106,7 @@ void Socket::write(std::string msg) {
       throw CloseException();
     }
     // Send may have not sent all the data
-    if(msg.length() > (long unsigned int) sent - 1) {
+    if(msg.length() > (uint64_t) sent - 1) {
       msg = msg.substr(sent - 1, msg.length());
     }
   } while(msg != "");
@@ -132,15 +132,15 @@ std::string Socket::read() {
     len += std::string(number);
   } while(number[0] != '$');
   delete number;
-  int length = stoi(len.substr(0, len.length() - 1));
-  int left = length;
+  int32_t length = stoi(len.substr(0, len.length() - 1));
+  int32_t left = length;
   do {
-    int size = std::min(SOCKET_MESSAGE_SIZE, left + 1);
+    int32_t size = std::min(SOCKET_MESSAGE_SIZE, left + 1);
     std::fill(msg, msg+SOCKET_MESSAGE_SIZE, '\0');
     #ifndef _WIN32_WINNT
-      int received = (int) recv(fd, (void *) msg, (ssize_t) size, 0) == -1;
+      int32_t received = (int32_t) recv(fd, (void *) msg, (ssize_t) size, 0) == -1;
     #else
-      int received = recv(fd, msg, (ssize_t) size, 0) == -1;
+      int32_t received = recv(fd, msg, (ssize_t) size, 0) == -1;
     #endif
     if(received == -1) {
       close();
@@ -157,7 +157,7 @@ std::string Socket::read() {
   return result;
 }
 
-int Socket::getFD() { return fd; }
+int32_t Socket::getFD() { return fd; }
 bool Socket::isOpen() const { return fd != -1; }
 
 void Socket::close() {

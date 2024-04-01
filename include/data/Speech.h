@@ -9,12 +9,12 @@
 class Speech {
   public:
     const std::string name;
-    const int type;
+    const int32_t type;
     const bool empty;
     const bool constant;
     Speech(
       std::string name,
-      int type,
+      int32_t type,
       bool empty,
       bool constant,
       std::map<const std::string, const std::string> options

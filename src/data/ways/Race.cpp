@@ -1,127 +1,127 @@
 #include "data/ways/Race.h"
 
-int Race::getType(std::list<Race *> race_modifiers) {
-  int result = race_type;
+int32_t Race::getType(std::list<Race *> race_modifiers) {
+  int32_t result = race_type;
   for(Race * modifier : race_modifiers) {
     result = std::max(result, modifier->type);
   }
   return result;
 }
 
-int Race::getBaseHp(std::list<Race *> race_modifiers) {
-  int result = baseHp;
+int32_t Race::getBaseHp(std::list<Race *> race_modifiers) {
+  int32_t result = baseHp;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseHp;
   }
   return result;
 }
 
-int Race::getBaseMana(std::list<Race *> race_modifiers) {
-  int result = baseMana;
+int32_t Race::getBaseMana(std::list<Race *> race_modifiers) {
+  int32_t result = baseMana;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseMana;
   }
   return result;
 }
 
-int Race::getBaseShield(std::list<Race *> race_modifiers) {
-  int result = baseShield;
+int32_t Race::getBaseShield(std::list<Race *> race_modifiers) {
+  int32_t result = baseShield;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseShield;
   }
   return result;
 }
 
-int Race::getBaseDamageMult(std::list<Race *> race_modifiers) {
-  int result = baseDamageMult;
+int32_t Race::getBaseDamageMult(std::list<Race *> race_modifiers) {
+  int32_t result = baseDamageMult;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseDamageMult;
   }
   return result;
 }
 
-int Race::getBaseSoulBurn(std::list<Race *> race_modifiers) {
-  int result = baseSoulBurn;
+int32_t Race::getBaseSoulBurn(std::list<Race *> race_modifiers) {
+  int32_t result = baseSoulBurn;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseSoulBurn;
   }
   return result;
 }
 
-int Race::getBaseFlow(std::list<Race *> race_modifiers) {
-  int result = baseFlow;
+int32_t Race::getBaseFlow(std::list<Race *> race_modifiers) {
+  int32_t result = baseFlow;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseFlow;
   }
   return result;
 }
 
-int Race::getBaseVisionRange(std::list<Race *> race_modifiers) {
-  int result = baseVisionRange;
+int32_t Race::getBaseVisionRange(std::list<Race *> race_modifiers) {
+  int32_t result = baseVisionRange;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseVisionRange;
   }
   return result;
 }
 
-int Race::getBaseVisionPower(std::list<Race *> race_modifiers) {
-  int result = baseVisionPower;
+int32_t Race::getBaseVisionPower(std::list<Race *> race_modifiers) {
+  int32_t result = baseVisionPower;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseVisionPower;
   }
   return result;
 }
 
-int Race::getBaseDetectionRange(std::list<Race *> race_modifiers) {
-  int result = baseDetectionRange;
+int32_t Race::getBaseDetectionRange(std::list<Race *> race_modifiers) {
+  int32_t result = baseDetectionRange;
   for(Race * modifier : race_modifiers) {
     result += modifier->baseDetectionRange;
   }
   return result;
 }
 
-int Race::getHpIncr(std::list<Race *> race_modifiers) {
-  int result = hpIncr;
+int32_t Race::getHpIncr(std::list<Race *> race_modifiers) {
+  int32_t result = hpIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->hpIncr;
   }
   return result;
 }
 
-int Race::getManaIncr(std::list<Race *> race_modifiers) {
-  int result = manaIncr;
+int32_t Race::getManaIncr(std::list<Race *> race_modifiers) {
+  int32_t result = manaIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->manaIncr;
   }
   return result;
 }
 
-int Race::getShieldIncr(std::list<Race *> race_modifiers) {
-  int result = shieldIncr;
+int32_t Race::getShieldIncr(std::list<Race *> race_modifiers) {
+  int32_t result = shieldIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->shieldIncr;
   }
   return result;
 }
 
-int Race::getDamageMultIncr(std::list<Race *> race_modifiers) {
-  int result = damageMultIncr;
+int32_t Race::getDamageMultIncr(std::list<Race *> race_modifiers) {
+  int32_t result = damageMultIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->damageMultIncr;
   }
   return result;
 }
 
-int Race::getSoulBurnIncr(std::list<Race *> race_modifiers) {
-  int result = soulBurnIncr;
+int32_t Race::getSoulBurnIncr(std::list<Race *> race_modifiers) {
+  int32_t result = soulBurnIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->soulBurnIncr;
   }
   return result;
 }
 
-int Race::getFlowIncr(std::list<Race *> race_modifiers) {
-  int result = flowIncr;
+int32_t Race::getFlowIncr(std::list<Race *> race_modifiers) {
+  int32_t result = flowIncr;
   for(Race * modifier : race_modifiers) {
     result += modifier->flowIncr;
   }

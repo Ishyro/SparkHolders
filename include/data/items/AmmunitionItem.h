@@ -12,22 +12,22 @@ class AmmunitionItem : public SerialItem {
   public:
     AmmunitionItem(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects,
-      int number,
-      int max,
+      int32_t number,
+      int32_t max,
       Projectile * projectile
     ):
       SerialItem(
@@ -51,7 +51,7 @@ class AmmunitionItem : public SerialItem {
       ),
       projectile(projectile)
     {}
-    AmmunitionItem(AmmunitionItem * item, int tier, int number):
+    AmmunitionItem(AmmunitionItem * item, int32_t tier, int32_t number):
       SerialItem(item, tier, number),
       projectile(item->projectile)
     {}

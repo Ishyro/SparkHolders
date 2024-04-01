@@ -79,7 +79,7 @@ namespace FileOpener {
 
   float _stof(std::string msg) {
     float result = stof(msg);
-    int int_part = (int) result;
+    int32_t int_part = (int32_t) result;
     if(result - int_part == 0.) {
       // float formating is not the same everywhere
       std::replace(msg.begin(), msg.end(), '.', ',');
@@ -129,7 +129,7 @@ namespace FileOpener {
     return result;
   }
 
-  void getCoordinates(std::string to_read, int & x, int & y, int & z) {
+  void getCoordinates(std::string to_read, int32_t & x, int32_t & y, int32_t & z) {
     std::stringstream * ss = new std::stringstream(to_read);
     x = String::extract_int(ss);
     y = String::extract_int(ss);
@@ -203,7 +203,7 @@ namespace FileOpener {
     if(keyword == "Character" && isServer) {
       std::string name = String::extract(ss);
       std::string coord = String::extract(ss);
-      int x, y, z;
+      int32_t x, y, z;
       getCoordinates(coord, x, y, z);
       std::string team = String::extract(ss);
       std::string ai_str = String::extract(ss);
@@ -229,8 +229,8 @@ namespace FileOpener {
         titles->push_back((Way *) database->getWay(String::extract(ss_titles)));
       }
       delete ss_titles;
-      long xp = String::extract_long(ss);
-      long gold = String::extract_long(ss);
+      int64_t xp = String::extract_long(ss);
+      int64_t gold = String::extract_long(ss);
       AI * ai;
       if (ai_str == "DiurnalPassiveAI") {
         ai = new DiurnalPassiveAI(x, y);
@@ -284,10 +284,10 @@ namespace FileOpener {
     }
     else if(keyword == "Map") {
       std::string map_name = String::extract(ss);
-      int offsetX = String::extract_int(ss);
-      int offsetY = String::extract_int(ss);
-      int offsetZ = String::extract_int(ss);
-      int rotation = String::extract_int(ss);
+      int32_t offsetX = String::extract_int(ss);
+      int32_t offsetY = String::extract_int(ss);
+      int32_t offsetZ = String::extract_int(ss);
+      int32_t rotation = String::extract_int(ss);
       Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation, database);
       world->addMap(map);
     }
@@ -363,7 +363,7 @@ namespace FileOpener {
       startingWays->push_back( (Way *) database->getWay(String::extract(ss)));
     }
     else if(keyword == "TeamRelation") {
-      int relation = database->getTargetFromMacro(String::extract(ss));
+      int32_t relation = database->getTargetFromMacro(String::extract(ss));
       std::string team1 = String::extract(ss);
       std::string team2 = String::extract(ss);
       database->addRelation(team1, team2, relation);
@@ -382,23 +382,23 @@ namespace FileOpener {
   std::string AttributesOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
-    int tier = stoi(values.at("tier"));
-    int baseHp = stoi(values.at("baseHp"));
-    int baseMana = stoi(values.at("baseMana"));
-    int baseShield = stoi(values.at("baseShield"));
-    int baseDamageMult = stoi(values.at("baseDamageMult"));
-    int baseSoulBurn = stoi(values.at("baseSoulBurn"));
-    int baseFlow = stoi(values.at("baseFlow"));
-    int baseVisionRange = stoi(values.at("baseVisionRange"));
-    int baseVisionPower = stoi(values.at("baseVisionPower"));
-    int baseDetectionRange = stoi(values.at("baseDetectionRange"));
-    int hpIncr = stoi(values.at("hpIncr"));
-    int manaIncr = stoi(values.at("manaIncr"));
-    int shieldIncr = stoi(values.at("shieldIncr"));
-    int damageMultIncr = stoi(values.at("damageMultIncr"));
-    int soulBurnIncr = stoi(values.at("soulBurnIncr"));
-    int flowIncr = stoi(values.at("flowIncr"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
+    int32_t tier = stoi(values.at("tier"));
+    int32_t baseHp = stoi(values.at("baseHp"));
+    int32_t baseMana = stoi(values.at("baseMana"));
+    int32_t baseShield = stoi(values.at("baseShield"));
+    int32_t baseDamageMult = stoi(values.at("baseDamageMult"));
+    int32_t baseSoulBurn = stoi(values.at("baseSoulBurn"));
+    int32_t baseFlow = stoi(values.at("baseFlow"));
+    int32_t baseVisionRange = stoi(values.at("baseVisionRange"));
+    int32_t baseVisionPower = stoi(values.at("baseVisionPower"));
+    int32_t baseDetectionRange = stoi(values.at("baseDetectionRange"));
+    int32_t hpIncr = stoi(values.at("hpIncr"));
+    int32_t manaIncr = stoi(values.at("manaIncr"));
+    int32_t shieldIncr = stoi(values.at("shieldIncr"));
+    int32_t damageMultIncr = stoi(values.at("damageMultIncr"));
+    int32_t soulBurnIncr = stoi(values.at("soulBurnIncr"));
+    int32_t flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -472,7 +472,7 @@ namespace FileOpener {
   void BlockOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
     std::string material = values.at("material");
     std::istringstream is_unwalkable(values.at("unwalkable"));
     bool unwalkable;
@@ -480,8 +480,8 @@ namespace FileOpener {
     std::istringstream is_opaque(values.at("opaque"));
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
-    int light = stoi(values.at("light"));
-    int orientation = stoi(values.at("orientation"));
+    int32_t light = stoi(values.at("light"));
+    int32_t orientation = stoi(values.at("orientation"));
     float ap_cost = _stof(values.at("ap_cost"));
     Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation, ap_cost);
     database->addBlock(block);
@@ -566,16 +566,16 @@ namespace FileOpener {
   void EffectOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int level = stoi(values.at("level"));
+    int32_t level = stoi(values.at("level"));
     std::string attributes = values.at("attributes");
-    int type = database->getTargetFromMacro(values.at("type"));
-    int duration_type = database->getTargetFromMacro(values.at("duration_type"));
-    int duration = 0;
+    int32_t type = database->getTargetFromMacro(values.at("type"));
+    int32_t duration_type = database->getTargetFromMacro(values.at("duration_type"));
+    int32_t duration = 0;
     if(duration_type == DURATION_TEMPORARY) {
       duration = stoi(values.at("duration"));
     }
-    int power = stoi(values.at("power"));
-    int damages[DAMAGE_TYPE_NUMBER] = {0};
+    int32_t power = stoi(values.at("power"));
+    int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
     float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
     if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
@@ -678,8 +678,8 @@ namespace FileOpener {
     while(getline(is_items, item, '%')) {
       std::string item_name = item.substr(0, item.find('|'));
       item = item.substr(item.find('|') + 1, item.length());
-      int tier = stoi(item.substr(0, item.find('|')));
-      int number = stoi(item.substr(item.find('|') + 1, item.length()));
+      int32_t tier = stoi(item.substr(0, item.find('|')));
+      int32_t number = stoi(item.substr(item.find('|') + 1, item.length()));
       items->push_back(Item::init(database->getItem(item_name), tier, number));
     }
     Gear * gear = new Gear(
@@ -708,13 +708,13 @@ namespace FileOpener {
   std::string ItemOpener(std::string fileName, Database * database) {
     std::map<const std::string, std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
-    int type2 = database->getTargetFromMacro(values.at("type2"));
-    int max_tier = stoi(values.at("tier"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
+    int32_t type2 = database->getTargetFromMacro(values.at("type2"));
+    int32_t max_tier = stoi(values.at("tier"));
     float weight = _stof(values.at("weight"));
-    int sizeX = stoi(values.at("sizeX"));
-    int sizeY = stoi(values.at("sizeY"));
-    int gold_value = stoi(values.at("gold_value"));
+    int32_t sizeX = stoi(values.at("sizeX"));
+    int32_t sizeY = stoi(values.at("sizeY"));
+    int32_t gold_value = stoi(values.at("gold_value"));
     std::istringstream is_droppable(values.at("droppable"));
     bool droppable;
     is_droppable >> std::boolalpha >> droppable;
@@ -724,7 +724,7 @@ namespace FileOpener {
     std::istringstream is_consumable(values.at("consumable"));
     bool consumable;
     is_consumable >> std::boolalpha >> consumable;
-    int use_time = 0;
+    int32_t use_time = 0;
     if(usable) {
       use_time = stoi(values.at("use_time"));
     }
@@ -736,7 +736,7 @@ namespace FileOpener {
     }
     Item * item;
     if(type == ITEM_ARMOR) {
-      int swap_time = stoi(values.at("swap_time"));
+      int32_t swap_time = stoi(values.at("swap_time"));
       float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
       damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
@@ -770,16 +770,16 @@ namespace FileOpener {
       );
     }
     if(type == ITEM_WEAPON) {
-      int swap_time = stoi(values.at("swap_time"));
+      int32_t swap_time = stoi(values.at("swap_time"));
       float range = _stof(values.at("range"));
-      int strike_time = stoi(values.at("strike_time"));
+      int32_t strike_time = stoi(values.at("strike_time"));
       std::istringstream is_use_projectile(values.at("use_projectile"));
       bool use_projectile;
       is_use_projectile >> std::boolalpha >> use_projectile;
       bool use_ammo = false;
-      int ammo_type = 0;
-      int capacity = 0;
-      int reload_time = 0;
+      int32_t ammo_type = 0;
+      int32_t capacity = 0;
+      int32_t reload_time = 0;
       if(use_projectile) {
         ammo_type = database->getTargetFromMacro(values.at("ammo_type"));
         std::istringstream is_use_ammo(values.at("use_ammo"));
@@ -789,7 +789,7 @@ namespace FileOpener {
           reload_time = stoi(values.at("reload_time"));
         }
       }
-      int damages[DAMAGE_TYPE_NUMBER] = {0};
+      int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
       damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
       damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
@@ -849,7 +849,7 @@ namespace FileOpener {
       );
     }
     if(type == ITEM_SERIAL) {
-      int max_stack = stoi(values.at("max_stack"));
+      int32_t max_stack = stoi(values.at("max_stack"));
       item = new SerialItem(
         name,
         0,
@@ -871,7 +871,7 @@ namespace FileOpener {
       );
     }
     if(type == ITEM_AMMUNITION) {
-      int max_stack = stoi(values.at("max_stack"));
+      int32_t max_stack = stoi(values.at("max_stack"));
       Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
       item = new AmmunitionItem(
         name,
@@ -895,7 +895,7 @@ namespace FileOpener {
       );
     }
     if(type == ITEM_CONTAINER) {
-      int swap_time = stoi(values.at("swap_time"));
+      int32_t swap_time = stoi(values.at("swap_time"));
       std::istringstream is_can_take_from(values.at("can_take_from"));
       bool can_take_from;
       is_can_take_from >> std::boolalpha >> can_take_from;
@@ -905,9 +905,9 @@ namespace FileOpener {
       std::istringstream is_limited(values.at("limited"));
       bool limited;
       is_limited >> std::boolalpha >> limited;
-      int limit_type = stoi(values.at("limit_type"));
-      int contentX = stoi(values.at("contentX"));
-      int contentY = stoi(values.at("contentY"));
+      int32_t limit_type = stoi(values.at("limit_type"));
+      int32_t contentX = stoi(values.at("contentX"));
+      int32_t contentY = stoi(values.at("contentY"));
       item = new ContainerItem(
         name,
         0,
@@ -942,10 +942,10 @@ namespace FileOpener {
   std::string FurnitureOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
-    int sizeX = stoi(values.at("sizeX"));
-    int sizeY = stoi(values.at("sizeY"));
-    int sizeZ = stoi(values.at("sizeZ"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
+    int32_t sizeX = stoi(values.at("sizeX"));
+    int32_t sizeY = stoi(values.at("sizeY"));
+    int32_t sizeZ = stoi(values.at("sizeZ"));
     std::istringstream is_unwalkable(values.at("unwalkable"));
     bool unwalkable;
     is_unwalkable >> std::boolalpha >> unwalkable;
@@ -955,7 +955,7 @@ namespace FileOpener {
     std::istringstream is_solid(values.at("solid"));
     bool solid;
     is_solid >> std::boolalpha >> solid;
-    int light = stoi(values.at("light"));
+    int32_t light = stoi(values.at("light"));
     float fire_size = 0.F;
     float fire_posX = 0.F;
     float fire_posY = 0.F;
@@ -999,7 +999,7 @@ namespace FileOpener {
         std::istringstream is_solid_off(values.at("solid_off"));
         bool solid_off;
         is_solid_off >> std::boolalpha >> solid_off;
-        int light_off = stoi(values.at("light_off"));
+        int32_t light_off = stoi(values.at("light_off"));
         // case where the light source is off when the furniture is on
         if(light == 0 && light_off > 0) {
           fire_size = stof(values.at("fire_size"));
@@ -1018,9 +1018,9 @@ namespace FileOpener {
   void MapOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int sizeX = stoi(values.at("sizeX"));
-    int sizeY = stoi(values.at("sizeY"));
-    int sizeZ = stoi(values.at("sizeZ"));
+    int32_t sizeX = stoi(values.at("sizeX"));
+    int32_t sizeY = stoi(values.at("sizeY"));
+    int32_t sizeZ = stoi(values.at("sizeZ"));
     std::istringstream is(values.at("outside"));
     bool outside;
     is >> std::boolalpha >> outside;
@@ -1037,17 +1037,17 @@ namespace FileOpener {
     // skip lines until we reach the map itself
     while(getline(file, line) && line != "!end");
     // tiles
-    for(int z = 0; z < sizeZ; z++) {
+    for(int32_t z = 0; z < sizeZ; z++) {
       // skip line
       getline(file, line);
-      for(int y = sizeY - 1; y >= 0; y--) {
+      for(int32_t y = sizeY - 1; y >= 0; y--) {
         getline(file, line);
         std::istringstream is(line);
-        for(int x = 0; x < sizeX; x++) {
+        for(int32_t x = 0; x < sizeX; x++) {
           std::string block;
           getline(is, block, ' ');
           if(values.at(block) != "TXT_VOID") {
-            map->setBlock(MapUtil::makeVector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
+            map->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
           }
         }
       }
@@ -1078,12 +1078,12 @@ namespace FileOpener {
     database->addMap(map);
   }
 
-  void addFurnitureToMap(int keyword, std::string command, Map * map, Database * database) {
+  void addFurnitureToMap(int32_t keyword, std::string command, Map * map, Database * database) {
     std::stringstream * ss = new std::stringstream(command);
     std::string name = String::extract(ss);
-    int x = String::extract_int(ss);
-    int y = String::extract_int(ss);
-    int z = String::extract_int(ss);
+    int32_t x = String::extract_int(ss);
+    int32_t y = String::extract_int(ss);
+    int32_t z = String::extract_int(ss);
     float orientation = String::extract_float(ss);
     if(keyword == FURNITURE_BASIC) {
       map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation));
@@ -1104,7 +1104,7 @@ namespace FileOpener {
         map->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
       }
       if(keyword == FURNITURE_CONTAINER) {
-        long gold = String::extract_long(ss);
+        int64_t gold = String::extract_long(ss);
         std::stringstream * ss_items = new std::stringstream(String::extract(ss));
         std::list<Item *> * items = new std::list<Item *>();
         while(ss_items->rdbuf()->in_avail() != 0) {
@@ -1114,8 +1114,8 @@ namespace FileOpener {
         delete ss_items;
       }
       if(keyword == FURNITURE_LINKED) {
-        int linked_x = String::extract_int(ss);
-        int linked_y = String::extract_int(ss);
+        int32_t linked_x = String::extract_int(ss);
+        int32_t linked_y = String::extract_int(ss);
         map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
       }
     }
@@ -1124,7 +1124,7 @@ namespace FileOpener {
   void ProjectileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
+    int32_t projectile_type = database->getTargetFromMacro(values.at("projectile_type"));
     float size = _stof(values.at("size"));
     std::istringstream is(values.at("homing"));
     bool homing;
@@ -1142,11 +1142,11 @@ namespace FileOpener {
     }
     float speed = _stof(values.at("speed"));
     float area = _stof(values.at("area"));
-    int falloff_timer = stoi(values.at("falloff_timer"));
+    int32_t falloff_timer = stoi(values.at("falloff_timer"));
     float waste_per_tick = _stof(values.at("waste_per_tick"));
     float waste_per_area = _stof(values.at("waste_per_area"));
     float waste_per_hit = _stof(values.at("waste_per_hit"));
-    int damages[DAMAGE_TYPE_NUMBER];
+    int32_t damages[DAMAGE_TYPE_NUMBER];
     damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
     damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
     damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
@@ -1203,17 +1203,17 @@ namespace FileOpener {
   void SkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int level = stoi(values.at("level"));
+    int32_t level = stoi(values.at("level"));
     std::string attributes = values.at("attributes");
-    int target_type = database->getTargetFromMacro(values.at("target_type"));
+    int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
     std::istringstream is(values.at("is_instant"));
     bool is_INSTANT_DURATION;
     is >> std::boolalpha >> is_INSTANT_DURATION;
-    int overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
-    int overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
-    int overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
-    int range = stoi(values.at("range"));
-    int time = stoi(values.at("time"));
+    int32_t overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
+    int32_t overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
+    int32_t overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
+    int32_t range = stoi(values.at("range"));
+    int32_t time = stoi(values.at("time"));
     std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
     std::istringstream is_skills(values.at("skills"));
     std::string pseudoSkill;
@@ -1228,9 +1228,9 @@ namespace FileOpener {
   void PseudoSkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int skill_type = database->getTargetFromMacro(values.at("skill_type"));
-    int target_type = database->getTargetFromMacro(values.at("target_type"));
-    int mana_cost = stoi(values.at("mana_cost"));
+    int32_t skill_type = database->getTargetFromMacro(values.at("skill_type"));
+    int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
+    int32_t mana_cost = stoi(values.at("mana_cost"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -1248,8 +1248,8 @@ namespace FileOpener {
         break;
       }
       case SKILL_TELEPORT: {
-        int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
-        int movement_type = database->getTargetFromMacro(values.at("movement_type"));
+        int32_t apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+        int32_t movement_type = database->getTargetFromMacro(values.at("movement_type"));
         pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects, apparition_type, movement_type);
         break;
       }
@@ -1284,8 +1284,8 @@ namespace FileOpener {
         while(getline(is_titles, title, '%') && title != "none") {
           titles->push_back((Way *) database->getWay(title));
         }
-        int apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
-        int xp = stoi(values.at("xp"));
+        int32_t apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
+        int32_t xp = stoi(values.at("xp"));
         pseudoSkill = new SummonSkill(
           name,
           skill_type,
@@ -1320,7 +1320,7 @@ namespace FileOpener {
   void SpeechOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
     std::istringstream is_empty(values.at("empty"));
     bool empty;
     is_empty >> std::boolalpha >> empty;
@@ -1343,23 +1343,23 @@ namespace FileOpener {
   std::string WayOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
-    int type = database->getTargetFromMacro(values.at("type"));
-    int tier = stoi(values.at("tier"));
-    int baseHp = stoi(values.at("baseHp"));
-    int baseMana = stoi(values.at("baseMana"));
-    int baseShield = stoi(values.at("baseShield"));
-    int baseDamageMult = stoi(values.at("baseDamageMult"));
-    int baseSoulBurn = stoi(values.at("baseSoulBurn"));
-    int baseFlow = stoi(values.at("baseFlow"));
-    int baseVisionRange = stoi(values.at("baseVisionRange"));
-    int baseVisionPower = stoi(values.at("baseVisionPower"));
-    int baseDetectionRange = stoi(values.at("baseDetectionRange"));
-    int hpIncr = stoi(values.at("hpIncr"));
-    int manaIncr = stoi(values.at("manaIncr"));
-    int shieldIncr = stoi(values.at("shieldIncr"));
-    int damageMultIncr = stoi(values.at("damageMultIncr"));
-    int soulBurnIncr = stoi(values.at("soulBurnIncr"));
-    int flowIncr = stoi(values.at("flowIncr"));
+    int32_t type = database->getTargetFromMacro(values.at("type"));
+    int32_t tier = stoi(values.at("tier"));
+    int32_t baseHp = stoi(values.at("baseHp"));
+    int32_t baseMana = stoi(values.at("baseMana"));
+    int32_t baseShield = stoi(values.at("baseShield"));
+    int32_t baseDamageMult = stoi(values.at("baseDamageMult"));
+    int32_t baseSoulBurn = stoi(values.at("baseSoulBurn"));
+    int32_t baseFlow = stoi(values.at("baseFlow"));
+    int32_t baseVisionRange = stoi(values.at("baseVisionRange"));
+    int32_t baseVisionPower = stoi(values.at("baseVisionPower"));
+    int32_t baseDetectionRange = stoi(values.at("baseDetectionRange"));
+    int32_t hpIncr = stoi(values.at("hpIncr"));
+    int32_t manaIncr = stoi(values.at("manaIncr"));
+    int32_t shieldIncr = stoi(values.at("shieldIncr"));
+    int32_t damageMultIncr = stoi(values.at("damageMultIncr"));
+    int32_t soulBurnIncr = stoi(values.at("soulBurnIncr"));
+    int32_t flowIncr = stoi(values.at("flowIncr"));
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -1379,7 +1379,7 @@ namespace FileOpener {
       tags->push_back(tag);
     }
     if(type == WAY_RACE) {
-      int race_type = database->getTargetFromMacro(values.at("race_type"));
+      int32_t race_type = database->getTargetFromMacro(values.at("race_type"));
       float size = _stof(values.at("size"));
       float height = _stof(values.at("height"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));

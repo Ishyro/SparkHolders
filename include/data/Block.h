@@ -6,21 +6,21 @@
 class Block {
   public:
     const std::string name;
-    const int type;
+    const int32_t type;
     const std::string material;
     const bool unwalkable;
     const bool opaque;
-    const int light;
-    const int orientation;
+    const int32_t light;
+    const int32_t orientation;
     const float ap_cost;
     Block(
       std::string name,
-      int type,
+      int32_t type,
       std::string material,
       bool unwalkable,
       bool opaque,
-      int light,
-      int orientation,
+      int32_t light,
+      int32_t orientation,
       float ap_cost
     ):
       name(name),

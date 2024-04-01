@@ -38,17 +38,17 @@ namespace Client {
   }
 
   std::string writeActions(
-    long id,
-    std::vector<int> types,
+    int64_t id,
+    std::vector<int32_t> types,
     std::vector<void *> args1,
     std::vector<void *> args2,
-    std::vector<int> overcharge_powers,
-    std::vector<int> overcharge_durations,
-    std::vector<int> overcharge_ranges
+    std::vector<int32_t> overcharge_powers,
+    std::vector<int32_t> overcharge_durations,
+    std::vector<int32_t> overcharge_ranges
   ) {
     std::stringstream * ss = new std::stringstream();
     String::insert_long(ss, id);
-    for(int i = 0; i < (int) types.size(); i++) {
+    for(int32_t i = 0; i < (int32_t) types.size(); i++) {
       String::insert(ss, writeAction(types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
     }
     std::string result = ss->str();
@@ -56,7 +56,7 @@ namespace Client {
     return result;
   }
 
-  std::string writeAction(int type, void * arg1, void * arg2, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  std::string writeAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
     switch(type) {
       case ACTION_IDLE:
       case ACTION_RESPITE:
@@ -88,7 +88,7 @@ namespace Client {
     return "";
   }
   
-  std::string writeBaseAction(int type) {
+  std::string writeBaseAction(int32_t type) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     std::string result = ss->str();
@@ -96,7 +96,7 @@ namespace Client {
     return result;
   }
 
-  std::string writeGearAction(int type, ItemSlot * slot1, ItemSlot * slot2) {
+  std::string writeGearAction(int32_t type, ItemSlot * slot1, ItemSlot * slot2) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     String::insert_int(ss, slot1->x);
@@ -112,19 +112,19 @@ namespace Client {
     return result;
   }
 
-  std::string writeTargetedAction(int type, Target * target) {
+  std::string writeTargetedAction(int32_t type, Target * target) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert(ss, MapUtil::target_to_string(target));
+    String::insert(ss, MathUtil::target_to_string(target));
     std::string result = ss->str();
     delete ss;
     return result;
   }
 
-  std::string writeSkillAction(int type, Target * target, Skill * skill, int overcharge_power, int overcharge_duration, int overcharge_range) {
+  std::string writeSkillAction(int32_t type, Target * target, Skill * skill, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert(ss, MapUtil::target_to_string(target));
+    String::insert(ss, MathUtil::target_to_string(target));
     String::insert(ss, skill->name);
     String::insert_int(ss, overcharge_power);
     String::insert_int(ss, overcharge_duration);

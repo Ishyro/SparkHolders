@@ -6,13 +6,13 @@
 class ServerSocket {
 
 	public :
-		ServerSocket(int port, int maxPlayers, bool local);
-		int getFD() { return socketfd; }
+		ServerSocket(int32_t port, int32_t maxPlayers, bool local);
+		int32_t getFD() { return socketfd; }
 		bool isOpen() const { return socketfd != -1; }
 		Socket accept();
 		void close();
 	private:
-		int socketfd;
+		int32_t socketfd;
 };
 
 #endif /* _SERVERSOCKET_H_ */

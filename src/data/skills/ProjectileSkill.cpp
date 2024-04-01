@@ -1,14 +1,14 @@
 #include "data/skills/ProjectileSkill.h"
 
 #include "util/String.h"
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
-void ProjectileSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
-  int realDamages[DAMAGE_TYPE_NUMBER];
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+void ProjectileSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+  int32_t realDamages[DAMAGE_TYPE_NUMBER];
+  for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     realDamages[damage_type] = projectile->getDamageFromType(damage_type) * overcharge_power;
   }
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+  for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     for(Effect * effect : effects) {
       realDamages[damage_type] += effect->getDamageFromType(damage_type) * overcharge_power;
     }
@@ -28,12 +28,12 @@ void ProjectileSkill::activate(Character * owner, Target * target, Adventure * a
   adventure->getWorld()->getMap(0)->addProjectile(to_add);
 }
 
-bool ProjectileSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+bool ProjectileSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   return true;
 }
 
-int ProjectileSkill::getPower() {
-  int power = projectile->getRawDamage();
+int32_t ProjectileSkill::getPower() {
+  int32_t power = projectile->getRawDamage();
   for(Effect * effect : effects) {
     if(effect->power != 0) {
       power += effect->power;
@@ -45,8 +45,8 @@ int ProjectileSkill::getPower() {
   return power;
 }
 
-int ProjectileSkill::getDamageFromType(int damage_type, int overcharge_power) {
-  int damage = projectile->getDamageFromType(damage_type) * overcharge_power;
+int32_t ProjectileSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
+  int32_t damage = projectile->getDamageFromType(damage_type) * overcharge_power;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type) * overcharge_power;
@@ -55,7 +55,7 @@ int ProjectileSkill::getDamageFromType(int damage_type, int overcharge_power) {
   return damage;
 }
 
-float ProjectileSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float ProjectileSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0.;
 }
 

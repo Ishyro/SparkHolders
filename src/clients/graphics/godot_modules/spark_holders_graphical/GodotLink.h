@@ -69,7 +69,7 @@ private:
   Translator * translator;
   StateDisplay * state;
   std::ofstream log;
-  std::map<long, int> mist_nbs = std::map<long, int>();
+  std::map<int64_t, int32_t> mist_nbs = std::map<int64_t, int32_t>();
   #ifdef _WIN32_WINNT
     HANDLE thread;
   #else

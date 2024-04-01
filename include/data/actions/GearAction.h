@@ -11,7 +11,7 @@
 class GearAction : public Action {
   public:
     GearAction(
-      const int type,
+      const int32_t type,
       Adventure * adventure,
       const Action * previous,
       Character * user,

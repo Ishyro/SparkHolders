@@ -10,29 +10,29 @@
 #include "util/FileOpener.h"
 
 namespace effect {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 class Effect {
   public:
-    const long id;
+    const int64_t id;
     const std::string name;
-    const int level;
+    const int32_t level;
     const std::string attributes;
-    const int type;
-    const int duration_type;
-    const int power;
-    const int duration;
+    const int32_t type;
+    const int32_t duration_type;
+    const int32_t power;
+    const int32_t duration;
     Effect(
       std::string name,
-      long id,
-      int level,
+      int64_t id,
+      int32_t level,
       std::string attributes,
-      int type,
-      int duration_type,
-      int power,
-      int duration,
-      int damages[DAMAGE_TYPE_NUMBER],
+      int32_t type,
+      int32_t duration_type,
+      int32_t power,
+      int32_t duration,
+      int32_t damages[DAMAGE_TYPE_NUMBER],
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
@@ -45,22 +45,22 @@ class Effect {
       duration(duration)
     {
       tick_left=(duration_type != DURATION_INFINITE ? duration : -1);
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(
       std::string name,
-      long id,
-      int level,
+      int64_t id,
+      int32_t level,
       std::string attributes,
-      int type,
-      int duration_type,
-      int power,
-      int duration,
-      int tick_left,
-      int damages[DAMAGE_TYPE_NUMBER],
+      int32_t type,
+      int32_t duration_type,
+      int32_t power,
+      int32_t duration,
+      int32_t tick_left,
+      int32_t damages[DAMAGE_TYPE_NUMBER],
       float damage_reductions[DAMAGE_TYPE_NUMBER]
     ):
       name(name),
@@ -73,15 +73,15 @@ class Effect {
       duration(duration),
       tick_left(tick_left)
     {
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
         this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(
       Effect * base,
-      int overcharge_power,
-      int overcharge_duration
+      int32_t overcharge_power,
+      int32_t overcharge_duration
     ):
       name(base->name),
       id(++effect::id_cpt),
@@ -93,15 +93,15 @@ class Effect {
       duration(base->duration * overcharge_duration)
     {
       tick_left=duration;
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge_power;
         this->damage_reductions[i] = damage_reductions[i] * overcharge_power;
       }
     }
-    int getRawDamage();
-    int getDamageFromType(int damage_type);
-    float getDamageReductionFromType(int damage_type);
-    int getTickLeft();
+    int32_t getRawDamage();
+    int32_t getDamageFromType(int32_t damage_type);
+    float getDamageReductionFromType(int32_t damage_type);
+    int32_t getTickLeft();
     void activate(Character * target);
     void desactivate(Character * target);
     bool tick(Character * target); // if true, delete effect
@@ -110,8 +110,8 @@ class Effect {
     bool operator == (const Effect& e) const { return id == e.id; }
     bool operator != (const Effect& e) const { return !operator==(e); }
   private:
-    int tick_left;
-    int damages[DAMAGE_TYPE_NUMBER];
+    int32_t tick_left;
+    int32_t damages[DAMAGE_TYPE_NUMBER];
     float damage_reductions[DAMAGE_TYPE_NUMBER];
 };
 

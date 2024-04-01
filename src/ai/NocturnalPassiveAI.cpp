@@ -25,7 +25,7 @@ Action * NocturnalPassiveAI::getActions(Adventure * adventure, Character * c) {
   if(!threats.empty()) {
     Character * target = threats.front();
     orientation = getFleeOrientation(adventure, c, target->getX(), target->getY());
-    MapUtil::Pair pair = MapUtil::getNextPairFromOrientation(orientation, c->getX(), c->getY());
+    MathUtil::Pair pair = MathUtil::getNextPairFromOrientation(orientation, c->getX(), c->getY());
     if(!adventure->getWorld()->getMap(c->getCurrentMap()->id)->getBlock(pair.x, pair.y)->unwalkable) {
       //return new Action(MOVE, adventure, nullptr, c, orientation, nullptr, nullptr, 0, 0, nullptr, "", 1, 1, 1);
     //}

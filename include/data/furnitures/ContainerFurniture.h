@@ -12,14 +12,14 @@ class ContainerFurniture : public ActivableFurniture  {
   public:
     ContainerFurniture(
       const std::string name,
-      const int type,
-      const int sizeX,
-      const int sizeY,
-      const int sizeZ,
+      const int32_t type,
+      const int32_t sizeX,
+      const int32_t sizeY,
+      const int32_t sizeZ,
       const bool unwalkable,
       const bool opaque,
       const bool solid,
-      const int light,
+      const int32_t light,
       const float activation_time,
       const float fire_size,
       const float fire_posX,
@@ -45,13 +45,13 @@ class ContainerFurniture : public ActivableFurniture  {
     {}
     ContainerFurniture(
       ContainerFurniture * furniture,
-      const int x,
-      const int y,
-      const int z,
+      const int32_t x,
+      const int32_t y,
+      const int32_t z,
       const float orientation,
       const bool isLocked,
       const std::string key_name,
-      const long gold,
+      const int64_t gold,
       std::list<Item *> loot
     ):
       ActivableFurniture(
@@ -83,11 +83,11 @@ class ContainerFurniture : public ActivableFurniture  {
     bool getUnwalkable();
     bool getOpaque();
     bool getSolid();
-    int getLight();
+    int32_t getLight();
     void activate(Character * user, bool remote);
 
   private:
-    long gold;
+    int64_t gold;
     std::list<Item *> loot;
 };
 

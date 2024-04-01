@@ -7,42 +7,42 @@
 #include "Values.h"
 
 namespace item {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 class Item {
   public:
     const std::string name;
-    const long id;
-    const int type;
-    const int type2;
-    const int tier;
-    const int max_tier;
+    const int64_t id;
+    const int32_t type;
+    const int32_t type2;
+    const int32_t tier;
+    const int32_t max_tier;
     const float weight;
-    const int sizeX;
-    const int sizeY;
-    const int gold_value;
+    const int32_t sizeX;
+    const int32_t sizeY;
+    const int32_t gold_value;
     const bool droppable;
     const bool usable;
     const bool consumable;
-    const int use_time;
+    const int32_t use_time;
     const std::list<Effect *> effects;
 
     Item(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects
     ):
       name(name),
@@ -61,7 +61,7 @@ class Item {
       use_time(use_time),
       effects(effects)
     {}
-    Item(const Item * item, int tier):
+    Item(const Item * item, int32_t tier):
       name(item->name),
       id(++item::id_cpt),
       type(item->type),
@@ -81,7 +81,7 @@ class Item {
     virtual std::string to_string() = 0;
     bool isFood();
     virtual float getWeight() = 0;
-    static Item * init(const Item * item, int tier, int number);
+    static Item * init(const Item * item, int32_t tier, int32_t number);
     static Item * from_string(std::string to_read, Adventure * adventure);
     bool operator == (const Item& i) const { return id == i.id; }
     bool operator != (const Item& i) const { return !operator==(i); }

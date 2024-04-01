@@ -8,7 +8,7 @@
 #include "ai/NocturnalAgressiveAI.h"
 #include "ai/EtheralCasterAI.h"
 
-void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   // Target will be a Block
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
@@ -31,9 +31,9 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     character->name,
     xp,
     0,
-    (int) target->coord.x,
-    (int) target->coord.y,
-    (int) target->coord.z,
+    (int32_t) target->coord.x,
+    (int32_t) target->coord.y,
+    (int32_t) target->coord.z,
     owner->getOrientation(),
     nullptr,
     team == "" ? owner->getTeam() : team,
@@ -58,19 +58,19 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
   }
 }
 
-bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   return true;
 }
 
-int SummonSkill::getPower() {
+int32_t SummonSkill::getPower() {
   return 0;
 }
 
-int SummonSkill::getDamageFromType(int damage_type, int overcharge_power) {
+int32_t SummonSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0;
 }
 
-float SummonSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float SummonSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0.;
 }
 

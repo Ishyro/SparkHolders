@@ -25,7 +25,7 @@ Save * Adventure::save() {
   return new Save(this);
 }
 
-void Adventure::softMoveCharacterToMap(Character * character, MapUtil::Vector3 coord) {
+void Adventure::softMoveCharacterToMap(Character * character, MathUtil::Vector3 coord) {
   /*
   for(Projectile * p : world->getMap(character->getCurrentMap()->id)->getProjectiles()) {
     if(p->getTarget()->type == TARGET_CHARACTER && p->getTarget()->id == character->id && !p->homing) {
@@ -41,7 +41,7 @@ void Adventure::softMoveCharacterToMap(Character * character, MapUtil::Vector3 c
   world->changeRegion(character);
 }
 
-void Adventure::hardMoveCharacterToMap(Character * character, MapUtil::Vector3 coord) {
+void Adventure::hardMoveCharacterToMap(Character * character, MathUtil::Vector3 coord) {
   /*
   Map * map = world->getMap(map_id);
   for(Character * c : map->getCharacters()) {
@@ -86,7 +86,7 @@ std::list<Character *> Adventure::getParty() { return party; }
 
 std::list<Character *> Adventure::getPreservedPlayers() { return preserved_players; }
 
-void Adventure::resurrect(Character * player, MapUtil::Vector3 coord) {
+void Adventure::resurrect(Character * player, MathUtil::Vector3 coord) {
   if(std::find(preserved_players.begin(), preserved_players.end(), player) != preserved_players.end()) {
     softMoveCharacterToMap(player, coord);
   }
@@ -100,8 +100,8 @@ void Adventure::event() {
   }
 }
 
-long Adventure::getRound() { return round; }
-int Adventure::getTick() { return tick; }
+int64_t Adventure::getRound() { return round; }
+int32_t Adventure::getTick() { return tick; }
 void Adventure::incrTick() {
   if( (++tick) == Settings::getMinuteDuration()) {
     tick = 0;
@@ -111,7 +111,7 @@ void Adventure::incrTick() {
 }
 
 World * Adventure::getWorld() { return world; }
-int Adventure::getLight() { return light; }
+int32_t Adventure::getLight() { return light; }
 std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
 std::list<Way *> Adventure::getStartingWays() { return startingWays; }
 Database * Adventure::getDatabase() { return database; }
@@ -121,11 +121,11 @@ std::list<Character *> Adventure::getCharacters() {
   return world->getCharacters();
 }
 
-Character * Adventure::getCharacter(long id) {
+Character * Adventure::getCharacter(int64_t id) {
   return world->getCharacter(id);
 }
 
-Furniture * Adventure::getFurniture(long id) {
+Furniture * Adventure::getFurniture(int64_t id) {
   return world->getFurniture(id);
 }
 
@@ -300,15 +300,15 @@ void Adventure::applyIteration() {
 }
 
 std::string Adventure::getTime() {
-  int year = (Settings::getStartingYear() * Settings::getYearDurationInRound() + round) / Settings::getYearDurationInRound();
-  int month = 1 + (((Settings::getStartingMonth() - 1) * Settings::getMonthDurationInRound() + round) % Settings::getYearDurationInRound()) / Settings::getMonthDurationInRound();
-  int week = 1 + (((Settings::getStartingWeek() - 1) * Settings::getWeekDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getWeekDurationInRound();
-  int day = 1 + (((Settings::getStartingDay() - 1) * Settings::getDayDurationInRound() + round) % Settings::getWeekDurationInRound()) / Settings::getDayDurationInRound();
-  int hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
-  int minutes = Settings::getHourDuration() * ((float) (round  % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
-  int charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  int charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  int charSecondsSize = std::to_string(Settings::getMinuteDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  int32_t year = (Settings::getStartingYear() * Settings::getYearDurationInRound() + round) / Settings::getYearDurationInRound();
+  int32_t month = 1 + (((Settings::getStartingMonth() - 1) * Settings::getMonthDurationInRound() + round) % Settings::getYearDurationInRound()) / Settings::getMonthDurationInRound();
+  int32_t week = 1 + (((Settings::getStartingWeek() - 1) * Settings::getWeekDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getWeekDurationInRound();
+  int32_t day = 1 + (((Settings::getStartingDay() - 1) * Settings::getDayDurationInRound() + round) % Settings::getWeekDurationInRound()) / Settings::getDayDurationInRound();
+  int32_t hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
+  int32_t minutes = Settings::getHourDuration() * ((float) (round  % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
+  int32_t charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  int32_t charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+  int32_t charSecondsSize = std::to_string(Settings::getMinuteDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
   std::string hour_str = std::to_string(hour);
   while(hour_str.length() - charHoursSize > 0) {
     hour_str = std::to_string(0) + hour_str;
@@ -334,7 +334,7 @@ std::string Adventure::getTime() {
   return result;
 }
 
-std::string Adventure::state_to_string(std::map<const long, Character *> players) {
+std::string Adventure::state_to_string(std::map<const int64_t, Character *> players) {
   std::stringstream * ss = new std::stringstream();
   std::stringstream * ss_blocks = new std::stringstream();
   std::stringstream * ss_characters = new std::stringstream();
@@ -352,8 +352,8 @@ std::string Adventure::state_to_string(std::map<const long, Character *> players
     Map * baseMap = (Map *) database->getMap(map->baseName);
     Map * visionMap = new Map(map, pair.second, database, world);
     pair.second->setCurrentMap(visionMap);
-    for(int y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
-      for(int x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
+    for(int32_t y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
+      for(int32_t x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
         if(visionMap->getBlock(x, y) != nullptr && visionMap->getBlock(x, y)->name != "TXT_MIST" &&
           world->getBlock(x, y, visionMap->offsetZ) != baseMap->getBlock(x + map->offsetX, y + map->offsetY)) {
           // TODO
@@ -414,10 +414,10 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   std::stringstream * ss_blocks = new std::stringstream(String::extract(ss));
   while(ss_blocks->rdbuf()->in_avail() != 0) {
     std::stringstream * ss_block = new std::stringstream(String::extract(ss_blocks));
-    int x = String::extract_int(ss_block);
-    int y = String::extract_int(ss_block);
-    int z = String::extract_int(ss_block);
-    world->setBlock(MapUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)));
+    int32_t x = String::extract_int(ss_block);
+    int32_t y = String::extract_int(ss_block);
+    int32_t z = String::extract_int(ss_block);
+    world->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)));
     delete ss_block;
   }
   delete ss_blocks;

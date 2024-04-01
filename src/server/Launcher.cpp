@@ -47,7 +47,7 @@ typedef struct RelinkCommunicationParameter {
   std::vector<Link *> * links;
   ServerSocket * ss;
   Adventure * adventure;
-  int playersNumber;
+  int32_t playersNumber;
 } RelinkCommunicationParameter;
 
 void listener(void * param) {
@@ -74,7 +74,7 @@ void relinkCommunication(void * param) {
   std::vector<Link *> * links = ((RelinkCommunicationParameter *) param)->links;
   ServerSocket * ss = ((RelinkCommunicationParameter *) param)->ss;
   Adventure * adventure = ((RelinkCommunicationParameter *) param)->adventure;
-  int playersNumber = ((RelinkCommunicationParameter *) param)->playersNumber;
+  int32_t playersNumber = ((RelinkCommunicationParameter *) param)->playersNumber;
   while(true) {
     Socket newSocket = ss->accept();
     bool used = false;
@@ -86,7 +86,7 @@ void relinkCommunication(void * param) {
       continue;
     }
     /* TODO
-    for(int i = 0; i < playersNumber; i++) {
+    for(int32_t i = 0; i < playersNumber; i++) {
       if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
         (*links)[i]->changeSocket(newSocket);
         used = true;
@@ -106,7 +106,7 @@ void relinkCommunication(void * param) {
   }
 }
 
-int main(int argc, char ** argv) {
+int32_t main(int32_t argc, char ** argv) {
 
   if (argc < 2) {
     std::cerr << "Expected: ./Launcher <adventureFile.commands>" << std::endl;
@@ -120,7 +120,7 @@ int main(int argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
   adventure->applyDayLight();
 
-  int playersNumber = adventure->maxPlayers;
+  int32_t playersNumber = adventure->maxPlayers;
 
   if (argc >= 3) {
     playersNumber = std::min(playersNumber, stoi(std::string(argv[2])));
@@ -134,7 +134,7 @@ int main(int argc, char ** argv) {
   #endif
   std::vector<Link *> links = std::vector<Link *>(playersNumber);
   ServerSocket * ss = new ServerSocket(Settings::getPort(), playersNumber, false);
-  for(int i = 0; i < playersNumber; i++) {
+  for(int32_t i = 0; i < playersNumber; i++) {
     links[i] = new Link(adventure);
     params[i] = new StartCommunicationParameter();
     params[i]->link = links[i];
@@ -149,7 +149,7 @@ int main(int argc, char ** argv) {
   bool started = true;
   do {
     usleep(1);
-    for(int i = 0; i < playersNumber; i++) {
+    for(int32_t i = 0; i < playersNumber; i++) {
       if(links[i]->isMaster() && links[i]->isReady()) {
         started = true;
         break;
@@ -157,7 +157,7 @@ int main(int argc, char ** argv) {
       started &= links[i]->isReady();
     }
   } while (!started);
-  for(int i = 0; i < playersNumber; i++) {
+  for(int32_t i = 0; i < playersNumber; i++) {
     links[i]->sendStart();
   }
   bool noPlayers = false;
@@ -174,14 +174,14 @@ int main(int argc, char ** argv) {
   while(!noPlayers) {
     auto start = std::chrono::system_clock::now();
     adventure->applyIteration();
-    for(int i = 0; i < playersNumber; i++) {
+    for(int32_t i = 0; i < playersNumber; i++) {
       links[i]->sendState();
     }
     SpeechManager::clear();
     adventure->getNPCsActions();
     // receive playerActions
     std::list<Action *> actionsPlayers = std::list<Action *>();
-    for(int i = 0; i < playersNumber; i++) {
+    for(int32_t i = 0; i < playersNumber; i++) {
       if(links[i]->getNeedToUpdateActions()) {
         while(!links[i]->hasActions()) {
           usleep(1);
@@ -194,7 +194,7 @@ int main(int argc, char ** argv) {
     adventure->executeActions();
     adventure->actAllProjectiles();
     noPlayers = true;
-    for(int i = 0; i < playersNumber; i++) {
+    for(int32_t i = 0; i < playersNumber; i++) {
       if(!links[i]->isClosed()) {
         noPlayers = false;
         break;

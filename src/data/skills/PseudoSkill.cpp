@@ -13,8 +13,8 @@
 
 #include "util/String.h"
 
-int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range) {
-  int cost = 0;
+int32_t PseudoSkill::getManaCost(int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  int32_t cost = 0;
   switch(overcharge_power_type) {
     case OVERCHARGE_NONE:
       cost += mana_cost;
@@ -26,7 +26,7 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
       cost += mana_cost * overcharge_power * overcharge_power;
       break;
     case OVERCHARGE_EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge_power - 1);
+      cost += mana_cost * (int32_t) std::pow(2. , (double) overcharge_power - 1);
       break;
     default:
       ;
@@ -42,7 +42,7 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
       cost += mana_cost * overcharge_duration * overcharge_duration;
       break;
     case OVERCHARGE_EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge_duration - 1);
+      cost += mana_cost * (int32_t) std::pow(2. , (double) overcharge_duration - 1);
     default:
       ;
   }
@@ -57,7 +57,7 @@ int PseudoSkill::getManaCost(int overcharge_power_type, int overcharge_duration_
       cost += mana_cost * overcharge_range * overcharge_range;
       break;
     case OVERCHARGE_EXPONENTIAL:
-      cost += mana_cost * (int) std::pow(2. , (double) overcharge_range - 1);
+      cost += mana_cost * (int32_t) std::pow(2. , (double) overcharge_range - 1);
       break;
     default:
       ;

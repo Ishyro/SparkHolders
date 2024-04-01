@@ -200,13 +200,13 @@ bool Character::isAlive() { return hp > 0 && mana > 0; }
 bool Character::isMarkedDead() { return dead; }
 void Character::markDead(bool dead) { this->dead = dead; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
-MapUtil::Vector3 Character::getCoord() { return coord; }
+MathUtil::Vector3 Character::getCoord() { return coord; }
 float Character::getSize() { return size; }
 float Character::getHeight() { return height; }
 float Character::getOrientation() { return orientation; }
-int Character::getHp() { return hp; }
-int Character::getMaxHp() {
-  int bonus = 0;
+int32_t Character::getHp() { return hp; }
+int32_t Character::getMaxHp() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_HP_MAX) {
       bonus += e->power;
@@ -215,11 +215,11 @@ int Character::getMaxHp() {
   return maxHp + bonus;
 }
 
-int Character::getMana() { return mana; }
-int Character::getChanneledMana() { return channeledMana; }
+int32_t Character::getMana() { return mana; }
+int32_t Character::getChanneledMana() { return channeledMana; }
 
-int Character::getMaxMana() {
-  int bonus = 0;
+int32_t Character::getMaxMana() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_MANA_MAX) {
       bonus += e->power;
@@ -230,10 +230,10 @@ int Character::getMaxMana() {
 
 float Character::getStamina() { return stamina; }
 float Character::getSatiety() { return satiety; }
-int Character::getShield() { return shield; }
+int32_t Character::getShield() { return shield; }
 
-int Character::getMaxShield() {
-  int bonus = 0;
+int32_t Character::getMaxShield() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_SHIELD_MAX) {
       bonus += e->power;
@@ -242,8 +242,8 @@ int Character::getMaxShield() {
   return std::max(maxShield + bonus, 0);
 }
 
-int Character::getSoulBurnThreshold() {
-  int bonus = 0;
+int32_t Character::getSoulBurnThreshold() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_SOULBURNTRESHOLD) {
       bonus += e->power;
@@ -252,10 +252,10 @@ int Character::getSoulBurnThreshold() {
   return std::max(soulBurnTreshold + bonus, 0);
 }
 
-int Character::getCurrentSoulBurn() { return currentSoulBurn; }
+int32_t Character::getCurrentSoulBurn() { return currentSoulBurn; }
 
-int Character::getFlow() {
-  int bonus = 0;
+int32_t Character::getFlow() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_FLOW) {
       bonus += e->power;
@@ -264,12 +264,12 @@ int Character::getFlow() {
   return std::max(flow + bonus, 0);
 }
 
-long Character::getRawPower() {
+int64_t Character::getRawPower() {
   return getMaxHp() + getMaxMana() + getMaxShield() + getSoulBurnThreshold() + 5 * (getFlow() + (getDamageMultiplier() - 1.F) * 100.F);
 }
 
-int Character::getVisionRange() {
-  int bonus = 0;
+int32_t Character::getVisionRange() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_VISION_RANGE) {
       bonus += e->power;
@@ -278,8 +278,8 @@ int Character::getVisionRange() {
   return std::max(visionRange + bonus, 0);
 }
 
-int Character::getVisionPower() {
-  int bonus = 0;
+int32_t Character::getVisionPower() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_VISION_POWER) {
       bonus += e->power;
@@ -288,8 +288,8 @@ int Character::getVisionPower() {
   return std::max(visionPower + bonus, 0);
 }
 
-int Character::getDetectionRange() {
-  int bonus = 0;
+int32_t Character::getDetectionRange() {
+  int32_t bonus = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DETECTION_RANGE) {
       bonus += e->power;
@@ -298,12 +298,12 @@ int Character::getDetectionRange() {
   return std::max(detectionRange + bonus, 0);
 }
 
-long Character::getGold() { return gold; }
-long Character::getXP() { return xp; }
-int Character::getLevel() { return level; }
+int64_t Character::getGold() { return gold; }
+int64_t Character::getXP() { return xp; }
+int32_t Character::getLevel() { return level; }
 
 float Character::getDamageMultiplier() {
-  int result = damage_multiplier;
+  int32_t result = damage_multiplier;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_MULTIPLIER) {
       result += e->power;
@@ -312,7 +312,7 @@ float Character::getDamageMultiplier() {
   return std::max(0.F, 1.F + ((float) result) / 100.F);
 }
 
-int Character::getPowerScore() {
+int32_t Character::getPowerScore() {
   return getMaxHp() + getMaxMana() + 5 * (getFlow() + getSoulBurnThreshold() + getShield() + getDamageMultiplier());
 }
 
@@ -323,7 +323,7 @@ AI * Character::getAI() { return ai; }
 std::string Character::getTeam() { return team; }
 Speech * Character::getDeathSpeech() { return death_speech; }
 Speech * Character::getTalkingSpeech() { return talking_speech; }
-int Character::getType() { return race->getType(race_modifiers); }
+int32_t Character::getType() { return race->getType(race_modifiers); }
 
 Region * Character::getRegion() { return region; }
 Action * Character::getCurrentAction() { return current_action; }
@@ -370,7 +370,7 @@ float Character::getMovementTimeModifier() {
   return result * getActionTimeModifier();
 }
 
-float Character::getStrikeTime(int slot) {
+float Character::getStrikeTime(int32_t slot) {
   if(slot == ITEM_SLOT_WEAPON_1) {
     return (float) gear->getWeapon_1()->strike_time / getHandActionTimeModifier();
   }
@@ -386,7 +386,7 @@ float Character::getStrikeTime(int slot) {
   return 0.F;
 }
 
-float Character::getReloadTime(int slot) {
+float Character::getReloadTime(int32_t slot) {
   if(slot == ITEM_SLOT_WEAPON_1) {
     return (float) gear->getWeapon_1()->reload_time / getHandActionTimeModifier();
   }
@@ -402,7 +402,7 @@ float Character::getReloadTime(int slot) {
   return 0.F;
 }
 
-float Character::getSwapTime(int slot1, int slot2) {
+float Character::getSwapTime(int32_t slot1, int32_t slot2) {
   if(slot1 == ITEM_SLOT_WEAPON_1) {
     if(slot2 == ITEM_SLOT_WEAPON_3) {
       return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon_1()->swap_time) / getHandActionTimeModifier();
@@ -426,8 +426,8 @@ float Character::getUseTime(Item * item) {
   return (float) item->use_time / getHandActionTimeModifier();
 }
 
-int Character::getLight() {
-  int light = 0;
+int32_t Character::getLight() {
+  int32_t light = 0;
   for(Effect * effect : effects) {
     if(effect->type == EFFECT_LIGHT) {
       light += effect->power;
@@ -439,13 +439,13 @@ std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
-std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
-  std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>>();
+std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
+  std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>>();
   for(Skill * skill : skills) {
     if(skill->getManaCost(1, 1, 1) < mana) {
-      std::array<int, DAMAGE_TYPE_NUMBER> damages;
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
       bool isDamageSkill = false;
-      for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = skill->getDamageFromType(i, 1);
         if(damages[i] > 0) {
           isDamageSkill = true;
@@ -456,8 +456,8 @@ std::map<Skill *, std::array<int, DAMAGE_TYPE_NUMBER>> Character::getDamageSkill
       }
     }
   }
-  std::array<int, DAMAGE_TYPE_NUMBER> damages;
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = getDamageFromType(i, ITEM_SLOT_WEAPON_1);
   }
   result.insert(std::make_pair(nullptr, damages));
@@ -482,19 +482,19 @@ std::list<Way *> Character::getTitles() { return titles; }
 
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
-void Character::move(MapUtil::Vector3 coord, float orientation, World * world) {
-  MapUtil::Vector3 ori = this->coord;
+void Character::move(MathUtil::Vector3 coord, float orientation, World * world) {
+  MathUtil::Vector3 ori = this->coord;
   this->coord = coord;
   this->orientation = orientation;
   world->checkRegion(this, ori, coord);
 }
 
-void Character::hpHeal(int hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
+void Character::hpHeal(int32_t hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
 void Character::incrMaxHp() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->hpIncr;
   incr += second_class->hpIncr;
   incr += spec_class->hpIncr;
@@ -508,15 +508,15 @@ void Character::incrMaxHp() {
   }
   maxHp += std::max(incr, 0);
 }
-void Character::setHp(int hp) { this->hp = hp; }
+void Character::setHp(int32_t hp) { this->hp = hp; }
 
-void Character::manaHeal(int mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
+void Character::manaHeal(int32_t mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
 
 void Character::incrMaxMana() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->manaIncr;
   incr += second_class->manaIncr;
   incr += spec_class->manaIncr;
@@ -531,14 +531,14 @@ void Character::incrMaxMana() {
   maxMana += std::max(incr, 0);
 }
 
-void Character::setMana(int mana) { this->mana = mana; }
-void Character::shieldRestore(int shield) { this->shield = std::min(getMaxShield(), this->shield + shield); }
-void Character::setShield(int shield) { this->shield = shield; }
+void Character::setMana(int32_t mana) { this->mana = mana; }
+void Character::shieldRestore(int32_t shield) { this->shield = std::min(getMaxShield(), this->shield + shield); }
+void Character::setShield(int32_t shield) { this->shield = shield; }
 void Character::incrMaxShield() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->shieldIncr;
   incr += second_class->shieldIncr;
   incr += spec_class->shieldIncr;
@@ -563,7 +563,7 @@ void Character::incrDamageMultiplier() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->damageMultIncr;
   incr += second_class->damageMultIncr;
   incr += spec_class->damageMultIncr;
@@ -581,7 +581,7 @@ void Character::incrSoulBurnTreshold() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->soulBurnIncr;
   incr += second_class->soulBurnIncr;
   incr += spec_class->soulBurnIncr;
@@ -595,12 +595,12 @@ void Character::incrSoulBurnTreshold() {
   }
   soulBurnTreshold += std::max(incr, 0);
 }
-void Character::setCurrentSoulBurn(int soulBurn) { this->currentSoulBurn = soulBurn; }
+void Character::setCurrentSoulBurn(int32_t soulBurn) { this->currentSoulBurn = soulBurn; }
 void Character::incrFlow() {
   if(player_character) {
     setNeedToSend(true);
   }
-  int incr = 0;
+  int32_t incr = 0;
   incr += main_class->flowIncr;
   incr += second_class->flowIncr;
   incr += spec_class->flowIncr;
@@ -641,17 +641,17 @@ void Character::setRegion(Region * region) { this->region = region; }
 void Character::setCurrentAction(Action * action) { this->current_action = action; }
 
 void Character::applySoulBurn() {
-  int soulBurnReduction = (int) std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
+  int32_t soulBurnReduction = (int32_t) std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
   if(currentSoulBurn > soulBurnTreshold) {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
 }
 void Character::applyManaWaste() {
-  channeledMana = (int) std::floor( (float) channeledMana * 0.99);
+  channeledMana = (int32_t) std::floor( (float) channeledMana * 0.99);
 }
 
-void Character::channel(int cost) {
-  int toadd;
+void Character::channel(int32_t cost) {
+  int32_t toadd;
   // can't use last mana point to kill itself
   if(cost == -1) {
     toadd = std::min(mana - 1, getFlow());
@@ -668,14 +668,14 @@ void Character::applyTiredness() {
   if(race->getNeedToSleep(race_modifiers)) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
     float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
-    int manaValue = (int) std::floor(currentManaRegen + savedManaRegen);
+    int32_t manaValue = (int32_t) std::floor(currentManaRegen + savedManaRegen);
     savedManaRegen += currentManaRegen - (float) manaValue;
     if(stamina > 0.) {
       removeStamina(step);
       manaHeal(manaValue);
     }
     else {
-      manaValue = (int) std::floor(currentManaRegen * Settings::getStaminaOverextendRatio() + savedManaRegen);
+      manaValue = (int32_t) std::floor(currentManaRegen * Settings::getStaminaOverextendRatio() + savedManaRegen);
       savedManaRegen += currentManaRegen - (float) manaValue;
       payMana(manaValue);
     }
@@ -686,14 +686,14 @@ void Character::applyHunger() {
   if(race->getNeedToEat(race_modifiers)) {
     float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
     float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
-    int hpValue = (int) std::floor(currentHpRegen + savedHpRegen);
+    int32_t hpValue = (int32_t) std::floor(currentHpRegen + savedHpRegen);
     savedHpRegen += currentHpRegen - (float) hpValue;
     if(satiety > 0.) {
       removeSatiety(step);
       hpHeal(hpValue);
     }
     else {
-      hpValue = (int) std::floor(currentHpRegen * Settings::getSatietyOverextendRatio() + savedHpRegen);
+      hpValue = (int32_t) std::floor(currentHpRegen * Settings::getSatietyOverextendRatio() + savedHpRegen);
       savedHpRegen += currentHpRegen - (float) hpValue;
       hp -= hpValue;
     }
@@ -721,19 +721,19 @@ void Character::rest() {
   }
 }
 
-void Character::gainGold(long gold) { this->gold += gold; }
-void Character::loseGold(long gold) { this->gold = (long) std::max(0., (double) this->gold + gold); }
-void Character::payMana(int cost) {
+void Character::gainGold(int64_t gold) { this->gold += gold; }
+void Character::loseGold(int64_t gold) { this->gold = (int64_t) std::max(0., (double) this->gold + gold); }
+void Character::payMana(int32_t cost) {
   mana -= cost;
   currentSoulBurn += cost;
 }
-void Character::gainXP(long xp) { this->xp += xp; }
+void Character::gainXP(int64_t xp) { this->xp += xp; }
 void Character::gainLevel() {
   while(xp >= level * level * 1000) { // INSERT FORMULA HERE
     level++;
-    int old_max_mana = getMaxMana();
-    int old_max_hp = getMaxHp();
-    int old_max_shield = getMaxHp();
+    int32_t old_max_mana = getMaxMana();
+    int32_t old_max_hp = getMaxHp();
+    int32_t old_max_shield = getMaxHp();
     incrMaxHp();
     hpHeal(getMaxHp() - old_max_hp);
     incrMaxMana();
@@ -856,7 +856,7 @@ void Character::setTalkingSpeech(std::string option, Database * database) {
   SpeechManager::add(talking_speech);
 }
 
-void Character::add(Item * item, int slot, int x, int y) {
+void Character::add(Item * item, int32_t slot, int32_t x, int32_t y) {
   if(player_character) {
     setNeedToSend(true);
   }
@@ -868,7 +868,7 @@ void Character::add(Item * item, int slot, int x, int y) {
   }
 }
 
-Item * Character::remove(int slot, int x, int y) {
+Item * Character::remove(int32_t slot, int32_t x, int32_t y) {
   if(player_character) {
     setNeedToSend(true);
   }
@@ -882,7 +882,7 @@ Item * Character::remove(int slot, int x, int y) {
   return item;
 }
 
-float Character::swap(int slot1, int slot2) {
+float Character::swap(int32_t slot1, int32_t slot2) {
   float time = getSwapTime(slot1, slot2);
   gear->swapWeapon(slot1, slot2);
   return time;
@@ -994,7 +994,7 @@ void Character::setWay(Way * way) {
   }
 }
 
-void Character::addItem(Item * i, int x, int y, int slot) {
+void Character::addItem(Item * i, int32_t x, int32_t y, int32_t slot) {
   if(player_character) {
     setNeedToSend(true);
   }
@@ -1006,7 +1006,7 @@ void Character::addItem(Item * i, int x, int y, int slot) {
   }
 }
 
-void Character::removeItem(int x, int y, int slot) {
+void Character::removeItem(int32_t x, int32_t y, int32_t slot) {
   if(player_character) {
     setNeedToSend(true);
   }
@@ -1018,7 +1018,7 @@ void Character::removeItem(int x, int y, int slot) {
   }
 }
 
-void Character::useItem(int x, int y, int slot) {
+void Character::useItem(int32_t x, int32_t y, int32_t slot) {
   gear->useItem(x, y, slot, this);
 }
 
@@ -1094,8 +1094,8 @@ bool Character::isSleeping() {
   return false;
 }
 
-int Character::cloakPower() {
-  int max = 0;
+int32_t Character::cloakPower() {
+  int32_t max = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_CLOAKED) {
       if(e->power > max) {
@@ -1115,12 +1115,12 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range) {
+void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
   skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
 }
 
-int Character::getDamageFromType(int damage_type, int slot) {
-  int damage = 0;
+int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
+  int32_t damage = 0;
   if(slot == ITEM_SLOT_WEAPON_1) {
     if(gear->getWeapon_1() != nullptr) {
       damage = gear->getWeapon_1()->getDamageFromType(damage_type);
@@ -1136,10 +1136,10 @@ int Character::getDamageFromType(int damage_type, int slot) {
       damage += e->getDamageFromType(damage_type);
     }
   }
-  return (int) std::ceil((float) damage * getDamageMultiplier());
+  return (int32_t) std::ceil((float) damage * getDamageMultiplier());
 }
 
-float Character::getDamageReductionFromType(int damage_type) {
+float Character::getDamageReductionFromType(int32_t damage_type) {
   float reduction = gear->getDamageReductionFromType(damage_type);
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
@@ -1149,11 +1149,11 @@ float Character::getDamageReductionFromType(int damage_type) {
   return reduction;
 }
 
-Projectile * Character::shoot(Target * target, Adventure * adventure, int slot) {
+Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t slot) {
   if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
-      int realDamages[DAMAGE_TYPE_NUMBER];
-      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, slot);
       }
       Projectile * base_projectile = (Projectile *) gear->getWeapon_1()->getAmmo()->getProjectile();
@@ -1169,15 +1169,15 @@ Projectile * Character::shoot(Target * target, Adventure * adventure, int slot) 
   return nullptr;
 }
 
-void Character::attack(Character * target, Adventure * adventure, int type) {
+void Character::attack(Character * target, Adventure * adventure, int32_t type) {
   mainAttack(target, adventure, type);
   if(gear->getWeapon_2() != nullptr) {
     subAttack(target, adventure, type);
   }
 }
 
-void Character::mainAttack(Character * target, Adventure * adventure, int type) {
-  if(gear->getWeapon_1()->range >= MapUtil::distance(coord, target->getCoord())) {
+void Character::mainAttack(Character * target, Adventure * adventure, int32_t type) {
+  if(gear->getWeapon_1()->range >= MathUtil::distance(coord, target->getCoord())) {
     if(gear->getWeapon_1()->use_projectile) {
       Target * t_target = new Target();
       t_target->type = TARGET_CHARACTER;
@@ -1185,8 +1185,8 @@ void Character::mainAttack(Character * target, Adventure * adventure, int type) 
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_1);
     }
     else {
-      int realDamages[DAMAGE_TYPE_NUMBER];
-      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_1);
       }
       target->receiveAttack(realDamages, orientation, type);
@@ -1194,8 +1194,8 @@ void Character::mainAttack(Character * target, Adventure * adventure, int type) 
   }
 }
 
-void Character::subAttack(Character * target, Adventure * adventure, int type) {
-  if(gear->getWeapon_2()->range >= MapUtil::distance(coord, target->getCoord())) {
+void Character::subAttack(Character * target, Adventure * adventure, int32_t type) {
+  if(gear->getWeapon_2()->range >= MathUtil::distance(coord, target->getCoord())) {
     if(gear->getWeapon_2()->use_projectile) {
       Target * t_target = new Target();
       t_target->type = TARGET_CHARACTER;
@@ -1203,8 +1203,8 @@ void Character::subAttack(Character * target, Adventure * adventure, int type) {
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_2);
     }
     else {
-      int realDamages[DAMAGE_TYPE_NUMBER];
-      for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_2);
       }
       target->receiveAttack(realDamages, orientation, type);
@@ -1212,7 +1212,7 @@ void Character::subAttack(Character * target, Adventure * adventure, int type) {
   }
 }
 
-void Character::reload(ItemSlot * ammo, int slot_weapon) {
+void Character::reload(ItemSlot * ammo, int32_t slot_weapon) {
   if(player_character) {
     setNeedToSend(true);
   }
@@ -1220,9 +1220,9 @@ void Character::reload(ItemSlot * ammo, int slot_weapon) {
 }
 
 
-ItemSlot * Character::canReload(int slot) {
+ItemSlot * Character::canReload(int32_t slot) {
   ItemSlot * ammo = nullptr;
-  int number = 0;
+  int32_t number = 0;
   if(slot == ITEM_SLOT_WEAPON_1) {
     for(ItemSlot * current : gear->getBelt()->getItems()) {
       if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_1()->ammo_type == current->item->type2 && ( (AmmunitionItem *) current->item)->getNumber() > number) {
@@ -1242,7 +1242,7 @@ ItemSlot * Character::canReload(int slot) {
   return ammo;
 }
 
-void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation, int type) {
+void Character::receiveAttack(int32_t damages[DAMAGE_TYPE_NUMBER], float orientation, int32_t type) {
   if(!isInvulnerable() && !isEtheral()) {
     if(orientation != 360.F) {
       float diff = 360.F + orientation - this->orientation;
@@ -1254,13 +1254,13 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation
     if(isInWeakState()) {
       return receiveCriticalAttack(damages, type);
     }
-    int damage = 0;
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    int32_t damage = 0;
+    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
       if(damage_type == DAMAGE_ACID) {
         damage += damages[damage_type];
       }
       if(damage_type == DAMAGE_MIND) {
-        hp -= std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+        hp -= std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
       if(damage_type == DAMAGE_TRUE) {
         hp -= damages[damage_type];
@@ -1269,30 +1269,30 @@ void Character::receiveAttack(int damages[DAMAGE_TYPE_NUMBER], float orientation
         payMana(damages[damage_type]);
       }
       else {
-        damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+        damage += std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
       }
     }
     damage = std::max(0, damage);
-    int leftover = damage - shield;
+    int32_t leftover = damage - shield;
     shield -= damage;
     hp -= std::max(0, leftover);
   }
 }
 
-void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type) {
+void Character::receiveCriticalAttack(int32_t damages[DAMAGE_TYPE_NUMBER], int32_t type) {
   if(!isInvulnerable() && !isEtheral()) {
-    int damage = 0;
-    for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    int32_t damage = 0;
+    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
       if(damage_type == DAMAGE_ACID) {
         damage += damages[damage_type] * 2;
       }
       if(damage_type == DAMAGE_MIND) {
         float damage_reduction = getDamageReductionFromType(damage_type);
         if(damage_reduction > 0.F) {
-          hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
+          hp -= std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
         }
         else {
-          hp -= std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
+          hp -= std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
         }
       }
       if(damage_type == DAMAGE_TRUE) {
@@ -1305,31 +1305,31 @@ void Character::receiveCriticalAttack(int damages[DAMAGE_TYPE_NUMBER], int type)
       else {
         float damage_reduction = getDamageReductionFromType(damage_type);
         if(damage_reduction > 0.F) {
-          damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
+          damage += std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
         }
         else {
-          damage += std::max(0, (int) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
+          damage += std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
         }
       }
     }
     damage = std::max(0, damage);
-    int leftover = damage - shield;
+    int32_t leftover = damage - shield;
     shield -= damage;
     hp -= std::max(0, leftover);
   }
 }
 
-int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) {
+int32_t Character::tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, int32_t type) {
   if(isInvulnerable() || isEtheral()) {
     return 0;
   }
-  int damage = 0;
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+  int32_t damage = 0;
+  for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     if(damage_type == DAMAGE_ACID) {
       damage += damages[damage_type];
     }
     if(damage_type == DAMAGE_MIND) {
-      damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+      damage += std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
     if(damage_type == DAMAGE_TRUE) {
       damage += damages[damage_type];
@@ -1338,19 +1338,19 @@ int Character::tryAttack(std::array<int, DAMAGE_TYPE_NUMBER> damages, int type) 
       damage += damages[damage_type];
     }
     else {
-      damage += std::max(0, (int) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+      damage += std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
   }
   return damage;
 }
 
-void Character::trade(Character * buyer, int object_type, std::string object_name, float price_modifier) {
-  int price = 0;
+void Character::trade(Character * buyer, int32_t object_type, std::string object_name, float price_modifier) {
+  int32_t price = 0;
   switch (object_type) {
     case OBJECT_ITEM:
       for(Item * item : sellable_items) {
         if(item->name == object_name) {
-          price = (int) std::ceil((float) item->gold_value * price_modifier);
+          price = (int32_t) std::ceil((float) item->gold_value * price_modifier);
           if(buyer->getGold() >= price) {
             //buyer->addItem(item);
             buyer->loseGold(price);
@@ -1363,7 +1363,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
     case OBJECT_SKILL:
       for(Skill * skill : sellable_skills) {
         if(skill->name == object_name && buyer->level >= 5 * skill->level && (skill->attributes == "" || buyer->main_class->name == skill->attributes)) {
-          price = (int) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
+          price = (int32_t) std::ceil((float) (skill->level * skill->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             buyer->addSkill(skill);
             buyer->loseGold(price);
@@ -1375,7 +1375,7 @@ void Character::trade(Character * buyer, int object_type, std::string object_nam
     case OBJECT_EFFECT:
       for(Effect * effect : sellable_effects) {
         if(effect->name == object_name && buyer->level >= 5 * effect->level && (effect->attributes == "" || buyer->main_class->name == effect->attributes)) {
-          price = (int) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);
+          price = (int32_t) std::ceil((float) (effect->level * effect->level) * 1000.F * price_modifier);
           if(buyer->getGold() >= price) {
             Effect * toadd = new Effect(effect, 1, 1);
             toadd->activate(buyer);
@@ -1461,10 +1461,10 @@ std::string Character::to_string() {
   else {
     String::insert(ss, "none");
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, getDamageReductionFromType(i));
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, getDamageFromType(i, ITEM_SLOT_WEAPON_1));
   }
   std::string result = ss->str();
@@ -1504,10 +1504,10 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   if(talking_speech_str != "none") {
     display->talking_speech = Speech::from_string(talking_speech_str);
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damage_reductions[i] = String::extract_float(ss);
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     display->damages[i] = String::extract_int(ss);
   }
   delete ss;
@@ -1629,26 +1629,26 @@ std::string Character::full_to_string(Adventure * adventure) {
 
 Character * Character::full_from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
-  int maxHp = String::extract_int(ss);
-  int maxMana = String::extract_int(ss);
-  int maxShield = String::extract_int(ss);
-  int hp = String::extract_int(ss);
-  int mana = String::extract_int(ss);
-  int shield = String::extract_int(ss);
-  int damage_multiplier = String::extract_int(ss);
-  int soulBurnTreshold = String::extract_int(ss);
-  int flow = String::extract_int(ss);
-  int visionRange = String::extract_int(ss);
-  int visionPower = String::extract_int(ss);
-  int detectionRange = String::extract_int(ss);
-  int currentSoulBurn = String::extract_int(ss);
+  int32_t maxHp = String::extract_int(ss);
+  int32_t maxMana = String::extract_int(ss);
+  int32_t maxShield = String::extract_int(ss);
+  int32_t hp = String::extract_int(ss);
+  int32_t mana = String::extract_int(ss);
+  int32_t shield = String::extract_int(ss);
+  int32_t damage_multiplier = String::extract_int(ss);
+  int32_t soulBurnTreshold = String::extract_int(ss);
+  int32_t flow = String::extract_int(ss);
+  int32_t visionRange = String::extract_int(ss);
+  int32_t visionPower = String::extract_int(ss);
+  int32_t detectionRange = String::extract_int(ss);
+  int32_t currentSoulBurn = String::extract_int(ss);
   float stamina = String::extract_float(ss);
   float satiety = String::extract_float(ss);
   float savedHpRegen = String::extract_float(ss);
   float savedManaRegen = String::extract_float(ss);
-  int channeledMana = String::extract_int(ss);
+  int32_t channeledMana = String::extract_int(ss);
   std::string name = String::extract(ss);
-  long id = String::extract_long(ss);
+  int64_t id = String::extract_long(ss);
   bool player_character = String::extract_bool(ss);
   std::string death_speech_str = String::extract(ss);
   Speech * death_speech = nullptr;
@@ -1660,7 +1660,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   if(talking_speech_str != "none") {
     talking_speech = Speech::from_string(talking_speech_str);
   }
-  MapUtil::Vector3 coord = MapUtil::Vector3();
+  MathUtil::Vector3 coord = MathUtil::Vector3();
   coord.x = String::extract_float(ss);
   coord.y = String::extract_float(ss);
   coord.z = String::extract_float(ss);
@@ -1668,9 +1668,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   float height = String::extract_float(ss);
   float orientation = String::extract_float(ss);
   bool merchant = String::extract_bool(ss);
-  long gold = String::extract_long(ss);
-  long xp = String::extract_long(ss);
-  int level = String::extract_int(ss);
+  int64_t gold = String::extract_long(ss);
+  int64_t xp = String::extract_long(ss);
+  int32_t level = String::extract_int(ss);
   std::string team = String::extract(ss);
   Gear * gear = Gear::from_string(String::extract(ss), adventure);
   std::stringstream * ss_effects = new std::stringstream(String::extract(ss));

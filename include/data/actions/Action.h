@@ -12,9 +12,9 @@
 
 class Action {
   public:
-    const int type;
+    const int32_t type;
     Action(
-      const int type,
+      const int32_t type,
       Adventure * adventure,
       const Action * previous,
       Character * user
@@ -28,12 +28,12 @@ class Action {
     virtual void computeTime(Adventure * adventure) = 0;
     void computeTick(float tick);
     Character * getUser();
-    int getTick();
-    int getTime();
+    int32_t getTick();
+    int32_t getTime();
     Action * getPrevious();
     Action * getNext();
-    void setTick(int tick);
-    void setTime(int time);
+    void setTick(int32_t tick);
+    void setTime(int32_t time);
     void setPrevious(Action * action);
     void setNext(Action * action);
     bool operator < (const Action& a) const { return tick < a.tick; }

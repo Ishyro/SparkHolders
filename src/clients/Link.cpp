@@ -32,7 +32,7 @@ void Link::listen() {
     closed = true;
   }
   std::stringstream * ss = new std::stringstream(msg);
-  int socket_msg_type = String::extract_int(ss);
+  int32_t socket_msg_type = String::extract_int(ss);
   switch(socket_msg_type) {
     case SOCKET_MSG_ADVENTURE:
       adventure = Client::receiveAdventure(ss->str(), master);
@@ -72,17 +72,17 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
 }
 
 void Link::sendActions(
-    std::vector<long> ids,
-    std::vector<std::vector<int>> types,
+    std::vector<int64_t> ids,
+    std::vector<std::vector<int32_t>> types,
     std::vector<std::vector<void *>> args1,
     std::vector<std::vector<void *>> args2,
-    std::vector<std::vector<int>> overcharge_powers,
-    std::vector<std::vector<int>> overcharge_durations,
-    std::vector<std::vector<int>> overcharge_ranges
+    std::vector<std::vector<int32_t>> overcharge_powers,
+    std::vector<std::vector<int32_t>> overcharge_durations,
+    std::vector<std::vector<int32_t>> overcharge_ranges
   ) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, SOCKET_MSG_ACTION);
-    for(int i = 0; i < (int) ids.size(); i++) {
+    for(int32_t i = 0; i < (int32_t) ids.size(); i++) {
       String::insert(ss, Client::writeActions(ids[i], types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
     }
     try {
@@ -98,7 +98,7 @@ void Link::receiveState(std::string msg) {
   for(CharacterDisplay * display : game_state->characters) {
     for(auto pair : characters) {
       if(pair.second->id == display->id) {
-        pair.second->move(MapUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
+        pair.second->move(MathUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
         pair.second->setHp(display->hp);
         pair.second->setMana(display->mana);
         pair.second->setShield(display->shield);
@@ -142,10 +142,10 @@ std::vector<Way *> Link::getStartingWays() {
 }
 std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return adventure->getDatabase()->getWaysIncompatibilities(); }
 
-Character * Link::getPlayer(long id) { return characters.at(id); }
+Character * Link::getPlayer(int64_t id) { return characters.at(id); }
 
-std::list<long> Link::getPlayersId() {
-  std::list<long> result = std::list<long>();
+std::list<int64_t> Link::getPlayersId() {
+  std::list<int64_t> result = std::list<int64_t>();
   for(auto pair : characters) {
     result.push_back(pair.first);
   }

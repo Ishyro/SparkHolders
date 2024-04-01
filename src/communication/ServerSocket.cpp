@@ -4,7 +4,7 @@
   #pragma comment(lib, "Ws2_32.lib")
 #endif
 
-ServerSocket::ServerSocket(int port, int maxPlayers, bool local) {
+ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool local) {
   #ifdef _WIN32_WINNT
 		WSADATA d;
 	  if (WSAStartup(MAKEWORD(2, 2), &d)) {
@@ -29,7 +29,7 @@ ServerSocket::ServerSocket(int port, int maxPlayers, bool local) {
   sin.sin_port = htons(port);
   sin.sin_family = AF_INET;
 
-  if(bind(socketfd,(struct sockaddr *)& sin,sizeof(sin)) < 0) {
+  if(bind(socketfd,(struct sockaddr *)& sin, sizeof(sin)) < 0) {
     #ifndef _WIN32_WINNT
       perror("bind");
     #else
@@ -41,12 +41,12 @@ ServerSocket::ServerSocket(int port, int maxPlayers, bool local) {
 }
 
 Socket ServerSocket::accept() {
-  int fd;
+  int32_t fd;
   struct sockaddr_in addr;;
   #ifndef _WIN32_WINNT
-    unsigned int len = (sizeof(addr));
+    uint32_t len = (sizeof(addr));
   #else
-    int len = (sizeof(addr));
+    int32_t len = (sizeof(addr));
   #endif
   if((fd = ::accept(socketfd, (struct sockaddr *)& addr, &len)) == -1) {
     #ifndef _WIN32_WINNT

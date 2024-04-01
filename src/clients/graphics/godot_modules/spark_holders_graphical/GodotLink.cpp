@@ -12,7 +12,7 @@
 #include "data/ways/Race.h"
 
 #include "util/FileOpener.h"
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include "data/ClientSettings.h"
 
@@ -56,12 +56,12 @@ bool GodotLink::getState() {
 }
 
 float GodotLink::getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest) {
-  float result = link->getPlayer((long) character_id)->getRegion()->getMoveCost(link->getPlayer((long) character_id), MapUtil::makeVector3(ori.z, ori.x, ori.y), MapUtil::makeVector3(dest.z, dest.x, dest.y));
+  float result = link->getPlayer((int64_t) character_id)->getRegion()->getMoveCost(link->getPlayer((int64_t) character_id), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
   return result;
 }
 
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
-  return MapUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
+  return MathUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
 Array GodotLink::getAvaillableBlocks() {
@@ -74,19 +74,19 @@ Array GodotLink::getAvaillableBlocks() {
 
 Dictionary GodotLink::getBlocks(int64_t character_id) {
   Dictionary result = Dictionary();
-  for(auto pair : link->getPlayer((long) character_id)->getRegion()->getBlocks()) {
+  for(auto pair : link->getPlayer((int64_t) character_id)->getRegion()->getBlocks()) {
     result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
   }
   return result;
 }
 
 Array GodotLink::getLights(int64_t character_id) {
-  //Map * map = state->maps.at((long) character_id);
+  //Map * map = state->maps.at((int64_t) character_id);
   Array result = Array();
   /*
-  for(int y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
+  for(int32_t y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
     Array result_y = Array();
-    for(int x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
+    for(int32_t x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
       result_y.push_back(map->getLight(x, y));
     }
     result.push_back(result_y);
@@ -97,7 +97,7 @@ Array GodotLink::getLights(int64_t character_id) {
 
 Array GodotLink::getControlledParty() {
   Array result = Array();
-  for(long id : link->getPlayersId()) {
+  for(int64_t id : link->getPlayersId()) {
     result.push_back( (int64_t) id);
   }
   return result;
@@ -182,7 +182,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
   }
   if(item->type == ITEM_ARMOR) {
     Array damage_reductions = Array();
-    for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
       damage_reductions.push_back(((ArmorItem *) item)->getDamageReductionFromType(i));
     }
     result["damage_reductions"] = damage_reductions;
@@ -196,7 +196,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
     result["capacity"] = ((WeaponItem *) item)->capacity;
     result["reload_time"] = ((WeaponItem *) item)->reload_time;
     Array damages = Array();
-    for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
       damages.push_back(((WeaponItem *) item)->getDamageFromType(i));
     }
     result["damages"] = damages;
@@ -346,12 +346,12 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["xp"] = character->xp;
   result["level"] = character->level;
   Array damage_reductions = Array();
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damage_reductions.push_back(character->damage_reductions[i]);
   }
   result["damage_reductions"] = damage_reductions;
   Array damages = Array();
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages.push_back(character->damages[i]);
   }
   result["damages"] = damages;
@@ -361,7 +361,7 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
 
 Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   Dictionary result = Dictionary();
-  Character * character = link->getPlayer( (long) character_id);
+  Character * character = link->getPlayer( (int64_t) character_id);
   result["name"] = character->name.c_str();
   result["maxHp"] = character->getMaxHp();
   result["maxMana"] = character->getMaxMana();
@@ -428,7 +428,7 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
 
 Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
   Dictionary result = Dictionary();
-  Gear * gear = link->getPlayer( (long) character_id)->getGear();
+  Gear * gear = link->getPlayer( (int64_t) character_id)->getGear();
   result["mantle"] = getDataFromItem(gear->getMantle());
   result["helmet"] = getDataFromItem(gear->getHelmet());
   result["armor"] = getDataFromItem(gear->getArmor());
@@ -476,7 +476,7 @@ Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   result["z"] = projectile->z;
   result["orientation"] = projectile->orientation;
   Array damages = Array();
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages.push_back(projectile->damages[i]);
   }
   result["damages"] = damages;
@@ -521,29 +521,29 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
 }
 
 void GodotLink::send_actions(Dictionary actions) {
-  std::vector<long> ids = std::vector<long>();
-  std::vector<std::vector<int>> types = std::vector<std::vector<int>>();
+  std::vector<int64_t> ids = std::vector<int64_t>();
+  std::vector<std::vector<int32_t>> types = std::vector<std::vector<int32_t>>();
   std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>();
   std::vector<std::vector<void *>> args2 = std::vector<std::vector<void *>>();
-  std::vector<std::vector<int>> overcharge_powers = std::vector<std::vector<int>>();
-  std::vector<std::vector<int>> overcharge_durations = std::vector<std::vector<int>>();
-  std::vector<std::vector<int>> overcharge_ranges = std::vector<std::vector<int>>();
+  std::vector<std::vector<int32_t>> overcharge_powers = std::vector<std::vector<int32_t>>();
+  std::vector<std::vector<int32_t>> overcharge_durations = std::vector<std::vector<int32_t>>();
+  std::vector<std::vector<int32_t>> overcharge_ranges = std::vector<std::vector<int32_t>>();
   for(int64_t iterator_id = 0; iterator_id < ((Array) actions["ids"]).size(); iterator_id++) {
     int64_t id = (int64_t) ((Array) actions["ids"])[iterator_id];
-    ids.push_back( (long) id);
-    std::vector<int> types_i = std::vector<int>();
+    ids.push_back( (int64_t) id);
+    std::vector<int32_t> types_i = std::vector<int32_t>();
     std::vector<void *> args1_i = std::vector<void *>();
     std::vector<void *> args2_i = std::vector<void *>();
-    std::vector<int> overcharge_powers_i = std::vector<int>();
-    std::vector<int> overcharge_durations_i = std::vector<int>();
-    std::vector<int> overcharge_ranges_i = std::vector<int>();
+    std::vector<int32_t> overcharge_powers_i = std::vector<int32_t>();
+    std::vector<int32_t> overcharge_durations_i = std::vector<int32_t>();
+    std::vector<int32_t> overcharge_ranges_i = std::vector<int32_t>();
     for(int64_t i = 0; i < ( (Array) ( (Dictionary) actions["types"])[id]).size(); i++) {
-      int type = (int) (int64_t) ( (Array) ( (Dictionary) actions["types"])[id])[i];
+      int32_t type = (int32_t) (int64_t) ( (Array) ( (Dictionary) actions["types"])[id])[i];
       void * arg1 = 0;
       void * arg2 = 0;
-      int overcharge_power = 1;
-      int overcharge_duration = 1;
-      int overcharge_range = 1;
+      int32_t overcharge_power = 1;
+      int32_t overcharge_duration = 1;
+      int32_t overcharge_range = 1;
       switch(type) {
         case ACTION_IDLE:
         case ACTION_RESPITE:
@@ -556,10 +556,10 @@ void GodotLink::send_actions(Dictionary actions) {
         case ACTION_ACTIVATION: {
           Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           Target * target = new Target();
-          target->type = (int) (int64_t) target_ori["type"];
-          target->id = (long) (int64_t) target_ori["id"];
+          target->type = (int32_t) (int64_t) target_ori["type"];
+          target->id = (int64_t) (int64_t) target_ori["id"];
           Vector3 pos = (Vector3) target_ori["pos"];
-          target->coord = MapUtil::makeVector3(pos.x, pos.y, pos.z);
+          target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
           arg1 = (void *) target;
           break;
         }
@@ -568,40 +568,40 @@ void GodotLink::send_actions(Dictionary actions) {
         case ACTION_USE_ITEM: {
           Dictionary slot_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           ItemSlot * slot = new ItemSlot();
-          slot->x = (int) (int64_t) slot_ori["x"];
-          slot->y = (int) (int64_t) slot_ori["y"];
-          slot->slot = (int) (int64_t) slot_ori["slot"];
+          slot->x = (int32_t) (int64_t) slot_ori["x"];
+          slot->y = (int32_t) (int64_t) slot_ori["y"];
+          slot->slot = (int32_t) (int64_t) slot_ori["slot"];
           arg1 = (void *) slot;
           break;
         }
         case ACTION_SWAP_GEAR: {
           Dictionary slot1_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           ItemSlot * slot1 = new ItemSlot();
-          slot1->x = (int) (int64_t) slot1_ori["x"];
-          slot1->y = (int) (int64_t) slot1_ori["y"];
-          slot1->slot = (int) (int64_t) slot1_ori["slot"];
+          slot1->x = (int32_t) (int64_t) slot1_ori["x"];
+          slot1->y = (int32_t) (int64_t) slot1_ori["y"];
+          slot1->slot = (int32_t) (int64_t) slot1_ori["slot"];
           arg1 = (void *) slot1;
           Dictionary slot2_ori = ( (Array) ( (Dictionary) actions["arg2"])[id])[i];
           ItemSlot * slot2 = new ItemSlot();
-          slot2->x = (int) (int64_t) slot2_ori["x"];
-          slot2->y = (int) (int64_t) slot2_ori["y"];
-          slot2->slot = (int) (int64_t) slot2_ori["slot"];
+          slot2->x = (int32_t) (int64_t) slot2_ori["x"];
+          slot2->y = (int32_t) (int64_t) slot2_ori["y"];
+          slot2->slot = (int32_t) (int64_t) slot2_ori["slot"];
           arg2 = (void *) slot2;
           break;
         }
         case ACTION_USE_SKILL: {
           Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
           Target * target = new Target();
-          target->type = (int) (int64_t) target_ori["type"];
-          target->id = (long) (int64_t) target_ori["id"];
+          target->type = (int32_t) (int64_t) target_ori["type"];
+          target->id = (int64_t) (int64_t) target_ori["id"];
           Vector3 pos = (Vector3) target_ori["pos"];
-          target->coord = MapUtil::makeVector3(pos.x, pos.y, pos.z);
+          target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
           arg1 = (void *) target;
           Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) ( (Array) ( (Dictionary) actions["arg2"])[id])[i]).utf8().get_data()));
           arg2 = (void *) skill;
-          overcharge_power = (int) ( (Array) ( (Dictionary) actions["overchage_power"])[id])[i];
-          overcharge_duration = (int) ( (Array) ( (Dictionary) actions["overchage_duration"])[id])[i];
-          overcharge_range = (int) ( (Array) ( (Dictionary) actions["overchage_range"])[id])[i];
+          overcharge_power = (int32_t) ( (Array) ( (Dictionary) actions["overchage_power"])[id])[i];
+          overcharge_duration = (int32_t) ( (Array) ( (Dictionary) actions["overchage_duration"])[id])[i];
+          overcharge_range = (int32_t) ( (Array) ( (Dictionary) actions["overchage_range"])[id])[i];
           break;
         }
       }

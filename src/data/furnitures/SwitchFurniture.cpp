@@ -24,7 +24,7 @@ bool SwitchFurniture::getSolid() {
     return solid_off;
   }
 }
-int SwitchFurniture::getLight() {
+int32_t SwitchFurniture::getLight() {
   if(isOn) {
     return light;
   }

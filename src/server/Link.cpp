@@ -28,7 +28,7 @@ void Link::listen() {
     markClosed();
   }
   std::stringstream * ss = new std::stringstream(msg);
-  int socket_msg_type = String::extract_int(ss);
+  int32_t socket_msg_type = String::extract_int(ss);
   switch(socket_msg_type) {
     case SOCKET_MSG_CONNECT:
       username = String::extract(ss);
@@ -62,7 +62,7 @@ void Link::listen() {
       actions = Server::receiveActions(ss->str(), characters, adventure);
       break;
     case SOCKET_MSG_SWITCH: {
-      long id = String::extract_long(ss);
+      int64_t id = String::extract_long(ss);
       if(characters.count(id) != 0) {
         std::string other = String::extract(ss);
       }
@@ -109,7 +109,7 @@ bool Link::isClosed() { return closed; }
 bool Link::isReady() { return ready; }
 bool Link::isMaster() { return master; }
 void Link::markClosed() { closed = true; }
-Character * Link::getCharacter(long id) { return characters.at(id); }
+Character * Link::getCharacter(int64_t id) { return characters.at(id); }
 void Link::changeSocket(Socket s) { this->s = s; closed = false; }
 bool Link::hasActions() { return !actions.empty(); }
 

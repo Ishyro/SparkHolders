@@ -10,12 +10,12 @@
 
 #include "util/String.h"
 
-int WeaponItem::getRawDamage() {
-  int power = 0;
+int32_t WeaponItem::getRawDamage() {
+  int32_t power = 0;
   if(ammo != nullptr) {
     power += ammo->getProjectile()->getRawDamage();
   }
-  for(int damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+  for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     if(damage_type == DAMAGE_ACID) {
       power += 3 * damages[damage_type];
     }
@@ -35,8 +35,8 @@ int WeaponItem::getRawDamage() {
   return power;
 }
 
-int WeaponItem::getDamageFromType(int damage_type) {
-  int damage = damages[damage_type];
+int32_t WeaponItem::getDamageFromType(int32_t damage_type) {
+  int32_t damage = damages[damage_type];
   if(ammo != nullptr) {
     damage += ammo->getProjectile()->getDamageFromType(damage_type);
   }
@@ -48,7 +48,7 @@ int WeaponItem::getDamageFromType(int damage_type) {
   return damage;
 }
 
-int WeaponItem::getCurrentCapacity() {
+int32_t WeaponItem::getCurrentCapacity() {
   if(this->ammo != nullptr) {
     return ammo->getNumber();
   }
@@ -69,18 +69,18 @@ void WeaponItem::useAmmo() {
 AmmunitionItem * WeaponItem::reload(AmmunitionItem * ammo) {
   AmmunitionItem * to_return = nullptr;
   if(this->ammo == nullptr && ammo_type == ammo->type2) {
-    int to_load = std::min(capacity, ammo->getNumber());
+    int32_t to_load = std::min(capacity, ammo->getNumber());
     ammo->reduce(to_load);
     this->ammo = new AmmunitionItem(ammo, ammo->tier, to_load);
   }
   else if(this->ammo != nullptr && this->ammo->name == ammo->name && this->ammo->tier == ammo->tier) {
-    int to_load = std::min(capacity, ammo->getNumber());
+    int32_t to_load = std::min(capacity, ammo->getNumber());
     ammo->reduce(to_load);
     this->ammo->add(to_load);
   }
   else if(this->ammo != nullptr && ammo_type == ammo->type2) {
     to_return = this->ammo;
-    int to_load = std::min(capacity, ammo->getNumber());
+    int32_t to_load = std::min(capacity, ammo->getNumber());
     ammo->reduce(to_load);
     this->ammo = new AmmunitionItem(ammo, ammo->tier, to_load);
   }
@@ -123,7 +123,7 @@ std::string WeaponItem::to_string() {
   else {
     String::insert(ss, "none");
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, damages[i]);
   }
   std::string result = ss->str();

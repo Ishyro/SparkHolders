@@ -20,30 +20,30 @@
 #include "data/furnitures/SkillFurniture.h"
 #include "data/furnitures/SwitchFurniture.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include <iostream>
 
 class Region {
   public:
-    const MapUtil::Vector3i id;
-    Region(MapUtil::Vector3i id, std::array<BlocksChunk *, 27> chunks):id(id),chunks(chunks) {}
+    const MathUtil::Vector3i id;
+    Region(MathUtil::Vector3i id, std::array<BlocksChunk *, 27> chunks):id(id),chunks(chunks) {}
     void addCharacter(Character * character);
     bool removeCharacter(Character * character);
-    Block * getBlock(MapUtil::Vector3 coord);
-    Block * getBlock(MapUtil::Vector3i coord);
-    std::map<const MapUtil::Vector3i, Block *> getBlocks();
-    float getMoveCost(Character * c, MapUtil::Vector3 ori, MapUtil::Vector3 dest);
-    bool tryMove(Character * c, MapUtil::Vector3 dest);
-    bool intersect(Character * character, MapUtil::Vector3 dest, Furniture * furniture);
-    bool move(Character * c, float orientation, MapUtil::Vector3 dest, float ap, World * world);
-    MapUtil::Vector3 getCoordsOnSlope(Character * character, MapUtil::Vector3 dest, int orientation, float z);
+    Block * getBlock(MathUtil::Vector3 coord);
+    Block * getBlock(MathUtil::Vector3i coord);
+    std::map<const MathUtil::Vector3i, Block *> getBlocks();
+    float getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
+    bool tryMove(Character * c, MathUtil::Vector3 dest);
+    bool intersect(Character * character, MathUtil::Vector3 dest, Furniture * furniture);
+    bool move(Character * c, float orientation, MathUtil::Vector3 dest, float ap, World * world);
+    MathUtil::Vector3 getCoordsOnSlope(Character * character, MathUtil::Vector3 dest, int32_t orientation, float z);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters();
     std::list<Character *> getCharacters(Character * character);
     std::list<Furniture *> getFurnitures();
     std::list<Furniture *> getFurnitures(Character * character);
-    Furniture * getFurniture(MapUtil::Vector3i coord);
+    Furniture * getFurniture(MathUtil::Vector3i coord);
   private:
     std::array<BlocksChunk *, 27> chunks;
     std::list<Character *> characters;

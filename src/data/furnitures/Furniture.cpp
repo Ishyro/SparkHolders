@@ -2,7 +2,7 @@
 
 #include "data/Map.h"
 
-void Furniture::init(Map * map, MapUtil::Vector3i coord) {
+void Furniture::init(Map * map, MathUtil::Vector3i coord) {
   this->coord.z = map->offsetZ; 
   switch(map->getRotation()) {
     case 0:
@@ -33,5 +33,5 @@ void Furniture::init(Map * map, MapUtil::Vector3i coord) {
   orientation = orientation >= 360.F ? orientation - 360.F : orientation;
 }
 
-MapUtil::Vector3i Furniture::getCoord() { return coord; }
+MathUtil::Vector3i Furniture::getCoord() { return coord; }
 float Furniture::getOrientation() { return orientation; }

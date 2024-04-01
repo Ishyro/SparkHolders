@@ -14,7 +14,7 @@ bool ContainerItem::overlap(ItemSlot * s1, ItemSlot * s2) {
     s1->y < s2->y + s2->item->sizeY && s1->y + s1->item->sizeY > s2->y;
 }
 
-bool ContainerItem::add(Item * item, int x, int y) {
+bool ContainerItem::add(Item * item, int32_t x, int32_t y) {
   ItemSlot * toadd = new ItemSlot();
   toadd->x = x;
   toadd->y = y;
@@ -40,15 +40,15 @@ bool ContainerItem::add(Item * item, int x, int y) {
 }
 
 void ContainerItem::add_all(std::list<Item *> items) {
-  int slot_type;
+  int32_t slot_type;
   if(type2 == ITEM_BAG) {
     slot_type = ITEM_SLOT_INSIDE_BAG;
   }
   else if(type2 == ITEM_BELT) {
     slot_type = ITEM_SLOT_INSIDE_BELT;
   }
-  int current_x = 0;
-  int current_y = 0;
+  int32_t current_x = 0;
+  int32_t current_y = 0;
   for(Item * item : items) {
     if(current_x + item->sizeX >= contentX) {
       current_x = 0;
@@ -65,7 +65,7 @@ void ContainerItem::add_all(std::list<Item *> items) {
   }
 }
 
-Item * ContainerItem::remove(int x, int y) {
+Item * ContainerItem::remove(int32_t x, int32_t y) {
   Item * result = nullptr;
   ItemSlot * toremove = nullptr;
   for(ItemSlot * slot : content) {
@@ -83,7 +83,7 @@ Item * ContainerItem::remove(int x, int y) {
   return result;
 }
 
-bool ContainerItem::move(int x1, int y1, int x2, int y2) {
+bool ContainerItem::move(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
   Item * item = remove(x1, y1);
   if(!add(item, x2, y2)) {
     add(item, x1, y1);

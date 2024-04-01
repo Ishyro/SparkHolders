@@ -1,8 +1,8 @@
 #include "data/skills/TeleportSkill.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
-void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   // Target 1 will always be a Character
   // other may be owner
   Character * other = adventure->getCharacter(target->id);
@@ -21,16 +21,16 @@ void TeleportSkill::activate(Character * owner, Target * target, Adventure * adv
 }
 
 // TODO
-bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   // Target 1 will always be a Character
   // other may be owner
   Character * other = adventure->getCharacter(target->id);
-  if(MapUtil::distance(owner->getCoord(), target->coord) > range * overcharge_range) {
+  if(MathUtil::distance(owner->getCoord(), target->coord) > range * overcharge_range) {
     return false;
   }
   switch(movement_type) {
     case MOVEMENT_TELEPORT:
-      if(range * overcharge_range >= MapUtil::distance(owner->getCoord(), target->next->coord)) {
+      if(range * overcharge_range >= MathUtil::distance(owner->getCoord(), target->next->coord)) {
         return true;
       }
       else {
@@ -40,7 +40,7 @@ bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adve
       TODO
     case WALKING:
       if(!owner->isFlying()) {
-        if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, false).size()) {
+        if(range * overcharge_range >= (int32_t) MathUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, false).size()) {
           return true;
         }
         else {
@@ -48,7 +48,7 @@ bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adve
         }
       }
     case FLYING:
-      if(range * overcharge_range >= (int) MapUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, true).size()) {
+      if(range * overcharge_range >= (int32_t) MathUtil::getPathToTarget(adventure->getWorld()->getMap(to_move->getCurrentMapId()), to_move->getX(), to_move->getY(), x, y, true).size()) {
         return true;
       }
       else {
@@ -60,14 +60,14 @@ bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adve
   }
 }
 
-int TeleportSkill::getPower() {
+int32_t TeleportSkill::getPower() {
   return 0;
 }
 
-int TeleportSkill::getDamageFromType(int damage_type, int overcharge_power) {
+int32_t TeleportSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0;
 }
 
-float TeleportSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float TeleportSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0.;
 }

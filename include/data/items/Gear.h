@@ -147,14 +147,14 @@ class Gear {
       belt(nullptr),
       items(std::list<Item *>())
     {}
-    void equip(GearItem * new_item, int slot);
-    GearItem * unequip(int slot);
-    void swapWeapon(int slot1, int slot2);
+    void equip(GearItem * new_item, int32_t slot);
+    GearItem * unequip(int32_t slot);
+    void swapWeapon(int32_t slot1, int32_t slot2);
     Item * takeItem(ItemSlot * slot);
     void putItem(ItemSlot * slot);
     void swapItem(ItemSlot * slot1, ItemSlot * slot2);
 
-    float getDamageReductionFromType(int damage_type);
+    float getDamageReductionFromType(int32_t damage_type);
 
     ArmorItem * getMantle();
     ArmorItem * getHelmet();
@@ -172,8 +172,8 @@ class Gear {
     ContainerItem * getBag();
     ContainerItem * getBelt();
     float getWeight();
-    void useItem(int x, int y, int slot, Character * user);
-    void reload(ItemSlot * ammo, int slot_weapon);
+    void useItem(int32_t x, int32_t y, int32_t slot, Character * user);
+    void reload(ItemSlot * ammo, int32_t slot_weapon);
     std::string to_string();
     std::list<ItemSlot *> getItems();
     static Gear * from_string(std::string to_read, Adventure * adventure);

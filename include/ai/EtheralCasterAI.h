@@ -12,8 +12,8 @@ class EtheralCasterAI : public AI {
     Action * getActions(Adventure * adventure, Character * c);
   private:
     bool casted = false;
-    int current_round = 0;
-    int target_round = Settings::getWeekDurationInRound();
+    int32_t current_round = 0;
+    int32_t target_round = Settings::getWeekDurationInRound();
 };
 
 #endif // _ETHERAL_CASTER_AI_H_

@@ -22,7 +22,7 @@ class Link {
     bool isReady();
     bool isMaster();
     void markClosed();
-    Character * getCharacter(long id);
+    Character * getCharacter(int64_t id);
     void changeSocket(Socket s);
     bool hasActions();
     std::list<Action *> getActions();
@@ -30,7 +30,7 @@ class Link {
     std::string getUsername();
   private:
     Adventure * adventure;
-    std::map<const long, Character *> characters;
+    std::map<const int64_t, Character *> characters;
     std::list<Action *> actions;
     Socket s;
     bool closed;

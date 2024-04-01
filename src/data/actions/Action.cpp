@@ -16,7 +16,7 @@
 #include "data/ways/Way.h"
 #include "data/ways/Attributes.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 #include "util/String.h"
 
 /*
@@ -33,17 +33,17 @@
 
 */
 Character * Action::getUser() { return user; }
-int Action::getTick() { return tick; }
-int Action::getTime() { return time; }
+int32_t Action::getTick() { return tick; }
+int32_t Action::getTime() { return time; }
 Action * Action::getPrevious() { return previous; }
 Action * Action::getNext() { return next; }
-void Action::setTick(int tick) { this->tick = tick; }
-void Action::setTime(int time) { this->time = time; }
+void Action::setTick(int32_t tick) { this->tick = tick; }
+void Action::setTime(int32_t time) { this->time = time; }
 void Action::setPrevious(Action * action) { previous = action; }
 void Action::setNext(Action * action) { next = action; }
 
 void Action::computeTick(float tick) {
   if(previous == nullptr) {
-    this->tick = MapUtil::round(this->tick - (float) tick);
+    this->tick = MathUtil::round(this->tick - (float) tick);
   }
 }

@@ -1,19 +1,19 @@
 #include "data/skills/MindControlSkill.h"
 
-void MindControlSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {}
+void MindControlSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {}
 
-bool MindControlSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+bool MindControlSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   return true;
 }
 
-int MindControlSkill::getPower() {
+int32_t MindControlSkill::getPower() {
   return 0;
 }
 
-int MindControlSkill::getDamageFromType(int damage_type, int overcharge_power) {
+int32_t MindControlSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0;
 }
 
-float MindControlSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float MindControlSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   return 0.;
 }

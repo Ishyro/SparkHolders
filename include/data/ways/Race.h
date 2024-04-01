@@ -12,7 +12,7 @@
 
 class Race : public Way {
   public:
-    const int race_type;
+    const int32_t race_type;
     const float size;
     const float height;
     const bool need_to_eat;
@@ -25,27 +25,27 @@ class Race : public Way {
     const float movement_time_modifier;
     Race(
       std::string name,
-      int type,
-      int tier,
-      int baseHp,
-      int baseMana,
-      int baseShield,
-      int baseDamageMult,
-      int baseSoulBurn,
-      int baseFlow,
-      int baseVisionRange,
-      int baseVisionPower,
-      int baseDetectionRange,
-      int hpIncr,
-      int manaIncr,
-      int shieldIncr,
-      int damageMultIncr,
-      int soulBurnIncr,
-      int flowIncr,
+      int32_t type,
+      int32_t tier,
+      int32_t baseHp,
+      int32_t baseMana,
+      int32_t baseShield,
+      int32_t baseDamageMult,
+      int32_t baseSoulBurn,
+      int32_t baseFlow,
+      int32_t baseVisionRange,
+      int32_t baseVisionPower,
+      int32_t baseDetectionRange,
+      int32_t hpIncr,
+      int32_t manaIncr,
+      int32_t shieldIncr,
+      int32_t damageMultIncr,
+      int32_t soulBurnIncr,
+      int32_t flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       std::list<std::string> tags,
-      int race_type,
+      int32_t race_type,
       float size,
       float height,
       bool need_to_eat,
@@ -98,22 +98,22 @@ class Race : public Way {
         this->loot.push_back(Item::init(item, 1, 1));
       }
     }
-    int getType(std::list<Race *> race_modifiers);
-    int getBaseHp(std::list<Race *> race_modifiers);
-    int getBaseMana(std::list<Race *> race_modifiers);
-    int getBaseShield(std::list<Race *> race_modifiers);
-    int getBaseDamageMult(std::list<Race *> race_modifiers);
-    int getBaseSoulBurn(std::list<Race *> race_modifiers);
-    int getBaseFlow(std::list<Race *> race_modifiers);
-    int getBaseVisionRange(std::list<Race *> race_modifiers);
-    int getBaseVisionPower(std::list<Race *> race_modifiers);
-    int getBaseDetectionRange(std::list<Race *> race_modifiers);
-    int getHpIncr(std::list<Race *> race_modifiers);
-    int getManaIncr(std::list<Race *> race_modifiers);
-    int getShieldIncr(std::list<Race *> race_modifiers);
-    int getDamageMultIncr(std::list<Race *> race_modifiers);
-    int getSoulBurnIncr(std::list<Race *> race_modifiers);
-    int getFlowIncr(std::list<Race *> race_modifiers);
+    int32_t getType(std::list<Race *> race_modifiers);
+    int32_t getBaseHp(std::list<Race *> race_modifiers);
+    int32_t getBaseMana(std::list<Race *> race_modifiers);
+    int32_t getBaseShield(std::list<Race *> race_modifiers);
+    int32_t getBaseDamageMult(std::list<Race *> race_modifiers);
+    int32_t getBaseSoulBurn(std::list<Race *> race_modifiers);
+    int32_t getBaseFlow(std::list<Race *> race_modifiers);
+    int32_t getBaseVisionRange(std::list<Race *> race_modifiers);
+    int32_t getBaseVisionPower(std::list<Race *> race_modifiers);
+    int32_t getBaseDetectionRange(std::list<Race *> race_modifiers);
+    int32_t getHpIncr(std::list<Race *> race_modifiers);
+    int32_t getManaIncr(std::list<Race *> race_modifiers);
+    int32_t getShieldIncr(std::list<Race *> race_modifiers);
+    int32_t getDamageMultIncr(std::list<Race *> race_modifiers);
+    int32_t getSoulBurnIncr(std::list<Race *> race_modifiers);
+    int32_t getFlowIncr(std::list<Race *> race_modifiers);
     float getSize(std::list<Race *> race_modifiers);
     float getHeight(std::list<Race *> race_modifiers);
     bool getNeedToEat(std::list<Race *> race_modifiers);

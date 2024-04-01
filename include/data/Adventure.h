@@ -8,14 +8,14 @@
 
 #include "data/Settings.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include "Values.h"
 
 typedef struct Spawn {
-  int x;
-  int y;
-  int z;
+  int32_t x;
+  int32_t y;
+  int32_t z;
 } Spawn;
 
 typedef struct StateDisplay {
@@ -31,11 +31,11 @@ class Adventure {
   public:
     const std::string name;
     const std::string filePath;
-    const int maxPlayers;
+    const int32_t maxPlayers;
     Adventure(
       std::string name,
       std::string filePath,
-      int maxPlayers,
+      int32_t maxPlayers,
       Database * database,
       World * world,
       std::list<Quest *> quests,
@@ -73,28 +73,28 @@ class Adventure {
     }
     */
     Save * save();
-    void softMoveCharacterToMap(Character * character, MapUtil::Vector3 coord);
-    void hardMoveCharacterToMap(Character * character, MapUtil::Vector3 coord);
+    void softMoveCharacterToMap(Character * character, MathUtil::Vector3 coord);
+    void hardMoveCharacterToMap(Character * character, MathUtil::Vector3 coord);
     void addPlayer(Character * player);
     void removePlayer(Character * player);
     bool isWiped();
     std::list<Character *> getParty();
     std::list<Character *> getPreservedPlayers();
-    void resurrect(Character * player, MapUtil::Vector3 coord);
-    long getRound();
-    int getTick();
+    void resurrect(Character * player, MathUtil::Vector3 coord);
+    int64_t getRound();
+    int32_t getTick();
     void incrTick();
     void event();
     World * getWorld();
-    int getLight();
+    int32_t getLight();
     std::list<Attributes *> getStartingAttributes();
     std::list<Way *> getStartingWays();
     Database * getDatabase();
     void addQuest(Quest * quest);
     void removeQuest(Quest * quest);
     std::list<Character *> getCharacters();
-    Character * getCharacter(long id);
-    Furniture * getFurniture(long id);
+    Character * getCharacter(int64_t id);
+    Furniture * getFurniture(int64_t id);
     std::list<Projectile *> getProjectiles();
     void getNPCsActions();
     void mergeActions(std::list<Action *> to_add);
@@ -105,14 +105,14 @@ class Adventure {
     Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
     std::string getTime();
-    std::string state_to_string(std::map<const long, Character *> players);
+    std::string state_to_string(std::map<const int64_t, Character *> players);
     StateDisplay * update_state(std::string to_read);
   private:
     World * world;
     Database * database;
-    int tick;
-    long round;
-    int light;
+    int32_t tick;
+    int64_t round;
+    int32_t light;
     bool lightUp;
     std::list<Character *> party;
     std::list<Character *> preserved_players;

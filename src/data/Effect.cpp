@@ -95,18 +95,18 @@ void Effect::desactivate(Character * target) {
   }
 }
 
-int Effect::getTickLeft() { return tick_left; }
+int32_t Effect::getTickLeft() { return tick_left; }
 
-int Effect::getRawDamage() {
-  int power = 0;
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+int32_t Effect::getRawDamage() {
+  int32_t power = 0;
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += damages[i];
   }
   return power;
 }
 
-int Effect::getDamageFromType(int damage_type) { return damages[damage_type]; }
-float Effect::getDamageReductionFromType(int damage_type) { return damage_reductions[damage_type]; }
+int32_t Effect::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
+float Effect::getDamageReductionFromType(int32_t damage_type) { return damage_reductions[damage_type]; }
 
 std::string Effect::to_string() {
   std::stringstream * ss = new std::stringstream();
@@ -119,10 +119,10 @@ std::string Effect::to_string() {
   String::insert_int(ss, power);
   String::insert_int(ss, duration);
   String::insert_int(ss, tick_left);
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_int(ss, damages[i]);
   }
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, damage_reductions[i]);
   }
   std::string result = ss->str();
@@ -133,20 +133,20 @@ std::string Effect::to_string() {
 Effect * Effect::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   std::string name = String::extract(ss);
-  long id = String::extract_long(ss);
-  int level = String::extract_int(ss);
+  int64_t id = String::extract_long(ss);
+  int32_t level = String::extract_int(ss);
   std::string attributes = String::extract(ss);
-  int type = String::extract_int(ss);
-  int duration_type = String::extract_int(ss);
-  int power = String::extract_int(ss);
-  int duration = String::extract_int(ss);
-  int tick_left = String::extract_int(ss);
-  int damages[DAMAGE_TYPE_NUMBER];
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  int32_t type = String::extract_int(ss);
+  int32_t duration_type = String::extract_int(ss);
+  int32_t power = String::extract_int(ss);
+  int32_t duration = String::extract_int(ss);
+  int32_t tick_left = String::extract_int(ss);
+  int32_t damages[DAMAGE_TYPE_NUMBER];
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_int(ss);
   }
   float damage_reductions[DAMAGE_TYPE_NUMBER];
-  for(int i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damage_reductions[i] = String::extract_float(ss);
   }
   delete ss;

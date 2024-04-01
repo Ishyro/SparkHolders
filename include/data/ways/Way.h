@@ -9,42 +9,42 @@
 class Way {
   public:
     const std::string name;
-    const int type;
-    const int tier;
-    const int baseHp;
-    const int baseMana;
-    const int baseShield;
-    const int baseDamageMult;
-    const int baseSoulBurn;
-    const int baseFlow;
-    const int baseVisionRange;
-    const int baseVisionPower;
-    const int baseDetectionRange;
-    const int hpIncr;
-    const int manaIncr;
-    const int shieldIncr;
-    const int damageMultIncr;
-    const int soulBurnIncr;
-    const int flowIncr;
+    const int32_t type;
+    const int32_t tier;
+    const int32_t baseHp;
+    const int32_t baseMana;
+    const int32_t baseShield;
+    const int32_t baseDamageMult;
+    const int32_t baseSoulBurn;
+    const int32_t baseFlow;
+    const int32_t baseVisionRange;
+    const int32_t baseVisionPower;
+    const int32_t baseDetectionRange;
+    const int32_t hpIncr;
+    const int32_t manaIncr;
+    const int32_t shieldIncr;
+    const int32_t damageMultIncr;
+    const int32_t soulBurnIncr;
+    const int32_t flowIncr;
     Way(
       std::string name,
-      int type,
-      int tier,
-      int baseHp,
-      int baseMana,
-      int baseShield,
-      int baseDamageMult,
-      int baseSoulBurn,
-      int baseFlow,
-      int baseVisionRange,
-      int baseVisionPower,
-      int baseDetectionRange,
-      int hpIncr,
-      int manaIncr,
-      int shieldIncr,
-      int damageMultIncr,
-      int soulBurnIncr,
-      int flowIncr,
+      int32_t type,
+      int32_t tier,
+      int32_t baseHp,
+      int32_t baseMana,
+      int32_t baseShield,
+      int32_t baseDamageMult,
+      int32_t baseSoulBurn,
+      int32_t baseFlow,
+      int32_t baseVisionRange,
+      int32_t baseVisionPower,
+      int32_t baseDetectionRange,
+      int32_t hpIncr,
+      int32_t manaIncr,
+      int32_t shieldIncr,
+      int32_t damageMultIncr,
+      int32_t soulBurnIncr,
+      int32_t flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
       std::list<std::string> tags

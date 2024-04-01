@@ -9,9 +9,9 @@
 #include "Values.h"
 
 typedef struct ItemSlot {
-  int x;
-  int y;
-  int slot;
+  int32_t x;
+  int32_t y;
+  int32_t slot;
   Item * item;
 } ItemSlot;
 
@@ -21,33 +21,33 @@ class ContainerItem : public GearItem {
     const bool canTakeFrom;
     const bool repercuteWeight;
     const bool isLimited;
-    const int limit_type;
-    const int contentX;
-    const int contentY;
+    const int32_t limit_type;
+    const int32_t contentX;
+    const int32_t contentY;
 
     ContainerItem(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects,
-      int swap_time,
+      int32_t swap_time,
       const bool canTakeFrom,
       const bool repercuteWeight,
       const bool isLimited,
-      const int limit_type,
-      const int contentX,
-      const int contentY
+      const int32_t limit_type,
+      const int32_t contentX,
+      const int32_t contentY
     ):
       GearItem(name,
         id,
@@ -74,7 +74,7 @@ class ContainerItem : public GearItem {
       contentY(contentY),
       content(std::list<ItemSlot *>())
     {}
-    ContainerItem(ContainerItem * item, int tier):
+    ContainerItem(ContainerItem * item, int32_t tier):
       GearItem(item, tier),
       canTakeFrom(item->canTakeFrom),
       repercuteWeight(item->repercuteWeight),
@@ -85,10 +85,10 @@ class ContainerItem : public GearItem {
       content(std::list<ItemSlot *>())
     {}
     static bool overlap(ItemSlot * s1, ItemSlot * s2);
-    bool add(Item * item, int x, int y);
+    bool add(Item * item, int32_t x, int32_t y);
     void add_all(std::list<Item *> items);
-    Item * remove(int x, int y);
-    bool move(int x1, int y1, int x2, int y2);
+    Item * remove(int32_t x, int32_t y);
+    bool move(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
     float getWeight();
     std::list<ItemSlot *> getItems();
     std::string to_string();

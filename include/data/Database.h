@@ -12,7 +12,7 @@
 class Database {
   public:
     Database();
-    const int getTargetFromMacro(const std::string macro);
+    const int32_t getTargetFromMacro(const std::string macro);
 
     const Attributes * getAttributes(const std::string attributes);
     const std::string getAttributesFile(const std::string attributes);
@@ -34,7 +34,7 @@ class Database {
     const Speech * getSpeech(const std::string speech);
     const Way * getWay(const std::string way);
     const std::string getWayFile(const std::string way);
-    const int getRelation(const std::string team1, const std::string team2);
+    const int32_t getRelation(const std::string team1, const std::string team2);
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
     std::list<std::string> getTranslationPaths();
 
@@ -57,12 +57,12 @@ class Database {
     void addSpeech(const Speech * speech);
     void addWay(const Way * way);
     void addWayFile(const std::string way, const std::string path);
-    void addRelation(const std::string team1, const std::string team2, int relation);
+    void addRelation(const std::string team1, const std::string team2, int32_t relation);
     void addWayImcompatibility(const std::string way1, const std::string way2);
     void addTranslationPath(const std::string path);
 
   private:
-    std::map<const std::string,const int> macros;
+    std::map<const std::string,const int32_t> macros;
 
     std::map<const std::string, const Attributes * > attributes;
     std::map<const std::string, const std::string> attributesFiles;
@@ -83,7 +83,7 @@ class Database {
     std::map<const std::string, const Speech * > speechs;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, const std::string> waysFiles;
-    std::map<const std::string, std::map<const std::string, int>> relations;
+    std::map<const std::string, std::map<const std::string, int32_t>> relations;
     std::list<std::pair<const std::string, const std::string>> waysIncompatibilities;
     std::list<std::string> paths;
 };

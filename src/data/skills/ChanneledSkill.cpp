@@ -1,17 +1,17 @@
 #include "data/skills/ChanneledSkill.h"
 
-void ChanneledSkill::activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {}
+void ChanneledSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {}
 
-bool ChanneledSkill::canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power_type, int overcharge_duration_type, int overcharge_range_type, int overcharge_power, int overcharge_duration, int overcharge_range, int range) {
+bool ChanneledSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   return true;
 }
 
-int ChanneledSkill::getPower() {
+int32_t ChanneledSkill::getPower() {
   return 0;
 }
 
-int ChanneledSkill::getDamageFromType(int damage_type, int overcharge_power) {
-  int damage = 0;
+int32_t ChanneledSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
+  int32_t damage = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type);
@@ -20,7 +20,7 @@ int ChanneledSkill::getDamageFromType(int damage_type, int overcharge_power) {
   return damage;
 }
 
-float ChanneledSkill::getDamageReductionFromType(int damage_type, int overcharge_power) {
+float ChanneledSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
   float reduction = 0.;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {

@@ -22,12 +22,12 @@
 #include "data/furnitures/SkillFurniture.h"
 #include "data/furnitures/SwitchFurniture.h"
 
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
 #include <iostream>
 
 typedef struct Loot {
-  int type;
+  int32_t type;
   float x;
   float y;
   float size;
@@ -35,26 +35,26 @@ typedef struct Loot {
 } Loot;
 
 namespace map {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 class Map {
   public:
     const std::string name;
     const std::string baseName;
-    const long id;
-    const int offsetX;
-    const int offsetY;
-    const int offsetZ;
-    const int sizeX;
-    const int sizeY;
-    const int sizeZ;
+    const int64_t id;
+    const int32_t offsetX;
+    const int32_t offsetY;
+    const int32_t offsetZ;
+    const int32_t sizeX;
+    const int32_t sizeY;
+    const int32_t sizeZ;
     const bool outside;
     Map(
       const std::string name,
-      const int sizeX,
-      const int sizeY,
-      const int sizeZ,
+      const int32_t sizeX,
+      const int32_t sizeY,
+      const int32_t sizeZ,
       const bool outside
     ):
       name(name),
@@ -67,7 +67,7 @@ class Map {
       sizeY(sizeY),
       sizeZ(sizeZ),
       outside(outside),
-      blocks(std::map<const MapUtil::Vector3i, Block *>()),
+      blocks(std::map<const MathUtil::Vector3i, Block *>()),
       light(0),
       rotation(0)
     {
@@ -77,7 +77,7 @@ class Map {
       loots = std::list<Loot *>();
     }
 
-    Map(Map * map, std::string name, int offsetX, int offsetY, int offsetZ, int rotation, Database * database):
+    Map(Map * map, std::string name, int32_t offsetX, int32_t offsetY, int32_t offsetZ, int32_t rotation, Database * database):
       name(name),
       baseName(map->name),
       id(++map::id_cpt),
@@ -88,7 +88,7 @@ class Map {
       sizeY(rotation == 0 || rotation == 180 ? map->sizeY : map->sizeX),
       sizeZ(map->sizeZ),
       outside(map->outside),
-      blocks(std::map<const MapUtil::Vector3i, Block *>()),
+      blocks(std::map<const MathUtil::Vector3i, Block *>()),
       lights(this->sizeY),
       light(map->light),
       rotation(rotation)
@@ -97,8 +97,8 @@ class Map {
       projectiles = std::list<Projectile *>();
       loots = std::list<Loot *>();
       for(auto pair : map->blocks) {
-        MapUtil::Vector3i coord = pair.first;
-        MapUtil::Vector3i new_coord;
+        MathUtil::Vector3i coord = pair.first;
+        MathUtil::Vector3i new_coord;
         Block * block = pair.second;
         switch(rotation) {
           case 0:
@@ -125,7 +125,7 @@ class Map {
         }
         // oriented block
         if(block->name.find('#') != std::string::npos) {
-          int orientation = rotation + block->orientation;
+          int32_t orientation = rotation + block->orientation;
           orientation = orientation >= 360.F ? orientation - 360.F : orientation;
           std::string the_name = std::string(block->name);
           switch(orientation) {
@@ -177,11 +177,11 @@ class Map {
       name(map->name),
       baseName(map->name),
       id(map->id),
-      offsetX( (int) std::floor(player->getX()) - std::max(player->getVisionRange(), player->getDetectionRange())),
-      offsetY( (int) std::floor(player->getY()) - std::max(player->getVisionRange(), player->getDetectionRange())),
+      offsetX( (int32_t) std::floor(player->getX()) - std::max(player->getVisionRange(), player->getDetectionRange())),
+      offsetY( (int32_t) std::floor(player->getY()) - std::max(player->getVisionRange(), player->getDetectionRange())),
       offsetZ(map->offsetZ),
-      sizeX( (int) std::floor(player->getX()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1 - offsetX),
-      sizeY( (int) std::floor(player->getY()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1 - offsetY),
+      sizeX( (int32_t) std::floor(player->getX()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1 - offsetX),
+      sizeY( (int32_t) std::floor(player->getY()) + std::max(player->getVisionRange(), player->getDetectionRange()) + 1 - offsetY),
       sizeZ(map->sizeZ),
       outside(map->outside),
       lights(sizeY),
@@ -189,10 +189,10 @@ class Map {
       light(map->light),
       rotation(0)
     {
-      std::set<long> ids = std::set<long>();
+      std::set<int64_t> ids = std::set<int64_t>();
       ids.insert(id);
-      for(int y = 0; y < sizeY; y++) {
-        for(int x = 0; x < sizeX; x++) {
+      for(int32_t y = 0; y < sizeY; y++) {
+        for(int32_t x = 0; x < sizeX; x++) {
           Block * block = map->getBlock(x + offsetX, y + offsetY); 
           if(block != nullptr && block->name != "TXT_VOID") {
             tiles[y][x] = block;
@@ -214,7 +214,7 @@ class Map {
       characters = std::list<Character *>();
       projectiles = std::list<Projectile *>();
       furnitures = std::list<Furniture *>();
-      for(int used_map_id : ids) {
+      for(int32_t used_map_id : ids) {
         Map * used_map = world->getMap(used_map_id);
         for(Furniture * f : used_map->furnitures) {
           if(f->getX() - offsetX >= 0 && f->getX() - offsetX < sizeX && f->getY() - offsetY >= 0 && f->getY() - offsetY < sizeY) {
@@ -229,7 +229,7 @@ class Map {
           furnitures.remove(f);
         }
       }
-      for(int used_map_id : ids) {
+      for(int32_t used_map_id : ids) {
         Map * used_map = world->getMap(used_map_id);
         for(Character * c : used_map->characters) {
           if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY &&
@@ -260,11 +260,11 @@ class Map {
       name(map->name),
       baseName(map->name),
       id(map->id),
-      offsetX( (int) std::floor(projectile->getX()) - projectile->getSpeed()),
-      offsetY( (int) std::floor(projectile->getY()) - projectile->getSpeed()),
+      offsetX( (int32_t) std::floor(projectile->getX()) - projectile->getSpeed()),
+      offsetY( (int32_t) std::floor(projectile->getY()) - projectile->getSpeed()),
       offsetZ(map->offsetZ),
-      sizeX( (int) std::floor(projectile->getX()) + projectile->getSpeed() + 1 - offsetX),
-      sizeY( (int) std::floor(projectile->getY()) + projectile->getSpeed() + 1 - offsetY),
+      sizeX( (int32_t) std::floor(projectile->getX()) + projectile->getSpeed() + 1 - offsetX),
+      sizeY( (int32_t) std::floor(projectile->getY()) + projectile->getSpeed() + 1 - offsetY),
       sizeZ(map->sizeZ),
       outside(map->outside),
       lights(sizeY),
@@ -272,13 +272,13 @@ class Map {
       light(map->light),
       rotation(0)
     {
-      std::set<int> ids = std::set<int>();
+      std::set<int32_t> ids = std::set<int32_t>();
       ids.insert(id);
-      for(int i = 0; i < sizeY; i++) {
+      for(int32_t i = 0; i < sizeY; i++) {
         tiles[i] = std::vector<Block *>(sizeX);
       }
-      for(int y = 0; y < sizeY; y++) {
-        for(int x = 0; x < sizeX; x++) {
+      for(int32_t y = 0; y < sizeY; y++) {
+        for(int32_t x = 0; x < sizeX; x++) {
           Block * block = map->getBlock(x + offsetX, y + offsetY); 
           if(block != nullptr && block->name != "TXT_VOID") {
             tiles[y][x] = block;
@@ -295,7 +295,7 @@ class Map {
         }
       }
       characters = std::list<Character *>();
-      for(int used_map_id : ids) {
+      for(int32_t used_map_id : ids) {
         Map * used_map = world->getMap(used_map_id);
         for(Character * c : used_map->characters) {
           if(c->getX() - offsetX >= 0 && c->getX() - offsetX < sizeX && c->getY() - offsetY >= 0 && c->getY() - offsetY < sizeY) {
@@ -309,28 +309,28 @@ class Map {
     std::list<Projectile *> getProjectiles();
     std::list<Furniture *> getFurnitures();
     std::list<Loot *> getLoots();
-    bool allowedCoords(int x, int y);
+    bool allowedCoords(int32_t x, int32_t y);
     bool allowedCoords(float x, float y);
-    Block * getBlock(const MapUtil::Vector3i coord);
-    int getLight(int x, int y);
-    int getLight(float x, float y);
-    Furniture * getFurniture(int x, int y);
+    Block * getBlock(const MathUtil::Vector3i coord);
+    int32_t getLight(int32_t x, int32_t y);
+    int32_t getLight(float x, float y);
+    Furniture * getFurniture(int32_t x, int32_t y);
     Furniture * getFurniture(float x, float y);
-    bool isOpaque(int x, int y);
+    bool isOpaque(int32_t x, int32_t y);
     bool isOpaque(float x, float y);
-    bool isSolid(int x, int y);
+    bool isSolid(int32_t x, int32_t y);
     bool isSolid(float x, float y);
-    bool isUnwalkable(int x, int y);
+    bool isUnwalkable(int32_t x, int32_t y);
     bool isUnwalkable(float x, float y);
     void calculateLights();
-    void propagateLight(int x, int y);
-    void applyDayLight(int light);
+    void propagateLight(int32_t x, int32_t y);
+    void applyDayLight(int32_t light);
     bool canSee(Character * watcher, Character * target);
-    int canSee(Character * watcher, Block * mist);
-    int getMistNb();
-    int getRotation();
-    void setBlock(const MapUtil::Vector3i coord, Block * block);
-    void crumble(int x, int y);
+    int32_t canSee(Character * watcher, Block * mist);
+    int32_t getMistNb();
+    int32_t getRotation();
+    void setBlock(const MathUtil::Vector3i coord, Block * block);
+    void crumble(int32_t x, int32_t y);
     void addCharacter(Character * c);
     void addProjectile(Projectile * p);
     void addFurniture(Furniture * f);
@@ -341,26 +341,26 @@ class Map {
     void destroyProjectile(Projectile * p);
     void removeLoot(Loot * l);
     void destroyLoot(Loot * l);
-    void takeLoot(Character * c, int mode);
+    void takeLoot(Character * c, int32_t mode);
     float getMoveCost(Character * c, float ori_x, float ori_y, float x, float y);
     bool tryMove(Character * c, float destX, float destY);
     float move(Character * c, float y, float x, World * world);
     float move(Character * c, float orientation, float destX, float destY, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
-    std::string block_to_string(int x, int y);
+    std::string block_to_string(int32_t x, int32_t y);
     bool operator == (const Map& m) const { return id == m.id; }
     bool operator != (const Map& m) const { return !operator==(m); }
   private:
-    int light;
-    int mist_nb = 0;
-    int rotation;
+    int32_t light;
+    int32_t mist_nb = 0;
+    int32_t rotation;
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;
     std::list<Furniture *> furnitures;
     std::list<Loot *> loots;
-    std::map<const MapUtil::Vector3i, Block *> blocks;
-    std::vector<std::vector<int>> lights;
+    std::map<const MathUtil::Vector3i, Block *> blocks;
+    std::vector<std::vector<int32_t>> lights;
 };
 
 #endif // _MAP_H_

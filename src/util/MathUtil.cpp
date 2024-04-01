@@ -4,71 +4,71 @@
 #include "data/Map.h"
 
 #include "util/String.h"
-#include "util/MapUtil.h"
+#include "util/MathUtil.h"
 
-MapUtil::Vector3 MapUtil::makeVector3(float x, float y, float z) {
-  MapUtil::Vector3 coord = MapUtil::Vector3();
+MathUtil::Vector3 MathUtil::makeVector3(float x, float y, float z) {
+  MathUtil::Vector3 coord = MathUtil::Vector3();
   coord.x = x;
   coord.y = y;
   coord.z = z;
   return coord;
 }
 
-MapUtil::Vector3 MapUtil::makeVector3(MapUtil::Vector3i coord_int) {
-  MapUtil::Vector3 coord = MapUtil::Vector3();
+MathUtil::Vector3 MathUtil::makeVector3(MathUtil::Vector3i coord_int) {
+  MathUtil::Vector3 coord = MathUtil::Vector3();
   coord.x = coord_int.x;
   coord.y = coord_int.y;
   coord.z = coord_int.z;
   return coord;
 }
 
-MapUtil::Vector3i MapUtil::makeVector3i(float x, float y, float z) {
-  MapUtil::Vector3i coord = MapUtil::Vector3i();
-  coord.x = (int) std::floor(x);
-  coord.y = (int) std::floor(y);
-  coord.z = (int) std::floor(z);
+MathUtil::Vector3i MathUtil::makeVector3i(float x, float y, float z) {
+  MathUtil::Vector3i coord = MathUtil::Vector3i();
+  coord.x = (int32_t) std::floor(x);
+  coord.y = (int32_t) std::floor(y);
+  coord.z = (int32_t) std::floor(z);
   return coord;
 }
 
-MapUtil::Vector3i MapUtil::makeVector3i(MapUtil::Vector3 coord_float) {
-  MapUtil::Vector3i coord = MapUtil::Vector3i();
-  coord.x = (int) std::floor(coord_float.x);
-  coord.y = (int) std::floor(coord_float.y);
-  coord.z = (int) std::floor(coord_float.z);
+MathUtil::Vector3i MathUtil::makeVector3i(MathUtil::Vector3 coord_float) {
+  MathUtil::Vector3i coord = MathUtil::Vector3i();
+  coord.x = (int32_t) std::floor(coord_float.x);
+  coord.y = (int32_t) std::floor(coord_float.y);
+  coord.z = (int32_t) std::floor(coord_float.z);
   return coord;
 }
 
-float MapUtil::round(float var) {
-  float value = (int) std::floor(var * 1000.F + .5F);
+float MathUtil::round(float var) {
+  float value = (int32_t) std::floor(var * 1000.F + .5F);
   value /= 1000.F;
   return value > 0.999F && value < 1.F ? 0.999F : value;
 }
 
-MapUtil::Vector3 MapUtil::round(MapUtil::Vector3 var) {
-  return MapUtil::makeVector3(MapUtil::round(var.x), MapUtil::round(var.y), MapUtil::round(var.z));
+MathUtil::Vector3 MathUtil::round(MathUtil::Vector3 var) {
+  return MathUtil::makeVector3(MathUtil::round(var.x), MathUtil::round(var.y), MathUtil::round(var.z));
 }
 
-float MapUtil::distanceSquare(float x1, float y1, float x2, float y2) {
+float MathUtil::distanceSquare(float x1, float y1, float x2, float y2) {
   return std::max(std::abs(x2 - x1), std::abs(y2 - y1));
 }
 
-float MapUtil::distance(float x1, float y1, float x2, float y2) {
+float MathUtil::distance(float x1, float y1, float x2, float y2) {
   return round(std::sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
 }
 
-float MapUtil::distance(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
+float MathUtil::distance(MathUtil::Vector3 coord1, MathUtil::Vector3 coord2) {
   return round(std::sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y) + (coord1.z - coord2.z) * (coord1.z - coord2.z)));
 }
 
-double MapUtil::distanceSquare(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
+double MathUtil::distanceSquare(MathUtil::Vector3 coord1, MathUtil::Vector3 coord2) {
   return ( (double) coord1.x - (double) coord2.x) * ( (double)coord1.x - (double) coord2.x) + ( (double) coord1.y - (double) coord2.y) * ( (double) coord1.y - (double) coord2.y) + ( (double) coord1.z - (double) coord2.z) * ( (double) coord1.z - (double) coord2.z);
 }
 
-float MapUtil::distance2(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
+float MathUtil::distance2(MathUtil::Vector3 coord1, MathUtil::Vector3 coord2) {
   return round(std::sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y)));
 }
 
-float MapUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
+float MathUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
   if(y1 == y2) {
     if(x1 < x2) {
       return 0.F;
@@ -95,7 +95,7 @@ float MapUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
   return angle * 180.F / 3.141593F;
 }
 
-MapUtil::Vector3 MapUtil::selectClosestVector(MapUtil::Vector3 next, MapUtil::Vector3 dest, int x_direction, int y_direction, int z_direction, float factor_x, float factor_y, float factor_z, float & range) {
+MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil::Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range) {
   float range_x = INFINITY;
   if(factor_x != 0.F) {
     if(x_direction == 1) {
@@ -132,66 +132,66 @@ MapUtil::Vector3 MapUtil::selectClosestVector(MapUtil::Vector3 next, MapUtil::Ve
       }
     }
   }
-  MapUtil::Vector3 try_x = MapUtil::makeVector3(
+  MathUtil::Vector3 try_x = MathUtil::makeVector3(
     try_x.x = next.x + factor_x * range_x,
     try_x.y = next.y + factor_y * range_x,
     try_x.z = next.z + factor_z * range_x
   );
-  MapUtil::Vector3 try_y = MapUtil::makeVector3(
+  MathUtil::Vector3 try_y = MathUtil::makeVector3(
     try_y.x = next.x + factor_x * range_y,
     try_y.y = next.y + factor_y * range_y,
     try_y.z = next.z + factor_z * range_y
   );
-  MapUtil::Vector3 try_z = MapUtil::makeVector3(
+  MathUtil::Vector3 try_z = MathUtil::makeVector3(
     try_z.x = next.x + factor_x * range_z,
     try_z.y = next.y + factor_y * range_z,
     try_z.z = next.z + factor_z * range_z
   );
-  double dist_x = MapUtil::distanceSquare(try_x, dest);
-  double dist_y = MapUtil::distanceSquare(try_y, dest);
-  double dist_z = MapUtil::distanceSquare(try_z, dest);
+  double dist_x = MathUtil::distanceSquare(try_x, dest);
+  double dist_y = MathUtil::distanceSquare(try_y, dest);
+  double dist_z = MathUtil::distanceSquare(try_z, dest);
   if(dist_x <= dist_y && dist_x <= dist_z) {
     range = range_x;
-    return MapUtil::round(try_x);
+    return MathUtil::round(try_x);
   }
   else if(dist_y <= dist_x && dist_y <= dist_z) {
     range = range_y;
-    return MapUtil::round(try_y);
+    return MathUtil::round(try_y);
   }
   else {
     range = range_z;
-    return MapUtil::round(try_z);
+    return MathUtil::round(try_z);
   }
 }
 
-std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest, int offsetX, int offsetY) {
-  std::list<MapUtil::Pair> work_list = std::list<MapUtil::Pair>();
+std::vector<MathUtil::Pair> MathUtil::reconstruct_path(std::vector<std::vector<MathUtil::Pair>> cameFrom, MathUtil::Pair start, MathUtil::Pair dest, int32_t offsetX, int32_t offsetY) {
+  std::list<MathUtil::Pair> work_list = std::list<MathUtil::Pair>();
   if(start == dest) {
-    return std::vector<MapUtil::Pair>();
+    return std::vector<MathUtil::Pair>();
   }
-  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
+  for(MathUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
     work_list.push_front(current);
   }
-  std::vector<MapUtil::Pair> result = std::vector<MapUtil::Pair>(work_list.size());
+  std::vector<MathUtil::Pair> result = std::vector<MathUtil::Pair>(work_list.size());
   std::copy(work_list.begin(), work_list.end(), result.begin());
   return result;
 }
 
-float MapUtil::reconstruct_orientation(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest, int offsetX, int offsetY) {
+float MathUtil::reconstruct_orientation(std::vector<std::vector<MathUtil::Pair>> cameFrom, MathUtil::Pair start, MathUtil::Pair dest, int32_t offsetX, int32_t offsetY) {
   if(start == dest) {
     return 360.F;
   }
-  MapUtil::Pair previous = dest;
-  for(MapUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
+  MathUtil::Pair previous = dest;
+  for(MathUtil::Pair current = dest; current != start; current = cameFrom[current.y - offsetY][current.x - offsetX]) {
     previous = current;
   }
   return getOrientationToTarget(start.x, start.y, previous.x, previous.y);
 }
 
 /*
-std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX, int startY, int destX, int destY) {
-  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
-  MapUtil::Pair next = MapUtil::Pair();
+std::list<MathUtil::Pair> MathUtil::getNeighboursTraversable(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY) {
+  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
+  MathUtil::Pair next = MathUtil::Pair();
   if(startY > map->offsetY) {
     if(!map->getBlock(startX, startY - 1)->unwalkable) {
       next.x = startX;
@@ -253,9 +253,9 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursTraversable(Map * map, int startX
   return result;
 }
 
-std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, int startY, int destX, int destY) {
-  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
-  MapUtil::Pair next = MapUtil::Pair();
+std::list<MathUtil::Pair> MathUtil::getNeighboursNonSolid(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY) {
+  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
+  MathUtil::Pair next = MathUtil::Pair();
   if(startY > map->offsetY) {
     if(!map->getBlock(startX, startY - 1)->solid) {
       next.x = startX;
@@ -318,36 +318,36 @@ std::list<MapUtil::Pair> MapUtil::getNeighboursNonSolid(Map * map, int startX, i
 }
 */
 
-std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying) {
-  return std::vector<MapUtil::Pair>();
+std::vector<MathUtil::Pair> MathUtil::getPathToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying) {
+  return std::vector<MathUtil::Pair>();
   /*
-  int start_x = startX - map->offsetX;
-  int start_y = startY - map->offsetY;
-  std::list<MapUtil::Pair> (*getNeighbours)(Map *, int, int, int, int){ &getNeighboursTraversable };
+  int32_t start_x = startX - map->offsetX;
+  int32_t start_y = startY - map->offsetY;
+  std::list<MathUtil::Pair> (*getNeighbours)(Map *, int32_t, int32_t, int32_t, int32_t){ &getNeighboursTraversable };
   if(flying) {
     getNeighbours = &getNeighboursNonSolid;
   }
-  MapUtil::Pair start = MapUtil::Pair();
+  MathUtil::Pair start = MathUtil::Pair();
   start.x = startX;
   start.y = startY;
   start.score = distance(startX, startY, destX, destY);
-  MapUtil::Pair dest = MapUtil::Pair();
+  MathUtil::Pair dest = MathUtil::Pair();
   dest.x = destX;
   dest.y = destY;
   dest.score = 0;
   if(start == dest) {
-    return std::vector<MapUtil::Pair>();
+    return std::vector<MathUtil::Pair>();
   }
-  std::list<MapUtil::Pair> openSet = std::list<MapUtil::Pair>();
-  std::vector<std::vector<MapUtil::Pair>> cameFrom = std::vector<std::vector<MapUtil::Pair>>(map->sizeY);
-  std::vector<std::vector<int>> gCost = std::vector<std::vector<int>>(map->sizeY);
-  for(int i = 0; i < map->sizeY; i++) {
-    cameFrom[i] = std::vector<MapUtil::Pair>(map->sizeX);
-    gCost[i] = std::vector<int>(map->sizeX);
+  std::list<MathUtil::Pair> openSet = std::list<MathUtil::Pair>();
+  std::vector<std::vector<MathUtil::Pair>> cameFrom = std::vector<std::vector<MathUtil::Pair>>(map->sizeY);
+  std::vector<std::vector<int32_t>> gCost = std::vector<std::vector<int32_t>>(map->sizeY);
+  for(int32_t i = 0; i < map->sizeY; i++) {
+    cameFrom[i] = std::vector<MathUtil::Pair>(map->sizeX);
+    gCost[i] = std::vector<int32_t>(map->sizeX);
   }
-  int max = map->sizeX * map->sizeY;
-  for(int i = 0; i < map->sizeY; i++) {
-    for(int j = 0; j < map->sizeX; j++) {
+  int32_t max = map->sizeX * map->sizeY;
+  for(int32_t i = 0; i < map->sizeY; i++) {
+    for(int32_t j = 0; j < map->sizeX; j++) {
       gCost[i][j] = max;
     }
   }
@@ -355,64 +355,64 @@ std::vector<MapUtil::Pair> MapUtil::getPathToTarget(Map * map, int startX, int s
   gCost[start_y][start_x] = 0;
 
   while(!openSet.empty()) {
-    MapUtil::Pair current = openSet.front();
+    MathUtil::Pair current = openSet.front();
     openSet.pop_front();
     if(current.x == destX && current.y == destY) {
       return reconstruct_path(cameFrom, start, dest, map->offsetX, map->offsetY);
     }
-    for(MapUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
-      int tentative_gScore = gCost[current.y - map->offsetY][current.x - map->offsetX] + 1;
+    for(MathUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
+      int32_t tentative_gScore = gCost[current.y - map->offsetY][current.x - map->offsetX] + 1;
       if(gCost[pair.y - map->offsetY][pair.x - map->offsetX] > tentative_gScore) {
         gCost[pair.y - map->offsetY][pair.x - map->offsetX] = tentative_gScore;
         cameFrom[pair.y - map->offsetY][pair.x - map->offsetX] = current;
         pair.score = tentative_gScore + distance(pair.x, pair.y, destX, destY);
         bool found = false;
-        for(MapUtil::Pair pair2 : openSet) {
+        for(MathUtil::Pair pair2 : openSet) {
           if(pair == pair2) {
             found = true;
             break;
           }
         }
         if(!found) {
-          std::list<MapUtil::Pair> sorted_element = std::list<MapUtil::Pair>(1);
+          std::list<MathUtil::Pair> sorted_element = std::list<MathUtil::Pair>(1);
           sorted_element.push_front(pair);
           openSet.merge(sorted_element);
         }
       }
     }
   }
-  return std::vector<MapUtil::Pair>();
+  return std::vector<MathUtil::Pair>();
   */
 }
 
-float MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int destX, int destY, bool flying) {
+float MathUtil::getOrientationToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying) {
   return 0.F;
   /*
-  std::list<MapUtil::Pair> (*getNeighbours)(Map *, int, int, int, int){ &getNeighboursTraversable };
+  std::list<MathUtil::Pair> (*getNeighbours)(Map *, int32_t, int32_t, int32_t, int32_t){ &getNeighboursTraversable };
   if(flying) {
     getNeighbours = &getNeighboursNonSolid;
   }
-  MapUtil::Pair start = MapUtil::Pair();
+  MathUtil::Pair start = MathUtil::Pair();
   start.x = startX;
   start.y = startY;
   start.score = distance(startX, startY, destX, destY);
-  MapUtil::Pair dest = MapUtil::Pair();
+  MathUtil::Pair dest = MathUtil::Pair();
   dest.x = destX;
   dest.y = destY;
   dest.score = 0;
   if(start == dest) {
     return 360.F;
   }
-  std::list<MapUtil::Pair> openSet = std::list<MapUtil::Pair>();
-  std::vector<std::vector<MapUtil::Pair>> cameFrom = std::vector<std::vector<MapUtil::Pair>>(map->sizeY);
-  std::vector<std::vector<int>> gCost = std::vector<std::vector<int>>(map->sizeY);
-  for(int i = 0; i < map->sizeY; i++) {
-    cameFrom[i] = std::vector<MapUtil::Pair>(map->sizeX);
-    gCost[i] = std::vector<int>(map->sizeX);
+  std::list<MathUtil::Pair> openSet = std::list<MathUtil::Pair>();
+  std::vector<std::vector<MathUtil::Pair>> cameFrom = std::vector<std::vector<MathUtil::Pair>>(map->sizeY);
+  std::vector<std::vector<int32_t>> gCost = std::vector<std::vector<int32_t>>(map->sizeY);
+  for(int32_t i = 0; i < map->sizeY; i++) {
+    cameFrom[i] = std::vector<MathUtil::Pair>(map->sizeX);
+    gCost[i] = std::vector<int32_t>(map->sizeX);
   }
-  int max = map->sizeX * map->sizeY;
-  for(int i = 0; i < map->sizeY; i++) {
-    for(int j = 0; j < map->sizeX; j++) {
+  int32_t max = map->sizeX * map->sizeY;
+  for(int32_t i = 0; i < map->sizeY; i++) {
+    for(int32_t j = 0; j < map->sizeX; j++) {
       gCost[i][j] = max;
     }
   }
@@ -420,26 +420,26 @@ float MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int des
   gCost[startY][startX] = 0;
 
   while(!openSet.empty()) {
-    MapUtil::Pair current = openSet.front();
+    MathUtil::Pair current = openSet.front();
     openSet.pop_front();
     if(current.x == destX && current.y == destY) {
       return reconstruct_orientation(cameFrom, start, dest, map->offsetX, map->offsetY);
     }
-    for(MapUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
-      int tentative_gScore = gCost[current.y][current.x] + 1;
+    for(MathUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
+      int32_t tentative_gScore = gCost[current.y][current.x] + 1;
       if(gCost[pair.y][pair.x] > tentative_gScore) {
         gCost[pair.y][pair.x] = tentative_gScore;
         cameFrom[pair.y][pair.x] = current;
         pair.score = tentative_gScore + distance(pair.x, pair.y, destX, destY);
         bool found = false;
-        for(MapUtil::Pair pair2 : openSet) {
+        for(MathUtil::Pair pair2 : openSet) {
           if(pair == pair2) {
             found = true;
             break;
           }
         }
         if(!found) {
-          std::list<MapUtil::Pair> sorted_element = std::list<MapUtil::Pair>(1);
+          std::list<MathUtil::Pair> sorted_element = std::list<MathUtil::Pair>(1);
           sorted_element.push_front(pair);
           openSet.merge(sorted_element);
         }
@@ -452,9 +452,9 @@ float MapUtil::getOrientationToTarget(Map * map, int startX, int startY, int des
 
 // 0 <= a <= 1
 // y <= x
-std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquation(float a, int range) {
-  MapUtil::Pair pair;
-  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
+std::list<MathUtil::Pair> MathUtil::getPathFromCartesianEquation(float a, int32_t range) {
+  MathUtil::Pair pair;
+  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
   for(pair.x = 0; pair.x <= range; pair.x++) {
     pair.y = std::floor(a * (float) pair.x);
     result.push_back(pair);
@@ -462,15 +462,15 @@ std::list<MapUtil::Pair> MapUtil::getPathFromCartesianEquation(float a, int rang
   return result;
 }
 
-std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float orientation, float size, float range) {
-  MapUtil::Pair pair;
-  std::list<MapUtil::Pair> result = std::list<MapUtil::Pair>();
+std::list<MathUtil::Pair> MathUtil::getPathFromOrientation(float x, float y, float orientation, float size, float range) {
+  MathUtil::Pair pair;
+  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
   float high_limit = round(0.999F - size);
   float low_limit = round(size);
   pair.x = x;
   pair.y = y;
-  int x_direction = 1;
-  int y_direction = 1;
+  int32_t x_direction = 1;
+  int32_t y_direction = 1;
   if(orientation > 180.F) {
     y_direction = -1;
   }
@@ -482,7 +482,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   if(orientation == 0.F) {
     pair.y = y;
     result.push_back(pair);
-    for(int i = 0; i < std::ceil(range); i++) {
+    for(int32_t i = 0; i < std::ceil(range); i++) {
       pair.x = pair.x + 1.F;
       result.push_back(pair);
     }
@@ -490,7 +490,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   else if(orientation == 180.F) {
     pair.y = y;
     result.push_back(pair);
-    for(int i = 0; i < std::ceil(range); i++) {
+    for(int32_t i = 0; i < std::ceil(range); i++) {
       pair.x = pair.x - 1.F;
       result.push_back(pair);
     }
@@ -498,7 +498,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   else if(orientation == 90.F) {
     pair.x = x;
     result.push_back(pair);
-    for(int i = 0; i < std::ceil(range); i++) {
+    for(int32_t i = 0; i < std::ceil(range); i++) {
       pair.y = pair.y + 1.F;
       result.push_back(pair);
     }
@@ -506,7 +506,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   else if(orientation == 270.F) {
     pair.x = x;
     result.push_back(pair);
-    for(int i = 0; i < std::ceil(range); i++) {
+    for(int32_t i = 0; i < std::ceil(range); i++) {
       pair.y = pair.y - 1.F;
       result.push_back(pair);
     }
@@ -575,7 +575,7 @@ std::list<MapUtil::Pair> MapUtil::getPathFromOrientation(float x, float y, float
   return result;
 }
 
-std::string MapUtil::target_to_string(Target * target) {
+std::string MathUtil::target_to_string(Target * target) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, target->type);
   if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
@@ -599,7 +599,7 @@ std::string MapUtil::target_to_string(Target * target) {
   return result;
 }
 
-Target * MapUtil::target_from_string(std::string to_read) {
+Target * MathUtil::target_from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   Target * target = new Target();
   target->type = String::extract_int(ss);
@@ -611,7 +611,7 @@ Target * MapUtil::target_from_string(std::string to_read) {
       float x = String::extract_float(ss);
       float y = String::extract_float(ss);
       float z = String::extract_float(ss);
-      target->coord = MapUtil::makeVector3(x, y, z);
+      target->coord = MathUtil::makeVector3(x, y, z);
     }
   }
   if(target->type != TARGET_NONE) {

@@ -10,7 +10,7 @@
 
 #include "util/String.h"
 
-void Gear::equip(GearItem * item, int slot) {
+void Gear::equip(GearItem * item, int32_t slot) {
   switch(slot) {
     case ITEM_SLOT_MANTLE:
       mantle = (ArmorItem *) item;
@@ -60,7 +60,7 @@ void Gear::equip(GearItem * item, int slot) {
   }
 }
 
-GearItem * Gear::unequip(int slot) {
+GearItem * Gear::unequip(int32_t slot) {
   GearItem * old_item = nullptr;
   switch(slot) {
     case ITEM_SLOT_MANTLE:
@@ -127,7 +127,7 @@ GearItem * Gear::unequip(int slot) {
   return old_item;
 }
 
-void Gear::swapWeapon(int slot1, int slot2) {
+void Gear::swapWeapon(int32_t slot1, int32_t slot2) {
   WeaponItem * temp;
   if(slot1 == ITEM_SLOT_WEAPON_1) {
     if(slot2 == ITEM_SLOT_WEAPON_3) {
@@ -318,7 +318,7 @@ void Gear::swapItem(ItemSlot * slot1, ItemSlot * slot2) {
   }
 }
 
-float Gear::getDamageReductionFromType(int damage_type) {
+float Gear::getDamageReductionFromType(int32_t damage_type) {
   float resistance = 0.;
   if(mantle != nullptr) {
     resistance += mantle->getDamageReductionFromType(damage_type);
@@ -416,7 +416,7 @@ float Gear::getWeight() {
   return weight;
 }
 
-void Gear::useItem(int x, int y, int slot, Character * user) {
+void Gear::useItem(int32_t x, int32_t y, int32_t slot, Character * user) {
   Item * item;
   switch(slot) {
     case ITEM_SLOT_INSIDE_BAG:
@@ -446,7 +446,7 @@ void Gear::useItem(int x, int y, int slot, Character * user) {
   }
 }
 
-void Gear::reload(ItemSlot * ammo, int slot_weapon) {
+void Gear::reload(ItemSlot * ammo, int32_t slot_weapon) {
 
 }
 

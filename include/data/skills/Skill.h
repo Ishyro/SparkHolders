@@ -12,27 +12,27 @@
 class Skill {
   public:
     const std::string name;
-    const int level;
+    const int32_t level;
     const std::string attributes;
-    const int target_type;
+    const int32_t target_type;
     const bool is_instant;
-    const int overcharge_power_type;
-    const int overcharge_duration_type;
-    const int overcharge_range_type;
-    const int range;
-    const int time;
+    const int32_t overcharge_power_type;
+    const int32_t overcharge_duration_type;
+    const int32_t overcharge_range_type;
+    const int32_t range;
+    const int32_t time;
     const std::list<PseudoSkill *> skills;
     Skill(
       std::string name,
-      int level,
+      int32_t level,
       std::string attributes,
-      int target_type,
+      int32_t target_type,
       bool is_instant,
-      int overcharge_power_type,
-      int overcharge_duration_type,
-      int overcharge_range_type,
-      int range,
-      int time,
+      int32_t overcharge_power_type,
+      int32_t overcharge_duration_type,
+      int32_t overcharge_range_type,
+      int32_t range,
+      int32_t time,
       std::list<PseudoSkill *> skills
     ):
       name(name),
@@ -48,14 +48,14 @@ class Skill {
       skills(skills)
     {}
 
-    void activate(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range);
-    bool canCast(Character * owner, Target * target, Adventure * adventure, int overcharge_power, int overcharge_duration, int overcharge_range);
-    int getManaCost(int overcharge_power, int overcharge_duration, int overcharge_range);
-    int getPower();
-    int getDamageFromType(int dammage_type, int overcharge_power);
-    float getDamageReductionFromType(int dammage_type, int overcharge_power);
+    void activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    int32_t getManaCost(int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    int32_t getPower();
+    int32_t getDamageFromType(int32_t dammage_type, int32_t overcharge_power);
+    float getDamageReductionFromType(int32_t dammage_type, int32_t overcharge_power);
     Block * isEatingSkill();
-    int isTeleportSkill();
+    int32_t isTeleportSkill();
 };
 
 #endif // _SKILL_H_

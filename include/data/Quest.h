@@ -5,21 +5,21 @@
 #include <list>
 
 typedef struct Step {
-  const int type;
+  const int32_t type;
   const Character * target;
   const Item * goal_item;
-  const int discover_map_id;
+  const int32_t discover_map_id;
   Speech * todo;
   Speech * when_done;
 } Step;
 
 namespace quest {
-  static long id_cpt = 0;
+  static int64_t id_cpt = 0;
 }
 
 class Quest {
   public:
-    const long id = ++quest::id_cpt;
+    const int64_t id = ++quest::id_cpt;
     const std::string name;
     const bool holdEvent;
     std::list<Item *> items_rewards;

@@ -10,25 +10,25 @@
 
 class SerialItem : public Item {
   public:
-    const int max;
+    const int32_t max;
     SerialItem(
       std::string name,
-      long id,
-      int type,
-      int type2,
-      int tier,
-      int max_tier,
+      int64_t id,
+      int32_t type,
+      int32_t type2,
+      int32_t tier,
+      int32_t max_tier,
       float weight,
-      int sizeX,
-      int sizeY,
-      int gold_value,
+      int32_t sizeX,
+      int32_t sizeY,
+      int32_t gold_value,
       bool droppable,
       bool usable,
       bool consumable,
-      int use_time,
+      int32_t use_time,
       std::list<Effect *> effects,
-      int number,
-      int max
+      int32_t number,
+      int32_t max
     ):
       Item(
         name,
@@ -50,18 +50,18 @@ class SerialItem : public Item {
       number(number),
       max(max)
     {}
-    SerialItem(SerialItem * item, int tier, int number):
+    SerialItem(SerialItem * item, int32_t tier, int32_t number):
       Item(item, tier),
       max(item->max),
       number(number)
     {}
-    int getNumber();
-    int add(int number);
-    int reduce(int number);
+    int32_t getNumber();
+    int32_t add(int32_t number);
+    int32_t reduce(int32_t number);
     float getWeight();
     std::string to_string();
   protected:
-    int number;
+    int32_t number;
 };
 
 #endif // _SERIAL_ITEM_H_
