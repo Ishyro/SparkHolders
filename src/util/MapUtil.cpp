@@ -44,6 +44,10 @@ float MapUtil::round(float var) {
   return value > 0.999F && value < 1.F ? 0.999F : value;
 }
 
+MapUtil::Vector3 MapUtil::round(MapUtil::Vector3 var) {
+  return MapUtil::makeVector3(MapUtil::round(var.x), MapUtil::round(var.y), MapUtil::round(var.z));
+}
+
 float MapUtil::distanceSquare(float x1, float y1, float x2, float y2) {
   return std::max(std::abs(x2 - x1), std::abs(y2 - y1));
 }
@@ -54,6 +58,10 @@ float MapUtil::distance(float x1, float y1, float x2, float y2) {
 
 float MapUtil::distance(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
   return round(std::sqrt((coord1.x - coord2.x) * (coord1.x - coord2.x) + (coord1.y - coord2.y) * (coord1.y - coord2.y) + (coord1.z - coord2.z) * (coord1.z - coord2.z)));
+}
+
+double MapUtil::distanceSquare(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
+  return ( (double) coord1.x - (double) coord2.x) * ( (double)coord1.x - (double) coord2.x) + ( (double) coord1.y - (double) coord2.y) * ( (double) coord1.y - (double) coord2.y) + ( (double) coord1.z - (double) coord2.z) * ( (double) coord1.z - (double) coord2.z);
 }
 
 float MapUtil::distance2(MapUtil::Vector3 coord1, MapUtil::Vector3 coord2) {
@@ -85,6 +93,75 @@ float MapUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
     angle += 2 * 3.141593F;
   }
   return angle * 180.F / 3.141593F;
+}
+
+MapUtil::Vector3 MapUtil::selectClosestVector(MapUtil::Vector3 next, MapUtil::Vector3 dest, int x_direction, int y_direction, int z_direction, float factor_x, float factor_y, float factor_z, float & range) {
+  float range_x = INFINITY;
+  if(factor_x != 0.F) {
+    if(x_direction == 1) {
+      range_x = std::abs((1.F - (next.x - std::floor(next.x))) / factor_x);
+    }
+    else {
+      range_x = std::abs((next.x - std::floor(next.x)) / factor_x);
+      if(range_x == 0.F) {
+        range_x = std::abs(1.F / factor_x);
+      }
+    }
+  }
+  float range_y = INFINITY;
+  if(factor_y != 0.F) {
+    if(y_direction == 1) {
+      range_y = std::abs((1.F - (next.y - std::floor(next.y))) / factor_y);
+    }
+    else {
+      range_y = std::abs((next.y - std::floor(next.y)) / factor_y);
+      if(range_y == 0.F) {
+        range_y = std::abs(1.F / factor_y);
+      }
+    }
+  }
+  float range_z = INFINITY;
+  if(factor_z != 0.F) {
+    if(z_direction == 1) {
+      range_z = std::abs((1.F - (next.z - std::floor(next.z))) / factor_z);
+    }
+    else {
+      range_z = std::abs((next.z - std::floor(next.z)) / factor_z);
+      if(range_z == 0.F) {
+        range_z = std::abs(1.F / factor_z);
+      }
+    }
+  }
+  MapUtil::Vector3 try_x = MapUtil::makeVector3(
+    try_x.x = next.x + factor_x * range_x,
+    try_x.y = next.y + factor_y * range_x,
+    try_x.z = next.z + factor_z * range_x
+  );
+  MapUtil::Vector3 try_y = MapUtil::makeVector3(
+    try_y.x = next.x + factor_x * range_y,
+    try_y.y = next.y + factor_y * range_y,
+    try_y.z = next.z + factor_z * range_y
+  );
+  MapUtil::Vector3 try_z = MapUtil::makeVector3(
+    try_z.x = next.x + factor_x * range_z,
+    try_z.y = next.y + factor_y * range_z,
+    try_z.z = next.z + factor_z * range_z
+  );
+  double dist_x = MapUtil::distanceSquare(try_x, dest);
+  double dist_y = MapUtil::distanceSquare(try_y, dest);
+  double dist_z = MapUtil::distanceSquare(try_z, dest);
+  if(dist_x <= dist_y && dist_x <= dist_z) {
+    range = range_x;
+    return MapUtil::round(try_x);
+  }
+  else if(dist_y <= dist_x && dist_y <= dist_z) {
+    range = range_y;
+    return MapUtil::round(try_y);
+  }
+  else {
+    range = range_z;
+    return MapUtil::round(try_z);
+  }
 }
 
 std::vector<MapUtil::Pair> MapUtil::reconstruct_path(std::vector<std::vector<MapUtil::Pair>> cameFrom, MapUtil::Pair start, MapUtil::Pair dest, int offsetX, int offsetY) {

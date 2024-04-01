@@ -38,9 +38,9 @@ func move_towards(dest: Vector3, delta: float):
 	var result = space.intersect_ray(query)
 	if not result.is_empty():
 		checkpoint = result["position"]
-	#global_transform = global_transform.looking_at(checkpoint, Vector3.UP, true).scaled_local(scale)
-	var direction = (checkpoint - transform.origin).normalized()
+	if not transform.origin.is_equal_approx(checkpoint):
+		global_transform = global_transform.looking_at(checkpoint, Vector3.UP, true).scaled_local(scale)
+		rotation = Vector3(0, rotation.y, 0)
+	var direction = (checkpoint - global_transform.origin).normalized()
 	velocity = velocity.lerp(direction * speed, accel * delta)
-	#if not is_on_floor(): # If in the air, fall towards the floor. Literally gravity
-	#	velocity.y = velocity.y - (fall_acceleration * delta)
 	move_and_slide()

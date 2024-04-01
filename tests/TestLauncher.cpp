@@ -61,12 +61,24 @@ int main(int argc, char ** argv) {
     adventure->incrTick();
     */
   }
-  for(Character * dasheep : adventure->getWorld()->getCharacters()) {
-    for(auto pair : dasheep->getRegion()->getBlocks()) {
-      if(pair.second != dasheep->getRegion()->getBlock(pair.first)) {
-        std::cout << "coord: " << pair.first.x << " " << pair.first.y << " " << pair.first.z << std::endl;
-        std::cout << "block: " << pair.second->name << std::endl;
-      }
+  Character * dasheep = adventure->getWorld()->getCharacters().front();
+  MapUtil::Vector3 base_coord = dasheep->getCoord();
+  for(float y = base_coord.y - 10; y < base_coord.y + 10; y += 0.1) {
+    for(float x = base_coord.x - 10; x < base_coord.x + 10; x += 0.1) {
+      MapUtil::Vector3 ori = dasheep->getCoord();
+      std::cout << "ori: " << ori.x << " " << ori.y << " " << ori.z << std::endl;
+      MapUtil::Vector3 dest = MapUtil::makeVector3(x, y, ori.z);
+      float real_cost = MapUtil::distance(ori, dest) * 10.F / dasheep->getMovementTimeModifier();
+      float cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, ori, dest));
+      MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y), dest, cost, adventure->getWorld()));
+      MapUtil::Vector3 ori_back = dasheep->getCoord();
+      std::cout << "ori_back: " << ori_back.x << " " << ori_back.y << " " << ori_back.z << std::endl;
+      // move back
+      float back_real_cost = MapUtil::distance(ori, dest) * 10.F / dasheep->getMovementTimeModifier();
+      float back_cost = MapUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dest, ori));
+      MapUtil::round(dasheep->getRegion()->move(dasheep, MapUtil::getOrientationToTarget(dest.x, dest.y, ori.x, ori.y), ori, back_cost, adventure->getWorld()));
+      MapUtil::Vector3 final = dasheep->getCoord();
+      std::cout << "final: " << final.x << " " << final.y << " " << final.z << std::endl;
     }
   }
   auto end = std::chrono::system_clock::now();

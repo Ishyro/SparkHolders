@@ -91,7 +91,7 @@ func update_mouse_coordinates():
 				Values.selected_block = selection
 	if not pause_state:
 		var ap_cost = ""
-		if(Values.selected_team and Values.mode == Values.ACTION_MOVE and not Values.updating_state):
+		if(Values.selected_team and Values.mode == Values.ACTION_MOVE):
 			ap_cost = map.update_phantom(Values.selected_team.id)
 		hud.update_mouse_box(mouse_coords, ap_cost)
 
@@ -231,7 +231,7 @@ func _unhandled_input(event):
 				hud.inventory.display_inventory()
 			else:
 				hud.inventory.visible = false
-		if event.is_action_pressed("action") && !Values.updating_state && !Values.link.hasState():
+		if event.is_action_pressed("action") && not Values.updating_state && not Values.link.hasState():
 			Values.action_muxtex.lock()
 			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
 				Values.mode = Values.ACTION_MODE_NONE

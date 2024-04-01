@@ -111,13 +111,15 @@ CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT
 # Compiler and flags
 
 CC=g++
-CC_FLAGS=-O0 -pipe -pthread -fpermissive -g -Wall -Wno-reorder
+CC_FLAGS=-O3 -pipe -pthread -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder
 CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
 PLATFORM=linuxbsd
 AR=ar rcs
+GODOT_TARGET_MODE=template_release
 
 # Windows
 ifdef WINDOWS
@@ -126,13 +128,24 @@ ifndef _WIN32_WINNT
 _WIN32_WINNT=0x0800
 endif # _D_WIN32_WINNT
 CC=x86_64-w64-mingw32-g++
-CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -pipe -static-libstdc++ -static-libgcc -fpermissive -g -Wall -Wno-reorder
+CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O3 -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
 CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
 CLIENT_TERMINAL_BINAIRIES=
 TARGET_CLIENT_TERMINAL=
 PLATFORM=windows
 endif # WINDOWS
+
+# Debug
+ifdef DEBUG
+CC_FLAGS=$(CC_DEBUG_FLAGS)
+GODOT_TARGET_MODE=template_debug
+else
+undefine BIN_CLIENT_TERMINAL
+undefine CLIENT_TERMINAL_BINAIRIES
+undefine TARGET_CLIENT_TERMINAL
+endif # DEBUG
 
 # Rules
 
@@ -150,8 +163,7 @@ $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRI
 
 godot:
 	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM)
-	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=template_release arch=x86_64
-	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=template_debug arch=x86_64
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=$(GODOT_TARGET_MODE) arch=x86_64
 
 $(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)

@@ -64,7 +64,7 @@ script = ExtResource("1_dfgek")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 light_color = Color(4.01, 1.25, 0.62, 1)
 light_energy = 0.05
-light_size = 0.5
+light_size = 0.1
 shadow_enabled = true
 
 [node name="Flames" type="GPUParticles3D" parent="."]

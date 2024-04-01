@@ -172,6 +172,7 @@ func _process(_delta):
 					add_character(character_id, next_characters_data[character_id])
 			var update = false
 			for character_id in owned_characters:
+				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
 				if floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16):
 					update = true
 					create_blocks(character_id)
@@ -192,7 +193,7 @@ func _process(_delta):
 			Values.updating_state = true
 		mutex.unlock()
 	if mutex.try_lock():
-		if !Values.updating_state: #&& !Values.link.hasState():
+		if not Values.updating_state: #&& !Values.link.hasState():
 			# waiting player actions, we can update our data now
 			bake_navigation_meshes()
 			set_navigation_mesh(Values.selected_team.id)
@@ -208,9 +209,9 @@ func _physics_process(delta):
 			for character_id in characters_data:
 				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
 				characters[character_id].move_towards(dest, delta)
-				characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
 				if characters[character_id].nav.is_target_reached():
 					characters[character_id].transform.origin = dest
+					characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
 					if phantoms.has(character_id):
 						if phantom_lines.has(character_id):
 							for phantom_line in phantom_lines[character_id]:
@@ -268,7 +269,7 @@ func add_block(coord: Vector3, current_lights: Dictionary):
 		collider.collision_layer = 0x21
 	else:
 		collider.collision_layer = 0x11
-	collider.collision_mask = 0x1f
+	collider.collision_mask = 0x0
 	collider.set_transform(Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
 	var shape = CollisionShape3D.new()
 	match blocks_data[current_blocks[coord]]["type"]:
@@ -557,8 +558,8 @@ func initialize_block(block: String):
 		multiMeshInstances[block] = multimeshinstance
 		n_blocks.add_child(multimeshinstance)
 		
-		if block == "TXT_GRASS" || block == "TXT_FLOOR_STONE" || block == "TXT_WALL_STONE":
-			var img = materials[block].albedo_texture.get_image()
+		if blocks_data[block]["type"] != Values.BLOCK_LIQUID && blocks_data[block]["type"] != Values.BLOCK_GAS && material.albedo_texture:
+			var img = material.albedo_texture.get_image()
 			blocks_img[block] = ImageTexture.create_from_image(img)
 
 func add_furniture(furniture_data: Dictionary, coord: Vector3):
@@ -631,37 +632,42 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	n_projectiles.add_child(projectile)
 
 func update_phantom(character_id: int):
-	if !baking_done:
-		return ""
-	phantoms[character_id].visible = true
-	phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y, Values.coord.z) 
-	characters[character_id].nav.target_position = phantoms[character_id].transform.origin
-	characters[character_id].nav.get_next_path_position()
-	if phantom_lines.has(character_id):
-		for phantom_line in phantom_lines[character_id]:
-			n_characters.remove_child(phantom_line)
-	phantom_lines[character_id] = []
-	var previous_vec = characters[character_id].transform.origin
-	var last_angle = Vector3.ZERO
-	var ap_cost = 0.
-	for vec in characters[character_id].nav.get_current_navigation_path():
-		# we need round y 
-		vec = round_vec(vec - Vector3(0, 0.1, 0))
-		var distance = previous_vec.distance_to(vec)
-		if distance != 0.:
-			ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
-			var phantom_line = Decal.new()
-			phantom_line.texture_albedo = preload("res://menus/arabesque.png")
-			n_characters.add_child(phantom_line)
-			phantom_line.transform.origin = previous_vec
-			phantom_line.global_transform = phantom_line.global_transform.looking_at(vec, Vector3.UP, true)
-			last_angle = phantom_line.rotation_degrees
-			phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, (vec.y + previous_vec.y) / 2 + 0.001, (vec.z + previous_vec.z) / 2)
-			phantom_line.set_size(Vector3(0.1, 0.25, distance))
-			previous_vec = vec
-			phantom_lines[character_id].push_back(phantom_line)
-	phantoms[character_id].rotation_degrees = last_angle
-	return String.num(ap_cost, 3) + " ap"
+	if mutex.try_lock():
+		if baking_done and not Values.updating_state:
+			phantoms[character_id].visible = true
+			phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y, Values.coord.z) 
+			characters[character_id].nav.target_position = phantoms[character_id].transform.origin
+			characters[character_id].nav.get_next_path_position()
+			if phantom_lines.has(character_id):
+				for phantom_line in phantom_lines[character_id]:
+					n_characters.remove_child(phantom_line)
+			phantom_lines[character_id] = []
+			var previous_vec = characters[character_id].transform.origin
+			var last_angle = Vector3.ZERO
+			var ap_cost = 0.
+			for vec in characters[character_id].nav.get_current_navigation_path():
+				# we need round y 
+				vec = round_vec(vec - Vector3(0, 0.1, 0))
+				var distance = previous_vec.distance_to(vec)
+				if distance != 0.:
+					ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
+					var phantom_line = Decal.new()
+					phantom_line.texture_albedo = preload("res://menus/arabesque.png")
+					n_characters.add_child(phantom_line)
+					phantom_line.transform.origin = previous_vec
+					if not previous_vec.cross(vec).is_zero_approx():
+						phantom_line.global_transform = phantom_line.global_transform.looking_at(vec, Vector3.UP, true)
+					last_angle = phantom_line.rotation_degrees
+					phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, (vec.y + previous_vec.y) / 2 + 0.001, (vec.z + previous_vec.z) / 2)
+					phantom_line.set_size(Vector3(0.1, 0.25, distance))
+					previous_vec = vec
+					phantom_lines[character_id].push_back(phantom_line)
+			phantoms[character_id].rotation_degrees = last_angle
+			mutex.unlock()
+			return String.num(ap_cost, 3) + " ap"
+		else:
+			mutex.unlock()
+			return ""
 
 func round_float(number: float):
 	var value = int(number * 1000. + 0.5)
