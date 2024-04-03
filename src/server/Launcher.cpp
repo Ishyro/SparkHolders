@@ -203,7 +203,7 @@ int32_t main(int32_t argc, char ** argv) {
     adventure->incrTick();
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
-    // std::cout << "Tick duration: " << elapsed_seconds.count() << "s" << std::endl;
+    std::cout << "Tick duration: " << elapsed_seconds.count() << "s" << std::endl;
   }
   delete adventure;
   ss->close();

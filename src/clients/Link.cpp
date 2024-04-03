@@ -95,8 +95,8 @@ void Link::sendActions(
 
 void Link::receiveState(std::string msg) {
   StateDisplay * game_state = Client::receiveState(msg, adventure);
-  for(CharacterDisplay * display : game_state->characters) {
-    for(auto pair : characters) {
+  for(auto pair : characters) {
+    for(CharacterDisplay * display : game_state->characters) {
       if(pair.second->id == display->id) {
         pair.second->move(MathUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
         pair.second->setHp(display->hp);
@@ -106,11 +106,12 @@ void Link::receiveState(std::string msg) {
         pair.second->setSatiety(display->satiety);
         pair.second->setCurrentSoulBurn(display->soulBurn);
         pair.second->gainXP(display->xp - pair.second->getXP());
+        break;
       }
     }
   }
   for(auto pair : characters) {
-    adventure->getWorld()->changeRegion(pair.second);
+    //adventure->getWorld()->changeRegion(pair.second);
     //Map * map = new Map(adventure->getWorld()->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ()), pair.second, adventure->getDatabase(), adventure->getWorld());
     //game_state->maps.erase(pair.first);
     //game_state->maps.insert(std::make_pair(pair.first, map));

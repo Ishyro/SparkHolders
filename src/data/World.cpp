@@ -127,10 +127,16 @@ void World::addCharacter(Character * character) {
   changeRegion(character);
 }
 
+void World::removeCharacter(Character * character) {
+  characters.remove(character);
+  character->getRegion()->removeCharacter(character);
+  delete character;
+}
+
 void World::checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest) {
-  if(floor(ori.x / CHUNK_SIZE) != floor(dest.x / CHUNK_SIZE) ||
-  floor(ori.y / CHUNK_SIZE) != floor(dest.y / CHUNK_SIZE) ||
-  floor(ori.z / CHUNK_SIZE) != floor(dest.z / CHUNK_SIZE)) {
+  if(floor(ori.x / CHUNK_SIZE) != floor(dest.x / CHUNK_SIZE)
+    || floor(ori.y / CHUNK_SIZE) != floor(dest.y / CHUNK_SIZE)
+    || floor(ori.z / CHUNK_SIZE) != floor(dest.z / CHUNK_SIZE)) {
     changeRegion(character);
   }
 }

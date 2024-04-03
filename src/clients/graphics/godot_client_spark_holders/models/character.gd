@@ -15,6 +15,8 @@ var target_velocity = Vector3.ZERO
 @onready var range_mesh = $AttackRange
 @onready var shape = $Shape
 
+var checkpoint = null
+
 func set_color(color: String):
 	var material = StandardMaterial3D.new()
 	material.albedo_color = color
@@ -32,7 +34,8 @@ func unselect():
 
 func move_towards(dest: Vector3, delta: float):
 	nav.target_position = dest
-	var checkpoint = nav.get_next_path_position()
+	#if not checkpoint or nav.is_navigation_finished():
+	checkpoint = nav.get_next_path_position()
 	var space = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(checkpoint, checkpoint + Vector3(0, -10, 0), 0x1)
 	var result = space.intersect_ray(query)

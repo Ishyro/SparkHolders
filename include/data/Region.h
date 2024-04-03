@@ -46,7 +46,6 @@ class Region {
     Furniture * getFurniture(MathUtil::Vector3i coord);
   private:
     std::array<BlocksChunk *, 27> chunks;
-    std::list<Character *> characters;
 };
 
 #endif // _REGION_H_

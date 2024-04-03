@@ -1,13 +1,31 @@
 #include "data/Region.h"
 
 void Region::addCharacter(Character * character) {
-  characters.push_back(character);
-  character->setRegion(this);
+  MathUtil::Vector3 coord = character->getCoord();
+  int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
+  int32_t b = (int32_t) std::floor( (coord.y - (float) id.y) / (float) CHUNK_SIZE) + 1;
+  int32_t c = (int32_t) std::floor( (coord.z - (float) id.z) / (float) CHUNK_SIZE) + 1;
+  int32_t chunk_indice = a + b * 3 + c * 9;
+  if(chunk_indice >= 0 && chunk_indice < 27) {
+    chunks[a + b * 3 + c * 9]->addCharacter(character);
+    character->setRegion(this);
+  }
 }
 
 bool Region::removeCharacter(Character * character) {
-  characters.remove(character);
-  return characters.empty();
+  MathUtil::Vector3 coord = character->getCoord();
+  int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
+  int32_t b = (int32_t) std::floor( (coord.y - (float) id.y) / (float) CHUNK_SIZE) + 1;
+  int32_t c = (int32_t) std::floor( (coord.z - (float) id.z) / (float) CHUNK_SIZE) + 1;
+  int32_t chunk_indice = a + b * 3 + c * 9;
+  if(chunk_indice >= 0 && chunk_indice < 27) {
+    bool no_characters_left = chunks[a + b * 3 + c * 9]->removeCharacter(character);
+    // 13 is the central chunk
+    if(chunk_indice == 13) {
+      return no_characters_left;
+    }
+  }
+  return false;
 }
 
 Block * Region::getBlock(MathUtil::Vector3 coord) {
@@ -104,7 +122,7 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
     }
     */
   }
-  for(Character * other : characters) {
+  for(Character * other : getCharacters()) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
       return false;
     }
@@ -251,24 +269,42 @@ bool Region::canSee(Character * watcher, Character * target) {
   MathUtil::Vector3 watcher_head = watcher->getCoord();
   watcher_head.z += watcher->getHeight();
   MathUtil::Vector3 target_head = target->getCoord();
+  bool connard = false;
+  if(target_head.x == 50.5 && target_head.y == 98.5) {
+    connard = true;
+  }
   target_head.z += target->getHeight();
-  float distance2 = MathUtil::distance2(watcher_head, target_head);
-  MathUtil::Vector3 direction = MathUtil::makeVector3((watcher_head.x - target_head.x) / distance2, (watcher_head.y - target_head.y) / distance2, (watcher_head.y - target_head.y) / distance2);
-  for(int32_t step = 1; step < distance2; step++) {
+  float distance = MathUtil::distance(watcher_head, target_head);
+  MathUtil::Vector3 direction = MathUtil::makeVector3((target_head.x - watcher_head.x) / distance, (target_head.y - watcher_head.y) / distance, (target_head.z - watcher_head.z) / distance);
+  for(int32_t step = 1; step < distance; step++) {
     MathUtil::Vector3 coord = MathUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
     Block * block = getBlock(coord);
+    if(connard) {
+      std::cout << "coord: " << coord.x << " " << coord.y << " " << coord.z << std::endl;
+    }
     if(block != nullptr && block->opaque) {
+      if(connard) {
+        std::cout << "ici: " << coord.x << " " << coord.y << " " << coord.z << std::endl;
+      }
       return false;
     }
   }
   return true;
 }
 
-std::list<Character *> Region::getCharacters() { return characters; }
+std::list<Character *> Region::getCharacters() {
+  std::list<Character *> result = std::list<Character *>();
+  for(BlocksChunk * chunk : chunks) {
+    for(Character * character : chunk->getCharacters()) {
+      result.push_front(character);
+    }
+  }
+  return result;
+}
 
 std::list<Character *> Region::getCharacters(Character * character) {
   std::list<Character *> result = std::list<Character *>();
-  for(Character * c : characters) {
+  for(Character * c : getCharacters()) {
     if(canSee(character, c)) {
       result.push_back(c);
     }

@@ -46,6 +46,7 @@ class World {
     BlocksChunk * getChunk(MathUtil::Vector3 coord);
     BlocksChunk * getChunk(MathUtil::Vector3i ori);
     void addCharacter(Character * character);
+    void removeCharacter(Character * character);
     void checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     void changeRegion(Character * character);
     int32_t getLight(int32_t x, int32_t y, int32_t z);

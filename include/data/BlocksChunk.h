@@ -45,10 +45,13 @@ class BlocksChunk {
     Block * getBlock(MathUtil::Vector3i coord);
     void setBlock(MathUtil::Vector3i coord, Block * block);
     std::map<const MathUtil::Vector3i, Block *> getBlocks();
+    std::list<Character *> getCharacters();
     std::list<Furniture *> getFurnitures();
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3 ori);
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3i ori);
+    void addCharacter(Character * character);
     void addFurniture(Furniture * furniture);
+    bool removeCharacter(Character * character);
   private:
     std::list<Character *> characters;
     std::list<Projectile *> projectiles;

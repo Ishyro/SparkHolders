@@ -150,7 +150,6 @@ func select_character(character_id: int):
 	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
 	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
 	n_camera3P.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_camera3P.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
-	#bake_navigation_meshes()
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
 	n_inventory.update_inventories(owned_characters)
@@ -207,11 +206,13 @@ func _physics_process(delta):
 		if Values.updating_state:
 			var done = true
 			for character_id in characters_data:
+				var character = characters[character_id]
 				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
-				characters[character_id].move_towards(dest, delta)
-				if characters[character_id].nav.is_target_reached():
-					characters[character_id].transform.origin = dest
-					characters[character_id].rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
+				character.move_towards(dest, delta)
+				if character.nav.is_target_reached() or not character.nav.is_target_reachable():
+					character.checkpoint = null
+					character.transform.origin = dest
+					character.rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
 					if phantoms.has(character_id):
 						if phantom_lines.has(character_id):
 							for phantom_line in phantom_lines[character_id]:
@@ -219,7 +220,7 @@ func _physics_process(delta):
 						phantom_lines[character_id] = []
 						phantoms[character_id].transform.origin = dest
 						phantoms[character_id].visible = false
-				done = done && (characters[character_id].transform.origin == dest)
+				done = done && (character.transform.origin == dest)
 			#for projectile_id in projectiles_data:
 			#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
 			#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
