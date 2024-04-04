@@ -1,4 +1,4 @@
-name = TXT_SPECIALIST
+name = TXT_PARAGON
 type = WAY_CLASS
 tier = 10
 baseHp = 250
@@ -18,7 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills = TXT_DASH%
-tags = specialist%pyrra%warrior%
+tags = paragon%alba%warrior%
 and_requirements = 
 or_requirements = 
 not_requirements = 

@@ -112,7 +112,7 @@ CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT
 
 CC=g++
 CC_FLAGS=-O3 -pipe -pthread -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder -DDEBUG
 CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
@@ -120,6 +120,7 @@ TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
 PLATFORM=linuxbsd
 AR=ar rcs
 GODOT_TARGET_MODE=template_release
+GODOT_DEBUG=0
 
 # Windows
 ifdef WINDOWS
@@ -129,7 +130,7 @@ _WIN32_WINNT=0x0800
 endif # _D_WIN32_WINNT
 CC=x86_64-w64-mingw32-g++
 CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O3 -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder -DDEBUG
 CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
 CLIENT_TERMINAL_BINAIRIES=
@@ -141,6 +142,7 @@ endif # WINDOWS
 ifdef DEBUG
 CC_FLAGS=$(CC_DEBUG_FLAGS)
 GODOT_TARGET_MODE=template_debug
+GODOT_DEBUG=1
 else
 undefine BIN_CLIENT_TERMINAL
 undefine CLIENT_TERMINAL_BINAIRIES
@@ -162,7 +164,7 @@ $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRI
 	$(AR) $@ $^
 
 godot:
-	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM)
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) debug=$(GODOT_DEBUG)
 	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=$(GODOT_TARGET_MODE) arch=x86_64
 
 $(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp

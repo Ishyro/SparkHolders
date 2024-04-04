@@ -41,30 +41,51 @@ void GodotLink::initialize(String ip) {
   }
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
+  #ifdef DEBUG
+    log << "sendChoices(test, TXT_HOMUNCULIST, TXT_LEPIDOPTERAN, TXT_GREEN_TOWN, TXT_WOODLAND, TXT_HIBERO, TXT_SCHOLAR)" << std::endl;
+  #endif
   link->sendChoices("test", "TXT_HOMUNCULIST", "TXT_LEPIDOPTERAN", "TXT_GREEN_TOWN", "TXT_WOODLAND", "TXT_HIBERO", "TXT_SCHOLAR");
+  #ifdef DEBUG
+    log << "sendReady()" << std::endl;
+  #endif
   link->sendReady();
 }
 
 bool GodotLink::hasState() {
+  #ifdef DEBUG
+    log << "hasState()" << std::endl;
+  #endif
   return link->hasState();
 }
 
 bool GodotLink::getState() {
+  #ifdef DEBUG
+    log << "getState()" << std::endl;
+  #endif
   delete state;
   state = link->getState();
   return state != nullptr;
 }
 
 float GodotLink::getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest) {
-  float result = link->getPlayer((int64_t) character_id)->getRegion()->getMoveCost(link->getPlayer((int64_t) character_id), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
+  #ifdef DEBUG
+    log << "getMoveCost(" << character_id << ", (" << ori.x << "," << ori.y << "," << ori.z << "), (" << dest.x << "," << dest.y << "," << dest.z << ") )" << std::endl;
+  #endif
+  float result = link->getPlayer(character_id)->getRegion()->getMoveCost(link->getPlayer(character_id), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
   return result;
 }
 
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
+  #ifdef DEBUG
+    log << "getOrientationToTarget( (" << a.x << "," << a.y << "), (" << b.x << "," << b.y << ") )" << std::endl;
+  #endif
   return MathUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
 Array GodotLink::getAvaillableBlocks() {
+  #ifdef DEBUG
+    log << "getAvaillableBlocks()" << std::endl;
+  #endif
   Array result = Array();
   for(auto pair : link->getAdventure()->getDatabase()->getAvaillableBlocks()) {
     result.push_back(pair.first.c_str());
@@ -73,15 +94,21 @@ Array GodotLink::getAvaillableBlocks() {
 }
 
 Dictionary GodotLink::getBlocks(int64_t character_id) {
+  #ifdef DEBUG
+    log << "getBlocks(" << character_id << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
-  for(auto pair : link->getPlayer((int64_t) character_id)->getRegion()->getBlocks()) {
+  for(auto pair : link->getPlayer(character_id)->getRegion()->getBlocks()) {
     result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
   }
   return result;
 }
 
 Array GodotLink::getLights(int64_t character_id) {
-  //Map * map = state->maps.at((int64_t) character_id);
+  #ifdef DEBUG
+    log << "getLights()" << character_id << ")" << std::endl;
+  #endif
+  //Map * map = state->maps.at(character_id);
   Array result = Array();
   /*
   for(int32_t y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
@@ -96,14 +123,20 @@ Array GodotLink::getLights(int64_t character_id) {
 }
 
 Array GodotLink::getControlledParty() {
+  #ifdef DEBUG
+    log << "getControlledParty()" << std::endl;
+  #endif
   Array result = Array();
   for(int64_t id : link->getPlayersId()) {
-    result.push_back( (int64_t) id);
+    result.push_back(id);
   }
   return result;
 }
 
 Dictionary GodotLink::getCharacters() {
+  #ifdef DEBUG
+    log << "getCharacters()" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   for(CharacterDisplay * character : state->characters) {
     result[ (int64_t) character->id] = getDataFromCharacter(character);
@@ -112,14 +145,20 @@ Dictionary GodotLink::getCharacters() {
 }
 
 Dictionary GodotLink::getProjectiles() {
+  #ifdef DEBUG
+    log << "getProjectiles()" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   for(ProjectileDisplay * projectile : state->projectiles) {
-    result[ (int64_t) projectile->id] = getDataFromProjectile(projectile);
+    result[projectile->id] = getDataFromProjectile(projectile);
   }
   return result;
 }
 
 Dictionary GodotLink::getFurnitures() {
+  #ifdef DEBUG
+    log << "getFurnitures()" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   for(Character * player : link->getPlayers()) {
     for(Furniture * furniture : player->getRegion()->getFurnitures(player)) {
@@ -130,6 +169,9 @@ Dictionary GodotLink::getFurnitures() {
 }
 
 Array GodotLink::getUpdatedFurnitures() {
+  #ifdef DEBUG
+    log << "getUpdatedFurnitures()" << std::endl;
+  #endif
   Array result = Array();
   for(Furniture * furniture : state->changed_furnitures) {
     result.push_back(Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x));
@@ -139,6 +181,9 @@ Array GodotLink::getUpdatedFurnitures() {
 
 
 String GodotLink::getRelation(String team1, String team2) {
+  #ifdef DEBUG
+    log << "getUpdatedFurnitures(" << team1.utf8().get_data() << ", " << team2.utf8().get_data() << ")" << std::endl;
+  #endif
   switch(link->getAdventure()->getDatabase()->getRelation(std::string(team1.utf8().get_data()), std::string(team2.utf8().get_data()))) {
     case TEAM_SAME:
       return "SAME";
@@ -156,8 +201,11 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
   if(item == nullptr) {
     return result;
   }
+  #ifdef DEBUG
+    log << "getDataFromItem(" << item->name << ")" << std::endl;
+  #endif
   result["name"] = item->name.c_str();
-  result["id"] = (int64_t) item->id;
+  result["id"] = item->id;
   result["type"] = item->type;
   result["type2"] = item->type2;
   result["tier"] = item->tier;
@@ -215,6 +263,9 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
 }
 
 Dictionary GodotLink::getDataFromBlock(String tile_name) {
+  #ifdef DEBUG
+    log << "getDataFromBlock(" << tile_name.utf8().get_data() << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   Block * block = (Block *) link->getAdventure()->getDatabase()->getBlock(std::string(tile_name.utf8().get_data()));
   result["type"] = block->type;
@@ -229,6 +280,9 @@ Dictionary GodotLink::getDataFromBlock(String tile_name) {
 
 
 Dictionary GodotLink::getDataFromClass(String class_name) {
+  #ifdef DEBUG
+    log << "getDataFromClass(" << class_name.utf8().get_data() << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   if(class_name == "") {
     return result;
@@ -256,6 +310,9 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
   return result;
 }
 Dictionary GodotLink::getDataFromRace(String race_name) {
+  #ifdef DEBUG
+    log << "getDataFromRace(" << race_name.utf8().get_data() << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   if(race_name == "") {
     return result;
@@ -294,6 +351,9 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   return result;
 }
 Dictionary GodotLink::getDataFromWay(String way_name) {
+  #ifdef DEBUG
+    log << "getDataFromWay(" << way_name.utf8().get_data() << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   if(way_name == "") {
     return result;
@@ -322,6 +382,9 @@ Dictionary GodotLink::getDataFromWay(String way_name) {
 }
 
 Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
+  #ifdef DEBUG
+    log << "getDataFromCharacter(" << character->id << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   result["name"] = character->name.c_str();
   result["hp"] = character->hp;
@@ -360,8 +423,11 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
 }
 
 Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
+  #ifdef DEBUG
+    log << "getStatsFromCharacter(" << character_id << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
-  Character * character = link->getPlayer( (int64_t) character_id);
+  Character * character = link->getPlayer(character_id);
   result["name"] = character->name.c_str();
   result["maxHp"] = character->getMaxHp();
   result["maxMana"] = character->getMaxMana();
@@ -427,8 +493,11 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
 }
 
 Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
+  #ifdef DEBUG
+    log << "getInventoryFromCharacter(" << character_id << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
-  Gear * gear = link->getPlayer( (int64_t) character_id)->getGear();
+  Gear * gear = link->getPlayer(character_id)->getGear();
   result["mantle"] = getDataFromItem(gear->getMantle());
   result["helmet"] = getDataFromItem(gear->getHelmet());
   result["armor"] = getDataFromItem(gear->getArmor());
@@ -460,6 +529,9 @@ Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
 }
 
 Dictionary GodotLink::getSkillsFromCharacter(int64_t character_id) {
+  #ifdef DEBUG
+    log << "getSkillsFromCharacter(" << character_id << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
 
   return result;
@@ -467,6 +539,9 @@ Dictionary GodotLink::getSkillsFromCharacter(int64_t character_id) {
 
 
 Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
+  #ifdef DEBUG
+    log << "getDataFromProjectile(" << projectile->name << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   result["name"] = projectile->name.c_str();
   result["projectile_type"] = projectile->projectile_type;
@@ -489,6 +564,9 @@ Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
 }
 
 Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
+  #ifdef DEBUG
+    log << "getDataFromFurniture(" << furniture->name << ")" << std::endl;
+  #endif
   Dictionary result = Dictionary();
   result["name"] = furniture->name.c_str();
   result["type"] = furniture->type;
@@ -521,6 +599,9 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
 }
 
 void GodotLink::send_actions(Dictionary actions) {
+  #ifdef DEBUG
+    log << "send_actions()" << std::endl;
+  #endif
   std::vector<int64_t> ids = std::vector<int64_t>();
   std::vector<std::vector<int32_t>> types = std::vector<std::vector<int32_t>>();
   std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>();
@@ -623,9 +704,14 @@ void GodotLink::send_actions(Dictionary actions) {
 }
 
 void GodotLink::close() {
+  #ifdef DEBUG
+    log << "close()" << std::endl;
+  #endif
   link->markClosed();
   s.close();
-  log.close();
+  #ifdef DEBUG
+    log.close();
+  #endif
   delete link;
   delete state;
   delete translator;

@@ -36,8 +36,8 @@ TXT_BIRPHAN = Birph is a Kindgom of the Old Lands, always at war with his neighb
 TXT_BRIDGE_TOWN = Built over the Bridge linking Yllia to the Ancestral Lands, Bridge Town is a cosmopolitan city where all races are welcomed.
 She is also the home base for all the Expeditions of the Endless Sea.%
 
-TXT_CAELIA_FOLLOWER = Caelia is the Goddess of Wind, Avatar of Freedom. Her Herald is the Winds' Shepherd. Her assiocated damage and metal are Lightning and Quicksilver.
-Her associated class is the Specialist, her Moon is Red.%
+TXT_AERINA_FOLLOWER = Aerina is the Goddess of Wind, Avatar of Freedom. Her Herald is the Winds' Shepherd. Her assiocated damage and metal are Lightning and Quicksilver.
+Her associated class is the Mender, her Moon is Red.%
 
 TXT_CELESTIA = The city of angels. At the top of a mountain west to Aether Forest, no road leads to her gates.%
 
@@ -67,13 +67,13 @@ TXT_HUMAN = Humans are the most prominent race on Aytlanta. They traveled beyond
 TXT_TAUROID = Tauroids are stronger than the other races, but they weren't able to found a lasting society. They were brought into slavery by the Khonori for centuries, and hunted for sports by the Birphans.
 Following the revolt of Khorak Gaalk, they were able to found multiple Enclaves in the New Lands where they can live in peace.%
 
-TXT_PHILLA_FOLLOWER = Philla is the Goddess of Life and Dawn, Avatar of Loyalty. Her Herald is the Golden Lion. Her assiocated damage and metal are True and Gold.
-Her cult his mostly find in human cities, she is the godess with the highest number of followers. Her associated class is the Mender, her Moon is the Sun.%
+TXT_ALBA_FOLLOWER = Alba is the Goddess of Life and Dawn, Avatar of Loyalty. Her Herald is the Golden Lion. Her assiocated damage and metal are True and Gold.
+Her cult his mostly find in human cities, she is the godess with the highest number of followers. Her associated class is the Paragon, her Moon is the Sun.%
 
 TXT_PYRRA_FOLLOWER = Pyrra is the Goddess of Fire, Avatar of Victory. Her Herald is the Red Ribbon. Her assiocated damage and metal are Fire and Iron. Her associated class is the Vanguard,
 her Moon is Yellow.%
 
-TXT_RAGARD_FOLLOWER = Ragard is the God of Rain, Avatar of Willpower. His Herald is the Last Flake. His assiocated damage and metal are Frost and Lead.
+TXT_HIBERO_FOLLOWER = Hibero is the God of Rain, Avatar of Willpower. His Herald is the Last Flake. His assiocated damage and metal are Frost and Lead.
 His associated class is the Elementalist, his Moon is Blue.%
 
 TXT_RUMINANT = Ruminant%

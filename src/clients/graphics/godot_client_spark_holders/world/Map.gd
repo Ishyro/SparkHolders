@@ -147,8 +147,8 @@ func set_navigation_mesh(character_id: int):
 	n_blocks.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
 
 func select_character(character_id: int):
-	var offsetX = 5 * sin(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
-	var offsetZ = 5 * cos(deg_to_rad($"../View/Camera3P".rotation_degrees.y))
+	var offsetX = 5 * sin($"../View/Camera3P".rotation.y)
+	var offsetZ = 5 * cos($"../View/Camera3P".rotation.y)
 	n_camera3P.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_camera3P.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
 	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])

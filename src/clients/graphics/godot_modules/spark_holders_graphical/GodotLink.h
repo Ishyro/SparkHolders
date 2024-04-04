@@ -21,7 +21,11 @@
 #include "Values.h"
 
 #include <iostream>
-#include <fstream>
+
+#ifdef DEBUG
+  #include <ostream>
+  #include <fstream>
+#endif
 
 class GodotLink : public RefCounted {
   GDCLASS(GodotLink, RefCounted);
@@ -31,7 +35,9 @@ public:
     translator(nullptr),
     state(nullptr)
   {
-    log.open("log.txt");
+    #ifdef DEBUG
+      log.open("log.txt");
+    #endif
   }
   void initialize(String ip);
   bool hasState();
@@ -68,7 +74,9 @@ private:
   Link * link;
   Translator * translator;
   StateDisplay * state;
-  std::ofstream log;
+  #ifdef DEBUG
+    std::ofstream log;
+  #endif
   std::map<int64_t, int32_t> mist_nbs = std::map<int64_t, int32_t>();
   #ifdef _WIN32_WINNT
     HANDLE thread;

@@ -12,4 +12,8 @@ if env["platform"] == 'windows':
   env.Append(LIBS=['ws2_32', 'winpthread'])
 module_env = env.Clone()
 module_env.add_source_files(env.modules_sources, "*.cpp")
-module_env.Append(CXXFLAGS=['-O0', '-Wno-reorder', '-pthread'])
+debug = ARGUMENTS.get('debug', 0)
+if int(debug):
+  module_env.Append(CXXFLAGS=['-O0', '-g', '-Wno-reorder', '-pthread', '-DDEBUG'])
+else:
+  module_env.Append(CXXFLAGS=['-O3', '-Wno-reorder', '-pthread'])

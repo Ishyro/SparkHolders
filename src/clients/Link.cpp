@@ -110,11 +110,9 @@ void Link::receiveState(std::string msg) {
       }
     }
   }
+  // only usefull for the first state received
   for(auto pair : characters) {
-    //adventure->getWorld()->changeRegion(pair.second);
-    //Map * map = new Map(adventure->getWorld()->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ()), pair.second, adventure->getDatabase(), adventure->getWorld());
-    //game_state->maps.erase(pair.first);
-    //game_state->maps.insert(std::make_pair(pair.first, map));
+    adventure->getWorld()->changeRegion(pair.second);
   }
   state_pile.push_back(game_state);
 }

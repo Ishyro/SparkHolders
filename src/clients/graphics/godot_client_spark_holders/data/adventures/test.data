@@ -125,7 +125,7 @@ data/attributes/elementalist.data
 data/attributes/shadow.data
 data/attributes/mender.data
 data/attributes/homunculist.data
-data/attributes/specialist.data
+data/attributes/paragon.data
 data/attributes/no_attributes.data
 data/attributes/sheep.data
 data/attributes/wolf.data
@@ -237,13 +237,13 @@ Spawn.{{44}{32}{0}}
 Spawn.{{44}{70}{0}}
 Spawn.{{44}{85}{0}}
 # add starting attributes
+StartingAttributes.{TXT_PARAGON}
+StartingAttributes.{TXT_HOMUNCULIST}
+StartingAttributes.{TXT_SHADOW}
 StartingAttributes.{TXT_VANGUARD}
 StartingAttributes.{TXT_ELEMENTALIST}
-StartingAttributes.{TXT_GUARDIAN}
-StartingAttributes.{TXT_SHADOW}
 StartingAttributes.{TXT_MENDER}
-StartingAttributes.{TXT_HOMUNCULIST}
-StartingAttributes.{TXT_SPECIALIST}
+StartingAttributes.{TXT_GUARDIAN}
 # add starting ways
 StartingWay.{TXT_HUMAN}
 StartingWay.{TXT_LEPIDOPTERAN}

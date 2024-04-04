@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp3vh6vt3h7jo"
-path="res://.godot/imported/specialist.png-60d02b3f5b93100e5806c2b7ee212af8.ctex"
+uid="uid://cgfeo22dqkkou"
+path="res://.godot/imported/paragon.png-615d96ef19333d24a3a6efc48aad4bf5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/attributes/specialist.png"
-dest_files=["res://.godot/imported/specialist.png-60d02b3f5b93100e5806c2b7ee212af8.ctex"]
+source_file="res://resources/attributes/paragon.png"
+dest_files=["res://.godot/imported/paragon.png-615d96ef19333d24a3a6efc48aad4bf5.ctex"]
 
 [params]
 

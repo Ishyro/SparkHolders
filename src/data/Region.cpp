@@ -269,23 +269,13 @@ bool Region::canSee(Character * watcher, Character * target) {
   MathUtil::Vector3 watcher_head = watcher->getCoord();
   watcher_head.z += watcher->getHeight();
   MathUtil::Vector3 target_head = target->getCoord();
-  bool connard = false;
-  if(target_head.x == 50.5 && target_head.y == 98.5) {
-    connard = true;
-  }
   target_head.z += target->getHeight();
   float distance = MathUtil::distance(watcher_head, target_head);
   MathUtil::Vector3 direction = MathUtil::makeVector3((target_head.x - watcher_head.x) / distance, (target_head.y - watcher_head.y) / distance, (target_head.z - watcher_head.z) / distance);
   for(int32_t step = 1; step < distance; step++) {
     MathUtil::Vector3 coord = MathUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
     Block * block = getBlock(coord);
-    if(connard) {
-      std::cout << "coord: " << coord.x << " " << coord.y << " " << coord.z << std::endl;
-    }
     if(block != nullptr && block->opaque) {
-      if(connard) {
-        std::cout << "ici: " << coord.x << " " << coord.y << " " << coord.z << std::endl;
-      }
       return false;
     }
   }
