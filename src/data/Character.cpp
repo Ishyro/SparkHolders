@@ -201,6 +201,7 @@ bool Character::isMarkedDead() { return dead; }
 void Character::markDead(bool dead) { this->dead = dead; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 MathUtil::Vector3 Character::getCoord() { return coord; }
+MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
 float Character::getSize() { return size; }
 float Character::getHeight() { return height; }
 float Character::getOrientation() { return orientation; }

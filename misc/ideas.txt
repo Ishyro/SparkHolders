@@ -1,0 +1,171 @@
+CLASSES, GODS AND OTHER SYMBOLISMS
+
+(Class - God - Sphere (moon) - Metal - Element - Virtue - Damage type - Divine Object)
+
+Paragon - Alba - Sun (Yellow) - Gold - Spirit - Faith - True - The Magnifing Glass (Light)
+Homonculist - Laxito - White - Silver - Soul - Hope - Mind - The Rule (Length)
+Shadow - Nubilo - Dark (Void) - Copper - Body - Charity - Acid - The Abacus (Mole)
+
+Vanguard - Pyrra - Yellow - Iron - Fire - Strength - Fire - The Anvil (Temperature)
+Elementalist - Hibero - Blue - Lead - Water - Prudence - Cold - The Clock (Time)
+
+Mender - Aerina - Red - Quicksilver (Mercury) - Wind - Temperance - Lightning - The Compass (Intensity)
+Guardian - Beastiona - Green - Tin - Earth - Justice - Poison - The Scale (Mass)
+
+CLASSES UPGRADES 
+
+Can be selected as the Third Class if the Required Class as been taken as the First or Second Class. => 2 + 2 = 4 choices
+
+2 * 7 = 14
+
+Marksman (Paragon): range
+Duelist (Paragon): melee
+Necromancer (Homonculist): weak low cost invocations in big numbers 
+Spiritualist (Homonculist): strong invocations, with pact
+Aerologist (Elementalist): Fire + Wind, use weather to fight, strong in exterior, weak in interior
+Hylekinesist (Elementalist): Water + Earth, use the land to fight.
+Reaper (Shadow): retarded assassin.
+Artificer (Shadow): use traps and other stuff (bombs or things).
+Rune Master (Mender): do things with runes (will runes really be in this game ?).
+Mind Shaper (Mender): Take control of people.
+Soulburner (Vanguard): Retarted guy that specializes in killing himself with soul burn.
+Sweeper (Vanguard): Retared guy less retarded than the guy above him (But still not really clever).
+Champion (Guardian): guy that don't really protect anymore, warrior with good defence, can tank in front.
+Bodyguard (Guardian): guy that tank in the back, can grab projectiles or stuff.
+
+CLASSES SPECS
+
+Can be selected as the Third Class if both Required Classes as been taken as the First and Second Class. => 1 choice
+
+6 + 5 + 4 + 3 + 2 + 1 = 21
+
+Flesh Thief (Shadow + Mender): can steal people faces, and take their appearance.
+Shadowmancer (Shadow + Elementalist): use shadow magic, #TooD4rk
+Puppeteer (Shadow + Homunculist): craft his own summons, and do stuff with them.
+Dark Knight (Shadow + Guardian): D4rk guy that tank better in D4rk places.
+??? (Shadow + Paragon): no idea, is so D4rk that it overflows and makes light ?
+Night Stalker (Shadow + Vanguard): Retarded among the Retards, is more retarded in unlit areas.
+
+Blood Lord (Mender + Elementalist): deal damage with is own hp pool, can steal hp.
+Druid (Mender + Homunculist): heal and do stuff with animals. No comment.
+??? (Mender + Paragon): lighter paladin, kinda cleric?
+Paladin (Mender + Guardian): tank and heal.
+??? (Mender + Vanguard): retarded healer? What do we do with this one?
+
+Arcanist (Elementalist + Homunculist): guy in the back, deal damage with short lived summons, maybe kamikaze style.
+Blade Caster (Elementalist + Paragon): the usual mix between magic and melee. Mid range magic (Wind Blade spam).
+Shield Bearer (Elementalist + Guardian): specializes in shield, and shield magic (uses Shield / Black Bile as a pool ?)
+??? (Elementalist + Vanguard): retarded magic user
+
+??? (Homonculist + Vanguard):
+??? (Homuncilist + Paragon):
+??? (Homonculist + Guardian):
+
+??? (Paragon + Guardian):
+??? (Paragon + Vanguard):
+
+??? (Guardian + Vanguard): Double shield user. Goes in and bash people.
+
+RACES
+
+1 Lord of Gods
+Caeleran (Amphytryona): angel
+
+3 Unique Gods
+Human (Alba)
+Lepidopteran (Laxito): Guy with pointy ears, butterfly wings, and maybe butterfly antenae (elf).
+Chamaeleonidan (Nubilo) : Chameleon guy with scaly skin, can change color. Eyes can look in different direction.
+
+6 Paired Gods
+Urodelan (Pyrra + Hibero) : Guy with red smouth skin, is amphibian can breath under water, or ar least stay longer without breathing. Resist fire. Red Salamender guy.
+Camelidan (Pyrra + Aerina) : Camel guy, can store water + food more than the others, no problem with heat, cannot eat meat.
+Pantheran (Pyrra + Beastiona) : Feline guy, strong claws and fangs. Can eat other guys without issue, but can eat only meat.
+Muridan (Hibero + Beastiona) : Rat guy, small, can eat basicaly anything, like digging stuff and crafting things (dwarf / gnome).
+Ursidan (Hibero + Aerina) : Bear guy, strong claws and fangs. Can eat other guys without issue, heavier and bigger than other guys, need to eat more, resist cold, but not heat (Kinda orc).
+Capran (Beastiona + Aerina): Goat guy, cannot eat meat, good balance, resist cold.
+
+6 Paired Gods - Demi Humans, not playable characters, without advanced societies. (Human as sentient, so demi-sentient more than looks like a human).
+Terminaison in "oid" instead of "an" because they are inferior.
+Draconoid (Pyrra + Hibero): Crocodil/Land Dragon, can swim and breath fire. Lives alone / Female with kids. Extremely territorial, especialy when with kids. Is a predator.
+Ardoroid (Pyrra + Aerina): Phenix, is used as a mean of transportation.
+Herpestoid (Pyrra + Beastiona): Hyena, hunts in pack, flee when things are not looking good. Is a predator.
+Castoroid (Hibero + Beastiona): Castor, piss of everyone by building digs and shutting of rivers. Is a prey.
+Canisoid (Hibero + Aerina): Wolf, hunts in pack, flee when the leader is down, unless things are looking really good. Is a predator.
+Sciuridoid (Beastiona + Aerina): Marmot, lives in big groups in the ground, with some specimen on the lookout. Is a prey.
+
+TALENTS
+
+WAR / PEACE
+??? - Farming - Alba
+??? - ??? - Laxito
+??? - Mining - Nubilo
+Swordsmanship / Smithing - Pyrra
+Mana Weaving (Efficency) / Enchanting - Hibero
+??? - Brewing - Aerina
+Marksmanship / Gathering - Beastiona
+
+TAROT - MAJOR ARCANA
+
+(probably wont have Minor)
+
+01 - The City (Urbi)
+02 - The Emperor
+03 - The Ground (The Bellow) (3)
+04 - The Sky (The Above) (4)
+05 - The Strength
+06 - The Justice
+07 - The Temple (3 + 4)
+08 - The Hourglass
+09 - The Potter (3 * 3)
+10 - The Star
+11 - The Hermit
+12 - The Snake (3 * 4)
+13 - The Temperance
+14 - The Prudence
+15 - The Path
+16 - The Aether (4 * 4)
+17 - The Faith
+18 - The Hope
+19 - The Charity
+20 - The Herald (The Hierophant)
+21 - The World (Orbi)
+00 - The Fool
+
+SPHERES, TIME AND DISTANCES
+
+Moons: size 30°, tidal locked with Planet, Revolution in 6 days (Planet time)
+Sun: size 3°.
+Planet : tidal locked with Sun.
+Day / Sun cycle: by solar eclispes. Hours and Degrees are the same. 1 Day is 60 hours, 1 Hour is 60 Minutes / 1°, 1 Minute is 60 Seconds.
+  1 Hour is equivalent to the Moons moving 1° in the sky.
+  24 Hours are Night (eclispe).
+  3 Hours are Dawn and Dusk.
+  30 Hours are Day.
+  The hottest hour is just before Dusk, the coldest just before Dawn.
+
+6 Days per Week => 1 Week is 360°, Moons Revolution.
+5 Weeks per Month => 30°, 
+12 Months per Year => 360°, Planet Revolution.
+
+1 Meter is the distance of 1'' / 30 of the Planet circonference => PlanetR = 19 440 000/π
+PlanetR = 6 187 944,1874129 m
+The Planet and The 6 Moons have the same mass (equivalent to volume)
+4/3 * π * PlanetR^3 = 6 * 4/3 * π * MoonR^3 
+PlanetR^3 = 6 * MoonR^3
+MoonR = PlanetR / 6^(1/3)
+MoonR = 0.55 PlanetR
+MoonR = 11 244 240,810244 m
+
+For comparison: 
+EarthMoonR = 1 737 000 m
+EarthR = 6 371 000 m 
+
+WARNING: The Terran Metter and the Planet Metter are NOT the same. The Planet Metter should be more or less beetween 0.8 and 1.2 Earth Metter, but we don't know more than that.
+(Earth and the Planet have more or less the same composition, so we can directly link gravity to volume (4/3*πR^3).
+The Planet must have a gravity pull beetween 0.5G and 1.5G).
+
+SunR and Sun - Planet distance: Irrelevant, but it appears as 3° from the Planet surface.
+
+Planet - Moons distance: The Moons appeae as 30° from the Planet surface, and moonR = 19 440 000/(π*6^(1/3)), so D = 30*π/180 * moonR 
+D = 60 * 19 440 000 / (6^(1/3))
+D = 641 894 657,18512 m

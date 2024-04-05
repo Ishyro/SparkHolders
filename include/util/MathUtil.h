@@ -35,10 +35,17 @@ namespace MathUtil {
     bool operator == (const Vector3i& v) const { return z == v.z && y == v.y && x == v.x; }
   } Vector3i;
 
+  typedef struct Coords {
+    Vector3i longitude;
+    Vector3i latitude;
+  } Coords;
+
   Vector3 makeVector3(float x, float y, float z);
   Vector3 makeVector3(Vector3i coord_int);
   Vector3i makeVector3i(float x, float y, float z);
   Vector3i makeVector3i(Vector3 coord_float);
+
+  Coords getCoords(Vector3 coord);
 
   float round(float var);
   MathUtil::Vector3 round(MathUtil::Vector3 var);

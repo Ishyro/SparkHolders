@@ -149,6 +149,7 @@ void Adventure::applyDayLight() {
 }
 
 void Adventure::incrDayLight() {
+  /*
   if(round % Settings::getLighDuration() == 0) {
     lightUp ? light++ : light--;
     if(light == Settings::getLightMaxPower()) {
@@ -159,6 +160,7 @@ void Adventure::incrDayLight() {
     }
     applyDayLight();
   }
+  */
 }
 
 void Adventure::getNPCsActions() {

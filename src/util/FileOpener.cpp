@@ -313,13 +313,7 @@ namespace FileOpener {
     else if(keyword == "Settings") {
       std::string setting = String::extract(ss);
       std::string value_str = String::extract(ss);
-      if(setting == "LIGHT_MAX_POWER") {
-        Settings::setLightMaxPower(stoi(value_str));
-      }
-      else if(setting == "LIGHT_DURATION") {
-        Settings::setLighDuration(stoi(value_str));
-      }
-      else if(setting == "YEAR_DURATION") {
+      if(setting == "YEAR_DURATION") {
         Settings::setYearDuration(stoi(value_str));
       }
       else if(setting == "MONTH_DURATION") {
@@ -327,6 +321,9 @@ namespace FileOpener {
       }
       else if(setting == "WEEK_DURATION") {
         Settings::setWeekDuration(stoi(value_str));
+      }
+      else if(setting == "DAY_DURATION") {
+        Settings::setDayDuration(stoi(value_str));
       }
       else if(setting == "HOUR_DURATION") {
         Settings::setHourDuration(stoi(value_str));
@@ -348,6 +345,14 @@ namespace FileOpener {
       }
       else if(setting == "STARING_HOUR") {
         Settings::setStartingHour(stoi(value_str));
+      }
+      else if(setting == "ORIGIN") {
+        int64_t longitudeOrigin = String::extract_long(ss);
+        int64_t latitudeOrigin = String::extract_long(ss);
+        Settings::setOrigin(longitudeOrigin, latitudeOrigin);
+      }
+      else if(setting == "SECOND_TO_METER") {
+        Settings::setSecondToMeter(_stof(value_str));
       }
     }
     else if(keyword == "Spawn" && isServer) {
@@ -1167,11 +1172,10 @@ namespace FileOpener {
 
   void SettingsOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    Settings::setLightMaxPower(stoi(values.at("LIGHT_MAX_POWER")));
-    Settings::setLighDuration(stoi(values.at("LIGHT_DURATION")));
     Settings::setYearDuration(stoi(values.at("YEAR_DURATION")));
     Settings::setMonthDuration(stoi(values.at("MONTH_DURATION")));
     Settings::setWeekDuration(stoi(values.at("WEEK_DURATION")));
+    Settings::setDayDuration(stoi(values.at("DAY_DURATION")));
     Settings::setHourDuration(stoi(values.at("HOUR_DURATION")));
     Settings::setMinuteDuration(stoi(values.at("MINUTE_DURATION")));
     Settings::setStartingYear(stoi(values.at("STARTING_YEAR")));
@@ -1179,6 +1183,8 @@ namespace FileOpener {
     Settings::setStartingWeek(stoi(values.at("STARTING_WEEK")));
     Settings::setStartingDay(stoi(values.at("STARTING_DAY")));
     Settings::setStartingHour(stoi(values.at("STARING_HOUR")));
+    Settings::setOrigin(stol(values.at("LONGITUDE_ORIGIN")), stol(values.at("LATITUDE_ORIGIN")));
+    Settings::setSecondToMeter(_stof(values.at("SECOND_TO_METER")));
     Settings::setMaxNumberOfDaysAwake(stoi(values.at("MAX_NUMBER_DAYS_AWAKE")));
     Settings::setMaxNumberOfDaysFasting(stoi(values.at("MAX_NUMBER_DAYS_FASTING")));
     Settings::setStaminaRecoveryRatio(stoi(values.at("STAMINA_RECOVERY_RATIO")));

@@ -63,6 +63,8 @@ int32_t main(int32_t argc, char ** argv) {
   }
   Character * dasheep = adventure->getWorld()->getCharacters().front();
   dasheep->getRegion()->getBlocks();
+  MathUtil::Coords coords = dasheep->getWorldCoords();
+  std::cout << "latitude: " << coords.latitude.x << "° " << coords.latitude.y << "' " << coords.latitude.z << "'' longitude: " << coords.longitude.x << "° " << coords.longitude.y << "' " << coords.longitude.z << "''" << std::endl;
   MathUtil::Vector3 base_coord = dasheep->getCoord();
   for(float y = base_coord.y - 10; y < base_coord.y + 10; y += 0.01) {
     for(float x = base_coord.x - 10; x < base_coord.x + 10; x += 0.01) {

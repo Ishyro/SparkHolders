@@ -160,18 +160,19 @@ data/maps/open_grassland.data
 # Adventure name
 The Main Place
 # settings
-Settings.{LIGHT_MAX_POWER}{10}
-Settings.{LIGHT_DURATION}{50}
-Settings.{YEAR_DURATION}{500}
-Settings.{MONTH_DURATION}{50}
-Settings.{MINUTE_DURATION}{100}
-Settings.{WEEK_DURATION}{5}
-Settings.{HOUR_DURATION}{50}
+Settings.{YEAR_DURATION}{360}
+Settings.{MONTH_DURATION}{30}
+Settings.{WEEK_DURATION}{6}
+Settings.{DAY_DURATION}{60}
+Settings.{HOUR_DURATION}{60}
+Settings.{MINUTE_DURATION}{60}
 Settings.{STARTING_YEAR}{1}
 Settings.{STARTING_MONTH}{1}
 Settings.{STARTING_WEEK}{1}
 Settings.{STARTING_DAY}{1}
 Settings.{STARING_HOUR}{4}
+Settings.{CENTER}{{0}{0}}
+Settings.{SECOND_TO_METER}{1.0}
 # translations files
 Translation.{data/translations/aytlanta}
 # add maps

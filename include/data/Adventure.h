@@ -60,12 +60,15 @@ class Adventure {
     {
       tick = 0;
       round = 0L;
+      light = 0;
+      /*
       light = Settings::getStartingHour() % Settings::getLightMaxPower();
       if(Settings::getStartingHour() < Settings::getLightMaxPower()) {
         lightUp = true;
       } else {
         lightUp = false;
       }
+      */
     }
     /*
     Adventure(Save * save) {

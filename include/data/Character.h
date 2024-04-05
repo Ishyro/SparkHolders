@@ -259,6 +259,7 @@ class Character {
     bool isAlive();
     bool isSoulBurning();
     MathUtil::Vector3 getCoord();
+    MathUtil::Coords getWorldCoords();
     float getOrientation();
     float getSize();
     float getHeight();

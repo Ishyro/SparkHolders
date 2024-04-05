@@ -1,0 +1,1 @@
+Introduce a Reaction system: if an hostile character appears/teleport near a Character, he can replace his next actions with new ones according to the unexpected situation.

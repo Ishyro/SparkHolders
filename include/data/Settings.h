@@ -4,8 +4,6 @@
 #include <string>
 
 namespace Settings {
-  int32_t getLightMaxPower();
-  int32_t getLighDuration();
   int32_t getYearDuration(); // in days
   int32_t getMonthDuration(); // in days
   int32_t getWeekDuration(); // in days
@@ -22,6 +20,9 @@ namespace Settings {
   int32_t getStartingWeek();
   int32_t getStartingDay();
   int32_t getStartingHour();
+  int64_t getLongitudeOrigin();
+  int64_t getLatitudeOrigin();
+  float getSecondToMeter();
   float getMaxNumberOfDaysAwake();
   float getMaxNumberOfDaysFasting();
   float getStaminaRecoveryRatio();
@@ -33,11 +34,10 @@ namespace Settings {
   int32_t getSeed();
   std::string getMasterPassword();
 
-  void setLightMaxPower(int32_t data);
-  void setLighDuration(int32_t data);
   void setYearDuration(int32_t data); // in days
   void setMonthDuration(int32_t data); // in days
   void setWeekDuration(int32_t data); // in days
+  void setDayDuration(int32_t data); // in hours
   void setHourDuration(int32_t data); // in minutes
   void setMinuteDuration(int32_t data); // in seconds/ticks
   void setStartingYear(int32_t data);
@@ -45,6 +45,8 @@ namespace Settings {
   void setStartingWeek(int32_t data);
   void setStartingDay(int32_t data);
   void setStartingHour(int32_t data);
+  void setOrigin(int64_t data1, int64_t data2);
+  void setSecondToMeter(float data);
   void setMaxNumberOfDaysAwake(float data);
   void setMaxNumberOfDaysFasting(float data);
   void setStaminaRecoveryRatio(float data);

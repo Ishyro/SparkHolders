@@ -2,6 +2,7 @@
 #include <list>
 
 #include "data/Map.h"
+#include "data/Settings.h"
 
 #include "util/String.h"
 #include "util/MathUtil.h"
@@ -36,6 +37,24 @@ MathUtil::Vector3i MathUtil::makeVector3i(MathUtil::Vector3 coord_float) {
   coord.y = (int32_t) std::floor(coord_float.y);
   coord.z = (int32_t) std::floor(coord_float.z);
   return coord;
+}
+
+MathUtil::Coords MathUtil::getCoords(Vector3 pos) {
+  MathUtil::Coords coords = MathUtil::Coords();
+  coords.longitude = makeVector3i(0, 0, ( (int64_t) std::floor(pos.x) - Settings::getLongitudeOrigin()) / Settings::getSecondToMeter());
+  coords.latitude = makeVector3i(0, 0, ( (int64_t) std::floor(pos.y) - Settings::getLatitudeOrigin()) / Settings::getSecondToMeter());
+  
+  coords.longitude.y = coords.longitude.z / 60;
+  coords.longitude.z -= coords.longitude.y * 60;
+  coords.longitude.x = coords.longitude.y / 60;
+  coords.longitude.y -= coords.longitude.x * 60;
+
+  coords.latitude.y = coords.latitude.z / 60;
+  coords.latitude.z -= coords.latitude.y * 60;
+  coords.latitude.x = coords.latitude.y / 60;
+  coords.latitude.y -= coords.latitude.x * 60;
+
+  return coords;
 }
 
 float MathUtil::round(float var) {
