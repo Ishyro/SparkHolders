@@ -43,6 +43,8 @@ public:
   bool hasState();
   bool getState();
   float getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest);
+  String getTime();
+  String getClock();
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
   Dictionary getBlocks(int64_t character_id);

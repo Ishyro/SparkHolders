@@ -2,7 +2,6 @@ name = TXT_CAVERN
 sizeX = 10
 sizeY = 10
 sizeZ = 6
-outside = false
 0 = TXT_VOID
 1 = TXT_ROCK
 !end

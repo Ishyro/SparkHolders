@@ -2,7 +2,6 @@ name = TXT_HOUSE
 sizeX = 11
 sizeY = 11
 sizeZ = 12
-outside = false
 0 = TXT_VOID
 1 = TXT_CUT_STONE
 2 = TXT_WOOD

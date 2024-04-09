@@ -52,6 +52,11 @@ Database::Database() {
   macros.insert(std::make_pair("BLOCK_STAIRS", BLOCK_STAIRS));
   macros.insert(std::make_pair("BLOCK_SLOPE", BLOCK_SLOPE));
 
+  // lightening_type
+  macros.insert(std::make_pair("LIGHTENING_INDOORS", LIGHTENING_INDOORS));
+  macros.insert(std::make_pair("LIGHTENING_OUTDOORS", LIGHTENING_OUTDOORS));
+  macros.insert(std::make_pair("LIGHTENING_DARK", LIGHTENING_DARK));
+
   // effect_duration_type
   macros.insert(std::make_pair("DURATION_INSTANT", DURATION_INSTANT));
   macros.insert(std::make_pair("DURATION_INFINITE", DURATION_INFINITE));

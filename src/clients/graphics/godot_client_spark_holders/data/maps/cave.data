@@ -2,7 +2,6 @@ name = TXT_CAVE
 sizeX = 25
 sizeY = 25
 sizeZ = 5
-outside = false
 0 = TXT_VOID
 1 = TXT_ROCK
 2 = TXT_WOOD

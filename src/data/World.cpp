@@ -13,12 +13,13 @@
 #include <iostream>
 
 void World::addMap(Map * map) {
+  int32_t lightening = map->lightening;
   MathUtil::Vector3i coord = MathUtil::Vector3i();
   for(coord.z = map->offsetZ; coord.z < map->offsetZ + map->sizeZ; coord.z++) {
     for(coord.y = map->offsetY; coord.y < map->offsetY + map->sizeY; coord.y++) {
       for(coord.x = map->offsetX; coord.x < map->offsetX + map->sizeX; coord.x++) {
         Block * block = map->getBlock(coord);
-        setBlock(coord, block);
+        setBlock(coord, block, lightening);
       }
     }
   }
@@ -27,8 +28,8 @@ void World::addMap(Map * map) {
   }
 }
 
-void World::setBlock(MathUtil::Vector3i coord, Block * block) {
-  getChunk(coord)->setBlock(coord, block);
+void World::setBlock(MathUtil::Vector3i coord, Block * block, int32_t lightening) {
+  getChunk(coord)->setBlock(coord, block, lightening);
 }
 
 void World::addMapLink(MapLink * link) {
@@ -94,6 +95,10 @@ Furniture * World::getFurniture(int64_t id) {
 
 Block * World::getBlock(MathUtil::Vector3i coord) {
   return getChunk(coord)->getBlock(coord);
+}
+
+int32_t World::getLightening(MathUtil::Vector3i coord) {
+  return getChunk(coord)->getLightening(coord);
 }
 
 BlocksChunk * World::getChunk(MathUtil::Vector3 ori) {

@@ -2,7 +2,6 @@ name = TXT_CENTRAL_SQUARE
 sizeX = 101
 sizeY = 101
 sizeZ = 3
-outside = true
 0 = TXT_VOID
 1 = TXT_CUT_STONE
 2 = TXT_ROAD_STONE

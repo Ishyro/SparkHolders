@@ -28,9 +28,9 @@ namespace MathUtil {
   } Vector3;
   
   typedef struct Vector3i {
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    int64_t x;
+    int64_t y;
+    int64_t z;
     bool operator < (const Vector3i& v) const { return std::tie(z, y, x) < std::tie(v.z, v.y, v.x); }
     bool operator == (const Vector3i& v) const { return z == v.z && y == v.y && x == v.x; }
   } Vector3i;
@@ -46,6 +46,7 @@ namespace MathUtil {
   Vector3i makeVector3i(Vector3 coord_float);
 
   Coords getCoords(Vector3 coord);
+  float getLight(MathUtil::Coords coords, Time time);
 
   float round(float var);
   MathUtil::Vector3 round(MathUtil::Vector3 var);

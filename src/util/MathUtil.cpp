@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <list>
 
+#include "data/Adventure.h"
 #include "data/Map.h"
 #include "data/Settings.h"
 
@@ -25,24 +26,24 @@ MathUtil::Vector3 MathUtil::makeVector3(MathUtil::Vector3i coord_int) {
 
 MathUtil::Vector3i MathUtil::makeVector3i(float x, float y, float z) {
   MathUtil::Vector3i coord = MathUtil::Vector3i();
-  coord.x = (int32_t) std::floor(x);
-  coord.y = (int32_t) std::floor(y);
-  coord.z = (int32_t) std::floor(z);
+  coord.x = (int64_t) std::floor(x);
+  coord.y = (int64_t) std::floor(y);
+  coord.z = (int64_t) std::floor(z);
   return coord;
 }
 
 MathUtil::Vector3i MathUtil::makeVector3i(MathUtil::Vector3 coord_float) {
   MathUtil::Vector3i coord = MathUtil::Vector3i();
-  coord.x = (int32_t) std::floor(coord_float.x);
-  coord.y = (int32_t) std::floor(coord_float.y);
-  coord.z = (int32_t) std::floor(coord_float.z);
+  coord.x = (int64_t) std::floor(coord_float.x);
+  coord.y = (int64_t) std::floor(coord_float.y);
+  coord.z = (int64_t) std::floor(coord_float.z);
   return coord;
 }
 
 MathUtil::Coords MathUtil::getCoords(Vector3 pos) {
   MathUtil::Coords coords = MathUtil::Coords();
-  coords.longitude = makeVector3i(0, 0, ( (int64_t) std::floor(pos.x) - Settings::getLongitudeOrigin()) / Settings::getSecondToMeter());
-  coords.latitude = makeVector3i(0, 0, ( (int64_t) std::floor(pos.y) - Settings::getLatitudeOrigin()) / Settings::getSecondToMeter());
+  coords.longitude = makeVector3i(0, 0, (int64_t) ((std::floor(pos.x) - (float) Settings::getLongitudeOrigin()) / Settings::getSecondToMeter()));
+  coords.latitude = makeVector3i(0, 0, (int64_t) ((std::floor(pos.y) - (float) Settings::getLatitudeOrigin()) / Settings::getSecondToMeter()));
   
   coords.longitude.y = coords.longitude.z / 60;
   coords.longitude.z -= coords.longitude.y * 60;
@@ -55,6 +56,60 @@ MathUtil::Coords MathUtil::getCoords(Vector3 pos) {
   coords.latitude.y -= coords.latitude.x * 60;
 
   return coords;
+}
+
+float MathUtil::getLight(MathUtil::Coords coords, Time time) {
+  float angle;
+  float sun_angle = 0.F;
+  int64_t light_power;
+  float latitude = (float) coords.latitude.x + (float) coords.latitude.y / 60.F + (float) coords.latitude.z / 3600.F;
+  float longitude = (float) coords.longitude.x + (float) coords.longitude.y / 60.F + (float) coords.longitude.z / 3600.F;
+  int64_t hour = time.hour * Settings::getHourDuration() * Settings::getMinuteDuration() + time.minutes * Settings::getMinuteDuration() + time.seconds;
+  int64_t max_hour = Settings::getDayDurationInRound() * Settings::getMinuteDuration();
+  int64_t zenith = max_hour / 2;
+  int64_t startNight = max_hour - Settings::getNightDuration() * Settings::getHourDuration() * Settings::getMinuteDuration() / 2.F;
+  int64_t startDusk = startNight - Settings::getDuskDuration() * Settings::getHourDuration() * Settings::getMinuteDuration();
+  int64_t startDawn = Settings::getNightDuration() * Settings::getHourDuration() * Settings::getMinuteDuration() / 2.F;
+  int64_t startDay = startDawn + Settings::getDawnDuration() * Settings::getHourDuration() * Settings::getMinuteDuration();
+  int64_t local_hour = hour;
+  if(!Settings::getTidalLocked()) {
+    // negative angle when the sun is rising, ie at east from ORIGIN
+    float sun_factor = (float) hour / (float) max_hour - (float) zenith;
+    sun_angle = 360.F * sun_factor;
+    if(std::abs(latitude) > std::abs(longitude - sun_angle)) {
+      angle = latitude;
+    }
+    else {
+      angle = longitude - sun_angle;
+    }
+  }
+  else {
+    if(std::abs(latitude) > std::abs(longitude)) {
+      angle = latitude;
+    }
+    else {
+      angle = longitude;
+    }
+  }
+  local_hour = (int64_t) (max_hour + hour + std::sin((longitude - sun_angle) * 3.141593F / 180.F) * zenith) % max_hour;
+  int32_t day_indice = time.day - (time.week - 1) * Settings::getWeekDuration();
+  // day
+  if(local_hour >= startDay && local_hour <= startDusk) {
+    light_power = Settings::getZenithLightPower(day_indice);
+  }
+  // night
+  else if(local_hour >= startNight || local_hour <= startDawn) {
+    light_power = Settings::getNightLightPower(day_indice);
+  }
+  // dusk
+  else if(local_hour >= startDusk) {
+    light_power = Settings::getNightLightPower(day_indice) + (Settings::getZenithLightPower(day_indice) - Settings::getNightLightPower(day_indice)) * (1.F - ((float) local_hour - (float) startDusk) / (float) ((Settings::getDuskDuration() * Settings::getHourDuration() * Settings::getMinuteDuration())));
+  }
+  // dawn
+  else {
+    light_power = Settings::getNightLightPower(day_indice) + (Settings::getZenithLightPower(day_indice) - Settings::getNightLightPower(day_indice)) * ((float) local_hour - (float)  startDawn) / (float) ( (Settings::getDawnDuration() * Settings::getHourDuration() * Settings::getMinuteDuration()));
+  }
+  return std::cos(angle * 3.141593F / 180.F) * light_power;
 }
 
 float MathUtil::round(float var) {

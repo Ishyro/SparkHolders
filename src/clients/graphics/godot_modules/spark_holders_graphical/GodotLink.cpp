@@ -82,6 +82,14 @@ float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   return MathUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
+String GodotLink::getTime() {
+  return link->getAdventure()->getTime().to_string_day().c_str();
+}
+
+String GodotLink::getClock() {
+  return link->getAdventure()->getTime().to_string_clock().c_str();
+}
+
 Array GodotLink::getAvaillableBlocks() {
   #ifdef DEBUG
     log << "getAvaillableBlocks()" << std::endl;
@@ -722,6 +730,8 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "ori", "dest"), &GodotLink::getMoveCost);
+  ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
+  ClassDB::bind_method(D_METHOD("getClock"), &GodotLink::getClock);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
   ClassDB::bind_method(D_METHOD("getBlocks", "id"), &GodotLink::getBlocks);

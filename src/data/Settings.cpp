@@ -12,12 +12,20 @@ namespace Settings {
   int32_t minuteDuration;
   int32_t startingYear;
   int32_t startingMonth;
-  int32_t startingWeek;
   int32_t startingDay;
   int32_t startingHour;
   int64_t longitudeOrigin;
   int64_t latitudeOrigin;
   float secondToMeter;
+  std::vector<int32_t> zenithLightPower; // week
+  std::vector<int32_t> nightLightPower; // week
+  bool tidalLocked;
+  int32_t nightDuration;
+  int32_t dawnDuration;
+  int32_t daytimeDuration;
+  int32_t duskDuration;
+  std::vector<std::string> monthNames; // yearDuration / monthDuration
+  std::vector<std::string> dayNames; // weekDuration
   float maxNumberOfDaysAwake;
   float maxNumberOfDaysFasting;
   float staminaRecoveryRatio;
@@ -26,7 +34,7 @@ namespace Settings {
   int32_t satietyOverextendRatio;
   float buyingPriceModifier;
   int32_t port;
-  int32_t seed;
+  int64_t seed;
   std::string masterPassword;
 
   int32_t getYearDuration() { return yearDuration; } // in days
@@ -42,12 +50,20 @@ namespace Settings {
   int32_t getHourDurationInRound() { return getHourDuration(); } // in rounds
   int32_t getStartingYear() { return startingYear; }
   int32_t getStartingMonth() { return startingMonth; }
-  int32_t getStartingWeek() { return startingWeek; }
   int32_t getStartingDay() { return startingDay; }
   int32_t getStartingHour() { return startingHour; }
   int64_t getLongitudeOrigin() { return longitudeOrigin; }
   int64_t getLatitudeOrigin() { return latitudeOrigin; }
   float getSecondToMeter() { return secondToMeter; }
+  int32_t getZenithLightPower(int32_t indice) { return zenithLightPower[indice]; } // week
+  int32_t getNightLightPower(int32_t indice) { return nightLightPower[indice]; } // week
+  bool getTidalLocked() { return tidalLocked; }
+  int32_t getNightDuration() { return nightDuration; }
+  int32_t getDawnDuration() { return dawnDuration; }
+  int32_t getDaytimeDuration() { return daytimeDuration; }
+  int32_t getDuskDuration() { return duskDuration; }
+  std::string getMonthName(int32_t indice) { return monthNames[indice]; } // yearDuration / monthDuration
+  std::string getDayName(int32_t indice) { return dayNames[indice]; } // weekDuration
   float getMaxNumberOfDaysAwake() { return maxNumberOfDaysAwake; }
   float getMaxNumberOfDaysFasting() { return maxNumberOfDaysFasting; }
   float getStaminaRecoveryRatio() { return staminaRecoveryRatio; }
@@ -56,22 +72,38 @@ namespace Settings {
   int32_t getSatietyOverextendRatio() { return satietyOverextendRatio; }
   float getBuyingPriceModifier() { return buyingPriceModifier; }
   int32_t getPort() { return port; }
-  int32_t getSeed() { return seed; }
+  int64_t getSeed() { return seed; }
   std::string getMasterPassword() { return masterPassword; }
 
   void setYearDuration(int32_t data) { yearDuration = data; } // in days
-  void setMonthDuration(int32_t data) { monthDuration = data; } // in days
-  void setWeekDuration(int32_t data) { weekDuration = data; } // in days
+  void setMonthDuration(int32_t data) { // in days
+    monthDuration = data;
+    monthNames = std::vector<std::string>(yearDuration / monthDuration);
+  }
+  void setWeekDuration(int32_t data) { // in days
+    weekDuration = data;
+    zenithLightPower = std::vector<int32_t>(weekDuration);
+    nightLightPower = std::vector<int32_t>(weekDuration);
+    dayNames = std::vector<std::string>(weekDuration);
+  } 
   void setDayDuration(int32_t data) { dayDuration = data; } // in hours
   void setHourDuration(int32_t data) { hourDuration = data; } // in minutes
   void setMinuteDuration(int32_t data) { minuteDuration = data; } // in seconds/minutes
   void setStartingYear(int32_t data) { startingYear = data; }
   void setStartingMonth(int32_t data) { startingMonth = data; }
-  void setStartingWeek(int32_t data) { startingWeek = data; }
   void setStartingDay(int32_t data) { startingDay = data; }
   void setStartingHour(int32_t data) { startingHour = data; }
   void setOrigin(int64_t data1, int64_t data2) { longitudeOrigin = data1; latitudeOrigin = data2; }
   void setSecondToMeter(float data) { secondToMeter = data; }
+  void setZenithLightPower(int32_t indice, int32_t data) { zenithLightPower[indice] = data; } // week
+  void setNightLightPower(int32_t indice, int32_t data) { nightLightPower[indice] = data; } // week
+  void setTidalLocked(bool data) { tidalLocked = data; }
+  void setNightDuration(int32_t data) { nightDuration = data; }
+  void setDawnDuration(int32_t data) { dawnDuration = data; }
+  void setDaytimeDuration(int32_t data) { daytimeDuration = data; }
+  void setDuskDuration(int32_t data) { duskDuration = data; }
+  void setMonthName(int32_t indice, std::string data) { monthNames[indice] = data; } // yearDuration / monthDuration
+  void setDayName(int32_t indice, std::string data) { dayNames[indice] = data; } // weekDuration
   void setMaxNumberOfDaysAwake(float data) { maxNumberOfDaysAwake = data; }
   void setMaxNumberOfDaysFasting(float data) { maxNumberOfDaysFasting = data; }
   void setStaminaRecoveryRatio(float data) { staminaRecoveryRatio = data; }
@@ -80,6 +112,6 @@ namespace Settings {
   void setSatietyOverextendRatio(int32_t data) { satietyOverextendRatio = data; }
   void setBuyingPriceModifier(float data) { buyingPriceModifier = data; }
   void setPort(int32_t data) { port = data; }
-  void setSeed(int32_t data) { seed = data; }
+  void setSeed(int64_t data) { seed = data; }
   void setMasterPassword(std::string data) { masterPassword = data; }
 };

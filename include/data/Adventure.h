@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <sstream>
 
 #include "data/Settings.h"
 
@@ -17,6 +18,61 @@ typedef struct Spawn {
   int32_t y;
   int32_t z;
 } Spawn;
+
+typedef struct Time {
+  int32_t year;
+  int32_t month;
+  int32_t week;
+  int32_t day;
+  int32_t hour;
+  int32_t minutes;
+  int32_t seconds;
+  std::string to_string_clock() {
+    int32_t charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+    int32_t charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+    int32_t charSecondsSize = std::to_string(Settings::getMinuteDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+    std::string hour_str = std::to_string(hour);
+    while(hour_str.length() - charHoursSize > 0) {
+      hour_str = std::to_string(0) + hour_str;
+    }
+    std::string minutes_str = std::to_string(minutes);
+    while(minutes_str.length() - charMinutesSize > 0) {
+      minutes_str = std::to_string(0) + minutes_str;
+    }
+    std::string seconds_str = std::to_string(seconds);
+    while(seconds_str.length() - charSecondsSize > 0) {
+      seconds_str = std::to_string(0) + seconds_str;
+    }
+    std::stringstream ss = std::stringstream();
+    ss << hour_str << ":" <<minutes_str << ":" << seconds_str;
+    std::string result = ss.str();
+    return result;
+  }
+  std::string to_string_day() {
+    std::stringstream ss = std::stringstream();
+    int32_t indice_day = (year * Settings::getYearDuration() + month * Settings::getMonthDuration() + day) % Settings::getWeekDuration() - 1;
+    int32_t indice_month = month - 1;
+    ss << Settings::getDayName(indice_day) << ", " << day << " of " << Settings::getMonthName(indice_month) << ", " << year;
+    std::string result = ss.str();
+    return result;
+  }
+  std::string to_string_day_short() {
+    std::stringstream ss = std::stringstream();
+    int32_t charDaySize = std::to_string(Settings::getYearDuration() / Settings::getMonthDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+    int32_t charMonthSize = std::to_string(Settings::getMonthDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
+    std::string day_str = std::to_string(day);
+    while(day_str.length() - charDaySize > 0) {
+      day_str = std::to_string(0) + day_str;
+    }
+    std::string month_str = std::to_string(month);
+    while(month_str.length() - charMonthSize > 0) {
+      month_str = std::to_string(0) + month_str;
+    }
+    ss << day_str << "/" << month_str << "/" << year;
+    std::string result = ss.str();
+    return result;
+  }
+} Time;
 
 typedef struct StateDisplay {
   std::list<CharacterDisplay *> characters;
@@ -60,15 +116,6 @@ class Adventure {
     {
       tick = 0;
       round = 0L;
-      light = 0;
-      /*
-      light = Settings::getStartingHour() % Settings::getLightMaxPower();
-      if(Settings::getStartingHour() < Settings::getLightMaxPower()) {
-        lightUp = true;
-      } else {
-        lightUp = false;
-      }
-      */
     }
     /*
     Adventure(Save * save) {
@@ -89,7 +136,6 @@ class Adventure {
     void incrTick();
     void event();
     World * getWorld();
-    int32_t getLight();
     std::list<Attributes *> getStartingAttributes();
     std::list<Way *> getStartingWays();
     Database * getDatabase();
@@ -102,12 +148,10 @@ class Adventure {
     void getNPCsActions();
     void mergeActions(std::list<Action *> to_add);
     void executeActions();
-    void applyDayLight();
-    void incrDayLight();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
-    std::string getTime();
+    Time getTime();
     std::string state_to_string(std::map<const int64_t, Character *> players);
     StateDisplay * update_state(std::string to_read);
   private:
@@ -115,8 +159,6 @@ class Adventure {
     Database * database;
     int32_t tick;
     int64_t round;
-    int32_t light;
-    bool lightUp;
     std::list<Character *> party;
     std::list<Character *> preserved_players;
     std::list<Quest *> quests;

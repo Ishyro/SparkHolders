@@ -2,6 +2,7 @@
 #define _SETTINGS_H_
 
 #include <string>
+#include <vector>
 
 namespace Settings {
   int32_t getYearDuration(); // in days
@@ -17,12 +18,20 @@ namespace Settings {
   int32_t getHourDurationInRound(); // in rounds
   int32_t getStartingYear();
   int32_t getStartingMonth();
-  int32_t getStartingWeek();
   int32_t getStartingDay();
   int32_t getStartingHour();
   int64_t getLongitudeOrigin();
   int64_t getLatitudeOrigin();
   float getSecondToMeter();
+  int32_t getZenithLightPower(int32_t indice); // week
+  int32_t getNightLightPower(int32_t indice); // week
+  bool getTidalLocked();
+  int32_t getNightDuration();
+  int32_t getDawnDuration();
+  int32_t getDaytimeDuration();
+  int32_t getDuskDuration();
+  std::string getMonthName(int32_t indice); // yearDuration / monthDuration
+  std::string getDayName(int32_t indice); // weekDuration
   float getMaxNumberOfDaysAwake();
   float getMaxNumberOfDaysFasting();
   float getStaminaRecoveryRatio();
@@ -31,7 +40,7 @@ namespace Settings {
   int32_t getSatietyOverextendRatio();
   float getBuyingPriceModifier();
   int32_t getPort();
-  int32_t getSeed();
+  int64_t getSeed();
   std::string getMasterPassword();
 
   void setYearDuration(int32_t data); // in days
@@ -42,11 +51,19 @@ namespace Settings {
   void setMinuteDuration(int32_t data); // in seconds/ticks
   void setStartingYear(int32_t data);
   void setStartingMonth(int32_t data);
-  void setStartingWeek(int32_t data);
   void setStartingDay(int32_t data);
   void setStartingHour(int32_t data);
   void setOrigin(int64_t data1, int64_t data2);
   void setSecondToMeter(float data);
+  void setZenithLightPower(int32_t indice, int32_t data); // week, in lux
+  void setNightLightPower(int32_t indice, int32_t data); // week, in lux
+  void setTidalLocked(bool data);
+  void setNightDuration(int32_t data);
+  void setDawnDuration(int32_t data);
+  void setDaytimeDuration(int32_t data);
+  void setDuskDuration(int32_t data);
+  void setMonthName(int32_t indice, std::string data); // yearDuration / monthDuration
+  void setDayName(int32_t indice, std::string data); // weekDuration
   void setMaxNumberOfDaysAwake(float data);
   void setMaxNumberOfDaysFasting(float data);
   void setStaminaRecoveryRatio(float data);
@@ -55,7 +72,7 @@ namespace Settings {
   void setSatietyOverextendRatio(int32_t data);
   void setBuyingPriceModifier(float data);
   void setPort(int32_t data);
-  void setSeed(int32_t data);
+  void setSeed(int64_t data);
   void setMasterPassword(std::string data);
 };
 

@@ -155,18 +155,26 @@ Settings.{WEEK_DURATION}{6}
 Settings.{DAY_DURATION}{60}
 Settings.{HOUR_DURATION}{60}
 Settings.{MINUTE_DURATION}{60}
-Settings.{STARTING_YEAR}{1}
+Settings.{STARTING_YEAR}{10000}
 Settings.{STARTING_MONTH}{1}
-Settings.{STARTING_WEEK}{1}
 Settings.{STARTING_DAY}{1}
-Settings.{STARING_HOUR}{4}
+Settings.{STARING_HOUR}{15}
 Settings.{CENTER}{{0}{0}}
 Settings.{SECOND_TO_METER}{1.0}
+Settings.{ZENITH_LIGHT_POWERS}{{216000}{216000}{216000}{216000}{216000}{216000}}
+Settings.{NIGHT_LIGHT_POWERS}{{60}{60}{60}{60}{60}{0}}
+Settings.{TIDAL_LOCKED}{true}
+Settings.{NIGHT_DURATION}{24}
+Settings.{DAWN_DURATION}{3}
+Settings.{DAYTIME_DURATION}{30}
+Settings.{DUSK_DURATION}{3}
+Settings.{MONTH_NAMES}{{Agate}{Onyx}{Emerald}{Rubis}{Topaz}{Jacynth}{Jasper}{Amethyst}{Diamond}{Sapphire}{Lapis Lazuli}{Aquamarine}}
+Settings.{DAY_NAMES}{{Laxito Dies}{Pyrra Dies}{Aerina Dies}{Hibero Dies}{Beastiona Dies}{Nubilo Dies}}
 # translations files
 Translation.{data/translations/aytlanta}
 # add maps
 # standard maps
-Map.{TXT_CAVERN}{0}{0}{-1}{0}
+Map.{TXT_CAVERN}{0}{0}{-1}{0}{LIGHTENING_INDOORS}
 # included maps
 # add map links
 # add spawns

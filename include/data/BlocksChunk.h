@@ -27,6 +27,12 @@
 #define CHUNK_SIZE 16
 
 class BlocksChunk {
+
+  typedef struct LightenedBlock {
+    Block * raw_block;
+    int32_t lightening;
+  } LightenedBlock;
+
   public:
     const MathUtil::Vector3i id;
     BlocksChunk(const MathUtil::Vector3i id, World * world):id(id) {
@@ -34,8 +40,12 @@ class BlocksChunk {
       for(coord.z = id.z; coord.z < id.z + CHUNK_SIZE; coord.z++) {
         for(coord.y = id.y; coord.y < id.y + CHUNK_SIZE; coord.y++) {
           for(coord.x = id.x; coord.x < id.x + CHUNK_SIZE; coord.x++) {
-            Block * block = nullptr; // world->getBlock(x, y, z);
-            if(block != nullptr) {
+            Block * raw_block = nullptr; // world->getBlock(x, y, z);
+            int32_t lightening = LIGHTENING_DARK;
+            LightenedBlock * block = new LightenedBlock();
+            block->raw_block = raw_block;
+            block->lightening = lightening;
+            if(block->raw_block != nullptr) {
               blocks.insert(std::make_pair(coord, block));
             }
           }
@@ -43,7 +53,8 @@ class BlocksChunk {
       }
     }
     Block * getBlock(MathUtil::Vector3i coord);
-    void setBlock(MathUtil::Vector3i coord, Block * block);
+    int32_t getLightening(MathUtil::Vector3i coord);
+    void setBlock(MathUtil::Vector3i coord, Block * block, int32_t lightening);
     std::map<const MathUtil::Vector3i, Block *> getBlocks();
     std::list<Character *> getCharacters();
     std::list<Furniture *> getFurnitures();
@@ -57,8 +68,7 @@ class BlocksChunk {
     std::list<Projectile *> projectiles;
     std::list<Furniture *> furnitures;
     std::list<Loot *> loots;
-    std::map<const MathUtil::Vector3i, Block *> blocks;
-    std::map<const MathUtil::Vector3i, int32_t>  lights;
+    std::map<const MathUtil::Vector3i, LightenedBlock *> blocks;
 };
 
 #endif // _TILES_BLOCK_H_

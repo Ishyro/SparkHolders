@@ -2,7 +2,9 @@
 
 void BlockSwapSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   // Target will always be a Block
-  adventure->getWorld()->setBlock(MathUtil::makeVector3i(target->coord), new_block);
+  int32_t lightening = adventure->getWorld()->getLightening(MathUtil::makeVector3i(target->coord));
+  // doesn't work when there wasn't a block (lighnening == LIGHTENING_NO)
+  adventure->getWorld()->setBlock(MathUtil::makeVector3i(target->coord), new_block, lightening);
 }
 bool BlockSwapSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
   return current_block == nullptr || adventure->getWorld()->getBlock(MathUtil::makeVector3i(target->coord)) == current_block;

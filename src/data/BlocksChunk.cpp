@@ -3,26 +3,46 @@
 #include <iostream>
 
 Block * BlocksChunk::getBlock(MathUtil::Vector3i coord) {
-  std::map<const MathUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
+  std::map<const MathUtil::Vector3i, LightenedBlock *>::iterator it = blocks.find(coord);
   if(it != blocks.end()) {
-    return it->second;
+    return it->second->raw_block;
   }
   else {
     return nullptr;
   }
 }
 
-void BlocksChunk::setBlock(MathUtil::Vector3i coord, Block * block) {
-  std::map<const MathUtil::Vector3i, Block *>::iterator it = blocks.find(coord);
+int32_t BlocksChunk::getLightening(MathUtil::Vector3i coord) {
+  std::map<const MathUtil::Vector3i, LightenedBlock *>::iterator it = blocks.find(coord);
+  if(it != blocks.end()) {
+    return it->second->lightening;
+  }
+  else {
+    return LIGHTENING_NO;
+  }
+}
+
+void BlocksChunk::setBlock(MathUtil::Vector3i coord, Block * raw_block, int32_t lightening) {
+  std::map<const MathUtil::Vector3i, LightenedBlock *>::iterator it = blocks.find(coord);
   if(it != blocks.end()) {
     blocks.erase(it);
   }
-  if(block != nullptr) {
+  if(raw_block != nullptr) {
+    LightenedBlock * block = new LightenedBlock();
+    block->raw_block = raw_block;
+    block->lightening = lightening;
     blocks.insert(std::make_pair(coord, block));
   }
 }
 
-std::map<const MathUtil::Vector3i, Block *> BlocksChunk::getBlocks() { return blocks; }
+std::map<const MathUtil::Vector3i, Block *> BlocksChunk::getBlocks() {
+  std::map<const MathUtil::Vector3i, Block *> result = std::map<const MathUtil::Vector3i, Block *>();
+  for(auto pair : blocks) {
+     result.insert(std::make_pair(pair.first, pair.second->raw_block));
+  }
+  return result;
+}
+
 std::list<Character *> BlocksChunk::getCharacters() { return characters; }
 std::list<Furniture *> BlocksChunk::getFurnitures() { return furnitures; }
 

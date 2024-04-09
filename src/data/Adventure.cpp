@@ -106,12 +106,10 @@ void Adventure::incrTick() {
   if( (++tick) == Settings::getMinuteDuration()) {
     tick = 0;
     round++;
-    incrDayLight();
   }
 }
 
 World * Adventure::getWorld() { return world; }
-int32_t Adventure::getLight() { return light; }
 std::list<Attributes *> Adventure::getStartingAttributes() { return startingAttributes; }
 std::list<Way *> Adventure::getStartingWays() { return startingWays; }
 Database * Adventure::getDatabase() { return database; }
@@ -138,29 +136,6 @@ std::list<Projectile *> Adventure::getProjectiles() {
     }
   }
   return projectiles;
-}
-
-void Adventure::applyDayLight() {
-  for(Map * map : world->getMaps()) {
-    if(map->outside) {
-      map->applyDayLight(light);
-    }
-  }
-}
-
-void Adventure::incrDayLight() {
-  /*
-  if(round % Settings::getLighDuration() == 0) {
-    lightUp ? light++ : light--;
-    if(light == Settings::getLightMaxPower()) {
-      lightUp = false;
-    }
-    if(light == 0) {
-      lightUp = true;
-    }
-    applyDayLight();
-  }
-  */
 }
 
 void Adventure::getNPCsActions() {
@@ -301,39 +276,16 @@ void Adventure::applyIteration() {
   }
 }
 
-std::string Adventure::getTime() {
-  int32_t year = (Settings::getStartingYear() * Settings::getYearDurationInRound() + round) / Settings::getYearDurationInRound();
-  int32_t month = 1 + (((Settings::getStartingMonth() - 1) * Settings::getMonthDurationInRound() + round) % Settings::getYearDurationInRound()) / Settings::getMonthDurationInRound();
-  int32_t week = 1 + (((Settings::getStartingWeek() - 1) * Settings::getWeekDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getWeekDurationInRound();
-  int32_t day = 1 + (((Settings::getStartingDay() - 1) * Settings::getDayDurationInRound() + round) % Settings::getWeekDurationInRound()) / Settings::getDayDurationInRound();
-  int32_t hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
-  int32_t minutes = Settings::getHourDuration() * ((float) (round  % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
-  int32_t charHoursSize = std::to_string(Settings::getDayDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  int32_t charMinutesSize = std::to_string(Settings::getHourDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  int32_t charSecondsSize = std::to_string(Settings::getMinuteDuration() - 1).length(); // -1 because if size is for example 100, we never reach 100
-  std::string hour_str = std::to_string(hour);
-  while(hour_str.length() - charHoursSize > 0) {
-    hour_str = std::to_string(0) + hour_str;
-  }
-  std::string minutes_str = std::to_string(minutes);
-  while(minutes_str.length() - charMinutesSize > 0) {
-    minutes_str = std::to_string(0) + minutes_str;
-  }
-  std::string seconds_str = std::to_string(tick);
-  while(seconds_str.length() - charSecondsSize > 0) {
-    seconds_str = std::to_string(0) + seconds_str;
-  }
-  std::stringstream * ss = new std::stringstream();
-  String::insert_int(ss, year);
-  String::insert_int(ss, month);
-  String::insert_int(ss, week);
-  String::insert_int(ss, day);
-  String::insert(ss, hour_str);
-  String::insert(ss, minutes_str);
-  String::insert(ss, seconds_str);
-  std::string result = ss->str();
-  delete ss;
-  return result;
+Time Adventure::getTime() {
+  Time time = Time();
+  time.year = Settings::getStartingYear() + round / Settings::getYearDurationInRound();
+  time.month = 1 + (((Settings::getStartingMonth() - 1) * Settings::getMonthDurationInRound() + round) % Settings::getYearDurationInRound()) / Settings::getMonthDurationInRound();
+  time.week = ((Settings::getWeekDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getWeekDurationInRound();
+  time.day = 1 + (((Settings::getStartingDay() - 1) * Settings::getDayDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getDayDurationInRound();
+  time.hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
+  time.minutes = Settings::getHourDuration() * ((float) (round % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
+  time.seconds = tick;
+  return time;
 }
 
 std::string Adventure::state_to_string(std::map<const int64_t, Character *> players) {
@@ -346,7 +298,6 @@ std::string Adventure::state_to_string(std::map<const int64_t, Character *> play
   std::stringstream * ss_speeches = new std::stringstream();
   String::insert_long(ss, round);
   String::insert_int(ss, tick);
-  String::insert_int(ss, light);
   for(auto pair : players) {
     Region * region = pair.second->getRegion();
     /*
@@ -411,15 +362,14 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   round = String::extract_long(ss);
   tick = String::extract_int(ss);
-  light = String::extract_int(ss);
-  applyDayLight();
   std::stringstream * ss_blocks = new std::stringstream(String::extract(ss));
   while(ss_blocks->rdbuf()->in_avail() != 0) {
     std::stringstream * ss_block = new std::stringstream(String::extract(ss_blocks));
     int32_t x = String::extract_int(ss_block);
     int32_t y = String::extract_int(ss_block);
     int32_t z = String::extract_int(ss_block);
-    world->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)));
+    bool outside = String::extract_bool(ss_block);
+    world->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)), outside);
     delete ss_block;
   }
   delete ss_blocks;

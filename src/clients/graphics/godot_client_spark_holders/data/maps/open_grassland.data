@@ -2,7 +2,6 @@ name = TXT_OPEN_GRASSLAND
 sizeX = 25
 sizeY = 25
 sizeZ = 1
-outside = true
 0 = TXT_GRASS
 !end
 0

@@ -50,39 +50,23 @@ int32_t main(int32_t argc, char ** argv) {
 
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
-  adventure->applyDayLight();
+  Character * dasheep = adventure->getWorld()->getCharacters().front();
+  dasheep->getRegion()->getBlocks();
+  MathUtil::Coords coords = dasheep->getWorldCoords();
+  Time time = adventure->getTime();
+  std::cout << time.to_string_day() << std::endl;
+  std::cout << "latitude: " << coords.latitude.x << "° " << coords.latitude.y << "' " << coords.latitude.z << "'' longitude: " << coords.longitude.x << "° " << coords.longitude.y << "' " << coords.longitude.z << "''" << std::endl;
   for(int32_t tick = 0; tick < ticks; tick++) {
-    /*
+    Time time = adventure->getTime();
+    std::cout << time.to_string_clock() << std::endl;
+    std::cout << MathUtil::getLight(coords, time) << std::endl;
+    //
     adventure->applyIteration();
     SpeechManager::clear();
     adventure->getNPCsActions();
     adventure->executeActions();
     adventure->actAllProjectiles();
     adventure->incrTick();
-    */
-  }
-  Character * dasheep = adventure->getWorld()->getCharacters().front();
-  dasheep->getRegion()->getBlocks();
-  MathUtil::Coords coords = dasheep->getWorldCoords();
-  std::cout << "latitude: " << coords.latitude.x << "° " << coords.latitude.y << "' " << coords.latitude.z << "'' longitude: " << coords.longitude.x << "° " << coords.longitude.y << "' " << coords.longitude.z << "''" << std::endl;
-  MathUtil::Vector3 base_coord = dasheep->getCoord();
-  for(float y = base_coord.y - 10; y < base_coord.y + 10; y += 0.01) {
-    for(float x = base_coord.x - 10; x < base_coord.x + 10; x += 0.01) {
-      MathUtil::Vector3 ori = dasheep->getCoord();
-      //std::cout << "ori: " << ori.x << " " << ori.y << " " << ori.z << std::endl;
-      MathUtil::Vector3 dest = MathUtil::makeVector3(x, y, ori.z);
-      float real_cost = MathUtil::distance(ori, dest) * 10.F / dasheep->getMovementTimeModifier();
-      float cost = MathUtil::round(dasheep->getRegion()->getMoveCost(dasheep, ori, dest));
-      MathUtil::round(dasheep->getRegion()->move(dasheep, MathUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y), dest, cost, adventure->getWorld()));
-      MathUtil::Vector3 ori_back = dasheep->getCoord();
-      //std::cout << "ori_back: " << ori_back.x << " " << ori_back.y << " " << ori_back.z << std::endl;
-      // move back
-      float back_real_cost = MathUtil::distance(ori, dest) * 10.F / dasheep->getMovementTimeModifier();
-      float back_cost = MathUtil::round(dasheep->getRegion()->getMoveCost(dasheep, dest, ori));
-      MathUtil::round(dasheep->getRegion()->move(dasheep, MathUtil::getOrientationToTarget(dest.x, dest.y, ori.x, ori.y), ori, back_cost, adventure->getWorld()));
-      MathUtil::Vector3 final = dasheep->getCoord();
-      //std::cout << "final: " << final.x << " " << final.y << " " << final.z << std::endl;
-    }
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;

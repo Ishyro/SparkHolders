@@ -31,7 +31,7 @@ class World {
       links = std::list<MapLink *>();
     }
     void addMap(Map * map);
-    void setBlock(MathUtil::Vector3i coord, Block * block);
+    void setBlock(MathUtil::Vector3i coord, Block * block, int32_t lightening);
     void addMapLink(MapLink * link);
     Map * getMap(int64_t map_id);
     Map * getMap(std::string name);
@@ -43,6 +43,7 @@ class World {
     Map * getMap(int32_t x, int32_t y, int32_t z);
     Map * getMap(float x, float y, float z);
     Block * getBlock(MathUtil::Vector3i coord);
+    int32_t getLightening(MathUtil::Vector3i coord);
     BlocksChunk * getChunk(MathUtil::Vector3 coord);
     BlocksChunk * getChunk(MathUtil::Vector3i ori);
     void addCharacter(Character * character);

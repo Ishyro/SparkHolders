@@ -49,13 +49,13 @@ class Map {
     const int32_t sizeX;
     const int32_t sizeY;
     const int32_t sizeZ;
-    const bool outside;
+    const int32_t lightening;
     Map(
       const std::string name,
       const int32_t sizeX,
       const int32_t sizeY,
       const int32_t sizeZ,
-      const bool outside
+      const int32_t lightening
     ):
       name(name),
       baseName(name),
@@ -66,7 +66,7 @@ class Map {
       sizeX(sizeX),
       sizeY(sizeY),
       sizeZ(sizeZ),
-      outside(outside),
+      lightening(lightening),
       blocks(std::map<const MathUtil::Vector3i, Block *>()),
       light(0),
       rotation(0)
@@ -77,7 +77,7 @@ class Map {
       loots = std::list<Loot *>();
     }
 
-    Map(Map * map, std::string name, int32_t offsetX, int32_t offsetY, int32_t offsetZ, int32_t rotation, Database * database):
+    Map(Map * map, std::string name, int32_t offsetX, int32_t offsetY, int32_t offsetZ, int32_t rotation, int32_t lightening, Database * database):
       name(name),
       baseName(map->name),
       id(++map::id_cpt),
@@ -87,7 +87,7 @@ class Map {
       sizeX(rotation == 0 || rotation == 180 ? map->sizeX : map->sizeY),
       sizeY(rotation == 0 || rotation == 180 ? map->sizeY : map->sizeX),
       sizeZ(map->sizeZ),
-      outside(map->outside),
+      lightening(lightening),
       blocks(std::map<const MathUtil::Vector3i, Block *>()),
       lights(this->sizeY),
       light(map->light),
@@ -309,12 +309,12 @@ class Map {
     std::list<Projectile *> getProjectiles();
     std::list<Furniture *> getFurnitures();
     std::list<Loot *> getLoots();
-    bool allowedCoords(int32_t x, int32_t y);
+    bool allowedCoords(int64_t x, int64_t y);
     bool allowedCoords(float x, float y);
     Block * getBlock(const MathUtil::Vector3i coord);
-    int32_t getLight(int32_t x, int32_t y);
-    int32_t getLight(float x, float y);
-    Furniture * getFurniture(int32_t x, int32_t y);
+    int64_t getLight(int64_t x, int64_t y);
+    int64_t getLight(float x, float y);
+    Furniture * getFurniture(int64_t x, int64_t y);
     Furniture * getFurniture(float x, float y);
     bool isOpaque(int32_t x, int32_t y);
     bool isOpaque(float x, float y);

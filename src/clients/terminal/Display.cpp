@@ -185,15 +185,7 @@ namespace Display {
     to_print = std::string("Y: ") + std::to_string(player->getCoord().y);
     mvwprintw(screen, lines - 2, 1, to_print.c_str());
     // time
-    std::stringstream * ss = new std::stringstream(adventure->getTime());
-    std::string skip = String::extract(ss); // skip years
-    skip = String::extract(ss); // skip months
-    skip = String::extract(ss); // skip weeks
-    skip = String::extract(ss); // skip days
-    to_print = String::extract(ss) + ":"; // hours
-    to_print += String::extract(ss) + ":"; // minutes
-    to_print += String::extract(ss); // seconds
-    delete ss;
+    to_print = adventure->getTime().to_string_clock();
     mvwprintw(screen, lines - 2, cols - 2 - to_print.length(), to_print.c_str());
 
     wrefresh(screen);

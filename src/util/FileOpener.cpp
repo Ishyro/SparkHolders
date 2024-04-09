@@ -288,7 +288,8 @@ namespace FileOpener {
       int32_t offsetY = String::extract_int(ss);
       int32_t offsetZ = String::extract_int(ss);
       int32_t rotation = String::extract_int(ss);
-      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation, database);
+      int32_t lightening = database->getTargetFromMacro(String::extract(ss));
+      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation, lightening, database);
       world->addMap(map);
     }
     else if(keyword == "MapLink") {
@@ -337,9 +338,6 @@ namespace FileOpener {
       else if(setting == "STARTING_MONTH") {
         Settings::setStartingMonth(stoi(value_str));
       }
-      else if(setting == "STARTING_WEEK") {
-        Settings::setStartingWeek(stoi(value_str));
-      }
       else if(setting == "STARTING_DAY") {
         Settings::setStartingDay(stoi(value_str));
       }
@@ -347,12 +345,55 @@ namespace FileOpener {
         Settings::setStartingHour(stoi(value_str));
       }
       else if(setting == "ORIGIN") {
-        int64_t longitudeOrigin = String::extract_long(ss);
-        int64_t latitudeOrigin = String::extract_long(ss);
+        std::stringstream * ss_origin = new std::stringstream(value_str);
+        int64_t longitudeOrigin = String::extract_long(ss_origin);
+        int64_t latitudeOrigin = String::extract_long(ss_origin);
         Settings::setOrigin(longitudeOrigin, latitudeOrigin);
       }
       else if(setting == "SECOND_TO_METER") {
         Settings::setSecondToMeter(_stof(value_str));
+      }
+      else if(setting == "ZENITH_LIGHT_POWERS") {
+        std::stringstream * ss_zenith = new std::stringstream(value_str);
+        for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
+          Settings::setZenithLightPower(i, String::extract_long(ss_zenith));
+        }
+      }
+      else if(setting == "NIGHT_LIGHT_POWERS") {
+        std::stringstream * ss_night = new std::stringstream(value_str);
+        for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
+          Settings::setNightLightPower(i, String::extract_long(ss_night));
+        }
+      }
+      else if(setting == "TIDAL_LOCKED") {
+        bool tidalLocked;
+        std::istringstream is_tidalLocked(value_str);
+        is_tidalLocked >> std::boolalpha >> tidalLocked;
+        Settings::setTidalLocked(tidalLocked);
+      }
+      else if(setting == "NIGHT_DURATION") {
+        Settings::setNightDuration(stoi(value_str));
+      }
+      else if(setting == "DAWN_DURATION") {
+        Settings::setDawnDuration(stoi(value_str));
+      }
+      else if(setting == "DAYTIME_DURATION") {
+        Settings::setDaytimeDuration(stoi(value_str));
+      }
+      else if(setting == "DUSK_DURATION") {
+        Settings::setDuskDuration(stoi(value_str));
+      }
+      else if(setting == "MONTH_NAMES") {
+        std::stringstream * ss_months = new std::stringstream(value_str);
+        for(int32_t i = 0; i < Settings::getYearDuration() / Settings::getMonthDuration(); i++) {
+          Settings::setMonthName(i, String::extract(ss_months));
+        }
+      }
+      else if(setting == "DAY_NAMES") {
+        std::stringstream * ss_days = new std::stringstream(value_str);
+        for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
+          Settings::setDayName(i, String::extract(ss_days));
+        }
       }
     }
     else if(keyword == "Spawn" && isServer) {
@@ -1026,11 +1067,8 @@ namespace FileOpener {
     int32_t sizeX = stoi(values.at("sizeX"));
     int32_t sizeY = stoi(values.at("sizeY"));
     int32_t sizeZ = stoi(values.at("sizeZ"));
-    std::istringstream is(values.at("outside"));
-    bool outside;
-    is >> std::boolalpha >> outside;
 
-    Map * map = new Map(name, sizeX, sizeY, sizeZ, outside);
+    Map * map = new Map(name, sizeX, sizeY, sizeZ, LIGHTENING_INDOORS);
 
     std::fstream file;
     std::string line;
@@ -1119,8 +1157,8 @@ namespace FileOpener {
         delete ss_items;
       }
       if(keyword == FURNITURE_LINKED) {
-        int32_t linked_x = String::extract_int(ss);
-        int32_t linked_y = String::extract_int(ss);
+        int64_t linked_x = String::extract_long(ss);
+        int64_t linked_y = String::extract_long(ss);
         map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
       }
     }
@@ -1172,19 +1210,6 @@ namespace FileOpener {
 
   void SettingsOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    Settings::setYearDuration(stoi(values.at("YEAR_DURATION")));
-    Settings::setMonthDuration(stoi(values.at("MONTH_DURATION")));
-    Settings::setWeekDuration(stoi(values.at("WEEK_DURATION")));
-    Settings::setDayDuration(stoi(values.at("DAY_DURATION")));
-    Settings::setHourDuration(stoi(values.at("HOUR_DURATION")));
-    Settings::setMinuteDuration(stoi(values.at("MINUTE_DURATION")));
-    Settings::setStartingYear(stoi(values.at("STARTING_YEAR")));
-    Settings::setStartingMonth(stoi(values.at("STARTING_MONTH")));
-    Settings::setStartingWeek(stoi(values.at("STARTING_WEEK")));
-    Settings::setStartingDay(stoi(values.at("STARTING_DAY")));
-    Settings::setStartingHour(stoi(values.at("STARING_HOUR")));
-    Settings::setOrigin(stol(values.at("LONGITUDE_ORIGIN")), stol(values.at("LATITUDE_ORIGIN")));
-    Settings::setSecondToMeter(_stof(values.at("SECOND_TO_METER")));
     Settings::setMaxNumberOfDaysAwake(stoi(values.at("MAX_NUMBER_DAYS_AWAKE")));
     Settings::setMaxNumberOfDaysFasting(stoi(values.at("MAX_NUMBER_DAYS_FASTING")));
     Settings::setStaminaRecoveryRatio(stoi(values.at("STAMINA_RECOVERY_RATIO")));
@@ -1194,7 +1219,7 @@ namespace FileOpener {
     Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");
-    seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stoi(seed));
+    seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stol(seed));
     Settings::setMasterPassword(values.at("MASTER_PASSWORD"));
   }
 

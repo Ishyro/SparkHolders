@@ -26,10 +26,10 @@ std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Furniture *> Map::getFurnitures() { return furnitures; }
 std::list<Loot *> Map::getLoots() { return loots; }
-bool Map::allowedCoords(int32_t x, int32_t y) { return y >= offsetY && y < sizeY + offsetY && x >= offsetX && x < sizeX + offsetX; }
+bool Map::allowedCoords(int64_t x, int64_t y) { return y >= offsetY && y < sizeY + offsetY && x >= offsetX && x < sizeX + offsetX; }
 bool Map::allowedCoords(float x, float y) {
-  int32_t local_y = (int32_t) std::floor(y) - offsetY;
-  int32_t local_x = (int32_t) std::floor(x) - offsetX;
+  int64_t local_y = (int64_t) std::floor(y) - offsetY;
+  int64_t local_x = (int64_t) std::floor(x) - offsetX;
   return local_y >= 0 && local_y < sizeY && local_x >= 0 && local_x < sizeX;
 }
 
@@ -43,10 +43,10 @@ Block * Map::getBlock(const MathUtil::Vector3i coord) {
   }
 }
 
-int32_t Map::getLight(int32_t x, int32_t y) { return allowedCoords(x, y) ? std::max(lights[y - offsetY][x - offsetX], light) : -1; }
-int32_t Map::getLight(float x, float y) { return allowedCoords(x, y) ? std::max(lights[(int32_t) std::floor(y) - offsetY][(int32_t) std::floor(x) - offsetX], light) : -1; }
+int64_t Map::getLight(int64_t x, int64_t y) { return allowedCoords(x, y) ? std::max(lights[y - offsetY][x - offsetX], light) : -1; }
+int64_t Map::getLight(float x, float y) { return allowedCoords(x, y) ? std::max(lights[(int64_t) std::floor(y) - offsetY][(int64_t) std::floor(x) - offsetX], light) : -1; }
 
-Furniture * Map::getFurniture(int32_t x, int32_t y) {
+Furniture * Map::getFurniture(int64_t x, int64_t y) {
   if(allowedCoords(x, y)) {
     for(Furniture * furniture : furnitures) {
       if(furniture->getCoord().x == x && furniture->getCoord().y == y) {
@@ -58,8 +58,8 @@ Furniture * Map::getFurniture(int32_t x, int32_t y) {
 }
 Furniture * Map::getFurniture(float x, float y) {
   if(allowedCoords(x, y)) {
-    int32_t int_x = (int32_t) std::floor(x);
-    int32_t int_y = (int32_t) std::floor(y);
+    int64_t int_x = (int64_t) std::floor(x);
+    int64_t int_y = (int64_t) std::floor(y);
     for(Furniture * furniture : furnitures) {
       if(furniture->getCoord().x == int_x && furniture->getCoord().y == int_y) {
         return furniture;

@@ -56,6 +56,7 @@ typedef struct Spawn Spawn;
 typedef struct StateDisplay StateDisplay;
 typedef struct Step Step;
 typedef struct Target Target;
+typedef struct Time Time;
 
 // communication
 
@@ -68,6 +69,13 @@ class SpeechManager;
 #define BLOCK_GAS 3
 #define BLOCK_STAIRS 4
 #define BLOCK_SLOPE 5
+
+// lightening_type
+
+#define LIGHTENING_NO 0
+#define LIGHTENING_INDOORS 1
+#define LIGHTENING_OUTDOORS 2
+#define LIGHTENING_DARK 3
 
 // effect_duration_type
 
