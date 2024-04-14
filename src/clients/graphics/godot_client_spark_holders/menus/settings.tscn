@@ -13,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_10ddg")
 
 [node name="Sprite2D" type="TextureRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,12 +23,76 @@ grow_vertical = 2
 texture = ExtResource("2_0m5bi")
 expand_mode = 1
 
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="Graphics" type="HBoxContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="Keys" type="VBoxContainer" parent="TabContainer/Graphics"]
+layout_mode = 2
+
+[node name="WindowType" type="Label" parent="TabContainer/Graphics/Keys"]
+layout_mode = 2
+text = "WINDOW_TYPE"
+
+[node name="Resolution" type="Label" parent="TabContainer/Graphics/Keys"]
+layout_mode = 2
+text = "RESOLUTION"
+
+[node name="Values" type="VBoxContainer" parent="TabContainer/Graphics"]
+layout_mode = 2
+
+[node name="LineEdit" type="ScrollContainer" parent="TabContainer/Graphics/Values"]
+clip_contents = false
+layout_mode = 2
+
+[node name="WindowType" type="VBoxContainer" parent="TabContainer/Graphics/Values/LineEdit"]
+layout_mode = 2
+
+[node name="Fullscreen" type="Button" parent="TabContainer/Graphics/Values/LineEdit/WindowType"]
+layout_mode = 2
+text = "Fullscreen"
+
+[node name="Windowed" type="Button" parent="TabContainer/Graphics/Values/LineEdit/WindowType"]
+layout_mode = 2
+text = "Window"
+
+[node name="BorderlessWindow" type="Button" parent="TabContainer/Graphics/Values/LineEdit/WindowType"]
+layout_mode = 2
+text = "Borderless Window"
+
+[node name="Sound" type="HBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Keys" type="VBoxContainer" parent="TabContainer/Sound"]
+layout_mode = 2
+
+[node name="Values" type="VBoxContainer" parent="TabContainer/Sound"]
+layout_mode = 2
+
+[node name="Misc" type="HBoxContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Keys" type="VBoxContainer" parent="TabContainer/Misc"]
+layout_mode = 2
+
+[node name="Values" type="VBoxContainer" parent="TabContainer/Misc"]
+layout_mode = 2
+
 [node name="Menu" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.4
+anchor_right = 0.2
 anchor_bottom = 0.5
 offset_left = -22.5
 offset_top = -20.0
@@ -37,13 +102,16 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Resolution" type="Button" parent="Menu"]
+[node name="Save" type="Button" parent="Menu"]
 layout_mode = 2
-text = "Resolution"
+text = "Save"
 
-[node name="Back" type="Button" parent="Menu"]
+[node name="Close" type="Button" parent="Menu"]
 layout_mode = 2
-text = "Back"
+text = "Close"
 
-[connection signal="pressed" from="Menu/Resolution" to="." method="_on_resolution_pressed"]
-[connection signal="pressed" from="Menu/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="TabContainer/Graphics/Values/LineEdit/WindowType/Fullscreen" to="." method="_on_fullscreen_pressed"]
+[connection signal="pressed" from="TabContainer/Graphics/Values/LineEdit/WindowType/Windowed" to="." method="_on_windowed_pressed"]
+[connection signal="pressed" from="TabContainer/Graphics/Values/LineEdit/WindowType/BorderlessWindow" to="." method="_on_borderless_window_pressed"]
+[connection signal="pressed" from="Menu/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Menu/Close" to="." method="_on_close_pressed"]

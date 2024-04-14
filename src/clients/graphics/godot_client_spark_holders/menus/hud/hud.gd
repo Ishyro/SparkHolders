@@ -29,6 +29,9 @@ extends Control
 @onready var mouse_box = $MouseBox
 @onready var mouse_label = $MouseBox/Label
 
+@onready var hour_box = $HourBox
+@onready var hour_label = $HourBox/Label
+
 @onready var inventory = $Inventory
 
 @onready var skill_button_1 = $Skills/Skillbar/Tabs/Button1
@@ -63,6 +66,7 @@ var skills = {}
 var current_skills = []
 var selected_skill
 var current_skill_slot = 0
+var selected_skill_slot = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -131,6 +135,9 @@ func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")\n" + ap_cost
 	else:
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
+
+func update_hour():
+	hour_label.text = "" + Values.link.getClock()
 
 # Map options
 func _on_grid_toggled(_button_pressed):
@@ -210,6 +217,7 @@ func _get_drag_data(at_position):
 	for skill in skill_slots:
 		if skill.get_global_rect().has_point(at_position):
 			selected_skill = skill
+			selected_skill_slot = current_skill_slot
 			var preview = Control.new()
 			var preview_skill = base_skill.instantiate()
 			preview_skill.texture = skill.texture
@@ -231,20 +239,22 @@ func _drop_data(at_position, data):
 	for slot in skill_slots:
 		if slot.get_global_rect().has_point(at_position):
 			if slot.texture != null && selected_skill != null:
-				selected_skill.texture = slot.texture
-				selected_skill.data = slot.data
-				current_skills[current_skill_slot][selected_skill.pos].texture = selected_skill.texture
-				current_skills[current_skill_slot][selected_skill.pos].data = selected_skill.data
+				if selected_skill_slot == current_skill_slot:
+					selected_skill.texture = slot.texture
+					selected_skill.data = slot.data
+				current_skills[selected_skill_slot][selected_skill.pos].texture = slot.texture
+				current_skills[selected_skill_slot][selected_skill.pos].data = slot.data
 			elif selected_skill != null:
-				selected_skill.texture = null
-				selected_skill.data = {}
-				current_skills[current_skill_slot][selected_skill.pos].texture = null
-				current_skills[current_skill_slot][selected_skill.pos].data = {}
+				if selected_skill_slot == current_skill_slot:
+					selected_skill.texture = null
+					selected_skill.data = {}
+				current_skills[selected_skill_slot][selected_skill.pos].texture = null
+				current_skills[selected_skill_slot][selected_skill.pos].data = {}
 				selected_skill = null
 			slot.texture = data.texture
 			slot.data = data.data
-			current_skills[current_skill_slot][slot.pos].texture = slot.texture
-			current_skills[current_skill_slot][slot.pos].data = slot.data
+			current_skills[current_skill_slot][slot.pos].texture = data.texture
+			current_skills[current_skill_slot][slot.pos].data = data.data
 			return
 
 func _on_button_1_toggled(button_pressed):

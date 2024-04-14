@@ -8,14 +8,66 @@ var small_text = preload("res://menus/hud/police/SmallText.tres")
 var text = preload("res://menus/hud/police/Text.tres")
 var big_text = preload("res://menus/hud/police/BigText.tres")
 
+var client_settings_dic = {}
+var server_settings_dic = {}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$Menu/Back.grab_focus()
+	$Menu/Close.grab_focus()
+	load_client_settings()
+	load_server_settings()
 
-func _on_back_pressed():
-	get_tree().change_scene_to_file("res://menus/main_menu.tscn")
-	
-func set_resolution(resolution: Vector2, mode: String):
+func load_client_settings():
+	var settings = FileAccess.open("res://data/settings_client.data", FileAccess.READ)
+	var content = settings.get_as_text(true)
+	for setting in content.split("\n"):
+		if not setting.is_empty() and setting[0] != "#":
+			var key_and_data = setting.split("=")
+			client_settings_dic[key_and_data[0].trim_prefix(" ").trim_suffix(" ")] = key_and_data[1].trim_prefix(" ").trim_suffix(" ")
+	settings.close()
+
+func save_client_settings():
+	var settings = FileAccess.open("res://data/settings_client.data", FileAccess.READ)
+	var content = settings.get_as_text(true)
+	settings.close()
+	settings = FileAccess.open("res://data/settings_client.data", FileAccess.WRITE)
+	for setting in content.split("\n"):
+		if not setting.is_empty() and setting[0] != "#":
+			var key_and_data = setting.split("=")
+			var setting_key = key_and_data[0].trim_prefix(" ").trim_suffix(" ")
+			settings.store_line(setting_key + " = " + client_settings_dic[setting_key])
+		else:
+			settings.store_line(setting)
+	settings.close()
+
+func load_server_settings():
+	var settings = FileAccess.open("res://data/settings_server.data", FileAccess.READ)
+	var content = settings.get_as_text(true)
+	for setting in content.split("\n"):
+		if not setting.is_empty() and setting[0] != "#":
+			var key_and_data = setting.split("=")
+			server_settings_dic[key_and_data[0].trim_prefix(" ").trim_suffix(" ")] = key_and_data[1].trim_prefix(" ").trim_suffix(" ")
+	settings.close()
+
+func save_server_settings():
+	var settings = FileAccess.open("res://data/settings_server.data", FileAccess.READ)
+	var content = settings.get_as_text(true)
+	settings.close()
+	settings = FileAccess.open("res://data/settings_server.data", FileAccess.WRITE)
+	for setting in content.split("\n"):
+		if not setting.is_empty() and setting[0] != "#":
+			var key_and_data = setting.split("=")
+			var setting_key = key_and_data[0].trim_prefix(" ").trim_suffix(" ")
+			settings.store_line(setting_key + " = " + server_settings_dic[setting_key])
+		else:
+			settings.store_line(setting)
+	settings.close()
+
+func set_resolution():
+	var resolution_str = client_settings_dic["RESOLUTION"]
+	var mode = client_settings_dic["WINDOW_TYPE"]
+	var key_and_data = resolution_str.split("x")
+	var resolution = Vector2(int(key_and_data[0]), int(key_and_data[1]))
 	if mode == "FULLSCREEN":
 		get_window().set_size(resolution)
 		get_window().set_mode(Window.MODE_FULLSCREEN)
@@ -39,5 +91,18 @@ func set_resolution(resolution: Vector2, mode: String):
 	#big_text.font_size = 36 * resolution.y / Values.BASE_RESOLUTION.y
 	Values.CURRENT_RESOLUTION = resolution
 
-func _on_resolution_pressed():
-	set_resolution(Vector2(1280, 720), "WINDOWED")
+func _on_fullscreen_pressed():
+	client_settings_dic["WINDOW_TYPE"] = "FULLSCREEN"
+
+func _on_windowed_pressed():
+	client_settings_dic["WINDOW_TYPE"] = "WINDOWED"
+
+func _on_borderless_window_pressed():
+	client_settings_dic["WINDOW_TYPE"] = "WINDOW_BORDERLESS"
+
+func _on_close_pressed():
+	visible = false
+
+func _on_save_pressed():
+	save_client_settings()
+	save_server_settings()

@@ -2,9 +2,18 @@ extends Control
 
 @onready var continueButton = $Menu/Continue
 
-@onready var map = $"../../Map"
 @onready var view = $"../../View"
 @onready var hud = $"../../HUD"
+
+@onready var settings = $Settings
+
+func _ready():
+	$Menu/Continue.set_text("Continue")
+	$Menu/Save.set_text("Save")
+	$Menu/Load.set_text("Load")
+	$Menu/Menu.set_text("Main Menu")
+	$Menu/Settings.set_text("Settings")
+	$Menu/Quit.set_text("Quit Game")
 
 func _on_continue_pressed():
 	view.pause_state = false
@@ -20,14 +29,15 @@ func _on_load_pressed():
 
 func _on_menu_pressed():
 	Values.link.close()
-	map.thread.wait_to_finish()
 	if Values.server_pid != -1:
 		OS.kill(Values.server_pid)
 	get_tree().change_scene_to_file("res://menus/main_menu.tscn")
 
+func _on_settings_pressed():
+	settings.visible = true
+
 func _on_quit_pressed():
 	Values.link.close()
-	map.thread.wait_to_finish()
 	if Values.server_pid != -1:
 		OS.kill(Values.server_pid)
 	get_tree().quit()

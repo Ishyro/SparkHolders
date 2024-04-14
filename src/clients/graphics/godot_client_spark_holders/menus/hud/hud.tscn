@@ -1,10 +1,11 @@
-[gd_scene load_steps=25 format=3 uid="uid://c4dl1848sgldd"]
+[gd_scene load_steps=26 format=3 uid="uid://c4dl1848sgldd"]
 
 [ext_resource type="Script" path="res://menus/hud/hud.gd" id="1_3lirh"]
 [ext_resource type="LabelSettings" uid="uid://c2gsmrocc1xgt" path="res://menus/hud/police/NumbersBox.tres" id="2_7gdju"]
 [ext_resource type="Texture2D" uid="uid://b1p14jbv2ak60" path="res://menus/hud/hud_background.png" id="2_prq3t"]
 [ext_resource type="Texture2D" uid="uid://rmmfrv4i0pre" path="res://menus/hud/buttons/move_off.png" id="3_cfs4o"]
 [ext_resource type="Texture2D" uid="uid://b6pfjcv5pmbih" path="res://menus/hud/buttons/move_on.png" id="4_8mdo8"]
+[ext_resource type="LabelSettings" uid="uid://21v7e3lc7vnt" path="res://menus/hud/police/Text.tres" id="4_ckly1"]
 [ext_resource type="Texture2D" uid="uid://ro7e3idj0o3u" path="res://menus/hud/buttons/attack_off.png" id="5_2do4i"]
 [ext_resource type="Texture2D" uid="uid://c7jc24r6vpqgh" path="res://menus/hud/buttons/skill_tab_off.png" id="5_ju7nf"]
 [ext_resource type="Texture2D" uid="uid://clo40sp7e0fqa" path="res://menus/hud/buttons/skill_tab_on.png" id="6_adgrr"]
@@ -68,6 +69,28 @@ mouse_filter = 2
 texture = ExtResource("2_prq3t")
 expand_mode = 1
 
+[node name="HourBox" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.906
+anchor_top = 0.027
+anchor_right = 0.985
+anchor_bottom = 0.073
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="HourBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+label_settings = ExtResource("4_ckly1")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Skills" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -95,7 +118,7 @@ anchor_bottom = 0.353
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 33
+theme_override_constants/separation = 66
 
 [node name="Button1" type="TextureButton" parent="Skills/Skillbar/Tabs"]
 layout_mode = 2

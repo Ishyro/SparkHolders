@@ -1,6 +1,5 @@
 extends Node3D
 
-var thread
 var mutex
 var baking_done = false
 
@@ -86,10 +85,10 @@ func _ready():
 	# var ip = "192.168.168.164"
 	# var ip = "192.168.1.83"
 	var ip = "127.0.0.1"
-	thread = Thread.new()
 	mutex = Mutex.new()
 	Values.link.initialize(ip)
 	Values.link.getState()
+	n_hud.update_hour()
 	owned_characters = Values.link.getControlledParty()
 	init_actions()
 	characters_data = Values.link.getCharacters()
@@ -160,6 +159,7 @@ func _process(_delta):
 		while Values.link.hasState():
 			Values.link.getState()
 			Values.next_state_ready = true
+			n_hud.update_hour()
 		if Values.next_state_ready:
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():

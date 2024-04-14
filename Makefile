@@ -112,7 +112,7 @@ CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT
 
 CC=g++
 CC_FLAGS=-O3 -pipe -pthread -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder -DDEBUG
+CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder
 CC_INCLUDES=-I $(INCLUDE)
 CC_LIBRARIES=
 NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
@@ -130,7 +130,7 @@ _WIN32_WINNT=0x0800
 endif # _D_WIN32_WINNT
 CC=x86_64-w64-mingw32-g++
 CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O3 -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder -DDEBUG
+CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
 CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
 TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
 CLIENT_TERMINAL_BINAIRIES=
@@ -143,11 +143,17 @@ ifdef DEBUG
 CC_FLAGS=$(CC_DEBUG_FLAGS)
 GODOT_TARGET_MODE=template_debug
 GODOT_DEBUG=1
+LOG=true
 else
 undefine BIN_CLIENT_TERMINAL
 undefine CLIENT_TERMINAL_BINAIRIES
 undefine TARGET_CLIENT_TERMINAL
 endif # DEBUG
+
+# Log
+ifdef LOG
+CC_FLAGS+=-DLOG
+endif
 
 # Rules
 

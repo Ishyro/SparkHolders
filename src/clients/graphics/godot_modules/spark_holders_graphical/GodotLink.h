@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#ifdef DEBUG
+#ifdef LOG
   #include <ostream>
   #include <fstream>
 #endif
@@ -35,7 +35,7 @@ public:
     translator(nullptr),
     state(nullptr)
   {
-    #ifdef DEBUG
+    #ifdef LOG
       log.open("log.txt");
     #endif
   }
@@ -76,7 +76,7 @@ private:
   Link * link;
   Translator * translator;
   StateDisplay * state;
-  #ifdef DEBUG
+  #ifdef LOG
     std::ofstream log;
   #endif
   std::map<int64_t, int32_t> mist_nbs = std::map<int64_t, int32_t>();

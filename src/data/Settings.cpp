@@ -10,6 +10,7 @@ namespace Settings {
   int32_t dayDuration;
   int32_t hourDuration;
   int32_t minuteDuration;
+  float tickDurationInSeconds;
   int32_t startingYear;
   int32_t startingMonth;
   int32_t startingDay;
@@ -55,6 +56,7 @@ namespace Settings {
   int64_t getLongitudeOrigin() { return longitudeOrigin; }
   int64_t getLatitudeOrigin() { return latitudeOrigin; }
   float getSecondToMeter() { return secondToMeter; }
+  float getTickDurationInSeconds() { return tickDurationInSeconds; }
   int32_t getZenithLightPower(int32_t indice) { return zenithLightPower[indice]; } // week
   int32_t getNightLightPower(int32_t indice) { return nightLightPower[indice]; } // week
   bool getTidalLocked() { return tidalLocked; }
@@ -95,6 +97,7 @@ namespace Settings {
   void setStartingHour(int32_t data) { startingHour = data; }
   void setOrigin(int64_t data1, int64_t data2) { longitudeOrigin = data1; latitudeOrigin = data2; }
   void setSecondToMeter(float data) { secondToMeter = data; }
+  void setTickDurationInSeconds(float data) {tickDurationInSeconds = data; }
   void setZenithLightPower(int32_t indice, int32_t data) { zenithLightPower[indice] = data; } // week
   void setNightLightPower(int32_t indice, int32_t data) { nightLightPower[indice] = data; } // week
   void setTidalLocked(bool data) { tidalLocked = data; }

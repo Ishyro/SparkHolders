@@ -101,10 +101,11 @@ void Adventure::event() {
 }
 
 int64_t Adventure::getRound() { return round; }
-int32_t Adventure::getTick() { return tick; }
+float Adventure::getTick() { return tick; }
 void Adventure::incrTick() {
-  if( (++tick) == Settings::getMinuteDuration()) {
-    tick = 0;
+  tick += Settings::getTickDurationInSeconds();
+  if(tick >= Settings::getMinuteDuration()) {
+    tick -= Settings::getMinuteDuration();
     round++;
   }
 }
@@ -284,7 +285,7 @@ Time Adventure::getTime() {
   time.day = 1 + (((Settings::getStartingDay() - 1) * Settings::getDayDurationInRound() + round) % Settings::getMonthDurationInRound()) / Settings::getDayDurationInRound();
   time.hour = ((Settings::getStartingHour() * Settings::getHourDurationInRound() + round) % Settings::getDayDurationInRound()) / Settings::getHourDurationInRound();
   time.minutes = Settings::getHourDuration() * ((float) (round % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
-  time.seconds = tick;
+  time.seconds = (int32_t) std::floor(tick);
   return time;
 }
 
@@ -297,7 +298,7 @@ std::string Adventure::state_to_string(std::map<const int64_t, Character *> play
   std::stringstream * ss_furnitures = new std::stringstream();
   std::stringstream * ss_speeches = new std::stringstream();
   String::insert_long(ss, round);
-  String::insert_int(ss, tick);
+  String::insert_float(ss, tick);
   for(auto pair : players) {
     Region * region = pair.second->getRegion();
     /*
@@ -361,7 +362,7 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   StateDisplay * display = new StateDisplay();
   std::stringstream * ss = new std::stringstream(to_read);
   round = String::extract_long(ss);
-  tick = String::extract_int(ss);
+  tick = String::extract_float(ss);
   std::stringstream * ss_blocks = new std::stringstream(String::extract(ss));
   while(ss_blocks->rdbuf()->in_avail() != 0) {
     std::stringstream * ss_block = new std::stringstream(String::extract(ss_blocks));

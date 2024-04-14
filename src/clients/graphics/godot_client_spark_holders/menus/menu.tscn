@@ -1,0 +1,142 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0oud2clscbk8"]
+
+[ext_resource type="Script" path="res://menus/menu.gd" id="1_occg0"]
+[ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="2_10tl3"]
+[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/button.tscn" id="2_tamjf"]
+[ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="3_h8g0t"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_occg0")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_10tl3")
+expand_mode = 1
+
+[node name="MainMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.4
+anchor_right = 0.55
+anchor_bottom = 0.6
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Singleplayer" parent="MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_bottom = NodePath("../Multiplayer")
+
+[node name="Multiplayer" parent="MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Singleplayer")
+focus_neighbor_bottom = NodePath("../Settings")
+
+[node name="Settings" parent="MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Multiplayer")
+focus_neighbor_bottom = NodePath("../Quit")
+
+[node name="Quit" parent="MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../Singleplayer")
+
+[node name="SinglePlayer" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.4
+anchor_right = 0.55
+anchor_bottom = 0.6
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="New" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Back")
+focus_neighbor_bottom = NodePath("../Load")
+
+[node name="Load" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../New")
+focus_neighbor_bottom = NodePath("../Settings")
+
+[node name="Settings" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Load")
+focus_neighbor_bottom = NodePath("../Back")
+
+[node name="Back" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../New")
+
+[node name="MultiPlayer" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.4
+anchor_right = 0.55
+anchor_bottom = 0.6
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="New" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Back")
+focus_neighbor_bottom = NodePath("../Load")
+
+[node name="Load" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../New")
+focus_neighbor_bottom = NodePath("../Join")
+
+[node name="Join" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Load")
+focus_neighbor_bottom = NodePath("../Settings")
+
+[node name="Settings" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Join")
+focus_neighbor_bottom = NodePath("../Back")
+
+[node name="Back" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+focus_neighbor_top = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../New")
+
+[node name="Settings" parent="." instance=ExtResource("3_h8g0t")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MainMenu/Singleplayer" to="." method="_on_singleplayer_pressed"]
+[connection signal="pressed" from="MainMenu/Multiplayer" to="." method="_on_multiplayer_pressed"]
+[connection signal="pressed" from="MainMenu/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MainMenu/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="SinglePlayer/New" to="." method="_on_new_single_pressed"]
+[connection signal="pressed" from="SinglePlayer/Load" to="." method="_on_load_single_pressed"]
+[connection signal="pressed" from="SinglePlayer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="SinglePlayer/Back" to="." method="_on_back_single_pressed"]
+[connection signal="pressed" from="MultiPlayer/New" to="." method="_on_new_multi_pressed"]
+[connection signal="pressed" from="MultiPlayer/Load" to="." method="_on_load_multi_pressed"]
+[connection signal="pressed" from="MultiPlayer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="MultiPlayer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MultiPlayer/Back" to="." method="_on_back_multi_pressed"]

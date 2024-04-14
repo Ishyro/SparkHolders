@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://csqpumv0ochcw"]
+
+[ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="1_snt6e"]
+[ext_resource type="Texture2D" uid="uid://djr3n5lm4m5ed" path="res://resources/materials/cut_stone/Color.jpg" id="2_gx573"]
+[ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="2_mrnvc"]
+[ext_resource type="Script" path="res://menus/Button.gd" id="3_h6xa7"]
+[ext_resource type="LabelSettings" uid="uid://bfkw6t3d0nqc2" path="res://menus/hud/police/SmallText.tres" id="4_5q3v8"]
+
+[node name="Button" type="TextureButton"]
+size_flags_vertical = 3
+focus_neighbor_top = NodePath("../Quit")
+texture_normal = ExtResource("1_snt6e")
+texture_pressed = ExtResource("2_gx573")
+texture_focused = ExtResource("2_mrnvc")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("3_h6xa7")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Button"
+label_settings = ExtResource("4_5q3v8")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]

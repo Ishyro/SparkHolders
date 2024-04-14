@@ -6,6 +6,7 @@ const MOVEMENT_FRICTION = 0.5
 var _mouse_motion = Vector2.ZERO
 var velocity = Vector3.ZERO
 var pause_state = false
+var free_mouse_state = false
 
 var perspective3 = true
 var tween
@@ -71,7 +72,7 @@ func update_mouse_coordinates():
 						owned = true
 						map.select_character(Values.selected_team.id)
 						break
-				if !owned:
+				if not owned:
 					Values.selected_target = selection
 				Values.selected_projectile = null
 				Values.selected_block = null
@@ -115,7 +116,7 @@ func _process(_delta):
 		if perspective3:
 			_mouse_motion.x = clamp(_mouse_motion.x, -1560, 1560)
 			camera3P.rotation_degrees = Vector3(clamp(camera3P.rotation_degrees.x + _mouse_motion.y * -0.001, -90, 0), camera3P.rotation_degrees.y, camera3P.rotation_degrees.z)
-		else:
+		elif not free_mouse_state:
 			_mouse_motion.y = clamp(_mouse_motion.y, -1560, 1560)
 			camera1P.transform.basis = Basis.from_euler(Vector3(_mouse_motion.y * -0.001, _mouse_motion.x * -0.001, 0))
 		if Values.selection_changed:
@@ -135,7 +136,7 @@ func _process(_delta):
 					hud.display_block(Values.selected_block, map.tiles_data[Values.selected_block.block])
 
 func _physics_process(_delta):
-	if(not pause_state):
+	if not pause_state and not free_mouse_state:
 		update_mouse_coordinates()
 		# Keyboard movement.
 		if perspective3:
@@ -144,7 +145,7 @@ func _physics_process(_delta):
 			var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
 			
 			movement *= MOVEMENT_SPEED * ( 3 + camera3P.transform.origin.y) / 20
-
+			
 			velocity += Vector3(movement.x, 0, movement.z)
 			# Apply horizontal friction.
 			velocity.x *= MOVEMENT_FRICTION
@@ -159,8 +160,10 @@ func _unhandled_input(event):
 			character_sheet.visible = false
 		else:
 			pause_state = not pause_state
-			if !perspective3:
-				if pause_state:
+			if pause_state:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			else:
+				if perspective3:
 					Input.set_mouse_mode(Input.MOUSE_MODE_CONFINED)
 				else:
 					Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -168,12 +171,18 @@ func _unhandled_input(event):
 	if not pause_state:
 		if event.is_action_pressed("swap_perspective"):
 			swap_camera()
+		if event.is_action_pressed("free_mouse") and not perspective3:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			free_mouse_state = true
+		if event.is_action_released("free_mouse") and not perspective3:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			free_mouse_state = false
 		if event.is_action_pressed("rotate_up_down") and event.double_click and perspective3:
 				camera3P.rotation_degrees = Vector3(-60, camera3P.rotation_degrees.y, 0)
 		if Input.is_action_pressed("rotate_up_down") and perspective3:
 			if event is InputEventMouseMotion:
 				_mouse_motion += event.relative
-		elif event is InputEventMouseMotion and !perspective3:
+		elif event is InputEventMouseMotion and not perspective3:
 			_mouse_motion += event.relative
 		if Input.is_action_just_released("rotate_up_down") and perspective3:
 			_mouse_motion = Vector2.ZERO
@@ -222,18 +231,18 @@ func _unhandled_input(event):
 		if event.is_action_pressed("action_rest"):
 			hud.rest.set_pressed(true)
 		if event.is_action_pressed("display_stats"):
-			if !character_sheet.visible:
+			if not character_sheet.visible:
 				character_sheet.display_stats()
 			else:
 				character_sheet.visible = false
 		if event.is_action_pressed("inventory"):
-			if !hud.inventory.visible:
+			if not hud.inventory.visible:
 				hud.inventory.display_inventory()
 			else:
 				hud.inventory.visible = false
-		if event.is_action_pressed("action") && not Values.updating_state && not Values.link.hasState():
+		if event.is_action_pressed("action") and not Values.updating_state and not Values.link.hasState():
 			Values.action_muxtex.lock()
-			if Values.mode == Values.ACTION_MODE_MOVE && map.baking_done:
+			if Values.mode == Values.ACTION_MODE_MOVE and map.baking_done:
 				Values.mode = Values.ACTION_MODE_NONE
 				map.phantoms[Values.selected_team.id].collision_layer = 0x0008
 				var is_first = true

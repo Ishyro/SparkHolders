@@ -132,7 +132,7 @@ class Adventure {
     std::list<Character *> getPreservedPlayers();
     void resurrect(Character * player, MathUtil::Vector3 coord);
     int64_t getRound();
-    int32_t getTick();
+    float getTick();
     void incrTick();
     void event();
     World * getWorld();
@@ -157,7 +157,7 @@ class Adventure {
   private:
     World * world;
     Database * database;
-    int32_t tick;
+    float tick;
     int64_t round;
     std::list<Character *> party;
     std::list<Character *> preserved_players;

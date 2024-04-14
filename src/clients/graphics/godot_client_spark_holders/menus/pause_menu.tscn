@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://ca2tqfxsjmhj1"]
+[gd_scene load_steps=4 format=3 uid="uid://ca2tqfxsjmhj1"]
 
 [ext_resource type="Script" path="res://menus/pause_menu.gd" id="1_a48ly"]
+[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/button.tscn" id="2_0h4ij"]
+[ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="2_pe3ds"]
 
 [node name="Pause" type="Control"]
 layout_mode = 3
@@ -24,45 +26,47 @@ color = Color(0, 0, 0, 0.352941)
 
 [node name="Menu" type="VBoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -4.0
-offset_top = -28.0
-offset_right = 4.0
-offset_bottom = 28.0
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.4
+anchor_right = 0.55
+anchor_bottom = 0.6
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Continue" type="Button" parent="Menu"]
+[node name="Continue" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Quit")
-text = "Continue
-"
+focus_neighbor_top = NodePath("")
 
-[node name="Save" type="Button" parent="Menu"]
+[node name="Save" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-text = "Save Game"
+focus_neighbor_top = NodePath("")
 
-[node name="Load" type="Button" parent="Menu"]
+[node name="Load" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-text = "Load Game"
+focus_neighbor_top = NodePath("")
 
-[node name="Menu" type="Button" parent="Menu"]
+[node name="Menu" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-text = "Main Menu"
+focus_neighbor_top = NodePath("")
 
-[node name="Quit" type="Button" parent="Menu"]
+[node name="Settings" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../Continue")
-text = "Quit Game"
+focus_neighbor_top = NodePath("")
+
+[node name="Quit" parent="Menu" instance=ExtResource("2_0h4ij")]
+layout_mode = 2
+focus_neighbor_top = NodePath("")
+
+[node name="Settings" parent="." instance=ExtResource("2_pe3ds")]
+visible = false
+layout_mode = 1
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="pressed" from="Menu/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Menu/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu/Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="Menu/Menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Menu/Quit" to="." method="_on_quit_pressed"]
