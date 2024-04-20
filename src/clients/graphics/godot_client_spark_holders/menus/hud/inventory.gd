@@ -38,7 +38,7 @@ var bag_content = {}
 var belt_content = {}
 
 func _ready():
-	SLOT_SIZE = Vector2(33, 33) #* Values.CURRENT_RESOLUTION / Values.BASE_RESOLUTION
+	SLOT_SIZE = Vector2(66, 66)
 	slots.push_back(slot_mantle)
 	slots.push_back(slot_helmet)
 	slots.push_back(slot_armor)
@@ -127,7 +127,7 @@ func update_inventories(ids):
 		inventories[id]["belt_content"] = inventory["belt_content"]
 
 func display_inventory():
-	SLOT_SIZE = Vector2(33, 33) #*  Values.CURRENT_RESOLUTION / Values.BASE_RESOLUTION
+	SLOT_SIZE = Vector2(66, 66)
 	var id = Values.selected_team.id
 	for item in items:
 		n_items.remove_child(item)

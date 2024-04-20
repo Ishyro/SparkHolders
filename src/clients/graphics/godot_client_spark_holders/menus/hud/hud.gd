@@ -68,7 +68,6 @@ var selected_skill
 var current_skill_slot = 0
 var selected_skill_slot = 0
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	characters_button.set_pressed_no_signal(true)
 	projectiles_button.set_pressed_no_signal(true)
@@ -88,8 +87,6 @@ func _ready():
 	current_skills[0][0].data = $Skills/Skillbar/Slots/Skill1.data
 	current_skills[0][1].texture = $Skills/Skillbar/Slots/Skill2.texture
 	current_skills[0][1].data = $Skills/Skillbar/Slots/Skill2.data
-	
-	#$Skills/Skillbar/Tabs.add_theme_constant_override("separation", 33 * Values.CURRENT_RESOLUTION.x / Values.BASE_RESOLUTION.x)
 
 func change_amount(type: String, current_value: float, max_value: float):
 	if type == "SHIELD":

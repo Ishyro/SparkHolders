@@ -23,18 +23,18 @@ func load_settings():
 func set_resolution(resolution_str: String, mode: String):
 	var key_and_data = resolution_str.split("x")
 	var resolution = Vector2(int(key_and_data[0]), int(key_and_data[1]))
-	if mode == "FULLSCREEN":
+	if mode == "Fullscreen":
 		get_window().set_size(resolution)
 		get_window().set_mode(Window.MODE_FULLSCREEN)
 		get_window().set_size(resolution)
-	elif mode == "WINDOWED":
+	elif mode == "Windowed":
 		get_window().set_mode(Window.MODE_WINDOWED)
 		get_window().set_flag(Window.FLAG_BORDERLESS, false)
 		get_window().set_flag(Window.FLAG_RESIZE_DISABLED, true)
 		get_window().set_size(resolution)
-	elif mode == "WINDOW_BORDERLESS":
+	elif mode == "Borderless Window":
 		get_window().set_mode(Window.MODE_WINDOWED)
 		get_window().set_flag(Window.FLAG_BORDERLESS, true)
 		get_window().set_flag(Window.FLAG_RESIZE_DISABLED, true)
 		get_window().set_size(resolution)
-	Values.CURRENT_RESOLUTION = resolution
+	Settings.Resolution = resolution

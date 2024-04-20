@@ -1,8 +1,6 @@
 extends Node
 
 # Constants
-const BASE_RESOLUTION = Vector2(1920, 1080)
-
 const BLOCK_SOLID = 1
 const BLOCK_LIQUID = 2
 const BLOCK_GAS = 3
@@ -57,7 +55,6 @@ const TARGET_PERMISSIVE = 5
 const TARGET_MULTIPLE = 6
 
 # Variables
-var CURRENT_RESOLUTION = BASE_RESOLUTION
 var server_pid = -1
 var link = GodotLink.new()
 var updating_state = false

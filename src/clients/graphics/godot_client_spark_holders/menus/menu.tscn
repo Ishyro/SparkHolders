@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0oud2clscbk8"]
+[gd_scene load_steps=6 format=3 uid="uid://d0oud2clscbk8"]
 
 [ext_resource type="Script" path="res://menus/menu.gd" id="1_occg0"]
-[ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="2_10tl3"]
-[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/button.tscn" id="2_tamjf"]
+[ext_resource type="Texture2D" uid="uid://djr3n5lm4m5ed" path="res://resources/materials/cut_stone/Color.jpg" id="2_ap7sj"]
+[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_tamjf"]
 [ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="3_h8g0t"]
+[ext_resource type="LabelSettings" uid="uid://dpf5xv4lmcttw" path="res://menus/hud/police/NumbersWhite.tres" id="3_tk4mp"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -21,122 +22,147 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_10tl3")
+texture = ExtResource("2_ap7sj")
 expand_mode = 1
 
-[node name="MainMenu" type="VBoxContainer" parent="."]
+[node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.4
-anchor_right = 0.55
-anchor_bottom = 0.6
+anchor_left = 0.2
+anchor_top = 0.1
+anchor_right = 0.8
+anchor_bottom = 0.2
 grow_horizontal = 2
-grow_vertical = 2
+text = "Spark Holders"
+label_settings = ExtResource("3_tk4mp")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.7
+anchor_right = 0.8
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 50
+
+[node name="SubMenus" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 100
+
+[node name="SinglePlayer" type="VBoxContainer" parent="Container/SubMenus"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
 alignment = 1
 
-[node name="Singleplayer" parent="MainMenu" instance=ExtResource("2_tamjf")]
+[node name="Dummy" type="Control" parent="Container/SubMenus/SinglePlayer"]
 layout_mode = 2
-focus_neighbor_bottom = NodePath("../Multiplayer")
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Multiplayer" parent="MainMenu" instance=ExtResource("2_tamjf")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Singleplayer")
-focus_neighbor_bottom = NodePath("../Settings")
-
-[node name="Settings" parent="MainMenu" instance=ExtResource("2_tamjf")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Multiplayer")
-focus_neighbor_bottom = NodePath("../Quit")
-
-[node name="Quit" parent="MainMenu" instance=ExtResource("2_tamjf")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Settings")
-focus_neighbor_bottom = NodePath("../Singleplayer")
-
-[node name="SinglePlayer" type="VBoxContainer" parent="."]
+[node name="New" parent="Container/SubMenus/SinglePlayer" instance=ExtResource("2_tamjf")]
 visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.4
-anchor_right = 0.55
-anchor_bottom = 0.6
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="New" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Back")
+focus_neighbor_top = NodePath("../../../MainMenu/Singleplayer")
 focus_neighbor_bottom = NodePath("../Load")
+text = "New Game"
 
-[node name="Load" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+[node name="Load" parent="Container/SubMenus/SinglePlayer" instance=ExtResource("2_tamjf")]
+visible = false
 layout_mode = 2
 focus_neighbor_top = NodePath("../New")
-focus_neighbor_bottom = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../../../MainMenu/Singleplayer")
+text = "Load Game"
 
-[node name="Settings" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
+[node name="MultiPlayer" type="VBoxContainer" parent="Container/SubMenus"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Load")
-focus_neighbor_bottom = NodePath("../Back")
-
-[node name="Back" parent="SinglePlayer" instance=ExtResource("2_tamjf")]
-layout_mode = 2
-focus_neighbor_top = NodePath("../Settings")
-focus_neighbor_bottom = NodePath("../New")
-
-[node name="MultiPlayer" type="VBoxContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.45
-anchor_top = 0.4
-anchor_right = 0.55
-anchor_bottom = 0.6
-grow_horizontal = 2
-grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
 alignment = 1
 
-[node name="New" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+[node name="New" parent="Container/SubMenus/MultiPlayer" instance=ExtResource("2_tamjf")]
+visible = false
 layout_mode = 2
-focus_neighbor_top = NodePath("../Back")
+focus_neighbor_top = NodePath("../../../MainMenu/Multiplayer")
 focus_neighbor_bottom = NodePath("../Load")
+text = "New Game"
 
-[node name="Load" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+[node name="Load" parent="Container/SubMenus/MultiPlayer" instance=ExtResource("2_tamjf")]
+visible = false
 layout_mode = 2
 focus_neighbor_top = NodePath("../New")
 focus_neighbor_bottom = NodePath("../Join")
+text = "Load Game"
 
-[node name="Join" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+[node name="Join" parent="Container/SubMenus/MultiPlayer" instance=ExtResource("2_tamjf")]
+visible = false
 layout_mode = 2
 focus_neighbor_top = NodePath("../Load")
-focus_neighbor_bottom = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../../../MainMenu/Multiplayer")
+text = "Join Game"
 
-[node name="Settings" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+[node name="Dummy" type="Control" parent="Container/SubMenus"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Join")
-focus_neighbor_bottom = NodePath("../Back")
+size_flags_horizontal = 3
 
-[node name="Back" parent="MultiPlayer" instance=ExtResource("2_tamjf")]
+[node name="Dummy2" type="Control" parent="Container/SubMenus"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../Settings")
-focus_neighbor_bottom = NodePath("../New")
+size_flags_horizontal = 3
+
+[node name="MainMenu" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+theme_override_constants/separation = 100
+alignment = 1
+
+[node name="Singleplayer" parent="Container/MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../Quit")
+focus_neighbor_top = NodePath("../../SubMenus/SinglePlayer/Load")
+focus_neighbor_right = NodePath("../Multiplayer")
+focus_neighbor_bottom = NodePath("../../SubMenus/SinglePlayer/New")
+text = "Singleplayer"
+
+[node name="Multiplayer" parent="Container/MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../Singleplayer")
+focus_neighbor_top = NodePath("../../SubMenus/MultiPlayer/Join")
+focus_neighbor_right = NodePath("../Settings")
+focus_neighbor_bottom = NodePath("../../SubMenus/MultiPlayer/New")
+text = "Multiplayer"
+
+[node name="Settings" parent="Container/MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../Multiplayer")
+focus_neighbor_right = NodePath("../Quit")
+text = "Settings"
+
+[node name="Quit" parent="Container/MainMenu" instance=ExtResource("2_tamjf")]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_neighbor_left = NodePath("../Settings")
+focus_neighbor_right = NodePath("../Singleplayer")
+text = "Quit Game "
 
 [node name="Settings" parent="." instance=ExtResource("3_h8g0t")]
 visible = false
 layout_mode = 1
 
-[connection signal="pressed" from="MainMenu/Singleplayer" to="." method="_on_singleplayer_pressed"]
-[connection signal="pressed" from="MainMenu/Multiplayer" to="." method="_on_multiplayer_pressed"]
-[connection signal="pressed" from="MainMenu/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="MainMenu/Quit" to="." method="_on_quit_pressed"]
-[connection signal="pressed" from="SinglePlayer/New" to="." method="_on_new_single_pressed"]
-[connection signal="pressed" from="SinglePlayer/Load" to="." method="_on_load_single_pressed"]
-[connection signal="pressed" from="SinglePlayer/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="SinglePlayer/Back" to="." method="_on_back_single_pressed"]
-[connection signal="pressed" from="MultiPlayer/New" to="." method="_on_new_multi_pressed"]
-[connection signal="pressed" from="MultiPlayer/Load" to="." method="_on_load_multi_pressed"]
-[connection signal="pressed" from="MultiPlayer/Join" to="." method="_on_join_pressed"]
-[connection signal="pressed" from="MultiPlayer/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="MultiPlayer/Back" to="." method="_on_back_multi_pressed"]
+[connection signal="pressed" from="Container/SubMenus/SinglePlayer/New" to="." method="_on_new_single_pressed"]
+[connection signal="pressed" from="Container/SubMenus/SinglePlayer/Load" to="." method="_on_load_single_pressed"]
+[connection signal="pressed" from="Container/SubMenus/MultiPlayer/New" to="." method="_on_new_multi_pressed"]
+[connection signal="pressed" from="Container/SubMenus/MultiPlayer/Load" to="." method="_on_load_multi_pressed"]
+[connection signal="pressed" from="Container/SubMenus/MultiPlayer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Container/MainMenu/Singleplayer" to="." method="_on_singleplayer_pressed"]
+[connection signal="pressed" from="Container/MainMenu/Multiplayer" to="." method="_on_multiplayer_pressed"]
+[connection signal="pressed" from="Container/MainMenu/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Container/MainMenu/Quit" to="." method="_on_quit_pressed"]

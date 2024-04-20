@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ca2tqfxsjmhj1"]
 
 [ext_resource type="Script" path="res://menus/pause_menu.gd" id="1_a48ly"]
-[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/button.tscn" id="2_0h4ij"]
+[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_0h4ij"]
 [ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="2_pe3ds"]
 
 [node name="Pause" type="Control"]
@@ -28,36 +28,38 @@ color = Color(0, 0, 0, 0.352941)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.45
-anchor_top = 0.4
+anchor_top = 0.35
 anchor_right = 0.55
-anchor_bottom = 0.6
+anchor_bottom = 0.65
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/separation = 50
 
 [node name="Continue" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("")
+text = "Continue"
 
 [node name="Save" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("")
+text = "Save Game"
 
 [node name="Load" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("")
-
-[node name="Menu" parent="Menu" instance=ExtResource("2_0h4ij")]
-layout_mode = 2
-focus_neighbor_top = NodePath("")
+text = "Load Game"
 
 [node name="Settings" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("")
+text = "Settings"
+
+[node name="Menu" parent="Menu" instance=ExtResource("2_0h4ij")]
+layout_mode = 2
+text = "Main Menu"
 
 [node name="Quit" parent="Menu" instance=ExtResource("2_0h4ij")]
 layout_mode = 2
-focus_neighbor_top = NodePath("")
+focus_neighbor_bottom = NodePath("../Continue")
+text = "Quit Game"
 
 [node name="Settings" parent="." instance=ExtResource("2_pe3ds")]
 visible = false
@@ -67,6 +69,6 @@ layout_mode = 1
 [connection signal="pressed" from="Menu/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="Menu/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Menu/Load" to="." method="_on_load_pressed"]
-[connection signal="pressed" from="Menu/Menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="Menu/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Menu/Menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="Menu/Quit" to="." method="_on_quit_pressed"]

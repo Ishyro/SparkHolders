@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://csqpumv0ochcw"]
+
+[ext_resource type="Script" path="res://menus/theme/Button.gd" id="1_b6evh"]
+
+[node name="Button" type="Button"]
+size_flags_vertical = 3
+script = ExtResource("1_b6evh")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

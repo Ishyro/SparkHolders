@@ -1,40 +1,91 @@
 extends Control
 
-var small_numbers = preload("res://menus/hud/police/SmallNumbers.tres")
-var numbers = preload("res://menus/hud/police/Numbers.tres")
-var numbers_box = preload("res://menus/hud/police/NumbersBox.tres")
-var numbers_white = preload("res://menus/hud/police/NumbersWhite.tres")
-var small_text = preload("res://menus/hud/police/SmallText.tres")
-var text = preload("res://menus/hud/police/Text.tres")
-var big_text = preload("res://menus/hud/police/BigText.tres")
-
 var client_settings_dic = {}
 var server_settings_dic = {}
+var client_settings_changed = {}
+var server_settings_changed = {}
 
-# Called when the node enters the scene tree for the first time.
+# General
+var languages = { "English": 0, "Français": 1 }
+var fonts = { "Emperialisme": 0, "Endor": 1, "Endor Alt": 2, "New Rocker": 3, "Rooters": 4 }
+var fonts_paths = { 
+	"Emperialisme": "res://menus/hud/police/emperialisme/Emperialisme Regular.otf",
+	"Endor": "res://menus/hud/police/endor/ENDOR___.ttf",
+	"Endor Alt": "res://menus/hud/police/endor/ENDORALT.ttf",
+	"New Rocker": "res://menus/hud/police/new-rocker/NewRocker-Regular.ttf",
+	"Rooters": "res://menus/hud/police/rooters/Rooters.otf"
+}
+# Video
+var window_types = { "Fullscreen": 0, "Windowed": 1, "Borderless Window": 2 }
+var resolutions = { "1280x720": 0, "1280x1080": 1, "1440x1080": 2, "1920x1080": 3, "2880x1920": 4, "3840x2160": 5, "7680x4320": 6 }
+var antialiasings = { "Off": 0, "x2": 1, "x4": 2, "x8": 3 }
+
+# General
+@onready var n_language = $Divider/MarginContainer/ClientServer/Client/General/LanguageValue
+@onready var n_font = $Divider/MarginContainer/ClientServer/Client/General/FontValue
+@onready var n_port = $Divider/MarginContainer/ClientServer/Client/General/PortValue
+@onready var n_edgepanning = $Divider/MarginContainer/ClientServer/Client/General/EdgePanningValue
+# Video
+@onready var n_resolution = $Divider/MarginContainer/ClientServer/Client/Video/ResolutionValue
+@onready var n_window_type = $Divider/MarginContainer/ClientServer/Client/Video/WindowTypeValue
+@onready var n_antialiasing = $Divider/MarginContainer/ClientServer/Client/Video/AntiAliasingValue
+@onready var n_vsync = $Divider/MarginContainer/ClientServer/Client/Video/VSyncValue
+@onready var n_shadows = $Divider/MarginContainer/ClientServer/Client/Video/ShadowsValue
+@onready var n_whitelight = $Divider/MarginContainer/ClientServer/Client/Video/WhileLightValue
+
+# Server
+@onready var n_tickduration = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue
+@onready var n_maxnumberdaysawake = $Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysAwakeValue
+@onready var n_maxnumberdaysfasting = $Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysFastingValue
+@onready var n_staminarecoveryratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaRecoveryRatioValue
+@onready var n_satietyrecoveryratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyRecoveryRatioValue
+@onready var n_staminaoverextendratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaOverextendRatioValue
+@onready var n_satietyoverextendratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyOverextendRatioValue
+@onready var n_buyingpricemodifier = $Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue
+
+@onready var n_serverport = $Divider/MarginContainer/ClientServer/Server/General/PortValue
+@onready var n_seed = $Divider/MarginContainer/ClientServer/Server/General/SeedValue
+@onready var n_pasword = $Divider/MarginContainer/ClientServer/Server/General/PasswordValue
+
 func _ready():
-	$Menu/Close.grab_focus()
+	# General
+	for language in languages:
+		n_language.add_item(language)
+	for font in fonts:
+		n_font.add_item(font)
+	# Video
+	for resolution in resolutions:
+		n_resolution.add_item(resolution)
+	for window_type in window_types:
+		n_window_type.add_item(window_type)
+	for antialiasing in antialiasings:
+		n_antialiasing.add_item(antialiasing)
+	
+	$Divider/Buttons/Save.grab_focus.call_deferred()
 	load_client_settings()
 	load_server_settings()
+	apply_client_settings(true)
+	apply_server_settings()
 
 func load_client_settings():
 	var settings = FileAccess.open("res://data/settings_client.data", FileAccess.READ)
-	var content = settings.get_as_text(true)
+	var content = settings.get_as_text(true).strip_edges(false)
 	for setting in content.split("\n"):
 		if not setting.is_empty() and setting[0] != "#":
 			var key_and_data = setting.split("=")
-			client_settings_dic[key_and_data[0].trim_prefix(" ").trim_suffix(" ")] = key_and_data[1].trim_prefix(" ").trim_suffix(" ")
+			client_settings_dic[key_and_data[0].strip_edges()] = key_and_data[1].strip_edges()
+			client_settings_changed[key_and_data[0].strip_edges()] = false
 	settings.close()
 
 func save_client_settings():
 	var settings = FileAccess.open("res://data/settings_client.data", FileAccess.READ)
-	var content = settings.get_as_text(true)
+	var content = settings.get_as_text(true).strip_edges(false)
 	settings.close()
 	settings = FileAccess.open("res://data/settings_client.data", FileAccess.WRITE)
 	for setting in content.split("\n"):
 		if not setting.is_empty() and setting[0] != "#":
 			var key_and_data = setting.split("=")
-			var setting_key = key_and_data[0].trim_prefix(" ").trim_suffix(" ")
+			var setting_key = key_and_data[0].strip_edges()
 			settings.store_line(setting_key + " = " + client_settings_dic[setting_key])
 		else:
 			settings.store_line(setting)
@@ -42,67 +93,272 @@ func save_client_settings():
 
 func load_server_settings():
 	var settings = FileAccess.open("res://data/settings_server.data", FileAccess.READ)
-	var content = settings.get_as_text(true)
+	var content = settings.get_as_text(true).strip_edges(false)
 	for setting in content.split("\n"):
 		if not setting.is_empty() and setting[0] != "#":
 			var key_and_data = setting.split("=")
-			server_settings_dic[key_and_data[0].trim_prefix(" ").trim_suffix(" ")] = key_and_data[1].trim_prefix(" ").trim_suffix(" ")
+			server_settings_dic[key_and_data[0].strip_edges()] = key_and_data[1].strip_edges()
+			server_settings_changed[key_and_data[0].strip_edges()] = false
 	settings.close()
 
 func save_server_settings():
 	var settings = FileAccess.open("res://data/settings_server.data", FileAccess.READ)
-	var content = settings.get_as_text(true)
+	var content = settings.get_as_text(true).strip_edges(false)
 	settings.close()
 	settings = FileAccess.open("res://data/settings_server.data", FileAccess.WRITE)
 	for setting in content.split("\n"):
 		if not setting.is_empty() and setting[0] != "#":
 			var key_and_data = setting.split("=")
-			var setting_key = key_and_data[0].trim_prefix(" ").trim_suffix(" ")
+			var setting_key = key_and_data[0].strip_edges()
 			settings.store_line(setting_key + " = " + server_settings_dic[setting_key])
 		else:
 			settings.store_line(setting)
 	settings.close()
+	
+func apply_client_settings(forced_update):
+	var need_to_save = false
+	var keys = [ "FONT", "ANTI_ALIASING" ]
+	for key in keys:
+		if client_settings_changed[key]:
+			need_to_save = true
+			break
+	# General
+	if client_settings_changed["LANG"] or forced_update:
+		n_language.select(languages[client_settings_dic["LANG"]])
+		Settings.Lang = client_settings_dic["LANG"]
+		client_settings_changed["LANG"] = false
+	if client_settings_changed["FONT"] or forced_update:
+		n_font.select(fonts[client_settings_dic["FONT"]])
+		ProjectSettings.set_setting("gui/theme/custom_font", fonts_paths[client_settings_dic["FONT"]])
+		client_settings_changed["FONT"] = false
+	if client_settings_changed["PORT"] or forced_update:
+		n_port.text = client_settings_dic["PORT"]
+		Settings.Port = int(client_settings_dic["PORT"])
+		client_settings_changed["PORT"] = false
+	if client_settings_changed["EDGE_PANNING"] or forced_update:
+		if client_settings_dic["EDGE_PANNING"] == "On":
+			n_edgepanning.set_pressed(true)
+			Settings.EdgePanning = true
+		else:
+			n_edgepanning.set_pressed(false)
+			Settings.EdgePanning = false
+		client_settings_changed["EDGE_PANNING"] = false
+	# Video
+	if client_settings_changed["RESOLUTION"] or client_settings_changed["WINDOW_TYPE"] or forced_update:
+		set_resolution()
+		n_resolution.select(resolutions[client_settings_dic["RESOLUTION"]])
+		n_window_type.select(window_types[client_settings_dic["WINDOW_TYPE"]])
+		client_settings_changed["RESOLUTION"] = false
+		client_settings_changed["WINDOW_TYPE"] = false
+	# no forced update for ProjectSettings since they only apply on restart
+	n_antialiasing.select(antialiasings[client_settings_dic["ANTI_ALIASING"]])
+	if client_settings_changed["ANTI_ALIASING"]:
+		match client_settings_dic["ANTI_ALIASING"]:
+			"Off" : ProjectSettings.set_setting("rendering/anti_aliasing/quality/msaa_3d", 0)
+			"x2" : ProjectSettings.set_setting("rendering/anti_aliasing/quality/msaa_3d", 1)
+			"x4" : ProjectSettings.set_setting("rendering/anti_aliasing/quality/msaa_3d", 2)
+			"x8" : ProjectSettings.set_setting("rendering/anti_aliasing/quality/msaa_3d", 3)
+		client_settings_changed["ANTI_ALIASING"] = false
+	if client_settings_changed["VSYNC"] or forced_update:
+		if client_settings_dic["VSYNC"] == "On":
+			n_vsync.set_pressed(true)
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		else:
+			n_vsync.set_pressed(false)
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		client_settings_changed["VSYNC"] = false
+	if client_settings_changed["SHADOWS"] or forced_update:
+		if client_settings_dic["SHADOWS"] == "On":
+			n_shadows.set_pressed(true)
+			Settings.shadows = true
+		else:
+			n_shadows.set_pressed(false)
+			Settings.shadows = false
+		client_settings_changed["SHADOWS"] = false
+	if client_settings_changed["WHITE_LIGHTS"] or forced_update:
+		if client_settings_dic["WHITE_LIGHTS"] == "On":
+			n_whitelight.set_pressed(true)
+			Settings.white_light = true
+		else:
+			n_whitelight.set_pressed(false)
+			Settings.white_light = false
+		client_settings_changed["WHITE_LIGHTS"] = false
+	if need_to_save:
+		ProjectSettings.save()
+
+
+func apply_server_settings():
+	# Gameplay
+	n_tickduration.text = server_settings_dic["TICK_DURATION"]
+	n_maxnumberdaysawake.text = server_settings_dic["MAX_NUMBER_DAYS_AWAKE"]
+	n_maxnumberdaysfasting.text = server_settings_dic["MAX_NUMBER_DAYS_FASTING"]
+	n_staminarecoveryratio.text = server_settings_dic["STAMINA_RECOVERY_RATIO"]
+	n_satietyrecoveryratio.text = server_settings_dic["SATIETY_RECOVERY_RATIO"]
+	n_staminaoverextendratio.text = server_settings_dic["STAMINA_OVEREXTEND_RATIO"]
+	n_satietyoverextendratio.text = server_settings_dic["SATIETY_OVEREXTEND_RATIO"]
+	n_buyingpricemodifier.text = server_settings_dic["BUYING_PRICE_MODIFIER"]
+	# General
+	n_serverport.text = server_settings_dic["PORT"]
+	n_seed.text = server_settings_dic["SEED"]
+	if server_settings_dic["MASTER_PASSWORD"] != "":
+		n_pasword.text = "*****"
+	else:
+		n_pasword.text = "EMPTY"
 
 func set_resolution():
 	var resolution_str = client_settings_dic["RESOLUTION"]
 	var mode = client_settings_dic["WINDOW_TYPE"]
 	var key_and_data = resolution_str.split("x")
 	var resolution = Vector2(int(key_and_data[0]), int(key_and_data[1]))
-	if mode == "FULLSCREEN":
-		get_window().set_size(resolution)
+	if mode == "Fullscreen":
 		get_window().set_mode(Window.MODE_FULLSCREEN)
-		get_window().set_size(resolution)
-	elif mode == "WINDOWED":
+	elif mode == "Windowed":
 		get_window().set_mode(Window.MODE_WINDOWED)
 		get_window().set_flag(Window.FLAG_BORDERLESS, false)
 		get_window().set_flag(Window.FLAG_RESIZE_DISABLED, true)
-		get_window().set_size(resolution)
-	elif mode == "BORDERLESS":
+	elif mode == "Borderless Window":
 		get_window().set_mode(Window.MODE_WINDOWED)
 		get_window().set_flag(Window.FLAG_BORDERLESS, true)
 		get_window().set_flag(Window.FLAG_RESIZE_DISABLED, true)
-		get_window().set_size(resolution)
-	#numbers_box.font_size = 18 * resolution.y / Values.BASE_RESOLUTION.y
-	#numbers_white.font_size = 36 * resolution.y / Values.BASE_RESOLUTION.y
-	#small_numbers.font_size = 32 * resolution.y / Values.BASE_RESOLUTION.y
-	#numbers.font_size = 48 * resolution.y / Values.BASE_RESOLUTION.y
-	#small_text.font_size = 16 * resolution.y / Values.BASE_RESOLUTION.y
-	#text.font_size = 28 * resolution.y / Values.BASE_RESOLUTION.y
-	#big_text.font_size = 36 * resolution.y / Values.BASE_RESOLUTION.y
-	Values.CURRENT_RESOLUTION = resolution
-
-func _on_fullscreen_pressed():
-	client_settings_dic["WINDOW_TYPE"] = "FULLSCREEN"
-
-func _on_windowed_pressed():
-	client_settings_dic["WINDOW_TYPE"] = "WINDOWED"
-
-func _on_borderless_window_pressed():
-	client_settings_dic["WINDOW_TYPE"] = "WINDOW_BORDERLESS"
-
-func _on_close_pressed():
-	visible = false
+	get_window().set_size(resolution)
+	Settings.Resolution = resolution
 
 func _on_save_pressed():
 	save_client_settings()
 	save_server_settings()
+	apply_client_settings(false)
+
+func _on_save_and_close_pressed():
+	save_client_settings()
+	save_server_settings()
+	apply_client_settings(false)
+	visible = false
+
+func _on_close_pressed():
+	visible = false
+
+func _on_reset_pressed():
+	pass # Replace with function body.
+
+# General
+func _on_language_value_item_selected(index):
+	client_settings_dic["LANG"] = n_language.get_item_text(index)
+	client_settings_changed["LANG"] = true
+
+func _on_font_value_item_selected(index):
+	client_settings_dic["FONT"] = n_font.get_item_text(index)
+	client_settings_changed["FONT"] = true
+
+func _on_port_value_text_submitted(new_text):
+	if new_text.is_valid_int():
+		client_settings_dic["PORT"] = new_text
+	else:
+		n_port.text = client_settings_dic["PORT"]
+	client_settings_changed["PORT"] = true
+
+# Video
+func _on_resolution_value_item_selected(index):
+	client_settings_dic["RESOLUTION"] = n_resolution.get_item_text(index)
+	client_settings_changed["RESOLUTION"] = true
+	
+func _on_window_type_value_item_selected(index):
+	client_settings_dic["WINDOW_TYPE"] = n_window_type.get_item_text(index)
+	client_settings_changed["WINDOW_TYPE"] = true
+
+func _on_anti_aliasing_value_item_selected(index):
+	client_settings_dic["ANTI_ALIASING"] = n_antialiasing.get_item_text(index)
+	client_settings_changed["ANTI_ALIASING"] = true
+
+func _on_v_sync_value_toggled(button_pressed):
+	if button_pressed:
+		n_vsync.set_text("On")
+		client_settings_dic["V_SYNC"] = "On"
+	else:
+		n_vsync.set_text("Off")
+		client_settings_dic["V_SYNC"] = "Off"
+	client_settings_changed["V_SYNC"] = true
+
+func _on_shadows_value_toggled(button_pressed):
+	if button_pressed:
+		n_shadows.set_text("On")
+		client_settings_dic["SHADOWS"] = "On"
+	else:
+		n_shadows.set_text("Off")
+		client_settings_dic["SHADOWS"] = "Off"
+	client_settings_changed["SHADOWS"] = true
+
+func _on_while_light_value_toggled(button_pressed):
+	if button_pressed:
+		n_whitelight.set_text("On")
+		client_settings_dic["WHITE_LIGHTS"] = "On"
+	else:
+		n_whitelight.set_text("Off")
+		client_settings_dic["WHITE_LIGHTS"] = "Off"
+	client_settings_changed["WHITE_LIGHTS"] = true
+
+func _on_tick_duration_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["TICK_DURATION"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["TICK_DURATION"]
+
+func _on_max_number_days_awake_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["MAX_NUMBER_DAYS_AWAKE "] = new_text
+	else:
+		n_serverport.text = server_settings_dic["MAX_NUMBER_DAYS_AWAKE "]
+
+func _on_max_number_days_fasting_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["MAX_NUMBER_DAYS_FASTING"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["MAX_NUMBER_DAYS_FASTING"]
+
+func _on_stamina_recovery_ratio_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["STAMINA_RECOVERY_RATIO"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["STAMINA_RECOVERY_RATIO"]
+
+func _on_satiety_recovery_ratio_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["SATIETY_RECOVERY_RATIO"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["SATIETY_RECOVERY_RATIO"]
+
+func _on_stamina_overextend_ratio_value_text_submitted(new_text):
+	if new_text.is_valid_int():
+		server_settings_dic["STAMINA_OVEREXTEND_RATIO"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["STAMINA_OVEREXTEND_RATIO"]
+
+func _on_satiety_overextend_ratio_value_text_submitted(new_text):
+	if new_text.is_valid_int():
+		server_settings_dic["SATIETY_OVEREXTEND_RATIO"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["SATIETY_OVEREXTEND_RATIO"]
+
+func _on_buying_price_modifier_value_text_submitted(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["BUYING_PRICE_MODIFIER"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["BUYING_PRICE_MODIFIER"]
+
+func _on_serverport_value_text_submitted(new_text):
+	if new_text.is_valid_int():
+		server_settings_dic["PORT"] = new_text
+	else:
+		n_serverport.text = server_settings_dic["PORT"]
+
+func _on_seed_value_text_submitted(new_text):
+	if new_text.is_valid_int() or new_text == "rand":
+		server_settings_dic["SEED"] = new_text
+	else:
+		n_seed.text = server_settings_dic["SEED"]
+
+func _on_password_value_text_submitted(new_text):
+	server_settings_dic["MASTER_PASSWORD"] = new_text
+	if new_text != "":
+		n_pasword.text = "*****"
+	else:
+		n_pasword.text = "EMPTY"

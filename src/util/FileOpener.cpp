@@ -1228,8 +1228,6 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     ClientSettings::setPort(stoi(values.at("PORT")));
     ClientSettings::setLang(values.at("LANG"));
-    ClientSettings::setResolution(values.at("RESOLUTION"));
-    ClientSettings::setWindowType(database->getTargetFromMacro(values.at("WINDOW_TYPE")));
   }
 
   void SkillOpener(std::string fileName, Database * database) {

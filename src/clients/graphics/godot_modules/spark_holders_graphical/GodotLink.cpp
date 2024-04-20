@@ -23,13 +23,13 @@ void listener(void * param) {
   }
 }
 
-void GodotLink::initialize(String ip) {
+void GodotLink::initialize(String ip, int64_t port, String lang) {
   Database * temp = new Database();
   FileOpener::ClientSettingsOpener("data" + FileOpener::PATH_DELIMITER + "settings_client.data", temp);
   delete temp;
   s = Socket();
-  s.connect(std::string(ip.utf8().get_data()), ClientSettings::getPort());
-  link = new Link(s, ClientSettings::getLang());
+  s.connect(std::string(ip.utf8().get_data()), port);
+  link = new Link(s, std::string(lang.utf8().get_data()));
   link->initialize("tester", "admin");
   #ifdef _WIN32_WINNT
     thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
@@ -732,7 +732,7 @@ void GodotLink::close() {
 }
 
 void GodotLink::_bind_methods() {
-  ClassDB::bind_method(D_METHOD("initialize", "ip"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "lang"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "ori", "dest"), &GodotLink::getMoveCost);

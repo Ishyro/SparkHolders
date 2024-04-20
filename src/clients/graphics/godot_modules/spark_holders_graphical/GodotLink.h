@@ -39,7 +39,7 @@ public:
       log.open("log.txt");
     #endif
   }
-  void initialize(String ip);
+  void initialize(String ip, int64_t port, String lang);
   bool hasState();
   bool getState();
   float getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest);

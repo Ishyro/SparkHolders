@@ -1,4 +1,0 @@
-Rework Action/Round system: introduce Initiative/Action Points with each Action = AP cost.
-=> Mutliple Actions per Round.
-To sort Actions: Character Current Initiative - Action AP Cost / 2, highest first.
-Introduce a Reaction system: if an hostile character appears/teleport near a Character, he can replace his next actions with new ones according to the unexpected situation.

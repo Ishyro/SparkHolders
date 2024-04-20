@@ -1,15 +1,21 @@
 extends Node3D
 
 func initialize(coords: Vector3, size: float, light_power: int):
+	var flames = $Flames
+	var smoke = $Smoke
+	var light = $Light
 	transform.origin = coords
-	$Flames.lifetime *= size
-	$Flames.draw_pass_1 = QuadMesh.new()
-	$Flames.draw_pass_1.size = Vector2(size, size)
-	$Flames.process_material.emission_sphere_radius *= size 
-	$Smoke.lifetime *= size
-	$Smoke.draw_pass_1 = QuadMesh.new()
-	$Smoke.draw_pass_1.size = Vector2(size, size)
-	$Smoke.process_material.emission_sphere_radius *= size
-	$Light.omni_range = light_power
-	$Light.light_energy *= light_power
-	#$Light.light_color = Color.WHITE
+	flames.lifetime *= size
+	flames.draw_pass_1 = QuadMesh.new()
+	flames.draw_pass_1.size = Vector2(size, size)
+	flames.process_material.emission_sphere_radius *= size 
+	smoke.lifetime *= size
+	smoke.draw_pass_1 = QuadMesh.new()
+	smoke.draw_pass_1.size = Vector2(size, size)
+	smoke.process_material.emission_sphere_radius *= size
+	light.omni_range = light_power
+	light.light_energy *= light_power
+	if Settings.white_light:
+		light.light_color = Color.WHITE
+	if not Settings.shadows:
+		light.set_shadow(false)

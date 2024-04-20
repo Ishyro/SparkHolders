@@ -141,6 +141,18 @@ func _physics_process(_delta):
 		# Keyboard movement.
 		if perspective3:
 			var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+			if Settings.EdgePanning:
+				var cam_move = Vector2.ZERO
+				var mouse_coords = camera3P.get_viewport().get_mouse_position()
+				if mouse_coords.x == 0:
+					cam_move.x = -1
+				if mouse_coords.y == 0:
+					cam_move.y = -1
+				if mouse_coords.x == Settings.Resolution.x - 1:
+					cam_move.x = 1
+				if mouse_coords.y == Settings.Resolution.y - 1:
+					cam_move.y = 1
+				movement_vec2 += cam_move
 			movement_vec2 = movement_vec2.rotated(deg_to_rad(-camera3P.rotation_degrees.y))
 			var movement = Vector3(movement_vec2.x, 0, movement_vec2.y)
 			

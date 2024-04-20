@@ -8,12 +8,7 @@ extends Control
 @onready var settings = $Settings
 
 func _ready():
-	$Menu/Continue.set_text("Continue")
-	$Menu/Save.set_text("Save")
-	$Menu/Load.set_text("Load")
-	$Menu/Menu.set_text("Main Menu")
-	$Menu/Settings.set_text("Settings")
-	$Menu/Quit.set_text("Quit Game")
+	$Menu/Continue.grab_focus.call_deferred()
 
 func _on_continue_pressed():
 	view.pause_state = false
@@ -31,7 +26,7 @@ func _on_menu_pressed():
 	Values.link.close()
 	if Values.server_pid != -1:
 		OS.kill(Values.server_pid)
-	get_tree().change_scene_to_file("res://menus/main_menu.tscn")
+	get_tree().change_scene_to_file("res://menus/menu.tscn")
 
 func _on_settings_pressed():
 	settings.visible = true

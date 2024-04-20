@@ -1,7 +1,4 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://c2gsmrocc1xgt"]
-
-[ext_resource type="FontFile" uid="uid://dte6pltybchg4" path="res://menus/hud/police/BaroqueScript.ttf" id="1_ldah6"]
+[gd_resource type="LabelSettings" format=3 uid="uid://c2gsmrocc1xgt"]
 
 [resource]
-font = ExtResource("1_ldah6")
-font_size = 36
+font_size = 52

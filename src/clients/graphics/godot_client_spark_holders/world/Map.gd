@@ -13,7 +13,6 @@ var current_blocks = {}
 var blocks_count = {}
 
 var colliders = {}
-var lights = {}
 var characters = {}
 var projectiles = {}
 var furnitures = {}
@@ -31,22 +30,6 @@ var blocks_img = {}
 var board_material = preload("res://resources/materials/board_material.tres")
 var phantom_material = preload("res://resources/materials/phantom.tres")
 var base_fire = preload("res://models/fire.tscn")
-var light_0 = StandardMaterial3D.new()
-var light_1 = StandardMaterial3D.new()
-var light_2 = StandardMaterial3D.new()
-var light_3 = StandardMaterial3D.new()
-var light_4 = StandardMaterial3D.new()
-var light_5 = StandardMaterial3D.new()
-var light_6 = StandardMaterial3D.new()
-var light_7 = StandardMaterial3D.new()
-var light_8 = StandardMaterial3D.new()
-var light_9 = StandardMaterial3D.new()
-var light_a = StandardMaterial3D.new()
-var light_b = StandardMaterial3D.new()
-var light_c = StandardMaterial3D.new()
-var light_d = StandardMaterial3D.new()
-var light_e = StandardMaterial3D.new()
-var light_f = StandardMaterial3D.new()
 
 var base_character = preload("res://models/character.tscn")
 var base_phantom = preload("res://models/phantom.tscn")
@@ -56,7 +39,6 @@ var base_projectile = preload("res://models/projectile.tscn")
 @onready var n_hud = $"../HUD"
 @onready var n_blocks = $Blocks
 @onready var n_ground = $Blocks/GroundColliders
-@onready var n_lights = $Lights
 @onready var n_characters = $Characters
 @onready var n_projectiles = $Projectiles
 @onready var n_furnitures = $Furnitures
@@ -65,28 +47,9 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	light_0.albedo_color = "000000"
-	light_1.albedo_color = "111111"
-	light_2.albedo_color = "222222"
-	light_3.albedo_color = "333333"
-	light_4.albedo_color = "444444"
-	light_5.albedo_color = "555555"
-	light_5.albedo_color = "666666"
-	light_7.albedo_color = "777777"
-	light_8.albedo_color = "888888"
-	light_9.albedo_color = "999999"
-	light_a.albedo_color = "aaaaaa"
-	light_b.albedo_color = "bbbbbb"
-	light_c.albedo_color = "cccccc"
-	light_d.albedo_color = "dddddd"
-	light_e.albedo_color = "eeeeee"
-	light_f.albedo_color = "ffffff"
-	# var ip = "84.97.162.152"
-	# var ip = "192.168.168.164"
-	# var ip = "192.168.1.83"
 	var ip = "127.0.0.1"
 	mutex = Mutex.new()
-	Values.link.initialize(ip)
+	Values.link.initialize(ip, Settings.Port, Settings.Lang)
 	Values.link.getState()
 	n_hud.update_hour()
 	owned_characters = Values.link.getControlledParty()
@@ -171,8 +134,7 @@ func _process(_delta):
 					add_character(character_id, next_characters_data[character_id])
 			var update = false
 			for character_id in owned_characters:
-				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
-				if floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16):
+				if floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16) || floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["z"] / 16) != floor(characters_data[character_id]["z"] / 16):
 					update = true
 					create_blocks(character_id)
 			update_furnitures()
@@ -233,34 +195,14 @@ func _physics_process(delta):
 			Values.next_state_ready = !done
 		mutex.unlock()
 
-func get_light(light: int):
-	match light:
-		0: return light_0
-		1: return light_1
-		2: return light_2
-		3: return light_3
-		4: return light_4
-		5: return light_5
-		6: return light_6
-		7: return light_7
-		8: return light_8
-		9: return light_9
-		10: return light_a
-		11: return light_b
-		12: return light_c
-		13: return light_d
-		14: return light_e
-		15: return light_f
-
 func create_blocks(character_id: int):
 	reset_map()
 	current_blocks = Values.link.getBlocks(character_id)
-	#var current_lights = Values.link.getLights(character_id)
 	for coord in current_blocks:
-		add_block(coord, {})
+		add_block(coord)
 	baking_done = false
 
-func add_block(coord: Vector3, current_lights: Dictionary):
+func add_block(coord: Vector3):
 	if current_blocks[coord] == "TXT_MIST" || current_blocks[coord] == "TXT_VOID":
 		return
 	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
