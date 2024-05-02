@@ -42,9 +42,9 @@ void GodotLink::initialize(String ip, int64_t port, String lang) {
   std::vector<std::string> choices;
   // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
   #ifdef LOG
-    log << "sendChoices(test, TXT_HOMUNCULIST, TXT_LEPIDOPTERAN, TXT_GREEN_TOWN, TXT_WOODLAND, TXT_HIBERO, TXT_SCHOLAR)" << std::endl;
+    log << "sendChoices(test, TXT_SPIRITUALIST, TXT_LEPIDOPTERAN, TXT_GREEN_TOWN, TXT_WOODLAND, TXT_HIBERO, TXT_SCHOLAR)" << std::endl;
   #endif
-  link->sendChoices("test", "TXT_HOMUNCULIST", "TXT_LEPIDOPTERAN", "TXT_GREEN_TOWN", "TXT_WOODLAND", "TXT_HIBERO", "TXT_SCHOLAR");
+  link->sendChoices("test", "TXT_SPIRITUALIST", "TXT_LEPIDOPTERAN", "TXT_GREEN_TOWN", "TXT_WOODLAND", "TXT_HIBERO", "TXT_SCHOLAR");
   #ifdef LOG
     log << "sendReady()" << std::endl;
   #endif

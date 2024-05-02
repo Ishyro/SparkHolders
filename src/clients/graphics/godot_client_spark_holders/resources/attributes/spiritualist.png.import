@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwo7spep2jra7"
-path="res://.godot/imported/homunculist.png-439bbb996829994ed607312f4d9cbaa7.ctex"
+path="res://.godot/imported/spiritualist.png-85a573c79170744ea9883b3c7f38fd13.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/attributes/homunculist.png"
-dest_files=["res://.godot/imported/homunculist.png-439bbb996829994ed607312f4d9cbaa7.ctex"]
+source_file="res://resources/attributes/spiritualist.png"
+dest_files=["res://.godot/imported/spiritualist.png-85a573c79170744ea9883b3c7f38fd13.ctex"]
 
 [params]
 

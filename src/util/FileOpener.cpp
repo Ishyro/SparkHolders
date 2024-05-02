@@ -349,6 +349,7 @@ namespace FileOpener {
         int64_t longitudeOrigin = String::extract_long(ss_origin);
         int64_t latitudeOrigin = String::extract_long(ss_origin);
         Settings::setOrigin(longitudeOrigin, latitudeOrigin);
+        delete ss_origin;
       }
       else if(setting == "SECOND_TO_METER") {
         Settings::setSecondToMeter(_stof(value_str));
@@ -358,18 +359,29 @@ namespace FileOpener {
         for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
           Settings::setZenithLightPower(i, String::extract_long(ss_zenith));
         }
+        delete ss_zenith;
       }
       else if(setting == "NIGHT_LIGHT_POWERS") {
         std::stringstream * ss_night = new std::stringstream(value_str);
         for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
           Settings::setNightLightPower(i, String::extract_long(ss_night));
         }
+        delete ss_night;
       }
       else if(setting == "TIDAL_LOCKED") {
         bool tidalLocked;
         std::istringstream is_tidalLocked(value_str);
         is_tidalLocked >> std::boolalpha >> tidalLocked;
         Settings::setTidalLocked(tidalLocked);
+      }
+      else if(setting == "SHADOW_ANGLE") {
+        std::stringstream * ss_angle = new std::stringstream(value_str);
+        MathUtil::Vector3i angle;
+        angle.x = String::extract_long(ss_angle);
+        angle.y = String::extract_long(ss_angle);
+        angle.z = String::extract_long(ss_angle);
+        Settings::setShadowAngle(angle);
+        delete ss_angle;
       }
       else if(setting == "NIGHT_DURATION") {
         Settings::setNightDuration(stoi(value_str));
@@ -388,12 +400,14 @@ namespace FileOpener {
         for(int32_t i = 0; i < Settings::getYearDuration() / Settings::getMonthDuration(); i++) {
           Settings::setMonthName(i, String::extract(ss_months));
         }
+        delete ss_months;
       }
       else if(setting == "DAY_NAMES") {
         std::stringstream * ss_days = new std::stringstream(value_str);
         for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
           Settings::setDayName(i, String::extract(ss_days));
         }
+        delete ss_days;
       }
     }
     else if(keyword == "Spawn" && isServer) {

@@ -1,4 +1,4 @@
-name = TXT_HOMUNCULIST
+name = TXT_SPIRITUALIST
 type = WAY_CLASS
 tier = 10
 baseHp = 150
@@ -18,7 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
-tags = homunculist%laxito%caster%
+tags = spiritualist%laxito%caster%
 and_requirements = 
 or_requirements = 
 not_requirements = 

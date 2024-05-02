@@ -72,6 +72,7 @@ float MathUtil::getLight(MathUtil::Coords coords, Time time) {
   int64_t startDawn = Settings::getNightDuration() * Settings::getHourDuration() * Settings::getMinuteDuration() / 2.F;
   int64_t startDay = startDawn + Settings::getDawnDuration() * Settings::getHourDuration() * Settings::getMinuteDuration();
   int64_t local_hour = hour;
+  bool permaDay = false;
   if(!Settings::getTidalLocked()) {
     // negative angle when the sun is rising, ie at east from ORIGIN
     float sun_factor = (float) hour / (float) max_hour - (float) zenith;
@@ -83,18 +84,24 @@ float MathUtil::getLight(MathUtil::Coords coords, Time time) {
       angle = longitude - sun_angle;
     }
   }
+  // TODO: the shadow is smaller when latitude is higher / lower than 0, because moons are spheres and not cubes
   else {
+    Vector3i shadow_angle = Settings::getShadowAngle();
+    float shadow_latitude = (float) shadow_angle.x + (float) shadow_angle.y / 60.F + (float) shadow_angle.z / 3600.F;
     if(std::abs(latitude) > std::abs(longitude)) {
       angle = latitude;
     }
     else {
       angle = longitude;
     }
+    if(std::abs(latitude) > shadow_latitude) {
+      permaDay = true;
+    }
   }
   local_hour = (int64_t) (max_hour + hour + std::sin((longitude - sun_angle) * 3.141593F / 180.F) * zenith) % max_hour;
   int32_t day_indice = time.day - (time.week - 1) * Settings::getWeekDuration();
   // day
-  if(local_hour >= startDay && local_hour <= startDusk) {
+  if((local_hour >= startDay && local_hour <= startDusk) || permaDay) {
     light_power = Settings::getZenithLightPower(day_indice);
   }
   // night

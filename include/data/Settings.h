@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "util/MathUtil.h"
+
 namespace Settings {
   int32_t getYearDuration(); // in days
   int32_t getMonthDuration(); // in days
@@ -27,6 +29,7 @@ namespace Settings {
   int32_t getZenithLightPower(int32_t indice); // week
   int32_t getNightLightPower(int32_t indice); // week
   bool getTidalLocked();
+  MathUtil::Vector3i getShadowAngle();
   int32_t getNightDuration();
   int32_t getDawnDuration();
   int32_t getDaytimeDuration();
@@ -60,6 +63,7 @@ namespace Settings {
   void setZenithLightPower(int32_t indice, int32_t data); // week, in lux
   void setNightLightPower(int32_t indice, int32_t data); // week, in lux
   void setTidalLocked(bool data);
+  void setShadowAngle(MathUtil::Vector3i data);
   void setNightDuration(int32_t data);
   void setDawnDuration(int32_t data);
   void setDaytimeDuration(int32_t data);

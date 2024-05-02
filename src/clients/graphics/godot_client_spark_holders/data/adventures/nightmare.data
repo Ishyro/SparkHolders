@@ -116,7 +116,7 @@ data/attributes/guardian.data
 data/attributes/elementalist.data
 data/attributes/shadow.data
 data/attributes/mender.data
-data/attributes/homunculist.data
+data/attributes/spiritualist.data
 data/attributes/paragon.data
 data/attributes/no_attributes.data
 data/attributes/sheep.data
@@ -164,6 +164,7 @@ Settings.{SECOND_TO_METER}{1.0}
 Settings.{ZENITH_LIGHT_POWERS}{{216000}{216000}{216000}{216000}{216000}{216000}}
 Settings.{NIGHT_LIGHT_POWERS}{{60}{60}{60}{60}{60}{0}}
 Settings.{TIDAL_LOCKED}{true}
+Settings.{SHADOW_ANGLE}{{33}{23}{21}}
 Settings.{NIGHT_DURATION}{24}
 Settings.{DAWN_DURATION}{3}
 Settings.{DAYTIME_DURATION}{30}
@@ -172,13 +173,6 @@ Settings.{MONTH_NAMES}{{Agate}{Onyx}{Emerald}{Diamond}{Topaz}{Jacynth}{Jasper}{A
 Settings.{DAY_NAMES}{{Laxito Dies}{Pyrra Dies}{Aerina Dies}{Hibero Dies}{Beastiona Dies}{Nubilo Dies}}
 # translations files
 Translation.{data/translations/aytlanta}
-# add maps
-# standard maps
-Map.{TXT_CAVERN}{0}{0}{-1}{0}{LIGHTENING_INDOORS}
-# included maps
-# add map links
-# add spawns
-Spawn.{{5}{5}{0}}
 # add starting attributes
 StartingAttributes.{TXT_PARAGON}
 StartingAttributes.{TXT_HOMUNCULIST}
@@ -335,5 +329,12 @@ TeamRelation.{TEAM_ENEMY}{Aho'z}{bandit}
 TeamRelation.{TEAM_ENEMY}{Scranem}{bandit}
 TeamRelation.{TEAM_ENEMY}{predator}{bandit}
 TeamRelation.{TEAM_ENEMY}{undead}{bandit}
+# add maps
+# standard maps
+Map.{TXT_CAVERN}{0}{0}{-1}{0}{LIGHTENING_INDOORS}
+# included maps
+# add map links
+# add spawns
+Spawn.{{5}{5}{0}}
 # add character
 Character.{TXT_SHEEP}{{3}{4}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}

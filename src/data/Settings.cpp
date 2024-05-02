@@ -21,6 +21,7 @@ namespace Settings {
   std::vector<int32_t> zenithLightPower; // week
   std::vector<int32_t> nightLightPower; // week
   bool tidalLocked;
+  MathUtil::Vector3i shadowAngle;
   int32_t nightDuration;
   int32_t dawnDuration;
   int32_t daytimeDuration;
@@ -60,6 +61,7 @@ namespace Settings {
   int32_t getZenithLightPower(int32_t indice) { return zenithLightPower[indice]; } // week
   int32_t getNightLightPower(int32_t indice) { return nightLightPower[indice]; } // week
   bool getTidalLocked() { return tidalLocked; }
+  MathUtil::Vector3i getShadowAngle() { return shadowAngle; }
   int32_t getNightDuration() { return nightDuration; }
   int32_t getDawnDuration() { return dawnDuration; }
   int32_t getDaytimeDuration() { return daytimeDuration; }
@@ -101,6 +103,7 @@ namespace Settings {
   void setZenithLightPower(int32_t indice, int32_t data) { zenithLightPower[indice] = data; } // week
   void setNightLightPower(int32_t indice, int32_t data) { nightLightPower[indice] = data; } // week
   void setTidalLocked(bool data) { tidalLocked = data; }
+  void setShadowAngle(MathUtil::Vector3i data) { shadowAngle = data; }
   void setNightDuration(int32_t data) { nightDuration = data; }
   void setDawnDuration(int32_t data) { dawnDuration = data; }
   void setDaytimeDuration(int32_t data) { daytimeDuration = data; }
