@@ -51,11 +51,10 @@ func _ready():
 	mutex = Mutex.new()
 	Values.link.initialize(ip, Settings.Port, Settings.Lang)
 	Values.link.getState()
-	n_hud.update_hour()
 	owned_characters = Values.link.getControlledParty()
-	init_actions()
 	characters_data = Values.link.getCharacters()
 	projectiles_data = Values.link.getProjectiles()
+	init_actions()
 	for character_id in characters_data:
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
@@ -122,7 +121,7 @@ func _process(_delta):
 		while Values.link.hasState():
 			Values.link.getState()
 			Values.next_state_ready = true
-			n_hud.update_hour()
+			n_hud.update(Values.selected_team, characters_data[Values.selected_team.id])
 		if Values.next_state_ready:
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():

@@ -77,11 +77,11 @@ void Character::initializeCharacter(Gear * gear) {
     detectionRange += way->baseDetectionRange;
   }
   currentSoulBurn = 0;
+  hunger = 75.;
+  thirst = 75.;
   stamina = 75.;
-  satiety = 75.;
-  savedHpRegen = 0.;
-  savedManaRegen = 0.;
-  channeledMana = 0;
+  sanity = 50.;
+  channeledMana = 0.F;
   this->gear = new Gear(gear);
   initSkillsAndEffects();
 }
@@ -205,7 +205,7 @@ MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord)
 float Character::getSize() { return size; }
 float Character::getHeight() { return height; }
 float Character::getOrientation() { return orientation; }
-int32_t Character::getHp() { return hp; }
+float Character::getHp() { return hp; }
 int32_t Character::getMaxHp() {
   int32_t bonus = 0;
   for(Effect * e : effects) {
@@ -213,11 +213,11 @@ int32_t Character::getMaxHp() {
       bonus += e->power;
     }
   }
-  return maxHp + bonus;
+  return std::max(maxHp + bonus, 0);
 }
 
-int32_t Character::getMana() { return mana; }
-int32_t Character::getChanneledMana() { return channeledMana; }
+float Character::getMana() { return mana; }
+float Character::getChanneledMana() { return channeledMana; }
 
 int32_t Character::getMaxMana() {
   int32_t bonus = 0;
@@ -229,9 +229,7 @@ int32_t Character::getMaxMana() {
   return std::max(maxMana + bonus, 0);
 }
 
-float Character::getStamina() { return stamina; }
-float Character::getSatiety() { return satiety; }
-int32_t Character::getShield() { return shield; }
+float Character::getShield() { return shield; }
 
 int32_t Character::getMaxShield() {
   int32_t bonus = 0;
@@ -242,6 +240,11 @@ int32_t Character::getMaxShield() {
   }
   return std::max(maxShield + bonus, 0);
 }
+
+float Character::getHunger() { return hunger; }
+float Character::getThirst() { return thirst; }
+float Character::getStamina() { return stamina; }
+float Character::getSanity() { return sanity; }
 
 int32_t Character::getSoulBurnThreshold() {
   int32_t bonus = 0;
@@ -490,7 +493,7 @@ void Character::move(MathUtil::Vector3 coord, float orientation, World * world) 
   world->checkRegion(this, ori, coord);
 }
 
-void Character::hpHeal(int32_t hp) { this->hp = std::min(this->hp + hp, getMaxHp()); }
+void Character::hpHeal(float hp) { this->hp = std::min(this->hp + hp, (float) getMaxHp()); }
 void Character::incrMaxHp() {
   if(player_character) {
     setNeedToSend(true);
@@ -509,9 +512,9 @@ void Character::incrMaxHp() {
   }
   maxHp += std::max(incr, 0);
 }
-void Character::setHp(int32_t hp) { this->hp = hp; }
+void Character::setHp(float hp) { this->hp = hp; }
 
-void Character::manaHeal(int32_t mana) { this->mana = std::min(this->mana + mana, getMaxMana()); }
+void Character::manaHeal(float mana) { this->mana = std::min(this->mana + mana, (float) getMaxMana()); }
 
 void Character::incrMaxMana() {
   if(player_character) {
@@ -532,9 +535,17 @@ void Character::incrMaxMana() {
   maxMana += std::max(incr, 0);
 }
 
-void Character::setMana(int32_t mana) { this->mana = mana; }
-void Character::shieldRestore(int32_t shield) { this->shield = std::min(getMaxShield(), this->shield + shield); }
-void Character::setShield(int32_t shield) { this->shield = shield; }
+void Character::setMana(float mana) { this->mana = mana; }
+float Character::shieldRestore(float shield) {
+  this->shield = std::min(this->shield + shield, (float) getMaxShield());
+  if(this->shield < 0.F) {
+    float result = this->shield;
+    this->shield = 0.F;
+    return result;
+  }
+  return 0.F;
+}
+void Character::setShield(float shield) { this->shield = shield; }
 void Character::incrMaxShield() {
   if(player_character) {
     setNeedToSend(true);
@@ -553,12 +564,15 @@ void Character::incrMaxShield() {
   }
   maxShield += std::max(incr, 0);
 }
-void Character::addStamina(float stamina) { this->stamina = std::min(100.F, this->stamina + stamina); }
-void Character::addSatiety(float satiety) { this->satiety = std::min(100.F, this->satiety + satiety); }
-void Character::removeStamina(float stamina) { this->stamina = std::max(0.F, this->stamina - stamina); }
-void Character::removeSatiety(float satiety) { this->satiety = std::max(0.F, this->satiety - satiety); }
+void Character::addHunger(float hunger) { this->hunger = std::max(-100.F, std::min(100.F, this->hunger + hunger)); }
+void Character::addThirst(float thirst) { this->thirst = std::max(-100.F, std::min(100.F, this->thirst + thirst)); }
+void Character::addStamina(float stamina) { this->stamina = std::max(-100.F, std::min(100.F, this->stamina + stamina)); }
+void Character::addSanity(float sanity) { this->sanity = std::max(-100.F, std::min(100.F, this->sanity + sanity)); }
+
+void Character::setHunger(float hunger) { this->hunger = hunger; }
+void Character::setThirst(float thirst) { this->thirst = thirst; }
 void Character::setStamina(float stamina) { this->stamina = stamina; }
-void Character::setSatiety(float satiety) { this->satiety = satiety; }
+void Character::setSanity(float sanity) { this->sanity = sanity; }
 
 void Character::incrDamageMultiplier() {
   if(player_character) {
@@ -642,62 +656,88 @@ void Character::setRegion(Region * region) { this->region = region; }
 void Character::setCurrentAction(Action * action) { this->current_action = action; }
 
 void Character::applySoulBurn() {
-  int32_t soulBurnReduction = (int32_t) std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
+  float soulBurnReduction = std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
   if(currentSoulBurn > soulBurnTreshold) {
     hp -= std::min(soulBurnReduction, currentSoulBurn - soulBurnTreshold);
   }
 }
+
 void Character::applyManaWaste() {
-  channeledMana = (int32_t) std::floor( (float) channeledMana * 0.99);
+  channeledMana *= 0.99;
 }
 
 void Character::channel(int32_t cost) {
-  int32_t toadd;
+  float toadd;
   // can't use last mana point to kill itself
   if(cost == -1) {
-    toadd = std::min(mana - 1, getFlow());
+    toadd = std::min((int32_t) std::floor(mana) - 1, getFlow());
   }
   else {
-    toadd = std::min(std::min(getFlow(), cost - channeledMana), mana - 1);
+    toadd = std::min(std::min(getFlow(), cost - (int32_t) std::floor(channeledMana)), (int32_t) std::floor(mana) - 1);
   }
   currentSoulBurn += toadd;
   channeledMana += toadd;
   mana -= toadd;
 }
 
-void Character::applyTiredness() {
-  if(race->getNeedToSleep(race_modifiers)) {
-    float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake());
-    float currentManaRegen = Settings::getStaminaRecoveryRatio() * step * getMaxMana() / 100.F;
-    int32_t manaValue = (int32_t) std::floor(currentManaRegen + savedManaRegen);
-    savedManaRegen += currentManaRegen - (float) manaValue;
-    if(stamina > 0.) {
-      removeStamina(step);
-      manaHeal(manaValue);
+void Character::hungerStep() {
+  // 2 Days without eating
+  if(!(isSleeping() || isIdling())) {
+    addHunger(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 2.F));
+  }
+  else {
+    addHunger(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 10.F));
+  }
+}
+
+void Character::thirstStep() {
+  if(!(isSleeping() || isIdling())) {
+    addThirst(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound()));
+  }
+  else {
+    addThirst(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 5.F));
+  }
+}
+
+void Character::staminaStep() {
+  // 2 Days without eating
+  if(!(isSleeping() || isIdling())) {
+    addStamina(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 2.F));
+  }
+}
+
+void Character::sanityStep() {
+  sanity = 50.F;
+}
+
+void Character::applyBodyNeeds() {
+  if(race->getNeedToEat(race_modifiers)) {
+    float body = std::min(hunger, thirst);
+    if(body > 0.F) {
+      hpHeal(getMaxHp() * body / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 100.F));
     }
     else {
-      manaValue = (int32_t) std::floor(currentManaRegen * Settings::getStaminaOverextendRatio() + savedManaRegen);
-      savedManaRegen += currentManaRegen - (float) manaValue;
-      payMana(manaValue);
+      hpHeal(getMaxHp() * body / (Settings::getMinuteDuration() * 100.F));
     }
   }
 }
 
-void Character::applyHunger() {
-  if(race->getNeedToEat(race_modifiers)) {
-    float step = 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysFasting());
-    float currentHpRegen = Settings::getSatietyRecoveryRatio() * step * getMaxHp() / 100.F;
-    int32_t hpValue = (int32_t) std::floor(currentHpRegen + savedHpRegen);
-    savedHpRegen += currentHpRegen - (float) hpValue;
-    if(satiety > 0.) {
-      removeSatiety(step);
-      hpHeal(hpValue);
+void Character::applySoulNeeds() {
+  if(race->getNeedToSleep(race_modifiers)) {
+    if(stamina > 0.F) {
+      shieldRestore(getMaxShield() * stamina / (Settings::getMinuteDuration() * 100.F));
     }
     else {
-      hpValue = (int32_t) std::floor(currentHpRegen * Settings::getSatietyOverextendRatio() + savedHpRegen);
-      savedHpRegen += currentHpRegen - (float) hpValue;
-      hp -= hpValue;
+      float rest = shieldRestore(getMaxShield() * stamina / (Settings::getMinuteDuration() * 100.F));
+      payMana(rest / 2.F);
+      hpHeal(-rest / 2.F);
     }
+  }
+}
+
+void Character::applySpiritNeeds() {
+  if(race->getNeedToThink(race_modifiers)) {
+    manaHeal(getMaxMana() * sanity / (Settings::getMinuteDuration() * 100.F));
   }
 }
 
@@ -717,14 +757,13 @@ void Character::applyEffects() {
 
 void Character::rest() {
   if(race->getNeedToSleep(race_modifiers)) {
-    // +1 because the character will still apply his tiredness while sleeping
-    addStamina( (float) (3 + 1) * 100.F / (Settings::getDayDurationInRound() * Settings::getMaxNumberOfDaysAwake()));
+    stamina += 3.F * 100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 2.F);
   }
 }
 
 void Character::gainGold(int64_t gold) { this->gold += gold; }
 void Character::loseGold(int64_t gold) { this->gold = (int64_t) std::max(0., (double) this->gold + gold); }
-void Character::payMana(int32_t cost) {
+void Character::payMana(float cost) {
   mana -= cost;
   currentSoulBurn += cost;
 }
@@ -1095,6 +1134,10 @@ bool Character::isSleeping() {
   return false;
 }
 
+bool Character::isIdling() {
+  return current_action == nullptr || current_action->type == ACTION_IDLE;
+}
+
 int32_t Character::cloakPower() {
   int32_t max = 0;
   for(Effect * e : effects) {
@@ -1434,14 +1477,16 @@ std::string Character::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);
   String::insert_long(ss, id);
-  String::insert_int(ss, hp);
+  String::insert_float(ss, hp);
   String::insert_int(ss, getMaxHp());
-  String::insert_int(ss, mana);
+  String::insert_float(ss, mana);
   String::insert_int(ss, getMaxMana());
-  String::insert_int(ss, shield);
+  String::insert_float(ss, shield);
   String::insert_int(ss, getMaxShield());
+  String::insert_float(ss, getHunger());
+  String::insert_float(ss, getThirst());
   String::insert_float(ss, getStamina());
-  String::insert_float(ss, getSatiety());
+  String::insert_float(ss, getSanity());
   String::insert_int(ss, getCurrentSoulBurn());
   String::insert_int(ss, getSoulBurnThreshold());
   String::insert_int(ss, getFlow());
@@ -1478,14 +1523,16 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   std::stringstream * ss = new std::stringstream(to_read);
   display->name = String::extract(ss);
   display->id = String::extract_long(ss);
-  display->hp = String::extract_int(ss);
+  display->hp = String::extract_float(ss);
   display->maxHp = String::extract_int(ss);
-  display->mana = String::extract_int(ss);
+  display->mana = String::extract_float(ss);
   display->maxMana = String::extract_int(ss);
-  display->shield = String::extract_int(ss);
+  display->shield = String::extract_float(ss);
   display->maxShield = String::extract_int(ss);
+  display->hunger = String::extract_float(ss);
+  display->thirst = String::extract_float(ss);
   display->stamina = String::extract_float(ss);
-  display->satiety = String::extract_float(ss);
+  display->sanity = String::extract_float(ss);
   display->soulBurn = String::extract_int(ss);
   display->soulBurnTreshold = String::extract_int(ss);
   display->flow = String::extract_int(ss);
@@ -1520,9 +1567,9 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, maxHp);
   String::insert_int(ss, maxMana);
   String::insert_int(ss, maxShield);
-  String::insert_int(ss, hp);
-  String::insert_int(ss, mana);
-  String::insert_int(ss, shield);
+  String::insert_float(ss, hp);
+  String::insert_float(ss, mana);
+  String::insert_float(ss, shield);
   String::insert_int(ss, damage_multiplier);
   String::insert_int(ss, soulBurnTreshold);
   String::insert_int(ss, flow);
@@ -1530,11 +1577,11 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_int(ss, visionPower);
   String::insert_int(ss, detectionRange);
   String::insert_int(ss, currentSoulBurn);
+  String::insert_float(ss, hunger);
+  String::insert_float(ss, thirst);
   String::insert_float(ss, stamina);
-  String::insert_float(ss, satiety);
-  String::insert_float(ss, savedHpRegen);
-  String::insert_float(ss, savedManaRegen);
-  String::insert_int(ss, channeledMana);
+  String::insert_float(ss, sanity);
+  String::insert_float(ss, channeledMana);
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_bool(ss, player_character);
@@ -1633,9 +1680,9 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   int32_t maxHp = String::extract_int(ss);
   int32_t maxMana = String::extract_int(ss);
   int32_t maxShield = String::extract_int(ss);
-  int32_t hp = String::extract_int(ss);
-  int32_t mana = String::extract_int(ss);
-  int32_t shield = String::extract_int(ss);
+  float hp = String::extract_float(ss);
+  float mana = String::extract_float(ss);
+  float shield = String::extract_float(ss);
   int32_t damage_multiplier = String::extract_int(ss);
   int32_t soulBurnTreshold = String::extract_int(ss);
   int32_t flow = String::extract_int(ss);
@@ -1643,11 +1690,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   int32_t visionPower = String::extract_int(ss);
   int32_t detectionRange = String::extract_int(ss);
   int32_t currentSoulBurn = String::extract_int(ss);
+  float hunger = String::extract_float(ss);
+  float thirst = String::extract_float(ss);
   float stamina = String::extract_float(ss);
-  float satiety = String::extract_float(ss);
-  float savedHpRegen = String::extract_float(ss);
-  float savedManaRegen = String::extract_float(ss);
-  int32_t channeledMana = String::extract_int(ss);
+  float sanity = String::extract_float(ss);
+  float channeledMana = String::extract_float(ss);
   std::string name = String::extract(ss);
   int64_t id = String::extract_long(ss);
   bool player_character = String::extract_bool(ss);
@@ -1747,10 +1794,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     visionPower,
     detectionRange,
     currentSoulBurn,
+    hunger,
+    thirst,
     stamina,
-    satiety,
-    savedHpRegen,
-    savedManaRegen,
+    sanity,
     channeledMana,
     name,
     id,

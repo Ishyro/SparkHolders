@@ -71,7 +71,6 @@
 #include "data/ways/Attributes.h"
 
 #include "data/Settings.h"
-#include "data/ClientSettings.h"
 
 #include "util/String.h"
 
@@ -1225,23 +1224,11 @@ namespace FileOpener {
   void SettingsOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     Settings::setTickDurationInSeconds(_stof(values.at("TICK_DURATION")));
-    Settings::setMaxNumberOfDaysAwake(stoi(values.at("MAX_NUMBER_DAYS_AWAKE")));
-    Settings::setMaxNumberOfDaysFasting(stoi(values.at("MAX_NUMBER_DAYS_FASTING")));
-    Settings::setStaminaRecoveryRatio(stoi(values.at("STAMINA_RECOVERY_RATIO")));
-    Settings::setSatietyRecoveryRatio(stoi(values.at("SATIETY_RECOVERY_RATIO")));
-    Settings::setStaminaOverextendRatio(stoi(values.at("STAMINA_OVEREXTEND_RATIO")));
-    Settings::setSatietyOverextendRatio(stoi(values.at("SATIETY_OVEREXTEND_RATIO")));
     Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stol(seed));
     Settings::setMasterPassword(values.at("MASTER_PASSWORD"));
-  }
-
-  void ClientSettingsOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    ClientSettings::setPort(stoi(values.at("PORT")));
-    ClientSettings::setLang(values.at("LANG"));
   }
 
   void SkillOpener(std::string fileName, Database * database) {
@@ -1435,6 +1422,9 @@ namespace FileOpener {
       std::istringstream is_need_to_sleep(values.at("need_to_sleep"));
       bool need_to_sleep;
       is_need_to_sleep >> std::boolalpha >> need_to_sleep;
+      std::istringstream is_need_to_think(values.at("need_to_think"));
+      bool need_to_think;
+      is_need_to_think >> std::boolalpha >> need_to_think;
       std::istringstream is_has_soulspark(values.at("has_soulspark"));
       bool has_soulspark;
       is_has_soulspark >> std::boolalpha >> has_soulspark;
@@ -1476,6 +1466,7 @@ namespace FileOpener {
         need_to_eat,
         can_eat_food,
         need_to_sleep,
+        need_to_think,
         has_soulspark,
         action_time_modifier,
         strike_time_modifier,

@@ -262,11 +262,14 @@ void Adventure::applyIteration() {
     if(!c->isMarkedDead()) {
       c->gainLevel();
       c->applyEffects();
+      c->applyBodyNeeds();
+      c->applySoulNeeds();
+      c->applySpiritNeeds();
       c->applySoulBurn();
-      if(tick == 0) {
-        c->applyTiredness();
-        c->applyHunger();
-      }
+      c->hungerStep();
+      c->thirstStep();
+      c->staminaStep();
+      c->sanityStep();
       if(!c->isAlive()) {
         //getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
       }

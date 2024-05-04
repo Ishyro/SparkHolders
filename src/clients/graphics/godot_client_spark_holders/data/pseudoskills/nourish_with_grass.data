@@ -2,4 +2,4 @@ name = TXT_NOURISH_WITH_GRASS
 skill_type = SKILL_SIMPLE
 target_type = TARGET_SELF
 mana_cost = 0
-effects = TXT_SATIETY_10%TXT_EXPERIENCE_10%
+effects = TXT_HUNGER_10%TXT_EXPERIENCE_10%

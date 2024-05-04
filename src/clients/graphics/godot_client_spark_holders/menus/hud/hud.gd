@@ -91,16 +91,16 @@ func _ready():
 func change_amount(type: String, current_value: float, max_value: float):
 	if type == "SHIELD":
 		shield.material.set_shader_parameter("level", current_value / max_value)
-		shield_label.text = str(current_value)
+		shield_label.text = str(int(floor(current_value)))
 	if type == "HEALTH":
 		health.material.set_shader_parameter("level", current_value / max_value)
-		health_label.text = str(current_value)
+		health_label.text = str(int(floor(current_value)))
 	if type == "MANA":
 		mana.material.set_shader_parameter("level", current_value / max_value)
-		mana_label.text = str(current_value)
+		mana_label.text = str(int(floor(current_value)))
 	if type == "SOULBURN":
 		soulburn.material.set_shader_parameter("level", current_value / max_value)
-		soulburn_label.text = str(current_value)
+		soulburn_label.text = str(int(floor(current_value)))
 
 func hide_phantom(character_id: int):
 	map.phantoms[Values.selected_team.id].visible = false
@@ -133,8 +133,12 @@ func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	else:
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
 
-func update_hour():
+func update(character, character_data: Dictionary):
 	hour_label.text = "" + Values.link.getClock()
+	change_amount("SHIELD", character_data["shield"], character_data["maxShield"])
+	change_amount("HEALTH", character_data["hp"], character_data["maxHp"])
+	change_amount("MANA", character_data["mana"], character_data["maxMana"])
+	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
 
 # Map options
 func _on_grid_toggled(_button_pressed):

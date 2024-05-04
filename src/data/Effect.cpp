@@ -27,11 +27,17 @@ void Effect::activate(Character * target) {
       case EFFECT_SHIELD_MAX:
         target->incrMaxShield();
         break;
+      case EFFECT_HUNGER:
+        target->addHunger((float) power);
+        break;
+      case EFFECT_THIRST:
+        target->addThirst((float) power);
+        break;
       case EFFECT_STAMINA:
         target->addStamina((float) power);
         break;
-      case EFFECT_SATIETY:
-        target->addSatiety((float) power);
+      case EFFECT_SANITY:
+        target->addSanity((float) power);
         break;
       case EFFECT_SOULBURNTRESHOLD:
         target->incrSoulBurnTreshold();
@@ -71,11 +77,17 @@ bool Effect::tick(Character * target) {
     case EFFECT_SHIELD:
       target->shieldRestore(power);
       break;
+    case EFFECT_HUNGER:
+      target->addHunger((float) power);
+      break;
+    case EFFECT_THIRST:
+      target->addThirst((float) power);
+      break;
     case EFFECT_STAMINA:
       target->addStamina((float) power);
       break;
-    case EFFECT_SATIETY:
-      target->addSatiety((float) power);
+    case EFFECT_SANITY:
+      target->addSanity((float) power);
       break;
     case EFFECT_DAMAGE:
       target->receiveAttack(damages, 360.F, ACTION_STRIKE);

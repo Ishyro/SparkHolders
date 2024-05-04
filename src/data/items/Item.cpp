@@ -35,7 +35,7 @@ Item * Item::init(const Item * item, int32_t tier, int32_t number) {
 
 bool Item::isFood() {
   for(Effect * effect : effects) {
-    if(effect->type == EFFECT_SATIETY) {
+    if(effect->type == EFFECT_HUNGER) {
       return true;
     }
   }

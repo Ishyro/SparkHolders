@@ -67,8 +67,10 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_MANA", EFFECT_MANA));
   macros.insert(std::make_pair("EFFECT_HP_MAX", EFFECT_HP_MAX));
   macros.insert(std::make_pair("EFFECT_MANA_MAX", EFFECT_MANA_MAX));
+  macros.insert(std::make_pair("EFFECT_HUNGER", EFFECT_HUNGER));
+  macros.insert(std::make_pair("EFFECT_THIRST", EFFECT_THIRST));
   macros.insert(std::make_pair("EFFECT_STAMINA", EFFECT_STAMINA));
-  macros.insert(std::make_pair("EFFECT_SATIETY", EFFECT_SATIETY));
+  macros.insert(std::make_pair("EFFECT_SANITY", EFFECT_SANITY));
   macros.insert(std::make_pair("EFFECT_SHIELD", EFFECT_SHIELD));
   macros.insert(std::make_pair("EFFECT_SHIELD_MULTIPLIER", EFFECT_SHIELD_MULTIPLIER));
   macros.insert(std::make_pair("EFFECT_SOULBURNTRESHOLD", EFFECT_SOULBURNTRESHOLD));

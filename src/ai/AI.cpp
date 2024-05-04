@@ -46,10 +46,10 @@ std::vector<MathUtil::Pair> AI::getFollowPath(Adventure * adventure, Character *
 }
 
 void AI::selectHungriness(Character * self) {
-  if(self->getSatiety() >= 66.F) {
+  if(self->getHunger() >= 66.F) {
     hungry = false;
   }
-  if(self->getSatiety() <= 33.F) {
+  if(self->getHunger() <= 33.F) {
     hungry = true;
   }
 }

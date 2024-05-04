@@ -21,6 +21,7 @@ size = 0.2
 height = 1.4
 need_to_eat = true
 can_eat_food = true
+need_to_think = true
 need_to_sleep = true
 has_soulspark = false
 action_time_modifier = 1.0

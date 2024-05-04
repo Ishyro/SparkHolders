@@ -168,6 +168,14 @@ bool Race::getNeedToSleep(std::list<Race *> race_modifiers) {
   return result;
 }
 
+bool Race::getNeedToThink(std::list<Race *> race_modifiers) {
+  bool result = need_to_think;
+  for(Race * modifier : race_modifiers) {
+    result = result && modifier->need_to_think;
+  }
+  return result;
+}
+
 bool Race::getHasSoulSpark(std::list<Race *> race_modifiers) {
   bool result = has_soulspark;
   for(Race * modifier : race_modifiers) {

@@ -14,8 +14,6 @@
 #include "util/FileOpener.h"
 #include "util/MathUtil.h"
 
-#include "data/ClientSettings.h"
-
 void listener(void * param) {
   Link * link = (Link *) param;
   while(!link->isClosed()) {
@@ -24,9 +22,6 @@ void listener(void * param) {
 }
 
 void GodotLink::initialize(String ip, int64_t port, String lang) {
-  Database * temp = new Database();
-  FileOpener::ClientSettingsOpener("data" + FileOpener::PATH_DELIMITER + "settings_client.data", temp);
-  delete temp;
   s = Socket();
   s.connect(std::string(ip.utf8().get_data()), port);
   link = new Link(s, std::string(lang.utf8().get_data()));
@@ -407,8 +402,10 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["maxMana"] = character->maxMana;
   result["shield"] = character->shield;
   result["maxShield"] = character->maxShield;
+  result["hunger"] = character->hunger;
+  result["thirst"] = character->thirst;
   result["stamina"] = character->stamina;
-  result["satiety"] = character->satiety;
+  result["sanity"] = character->sanity;
   result["currentSoulBurn"] = character->soulBurn;
   result["soulBurnThreshold"] = character->soulBurnTreshold;
   result["flow"] = character->flow;
@@ -457,8 +454,10 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   result["visionRange"] = character->getVisionRange();
   result["visionPower"] = character->getVisionPower();
   result["detectionRange"] = character->getDetectionRange();
+  result["hunger"] = character->getHunger();
+  result["thirst"] = character->getThirst();
   result["stamina"] = character->getStamina();
-  result["satiety"] = character->getSatiety();
+  result["sanity"] = character->getSanity();
   //result["channeledMana"] = character->getChanneledMana();
   result["size"] = character->getSize();
   result["xp"] = (int64_t) character->getXP();

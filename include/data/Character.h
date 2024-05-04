@@ -26,14 +26,16 @@ namespace character {
 typedef struct CharacterDisplay {
   std::string name;
   int64_t id;
-  int32_t hp;
+  float hp;
   int32_t maxHp;
-  int32_t mana;
+  float mana;
   int32_t maxMana;
-  int32_t shield;
+  float shield;
   int32_t maxShield;
+  float hunger;
+  float thirst;
   float stamina;
-  float satiety;
+  float sanity;
   int32_t soulBurn;
   int32_t soulBurnTreshold;
   int32_t flow;
@@ -153,9 +155,9 @@ class Character {
       int32_t maxHp,
       int32_t maxMana,
       int32_t maxShield,
-      int32_t hp,
-      int32_t mana,
-      int32_t shield,
+      float hp,
+      float mana,
+      float shield,
       int32_t damage_multiplier,
       int32_t soulBurnTreshold,
       int32_t flow,
@@ -163,10 +165,10 @@ class Character {
       int32_t visionPower,
       int32_t detectionRange,
       int32_t currentSoulBurn,
+      float hunger,
+      float thirst,
       float stamina,
-      float satiety,
-      float savedHpRegen,
-      float savedManaRegen,
+      float sanity,
       int32_t channeledMana,
       std::string name,
       int64_t id,
@@ -213,10 +215,10 @@ class Character {
       visionPower(visionPower),
       detectionRange(detectionRange),
       currentSoulBurn(currentSoulBurn),
+      hunger(hunger),
+      thirst(thirst),
       stamina(stamina),
-      satiety(satiety),
-      savedHpRegen(savedHpRegen),
-      savedManaRegen(savedManaRegen),
+      sanity(sanity),
       channeledMana(channeledMana),
       name(name),
       id(id),
@@ -263,15 +265,17 @@ class Character {
     float getOrientation();
     float getSize();
     float getHeight();
-    int32_t getHp();
+    float getHp();
     int32_t getMaxHp();
-    int32_t getMana();
-    int32_t getChanneledMana();
+    float getMana();
+    float getChanneledMana();
     int32_t getMaxMana();
-    int32_t getShield();
+    float getShield();
     int32_t getMaxShield();
+    float getHunger();
+    float getThirst();
     float getStamina();
-    float getSatiety();
+    float getSanity();
     int32_t getSoulBurnThreshold();
     int32_t getCurrentSoulBurn();
     int32_t getFlow();
@@ -330,21 +334,23 @@ class Character {
     void setOrientation(float orientation);
     void setSize(float size);
     void move(MathUtil::Vector3 coord, float orientation, World * world);
-    void hpHeal(int32_t hp);
+    void hpHeal(float hp);
     void incrMaxHp();
-    void setHp(int32_t hp);
-    void manaHeal(int32_t mana);
+    void setHp(float hp);
+    void manaHeal(float mana);
     void incrMaxMana();
-    void setMana(int32_t mana);
-    void shieldRestore(int32_t shield);
-    void setShield(int32_t shield);
+    void setMana(float mana);
+    float shieldRestore(float shield);
+    void setShield(float shield);
     void incrMaxShield();
+    void addHunger(float hunger);
+    void addThirst(float thirst);
     void addStamina(float stamina);
-    void addSatiety(float satiety);
-    void removeStamina(float stamina);
-    void removeSatiety(float satiety);
+    void addSanity(float sanity);
+    void setHunger(float hunger);
+    void setThirst(float thirst);
     void setStamina(float stamina);
-    void setSatiety(float satiety);
+    void setSanity(float sanity);
     void incrDamageMultiplier();
     void incrSoulBurnTreshold();
     void setCurrentSoulBurn(int32_t soulBurn);
@@ -358,13 +364,18 @@ class Character {
     void applySoulBurn();
     void applyManaWaste();
     void channel(int32_t cost);
-    void applyTiredness();
-    void applyHunger();
+    void hungerStep();
+    void thirstStep();
+    void staminaStep();
+    void sanityStep();
+    void applyBodyNeeds();
+    void applySoulNeeds();
+    void applySpiritNeeds();
     void applyEffects();
     void rest();
     void gainGold(int64_t gold);
     void loseGold(int64_t gold);
-    void payMana(int32_t cost);
+    void payMana(float cost);
     void gainXP(int64_t xp);
     void gainLevel();
     void newSkillsAndEffects();
@@ -399,6 +410,7 @@ class Character {
     bool isEtheral();
     bool isInvulnerable();
     bool isSleeping();
+    bool isIdling();
     int32_t cloakPower();
     bool isInWeakState();
 
@@ -432,21 +444,21 @@ class Character {
     float height;
     float orientation;
     Region * region;
-    Action * current_action;
-    int32_t hp;
+    Action * current_action = nullptr;
+    float hp;
     int32_t maxHp;
-    int32_t mana;
+    float mana;
     int32_t maxMana;
-    float stamina;
-    float satiety;
-    float savedHpRegen;
-    float savedManaRegen;
-    int32_t channeledMana;
-    int32_t shield;
+    float shield;
     int32_t maxShield;
+    float hunger;
+    float thirst;
+    float stamina;
+    float sanity;
+    float channeledMana;
     int32_t damage_multiplier;
     int32_t soulBurnTreshold;
-    int32_t currentSoulBurn;
+    float currentSoulBurn;
     int32_t flow;
     int32_t visionRange;
     int32_t visionPower;

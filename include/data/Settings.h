@@ -36,12 +36,6 @@ namespace Settings {
   int32_t getDuskDuration();
   std::string getMonthName(int32_t indice); // yearDuration / monthDuration
   std::string getDayName(int32_t indice); // weekDuration
-  float getMaxNumberOfDaysAwake();
-  float getMaxNumberOfDaysFasting();
-  float getStaminaRecoveryRatio();
-  float getSatietyRecoveryRatio();
-  int32_t getStaminaOverextendRatio();
-  int32_t getSatietyOverextendRatio();
   float getBuyingPriceModifier();
   int32_t getPort();
   int64_t getSeed();
@@ -70,12 +64,6 @@ namespace Settings {
   void setDuskDuration(int32_t data);
   void setMonthName(int32_t indice, std::string data); // yearDuration / monthDuration
   void setDayName(int32_t indice, std::string data); // weekDuration
-  void setMaxNumberOfDaysAwake(float data);
-  void setMaxNumberOfDaysFasting(float data);
-  void setStaminaRecoveryRatio(float data);
-  void setSatietyRecoveryRatio(float data);
-  void setStaminaOverextendRatio(int32_t data);
-  void setSatietyOverextendRatio(int32_t data);
   void setBuyingPriceModifier(float data);
   void setPort(int32_t data);
   void setSeed(int64_t data);

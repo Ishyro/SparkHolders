@@ -378,10 +378,16 @@ size_flags_horizontal = 0
 text = "Soulburn"
 label_settings = ExtResource("7_m5546")
 
-[node name="Satiety" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+[node name="Hunger" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Satiety"
+text = "Hunger"
+label_settings = ExtResource("7_m5546")
+
+[node name="Thirst" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Thirst"
 label_settings = ExtResource("7_m5546")
 
 [node name="Stamina" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
@@ -389,6 +395,12 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Stamina
 "
+label_settings = ExtResource("7_m5546")
+
+[node name="Sanity" type="Label" parent="Mutable/SubStats/Resources/Content/Names"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Sanity"
 label_settings = ExtResource("7_m5546")
 
 [node name="Values" type="VBoxContainer" parent="Mutable/SubStats/Resources/Content"]
@@ -419,13 +431,25 @@ size_flags_horizontal = 8
 text = "750 / 750"
 label_settings = ExtResource("7_m5546")
 
-[node name="Satiety" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+[node name="Hunger" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("7_m5546")
+
+[node name="Thirst" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "100%"
 label_settings = ExtResource("7_m5546")
 
 [node name="Stamina" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "100%"
+label_settings = ExtResource("7_m5546")
+
+[node name="Sanity" type="Label" parent="Mutable/SubStats/Resources/Content/Values"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "100%"

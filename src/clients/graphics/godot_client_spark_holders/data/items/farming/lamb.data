@@ -10,4 +10,4 @@ droppable = true
 usable = true
 consumable = true
 use_time = 10
-effects = TXT_SATIETY_10%
+effects = TXT_HUNGER_10%

@@ -235,90 +235,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="MaxNumberDaysAwake" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "MaxNumberDaysAwake"
-
-[node name="MaxNumberDaysAwakeValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
-[node name="MaxNumberDaysFasting" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "MaxNumberDaysFasting"
-
-[node name="MaxNumberDaysFastingValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
-[node name="StaminaRecoveryRatio" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "StaminaRecoveryRatio"
-
-[node name="StaminaRecoveryRatioValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
-[node name="SatietyRecoveryRatio" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "SatietyRecoveryRatio"
-
-[node name="SatietyRecoveryRatioValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
-[node name="StaminaOverextendRatio" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "StaminaOverextendRatio"
-
-[node name="StaminaOverextendRatioValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
-[node name="SatietyOverextendRatio" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "SatietyOverextendRatio"
-
-[node name="SatietyOverextendRatioValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-caret_blink = true
-
 [node name="BuyingPriceModifier" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -332,6 +248,46 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
+
+[node name="Dummy" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy2" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy3" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy4" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy5" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy6" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy7" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy8" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="General" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Server"]
 visible = false
@@ -467,12 +423,6 @@ text = "Reset to defaults"
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/ShadowsValue" to="." method="_on_shadows_value_toggled"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/WhileLightValue" to="." method="_on_while_light_value_toggled"]
 [connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue" to="." method="_on_tick_duration_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysAwakeValue" to="." method="_on_max_number_days_awake_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysFastingValue" to="." method="_on_max_number_days_fasting_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaRecoveryRatioValue" to="." method="_on_stamina_recovery_ratio_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyRecoveryRatioValue" to="." method="_on_satiety_recovery_ratio_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaOverextendRatioValue" to="." method="_on_stamina_overextend_ratio_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyOverextendRatioValue" to="." method="_on_satiety_overextend_ratio_value_text_submitted"]
 [connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue" to="." method="_on_buying_price_modifier_value_text_submitted"]
 [connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/PortValue" to="." method="_on_serverport_value_text_submitted"]
 [connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/SeedValue" to="." method="_on_seed_value_text_submitted"]

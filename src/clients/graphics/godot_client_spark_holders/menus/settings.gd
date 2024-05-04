@@ -35,12 +35,6 @@ var antialiasings = { "Off": 0, "x2": 1, "x4": 2, "x8": 3 }
 
 # Server
 @onready var n_tickduration = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue
-@onready var n_maxnumberdaysawake = $Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysAwakeValue
-@onready var n_maxnumberdaysfasting = $Divider/MarginContainer/ClientServer/Server/Gameplay/MaxNumberDaysFastingValue
-@onready var n_staminarecoveryratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaRecoveryRatioValue
-@onready var n_satietyrecoveryratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyRecoveryRatioValue
-@onready var n_staminaoverextendratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/StaminaOverextendRatioValue
-@onready var n_satietyoverextendratio = $Divider/MarginContainer/ClientServer/Server/Gameplay/SatietyOverextendRatioValue
 @onready var n_buyingpricemodifier = $Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue
 
 @onready var n_serverport = $Divider/MarginContainer/ClientServer/Server/General/PortValue
@@ -190,12 +184,6 @@ func apply_client_settings(forced_update):
 func apply_server_settings():
 	# Gameplay
 	n_tickduration.text = server_settings_dic["TICK_DURATION"]
-	n_maxnumberdaysawake.text = server_settings_dic["MAX_NUMBER_DAYS_AWAKE"]
-	n_maxnumberdaysfasting.text = server_settings_dic["MAX_NUMBER_DAYS_FASTING"]
-	n_staminarecoveryratio.text = server_settings_dic["STAMINA_RECOVERY_RATIO"]
-	n_satietyrecoveryratio.text = server_settings_dic["SATIETY_RECOVERY_RATIO"]
-	n_staminaoverextendratio.text = server_settings_dic["STAMINA_OVEREXTEND_RATIO"]
-	n_satietyoverextendratio.text = server_settings_dic["SATIETY_OVEREXTEND_RATIO"]
 	n_buyingpricemodifier.text = server_settings_dic["BUYING_PRICE_MODIFIER"]
 	# General
 	n_serverport.text = server_settings_dic["PORT"]
@@ -301,42 +289,6 @@ func _on_tick_duration_value_text_submitted(new_text):
 		server_settings_dic["TICK_DURATION"] = new_text
 	else:
 		n_serverport.text = server_settings_dic["TICK_DURATION"]
-
-func _on_max_number_days_awake_value_text_submitted(new_text):
-	if new_text.is_valid_float():
-		server_settings_dic["MAX_NUMBER_DAYS_AWAKE "] = new_text
-	else:
-		n_serverport.text = server_settings_dic["MAX_NUMBER_DAYS_AWAKE "]
-
-func _on_max_number_days_fasting_value_text_submitted(new_text):
-	if new_text.is_valid_float():
-		server_settings_dic["MAX_NUMBER_DAYS_FASTING"] = new_text
-	else:
-		n_serverport.text = server_settings_dic["MAX_NUMBER_DAYS_FASTING"]
-
-func _on_stamina_recovery_ratio_value_text_submitted(new_text):
-	if new_text.is_valid_float():
-		server_settings_dic["STAMINA_RECOVERY_RATIO"] = new_text
-	else:
-		n_serverport.text = server_settings_dic["STAMINA_RECOVERY_RATIO"]
-
-func _on_satiety_recovery_ratio_value_text_submitted(new_text):
-	if new_text.is_valid_float():
-		server_settings_dic["SATIETY_RECOVERY_RATIO"] = new_text
-	else:
-		n_serverport.text = server_settings_dic["SATIETY_RECOVERY_RATIO"]
-
-func _on_stamina_overextend_ratio_value_text_submitted(new_text):
-	if new_text.is_valid_int():
-		server_settings_dic["STAMINA_OVEREXTEND_RATIO"] = new_text
-	else:
-		n_serverport.text = server_settings_dic["STAMINA_OVEREXTEND_RATIO"]
-
-func _on_satiety_overextend_ratio_value_text_submitted(new_text):
-	if new_text.is_valid_int():
-		server_settings_dic["SATIETY_OVEREXTEND_RATIO"] = new_text
-	else:
-		n_serverport.text = server_settings_dic["SATIETY_OVEREXTEND_RATIO"]
 
 func _on_buying_price_modifier_value_text_submitted(new_text):
 	if new_text.is_valid_float():

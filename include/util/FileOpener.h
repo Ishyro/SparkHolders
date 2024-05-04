@@ -32,7 +32,6 @@ namespace FileOpener {
   void MapOpener(std::string fileName, Database * database);
   void ProjectileOpener(std::string fileName, Database * database);
   void QuestOpener(std::string fileName, Database * database);
-  void ClientSettingsOpener(std::string fileName, Database * database);
   void SettingsOpener(std::string fileName, Database * database);
   void SkillOpener(std::string fileName, Database * database);
   void PseudoSkillOpener(std::string fileName, Database * database);

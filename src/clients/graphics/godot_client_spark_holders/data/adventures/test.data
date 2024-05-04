@@ -14,7 +14,7 @@ data/blocks/water.data
 data/blocks/wood.data
 # effects
 data/effects/experience_10.data
-data/effects/satiety_10.data
+data/effects/hunger_10.data
 data/effects/etheral.data
 data/effects/flying.data
 # items

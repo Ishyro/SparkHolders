@@ -28,12 +28,6 @@ namespace Settings {
   int32_t duskDuration;
   std::vector<std::string> monthNames; // yearDuration / monthDuration
   std::vector<std::string> dayNames; // weekDuration
-  float maxNumberOfDaysAwake;
-  float maxNumberOfDaysFasting;
-  float staminaRecoveryRatio;
-  float satietyRecoveryRatio;
-  int32_t staminaOverextendRatio;
-  int32_t satietyOverextendRatio;
   float buyingPriceModifier;
   int32_t port;
   int64_t seed;
@@ -68,12 +62,6 @@ namespace Settings {
   int32_t getDuskDuration() { return duskDuration; }
   std::string getMonthName(int32_t indice) { return monthNames[indice]; } // yearDuration / monthDuration
   std::string getDayName(int32_t indice) { return dayNames[indice]; } // weekDuration
-  float getMaxNumberOfDaysAwake() { return maxNumberOfDaysAwake; }
-  float getMaxNumberOfDaysFasting() { return maxNumberOfDaysFasting; }
-  float getStaminaRecoveryRatio() { return staminaRecoveryRatio; }
-  float getSatietyRecoveryRatio() { return satietyRecoveryRatio; }
-  int32_t getStaminaOverextendRatio() { return staminaOverextendRatio; }
-  int32_t getSatietyOverextendRatio() { return satietyOverextendRatio; }
   float getBuyingPriceModifier() { return buyingPriceModifier; }
   int32_t getPort() { return port; }
   int64_t getSeed() { return seed; }
@@ -110,12 +98,6 @@ namespace Settings {
   void setDuskDuration(int32_t data) { duskDuration = data; }
   void setMonthName(int32_t indice, std::string data) { monthNames[indice] = data; } // yearDuration / monthDuration
   void setDayName(int32_t indice, std::string data) { dayNames[indice] = data; } // weekDuration
-  void setMaxNumberOfDaysAwake(float data) { maxNumberOfDaysAwake = data; }
-  void setMaxNumberOfDaysFasting(float data) { maxNumberOfDaysFasting = data; }
-  void setStaminaRecoveryRatio(float data) { staminaRecoveryRatio = data; }
-  void setSatietyRecoveryRatio(float data) { satietyRecoveryRatio = data; }
-  void setStaminaOverextendRatio(int32_t data) { staminaOverextendRatio = data; }
-  void setSatietyOverextendRatio(int32_t data) { satietyOverextendRatio = data; }
   void setBuyingPriceModifier(float data) { buyingPriceModifier = data; }
   void setPort(int32_t data) { port = data; }
   void setSeed(int64_t data) { seed = data; }

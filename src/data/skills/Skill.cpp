@@ -65,7 +65,7 @@ Block * Skill::isEatingSkill() {
     }
     if(s->skill_type == SKILL_SIMPLE) {
       for(Effect * effect : s->effects) {
-        if(effect->type == EFFECT_SATIETY) {
+        if(effect->type == EFFECT_HUNGER) {
           is_eating_skill = true;
         }
       }

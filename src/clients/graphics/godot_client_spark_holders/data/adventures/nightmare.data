@@ -6,7 +6,7 @@ data/blocks/rock.data
 data/blocks/soil.data
 # effects
 data/effects/experience_10.data
-data/effects/satiety_10.data
+data/effects/hunger_10.data
 data/effects/etheral.data
 data/effects/flying.data
 # items
@@ -175,7 +175,7 @@ Settings.{DAY_NAMES}{{Laxito Dies}{Pyrra Dies}{Aerina Dies}{Hibero Dies}{Beastio
 Translation.{data/translations/aytlanta}
 # add starting attributes
 StartingAttributes.{TXT_PARAGON}
-StartingAttributes.{TXT_HOMUNCULIST}
+StartingAttributes.{TXT_SPIRITUALIST}
 StartingAttributes.{TXT_SHADOW}
 StartingAttributes.{TXT_VANGUARD}
 StartingAttributes.{TXT_ELEMENTALIST}

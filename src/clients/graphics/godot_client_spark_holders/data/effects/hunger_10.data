@@ -1,7 +1,7 @@
-name = TXT_SATIETY_10
+name = TXT_HUNGER_10
 level = 0
 attributes =
-type = EFFECT_SATIETY
+type = EFFECT_HUNGER
 duration_type = DURATION_INSTANT
 duration = 0
 power = 10

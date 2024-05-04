@@ -18,6 +18,7 @@ class Race : public Way {
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
+    const bool need_to_think;
     const bool has_soulspark;
     const float action_time_modifier;
     const float strike_time_modifier;
@@ -51,6 +52,7 @@ class Race : public Way {
       bool need_to_eat,
       bool can_eat_food,
       bool need_to_sleep,
+      bool need_to_think,
       bool has_soulspark,
       float action_time_modifier,
       float strike_time_modifier,
@@ -87,6 +89,7 @@ class Race : public Way {
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
+      need_to_think(need_to_think),
       has_soulspark(has_soulspark),
       action_time_modifier(action_time_modifier),
       strike_time_modifier(strike_time_modifier),
@@ -119,6 +122,7 @@ class Race : public Way {
     bool getNeedToEat(std::list<Race *> race_modifiers);
     bool getCanEatFood(std::list<Race *> race_modifiers);
     bool getNeedToSleep(std::list<Race *> race_modifiers);
+    bool getNeedToThink(std::list<Race *> race_modifiers);
     bool getHasSoulSpark(std::list<Race *> race_modifiers);
     float getActionTimeModifier(std::list<Race *> race_modifiers);
     float getStrikeTimeModifier(std::list<Race *> race_modifiers);

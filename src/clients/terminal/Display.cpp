@@ -202,7 +202,7 @@ namespace Display {
     mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
     mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());
     mvwprintw(screen, 5, 1, (t->getStandardName("Stamina") + std::string(": ") + std::to_string(player->getStamina()) + std::string(" / ") + std::string("100")).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("Satiety") + std::string(": ") + std::to_string(player->getSatiety()) + std::string(" / ") + std::string("100")).c_str());
+    mvwprintw(screen, 6, 1, (t->getStandardName("Hunger") + std::string(": ") + std::to_string(player->getHunger()) + std::string(" / ") + std::string("100")).c_str());
     mvwprintw(screen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnThreshold())).c_str());
     mvwprintw(screen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
     mvwprintw(screen, 9, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(player->getShield())).c_str());

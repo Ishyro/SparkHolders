@@ -31,8 +31,10 @@ extends Control
 @onready var res_health = $Mutable/SubStats/Resources/Content/Values/Health
 @onready var res_mana = $Mutable/SubStats/Resources/Content/Values/Mana
 @onready var res_soulburn = $Mutable/SubStats/Resources/Content/Values/Soulburn
-@onready var res_satiety = $Mutable/SubStats/Resources/Content/Values/Satiety
+@onready var res_hunger = $Mutable/SubStats/Resources/Content/Values/Hunger
+@onready var res_thirst = $Mutable/SubStats/Resources/Content/Values/Thirst
 @onready var res_stamina = $Mutable/SubStats/Resources/Content/Values/Stamina
+@onready var res_sanity = $Mutable/SubStats/Resources/Content/Values/Sanity
 
 @onready var sec_size = $Mutable/SubStats/Secondary/Content/Values1/Size
 @onready var sec_cloaking = $Mutable/SubStats/Secondary/Content/Values1/Cloaking
@@ -120,8 +122,10 @@ func display_stats():
 	res_health.text = str(character_stats["hp"]) + " / " + str(character_stats["maxHp"])
 	res_mana.text = str(character_stats["mana"]) + " / " + str(character_stats["maxMana"])
 	res_soulburn.text = str(character_stats["currentSoulBurn"]) + " / " + str(character_stats["soulBurnThreshold"])
-	res_satiety.text = str(map.round_float(character_stats["satiety"])) + "%"
+	res_hunger.text = str(map.round_float(character_stats["hunger"])) + "%"
+	res_thirst.text = str(map.round_float(character_stats["thirst"])) + "%"
 	res_stamina.text = str(map.round_float(character_stats["stamina"])) + "%"
+	res_sanity.text = str(map.round_float(character_stats["sanity"])) + "%"
 
 	# Secondaries
 	sec_size.text = str(map.round_float(character_stats["size"]))
