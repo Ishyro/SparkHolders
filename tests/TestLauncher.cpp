@@ -51,7 +51,6 @@ int32_t main(int32_t argc, char ** argv) {
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
   Character * dasheep = adventure->getWorld()->getCharacters().front();
-  dasheep->getRegion()->getBlocks();
   MathUtil::Coords coords = dasheep->getWorldCoords();
   Time time = adventure->getTime();
   std::cout << time.to_string_day() << std::endl;
@@ -60,6 +59,7 @@ int32_t main(int32_t argc, char ** argv) {
     Time time = adventure->getTime();
     std::cout << time.to_string_clock() << std::endl;
     std::cout << MathUtil::getLight(coords, time) << std::endl;
+    std::cout << adventure->getLight(dasheep->getCoord()) << std::endl;
     //
     adventure->applyIteration();
     SpeechManager::clear();

@@ -152,6 +152,8 @@ class Adventure {
     Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
     Time getTime();
+    int32_t getLight(MathUtil::Vector3i coord);
+    int32_t getLight(MathUtil::Vector3 coord);
     std::string state_to_string(std::map<const int64_t, Character *> players);
     StateDisplay * update_state(std::string to_read);
   private:

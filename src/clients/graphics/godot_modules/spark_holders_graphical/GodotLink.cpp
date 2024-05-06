@@ -91,6 +91,32 @@ String GodotLink::getClock() {
   return link->getAdventure()->getTime().to_string_clock().c_str();
 }
 
+int64_t GodotLink::getLight(int64_t character_id) {
+  #ifdef LOG
+    log << "getLight(" << character_id << ")" << std::endl;
+  #endif
+  return (int64_t) link->getAdventure()->getLight(link->getPlayer(character_id)->getCoord());
+}
+
+int64_t GodotLink::getBaseLight(int64_t character_id) {
+  #ifdef LOG
+    log << "getLight(" << character_id << ")" << std::endl;
+  #endif
+  return (int64_t) MathUtil::getLight(link->getPlayer(character_id)->getWorldCoords(), link->getAdventure()->getTime());
+}
+
+
+int64_t GodotLink::getMaxLight() {
+  #ifdef LOG
+    log << "getMaxLight()" << std::endl;
+  #endif
+  int32_t max = 0;
+  for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
+    max = std::max(max, Settings::getZenithLightPower(i));
+  }
+  return (int64_t) max;
+}
+
 Array GodotLink::getAvaillableBlocks() {
   #ifdef LOG
     log << "getAvaillableBlocks()" << std::endl;
@@ -110,24 +136,6 @@ Dictionary GodotLink::getBlocks(int64_t character_id) {
   for(auto pair : link->getPlayer(character_id)->getRegion()->getBlocks()) {
     result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
   }
-  return result;
-}
-
-Array GodotLink::getLights(int64_t character_id) {
-  #ifdef LOG
-    log << "getLights()" << character_id << ")" << std::endl;
-  #endif
-  //Map * map = state->maps.at(character_id);
-  Array result = Array();
-  /*
-  for(int32_t y = map->offsetY; y < map->offsetY + map->sizeY; y++) {
-    Array result_y = Array();
-    for(int32_t x = map->offsetX; x < map->offsetX + map->sizeX; x++) {
-      result_y.push_back(map->getLight(x, y));
-    }
-    result.push_back(result_y);
-  }
-  */
   return result;
 }
 
@@ -737,10 +745,12 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getMoveCost", "id", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
   ClassDB::bind_method(D_METHOD("getClock"), &GodotLink::getClock);
+  ClassDB::bind_method(D_METHOD("getLight", "id"), &GodotLink::getLight);
+  ClassDB::bind_method(D_METHOD("getBaseLight", "id"), &GodotLink::getBaseLight);
+  ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
   ClassDB::bind_method(D_METHOD("getBlocks", "id"), &GodotLink::getBlocks);
-  ClassDB::bind_method(D_METHOD("getLights", "id"), &GodotLink::getLights);
   ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);

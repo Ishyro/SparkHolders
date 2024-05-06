@@ -50,8 +50,6 @@ class World {
     void removeCharacter(Character * character);
     void checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     void changeRegion(Character * character);
-    int32_t getLight(int32_t x, int32_t y, int32_t z);
-    int32_t getLight(float x, float y, float z);
     float setPathToTarget(Region * region, float x, float y, Target * target);
     float distance(int64_t map_id, float x, float y, Target * target);
   private:

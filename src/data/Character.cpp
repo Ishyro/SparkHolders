@@ -680,7 +680,7 @@ void Character::channel(int32_t cost) {
   mana -= toadd;
 }
 
-void Character::hungerStep() {
+void Character::hungerStep(Environment e) {
   // 2 Days without eating
   if(!(isSleeping() || isIdling())) {
     addHunger(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 2.F));
@@ -690,7 +690,7 @@ void Character::hungerStep() {
   }
 }
 
-void Character::thirstStep() {
+void Character::thirstStep(Environment e) {
   if(!(isSleeping() || isIdling())) {
     addThirst(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound()));
   }
@@ -699,22 +699,25 @@ void Character::thirstStep() {
   }
 }
 
-void Character::staminaStep() {
+void Character::staminaStep(Environment e) {
   // 2 Days without eating
   if(!(isSleeping() || isIdling())) {
     addStamina(-100.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 2.F));
   }
 }
 
-void Character::sanityStep() {
+void Character::sanityStep(Environment e) {
   sanity = 50.F;
 }
 
 void Character::applyBodyNeeds() {
   if(race->getNeedToEat(race_modifiers)) {
     float body = std::min(hunger, thirst);
-    if(body > 0.F) {
-      hpHeal(getMaxHp() * body / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 100.F));
+    if(body > 0.5) {
+      hpHeal(getMaxHp() / (Settings::getMinuteDuration() * Settings::getDayDurationInRound()));
+    }
+    else if(body > 0.F) {
+      hpHeal(getMaxHp() * body * 2.F / (Settings::getMinuteDuration() * Settings::getDayDurationInRound() * 100.F));
     }
     else {
       hpHeal(getMaxHp() * body / (Settings::getMinuteDuration() * 100.F));
@@ -724,8 +727,11 @@ void Character::applyBodyNeeds() {
 
 void Character::applySoulNeeds() {
   if(race->getNeedToSleep(race_modifiers)) {
-    if(stamina > 0.F) {
-      shieldRestore(getMaxShield() * stamina / (Settings::getMinuteDuration() * 100.F));
+    if(stamina > 0.5) {
+      shieldRestore(getMaxShield() / Settings::getMinuteDuration());
+    }
+    else if(stamina > 0.F) {
+      shieldRestore(getMaxShield() * stamina * 2.F / (Settings::getMinuteDuration() * 100.F));
     }
     else {
       float rest = shieldRestore(getMaxShield() * stamina / (Settings::getMinuteDuration() * 100.F));

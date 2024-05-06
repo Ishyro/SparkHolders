@@ -45,8 +45,9 @@ namespace MathUtil {
   Vector3i makeVector3i(float x, float y, float z);
   Vector3i makeVector3i(Vector3 coord_float);
 
+  Coords getCoords(Vector3i coord);
   Coords getCoords(Vector3 coord);
-  float getLight(MathUtil::Coords coords, Time time);
+  int32_t getLight(MathUtil::Coords coords, Time time);
 
   float round(float var);
   MathUtil::Vector3 round(MathUtil::Vector3 var);

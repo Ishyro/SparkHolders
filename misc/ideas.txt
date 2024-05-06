@@ -131,6 +131,49 @@ TAROT - MAJOR ARCANA
 21 - The World (Orbi)
 00 - The Fool
 
+CHARACTERS
+
+EREDEN
+
+Aelys Ereden: Prince of Ereden
+Anastasia Ereden: Princess of Ereden
+
+CAELA
+
+Isphalia ???: Priestress of Aerela, high nobility (warring against undeads)
+
+
+ILLIA
+
+Ecarlate: Lord of the Prides
+Esteban Laporte: Captain of the Wolf Order / Trackers
+Enric de Cassou: Duke of Bridge-Town
+Sefriana Aguer: Owner of the Sea Guild
+Lugan Abadie: Bishop of Bridge-Town (Triple Temple dedicated to Alba, Aerina and Hibero)
+Isarn Lafargue: Blacksmith
+Gassan Lavigne: Winegrower
+
+SCRANEM
+
+Garruk Anguken: Relentless Hunter, Herald of Beastiona
+Skehart Angerfeld: Pantheran Knight
+
+AHO'Z
+
+Khoron Peyhn: Prince of the Green Lands
+Isa Sahyn: Aho'z Warrior
+
+Aydan Howah: Professor at the Aether University
+
+TAGR
+
+Alan Olyan: Prince of Tagr / (or simply high nobility?)
+
+OTHER
+
+Edgar Relin: The Stranger
+
+
 SPHERES, TIME AND DISTANCES
 
 Moons: size 30°, tidal locked with Planet, Revolution in 6 days (Planet time)

@@ -91,16 +91,16 @@ func _ready():
 func change_amount(type: String, current_value: float, max_value: float):
 	if type == "SHIELD":
 		shield.material.set_shader_parameter("level", current_value / max_value)
-		shield_label.text = str(int(floor(current_value)))
+		shield_label.text = str(int(ceil(current_value)))
 	if type == "HEALTH":
 		health.material.set_shader_parameter("level", current_value / max_value)
-		health_label.text = str(int(floor(current_value)))
+		health_label.text = str(int(ceil(current_value)))
 	if type == "MANA":
 		mana.material.set_shader_parameter("level", current_value / max_value)
-		mana_label.text = str(int(floor(current_value)))
+		mana_label.text = str(int(ceil(current_value)))
 	if type == "SOULBURN":
 		soulburn.material.set_shader_parameter("level", current_value / max_value)
-		soulburn_label.text = str(int(floor(current_value)))
+		soulburn_label.text = str(int(ceil(current_value)))
 
 func hide_phantom(character_id: int):
 	map.phantoms[Values.selected_team.id].visible = false

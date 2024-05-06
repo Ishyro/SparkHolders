@@ -37,6 +37,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 @onready var n_camera3P = $"../View/Camera3P"
 @onready var n_hud = $"../HUD"
+@onready var n_sun = $"../WorldEnvironment/Sun"
 @onready var n_blocks = $Blocks
 @onready var n_ground = $Blocks/GroundColliders
 @onready var n_characters = $Characters
@@ -92,6 +93,8 @@ func _ready():
 	
 	Values.selected_team = characters[owned_characters[0]]
 	select_character(owned_characters[0])
+	n_hud.update(Values.selected_team, characters_data[Values.selected_team.id])
+	n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight(Values.selected_team.id)) / float(Values.link.getMaxLight()))
 	n_camera3P.transform.origin = Vector3(characters_data[owned_characters[0]]["y"] - 5, characters_data[owned_characters[0]]["z"] + n_camera3P.transform.origin.y, characters_data[owned_characters[0]]["x"])
 	n_hud.move.set_pressed(true)
 	
@@ -122,6 +125,8 @@ func _process(_delta):
 			Values.link.getState()
 			Values.next_state_ready = true
 			n_hud.update(Values.selected_team, characters_data[Values.selected_team.id])
+		# set sky light
+		n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight(Values.selected_team.id)) / float(Values.link.getMaxLight()))
 		if Values.next_state_ready:
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():

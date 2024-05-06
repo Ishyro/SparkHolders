@@ -56,6 +56,16 @@ typedef struct CharacterDisplay {
   int32_t teamRelation;
 } CharacterDisplay;
 
+typedef struct Environment {
+  int64_t light;
+  int32_t lightening;
+  float temperature;
+  int32_t biome_type;
+  int32_t weather_type;
+  int32_t depth;
+  bool making_effort;
+} Environment;
+
 class Character {
   public:
     const int64_t id;
@@ -364,10 +374,10 @@ class Character {
     void applySoulBurn();
     void applyManaWaste();
     void channel(int32_t cost);
-    void hungerStep();
-    void thirstStep();
-    void staminaStep();
-    void sanityStep();
+    void hungerStep(Environment e);
+    void thirstStep(Environment e);
+    void staminaStep(Environment e);
+    void sanityStep(Environment e);
     void applyBodyNeeds();
     void applySoulNeeds();
     void applySpiritNeeds();

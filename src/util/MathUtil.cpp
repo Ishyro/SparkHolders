@@ -40,6 +40,10 @@ MathUtil::Vector3i MathUtil::makeVector3i(MathUtil::Vector3 coord_float) {
   return coord;
 }
 
+MathUtil::Coords MathUtil::getCoords(Vector3i pos) {
+  return getCoords(makeVector3(pos));
+}
+
 MathUtil::Coords MathUtil::getCoords(Vector3 pos) {
   MathUtil::Coords coords = MathUtil::Coords();
   coords.longitude = makeVector3i(0, 0, (int64_t) ((std::floor(pos.x) - (float) Settings::getLongitudeOrigin()) / Settings::getSecondToMeter()));
@@ -58,7 +62,7 @@ MathUtil::Coords MathUtil::getCoords(Vector3 pos) {
   return coords;
 }
 
-float MathUtil::getLight(MathUtil::Coords coords, Time time) {
+int32_t MathUtil::getLight(MathUtil::Coords coords, Time time) {
   float angle;
   float sun_angle = 0.F;
   int64_t light_power;
@@ -116,7 +120,7 @@ float MathUtil::getLight(MathUtil::Coords coords, Time time) {
   else {
     light_power = Settings::getNightLightPower(day_indice) + (Settings::getZenithLightPower(day_indice) - Settings::getNightLightPower(day_indice)) * ((float) local_hour - (float)  startDawn) / (float) ( (Settings::getDawnDuration() * Settings::getHourDuration() * Settings::getMinuteDuration()));
   }
-  return std::cos(angle * 3.141593F / 180.F) * light_power;
+  return (int32_t) std::ceil(std::cos(angle * 3.141593F / 180.F) * light_power);
 }
 
 float MathUtil::round(float var) {

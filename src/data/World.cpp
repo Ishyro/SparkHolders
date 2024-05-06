@@ -98,7 +98,12 @@ Block * World::getBlock(MathUtil::Vector3i coord) {
 }
 
 int32_t World::getLightening(MathUtil::Vector3i coord) {
-  return getChunk(coord)->getLightening(coord);
+  MathUtil::Vector3i to_check = coord;
+  int32_t result = getChunk(to_check)->getLightening(to_check);
+  while( (result = getChunk(to_check)->getLightening(to_check)) == LIGHTENING_NO) {
+    to_check.z--;
+  }
+  return result;
 }
 
 BlocksChunk * World::getChunk(MathUtil::Vector3 ori) {
@@ -172,32 +177,6 @@ void World::changeRegion(Character * character) {
     regions.insert(std::make_pair(coord, region));
   }
 }
-
-/*
-int32_t World::getLight(int32_t x, int32_t y, int32_t z) {
-  for (auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Block * block = pair.second->getBlock(x, y);
-      if(block != nullptr && block->name != "TXT_VOID") {
-        return pair.second->getLight(x, y);
-      }
-    }
-  }
-  return 0;
-}
-int32_t World::getLight(float x, float y, float z) {
-  for (auto pair : maps) {
-    if(pair.second->offsetZ == z) {
-      Block * block = pair.second->getBlock(x, y);
-      if(block != nullptr && block->name != "TXT_VOID") {
-        return pair.second->getLight(x, y);
-      }
-    }
-  }
-  return 0;
-}
-
-*/
 
 float World::setPathToTarget(Region * region, float x, float y, Target * target) {
   float target_x;

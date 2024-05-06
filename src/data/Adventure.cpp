@@ -266,10 +266,11 @@ void Adventure::applyIteration() {
       c->applySoulNeeds();
       c->applySpiritNeeds();
       c->applySoulBurn();
-      c->hungerStep();
-      c->thirstStep();
-      c->staminaStep();
-      c->sanityStep();
+      Environment e;
+      c->hungerStep(e);
+      c->thirstStep(e);
+      c->staminaStep(e);
+      c->sanityStep(e);
       if(!c->isAlive()) {
         //getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
       }
@@ -290,6 +291,22 @@ Time Adventure::getTime() {
   time.minutes = Settings::getHourDuration() * ((float) (round % Settings::getHourDurationInRound())) / ( (float) Settings::getHourDurationInRound());
   time.seconds = (int32_t) std::floor(tick);
   return time;
+}
+
+int32_t Adventure::getLight(MathUtil::Vector3i coord) {
+  int32_t base_light = MathUtil::getLight(MathUtil::getCoords(coord), getTime());
+  switch(world->getLightening(coord)) {
+    case LIGHTENING_INDOORS:
+      return base_light / 3600;
+    case LIGHTENING_OUTDOORS:
+      return base_light;
+    case LIGHTENING_DARK:
+      return 0;
+  }
+}
+
+int32_t Adventure::getLight(MathUtil::Vector3 coord) {
+  return getLight(MathUtil::makeVector3i(coord));
 }
 
 std::string Adventure::state_to_string(std::map<const int64_t, Character *> players) {
