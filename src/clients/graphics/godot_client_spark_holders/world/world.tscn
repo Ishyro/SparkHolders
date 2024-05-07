@@ -52,7 +52,9 @@ process_mode = 3
 background_mode = 2
 sky = SubResource("Sky_2fky8")
 ambient_light_source = 3
-ssao_enabled = true
+tonemap_mode = 2
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
 volumetric_fog_enabled = true
 volumetric_fog_sky_affect = 0.0
 
@@ -96,9 +98,6 @@ script = ExtResource("2_kskax")
 [node name="Blocks" type="NavigationRegion3D" parent="Map"]
 
 [node name="GroundColliders" type="Node3D" parent="Map/Blocks"]
-
-[node name="Lights" type="Node3D" parent="Map"]
-visible = false
 
 [node name="Characters" type="Node3D" parent="Map"]
 

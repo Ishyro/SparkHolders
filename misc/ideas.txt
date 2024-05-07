@@ -96,12 +96,12 @@ Sciuridoid (Beastiona + Aerina): Marmot, lives in big groups in the ground, with
 TALENTS
 
 WAR / PEACE
-??? - Farming - Alba
-??? - ??? - Laxito
-??? - Mining - Nubilo
+Leadership / Farming - Alba
+Blocking / Brewing - Laxito
+Sneaking / Mining - Nubilo
 Swordsmanship / Smithing - Pyrra
-Mana Weaving (Efficency) / Enchanting - Hibero
-??? - Brewing - Aerina
+Mana Weaving (Efficiency) / Enchanting - Hibero
+Running / Bargaining - Aerina
 Marksmanship / Gathering - Beastiona
 
 TAROT - MAJOR ARCANA
@@ -146,7 +146,7 @@ Isphalia ???: Priestress of Aerela, high nobility (warring against undeads)
 ILLIA
 
 Ecarlate: Lord of the Prides
-Esteban Laporte: Captain of the Wolf Order / Trackers
+Esteban Laporte: Apprentice sailor in the Sea Guild, and then Captain of the Wolf Order / Trackers
 Enric de Cassou: Duke of Bridge-Town
 Sefriana Aguer: Owner of the Sea Guild
 Lugan Abadie: Bishop of Bridge-Town (Triple Temple dedicated to Alba, Aerina and Hibero)

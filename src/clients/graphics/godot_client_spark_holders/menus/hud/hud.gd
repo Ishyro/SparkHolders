@@ -133,7 +133,7 @@ func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
 	else:
 		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
 
-func update(character, character_data: Dictionary):
+func update(character_data: Dictionary):
 	hour_label.text = "" + Values.link.getClock()
 	change_amount("SHIELD", character_data["shield"], character_data["maxShield"])
 	change_amount("HEALTH", character_data["hp"], character_data["maxHp"])

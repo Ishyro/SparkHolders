@@ -9,7 +9,7 @@ RESOLUTION = 3840x2160
 WINDOW_TYPE = Borderless Window
 ANTI_ALIASING = x8
 VSYNC = On
-SHADOWS = On
+SHADOWS = Off
 WHITE_LIGHTS = Off
 
 # Sound
