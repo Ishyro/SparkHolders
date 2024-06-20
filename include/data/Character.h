@@ -51,8 +51,8 @@ typedef struct CharacterDisplay {
   int32_t xp;
   int32_t level;
   Speech * talking_speech;
-  float damage_reductions[DAMAGE_TYPE_NUMBER];
-  int32_t damages[DAMAGE_TYPE_NUMBER];
+  std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
   int32_t teamRelation;
 } CharacterDisplay;
 
@@ -426,16 +426,18 @@ class Character {
 
     void useSkill(Skill * skill, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
+    float getRawDamageReductionFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);
+    float getStatusPower();
+    float getStatusReductionFromType(int32_t damage_type);
     Projectile * shoot(Target * target, Adventure * adventure, int32_t slot);
     void reload(ItemSlot * ammo, int32_t slot_weapon);
     void attack(Character * target, Adventure * adventure, int32_t type);
     void mainAttack(Character * target, Adventure * adventure, int32_t type);
     void subAttack(Character * target, Adventure * adventure, int32_t type);
     ItemSlot * canReload(int32_t slot);
-    void receiveAttack(int32_t damages[DAMAGE_TYPE_NUMBER], float orientation, int32_t type);
-    void receiveCriticalAttack(int32_t damages[DAMAGE_TYPE_NUMBER], int32_t type);
-    int32_t tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, int32_t type);
+    void receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
+    int32_t tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages);
     void trade(Character * buyer, int32_t object_type, std::string object_name, float price_modifier);
     std::set<std::string> getTags();
     std::string to_string();
@@ -504,6 +506,7 @@ class Character {
     Way * religion;
     Way * profession;
     std::list<Way *> titles;
+    std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status;
 };
 
 #endif // _CHARACTER_H_

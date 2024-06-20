@@ -40,6 +40,7 @@ namespace Settings {
   int32_t getPort();
   int64_t getSeed();
   std::string getMasterPassword();
+  int32_t getStatusThreshold(int32_t indice);
 
   void setYearDuration(int32_t data); // in days
   void setMonthDuration(int32_t data); // in days
@@ -68,6 +69,7 @@ namespace Settings {
   void setPort(int32_t data);
   void setSeed(int64_t data);
   void setMasterPassword(std::string data);
+  void setStatusThreshold(int32_t indice, int32_t data);
 };
 
 #endif // _SETTINGS_H_

@@ -277,14 +277,14 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
     int32_t maxDamage = 0;
     for(auto pair : skills) {
       if(pair.first != nullptr && pair.first->range >= range) {
-        int32_t rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
+        int32_t rawDamage = threat->tryAttack(pair.second);
         if(rawDamage > maxDamage) {
           skill = pair.first;
           maxDamage = rawDamage;
         }
       }
       else if(pair.first == nullptr && self->getGear()->getWeapon_1()->range >= range) {
-        int32_t rawDamage = threat->tryAttack(pair.second, ACTION_STRIKE);
+        int32_t rawDamage = threat->tryAttack(pair.second);
         if(rawDamage > maxDamage) {
           skill = pair.first;
           maxDamage = rawDamage;
@@ -305,7 +305,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
   Skill * skill = nullptr;
   Character * target = nullptr;
   for(auto pair : bestDamageSkills) {
-    int32_t rawDamage = pair.first->tryAttack(skills.at(pair.second), ACTION_STRIKE);
+    int32_t rawDamage = pair.first->tryAttack(skills.at(pair.second));
     if(rawDamage > max) {
       skill = pair.second;
       target = pair.first;

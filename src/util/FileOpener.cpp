@@ -633,9 +633,9 @@ namespace FileOpener {
     if(duration_type == DURATION_TEMPORARY) {
       duration = stoi(values.at("duration"));
     }
-    int32_t power = stoi(values.at("power"));
-    int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
-    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
+    float power = _stof(values.at("power"));
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
     if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
       damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
@@ -646,8 +646,8 @@ namespace FileOpener {
       damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
       damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
       damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
-      damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
-      damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
+      damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
+      damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
     }
     if(type == EFFECT_DAMAGE_REDUCTION) {
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
@@ -659,8 +659,8 @@ namespace FileOpener {
       damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
       damage_reductions[DAMAGE_ACID] = 0.;
       damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_TRUE] = 0.;
-      damage_reductions[DAMAGE_SOUL] = 0.;
+      damage_reductions[DAMAGE_SOLAR] = 0.;
+      damage_reductions[DAMAGE_AETHER] = 0.;
     }
     Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
     database->addEffect(effect);
@@ -796,7 +796,7 @@ namespace FileOpener {
     Item * item;
     if(type == ITEM_ARMOR) {
       int32_t swap_time = stoi(values.at("swap_time"));
-      float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.};
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
       damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
       damage_reductions[DAMAGE_BLUNT] = _stof(values.at("BLUNT_REDUCTION"));
@@ -806,8 +806,8 @@ namespace FileOpener {
       damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
       damage_reductions[DAMAGE_ACID] = 0.;
       damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_TRUE] = 0.;
-      damage_reductions[DAMAGE_SOUL] = 0.;
+      damage_reductions[DAMAGE_SOLAR] = 0.;
+      damage_reductions[DAMAGE_AETHER] = 0.;
       item = new ArmorItem(
         name,
         0,
@@ -832,6 +832,7 @@ namespace FileOpener {
       int32_t swap_time = stoi(values.at("swap_time"));
       float range = _stof(values.at("range"));
       int32_t strike_time = stoi(values.at("strike_time"));
+      float status_power = _stof(values.at("status_power"));
       std::istringstream is_use_projectile(values.at("use_projectile"));
       bool use_projectile;
       is_use_projectile >> std::boolalpha >> use_projectile;
@@ -848,7 +849,7 @@ namespace FileOpener {
           reload_time = stoi(values.at("reload_time"));
         }
       }
-      int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
       damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
       damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
       damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
@@ -858,8 +859,8 @@ namespace FileOpener {
       damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
       damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
       damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
-      damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
-      damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
+      damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
+      damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
       item = new WeaponItem(
         name,
         0,
@@ -879,6 +880,7 @@ namespace FileOpener {
         swap_time,
         range,
         strike_time,
+        status_power,
         use_projectile,
         use_ammo,
         ammo_type,
@@ -1202,7 +1204,7 @@ namespace FileOpener {
     float waste_per_tick = _stof(values.at("waste_per_tick"));
     float waste_per_area = _stof(values.at("waste_per_area"));
     float waste_per_hit = _stof(values.at("waste_per_hit"));
-    int32_t damages[DAMAGE_TYPE_NUMBER];
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
     damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
     damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
     damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
@@ -1212,8 +1214,8 @@ namespace FileOpener {
     damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
     damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
     damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_ACID"));
-    damages[DAMAGE_TRUE] = stoi(values.at("DAMAGE_TRUE"));
-    damages[DAMAGE_SOUL] = stoi(values.at("DAMAGE_SOUL"));
+    damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
+    damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
     Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
     delete effects;
@@ -1229,6 +1231,11 @@ namespace FileOpener {
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stol(seed));
     Settings::setMasterPassword(values.at("MASTER_PASSWORD"));
+    std::stringstream * ss_status_threshold = new std::stringstream(values.at("STATUS_THRESHOLD"));
+    for(int32_t i = 0; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {
+      Settings::setStatusThreshold(i, String::extract_int(ss_status_threshold));
+    }
+    delete ss_status_threshold;
   }
 
   void SkillOpener(std::string fileName, Database * database) {

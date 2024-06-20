@@ -28,6 +28,7 @@ namespace Settings {
   int32_t duskDuration;
   std::vector<std::string> monthNames; // yearDuration / monthDuration
   std::vector<std::string> dayNames; // weekDuration
+  std::array<int32_t, DAMAGE_TYPE_STATUS_NUMBER> statusThreshold;
   float buyingPriceModifier;
   int32_t port;
   int64_t seed;
@@ -66,6 +67,7 @@ namespace Settings {
   int32_t getPort() { return port; }
   int64_t getSeed() { return seed; }
   std::string getMasterPassword() { return masterPassword; }
+  int32_t getStatusThreshold(int32_t indice) { return statusThreshold[indice]; }
 
   void setYearDuration(int32_t data) { yearDuration = data; } // in days
   void setMonthDuration(int32_t data) { // in days
@@ -102,4 +104,5 @@ namespace Settings {
   void setPort(int32_t data) { port = data; }
   void setSeed(int64_t data) { seed = data; }
   void setMasterPassword(std::string data) { masterPassword = data; }
+  void setStatusThreshold(int32_t indice, int32_t data) { statusThreshold[indice] = data; }
 };

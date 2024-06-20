@@ -276,11 +276,11 @@ namespace Display {
     if(damage_NEUTRAL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
-    int32_t damage_TRUE = skill->getDamageFromType(DAMAGE_TRUE, overcharge_power);
+    int32_t damage_TRUE = skill->getDamageFromType(DAMAGE_SOLAR, overcharge_power);
     if(damage_TRUE != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
     }
-    int32_t damage_SOUL = skill->getDamageFromType(DAMAGE_SOUL, overcharge_power);
+    int32_t damage_SOUL = skill->getDamageFromType(DAMAGE_AETHER, overcharge_power);
     if(damage_SOUL != 0) {
       mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
     }
@@ -321,8 +321,8 @@ namespace Display {
     mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[DAMAGE_FROST]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_FROST])).c_str());
     mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[DAMAGE_POISON]) + std::string(" / ") + std::to_string(target->damage_reductions[DAMAGE_POISON])).c_str());
     mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[DAMAGE_ACID])).c_str());
-    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[DAMAGE_TRUE])).c_str());
-    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[DAMAGE_SOUL])).c_str());
+    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[DAMAGE_SOLAR])).c_str());
+    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[DAMAGE_AETHER])).c_str());
     wrefresh(screen);
   }
 
@@ -386,10 +386,10 @@ namespace Display {
         mvwprintw(screen, i++, 1, (t->getStandardName("ACID") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_ACID))).c_str());
       if(weapon->getDamageFromType(DAMAGE_MIND) > 0)
         mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_MIND))).c_str());
-      if(weapon->getDamageFromType(DAMAGE_TRUE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_TRUE))).c_str());
-      if(weapon->getDamageFromType(DAMAGE_SOUL) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SOUL))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_SOLAR) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SOLAR))).c_str());
+      if(weapon->getDamageFromType(DAMAGE_AETHER) > 0)
+        mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_AETHER))).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants

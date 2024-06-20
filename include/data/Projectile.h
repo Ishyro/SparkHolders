@@ -18,7 +18,7 @@ typedef struct ProjectileDisplay {
   float y;
   float z;
   float orientation;
-  int32_t damages[DAMAGE_TYPE_NUMBER];
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
   float speed;
   float area;
   float waste_per_tick;
@@ -50,7 +50,7 @@ class Projectile {
       float waste_per_tick,
       float waste_per_area,
       float waste_per_hit,
-      int32_t damages[DAMAGE_TYPE_NUMBER]
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(0),
@@ -85,7 +85,7 @@ class Projectile {
     }
     Projectile(
       const Projectile * projectile,
-      int32_t realDamages[DAMAGE_TYPE_NUMBER],
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages,
       World * world,
       int32_t current_map_id,
       Target * target,
@@ -126,7 +126,7 @@ class Projectile {
     }
     Projectile(
       const Projectile * projectile,
-      int32_t realDamages[DAMAGE_TYPE_NUMBER],
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages,
       World * world,
       int32_t current_map_id,
       float x,
@@ -193,7 +193,7 @@ class Projectile {
       float waste_per_tick,
       float waste_per_area,
       float waste_per_hit,
-      int32_t damages[DAMAGE_TYPE_NUMBER]
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(id),
@@ -294,8 +294,8 @@ class Projectile {
     float waste_per_tick;
     float waste_per_area;
     float waste_per_hit;
-    int32_t damages[DAMAGE_TYPE_NUMBER];
-    int32_t current_damages[DAMAGE_TYPE_NUMBER];
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> current_damages;
     std::list<Character *> previous_targets;
     std::list<Character *> current_targets;
 };

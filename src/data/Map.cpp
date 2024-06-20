@@ -492,8 +492,8 @@ void Map::killCharacter(Character * killer, Character * victim) {
     killer->gainXP(victim->getXP() / 2);
   }
   else {
-    int32_t damages[DAMAGE_TYPE_NUMBER] = {0};
-    float damage_reductions[DAMAGE_TYPE_NUMBER] = {0.F};
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
     int32_t xp = victim->getXP();
     Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages, damage_reductions);
     std::list<Effect *> * effects = new std::list<Effect *>();

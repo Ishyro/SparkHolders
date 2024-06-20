@@ -27,7 +27,7 @@ class ArmorItem : public GearItem {
       int32_t use_time,
       std::list<Effect *> effects,
       int32_t swap_time,
-      float damage_reductions[DAMAGE_TYPE_NUMBER]
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
     ):
       GearItem(
         name,
@@ -62,7 +62,7 @@ class ArmorItem : public GearItem {
     float getDamageReductionFromType(int32_t damage_type);
     std::string to_string();
   private:
-    float damage_reductions[DAMAGE_TYPE_NUMBER];
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
 };
 
 #endif // _ARMOR_ITEM_H_

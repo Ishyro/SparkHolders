@@ -83,6 +83,9 @@ void Character::initializeCharacter(Gear * gear) {
   sanity = 50.;
   channeledMana = 0.F;
   this->gear = new Gear(gear);
+  for(int i = 0; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {
+    status[i] = 0.F;
+  }
   initSkillsAndEffects();
 }
 void Character::initSkillsAndEffects() {
@@ -244,7 +247,14 @@ int32_t Character::getMaxShield() {
 float Character::getHunger() { return hunger; }
 float Character::getThirst() { return thirst; }
 float Character::getStamina() { return stamina; }
-float Character::getSanity() { return sanity; }
+float Character::getSanity() { 
+  float result = sanity;
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_STATUS_BROKEN) {
+      result -= 25;
+    }
+  }
+}
 
 int32_t Character::getSoulBurnThreshold() {
   int32_t bonus = 0;
@@ -265,7 +275,14 @@ int32_t Character::getFlow() {
       bonus += e->power;
     }
   }
-  return std::max(flow + bonus, 0);
+  int32_t result = std::max(flow + bonus, 0);
+  int32_t decrement = result / 10;
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_STATUS_WEAKENED) {
+      result -= decrement;
+    }
+  }
+  return std::max(result, 0);
 }
 
 int64_t Character::getRawPower() {
@@ -313,7 +330,14 @@ float Character::getDamageMultiplier() {
       result += e->power;
     }
   }
-  return std::max(0.F, 1.F + ((float) result) / 100.F);
+  result = std::max(1.F + ((float) result) / 100.F, 0.F);
+  int32_t decrement = result / 10;
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_STATUS_WEAKENED) {
+      result -= decrement;
+    }
+  }
+  return std::max(result, 0);
 }
 
 int32_t Character::getPowerScore() {
@@ -439,6 +463,7 @@ int32_t Character::getLight() {
   }
   return light;
 }
+
 std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
@@ -1091,6 +1116,9 @@ bool Character::isStunned() {
     if(e->type == EFFECT_STUNNED) {
       return true;
     }
+    if(e->type == EFFECT_STATUS_SHOCKED) {
+      return true;
+    }
   }
   return false;
 }
@@ -1158,7 +1186,7 @@ int32_t Character::cloakPower() {
 
 bool Character::isInWeakState() {
   for(Effect * e : effects) {
-    if(e->type == EFFECT_STUNNED || e->type == EFFECT_SLEEPING) {
+    if(e->type == EFFECT_STUNNED || e->type == EFFECT_SLEEPING || e->type == EFFECT_STATUS_SHOCKED) {
       return true;
     }
   }
@@ -1189,20 +1217,66 @@ int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
   return (int32_t) std::ceil((float) damage * getDamageMultiplier());
 }
 
-float Character::getDamageReductionFromType(int32_t damage_type) {
+float Character::getRawDamageReductionFromType(int32_t damage_type) {
   float reduction = gear->getDamageReductionFromType(damage_type);
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
       reduction += e->getDamageReductionFromType(damage_type);
     }
   }
+  int32_t decrement = std::max(0.F, reduction / 10);
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_STATUS_CORRODED) {
+      reduction -= decrement;
+    }
+  }
   return reduction;
+}
+
+float Character::getDamageReductionFromType(int32_t damage_type) {
+  float damage_reduction = getRawDamageReductionFromType(damage_type);
+  if(damage_reduction > 0.F) {
+    return 1.F - 100.F / (100.F + damage_reduction);
+  }
+  else {
+    return damage_reduction / 100.F;
+  }
+}
+
+float Character::getStatusPower() {
+  float status_power = 0.F;
+  for(Effect * effect : effects) {
+    if(effect->type == EFFECT_STATUS_POWER) {
+      status_power += effect->power;
+    }
+  }
+  return status_power * gear->getWeapon_1()->status_power;
+}
+
+float Character::getStatusReductionFromType(int32_t damage_type) {
+  float status_reduction = 0.F;
+  for(Effect * e : effects) {
+    if(e->type == EFFECT_STATUS_REDUCTION) {
+      // no need to use another variable
+      status_reduction += e->getDamageReductionFromType(damage_type);
+    }
+    // 100% status reduction
+    if(e->type == EFFECT_STATUS_IMMUNITY_BLEEDING + damage_type) {
+      return 1.F;
+    }
+  }
+  if(status_reduction > 0.F) {
+    return 1.F - 100.F / (100.F + status_reduction);
+  }
+  else {
+    return status_reduction / 100.F;
+  }
 }
 
 Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t slot) {
   if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
-      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, slot);
       }
@@ -1235,11 +1309,11 @@ void Character::mainAttack(Character * target, Adventure * adventure, int32_t ty
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_1);
     }
     else {
-      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_1);
       }
-      target->receiveAttack(realDamages, orientation, type);
+      target->receiveDamage(realDamages, this, this->getStatusPower());
     }
   }
 }
@@ -1253,11 +1327,11 @@ void Character::subAttack(Character * target, Adventure * adventure, int32_t typ
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_2);
     }
     else {
-      int32_t realDamages[DAMAGE_TYPE_NUMBER];
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_2);
       }
-      target->receiveAttack(realDamages, orientation, type);
+      target->receiveDamage(realDamages, this, this->getStatusPower());
     }
   }
 }
@@ -1292,34 +1366,104 @@ ItemSlot * Character::canReload(int32_t slot) {
   return ammo;
 }
 
-void Character::receiveAttack(int32_t damages[DAMAGE_TYPE_NUMBER], float orientation, int32_t type) {
+void Character::receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power) {
   if(!isInvulnerable() && !isEtheral()) {
-    if(orientation != 360.F) {
-      float diff = 360.F + orientation - this->orientation;
-      diff = diff >= 360.F ? diff - 360.F : diff;
-      if(diff <= 30.F || diff >= 330.F) {
-        return receiveCriticalAttack(damages, type);
-      }
-    }
-    if(isInWeakState()) {
-      return receiveCriticalAttack(damages, type);
-    }
     int32_t damage = 0;
+    int32_t current_damage = 0;
     for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == DAMAGE_ACID) {
-        damage += damages[damage_type];
+      if(damages[damage_type] > 0) {
+        if(damage_type == DAMAGE_ACID) {
+          current_damage = damages[damage_type];
+          damage += current_damage;
+          status[damage_type] += current_damage * status_power * 100.F * (1.F - getStatusReductionFromType(damage_type)) / (Settings::getStatusThreshold(damage_type) * (1 + (float) (level - 1) * 0.25));
+        }
+        if(damage_type == DAMAGE_MIND) {
+          current_damage = std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+          hp -= current_damage;
+          status[damage_type] += current_damage * status_power * 100.F * (1.F - getStatusReductionFromType(damage_type)) / (Settings::getStatusThreshold(damage_type) * (1 + (float) (level - 1) * 0.25));
+        }
+        if(damage_type == DAMAGE_SOLAR) {
+          current_damage -= damages[damage_type];
+          hp -= current_damage;
+          status[damage_type] += current_damage * status_power * 100.F * (1.F - getStatusReductionFromType(damage_type)) / (Settings::getStatusThreshold(damage_type) * (1 + (float) (level - 1) * 0.25));
+        }
+        if(damage_type == DAMAGE_AETHER) {
+          payMana(damages[damage_type]);
+          float status_inc = damages[damage_type] * status_power * 0.25;
+          for(int32_t i; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {
+            status[i] += status_inc * 100.F * (1.F - getStatusReductionFromType(i)) / (Settings::getStatusThreshold(i) * (1 + (float) (level - 1) * 0.25));
+          } 
+        }
+        else {
+          current_damage = std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+          damage += current_damage;
+          if(damage_type < DAMAGE_TYPE_STATUS_NUMBER) {
+            status[damage_type] += current_damage * status_power * 100.F * (1.F - getStatusReductionFromType(damage_type)) / (Settings::getStatusThreshold(damage_type) * (1 + (float) (level - 1) * 0.25));
+          }
+        }
       }
-      if(damage_type == DAMAGE_MIND) {
-        hp -= std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
-      }
-      if(damage_type == DAMAGE_TRUE) {
-        hp -= damages[damage_type];
-      }
-      if(damage_type == DAMAGE_SOUL) {
-        payMana(damages[damage_type]);
-      }
-      else {
-        damage += std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
+    }
+    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_STATUS_NUMBER; damage_type++) {
+      while(status[damage_type] > 100.F) {
+        status[damage_type] -= 100.F;
+        std::array<int32_t, DAMAGE_TYPE_NUMBER> effect_damages;
+        std::array<float, DAMAGE_TYPE_NUMBER> effect_damage_reductions;
+        Effect * effect;
+        float potency = 0;
+        int32_t duration = 60;
+        switch(damage_type) {
+          case DAMAGE_SLASH:
+            potency = 4.F * duration;
+            effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
+            effect = new Effect("TXT_BLEEDING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BLEEDING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_PUNCTURE:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
+            effect = new Effect("TXT_WEAKENED", ++effect::id_cpt, 1, "", EFFECT_STATUS_WEAKENED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_BLUNT:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
+            effect = new Effect("TXT_CONFUSED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CONFUSED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_FIRE:
+            duration = 12;
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
+            effect = new Effect("TXT_BURNING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BURNING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_LIGHTNING:
+            duration = 12;
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
+            effect = new Effect("TXT_SHOCKED", ++effect::id_cpt, 1, "", EFFECT_STATUS_SHOCKED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_FROST:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
+            effect = new Effect("TXT_FROZEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_FROZEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_POISON:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_POISON] = getMaxHp() / potency;
+            effect = new Effect("TXT_POISONED", ++effect::id_cpt, 1, "", EFFECT_STATUS_POISONED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_ACID:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
+            effect = new Effect("TXT_CORRODED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CORRODED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_MIND:
+            potency = 10.F * duration;
+            effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
+            effect = new Effect("TXT_BROKEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_BROKEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            break;
+          case DAMAGE_SOLAR:
+            effect = new Effect("TXT_DISINTEGRATED", ++effect::id_cpt, 1, "", EFFECT_STATUS_DISINTEGRATED, DURATION_INSTANT, 0.F, 0, effect_damages, effect_damage_reductions);
+            break;
+        }
+        effect->activate(this);
       }
     }
     damage = std::max(0, damage);
@@ -1329,47 +1473,7 @@ void Character::receiveAttack(int32_t damages[DAMAGE_TYPE_NUMBER], float orienta
   }
 }
 
-void Character::receiveCriticalAttack(int32_t damages[DAMAGE_TYPE_NUMBER], int32_t type) {
-  if(!isInvulnerable() && !isEtheral()) {
-    int32_t damage = 0;
-    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-      if(damage_type == DAMAGE_ACID) {
-        damage += damages[damage_type] * 2;
-      }
-      if(damage_type == DAMAGE_MIND) {
-        float damage_reduction = getDamageReductionFromType(damage_type);
-        if(damage_reduction > 0.F) {
-          hp -= std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
-        }
-        else {
-          hp -= std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
-        }
-      }
-      if(damage_type == DAMAGE_TRUE) {
-        hp -= damages[damage_type] * 2;
-      }
-      if(damage_type == DAMAGE_SOUL) {
-        hp -= damages[damage_type] * 2;
-        payMana(damages[damage_type] * 2);
-      }
-      else {
-        float damage_reduction = getDamageReductionFromType(damage_type);
-        if(damage_reduction > 0.F) {
-          damage += std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - .5 * damage_reduction)));
-        }
-        else {
-          damage += std::max(0, (int32_t) floor( (float) (damages[damage_type] * 2) * (1.F - damage_reduction)));
-        }
-      }
-    }
-    damage = std::max(0, damage);
-    int32_t leftover = damage - shield;
-    shield -= damage;
-    hp -= std::max(0, leftover);
-  }
-}
-
-int32_t Character::tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, int32_t type) {
+int32_t Character::tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages) {
   if(isInvulnerable() || isEtheral()) {
     return 0;
   }
@@ -1381,10 +1485,10 @@ int32_t Character::tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, in
     if(damage_type == DAMAGE_MIND) {
       damage += std::max(0, (int32_t) floor( (float) damages[damage_type] * (1.F - getDamageReductionFromType(damage_type))));
     }
-    if(damage_type == DAMAGE_TRUE) {
+    if(damage_type == DAMAGE_SOLAR) {
       damage += damages[damage_type];
     }
-    if(damage_type == DAMAGE_SOUL) {
+    if(damage_type == DAMAGE_AETHER) {
       damage += damages[damage_type];
     }
     else {

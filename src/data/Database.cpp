@@ -84,6 +84,8 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_DAMAGE_BUFF", EFFECT_DAMAGE_BUFF));
   macros.insert(std::make_pair("EFFECT_DAMAGE_REDUCTION", EFFECT_DAMAGE_REDUCTION));
   macros.insert(std::make_pair("EFFECT_DAMAGE_MULTIPLIER", EFFECT_DAMAGE_MULTIPLIER));
+  macros.insert(std::make_pair("EFFECT_STATUS_POWER", EFFECT_STATUS_POWER));
+  macros.insert(std::make_pair("EFFECT_STATUS_REDUCTION", EFFECT_STATUS_REDUCTION));
   macros.insert(std::make_pair("EFFECT_CHANNELING", EFFECT_CHANNELING));
   macros.insert(std::make_pair("EFFECT_STUNNED", EFFECT_STUNNED));
   macros.insert(std::make_pair("EFFECT_SLEEPING", EFFECT_SLEEPING));
@@ -97,6 +99,29 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_HAND_ACTION_TIME_MODIFIER", EFFECT_HAND_ACTION_TIME_MODIFIER));
   macros.insert(std::make_pair("EFFECT_SKILL_TIME_MODIFIER", EFFECT_SKILL_TIME_MODIFIER));
   macros.insert(std::make_pair("EFFECT_MOVEMENT_TIME_MODIFIER", EFFECT_MOVEMENT_TIME_MODIFIER));
+
+  // status_type
+  macros.insert(std::make_pair("EFFECT_STATUS_BLEEDING", EFFECT_STATUS_BLEEDING));
+  macros.insert(std::make_pair("EFFECT_STATUS_WEAKENED", EFFECT_STATUS_WEAKENED));
+  macros.insert(std::make_pair("EFFECT_STATUS_CONFUSED", EFFECT_STATUS_CONFUSED));
+  macros.insert(std::make_pair("EFFECT_STATUS_BURNING", EFFECT_STATUS_BURNING));
+  macros.insert(std::make_pair("EFFECT_STATUS_FROZEN", EFFECT_STATUS_FROZEN));
+  macros.insert(std::make_pair("EFFECT_STATUS_SHOCKED", EFFECT_STATUS_SHOCKED));
+  macros.insert(std::make_pair("EFFECT_STATUS_POISONED", EFFECT_STATUS_POISONED));
+  macros.insert(std::make_pair("EFFECT_STATUS_CORRODED", EFFECT_STATUS_CORRODED));
+  macros.insert(std::make_pair("EFFECT_STATUS_BROKEN", EFFECT_STATUS_BROKEN));
+  macros.insert(std::make_pair("EFFECT_STATUS_DISINTEGRATED", EFFECT_STATUS_DISINTEGRATED));
+
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_BLEEDING", EFFECT_STATUS_IMMUNITY_BLEEDING));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_WEAKENED", EFFECT_STATUS_IMMUNITY_WEAKENED));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_CONFUSED", EFFECT_STATUS_IMMUNITY_CONFUSED));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_BURNING", EFFECT_STATUS_IMMUNITY_BURNING));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_FROZEN", EFFECT_STATUS_IMMUNITY_FROZEN));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_SHOCKED", EFFECT_STATUS_IMMUNITY_SHOCKED));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_POISONED", EFFECT_STATUS_IMMUNITY_POISONED));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_CORRODED", EFFECT_STATUS_IMMUNITY_CORRODED));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_BROKEN", EFFECT_STATUS_IMMUNITY_BROKEN));
+  macros.insert(std::make_pair("EFFECT_STATUS_IMMUNITY_DISINTEGRATED", EFFECT_STATUS_IMMUNITY_DISINTEGRATED));
 
   // item_type
   macros.insert(std::make_pair("ITEM_WEAPON", ITEM_WEAPON));
@@ -226,8 +251,8 @@ Database::Database() {
   macros.insert(std::make_pair("DAMAGE_POISON", DAMAGE_POISON));
   macros.insert(std::make_pair("DAMAGE_ACID", DAMAGE_ACID));
   macros.insert(std::make_pair("DAMAGE_MIND", DAMAGE_MIND));
-  macros.insert(std::make_pair("DAMAGE_TRUE", DAMAGE_TRUE));
-  macros.insert(std::make_pair("DAMAGE_SOUL", DAMAGE_SOUL));
+  macros.insert(std::make_pair("DAMAGE_SOLAR", DAMAGE_SOLAR));
+  macros.insert(std::make_pair("DAMAGE_AETHER", DAMAGE_AETHER));
 
   // loot_type
   macros.insert(std::make_pair("LOOT_CORPSE", LOOT_CORPSE));

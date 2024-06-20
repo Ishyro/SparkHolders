@@ -118,7 +118,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
     setLost(true);
   }
   if(area == 0.F) {
-    target->receiveAttack(current_damages, orientation, ACTION_STRIKE);
+    target->receiveDamage(current_damages, owner, owner->getStatusPower());
     if(skill != nullptr) {
       Target * t = new Target();
       t->type = TARGET_CHARACTER;
@@ -138,11 +138,11 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
           range = MathUtil::distance(target->getCoord(), c->getCoord());
         }
         if(range <= area - c->getSize()) {
-          int32_t reducedDamages[DAMAGE_TYPE_NUMBER];
+          std::array<int32_t, DAMAGE_TYPE_NUMBER> reducedDamages;
           for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
             reducedDamages[i] = (int32_t) ceil( ((float) current_damages[i]) * pow(1 - waste_per_area, range));
           }
-          target->receiveAttack(reducedDamages, 360.F, ACTION_STRIKE);
+          target->receiveDamage(reducedDamages, owner, owner->getStatusPower());
           if(skill != nullptr) {
             Target * t = new Target();
             t->type = TARGET_CHARACTER;
@@ -302,7 +302,7 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
   float waste_per_tick = String::extract_float(ss);
   float waste_per_area = String::extract_float(ss);
   float waste_per_hit = String::extract_float(ss);
-  int32_t damages[DAMAGE_TYPE_NUMBER];
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_int(ss);
   }

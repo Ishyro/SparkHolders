@@ -21,7 +21,7 @@ class Effect {
     const std::string attributes;
     const int32_t type;
     const int32_t duration_type;
-    const int32_t power;
+    const float power;
     const int32_t duration;
     Effect(
       std::string name,
@@ -30,10 +30,10 @@ class Effect {
       std::string attributes,
       int32_t type,
       int32_t duration_type,
-      int32_t power,
+      float power,
       int32_t duration,
-      int32_t damages[DAMAGE_TYPE_NUMBER],
-      float damage_reductions[DAMAGE_TYPE_NUMBER]
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages,
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
     ):
       name(name),
       id(id),
@@ -57,11 +57,11 @@ class Effect {
       std::string attributes,
       int32_t type,
       int32_t duration_type,
-      int32_t power,
+      float power,
       int32_t duration,
       int32_t tick_left,
-      int32_t damages[DAMAGE_TYPE_NUMBER],
-      float damage_reductions[DAMAGE_TYPE_NUMBER]
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages,
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
     ):
       name(name),
       id(id),
@@ -111,8 +111,9 @@ class Effect {
     bool operator != (const Effect& e) const { return !operator==(e); }
   private:
     int32_t tick_left;
-    int32_t damages[DAMAGE_TYPE_NUMBER];
-    float damage_reductions[DAMAGE_TYPE_NUMBER];
+    Character * owner;
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
 };
 
 #endif // _EFFECT_H_

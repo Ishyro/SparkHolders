@@ -4,7 +4,7 @@
 #include "util/MathUtil.h"
 
 void ProjectileSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
-  int32_t realDamages[DAMAGE_TYPE_NUMBER];
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
   for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     realDamages[damage_type] = projectile->getDamageFromType(damage_type) * overcharge_power;
   }

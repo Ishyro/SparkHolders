@@ -12,6 +12,7 @@ class WeaponItem : public GearItem {
   public:
     const float range;
     const int32_t strike_time;
+    const float status_power;
     const bool use_projectile;
     const bool use_ammo;
     const int32_t ammo_type;
@@ -36,13 +37,14 @@ class WeaponItem : public GearItem {
       int32_t swap_time,
       float range,
       int32_t strike_time,
+      float status_power,
       bool use_projectile,
       bool use_ammo,
       int32_t ammo_type,
       int32_t capacity,
       int32_t reload_time,
       AmmunitionItem * ammo,
-      int32_t damages[DAMAGE_TYPE_NUMBER]
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
     ):
       GearItem(
         name,
@@ -64,6 +66,7 @@ class WeaponItem : public GearItem {
       ),
       range(range),
       strike_time(strike_time),
+      status_power(status_power),
       use_projectile(use_projectile),
       use_ammo(use_ammo),
       ammo_type(ammo_type),
@@ -79,6 +82,7 @@ class WeaponItem : public GearItem {
       GearItem(item, tier),
       range(item->range),
       strike_time(item->strike_time),
+      status_power(item->status_power),
       use_projectile(item->use_projectile),
       use_ammo(item->use_ammo),
       ammo_type(item->ammo_type),
@@ -99,7 +103,7 @@ class WeaponItem : public GearItem {
     std::string to_string();
   private:
     AmmunitionItem * ammo;
-    int32_t damages[DAMAGE_TYPE_NUMBER];
+    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
 };
 
 #endif // _WEAPON_ITEM_H_

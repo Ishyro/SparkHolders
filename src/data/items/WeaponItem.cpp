@@ -22,10 +22,10 @@ int32_t WeaponItem::getRawDamage() {
     else if(damage_type == DAMAGE_MIND) {
       power += 5 * damages[damage_type];
     }
-    else if(damage_type == DAMAGE_TRUE) {
+    else if(damage_type == DAMAGE_SOLAR) {
       power += 10 * damages[damage_type];
     }
-    else if(damage_type == DAMAGE_SOUL) {
+    else if(damage_type == DAMAGE_AETHER) {
       power += 10 * damages[damage_type];
     }
     else {
@@ -112,6 +112,7 @@ std::string WeaponItem::to_string() {
   String::insert_int(ss, swap_time);
   String::insert_float(ss, range);
   String::insert_int(ss, strike_time);
+  String::insert_float(ss, status_power);
   String::insert_bool(ss, use_projectile);
   String::insert_bool(ss, use_ammo);
   String::insert_int(ss, ammo_type);

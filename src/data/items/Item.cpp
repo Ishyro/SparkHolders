@@ -93,6 +93,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       int32_t swap_time = String::extract_int(ss);
       float range = String::extract_float(ss);
       int32_t strike_time = String::extract_int(ss);
+      float status_power = String::extract_float(ss);
       bool use_projectile = String::extract_bool(ss);
       bool use_ammo = String::extract_bool(ss);
       int32_t ammo_type = String::extract_int(ss);
@@ -103,7 +104,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       if(ammo_str != "none") {
         ammo = (AmmunitionItem *) from_string(ammo_str, adventure);
       }
-      int32_t damages[DAMAGE_TYPE_NUMBER];
+      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = String::extract_int(ss);
       }
@@ -126,6 +127,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         swap_time,
         range,
         strike_time,
+        status_power,
         use_projectile,
         use_ammo,
         ammo_type,
@@ -138,7 +140,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
     }
     case ITEM_ARMOR: {
       int32_t swap_time = String::extract_int(ss);
-      float damage_reductions[DAMAGE_TYPE_NUMBER];
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damage_reductions[i] = String::extract_float(ss);
       }

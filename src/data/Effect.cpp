@@ -1,4 +1,5 @@
 #include "data/Effect.h"
+#include "data/Settings.h"
 
 #include "util/String.h"
 
@@ -55,7 +56,7 @@ void Effect::activate(Character * target) {
         target->incrDetectionRange();
         break;
       case EFFECT_DAMAGE:
-        target->receiveAttack(damages, 360.F, ACTION_STRIKE);
+        target->receiveDamage(damages, owner, power);
         break;
       case EFFECT_EXPERIENCE:
         target->gainXP(power);
@@ -90,10 +91,45 @@ bool Effect::tick(Character * target) {
       target->addSanity((float) power);
       break;
     case EFFECT_DAMAGE:
-      target->receiveAttack(damages, 360.F, ACTION_STRIKE);
+      target->receiveDamage(damages, owner, power);
       break;
     case EFFECT_EXPERIENCE:
       target->gainXP(power);
+      break;
+    case EFFECT_STATUS_BLEEDING: {
+      float potency = 4.F * duration;
+      target->receiveDamage(damages, owner, power);
+      target->addHunger(-100.F / potency);
+      target->addThirst(-100.F / potency);
+      target->addStamina(-100.F / potency);
+      break;
+    }
+    case EFFECT_STATUS_WEAKENED:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_CONFUSED:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_BURNING:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_FROZEN:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_SHOCKED:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_POISONED:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_CORRODED:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_BROKEN:
+      target->receiveDamage(damages, owner, power);
+      break;
+    case EFFECT_STATUS_DISINTEGRATED:
+      target->receiveDamage(damages, owner, power);
       break;
     default:
       ;
@@ -153,11 +189,11 @@ Effect * Effect::from_string(std::string to_read) {
   int32_t power = String::extract_int(ss);
   int32_t duration = String::extract_int(ss);
   int32_t tick_left = String::extract_int(ss);
-  int32_t damages[DAMAGE_TYPE_NUMBER];
+  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_int(ss);
   }
-  float damage_reductions[DAMAGE_TYPE_NUMBER];
+  std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damage_reductions[i] = String::extract_float(ss);
   }

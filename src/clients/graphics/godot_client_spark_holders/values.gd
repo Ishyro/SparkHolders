@@ -17,8 +17,8 @@ const DAMAGE_FROST = 5
 const DAMAGE_POISON = 6
 const DAMAGE_ACID = 7
 const DAMAGE_MIND = 8
-const DAMAGE_TRUE = 9
-const DAMAGE_SOUL = 10
+const DAMAGE_SOLAR = 9
+const DAMAGE_AETHER = 10
 
 const ACTION_MODE_NONE = 0
 const ACTION_MODE_MOVE = 1
