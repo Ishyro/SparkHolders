@@ -1,16 +1,75 @@
-# Utilities
+# Base directories
 
-MKDIR=mkdir -p
-RM=rm -rf
-
-# Directories
-
-BIN=bin
+BIN_WIN=bin_win
+BIN_UNIX=bin
+BIN=$(BIN_UNIX)
 EXEC=src/clients/graphics/godot_client_spark_holders
 TEST=test
 SRC=src
 INCLUDE=include
 SCRIPTS=scripts
+
+# Targets
+
+TARGET_TEST=$(EXEC)/TestLauncher.x86_64
+TARGET_CLIENT_TERMINAL=$(EXEC)/Client_terminal.x86_64
+
+TARGET_SERVER_WIN=$(EXEC)/SparkHolders.Server.exe
+TARGET_SERVER_UNIX=$(EXEC)/SparkHolders.Server.x86_64
+TARGET_SERVER=$(TARGET_SERVER_UNIX)
+
+# Utilities
+
+MKDIR=mkdir -p
+RM=rm -rf
+
+# Compiler and flags
+
+CC=g++
+CC_FLAGS=-O3 -pipe -pthread -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder
+CC_INCLUDES=-I $(INCLUDE)
+CC_LIBRARIES=
+NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
+TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
+PLATFORM=linuxbsd
+AR=ar rcs
+GODOT_TARGET_MODE=template_release
+GODOT_DEBUG=0
+
+# Windows
+ifdef WINDOWS
+ifndef _WIN32_WINNT
+# _D_WIN32_WINNT must be greater than 0x0600 for sockets (inet_pton)
+_WIN32_WINNT=0x0800
+endif # _D_WIN32_WINNT
+CC=x86_64-w64-mingw32-g++
+CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O3 -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
+CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
+CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
+TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
+CLIENT_TERMINAL_BINAIRIES=
+TARGET_CLIENT_TERMINAL=
+PLATFORM=windows
+BIN=$(BIN_WIN)
+TARGET_SERVER=$(TARGET_SERVER_WIN)
+endif # WINDOWS
+
+# Debug
+ifdef DEBUG
+CC_FLAGS=$(CC_DEBUG_FLAGS)
+GODOT_TARGET_MODE=template_debug
+GODOT_DEBUG=1
+LOG=true
+else
+endif # DEBUG
+
+# Log
+ifdef LOG
+CC_FLAGS+=-DLOG
+endif
+
+# Directories
 
 INCLUDE_AI=$(INCLUDE)/ai
 INCLUDE_COM=$(INCLUDE)/communication
@@ -53,10 +112,6 @@ BIN_UTIL=$(BIN)/util
 BIN_SERVER=$(BIN)/server
 BIN_CLIENTS=$(BIN)/clients
 BIN_CLIENT_TERMINAL=$(BIN_CLIENTS)/terminal
-
-TARGET_SERVER=$(EXEC)/SparkHolders.Server.exe
-TARGET_TEST=$(EXEC)/TestLauncher.exe
-TARGET_CLIENT_TERMINAL=$(EXEC)/Client_terminal
 
 # Files
 
@@ -108,63 +163,18 @@ CLIENT_TERMINAL_HEADERS=$(wildcard $(INCLUDE_CLIENT_TERMINAL)/*.h)
 CLIENT_TERMINAL_SOURCES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(SRC_CLIENT_TERMINAL)/%.cpp,$(CLIENT_TERMINAL_HEADERS))
 CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT_TERMINAL)/%.o,$(CLIENT_TERMINAL_HEADERS))
 
-# Compiler and flags
-
-CC=g++
-CC_FLAGS=-O3 -pipe -pthread -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-O0 -g -ggdb -pipe -pthread -fpermissive -Wall -Wno-reorder
-CC_INCLUDES=-I $(INCLUDE)
-CC_LIBRARIES=
-NCURSES_LIBRARIES=-lncursesw -lformw -lmenuw -lpanelw
-TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64
-PLATFORM=linuxbsd
-AR=ar rcs
-GODOT_TARGET_MODE=template_release
-GODOT_DEBUG=0
-
-# Windows
-ifdef WINDOWS
-ifndef _WIN32_WINNT
-# _D_WIN32_WINNT must be greater than 0x0600 for sockets (inet_pton)
-_WIN32_WINNT=0x0800
-endif # _D_WIN32_WINNT
-CC=x86_64-w64-mingw32-g++
-CC_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O3 -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
-CC_DEBUG_FLAGS=-D_WIN32_WINNT=$(_WIN32_WINNT) -O0 -g -ggdb -pipe -static-libstdc++ -static-libgcc -fpermissive -Wall -Wno-reorder
-CC_LIBRARIES+=-lws2_32 -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive
-TARGET_GODOT=externals/godot/bin/godot.windows.editor.x86_64.console.exe externals/godot/bin/godot.windows.editor.x86_64.exe
-CLIENT_TERMINAL_BINAIRIES=
-TARGET_CLIENT_TERMINAL=
-PLATFORM=windows
-endif # WINDOWS
-
-# Debug
-ifdef DEBUG
-CC_FLAGS=$(CC_DEBUG_FLAGS)
-GODOT_TARGET_MODE=template_debug
-GODOT_DEBUG=1
-LOG=true
-else
-undefine BIN_CLIENT_TERMINAL
-undefine CLIENT_TERMINAL_BINAIRIES
-undefine TARGET_CLIENT_TERMINAL
-endif # DEBUG
-
-# Log
-ifdef LOG
-CC_FLAGS+=-DLOG
-endif
-
 # Rules
 
-all: bin $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
+ifndef WINDOWS
+all: $(BIN) $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
 	$(TARGET_SERVER) $(TARGET_TEST) $(CLIENT_TERMINAL_BINAIRIES) $(TARGET_CLIENT_TERMINAL) $(BIN)/libsparkholders.a godot
+else
+all: $(BIN) $(AI_BINAIRIES) $(DATA_BINAIRIES) $(COM_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES) $(CLIENTS_BINAIRIES) \
+	$(TARGET_SERVER) $(BIN)/libsparkholders.a godot
+endif
 
-bin:
+$(BIN):
 	$(MKDIR) $(BIN) $(BIN_AI) $(BIN_COM) $(BIN_DATA) $(BIN_ACTIONS) $(BIN_ITEMS) $(BIN_FURNITURES) $(BIN_SKILLS) $(BIN_WAYS) $(BIN_UTIL) $(BIN_SERVER) $(BIN_CLIENTS) $(BIN_CLIENT_TERMINAL)
-
-exec:
-	$(MKDIR) $(EXEC)
 
 $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(CLIENTS_BINAIRIES)
 	$(AR) $@ $^
@@ -189,4 +199,4 @@ $(TARGET_CLIENT_TERMINAL): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) $^ -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)
 
 clean:
-	$(RM) $(BIN) $(TARGET_SERVER) $(TARGET_TEST) $(TARGET_CLIENT_TERMINAL)
+	$(RM) $(BIN_UNIX) $(BIN_WIN) $(TARGET_SERVER_UNIX) $(TARGET_SERVER_WIN) $(TARGET_TEST) $(TARGET_CLIENT_TERMINAL)

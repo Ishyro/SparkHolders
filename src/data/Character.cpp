@@ -320,7 +320,7 @@ int32_t Character::getDetectionRange() {
 }
 
 int64_t Character::getGold() { return gold; }
-int64_t Character::getXP() { return xp; }
+int64_t Character::getXP() { return xp + last_level_xp; }
 int32_t Character::getLevel() { return level; }
 
 float Character::getDamageMultiplier() {
@@ -799,8 +799,13 @@ void Character::payMana(float cost) {
   currentSoulBurn += cost;
 }
 void Character::gainXP(int64_t xp) { this->xp += xp; }
+// u(0) = 0
+// u(n+1) = n^3 * 60 + u(n)
 void Character::gainLevel() {
-  while(xp >= level * level * 1000) { // INSERT FORMULA HERE
+  int64_t current_level_xp;
+  while( (current_level_xp = level * level * level * 60) <= xp ) {
+    last_level_xp += current_level_xp;
+    xp -= current_level_xp;
     level++;
     int32_t old_max_mana = getMaxMana();
     int32_t old_max_hp = getMaxHp();
@@ -1716,6 +1721,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
+  String::insert_long(ss, last_level_xp);
   String::insert_int(ss, level);
   String::insert(ss, team);
   String::insert(ss, gear->to_string());
@@ -1828,6 +1834,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   bool merchant = String::extract_bool(ss);
   int64_t gold = String::extract_long(ss);
   int64_t xp = String::extract_long(ss);
+  int64_t last_level_xp = String::extract_long(ss);
   int32_t level = String::extract_int(ss);
   std::string team = String::extract(ss);
   Gear * gear = Gear::from_string(String::extract(ss), adventure);
@@ -1922,6 +1929,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     merchant,
     gold,
     xp,
+    last_level_xp,
     level,
     team,
     gear,

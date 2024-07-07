@@ -648,6 +648,8 @@ namespace FileOpener {
       damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
       damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
       damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
+      damages[DAMAGE_NEUTRAL] = 0;
+      damages[DAMAGE_TRUE] = 0;
     }
     if(type == EFFECT_DAMAGE_REDUCTION) {
       damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
@@ -659,8 +661,10 @@ namespace FileOpener {
       damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
       damage_reductions[DAMAGE_ACID] = 0.;
       damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_SOLAR] = 0.;
-      damage_reductions[DAMAGE_AETHER] = 0.;
+      damage_reductions[DAMAGE_SOLAR] = 0.F;
+      damage_reductions[DAMAGE_AETHER] = 0.F;
+      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
+      damage_reductions[DAMAGE_TRUE] = 0.F;
     }
     Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
     database->addEffect(effect);
@@ -804,10 +808,12 @@ namespace FileOpener {
       damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
       damage_reductions[DAMAGE_FROST] = _stof(values.at("FROST_REDUCTION"));
       damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
-      damage_reductions[DAMAGE_ACID] = 0.;
+      damage_reductions[DAMAGE_ACID] = 0.F;
       damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_SOLAR] = 0.;
-      damage_reductions[DAMAGE_AETHER] = 0.;
+      damage_reductions[DAMAGE_SOLAR] = 0.F;
+      damage_reductions[DAMAGE_AETHER] = 0.F;
+      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
+      damage_reductions[DAMAGE_TRUE] = 0.F;
       item = new ArmorItem(
         name,
         0,
@@ -861,6 +867,8 @@ namespace FileOpener {
       damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
       damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
       damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
+      damages[DAMAGE_NEUTRAL] = 0;
+      damages[DAMAGE_TRUE] = 0;
       item = new WeaponItem(
         name,
         0,
@@ -1216,6 +1224,8 @@ namespace FileOpener {
     damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_ACID"));
     damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
     damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
+    damages[DAMAGE_NEUTRAL] = 0;
+    damages[DAMAGE_TRUE] = 0;
     Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
     delete effects;
@@ -1226,6 +1236,7 @@ namespace FileOpener {
   void SettingsOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     Settings::setTickDurationInSeconds(_stof(values.at("TICK_DURATION")));
+    Settings::setTickTimer(stoi(values.at("TICK_TIMER")));
     Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     std::string seed = values.at("SEED");

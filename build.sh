@@ -6,29 +6,29 @@ PROJECT_DIR=$(readlink -f "$PROJECT_DIR")
 
 function usage() {
     column -t -s "@" <<<"""
+  -c, --clean@Clean before building.
   -l, --log@Enable logger.
   -d, --debug@Build with debugging symbols.
-  -w, --windows@Build for Windows.
   -v [ver], --version [ver]@Select a speficic Godot version.
   -h, --help@Display this.
 """
     exit 1
 }
 
+unset ARG_CLEAN
 unset ARG_DEBUG
 unset ARG_GODOT_VERSION
 unset ARG_LOG
-unset ARG_WINDOWS
 unset MAKE_ARGS
 
 while [[ $# -ne 0 ]]; do
     case $1 in
+    -c | --clean)  shift
+        ARG_CLEAN=true ;;
     -l | --log) shift
         ARG_LOG=true ;;
     -d | --debug)  shift
         ARG_DEBUG=true ;;
-    -w | --windows) shift
-        ARG_WINDOWS=true ;;
     -v | -version) shift
         ARG_GODOT_VERSION=$1
         shift ;;
@@ -57,11 +57,11 @@ if [[ -n "$ARG_DEBUG" ]]; then
     MAKE_ARGS+=" DEBUG=true"
 fi
 
-if [[ -n "$ARG_WINDOWS" ]]; then
-    MAKE_ARGS+=" WINDOWS=true"
+if [[ -n "$ARG_CLEAN" ]]; then
+    make clean
 fi
-
-make -B ${MAKE_ARGS:1}
+make ${MAKE_ARGS:1}
+make ${MAKE_ARGS:1} WINDOWS=true
 
 cd "$PROJECT_DIR/externals/godot/bin/"
 

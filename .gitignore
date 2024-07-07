@@ -1,4 +1,5 @@
 bin/
+bin_win/
 externals/godot
 .vscode/
 src/clients/graphics/godot_modules/spark_holders_graphical/__pycache__/

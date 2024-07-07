@@ -170,23 +170,28 @@ int32_t main(int32_t argc, char ** argv) {
   #else
     std::thread thread = std::thread(relinkCommunication, (void *) param);
   #endif
+  std::chrono::_V2::system_clock::time_point start = std::chrono::system_clock::now();
+  std::chrono::_V2::system_clock::time_point end;
   while(!noPlayers) {
-    auto start = std::chrono::system_clock::now();
     adventure->applyIteration();
     for(int32_t i = 0; i < playersNumber; i++) {
       links[i]->sendState();
     }
     SpeechManager::clear();
     adventure->getNPCsActions();
+    // wait for tick duration
+    end = std::chrono::system_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    if(duration < Settings::getTickTimer()) {
+      std::this_thread::sleep_for(Settings::getTickTimer() - duration);
+    }
+    start = std::chrono::system_clock::now();
     // receive playerActions
     std::list<Action *> actionsPlayers = std::list<Action *>();
     for(int32_t i = 0; i < playersNumber; i++) {
-      if(links[i]->getNeedToUpdateActions()) {
-        while(!links[i]->hasActions()) {
-          usleep(1);
-        }
+      //if(links[i]->getNeedToUpdateActions()) {
         actionsPlayers.merge(links[i]->getActions());
-      }
+      //}
     }
     adventure->mergeActions(actionsPlayers);
     actionsPlayers.clear();
@@ -200,9 +205,6 @@ int32_t main(int32_t argc, char ** argv) {
       }
     }
     adventure->incrTick();
-    auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "Tick duration: " << elapsed_seconds.count() << "s" << std::endl;
   }
   delete adventure;
   ss->close();

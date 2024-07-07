@@ -4,8 +4,6 @@ var mutex
 var baking_done = false
 
 var owned_characters = []
-var phantoms = {}
-var phantom_lines = {}
 
 var navigations = {}
 var multiMeshInstances = {}
@@ -28,14 +26,11 @@ var materials = {}
 var blocks_img = {}
 
 var board_material = preload("res://resources/materials/board_material.tres")
-var phantom_material = preload("res://resources/materials/phantom.tres")
 var base_fire = preload("res://models/fire.tscn")
 
 var base_character = preload("res://models/character.tscn")
-var base_phantom = preload("res://models/phantom.tscn")
 var base_projectile = preload("res://models/projectile.tscn")
 
-@onready var n_camera3P = $"../View/Camera3P"
 @onready var n_hud = $"../HUD"
 @onready var n_sun = $"../WorldEnvironment/Sun"
 @onready var n_blocks = $Blocks
@@ -67,54 +62,14 @@ func _ready():
 	
 	furnitures_data = Values.link.getFurnitures()
 	display_map()
-	var map_rid = get_world_3d().get_navigation_map()
-	NavigationServer3D.map_set_cell_size(map_rid, 0.05)
-	NavigationServer3D.map_set_cell_height(map_rid, 0.05)
-	for character_id in owned_characters:
-		# Phantom
-		phantoms[character_id] = base_phantom.instantiate()
-		phantoms[character_id].scale_object_local(Vector3(characters_data[character_id]["size"], characters_data[character_id]["size"], characters_data[character_id]["size"]))
-		phantoms[character_id].id = character_id
-		phantoms[character_id].transform.origin = characters[character_id].transform.origin
-		n_characters.add_child(phantoms[character_id])
-		# Navigation3D
-		var character_size = round_float(characters_data[character_id]["size"])
-		if !navigations.has(character_size):
-			navigations[character_size] = NavigationMesh.new()
-			navigations[character_size].sample_partition_type = NavigationMesh.SAMPLE_PARTITION_WATERSHED
-			navigations[character_size].geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
-			navigations[character_size].geometry_collision_mask = 0x10
-			navigations[character_size].cell_size = 0.05
-			navigations[character_size].cell_height = 0.05
-			navigations[character_size].agent_height = 1.8
-			navigations[character_size].agent_max_climb = 0.25
-			navigations[character_size].agent_max_slope = 60
-			navigations[character_size].agent_radius = character_size
 	
 	Values.selected_team = characters[owned_characters[0]]
 	select_character(owned_characters[0])
 	n_hud.update(characters_data[Values.selected_team.id])
 	n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight(Values.selected_team.id)) / float(Values.link.getMaxLight()))
-	n_camera3P.transform.origin = Vector3(characters_data[owned_characters[0]]["y"] - 5, characters_data[owned_characters[0]]["z"] + n_camera3P.transform.origin.y, characters_data[owned_characters[0]]["x"])
 	n_hud.move.set_pressed(true)
-	
-func bake_navigation_meshes():
-	if !baking_done:
-		for size in navigations:
-			var data = NavigationMeshSourceGeometryData3D.new()
-			NavigationMeshGenerator.parse_source_geometry_data(navigations[size], data, n_ground)
-			NavigationMeshGenerator.bake_from_source_geometry_data(navigations[size], data)
-		n_blocks.set_navigation_mesh(null)
-		baking_done = true
-
-func set_navigation_mesh(character_id: int):
-	n_blocks.set_navigation_mesh(navigations[round_float(characters_data[character_id]["size"])])
 
 func select_character(character_id: int):
-	var offsetX = 5 * sin($"../View/Camera3P".rotation.y)
-	var offsetZ = 5 * cos($"../View/Camera3P".rotation.y)
-	n_camera3P.transform.origin = Vector3(characters_data[character_id]["y"] + offsetX, characters_data[character_id]["z"] + n_camera3P.transform.origin.y, characters_data[character_id]["x"] + offsetZ)
-	set_navigation_mesh(character_id)
 	n_hud.display_team(characters[character_id], characters_data[character_id])
 	n_inventory.update_inventories(owned_characters)
 
@@ -160,8 +115,6 @@ func _process(_delta):
 	if mutex.try_lock():
 		if not Values.updating_state: #&& !Values.link.hasState():
 			# waiting player actions, we can update our data now
-			bake_navigation_meshes()
-			set_navigation_mesh(Values.selected_team.id)
 			n_inventory.update_inventories(owned_characters)
 			# do nothing if not all characters have at least 1 action ready
 			send_actions()
@@ -174,19 +127,7 @@ func _physics_process(delta):
 			for character_id in characters_data:
 				var character = characters[character_id]
 				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
-				character.move_towards(dest, delta)
-				if character.nav.is_target_reached() or not character.nav.is_target_reachable():
-					character.checkpoint = null
-					character.transform.origin = dest
-					character.rotation_degrees = Vector3(0, characters_data[character_id]["orientation"], 0)
-					if phantoms.has(character_id):
-						if phantom_lines.has(character_id):
-							for phantom_line in phantom_lines[character_id]:
-								n_characters.remove_child(phantom_line)
-						phantom_lines[character_id] = []
-						phantoms[character_id].transform.origin = dest
-						phantoms[character_id].visible = false
-				done = done && (character.transform.origin == dest)
+				done = done && character.move_towards(dest, delta)
 			#for projectile_id in projectiles_data:
 			#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
 			#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
@@ -578,44 +519,6 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
 
-func update_phantom(character_id: int):
-	if mutex.try_lock():
-		if baking_done and not Values.updating_state:
-			phantoms[character_id].visible = true
-			phantoms[character_id].transform.origin = Vector3(Values.coord.x, Values.coord.y, Values.coord.z) 
-			characters[character_id].nav.target_position = phantoms[character_id].transform.origin
-			characters[character_id].nav.get_next_path_position()
-			if phantom_lines.has(character_id):
-				for phantom_line in phantom_lines[character_id]:
-					n_characters.remove_child(phantom_line)
-			phantom_lines[character_id] = []
-			var previous_vec = characters[character_id].transform.origin
-			var last_angle = Vector3.ZERO
-			var ap_cost = 0.
-			for vec in characters[character_id].nav.get_current_navigation_path():
-				# we need round y 
-				vec = round_vec(vec - Vector3(0, 0.1, 0))
-				var distance = previous_vec.distance_to(vec)
-				if distance != 0.:
-					ap_cost = ap_cost + Values.link.getMoveCost(Values.selected_team.id, previous_vec, vec)
-					var phantom_line = Decal.new()
-					phantom_line.texture_albedo = preload("res://menus/arabesque.png")
-					n_characters.add_child(phantom_line)
-					phantom_line.transform.origin = previous_vec
-					if not previous_vec.cross(vec).is_zero_approx():
-						phantom_line.global_transform = phantom_line.global_transform.looking_at(vec, Vector3.UP, true)
-					last_angle = phantom_line.rotation_degrees
-					phantom_line.transform.origin = Vector3((vec.x + previous_vec.x) / 2, (vec.y + previous_vec.y) / 2 + 0.001, (vec.z + previous_vec.z) / 2)
-					phantom_line.set_size(Vector3(0.1, 0.25, distance))
-					previous_vec = vec
-					phantom_lines[character_id].push_back(phantom_line)
-			phantoms[character_id].rotation_degrees = last_angle
-			mutex.unlock()
-			return String.num(ap_cost, 3) + " ap"
-		else:
-			mutex.unlock()
-			return ""
-
 func round_float(number: float):
 	var value = int(number * 1000. + 0.5)
 	return float(value) / 1000.
@@ -624,6 +527,7 @@ func round_vec(vec: Vector3):
 	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))
 
 func init_actions():
+	Values.action_muxtex.lock()
 	Values.actions = {}
 	Values.actions["ids"] = owned_characters
 	Values.actions["types"] = {}
@@ -639,6 +543,8 @@ func init_actions():
 		Values.actions["overcharge_power"][id] = []
 		Values.actions["overcharge_duration"][id] = []
 		Values.actions["overcharge_range"][id] = []
+	Values.action_set = false
+	Values.action_muxtex.unlock()
 
 func send_actions():
 	#do not send if at least 1 character doesn't have any action set
@@ -654,22 +560,39 @@ func send_actions():
 	Values.action_muxtex.unlock()
 
 func clear_actions(id):
+	Values.action_muxtex.lock()
 	Values.actions["types"][id] = []
 	Values.actions["arg1"][id] = []
 	Values.actions["arg2"][id] = []
 	Values.actions["overcharge_power"][id] = []
 	Values.actions["overcharge_duration"][id] = []
 	Values.actions["overcharge_range"][id] = []
+	Values.action_muxtex.unlock()
 
 func add_base_action(id, type):
+	Values.action_muxtex.lock()
 	Values.actions["types"][id].push_back(type)
 	Values.actions["arg1"][id].push_back(0)
 	Values.actions["arg2"][id].push_back(0)
 	Values.actions["overcharge_power"][id].push_back(0)
 	Values.actions["overcharge_duration"][id].push_back(0)
 	Values.actions["overcharge_range"][id].push_back(0)
+	Values.action_set = true
+	Values.action_muxtex.unlock()
+	
+func add_oriented_action(id, type, orientation):
+	Values.action_muxtex.lock()
+	Values.actions["types"][id].push_back(type)
+	Values.actions["arg1"][id].push_back(orientation)
+	Values.actions["arg2"][id].push_back(0)
+	Values.actions["overcharge_power"][id].push_back(0)
+	Values.actions["overcharge_duration"][id].push_back(0)
+	Values.actions["overcharge_range"][id].push_back(0)
+	Values.action_set = true
+	Values.action_muxtex.unlock()
 	
 func add_targeted_action(id, type, target_type, target_id, pos):
+	Values.action_muxtex.lock()
 	Values.actions["types"][id].push_back(type)
 	var target = {}
 	target["type"] = target_type
@@ -680,16 +603,22 @@ func add_targeted_action(id, type, target_type, target_id, pos):
 	Values.actions["overcharge_power"][id].push_back(0)
 	Values.actions["overcharge_duration"][id].push_back(0)
 	Values.actions["overcharge_range"][id].push_back(0)
+	Values.action_set = true
+	Values.action_muxtex.unlock()
 	
 func add_gear_action(id, type, item_id):
+	Values.action_muxtex.lock()
 	Values.actions["types"][id].push_back(type)
 	Values.actions["arg1"][id].push_back(item_id)
 	Values.actions["arg2"][id].push_back(0)
 	Values.actions["overcharge_power"][id].push_back(0)
 	Values.actions["overcharge_duration"][id].push_back(0)
 	Values.actions["overcharge_range"][id].push_back(0)
+	Values.action_set = true
+	Values.action_muxtex.unlock()
 	
 func add_skill_action(id, type, target_type, target_id, pos, skill, overcharge_power, overcharge_duration, overcharge_range):
+	Values.action_muxtex.lock()
 	Values.actions["types"][id].push_back(type)
 	var target = {}
 	target["type"] = target_type
@@ -700,3 +629,5 @@ func add_skill_action(id, type, target_type, target_id, pos, skill, overcharge_p
 	Values.actions["overcharge_power"][id].push_back(overcharge_power)
 	Values.actions["overcharge_duration"][id].push_back(overcharge_duration)
 	Values.actions["overcharge_range"][id].push_back(overcharge_range)
+	Values.action_set = true
+	Values.action_muxtex.unlock()

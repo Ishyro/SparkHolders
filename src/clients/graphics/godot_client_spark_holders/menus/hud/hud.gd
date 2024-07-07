@@ -102,12 +102,6 @@ func change_amount(type: String, current_value: float, max_value: float):
 		soulburn.material.set_shader_parameter("level", current_value / max_value)
 		soulburn_label.text = str(int(ceil(current_value)))
 
-func hide_phantom(character_id: int):
-	map.phantoms[Values.selected_team.id].visible = false
-	if map.phantom_lines.has(character_id):
-		for phantom_line in map.phantom_lines[character_id]:
-			phantom_line.visible = false
-
 func display_projectile(_projectile, _projectile_data: Dictionary):
 	pass
 
@@ -163,9 +157,7 @@ func _on_move_toggled(button_pressed):
 		interact.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_MOVE
-		map.phantoms[Values.selected_team.id].visible = true
 		map.characters[Values.selected_team.id].range_mesh.visible = false
-		map.set_navigation_mesh(Values.selected_team.id)
 	else:
 		move.set_pressed_no_signal(true)
 
@@ -175,7 +167,6 @@ func _on_attack_toggled(button_pressed):
 		interact.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_ATTACK
-		hide_phantom(Values.selected_team.id)
 		map.characters[Values.selected_team.id].range_mesh.visible = true
 	else:
 		map.characters[Values.selected_team.id].range_mesh.visible = false
@@ -187,7 +178,6 @@ func _on_interact_toggled(button_pressed):
 		attack.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_ACTIVATION
-		hide_phantom(Values.selected_team.id)
 		map.characters[Values.selected_team.id].range_mesh.visible = false
 	else:
 		move.set_pressed(true)
@@ -198,7 +188,6 @@ func _on_rest_toggled(button_pressed):
 		attack.set_pressed_no_signal(false)
 		interact.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_WAIT
-		hide_phantom(Values.selected_team.id)
 		map.characters[Values.selected_team.id].range_mesh.visible = false
 	else:
 		move.set_pressed(true)

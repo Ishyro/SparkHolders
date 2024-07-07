@@ -10,6 +10,7 @@
 #include "data/actions/BaseAction.h"
 #include "data/actions/EconomicsAction.h"
 #include "data/actions/GearAction.h"
+#include "data/actions/OrientedAction.h"
 #include "data/actions/SkillAction.h"
 #include "data/actions/TalkingAction.h"
 #include "data/actions/TargetedAction.h"
@@ -64,7 +65,12 @@ namespace Server {
       case ACTION_CHANNEL:
         action = new BaseAction(type, adventure, nullptr, user);
         break;
-      case ACTION_MOVE:
+      case ACTION_MOVE: {
+        float orientation = String::extract_float(ss);
+        std::cout << "orientation: " << orientation << std::endl;
+        action = new OrientedAction(type, adventure, nullptr, user, orientation);
+        break;
+      }
       case ACTION_STRIKE:
       case ACTION_ACTIVATION: {
         Target * target = MathUtil::target_from_string(String::extract(ss));

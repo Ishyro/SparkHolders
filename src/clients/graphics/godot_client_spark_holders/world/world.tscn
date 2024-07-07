@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://0fnxik7j4q84"]
+[gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
 
 [ext_resource type="Script" path="res://world/View.gd" id="2_7wmtq"]
 [ext_resource type="Script" path="res://world/Map.gd" id="2_kskax"]
@@ -6,8 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
 [ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://menus/hud/hud.tscn" id="5_feur5"]
 [ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6mjh4"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_b7eew"]
 
@@ -83,19 +81,13 @@ layout_mode = 1
 [node name="View" type="Node3D" parent="."]
 script = ExtResource("2_7wmtq")
 
-[node name="Camera3P" type="Camera3D" parent="View"]
-transform = Transform3D(-4.37114e-08, 0.866025, -0.5, 0, 0.5, 0.866025, 1, 3.78552e-08, -2.18557e-08, 0, 5, 0)
-attributes = SubResource("CameraAttributesPractical_6mjh4")
-current = true
-fov = 90.0
-
-[node name="Camera1P" type="Camera3D" parent="View"]
+[node name="Camera" type="Camera3D" parent="View"]
 attributes = SubResource("CameraAttributesPractical_b7eew")
 
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("2_kskax")
 
-[node name="Blocks" type="NavigationRegion3D" parent="Map"]
+[node name="Blocks" type="Node3D" parent="Map"]
 
 [node name="GroundColliders" type="Node3D" parent="Map/Blocks"]
 

@@ -127,6 +127,7 @@ class Character {
       talking_speech(from_database->talking_speech),
       gold(gold),
       xp(xp),
+      last_level_xp(0),
       level(1),
       coord(MathUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
       orientation(orientation),
@@ -193,6 +194,7 @@ class Character {
       bool merchant,
       int64_t gold,
       int64_t xp,
+      int64_t last_level_xp,
       int32_t level,
       std::string team,
       Gear * gear,
@@ -243,6 +245,7 @@ class Character {
       merchant(merchant),
       gold(gold),
       xp(xp),
+      last_level_xp(last_level_xp),
       level(level),
       ai(nullptr),
       team(team),
@@ -480,6 +483,7 @@ class Character {
 
     int64_t gold;
     int64_t xp;
+    int64_t last_level_xp;
     int32_t level;
 
     AI * ai;

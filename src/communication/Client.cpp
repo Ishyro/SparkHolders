@@ -66,6 +66,8 @@ namespace Client {
         return writeBaseAction(type);
         break;
       case ACTION_MOVE:
+        return writeOrientedAction(type, *((float *) arg1));
+        break;
       case ACTION_STRIKE:
       case ACTION_ACTIVATION:
         return writeTargetedAction(type, (Target *) arg1);
@@ -111,6 +113,16 @@ namespace Client {
     delete ss;
     return result;
   }
+
+  std::string writeOrientedAction(int32_t type, float orientation) {
+    std::stringstream * ss = new std::stringstream();
+    String::insert_int(ss, type);
+    String::insert_float(ss, orientation);
+    std::string result = ss->str();
+    delete ss;
+    return result;
+  }
+
 
   std::string writeTargetedAction(int32_t type, Target * target) {
     std::stringstream * ss = new std::stringstream();

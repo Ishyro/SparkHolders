@@ -181,7 +181,7 @@ float MathUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
 }
 
 MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil::Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range) {
-  float range_x = INFINITY;
+  float range_x = 0.F;
   if(factor_x != 0.F) {
     if(x_direction == 1) {
       range_x = std::abs((1.F - (next.x - std::floor(next.x))) / factor_x);
@@ -193,7 +193,10 @@ MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil
       }
     }
   }
-  float range_y = INFINITY;
+  if(range_x > 1.5F) {
+    range_x = 0.F;
+  }
+  float range_y = 0.F;
   if(factor_y != 0.F) {
     if(y_direction == 1) {
       range_y = std::abs((1.F - (next.y - std::floor(next.y))) / factor_y);
@@ -205,7 +208,10 @@ MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil
       }
     }
   }
-  float range_z = INFINITY;
+  if(range_y > 1.5F) {
+    range_y = 0.F;
+  }
+  float range_z = 0.F;
   if(factor_z != 0.F) {
     if(z_direction == 1) {
       range_z = std::abs((1.F - (next.z - std::floor(next.z))) / factor_z);
@@ -216,6 +222,9 @@ MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil
         range_z = std::abs(1.F / factor_z);
       }
     }
+  }
+  if(range_z > 1.5F) {
+    range_z = 0.F;
   }
   MathUtil::Vector3 try_x = MathUtil::makeVector3(
     try_x.x = next.x + factor_x * range_x,

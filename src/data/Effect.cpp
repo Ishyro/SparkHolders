@@ -164,14 +164,18 @@ std::string Effect::to_string() {
   String::insert(ss, attributes);
   String::insert_int(ss, type);
   String::insert_int(ss, duration_type);
-  String::insert_int(ss, power);
+  String::insert_float(ss, power);
   String::insert_int(ss, duration);
   String::insert_int(ss, tick_left);
-  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_int(ss, damages[i]);
+  if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      String::insert_int(ss, damages[i]);
+    }
   }
-  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_float(ss, damage_reductions[i]);
+  if(type == EFFECT_DAMAGE_REDUCTION) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      String::insert_float(ss, damage_reductions[i]);
+    }
   }
   std::string result = ss->str();
   delete ss;
@@ -186,16 +190,20 @@ Effect * Effect::from_string(std::string to_read) {
   std::string attributes = String::extract(ss);
   int32_t type = String::extract_int(ss);
   int32_t duration_type = String::extract_int(ss);
-  int32_t power = String::extract_int(ss);
+  float power = String::extract_float(ss);
   int32_t duration = String::extract_int(ss);
   int32_t tick_left = String::extract_int(ss);
   std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damages[i] = String::extract_int(ss);
+  if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      damages[i] = String::extract_int(ss);
+    }
   }
   std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
-  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    damage_reductions[i] = String::extract_float(ss);
+  if(type == EFFECT_DAMAGE_REDUCTION) {
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      damage_reductions[i] = String::extract_float(ss);
+    }
   }
   delete ss;
   return new Effect(name, id, level, attributes, type, duration_type, power, duration, tick_left, damages, damage_reductions);

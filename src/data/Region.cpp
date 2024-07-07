@@ -50,7 +50,7 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
     return -1.F;
   }
   if(c->isFlying()) {
-    return MathUtil::distance(ori, dest) * 10.F / c->getMovementTimeModifier();
+    return MathUtil::distance(ori, dest) * 5.F / c->getMovementTimeModifier();
   }
   else {
     MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
@@ -111,16 +111,20 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   if(c->isEtheral()) {
     return true;
   }
+  // check on foot
   Block * block = getBlock(dest);
   if(block != nullptr && block->unwalkable) {
     if(!(block->type == BLOCK_SLOPE || block->type == BLOCK_STAIRS)) {
       return false;
     }
-    /*
-    if(dest.z == std::floor(dest.z)) {
+  }
+  // check on height
+  for(int i = 1; i < c->getHeight(); i++) {
+    MathUtil::Vector3 vec_up = MathUtil::makeVector3(dest.x, dest.y, dest.z + i);
+    Block * up = getBlock(vec_up);
+    if(up != nullptr && (up->type != BLOCK_LIQUID && up->type != BLOCK_GAS)) {
       return false;
     }
-    */
   }
   for(Character * other : getCharacters()) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
@@ -182,7 +186,84 @@ bool Region::move(Character * c, float orientation, MathUtil::Vector3 dest, floa
   float factor_y = sin_colat * sin_long;
   float factor_z = cos_colat;
   if(c->isFlying()) {
-    float range_with_cost = c->getMovementTimeModifier() * ap / 10.F;
+    float range_with_cost = c->getMovementTimeModifier() * ap / 5.F;
+    next.x += factor_x * range_with_cost;
+    next.y += factor_y * range_with_cost;
+    next.z += factor_z * range_with_cost;
+    next = MathUtil::round(next);
+  }
+  else {
+    int32_t x_direction = 1;
+    int32_t y_direction = 1;
+    int32_t z_direction = 1;
+    if(orientation > 180.F) {
+      y_direction = -1;
+    }
+    if(orientation > 90.F && orientation < 270.F) {
+      x_direction = -1;
+    }
+    if(orientation_z > 3.141593F / 2.F && orientation_z < 1.5F * 3.141593F) {
+      z_direction = -1;
+    }
+    float ap_cost = 0.F;
+    bool done = false; 
+    while(!done) {
+      float range;
+      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
+      Block * block = getBlock(current);
+      if(block == nullptr) {
+        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
+        // no path
+        if(block == nullptr) {
+          return false;
+        }
+      }
+      float border_ap = range * block->ap_cost / c->getMovementTimeModifier();
+      float current_ap = std::min(ap - ap_cost, border_ap);
+      if(current_ap != border_ap) {
+        done = true;
+        float range_with_cost = c->getMovementTimeModifier() * current_ap / block->ap_cost;
+        next.x += factor_x * range_with_cost;
+        next.y += factor_y * range_with_cost;
+        next.z += factor_z * range_with_cost;
+        next = MathUtil::round(next);
+      }
+      else {
+        next = current;
+      }
+      ap_cost += current_ap;
+    }
+  }
+  // check if we went too far
+  if(MathUtil::distance(ori, dest) < MathUtil::distance(ori, next)) {
+    next = MathUtil::round(dest);
+  }
+  if(tryMove(c, next)) {
+    c->move(next, orientation, world);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool Region::move(Character * c, float orientation, World * world) {
+  float ap = 1.F;
+  MathUtil::Vector3 ori = c->getCoord();
+  MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
+  float orientation_z = std::abs(std::acos(0.F)); //3.141593F / 2.F;
+  float cos_long = std::cos(orientation * 3.141593F / 180.F);
+  float sin_long = std::sin(orientation * 3.141593F / 180.F);
+  float cos_colat = std::cos(orientation_z);
+  float sin_colat = std::sin(orientation_z);
+  //
+  float factor_x = sin_colat * cos_long;
+  float factor_y = sin_colat * sin_long;
+  float factor_z = cos_colat;
+  // arbitrary far destination
+  MathUtil::Vector3 dest = MathUtil::makeVector3(ori.x + factor_x * 100.F, ori.y + factor_y * 100.F, ori.z + factor_z * 100.F);
+  if(c->isFlying()) {
+    float range_with_cost = c->getMovementTimeModifier() * ap / 5.F;
     next.x += factor_x * range_with_cost;
     next.y += factor_y * range_with_cost;
     next.z += factor_z * range_with_cost;

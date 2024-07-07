@@ -653,7 +653,14 @@ void GodotLink::send_actions(Dictionary actions) {
         case ACTION_BREAKPOINT:
         case ACTION_CHANNEL:
           break;
-        case ACTION_MOVE:
+        case ACTION_MOVE: {
+          float orientation = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
+          #ifdef LOG
+            log << "orientation: " << orientation << std::endl;
+          #endif
+          arg1 = (void *) &orientation;
+          break;
+        }
         case ACTION_STRIKE:
         case ACTION_ACTIVATION: {
           Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];

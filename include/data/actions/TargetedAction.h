@@ -1,5 +1,5 @@
-#ifndef _MOVE_ACTION_H_
-#define _MOVE_ACTION_H_
+#ifndef _TARGETED_ACTION_H_
+#define _TARGETED_ACTION_H_
 
 #include "data/actions/Action.h"
 
@@ -31,4 +31,4 @@ class TargetedAction : public Action {
     Target * target;
 };
 
-#endif // _MOVE_ACTION_H_
+#endif // _TARGETED_ACTION_H_
