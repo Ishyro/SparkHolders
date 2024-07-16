@@ -13,7 +13,6 @@ class Socket;
 namespace Client {
   Adventure * receiveAdventure(std::string msg, bool & master);
   StateDisplay * receiveState(std::string msg, Adventure * adventure);
-  std::string writeActions(int64_t id, std::vector<int32_t> types, std::vector<void *> args1, std::vector<void *> args2, std::vector<int32_t> overcharge_powers, std::vector<int32_t> overcharge_durations, std::vector<int32_t> overcharge_ranges);
   std::string writeAction(int32_t type, void * arg1 = nullptr, void * arg2 = nullptr, int32_t overcharge_power = 1, int32_t overcharge_duration = 1, int32_t overcharge_range = 1);
   std::string writeBaseAction(int32_t type);
   std::string writeGearAction(int32_t type, ItemSlot * slot1, ItemSlot * slot2);

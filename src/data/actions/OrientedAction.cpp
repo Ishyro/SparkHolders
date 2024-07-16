@@ -34,6 +34,7 @@ Action * OrientedAction::execute(Adventure * adventure) {
       next->setPrevious(nullptr);
       // tick is in range [0;1]
       next->computeTick(1 - tick);
+      user->setCurrentAction(next);
     }
     else {
       user->setCurrentAction(nullptr);

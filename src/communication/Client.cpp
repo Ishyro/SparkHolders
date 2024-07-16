@@ -37,25 +37,6 @@ namespace Client {
     return result;
   }
 
-  std::string writeActions(
-    int64_t id,
-    std::vector<int32_t> types,
-    std::vector<void *> args1,
-    std::vector<void *> args2,
-    std::vector<int32_t> overcharge_powers,
-    std::vector<int32_t> overcharge_durations,
-    std::vector<int32_t> overcharge_ranges
-  ) {
-    std::stringstream * ss = new std::stringstream();
-    String::insert_long(ss, id);
-    for(int32_t i = 0; i < (int32_t) types.size(); i++) {
-      String::insert(ss, writeAction(types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
-    }
-    std::string result = ss->str();
-    delete ss;
-    return result;
-  }
-
   std::string writeAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
     switch(type) {
       case ACTION_IDLE:

@@ -1,4 +1,5 @@
 #include <sstream>
+#include <mutex>
 
 #include "data/Adventure.h"
 #include "data/Character.h"
@@ -15,6 +16,10 @@
 #include "server/Link.h"
 
 #include "util/String.h"
+
+namespace link_mutex {
+  std::mutex mutex;
+}
 
 void Link::initialize(Socket s) {
   this->s = s;
@@ -49,8 +54,10 @@ void Link::listen() {
       ready = true;
       break;
     case SOCKET_MSG_CHOICE: {
-      Character * character = Server::receiveChoices(ss->str(), adventure);
-      characters.insert(std::make_pair(character->id, character));
+      if(character != nullptr) {
+        delete character;
+      }
+      character = Server::receiveChoices(ss->str(), adventure);
       try {
         Server::sendCharacter(s, character, adventure);
       } catch (const CloseException &e) {
@@ -58,13 +65,20 @@ void Link::listen() {
       }
       break;
     }
-    case SOCKET_MSG_ACTION:
-      actions = Server::receiveActions(ss->str(), characters, adventure);
-      break;
-    case SOCKET_MSG_SWITCH: {
-      int64_t id = String::extract_long(ss);
-      if(characters.count(id) != 0) {
-        std::string other = String::extract(ss);
+    case SOCKET_MSG_ACTION: {
+      Action * new_action = Server::receiveAction(ss->str(), character, adventure);
+      new_action->computeTime(adventure);
+      const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+      if(action == nullptr) {
+        action = new_action;
+      }
+      else {
+        Action * tmp = action;
+        while(tmp->getNext() != nullptr) {
+          tmp = tmp->getNext();
+        }
+        tmp->setNext(new_action);
+        new_action->setPrevious(tmp);
       }
       break;
     }
@@ -81,14 +95,10 @@ void Link::listen() {
 void Link::sendState() {
   if(!isClosed()) {
     try {
-      bool need_to_send = false;
-      for(auto pair : characters) {
-        if(pair.second->needToSend()) {
-          Server::sendCharacter(s, pair.second, adventure);
-        }
-        need_to_send |= pair.second->getCurrentAction() == nullptr;
+      if(character->needToSend()) {
+        Server::sendCharacter(s, character, adventure);
       }
-      Server::sendState(s, characters, need_to_send, adventure);
+      Server::sendState(s, character, adventure);
     } catch (const CloseException &e) {
       markClosed();
     }
@@ -109,22 +119,29 @@ bool Link::isClosed() { return closed; }
 bool Link::isReady() { return ready; }
 bool Link::isMaster() { return master; }
 void Link::markClosed() { closed = true; }
-Character * Link::getCharacter(int64_t id) { return characters.at(id); }
+Character * Link::getCharacter() { return character; }
 void Link::changeSocket(Socket s) { this->s = s; closed = false; }
-bool Link::hasActions() { return !actions.empty(); }
+bool Link::hasActions() {
+  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  return action != nullptr;
+}
 
-std::list<Action *> Link::getActions() {
-  std::list<Action *> result = std::list<Action *>(actions);
-  actions.clear();
+std::list<Action *> Link::getAction() {
+  std::list<Action *> result = std::list<Action *>();
+  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  if(action != nullptr) {
+    result.push_front(action);
+    if(character->getCurrentAction() == nullptr) {
+      character->setCurrentAction(action);
+    }
+    action = nullptr;
+  }
   return result;
 }
 
 bool Link::getNeedToUpdateActions() {
-  bool result = false;
-  for(auto pair : characters) {
-    result |= pair.second->getCurrentAction() == nullptr;
-  }
-  return result;
+  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  return character->getCurrentAction() == nullptr;
 }
 
 std::string Link::getUsername() { return username; }

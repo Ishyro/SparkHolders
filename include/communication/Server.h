@@ -5,10 +5,10 @@
 class Socket;
 
 namespace Server {
-  std::list<Action *> receiveActions(std::string msg, std::map<const int64_t, Character *> characters, Adventure * adventure);
+  Action * receiveAction(std::string msg, Character * character, Adventure * adventure);
   Action * readAction(std::string msg, Character * user, Adventure * adventure);
   Character * receiveChoices(std::string msg, Adventure * adventure);
-  void sendState(Socket s, std::map<const int64_t, Character *> characters, bool need_to_send, Adventure * adventure);
+  void sendState(Socket s, Character * character, Adventure * adventure);
   void sendAdventure(Socket s, Adventure * adventure, bool master);
   void sendCharacter(Socket s, Character * character, Adventure * adventure);
   void sendAction(Socket s);

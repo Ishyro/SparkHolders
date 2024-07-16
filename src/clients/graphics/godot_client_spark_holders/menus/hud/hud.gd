@@ -120,12 +120,9 @@ func display_block(_block_object, _block_data: Dictionary):
 	#target.visible = false
 	block.visible = true
 	
-func update_mouse_box(mouse_coord: Vector2, ap_cost: String):
+func update_mouse_box(mouse_coord: Vector2):
 	mouse_box._set_position(Vector2(mouse_coord.x - mouse_box.get_size().x / 2.0, mouse_coord.y))
-	if Values.selected_team:
-		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")\n" + ap_cost
-	else:
-		mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
+	mouse_label.text = "(" + String.num(Values.coord.z, 3) + ", " + String.num(Values.coord.x, 3) + ", " + String.num(Values.coord.y, 3) + ")"
 
 func update(character_data: Dictionary):
 	hour_label.text = "" + Values.link.getClock()
@@ -157,7 +154,7 @@ func _on_move_toggled(button_pressed):
 		interact.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_MOVE
-		map.characters[Values.selected_team.id].range_mesh.visible = false
+		map.characters[map.owned_character].range_mesh.visible = false
 	else:
 		move.set_pressed_no_signal(true)
 
@@ -167,9 +164,9 @@ func _on_attack_toggled(button_pressed):
 		interact.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_ATTACK
-		map.characters[Values.selected_team.id].range_mesh.visible = true
+		map.characters[map.owned_character].range_mesh.visible = true
 	else:
-		map.characters[Values.selected_team.id].range_mesh.visible = false
+		map.characters[map.owned_character].range_mesh.visible = false
 		move.set_pressed(true)
 
 func _on_interact_toggled(button_pressed):
@@ -178,7 +175,7 @@ func _on_interact_toggled(button_pressed):
 		attack.set_pressed_no_signal(false)
 		rest.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_ACTIVATION
-		map.characters[Values.selected_team.id].range_mesh.visible = false
+		map.characters[map.owned_character].range_mesh.visible = false
 	else:
 		move.set_pressed(true)
 
@@ -188,7 +185,7 @@ func _on_rest_toggled(button_pressed):
 		attack.set_pressed_no_signal(false)
 		interact.set_pressed_no_signal(false)
 		Values.mode = Values.ACTION_MODE_WAIT
-		map.characters[Values.selected_team.id].range_mesh.visible = false
+		map.characters[map.owned_character].range_mesh.visible = false
 	else:
 		move.set_pressed(true)
 

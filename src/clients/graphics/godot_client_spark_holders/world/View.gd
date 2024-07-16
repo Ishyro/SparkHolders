@@ -48,15 +48,11 @@ func update_mouse_coordinates():
 			var selection = result["collider"]
 			if Values.selected_target:
 				Values.selected_target.unselect()
-			if Values.selected_team:
-				Values.selected_team.unselect()
 			if "character" in selection:
 				var owned = false
 				for character_id in map.owned_characters:
 					if character_id == selection.id:
-						Values.selected_team = selection
 						owned = true
-						map.select_character(Values.selected_team.id)
 						break
 				if not owned:
 					Values.selected_target = selection
@@ -71,8 +67,7 @@ func update_mouse_coordinates():
 				Values.selected_target = null
 				Values.selected_block = selection
 	if not pause_state:
-		var ap_cost = ""
-		hud.update_mouse_box(mouse_coords, ap_cost)
+		hud.update_mouse_box(mouse_coords)
 
 func _process(_delta):
 	if not pause_state:
@@ -89,8 +84,6 @@ func _process(_delta):
 					hud.display_target(Values.selected_target, map.characters_data[Values.selected_target.id])
 				else:
 					Values.selected_target = null
-			if Values.selected_team:
-				hud.display_team(Values.selected_team, map.characters_data[Values.selected_team.id])
 			if Values.selected_block:
 				if map.tiles_img.has(Values.selected_block.block):
 					$"../HUD/Block/Picture".texture = map.tiles_img[Values.selected_block.block]
@@ -99,14 +92,13 @@ func _process(_delta):
 func _physics_process(_delta):
 	if not pause_state and not free_mouse_state:
 		update_mouse_coordinates()
-		camera.transform.origin = map.characters[Values.selected_team.id].transform.origin + Vector3(0, 1.6, 0)
+		camera.transform.origin = map.characters[map.owned_character].transform.origin + Vector3(0, 1.6, 0)
 		var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-		if movement_vec2 != Vector2.ZERO and not Values.action_set:
+		if movement_vec2 != Vector2.ZERO and not Values.move_set:
 			# invert x axis
 			movement_vec2.x = -movement_vec2.x
 			movement_vec2 = movement_vec2.rotated(camera.rotation.y - PI / 2.)
-			var orientation = fmod(rad_to_deg(movement_vec2.angle()) + camera.rotation_degrees.y - 90., 360.)
-			map.add_oriented_action(Values.selected_team.id, Values.ACTION_MOVE, rad_to_deg(movement_vec2.angle()))
+			map.send_oriented_action(Values.ACTION_MOVE, rad_to_deg(movement_vec2.angle()))
 
 func _unhandled_input(event):
 	if event.is_action_pressed("pause"):
@@ -171,22 +163,10 @@ func _unhandled_input(event):
 			else:
 				hud.inventory.visible = false
 		if event.is_action_pressed("action") and not Values.updating_state and not Values.link.hasState():
-			if Values.mode == Values.ACTION_MODE_MOVE and map.baking_done:
-				Values.mode = Values.ACTION_MODE_NONE
-				var is_first = true
-				map.clear_actions(Values.selected_team.id)
-				for vec in map.characters[Values.selected_team.id].nav.get_current_navigation_path():
-					if is_first:
-						is_first = false
-					else:
-						vec = fix_vec(vec)
-						map.add_targeted_action(Values.selected_team.id, Values.ACTION_MOVE, Values.TARGET_COORDINATES, 0, Vector3(vec.z, vec.x, vec.y))
 			if Values.mode == Values.ACTION_MODE_ACTIVATION:
-				map.add_targeted_action(Values.selected_team.id, Values.ACTION_ACTIVATION, Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
+				map.send_targeted_action(Values.ACTION_ACTIVATION, Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
 			if Values.mode == Values.ACTION_MODE_ATTACK:
-				map.add_targeted_action(Values.selected_team.id, Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
-		if event.is_action_pressed("send_actions"):
-			map.send_actions()
+				map.send_targeted_action(Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
 
 func fix_vec(vec: Vector3):
 	var space = get_world_3d().direct_space_state

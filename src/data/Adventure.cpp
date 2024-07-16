@@ -157,10 +157,11 @@ void Adventure::getNPCsActions() {
           delete to_remove;
         }
         actions.push_back(action);
-        npc->setCurrentAction(nullptr);
+        //npc->setCurrentAction(nullptr);
       }
     }
   }
+  actions.sort();
 }
 
 void Adventure::mergeActions(std::list<Action *> to_add) {
@@ -172,17 +173,19 @@ void Adventure::executeActions() {
   std::list<Action *> next_actions;
   for(Action * action : actions) {
     // the user might have been killed and deleted
-    if(action != nullptr && !action->getUser()->isMarkedDead() && action->getTick() <= 1.F ) {
-      Action * next = action->execute(this);
-      if(next != nullptr) {
-        next_actions.push_back(next);
+    if(action != nullptr && !action->getUser()->isMarkedDead()) {
+      if(action->getTick() <= 1.F) {
+        Action * next = action->execute(this);
+        if(next != nullptr) {
+          next_actions.push_back(next);
+        }
+        delete action;
+        action = nullptr;
       }
-      delete action;
-      action = nullptr;
-    }
-    else {
-      action->computeTick(1);
-      next_actions.push_back(action);
+      else {
+        action->computeTick(1);
+        next_actions.push_back(action);
+      }
     }
   }
   actions.clear();
@@ -309,7 +312,7 @@ int32_t Adventure::getLight(MathUtil::Vector3 coord) {
   return getLight(MathUtil::makeVector3i(coord));
 }
 
-std::string Adventure::state_to_string(std::map<const int64_t, Character *> players) {
+std::string Adventure::state_to_string(Character * player) {
   std::stringstream * ss = new std::stringstream();
   std::stringstream * ss_blocks = new std::stringstream();
   std::stringstream * ss_characters = new std::stringstream();
@@ -319,43 +322,41 @@ std::string Adventure::state_to_string(std::map<const int64_t, Character *> play
   std::stringstream * ss_speeches = new std::stringstream();
   String::insert_long(ss, round);
   String::insert_float(ss, tick);
-  for(auto pair : players) {
-    Region * region = pair.second->getRegion();
-    /*
-    Map * map = world->getMap(pair.second->getX(), pair.second->getY(), pair.second->getZ());
-    Map * baseMap = (Map *) database->getMap(map->baseName);
-    Map * visionMap = new Map(map, pair.second, database, world);
-    pair.second->setCurrentMap(visionMap);
-    for(int32_t y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
-      for(int32_t x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
-        if(visionMap->getBlock(x, y) != nullptr && visionMap->getBlock(x, y)->name != "TXT_MIST" &&
-          world->getBlock(x, y, visionMap->offsetZ) != baseMap->getBlock(x + map->offsetX, y + map->offsetY)) {
-          // TODO
-          // String::insert(ss_blocks, map->tile_to_string(y, x));
-        }
+  Region * region = player->getRegion();
+  /*
+  Map * map = world->getMap(player->getX(), player->getY(), player->getZ());
+  Map * baseMap = (Map *) database->getMap(map->baseName);
+  Map * visionMap = new Map(map, player, database, world);
+  player->setCurrentMap(visionMap);
+  for(int32_t y = visionMap->offsetY; y < map->sizeY + visionMap->offsetY; y++) {
+    for(int32_t x = visionMap->offsetX; x < map->sizeX + visionMap->offsetX; x++) {
+      if(visionMap->getBlock(x, y) != nullptr && visionMap->getBlock(x, y)->name != "TXT_MIST" &&
+        world->getBlock(x, y, visionMap->offsetZ) != baseMap->getBlock(x + map->offsetX, y + map->offsetY)) {
+        // TODO
+        // String::insert(ss_blocks, map->tile_to_string(y, x));
       }
     }
-    */
-    for(Character * character : region->getCharacters(pair.second)) {
-      String::insert(ss_characters, character->to_string());
-      String::insert_int(ss_characters, database->getRelation(character->getTeam(), pair.second->getTeam()));
-    }
-    /*
-    for(Projectile * projectile : region->getProjectiles()) {
-      String::insert(ss_projectiles, projectile->to_string());
-    }
-    for(Loot * loot : region->getLoots()) {
-      String::insert_int(ss_loots, loot->type);
-      String::insert_float(ss_loots, loot->x);
-      String::insert_float(ss_loots, loot->y);
-      String::insert_float(ss_loots, loot->size);
-    }
-    */
-    for(Furniture * furniture : region->getFurnitures(pair.second)) {
-      if(furniture->type == FURNITURE_SWITCH) {
-        String::insert_long(ss_furnitures, furniture->id);
-        String::insert_bool(ss_furnitures, ( (SwitchFurniture *) furniture)->getIsOn());
-      }
+  }
+  */
+  for(Character * character : region->getCharacters(player)) {
+    String::insert(ss_characters, character->to_string());
+    String::insert_int(ss_characters, database->getRelation(character->getTeam(), player->getTeam()));
+  }
+  /*
+  for(Projectile * projectile : region->getProjectiles()) {
+    String::insert(ss_projectiles, projectile->to_string());
+  }
+  for(Loot * loot : region->getLoots()) {
+    String::insert_int(ss_loots, loot->type);
+    String::insert_float(ss_loots, loot->x);
+    String::insert_float(ss_loots, loot->y);
+    String::insert_float(ss_loots, loot->size);
+  }
+  */
+  for(Furniture * furniture : region->getFurnitures(player)) {
+    if(furniture->type == FURNITURE_SWITCH) {
+      String::insert_long(ss_furnitures, furniture->id);
+      String::insert_bool(ss_furnitures, ( (SwitchFurniture *) furniture)->getIsOn());
     }
   }
   String::insert(ss, ss_blocks->str());

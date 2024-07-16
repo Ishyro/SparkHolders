@@ -76,7 +76,7 @@ func set_value(label, value, str_size, font_small, font_big):
 
 func display_stats():
 	visible = true
-	character_stats = Values.link.getStatsFromCharacter(Values.selected_team.id)
+	character_stats = Values.link.getStatsFromCharacter()
 	origin = Values.link.getDataFromWay(character_stats["origin"])
 	culture = Values.link.getDataFromWay(character_stats["culture"])
 	religion = Values.link.getDataFromWay(character_stats["religion"])

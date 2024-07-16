@@ -15,23 +15,13 @@ class Link {
     void initialize(std::string username, std::string password);
     void listen();
     void sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
-    void sendActions(
-      std::vector<int64_t> ids,
-      std::vector<std::vector<int32_t>> types,
-      std::vector<std::vector<void *>> args1,
-      std::vector<std::vector<void *>> args2,
-      std::vector<std::vector<int32_t>> overcharge_powers,
-      std::vector<std::vector<int32_t>> overcharge_durations,
-      std::vector<std::vector<int32_t>> overcharge_ranges
-    );
+    void sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
     void receiveState(std::string msg);
     void sendReady();
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
-    Character * getPlayer(int64_t id);
-    std::list<int64_t> getPlayersId();
-    std::list<Character *> getPlayers();
+    Character * getPlayer();
     Adventure * getAdventure();
     bool hasState();
     StateDisplay * getState();
@@ -45,7 +35,7 @@ class Link {
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
     std::list<std::pair<const std::string, const std::string>> * waysIncompatibilities;
-    std::map<const int64_t, Character *> characters = std::map<const int64_t, Character *>();
+    Character * character = nullptr;
     std::list<StateDisplay *> state_pile = std::list<StateDisplay *>();
     Adventure * adventure;
     bool ready = false;

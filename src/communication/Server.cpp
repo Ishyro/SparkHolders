@@ -27,29 +27,13 @@
 
 namespace Server {
 
-  std::list<Action *> receiveActions(std::string msg, std::map<const int64_t, Character *> characters, Adventure * adventure) {
-    std::list<Action *> result = std::list<Action *>();
+  Action * receiveAction(std::string msg, Character * character, Adventure * adventure) {
+    Action * result;
     std::stringstream * ss = new std::stringstream(msg);
     // ignore socket_msg_type
     String::extract(ss);
-    while(ss->rdbuf()->in_avail() != 0) {
-      std::stringstream * ss_actions = new std::stringstream(String::extract(ss));
-      int64_t id = String::extract_long(ss_actions);
-      std::vector<Action *> actions = std::vector<Action *>();
-      while(ss_actions->rdbuf()->in_avail() != 0) {
-        actions.push_back(readAction(String::extract(ss_actions), characters.at(id), adventure));
-      }
-      for(int32_t i = 1; i < (int32_t) actions.size(); i++) {
-        actions[i-1]->setNext(actions[i]);
-        actions[i]->setPrevious(actions[i-1]);
-      }
-      actions[0]->computeTime(adventure);
-      characters.at(id)->setCurrentAction(actions[0]);
-      result.push_back(actions[0]);
-      delete ss_actions;
-    }
+    result = readAction(String::extract(ss), character, adventure);
     delete ss;
-    result.sort();
     return result;
   }
 
@@ -67,7 +51,6 @@ namespace Server {
         break;
       case ACTION_MOVE: {
         float orientation = String::extract_float(ss);
-        std::cout << "orientation: " << orientation << std::endl;
         action = new OrientedAction(type, adventure, nullptr, user, orientation);
         break;
       }
@@ -216,12 +199,12 @@ namespace Server {
     return character;
   }
 
-  void sendState(Socket s, std::map<const int64_t, Character *> characters, bool need_to_send, Adventure * adventure) {
+  void sendState(Socket s, Character * character, Adventure * adventure) {
     try {
       std::stringstream * ss = new std::stringstream();
       String::insert_int(ss, SOCKET_MSG_STATE);
-      String::insert(ss, adventure->state_to_string(characters));
-      String::insert_bool(ss, need_to_send);
+      String::insert(ss, adventure->state_to_string(character));
+      String::insert_bool(ss, character->getCurrentAction() == nullptr);
       s.write(ss->str());
       delete ss;
     } catch (const CloseException &e) {

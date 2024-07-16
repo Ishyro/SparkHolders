@@ -1,9 +1,10 @@
 extends Node3D
 
 var mutex
+var timer = 0
 var baking_done = false
 
-var owned_characters = []
+var owned_character
 
 var navigations = {}
 var multiMeshInstances = {}
@@ -47,42 +48,39 @@ func _ready():
 	mutex = Mutex.new()
 	Values.link.initialize(ip, Settings.Port, Settings.Lang)
 	Values.link.getState()
-	owned_characters = Values.link.getControlledParty()
+	owned_character = Values.link.getPlayerId()
 	characters_data = Values.link.getCharacters()
 	projectiles_data = Values.link.getProjectiles()
-	init_actions()
 	for character_id in characters_data:
 		add_character(character_id, characters_data[character_id])
 	for projectile_id in projectiles_data:
 		add_projectile(projectile_id, projectiles_data[projectile_id])
 	for block in Values.link.getAvaillableBlocks():
 		initialize_block(block)
-	for character_id in owned_characters:
-		create_blocks(character_id)
+	create_blocks()
 	
 	furnitures_data = Values.link.getFurnitures()
 	display_map()
 	
-	Values.selected_team = characters[owned_characters[0]]
-	select_character(owned_characters[0])
-	n_hud.update(characters_data[Values.selected_team.id])
-	n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight(Values.selected_team.id)) / float(Values.link.getMaxLight()))
+	n_hud.display_team(characters[owned_character], characters_data[owned_character])
+	n_inventory.update_inventory()
+	n_hud.update(characters_data[owned_character])
+	n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight()) / float(Values.link.getMaxLight()))
 	n_hud.move.set_pressed(true)
-
-func select_character(character_id: int):
-	n_hud.display_team(characters[character_id], characters_data[character_id])
-	n_inventory.update_inventories(owned_characters)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	if mutex.try_lock():
+		Values.action_mutex.lock()
 		while Values.link.hasState():
 			Values.link.getState()
 			Values.next_state_ready = true
-			n_hud.update( characters_data[Values.selected_team.id])
-		# set sky light
-		n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight(Values.selected_team.id)) / float(Values.link.getMaxLight()))
+			n_hud.update(characters_data[owned_character])
+			Values.move_set = false
+		Values.action_mutex.unlock()
 		if Values.next_state_ready:
+			# set sky light
+			n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight()) / float(Values.link.getMaxLight()))
 			var next_characters_data = Values.link.getCharacters()
 			for character_id in characters_data.keys():
 				if !next_characters_data.has(character_id):
@@ -92,10 +90,9 @@ func _process(_delta):
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 			var update = false
-			for character_id in owned_characters:
-				if floor(next_characters_data[character_id]["x"] / 16) != floor(characters_data[character_id]["x"] / 16) || floor(next_characters_data[character_id]["y"] / 16) != floor(characters_data[character_id]["y"] / 16) || floor(next_characters_data[character_id]["z"] / 16) != floor(characters_data[character_id]["z"] / 16):
-					update = true
-					create_blocks(character_id)
+			if floor(next_characters_data[owned_character]["x"] / 16) != floor(characters_data[owned_character]["x"] / 16) || floor(next_characters_data[owned_character]["y"] / 16) != floor(characters_data[owned_character]["y"] / 16) || floor(next_characters_data[owned_character]["z"] / 16) != floor(characters_data[owned_character]["z"] / 16):
+				update = true
+				create_blocks()
 			update_furnitures()
 			if update:
 				furnitures_data = Values.link.getFurnitures()
@@ -110,24 +107,19 @@ func _process(_delta):
 				if !projectiles_data.has(projectile_id):
 					add_projectile(projectile_id, next_projectiles_data[projectile_id])
 			projectiles_data = next_projectiles_data
+			n_inventory.update_inventory()
 			Values.updating_state = true
-		mutex.unlock()
-	if mutex.try_lock():
-		if not Values.updating_state: #&& !Values.link.hasState():
-			# waiting player actions, we can update our data now
-			n_inventory.update_inventories(owned_characters)
-			# do nothing if not all characters have at least 1 action ready
-			send_actions()
 		mutex.unlock()
 
 func _physics_process(delta):
+	timer += delta
 	if mutex.try_lock():
 		if Values.updating_state:
 			var done = true
 			for character_id in characters_data:
 				var character = characters[character_id]
 				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
-				done = done && character.move_towards(dest, delta)
+				done = done && character.move_towards(dest, timer)
 			#for projectile_id in projectiles_data:
 			#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
 			#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
@@ -138,11 +130,12 @@ func _physics_process(delta):
 			#	done = done && (projectiles[projectile_id].transform.origin == dest)
 			Values.updating_state = !done
 			Values.next_state_ready = !done
+			timer = 0
 		mutex.unlock()
 
-func create_blocks(character_id: int):
+func create_blocks():
 	reset_map()
-	current_blocks = Values.link.getBlocks(character_id)
+	current_blocks = Values.link.getBlocks()
 	for coord in current_blocks:
 		add_block(coord)
 	baking_done = false
@@ -491,7 +484,7 @@ func add_fire(coord: Vector3, size: float, light_power: int):
 	return fire
 
 func get_color(character_data: Dictionary):
-	match(Values.link.getRelation(characters_data[owned_characters[0]]["team"], character_data["team"])):
+	match(Values.link.getRelation(characters_data[owned_character]["team"], character_data["team"])):
 		"SAME": return "0000FF"
 		"ALLY": return "00FF00"
 		"NEUTRAL": return "FFFF00"
@@ -526,108 +519,67 @@ func round_float(number: float):
 func round_vec(vec: Vector3):
 	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))
 
-func init_actions():
-	Values.action_muxtex.lock()
-	Values.actions = {}
-	Values.actions["ids"] = owned_characters
-	Values.actions["types"] = {}
-	Values.actions["arg1"] = {}
-	Values.actions["arg2"] = {}
-	Values.actions["overcharge_power"] = {}
-	Values.actions["overcharge_duration"] = {}
-	Values.actions["overcharge_range"] = {}
-	for id in owned_characters:
-		Values.actions["types"][id] = []
-		Values.actions["arg1"][id] = []
-		Values.actions["arg2"][id] = []
-		Values.actions["overcharge_power"][id] = []
-		Values.actions["overcharge_duration"][id] = []
-		Values.actions["overcharge_range"][id] = []
-	Values.action_set = false
-	Values.action_muxtex.unlock()
-
-func send_actions():
-	#do not send if at least 1 character doesn't have any action set
-	Values.action_muxtex.lock()
-	for id in owned_characters:
-		if Values.actions["types"][id].is_empty():
-			Values.action_muxtex.unlock()
-			return
-	Values.link.send_actions(Values.actions)
-	init_actions()
-	if Values.mode == Values.ACTION_MODE_NONE:
-		Values.mode = Values.ACTION_MODE_MOVE
-	Values.action_muxtex.unlock()
-
-func clear_actions(id):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id] = []
-	Values.actions["arg1"][id] = []
-	Values.actions["arg2"][id] = []
-	Values.actions["overcharge_power"][id] = []
-	Values.actions["overcharge_duration"][id] = []
-	Values.actions["overcharge_range"][id] = []
-	Values.action_muxtex.unlock()
-
-func add_base_action(id, type):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id].push_back(type)
-	Values.actions["arg1"][id].push_back(0)
-	Values.actions["arg2"][id].push_back(0)
-	Values.actions["overcharge_power"][id].push_back(0)
-	Values.actions["overcharge_duration"][id].push_back(0)
-	Values.actions["overcharge_range"][id].push_back(0)
-	Values.action_set = true
-	Values.action_muxtex.unlock()
+func send_base_action(type):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
+	Values.action["arg1"] = 0
+	Values.action["arg2"] = 0
+	Values.action["overcharge_power"] = 0
+	Values.action["overcharge_duration"] = 0
+	Values.action["overcharge_range"] = 0
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()
 	
-func add_oriented_action(id, type, orientation):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id].push_back(type)
-	Values.actions["arg1"][id].push_back(orientation)
-	Values.actions["arg2"][id].push_back(0)
-	Values.actions["overcharge_power"][id].push_back(0)
-	Values.actions["overcharge_duration"][id].push_back(0)
-	Values.actions["overcharge_range"][id].push_back(0)
-	Values.action_set = true
-	Values.action_muxtex.unlock()
+func send_oriented_action(type, orientation):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
+	Values.action["arg1"] = orientation
+	Values.action["arg2"] = 0
+	Values.action["overcharge_power"] = 0
+	Values.action["overcharge_duration"] = 0
+	Values.action["overcharge_range"] = 0
+	if type == Values.ACTION_MOVE:
+		Values.move_set = true
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()
 	
-func add_targeted_action(id, type, target_type, target_id, pos):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id].push_back(type)
+func send_targeted_action(type, target_type, target_id, pos):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
 	var target = {}
 	target["type"] = target_type
 	target["id"] = target_id
 	target["pos"] = pos
-	Values.actions["arg1"][id].push_back(target)
-	Values.actions["arg2"][id].push_back(0)
-	Values.actions["overcharge_power"][id].push_back(0)
-	Values.actions["overcharge_duration"][id].push_back(0)
-	Values.actions["overcharge_range"][id].push_back(0)
-	Values.action_set = true
-	Values.action_muxtex.unlock()
+	Values.action["arg1"] = target
+	Values.action["arg2"] = 0
+	Values.action["overcharge_power"] = 0
+	Values.action["overcharge_duration"] = 0
+	Values.action["overcharge_range"] = 0
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()
 	
-func add_gear_action(id, type, item_id):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id].push_back(type)
-	Values.actions["arg1"][id].push_back(item_id)
-	Values.actions["arg2"][id].push_back(0)
-	Values.actions["overcharge_power"][id].push_back(0)
-	Values.actions["overcharge_duration"][id].push_back(0)
-	Values.actions["overcharge_range"][id].push_back(0)
-	Values.action_set = true
-	Values.action_muxtex.unlock()
+func send_gear_action(type, item_id):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
+	Values.action["arg1"] = item_id
+	Values.action["arg2"] = 0
+	Values.action["overcharge_power"] = 0
+	Values.action["overcharge_duration"] = 0
+	Values.action["overcharge_range"] = 0
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()
 	
-func add_skill_action(id, type, target_type, target_id, pos, skill, overcharge_power, overcharge_duration, overcharge_range):
-	Values.action_muxtex.lock()
-	Values.actions["types"][id].push_back(type)
+func send_skill_action(type, target_type, target_id, pos, skill, overcharge_power, overcharge_duration, overcharge_range):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
 	var target = {}
 	target["type"] = target_type
 	target["id"] = target_id
 	target["pos"] = pos
-	Values.actions["arg1"][id].push_back(target)
-	Values.actions["arg2"][id].push_back(skill)
-	Values.actions["overcharge_power"][id].push_back(overcharge_power)
-	Values.actions["overcharge_duration"][id].push_back(overcharge_duration)
-	Values.actions["overcharge_range"][id].push_back(overcharge_range)
-	Values.action_set = true
-	Values.action_muxtex.unlock()
+	Values.action["arg1"] = target
+	Values.action["arg2"] = skill
+	Values.action["overcharge_power"] = overcharge_power
+	Values.action["overcharge_duration"] = overcharge_duration
+	Values.action["overcharge_range"] = overcharge_range
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()

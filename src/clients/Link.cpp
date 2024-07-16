@@ -46,9 +46,11 @@ void Link::listen() {
       receiveState(ss->str());
       break;
     case SOCKET_MSG_CHARACTER: {
-      Character * character = Character::full_from_string(String::extract(ss), adventure);
-      characters.erase(character->id);
-      characters.insert(std::make_pair(character->id, character));
+      Character * new_character = Character::full_from_string(String::extract(ss), adventure);
+      if(character != nullptr) {
+        delete character;
+      }
+      character = new_character;
       break;
     }
     case SOCKET_MSG_SWITCH:
@@ -71,20 +73,10 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
   }
 }
 
-void Link::sendActions(
-    std::vector<int64_t> ids,
-    std::vector<std::vector<int32_t>> types,
-    std::vector<std::vector<void *>> args1,
-    std::vector<std::vector<void *>> args2,
-    std::vector<std::vector<int32_t>> overcharge_powers,
-    std::vector<std::vector<int32_t>> overcharge_durations,
-    std::vector<std::vector<int32_t>> overcharge_ranges
-  ) {
+void Link::sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, SOCKET_MSG_ACTION);
-    for(int32_t i = 0; i < (int32_t) ids.size(); i++) {
-      String::insert(ss, Client::writeActions(ids[i], types[i], args1[i], args2[i], overcharge_powers[i], overcharge_durations[i], overcharge_ranges[i]));
-    }
+    String::insert(ss, Client::writeAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range));
     try {
       s.write(ss->str());
       delete ss;
@@ -95,27 +87,23 @@ void Link::sendActions(
 
 void Link::receiveState(std::string msg) {
   StateDisplay * game_state = Client::receiveState(msg, adventure);
-  for(auto pair : characters) {
-    for(CharacterDisplay * display : game_state->characters) {
-      if(pair.second->id == display->id) {
-        pair.second->move(MathUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
-        pair.second->setHp(display->hp);
-        pair.second->setMana(display->mana);
-        pair.second->setShield(display->shield);
-        pair.second->setHunger(display->hunger);
-        pair.second->setThirst(display->thirst);
-        pair.second->setStamina(display->stamina);
-        pair.second->setSanity(display->sanity);
-        pair.second->setCurrentSoulBurn(display->soulBurn);
-        pair.second->gainXP(display->xp - pair.second->getXP());
-        break;
-      }
+  for(CharacterDisplay * display : game_state->characters) {
+    if(character->id == display->id) {
+      character->move(MathUtil::makeVector3(display->x, display->y, display->z), display->orientation, adventure->getWorld());
+      character->setHp(display->hp);
+      character->setMana(display->mana);
+      character->setShield(display->shield);
+      character->setHunger(display->hunger);
+      character->setThirst(display->thirst);
+      character->setStamina(display->stamina);
+      character->setSanity(display->sanity);
+      character->setCurrentSoulBurn(display->soulBurn);
+      character->gainXP(display->xp - character->getXP());
+      break;
     }
   }
   // only usefull for the first state received
-  for(auto pair : characters) {
-    adventure->getWorld()->changeRegion(pair.second);
-  }
+  adventure->getWorld()->changeRegion(character);
   state_pile.push_back(game_state);
 }
 
@@ -143,23 +131,7 @@ std::vector<Way *> Link::getStartingWays() {
 }
 std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return adventure->getDatabase()->getWaysIncompatibilities(); }
 
-Character * Link::getPlayer(int64_t id) { return characters.at(id); }
-
-std::list<int64_t> Link::getPlayersId() {
-  std::list<int64_t> result = std::list<int64_t>();
-  for(auto pair : characters) {
-    result.push_back(pair.first);
-  }
-  return result;
-}
-
-std::list<Character *> Link::getPlayers() {
-  std::list<Character *> result = std::list<Character *>();
-  for(auto pair : characters) {
-    result.push_back(pair.second);
-  }
-  return result;
-}
+Character * Link::getPlayer() { return character; }
 
 Adventure * Link::getAdventure() { return adventure; }
 bool Link::hasState() { return closed || !state_pile.empty(); }

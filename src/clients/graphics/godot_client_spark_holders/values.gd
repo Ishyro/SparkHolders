@@ -63,11 +63,10 @@ var mode = ACTION_MODE_NONE
 
 var coord = Vector3.ZERO
 var selection_changed = false
-var selected_team = null
 var selected_target = null
 var selected_projectile = null
 var selected_block = null
 
-var actions = {}
-var action_set = false
-var action_muxtex = Mutex.new()
+var action = {}
+var move_set = false
+var action_mutex = Mutex.new()

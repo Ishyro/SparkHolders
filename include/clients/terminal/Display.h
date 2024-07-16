@@ -46,7 +46,7 @@ namespace Display {
   bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Translator * t);
   std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, Translator * t);
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t);
-  void sendAction(Link * link, int64_t id, int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+  void sendAction(Link * link, int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
 };
 
 #endif // _DISPLAY_H_

@@ -37,7 +37,9 @@ func unselect():
 func move_towards(dest: Vector3, delta: float):
 	current_time += delta
 	if transform.origin.is_equal_approx(dest) or current_time >= tick_time:
-		global_transform.origin = dest
+		if not transform.origin.is_equal_approx(dest):
+			pass
+			#global_transform.origin = dest
 		range_to_clear = 0
 		current_time = 0
 		return true

@@ -6,6 +6,7 @@ PROJECT_DIR=$(readlink -f "$PROJECT_DIR")
 
 function usage() {
     column -t -s "@" <<<"""
+usage: $0 [options]
   -c, --clean@Clean before building.
   -l, --log@Enable logger.
   -d, --debug@Build with debugging symbols.

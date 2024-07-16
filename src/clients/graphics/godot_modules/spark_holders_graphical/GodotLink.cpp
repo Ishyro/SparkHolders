@@ -62,11 +62,11 @@ bool GodotLink::getState() {
   return state != nullptr;
 }
 
-float GodotLink::getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest) {
+float GodotLink::getMoveCost(Vector3 ori, Vector3 dest) {
   #ifdef LOG
-    log << "getMoveCost(" << character_id << ", (" << ori.x << "," << ori.y << "," << ori.z << "), (" << dest.x << "," << dest.y << "," << dest.z << ") )" << std::endl;
+    log << "getMoveCost( (" << ori.x << "," << ori.y << "," << ori.z << "), (" << dest.x << "," << dest.y << "," << dest.z << ") )" << std::endl;
   #endif
-  float result = link->getPlayer(character_id)->getRegion()->getMoveCost(link->getPlayer(character_id), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
+  float result = link->getPlayer()->getRegion()->getMoveCost(link->getPlayer(), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
   return result;
 }
 
@@ -91,18 +91,18 @@ String GodotLink::getClock() {
   return link->getAdventure()->getTime().to_string_clock().c_str();
 }
 
-int64_t GodotLink::getLight(int64_t character_id) {
+int64_t GodotLink::getLight() {
   #ifdef LOG
-    log << "getLight(" << character_id << ")" << std::endl;
+    log << "getLight()" << std::endl;
   #endif
-  return (int64_t) link->getAdventure()->getLight(link->getPlayer(character_id)->getCoord());
+  return (int64_t) link->getAdventure()->getLight(link->getPlayer()->getCoord());
 }
 
-int64_t GodotLink::getBaseLight(int64_t character_id) {
+int64_t GodotLink::getBaseLight() {
   #ifdef LOG
-    log << "getLight(" << character_id << ")" << std::endl;
+    log << "getLight()" << std::endl;
   #endif
-  return (int64_t) MathUtil::getLight(link->getPlayer(character_id)->getWorldCoords(), link->getAdventure()->getTime());
+  return (int64_t) MathUtil::getLight(link->getPlayer()->getWorldCoords(), link->getAdventure()->getTime());
 }
 
 
@@ -128,26 +128,22 @@ Array GodotLink::getAvaillableBlocks() {
   return result;
 }
 
-Dictionary GodotLink::getBlocks(int64_t character_id) {
+Dictionary GodotLink::getBlocks() {
   #ifdef LOG
-    log << "getBlocks(" << character_id << ")" << std::endl;
+    log << "getBlocks()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  for(auto pair : link->getPlayer(character_id)->getRegion()->getBlocks()) {
+  for(auto pair : link->getPlayer()->getRegion()->getBlocks()) {
     result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
   }
   return result;
 }
 
-Array GodotLink::getControlledParty() {
+int64_t GodotLink::getPlayerId() {
   #ifdef LOG
-    log << "getControlledParty()" << std::endl;
+    log << "getPlayerId()" << std::endl;
   #endif
-  Array result = Array();
-  for(int64_t id : link->getPlayersId()) {
-    result.push_back(id);
-  }
-  return result;
+  return link->getPlayer()->id;
 }
 
 Dictionary GodotLink::getCharacters() {
@@ -177,10 +173,9 @@ Dictionary GodotLink::getFurnitures() {
     log << "getFurnitures()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  for(Character * player : link->getPlayers()) {
-    for(Furniture * furniture : player->getRegion()->getFurnitures(player)) {
-      result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
-    }
+  Character * player = link->getPlayer();
+  for(Furniture * furniture : player->getRegion()->getFurnitures(player)) {
+    result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
   }
   return result;
 }
@@ -441,12 +436,12 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   return result;
 }
 
-Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
+Dictionary GodotLink::getStatsFromCharacter() {
   #ifdef LOG
-    log << "getStatsFromCharacter(" << character_id << ")" << std::endl;
+    log << "getStatsFromCharacter()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  Character * character = link->getPlayer(character_id);
+  Character * character = link->getPlayer();
   result["name"] = character->name.c_str();
   result["maxHp"] = character->getMaxHp();
   result["maxMana"] = character->getMaxMana();
@@ -513,12 +508,12 @@ Dictionary GodotLink::getStatsFromCharacter(int64_t character_id) {
   return result;
 }
 
-Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
+Dictionary GodotLink::getInventoryFromCharacter() {
   #ifdef LOG
-    log << "getInventoryFromCharacter(" << character_id << ")" << std::endl;
+    log << "getInventoryFromCharacter()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  Gear * gear = link->getPlayer(character_id)->getGear();
+  Gear * gear = link->getPlayer()->getGear();
   result["mantle"] = getDataFromItem(gear->getMantle());
   result["helmet"] = getDataFromItem(gear->getHelmet());
   result["armor"] = getDataFromItem(gear->getArmor());
@@ -549,9 +544,9 @@ Dictionary GodotLink::getInventoryFromCharacter(int64_t character_id) {
   return result;
 }
 
-Dictionary GodotLink::getSkillsFromCharacter(int64_t character_id) {
+Dictionary GodotLink::getSkillsFromCharacter() {
   #ifdef LOG
-    log << "getSkillsFromCharacter(" << character_id << ")" << std::endl;
+    log << "getSkillsFromCharacter()" << std::endl;
   #endif
   Dictionary result = Dictionary();
 
@@ -619,116 +614,85 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   return result;
 }
 
-void GodotLink::send_actions(Dictionary actions) {
+void GodotLink::send_action(Dictionary action) {
   #ifdef LOG
-    log << "send_actions()" << std::endl;
+    log << "send_action()" << std::endl;
   #endif
-  std::vector<int64_t> ids = std::vector<int64_t>();
-  std::vector<std::vector<int32_t>> types = std::vector<std::vector<int32_t>>();
-  std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>();
-  std::vector<std::vector<void *>> args2 = std::vector<std::vector<void *>>();
-  std::vector<std::vector<int32_t>> overcharge_powers = std::vector<std::vector<int32_t>>();
-  std::vector<std::vector<int32_t>> overcharge_durations = std::vector<std::vector<int32_t>>();
-  std::vector<std::vector<int32_t>> overcharge_ranges = std::vector<std::vector<int32_t>>();
-  for(int64_t iterator_id = 0; iterator_id < ((Array) actions["ids"]).size(); iterator_id++) {
-    int64_t id = (int64_t) ((Array) actions["ids"])[iterator_id];
-    ids.push_back( (int64_t) id);
-    std::vector<int32_t> types_i = std::vector<int32_t>();
-    std::vector<void *> args1_i = std::vector<void *>();
-    std::vector<void *> args2_i = std::vector<void *>();
-    std::vector<int32_t> overcharge_powers_i = std::vector<int32_t>();
-    std::vector<int32_t> overcharge_durations_i = std::vector<int32_t>();
-    std::vector<int32_t> overcharge_ranges_i = std::vector<int32_t>();
-    for(int64_t i = 0; i < ( (Array) ( (Dictionary) actions["types"])[id]).size(); i++) {
-      int32_t type = (int32_t) (int64_t) ( (Array) ( (Dictionary) actions["types"])[id])[i];
-      void * arg1 = 0;
-      void * arg2 = 0;
-      int32_t overcharge_power = 1;
-      int32_t overcharge_duration = 1;
-      int32_t overcharge_range = 1;
-      switch(type) {
-        case ACTION_IDLE:
-        case ACTION_RESPITE:
-        case ACTION_REST:
-        case ACTION_BREAKPOINT:
-        case ACTION_CHANNEL:
-          break;
-        case ACTION_MOVE: {
-          float orientation = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
-          #ifdef LOG
-            log << "orientation: " << orientation << std::endl;
-          #endif
-          arg1 = (void *) &orientation;
-          break;
-        }
-        case ACTION_STRIKE:
-        case ACTION_ACTIVATION: {
-          Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
-          Target * target = new Target();
-          target->type = (int32_t) (int64_t) target_ori["type"];
-          target->id = (int64_t) (int64_t) target_ori["id"];
-          Vector3 pos = (Vector3) target_ori["pos"];
-          target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
-          arg1 = (void *) target;
-          break;
-        }
-        case ACTION_RELOAD:
-        case ACTION_GRAB:
-        case ACTION_USE_ITEM: {
-          Dictionary slot_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
-          ItemSlot * slot = new ItemSlot();
-          slot->x = (int32_t) (int64_t) slot_ori["x"];
-          slot->y = (int32_t) (int64_t) slot_ori["y"];
-          slot->slot = (int32_t) (int64_t) slot_ori["slot"];
-          arg1 = (void *) slot;
-          break;
-        }
-        case ACTION_SWAP_GEAR: {
-          Dictionary slot1_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
-          ItemSlot * slot1 = new ItemSlot();
-          slot1->x = (int32_t) (int64_t) slot1_ori["x"];
-          slot1->y = (int32_t) (int64_t) slot1_ori["y"];
-          slot1->slot = (int32_t) (int64_t) slot1_ori["slot"];
-          arg1 = (void *) slot1;
-          Dictionary slot2_ori = ( (Array) ( (Dictionary) actions["arg2"])[id])[i];
-          ItemSlot * slot2 = new ItemSlot();
-          slot2->x = (int32_t) (int64_t) slot2_ori["x"];
-          slot2->y = (int32_t) (int64_t) slot2_ori["y"];
-          slot2->slot = (int32_t) (int64_t) slot2_ori["slot"];
-          arg2 = (void *) slot2;
-          break;
-        }
-        case ACTION_USE_SKILL: {
-          Dictionary target_ori = ( (Array) ( (Dictionary) actions["arg1"])[id])[i];
-          Target * target = new Target();
-          target->type = (int32_t) (int64_t) target_ori["type"];
-          target->id = (int64_t) (int64_t) target_ori["id"];
-          Vector3 pos = (Vector3) target_ori["pos"];
-          target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
-          arg1 = (void *) target;
-          Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) ( (Array) ( (Dictionary) actions["arg2"])[id])[i]).utf8().get_data()));
-          arg2 = (void *) skill;
-          overcharge_power = (int32_t) ( (Array) ( (Dictionary) actions["overchage_power"])[id])[i];
-          overcharge_duration = (int32_t) ( (Array) ( (Dictionary) actions["overchage_duration"])[id])[i];
-          overcharge_range = (int32_t) ( (Array) ( (Dictionary) actions["overchage_range"])[id])[i];
-          break;
-        }
-      }
-      types_i.push_back(type);
-      args1_i.push_back(arg1);
-      args2_i.push_back(arg2);
-      overcharge_powers_i.push_back(overcharge_power);
-      overcharge_durations_i.push_back(overcharge_duration);
-      overcharge_ranges_i.push_back(overcharge_range);
+  int32_t type = (int32_t) (int64_t) action["type"];
+  void * arg1 = 0;
+  void * arg2 = 0;
+  int32_t overcharge_power = 1;
+  int32_t overcharge_duration = 1;
+  int32_t overcharge_range = 1;
+  switch(type) {
+    case ACTION_IDLE:
+    case ACTION_RESPITE:
+    case ACTION_REST:
+    case ACTION_BREAKPOINT:
+    case ACTION_CHANNEL:
+      break;
+    case ACTION_MOVE: {
+      float orientation = action["arg1"];
+      #ifdef LOG
+        log << "orientation: " << orientation << std::endl;
+      #endif
+      arg1 = (void *) &orientation;
+      break;
     }
-    types.push_back(types_i);
-    args1.push_back(args1_i);
-    args2.push_back(args2_i);
-    overcharge_powers.push_back(overcharge_powers_i);
-    overcharge_durations.push_back(overcharge_durations_i);
-    overcharge_ranges.push_back(overcharge_ranges_i);
+    case ACTION_STRIKE:
+    case ACTION_ACTIVATION: {
+      Dictionary target_ori = action["arg1"];
+      Target * target = new Target();
+      target->type = (int32_t) (int64_t) target_ori["type"];
+      target->id = (int64_t) (int64_t) target_ori["id"];
+      Vector3 pos = (Vector3) target_ori["pos"];
+      target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
+      arg1 = (void *) target;
+      break;
+    }
+    case ACTION_RELOAD:
+    case ACTION_GRAB:
+    case ACTION_USE_ITEM: {
+      Dictionary slot_ori = action["arg1"];
+      ItemSlot * slot = new ItemSlot();
+      slot->x = (int32_t) (int64_t) slot_ori["x"];
+      slot->y = (int32_t) (int64_t) slot_ori["y"];
+      slot->slot = (int32_t) (int64_t) slot_ori["slot"];
+      arg1 = (void *) slot;
+      break;
+    }
+    case ACTION_SWAP_GEAR: {
+      Dictionary slot1_ori = action["arg1"];
+      ItemSlot * slot1 = new ItemSlot();
+      slot1->x = (int32_t) (int64_t) slot1_ori["x"];
+      slot1->y = (int32_t) (int64_t) slot1_ori["y"];
+      slot1->slot = (int32_t) (int64_t) slot1_ori["slot"];
+      arg1 = (void *) slot1;
+      Dictionary slot2_ori = action["arg2"];
+      ItemSlot * slot2 = new ItemSlot();
+      slot2->x = (int32_t) (int64_t) slot2_ori["x"];
+      slot2->y = (int32_t) (int64_t) slot2_ori["y"];
+      slot2->slot = (int32_t) (int64_t) slot2_ori["slot"];
+      arg2 = (void *) slot2;
+      break;
+    }
+    case ACTION_USE_SKILL: {
+      Dictionary target_ori = action["arg1"];
+      Target * target = new Target();
+      target->type = (int32_t) (int64_t) target_ori["type"];
+      target->id = (int64_t) (int64_t) target_ori["id"];
+      Vector3 pos = (Vector3) target_ori["pos"];
+      target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
+      arg1 = (void *) target;
+      Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) action["arg2"]).utf8().get_data()));
+      arg2 = (void *) skill;
+      overcharge_power = (int32_t) action["overchage_power"];
+      overcharge_duration = (int32_t) action["overchage_duration"];
+      overcharge_range = (int32_t) action["overchage_range"];
+      break;
+    }
   }
-  link->sendActions(ids, types, args1, args2, overcharge_powers, overcharge_durations, overcharge_ranges);
+  link->sendAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range);
 }
 
 void GodotLink::close() {
@@ -749,16 +713,16 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "lang"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
-  ClassDB::bind_method(D_METHOD("getMoveCost", "id", "ori", "dest"), &GodotLink::getMoveCost);
+  ClassDB::bind_method(D_METHOD("getMoveCost", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
   ClassDB::bind_method(D_METHOD("getClock"), &GodotLink::getClock);
-  ClassDB::bind_method(D_METHOD("getLight", "id"), &GodotLink::getLight);
-  ClassDB::bind_method(D_METHOD("getBaseLight", "id"), &GodotLink::getBaseLight);
+  ClassDB::bind_method(D_METHOD("getLight"), &GodotLink::getLight);
+  ClassDB::bind_method(D_METHOD("getBaseLight"), &GodotLink::getBaseLight);
   ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
-  ClassDB::bind_method(D_METHOD("getBlocks", "id"), &GodotLink::getBlocks);
-  ClassDB::bind_method(D_METHOD("getControlledParty"), &GodotLink::getControlledParty);
+  ClassDB::bind_method(D_METHOD("getBlocks"), &GodotLink::getBlocks);
+  ClassDB::bind_method(D_METHOD("getPlayerId"), &GodotLink::getPlayerId);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
   ClassDB::bind_method(D_METHOD("getFurnitures"), &GodotLink::getFurnitures);
@@ -768,8 +732,8 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getDataFromClass", "class"), &GodotLink::getDataFromClass);
   ClassDB::bind_method(D_METHOD("getDataFromRace", "race"), &GodotLink::getDataFromRace);
   ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);
-  ClassDB::bind_method(D_METHOD("getStatsFromCharacter", "id"), &GodotLink::getStatsFromCharacter);
-  ClassDB::bind_method(D_METHOD("getInventoryFromCharacter", "id"), &GodotLink::getInventoryFromCharacter);
-  ClassDB::bind_method(D_METHOD("send_actions", "actions"), &GodotLink::send_actions);
+  ClassDB::bind_method(D_METHOD("getStatsFromCharacter"), &GodotLink::getStatsFromCharacter);
+  ClassDB::bind_method(D_METHOD("getInventoryFromCharacter"), &GodotLink::getInventoryFromCharacter);
+  ClassDB::bind_method(D_METHOD("send_action", "action"), &GodotLink::send_action);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

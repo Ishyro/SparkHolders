@@ -154,7 +154,7 @@ class Adventure {
     Time getTime();
     int32_t getLight(MathUtil::Vector3i coord);
     int32_t getLight(MathUtil::Vector3 coord);
-    std::string state_to_string(std::map<const int64_t, Character *> players);
+    std::string state_to_string(Character * player);
     StateDisplay * update_state(std::string to_read);
   private:
     World * world;

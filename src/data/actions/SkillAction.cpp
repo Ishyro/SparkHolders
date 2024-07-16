@@ -34,13 +34,16 @@ Action * SkillAction::execute(Adventure * adventure) {
     previous->setNext(next);
     next->setPrevious(previous);
   }
-  else if(next != nullptr) {
-    next->setPrevious(nullptr);
-    // tick is in range [0;1]
-    next->computeTick(1 - tick);
-  }
   else {
-    user->setCurrentAction(nullptr);
+    if(next != nullptr) {
+      next->setPrevious(nullptr);
+      // tick is in range [0;1]
+      next->computeTick(1 - tick);
+      user->setCurrentAction(next);
+    }
+    else {
+      user->setCurrentAction(nullptr);
+    }
   }
   return next;
 }

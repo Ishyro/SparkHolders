@@ -189,9 +189,9 @@ int32_t main(int32_t argc, char ** argv) {
     // receive playerActions
     std::list<Action *> actionsPlayers = std::list<Action *>();
     for(int32_t i = 0; i < playersNumber; i++) {
-      //if(links[i]->getNeedToUpdateActions()) {
-        actionsPlayers.merge(links[i]->getActions());
-      //}
+      if(links[i]->getNeedToUpdateActions()) {
+        actionsPlayers.merge(links[i]->getAction());
+      }
     }
     adventure->mergeActions(actionsPlayers);
     actionsPlayers.clear();
@@ -205,6 +205,7 @@ int32_t main(int32_t argc, char ** argv) {
       }
     }
     adventure->incrTick();
+    std::cout << adventure->getTime().to_string_clock() << std::endl;
   }
   delete adventure;
   ss->close();

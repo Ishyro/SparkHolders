@@ -42,16 +42,17 @@ public:
   void initialize(String ip, int64_t port, String lang);
   bool hasState();
   bool getState();
-  float getMoveCost(int64_t character_id, Vector3 ori, Vector3 dest);
+  float getMoveCost(Vector3 ori, Vector3 dest);
   String getTime();
   String getClock();
-  int64_t getLight(int64_t character_id);
-  int64_t getBaseLight(int64_t character_id);
+  int64_t getLight();
+  int64_t getBaseLight();
   int64_t getMaxLight();
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
-  Dictionary getBlocks(int64_t character_id);
-  Array getLights(int64_t character_id);
+  Dictionary getBlocks();
+  int64_t getPlayerId();
+  Array getLights();
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
@@ -64,12 +65,12 @@ public:
   Dictionary getDataFromRace(String race_name);
   Dictionary getDataFromWay(String way_name);
   Dictionary getDataFromCharacter(CharacterDisplay * character);
-  Dictionary getStatsFromCharacter(int64_t character_id);
-  Dictionary getInventoryFromCharacter(int64_t character_id);
-  Dictionary getSkillsFromCharacter(int64_t character_id);
+  Dictionary getStatsFromCharacter();
+  Dictionary getInventoryFromCharacter();
+  Dictionary getSkillsFromCharacter();
   Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
   Dictionary getDataFromFurniture(Furniture * furniture);
-  void send_actions(Dictionary actions);
+  void send_action(Dictionary action);
   void close();
 
 protected:

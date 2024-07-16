@@ -1158,13 +1158,12 @@ namespace Display {
     while(!link->isReady()) {
       usleep(1);
     }
-    int64_t id = link->getPlayersId().front();
     while(true) {
       StateDisplay * display = link->getState();
-      Region * region = link->getPlayer(id)->getRegion();
+      Region * region = link->getPlayer()->getRegion();
       if(display->need_to_send_actions) {
-        displayMap(display, link->getAdventure(), link->getPlayer(id), mapScreen, t);
-        displayStats(link->getPlayer(id), statsScreen, t);
+        displayMap(display, link->getAdventure(), link->getPlayer(), mapScreen, t);
+        displayStats(link->getPlayer(), statsScreen, t);
         displayCommands(targetScreen, t);
         wrefresh(targetScreen);
         bool done = false;
@@ -1184,11 +1183,11 @@ namespace Display {
           object_type = 0;
           object = "";
           object_id = 0;
-          orientation = link->getPlayer(id)->getOrientation();
+          orientation = link->getPlayer()->getOrientation();
           skill = nullptr;
           target_id = 0;
-          target_x = (int32_t) std::floor(link->getPlayer(id)->getCoord().x) - region->id.x;
-          target_y = (int32_t) std::floor(link->getPlayer(id)->getCoord().y) - region->id.y;
+          target_x = (int32_t) std::floor(link->getPlayer()->getCoord().x) - region->id.x;
+          target_y = (int32_t) std::floor(link->getPlayer()->getCoord().y) - region->id.y;
           overcharge_power = 1;
           overcharge_duration = 1;
           overcharge_range = 1;
@@ -1211,7 +1210,7 @@ namespace Display {
             case '8':
             case KEY_UP:
             case '9':
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
                 type = ACTION_MOVE;
                 done = true;
               }
@@ -1224,8 +1223,8 @@ namespace Display {
             case 'x':
             case 'X':
               type = ACTION_USE_SKILL;
-              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(id), overcharge_power, overcharge_duration, overcharge_range, t);
-              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), skill->range, target_id, target_x, target_y, orientation, t))) {
+              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge_power, overcharge_duration, overcharge_range, t);
+              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(), skill->range, target_id, target_x, target_y, orientation, t))) {
                 done = true;
                 object = skill->name;
               }
@@ -1233,9 +1232,9 @@ namespace Display {
             case 'c':
             case 'C':
               type = ACTION_STRIKE;
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(id), link->getPlayer(id)->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
-                if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
-                  link->getPlayer(id)->getGear()->getWeapon_1()->useAmmo();
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
+                if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
+                  link->getPlayer()->getGear()->getWeapon_1()->useAmmo();
                 }
                 done = true;
               }
@@ -1243,9 +1242,9 @@ namespace Display {
             case 'i':
             case 'I':
               type = ACTION_SWAP_GEAR;
-              object = selectItem(displayScreen, targetScreen, link->getPlayer(id), object_type, object_id, t);
+              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, t);
               if(object != "") {
-                for(ItemSlot * slot : link->getPlayer(id)->getGear()->getItems()) {
+                for(ItemSlot * slot : link->getPlayer()->getGear()->getItems()) {
                   if(slot->item->id == object_id) {
                     if(slot->item->usable) {
                       type = ACTION_USE_ITEM;
@@ -1261,11 +1260,11 @@ namespace Display {
             case 'r':
             case 'R':
               type = ACTION_RELOAD;
-              if(link->getPlayer(id)->getGear()->getWeapon_1()->use_ammo) {
-                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(id), t);
-                if(object != "" && (link->getPlayer(id)->getGear()->getWeapon_1()->getAmmo() == nullptr
-                || link->getPlayer(id)->getGear()->getWeapon_1()->getAmmo()->getProjectile()->name != object
-                || link->getPlayer(id)->getGear()->getWeapon_1()->getCurrentCapacity() < link->getPlayer(id)->getGear()->getWeapon_1()->capacity)) {
+              if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
+                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
+                if(object != "" && (link->getPlayer()->getGear()->getWeapon_1()->getAmmo() == nullptr
+                || link->getPlayer()->getGear()->getWeapon_1()->getAmmo()->getProjectile()->name != object
+                || link->getPlayer()->getGear()->getWeapon_1()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon_1()->capacity)) {
                   done = true;
                 }
               }
@@ -1279,7 +1278,7 @@ namespace Display {
           case ACTION_RESPITE:
           case ACTION_REST:
           case ACTION_BREAKPOINT:
-            sendAction(link, id, type, nullptr, nullptr, 0, 0, 0);
+            sendAction(link, type, nullptr, nullptr, 0, 0, 0);
             break;
           case ACTION_MOVE:
           case ACTION_STRIKE:
@@ -1291,27 +1290,27 @@ namespace Display {
             ((Target *) target)->coord.y = target_y + 0.5;
             ((Target *) target)->coord.z = 0;
             ((Target *) target)->next = nullptr;
-            sendAction(link, id, type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
+            sendAction(link, type, (void *) target, skill, overcharge_power, overcharge_duration, overcharge_range);
             break;
           }
           case ACTION_RELOAD:
           case ACTION_GRAB:
           case ACTION_USE_ITEM: {
             ItemSlot * slot = new ItemSlot();
-            for(ItemSlot * item : link->getPlayer(id)->getGear()->getItems()) {
+            for(ItemSlot * item : link->getPlayer()->getGear()->getItems()) {
               if(item->item->id == object_id) {
                 slot->x = item->x;
                 slot->y = item->y;
                 slot->slot = item->slot;
               }
             }
-            sendAction(link, id, type, (void *) slot, nullptr, 0, 0, 0);
+            sendAction(link, type, (void *) slot, nullptr, 0, 0, 0);
             break;
           }
           case ACTION_SWAP_GEAR: {
             ItemSlot * slot = new ItemSlot();
             ItemSlot * dummy = new ItemSlot();
-            for(ItemSlot * item : link->getPlayer(id)->getGear()->getItems()) {
+            for(ItemSlot * item : link->getPlayer()->getGear()->getItems()) {
               if(item->item->id == object_id) {
                 slot->x = item->x;
                 slot->y = item->y;
@@ -1321,7 +1320,7 @@ namespace Display {
             dummy->x = 0;
             dummy->y = 0;
             dummy->slot = 0;
-            sendAction(link, id, type, (void *) slot, (void *) dummy, 0, 0, 0);
+            sendAction(link, type, (void *) slot, (void *) dummy, 0, 0, 0);
             break;
           }
           case ACTION_TALKING:
@@ -1894,32 +1893,6 @@ namespace Display {
   }
 }
 
-void Display::sendAction(Link * link, int64_t id, int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
-  std::vector<int64_t> ids = std::vector<int64_t>();
-  ids.push_back(id);
-  std::vector<std::vector<int32_t>> types = std::vector<std::vector<int32_t>>(); 
-  std::vector<int32_t> types_args = std::vector<int32_t>();
-  types_args.push_back(type);
-  types.push_back(types_args);
-  std::vector<std::vector<void *>> args1 = std::vector<std::vector<void *>>(); 
-  std::vector<void *> args1_args = std::vector<void *>();
-  args1_args.push_back(arg1);
-  args1.push_back(args1_args);
-  std::vector<std::vector<void *>> args2 = std::vector<std::vector<void *>>(); 
-  std::vector<void *> args2_args = std::vector<void *>();
-  args2_args.push_back(arg2);
-  args2.push_back(args2_args);
-  std::vector<std::vector<int32_t>> overcharge_powers = std::vector<std::vector<int32_t>>(); 
-  std::vector<int32_t> overcharge_powers_args = std::vector<int32_t>();
-  overcharge_powers_args.push_back(overcharge_power);
-  overcharge_powers.push_back(overcharge_powers_args);
-  std::vector<std::vector<int32_t>> overcharge_durations = std::vector<std::vector<int32_t>>(); 
-  std::vector<int32_t> overcharge_durations_args = std::vector<int32_t>();
-  overcharge_durations_args.push_back(overcharge_duration);
-  overcharge_durations.push_back(overcharge_durations_args);
-  std::vector<std::vector<int32_t>> overcharge_ranges = std::vector<std::vector<int32_t>>(); 
-  std::vector<int32_t> overcharge_ranges_args = std::vector<int32_t>();
-  overcharge_ranges_args.push_back(overcharge_range);
-  overcharge_ranges.push_back(overcharge_ranges_args);
-  link->sendActions(ids, types, args1, args2, overcharge_powers, overcharge_durations, overcharge_ranges);
+void Display::sendAction(Link * link, int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  link->sendAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range);
 }
