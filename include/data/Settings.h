@@ -49,7 +49,7 @@ namespace Settings {
   void setWeekDuration(int32_t data); // in days
   void setDayDuration(int32_t data); // in hours
   void setHourDuration(int32_t data); // in minutes
-  void setMinuteDuration(int32_t data); // in seconds/ticks
+  void setMinuteDuration(int32_t data); // in seconds
   void setTickDurationInSeconds(float data);
   void setTickTimer(int32_t data);
   void setStartingYear(int32_t data);

@@ -1,1 +1,13 @@
+Choices selector on client
+
+ServerSerttings for tick pause
+Send Settings via socket to client
+
+add orientation_z to OrientedAction
+Strike/Shoot/SkillAction switch to OrientedAction
+
+Fix Projectile
+
+Add missings attributes (medidation ? Concentration .)
+
 Introduce a Reaction system: if an hostile character appears/teleport near a Character, he can replace his next actions with new ones according to the unexpected situation.

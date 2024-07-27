@@ -53,7 +53,6 @@ ambient_light_source = 3
 tonemap_mode = 2
 sdfgi_enabled = true
 sdfgi_use_occlusion = true
-volumetric_fog_enabled = true
 volumetric_fog_sky_affect = 0.0
 
 [node name="World" type="Node3D"]
@@ -83,6 +82,7 @@ script = ExtResource("2_7wmtq")
 
 [node name="Camera" type="Camera3D" parent="View"]
 attributes = SubResource("CameraAttributesPractical_b7eew")
+current = true
 
 [node name="Map" type="Node3D" parent="."]
 script = ExtResource("2_kskax")

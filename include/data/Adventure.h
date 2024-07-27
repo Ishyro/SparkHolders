@@ -72,6 +72,32 @@ typedef struct Time {
     std::string result = ss.str();
     return result;
   }
+  std::string to_string_clock_terra() {
+    int32_t charHoursSize = 2;
+    int32_t charMinutesSize = 2;
+    int32_t charSecondsSize = 2;
+    int32_t secondsTotal = std::floor( ( (float) Settings::getHourDuration() * (float) Settings::getMinuteDuration() * (float) hour + (float) Settings::getMinuteDuration() * (float) minutes + (float) seconds) * (24.F * 3600.F) / ( (float) Settings::getDayDuration() * (float) Settings::getHourDuration() * (float) Settings::getMinuteDuration()));
+    int32_t hour_terra = secondsTotal / 3600;
+    secondsTotal -= hour_terra * 3600;
+    int32_t minutes_terra = secondsTotal / 60;
+    int32_t seconds_terra = secondsTotal - minutes_terra * 60;
+    std::string hour_str = std::to_string(hour_terra);
+    while(hour_str.length() - charHoursSize > 0) {
+      hour_str = std::to_string(0) + hour_str;
+    }
+    std::string minutes_str = std::to_string(minutes_terra);
+    while(minutes_str.length() - charMinutesSize > 0) {
+      minutes_str = std::to_string(0) + minutes_str;
+    }
+    std::string seconds_str = std::to_string(seconds_terra);
+    while(seconds_str.length() - charSecondsSize > 0) {
+      seconds_str = std::to_string(0) + seconds_str;
+    }
+    std::stringstream ss = std::stringstream();
+    ss << hour_str << ":" <<minutes_str << ":" << seconds_str;
+    std::string result = ss.str();
+    return result;
+  }
 } Time;
 
 typedef struct StateDisplay {

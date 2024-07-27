@@ -24,7 +24,7 @@ var antialiasings = { "Off": 0, "x2": 1, "x4": 2, "x8": 3 }
 @onready var n_language = $Divider/MarginContainer/ClientServer/Client/General/LanguageValue
 @onready var n_font = $Divider/MarginContainer/ClientServer/Client/General/FontValue
 @onready var n_port = $Divider/MarginContainer/ClientServer/Client/General/PortValue
-@onready var n_edgepanning = $Divider/MarginContainer/ClientServer/Client/General/EdgePanningValue
+@onready var n_terranday = $Divider/MarginContainer/ClientServer/Client/General/TerranDayValue
 # Video
 @onready var n_resolution = $Divider/MarginContainer/ClientServer/Client/Video/ResolutionValue
 @onready var n_window_type = $Divider/MarginContainer/ClientServer/Client/Video/WindowTypeValue
@@ -129,13 +129,13 @@ func apply_client_settings(forced_update):
 		n_port.text = client_settings_dic["PORT"]
 		Settings.Port = int(client_settings_dic["PORT"])
 		client_settings_changed["PORT"] = false
-	if client_settings_changed["EDGE_PANNING"] or forced_update:
-		if client_settings_dic["EDGE_PANNING"] == "On":
-			n_edgepanning.set_pressed(true)
-			Settings.EdgePanning = true
+	if client_settings_changed["TERRAN_DAY"] or forced_update:
+		if client_settings_dic["TERRAN_DAY"] == "On":
+			n_terranday.set_pressed(true)
+			Settings.TerranDay = true
 		else:
-			n_edgepanning.set_pressed(false)
-			Settings.EdgePanning = false
+			n_terranday.set_pressed(false)
+			Settings.TerranDay = false
 		client_settings_changed["EDGE_PANNING"] = false
 	# Video
 	if client_settings_changed["RESOLUTION"] or client_settings_changed["WINDOW_TYPE"] or forced_update:
@@ -244,6 +244,15 @@ func _on_port_value_text_submitted(new_text):
 		n_port.text = client_settings_dic["PORT"]
 	client_settings_changed["PORT"] = true
 
+func _on_terran_day_value_toggled(button_pressed):
+	if button_pressed:
+		n_terranday.set_text("On")
+		client_settings_dic["TERRAN_DAY"] = "On"
+	else:
+		n_terranday.set_text("Off")
+		client_settings_dic["TERRAN_DAY"] = "Off"
+	client_settings_changed["TERRAN_DAY"] = true
+
 # Video
 func _on_resolution_value_item_selected(index):
 	client_settings_dic["RESOLUTION"] = n_resolution.get_item_text(index)
@@ -314,3 +323,5 @@ func _on_password_value_text_submitted(new_text):
 		n_pasword.text = "*****"
 	else:
 		n_pasword.text = "EMPTY"
+
+

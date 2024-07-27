@@ -1,7 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 SparkHolders.Server.exe
+SparkHolders.Server.x86_64
 SparkHolders.exe
 TestLauncher.exe
-Client_terminal
+TestLauncher.x86_64
+Client_terminal.x86_64
 log.txt
+*:Zone.Identifier

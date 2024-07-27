@@ -3,7 +3,7 @@ extends Node
 # General
 var Lang
 var Port
-var EdgePanning = true
+var TerranDay = true
 
 # Video
 var Resolution

@@ -14,6 +14,10 @@ class Link {
       closed(false),
       ready(false)
     {}
+    // non copyable because of mutex
+    Link(const Link&) = delete;
+    Link & operator=(const Link&) = delete;
+    //
     void initialize(Socket s);
     void listen();
     void sendState();
@@ -38,6 +42,7 @@ class Link {
     bool master;
     std::string username;
     std::string password;
+    std::mutex mutex;
 };
 
 #endif // _LINK_SERVER_H_

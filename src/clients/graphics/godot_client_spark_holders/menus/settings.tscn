@@ -96,15 +96,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="EdgePanning" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="TerranDay" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Edge panning"
+text = "Terran Day"
 
-[node name="EdgePanningValue" type="CheckButton" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="TerranDayValue" type="CheckButton" parent="Divider/MarginContainer/ClientServer/Client/General"]
 layout_mode = 2
-text = "Off"
+text = "On"
 
 [node name="Dummy" type="Control" parent="Divider/MarginContainer/ClientServer/Client/General"]
 layout_mode = 2
@@ -415,7 +415,7 @@ text = "Reset to defaults"
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/General/LanguageValue" to="." method="_on_language_value_item_selected"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/General/FontValue" to="." method="_on_font_value_item_selected"]
 [connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Client/General/PortValue" to="." method="_on_port_value_text_submitted"]
-[connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/General/EdgePanningValue" to="." method="_on_while_light_value_toggled"]
+[connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/General/TerranDayValue" to="." method="_on_terran_day_value_toggled"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/Video/ResolutionValue" to="." method="_on_resolution_value_item_selected"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/Video/WindowTypeValue" to="." method="_on_window_type_value_item_selected"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/Video/AntiAliasingValue" to="." method="_on_anti_aliasing_value_item_selected"]

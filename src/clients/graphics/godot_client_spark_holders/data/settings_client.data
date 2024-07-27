@@ -2,7 +2,7 @@
 LANG = English
 FONT = New Rocker
 PORT = 45678
-EDGE_PANNING = Off
+TERRAN_DAY = On
 
 # Video
 RESOLUTION = 3840x2160

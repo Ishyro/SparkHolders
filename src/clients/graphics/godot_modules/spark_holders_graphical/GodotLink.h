@@ -44,7 +44,7 @@ public:
   bool getState();
   float getMoveCost(Vector3 ori, Vector3 dest);
   String getTime();
-  String getClock();
+  String getClock(bool terran_day);
   int64_t getLight();
   int64_t getBaseLight();
   int64_t getMaxLight();

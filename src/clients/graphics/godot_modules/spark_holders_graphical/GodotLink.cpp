@@ -84,11 +84,16 @@ String GodotLink::getTime() {
   return link->getAdventure()->getTime().to_string_day().c_str();
 }
 
-String GodotLink::getClock() {
+String GodotLink::getClock(bool terran_day) {
   #ifdef LOG
-    log << "getClock()" << std::endl;
+    log << "getClock( " << terran_day << " )" << std::endl;
   #endif
-  return link->getAdventure()->getTime().to_string_clock().c_str();
+  if(terran_day) {
+    return link->getAdventure()->getTime().to_string_clock_terra().c_str();
+  }
+  else {
+    return link->getAdventure()->getTime().to_string_clock().c_str();
+  }
 }
 
 int64_t GodotLink::getLight() {
@@ -715,7 +720,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
-  ClassDB::bind_method(D_METHOD("getClock"), &GodotLink::getClock);
+  ClassDB::bind_method(D_METHOD("getClock", "terran_day"), &GodotLink::getClock);
   ClassDB::bind_method(D_METHOD("getLight"), &GodotLink::getLight);
   ClassDB::bind_method(D_METHOD("getBaseLight"), &GodotLink::getBaseLight);
   ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);

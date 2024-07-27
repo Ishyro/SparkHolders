@@ -17,10 +17,6 @@
 
 #include "util/String.h"
 
-namespace link_mutex {
-  std::mutex mutex;
-}
-
 void Link::initialize(Socket s) {
   this->s = s;
 }
@@ -68,7 +64,7 @@ void Link::listen() {
     case SOCKET_MSG_ACTION: {
       Action * new_action = Server::receiveAction(ss->str(), character, adventure);
       new_action->computeTime(adventure);
-      const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+      const std::lock_guard<std::mutex> guard(mutex);
       if(action == nullptr) {
         action = new_action;
       }
@@ -122,13 +118,13 @@ void Link::markClosed() { closed = true; }
 Character * Link::getCharacter() { return character; }
 void Link::changeSocket(Socket s) { this->s = s; closed = false; }
 bool Link::hasActions() {
-  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  const std::lock_guard<std::mutex> guard(mutex);
   return action != nullptr;
 }
 
 std::list<Action *> Link::getAction() {
   std::list<Action *> result = std::list<Action *>();
-  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  const std::lock_guard<std::mutex> guard(mutex);
   if(action != nullptr) {
     result.push_front(action);
     if(character->getCurrentAction() == nullptr) {
@@ -140,7 +136,7 @@ std::list<Action *> Link::getAction() {
 }
 
 bool Link::getNeedToUpdateActions() {
-  const std::lock_guard<std::mutex> guard(link_mutex::mutex);
+  const std::lock_guard<std::mutex> guard(mutex);
   return character->getCurrentAction() == nullptr;
 }
 

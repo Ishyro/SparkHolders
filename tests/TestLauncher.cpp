@@ -53,11 +53,12 @@ int32_t main(int32_t argc, char ** argv) {
   Character * dasheep = adventure->getWorld()->getCharacters().front();
   MathUtil::Coords coords = dasheep->getWorldCoords();
   Time time = adventure->getTime();
-  std::cout << time.to_string_day() << std::endl;
+  std::cout << time.to_string_clock_terra() << std::endl;
   std::cout << "latitude: " << coords.latitude.x << "° " << coords.latitude.y << "' " << coords.latitude.z << "'' longitude: " << coords.longitude.x << "° " << coords.longitude.y << "' " << coords.longitude.z << "''" << std::endl;
   for(int32_t tick = 0; tick < ticks; tick++) {
     Time time = adventure->getTime();
     std::cout << time.to_string_clock() << std::endl;
+    std::cout << time.to_string_clock_terra() << std::endl;
     std::cout << MathUtil::getLight(coords, time) << std::endl;
     std::cout << adventure->getLight(dasheep->getCoord()) << std::endl;
     //
