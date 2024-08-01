@@ -40,6 +40,8 @@ public:
     #endif
   }
   void initialize(String ip, int64_t port, String lang);
+  bool isCompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
+  void sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession);
   bool hasState();
   bool getState();
   float getMoveCost(Vector3 ori, Vector3 dest);
@@ -70,6 +72,8 @@ public:
   Dictionary getSkillsFromCharacter();
   Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
   Dictionary getDataFromFurniture(Furniture * furniture);
+  Array getStartingAttributes();
+  Array getStartingWays();
   void send_action(Dictionary action);
   void close();
 

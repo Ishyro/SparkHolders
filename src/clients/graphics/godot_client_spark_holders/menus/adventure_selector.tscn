@@ -1,0 +1,259 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1w6hj8fjnwak"]
+
+[ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="1_aykka"]
+[ext_resource type="Script" path="res://menus/adventure_selector.gd" id="1_yeqcr"]
+[ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_254r8"]
+
+[node name="AdventureSelector" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yeqcr")
+
+[node name="Sprite2D" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_aykka")
+expand_mode = 1
+
+[node name="Divider" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+
+[node name="MarginContainer" type="MarginContainer" parent="Divider"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_right = 64
+
+[node name="TabContainer" type="TabContainer" parent="Divider/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_alignment = 1
+
+[node name="Base" type="TabContainer" parent="Divider/MarginContainer/TabContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_alignment = 1
+use_hidden_tabs_for_min_size = true
+
+[node name="Tutorials" type="MarginContainer" parent="Divider/MarginContainer/TabContainer/Base"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Tutorials"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="Control" parent="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="AdventureValue" type="OptionButton" parent="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="AdventureMiniature" type="TextureRect" parent="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="Description" type="Label" parent="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="First Era" type="MarginContainer" parent="Divider/MarginContainer/TabContainer/Base"]
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/First Era"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="Control" parent="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="AdventureValue" type="OptionButton" parent="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="AdventureMiniature" type="TextureRect" parent="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="Description" type="Label" parent="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Second Era" type="MarginContainer" parent="Divider/MarginContainer/TabContainer/Base"]
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Second Era"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="Control" parent="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="AdventureValue" type="OptionButton" parent="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="AdventureMiniature" type="TextureRect" parent="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="Description" type="Label" parent="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Third Era" type="MarginContainer" parent="Divider/MarginContainer/TabContainer/Base"]
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Third Era"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="Control" parent="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="AdventureValue" type="OptionButton" parent="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="AdventureMiniature" type="TextureRect" parent="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="Description" type="Label" parent="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Mods" type="TabContainer" parent="Divider/MarginContainer/TabContainer"]
+visible = false
+layout_mode = 2
+tab_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Divider/MarginContainer/TabContainer/Mods"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Divider/MarginContainer/TabContainer/Mods/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="Control" parent="Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="AdventureValue" type="OptionButton" parent="Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+
+[node name="AdventureMiniature" type="TextureRect" parent="Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="Description" type="Label" parent="Divider/MarginContainer/TabContainer/Mods/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Divider"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.06
+theme_override_constants/separation = 32
+
+[node name="Dummy" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Dummy2" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Dummy3" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Start" parent="Divider/Buttons" instance=ExtResource("2_254r8")]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start"
+
+[node name="Close" parent="Divider/Buttons" instance=ExtResource("2_254r8")]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Close"
+
+[node name="Dummy4" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Dummy5" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Dummy6" type="Control" parent="Divider/Buttons"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="item_selected" from="Divider/MarginContainer/TabContainer/Base/Tutorials/HBoxContainer/VBoxContainer/AdventureValue" to="." method="_on_tutorial_value_item_selected"]
+[connection signal="item_selected" from="Divider/MarginContainer/TabContainer/Base/First Era/HBoxContainer/VBoxContainer/AdventureValue" to="." method="_on_first_era_value_item_selected"]
+[connection signal="item_selected" from="Divider/MarginContainer/TabContainer/Base/Second Era/HBoxContainer/VBoxContainer/AdventureValue" to="." method="_on_second_era_value_item_selected"]
+[connection signal="item_selected" from="Divider/MarginContainer/TabContainer/Base/Third Era/HBoxContainer/VBoxContainer/AdventureValue" to="." method="_on_third_era_value_item_selected"]
+[connection signal="item_selected" from="Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer/AdventureValue" to="." method="_on_mod_value_item_selected"]
+[connection signal="pressed" from="Divider/Buttons/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Divider/Buttons/Close" to="." method="_on_close_pressed"]

@@ -1,6 +1,7 @@
 extends Control
 
-@onready var Settings = $Settings
+@onready var settings = $Settings
+@onready var adventure_selector = $AdventureSelector
 
 @onready var single_player_new = $Container/SubMenus/SinglePlayer/New
 @onready var single_player_load = $Container/SubMenus/SinglePlayer/Load
@@ -26,7 +27,7 @@ func _on_multiplayer_pressed():
 	multi_player_join.visible = not multi_player_join.visible
 
 func _on_settings_pressed():
-	Settings.visible = true
+	settings.visible = true
 
 func _on_quit_pressed():
 	if Values.server_pid != -1:
@@ -34,20 +35,23 @@ func _on_quit_pressed():
 	get_tree().quit()
 
 func _on_new_single_pressed():
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", "1"])
-	get_tree().change_scene_to_file("res://world/world.tscn")
+	Values.multiplayer_mode = false
+	adventure_selector.visible = true
 
 func _on_load_single_pressed():
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", "1"])
+	Values.multiplayer_mode = false
+	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_new_multi_pressed():
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", "1"])
-	get_tree().change_scene_to_file("res://world/world.tscn")
+	Values.multiplayer_mode = true
+	adventure_selector.visible = true
 
 func _on_load_multi_pressed():
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", "1"])
+	Values.multiplayer_mode = true
+	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_join_pressed():
+	Values.multiplayer_mode = true
 	get_tree().change_scene_to_file("res://world/world.tscn")

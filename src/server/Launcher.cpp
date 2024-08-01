@@ -108,8 +108,8 @@ void relinkCommunication(void * param) {
 
 int32_t main(int32_t argc, char ** argv) {
 
-  if (argc < 2) {
-    std::cerr << "Expected: ./Launcher <adventureFile.commands>" << std::endl;
+  if (argc < 3) {
+    std::cerr << "Expected: ./Launcher <adventureFile> <multi>" << std::endl;
     return EXIT_FAILURE;
   }
   
@@ -120,9 +120,13 @@ int32_t main(int32_t argc, char ** argv) {
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
 
   int32_t playersNumber = adventure->maxPlayers;
+  bool multiplayer = true;
 
   if (argc >= 3) {
-    playersNumber = std::min(playersNumber, stoi(std::string(argv[2])));
+    std::istringstream(argv[2]) >> multiplayer;
+    if(!multiplayer) {
+      playersNumber = 1;
+    }
   }
   
   std::vector<StartCommunicationParameter *> params = std::vector<StartCommunicationParameter *>(playersNumber);
@@ -132,7 +136,7 @@ int32_t main(int32_t argc, char ** argv) {
     std::vector<std::thread> threads = std::vector<std::thread>(playersNumber);
   #endif
   std::vector<Link *> links = std::vector<Link *>(playersNumber);
-  ServerSocket * ss = new ServerSocket(Settings::getPort(), playersNumber, false);
+  ServerSocket * ss = new ServerSocket(Settings::getPort(), playersNumber, multiplayer);
   for(int32_t i = 0; i < playersNumber; i++) {
     links[i] = new Link(adventure);
     params[i] = new StartCommunicationParameter();

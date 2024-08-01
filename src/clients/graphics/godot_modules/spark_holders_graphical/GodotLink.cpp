@@ -34,12 +34,31 @@ void GodotLink::initialize(String ip, int64_t port, String lang) {
   while(!link->isStarted()) {
     usleep(1);
   }
-  std::vector<std::string> choices;
-  // choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
+}
+
+bool GodotLink::isCompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession) {
+  std::list<String> currents = std::list<String>();
+  currents.push_back(attributes);
+  currents.push_back(race);
+  currents.push_back(origin);
+  currents.push_back(culture);
+  currents.push_back(religion);
+  currents.push_back(profession);
+  for(String way : currents) {
+    for(std::pair<const std::string, const std::string> incompatibility : link->getAdventure()->getDatabase()->getWaysIncompatibilities()) {
+      if(incompatibility.first.c_str() == tocheck && incompatibility.second.c_str() == way || incompatibility.first.c_str() == way && incompatibility.second.c_str() == tocheck) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+void GodotLink::sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession) {
   #ifdef LOG
-    log << "sendChoices(test, TXT_SPIRITUALIST, TXT_LEPIDOPTERAN, TXT_GREEN_TOWN, TXT_WOODLAND, TXT_HIBERO, TXT_SCHOLAR)" << std::endl;
+    log << "sendChoices(" << character.utf8().get_data() << ", " << attributes.utf8().get_data() << ", " << race.utf8().get_data() << ", " << origin.utf8().get_data() << ", " << culture.utf8().get_data() << ", " << religion.utf8().get_data() << ", " << profession.utf8().get_data() <<")" << std::endl;
   #endif
-  link->sendChoices("test", "TXT_SPIRITUALIST", "TXT_LEPIDOPTERAN", "TXT_GREEN_TOWN", "TXT_WOODLAND", "TXT_HIBERO", "TXT_SCHOLAR");
+  link->sendChoices(character.utf8().get_data(), attributes.utf8().get_data(), race.utf8().get_data(), origin.utf8().get_data(), culture.utf8().get_data(), religion.utf8().get_data(), profession.utf8().get_data());
   #ifdef LOG
     log << "sendReady()" << std::endl;
   #endif
@@ -619,6 +638,23 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   return result;
 }
 
+
+Array GodotLink::getStartingAttributes() {
+  Array result;
+  for(Attributes * attributes : link->getAdventure()->getStartingAttributes()) {
+    result.push_back(getDataFromClass(attributes->name.c_str()));
+  }
+  return result;
+}
+
+Array GodotLink::getStartingWays() {
+  Array result;
+  for(Way * way : link->getAdventure()->getStartingWays()) {
+    result.push_back(getDataFromWay(way->name.c_str()));
+  }
+  return result;
+}
+
 void GodotLink::send_action(Dictionary action) {
   #ifdef LOG
     log << "send_action()" << std::endl;
@@ -716,6 +752,8 @@ void GodotLink::close() {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "lang"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("isCompatible", "tocheck", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::isCompatible);
+  ClassDB::bind_method(D_METHOD("sendChoices", "character", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::sendChoices);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMoveCost", "ori", "dest"), &GodotLink::getMoveCost);
@@ -739,6 +777,8 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);
   ClassDB::bind_method(D_METHOD("getStatsFromCharacter"), &GodotLink::getStatsFromCharacter);
   ClassDB::bind_method(D_METHOD("getInventoryFromCharacter"), &GodotLink::getInventoryFromCharacter);
+  ClassDB::bind_method(D_METHOD("getStartingAttributes"), &GodotLink::getStartingAttributes);
+  ClassDB::bind_method(D_METHOD("getStartingWays"), &GodotLink::getStartingWays);
   ClassDB::bind_method(D_METHOD("send_action", "action"), &GodotLink::send_action);
   ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
 }

@@ -54,8 +54,17 @@ const TARGET_BLOCK = 4
 const TARGET_PERMISSIVE = 5
 const TARGET_MULTIPLE = 6
 
+const WAY_CLASS = 1
+const WAY_RACE = 2
+const WAY_ORIGIN = 3
+const WAY_CULTURE = 4
+const WAY_RELIGION = 5
+const WAY_PROFESSION = 6
+
 # Variables
 var server_pid = -1
+var ip = "127.0.0.1"
+var multiplayer_mode = true
 var link = GodotLink.new()
 var updating_state = false
 var next_state_ready = false

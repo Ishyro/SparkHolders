@@ -40,7 +40,7 @@ func _on_visibility_changed():
 	if visible:
 		if hud:
 			hud.visible = false
-		continueButton.grab_focus()
+		continueButton.grab_focus.call_deferred()
 	else:
 		if hud:
 			hud.visible = true

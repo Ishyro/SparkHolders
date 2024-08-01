@@ -44,9 +44,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var ip = "127.0.0.1"
 	mutex = Mutex.new()
-	Values.link.initialize(ip, Settings.Port, Settings.Lang)
 	Values.link.getState()
 	owned_character = Values.link.getPlayerId()
 	characters_data = Values.link.getCharacters()

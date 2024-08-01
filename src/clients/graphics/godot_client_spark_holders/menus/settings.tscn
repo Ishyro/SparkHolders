@@ -334,6 +334,8 @@ text = "Password"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+secret = true
+secret_character = "*"
 caret_blink = true
 
 [node name="Dummy" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]

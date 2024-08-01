@@ -4,7 +4,7 @@
   #pragma comment(lib, "Ws2_32.lib")
 #endif
 
-ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool local) {
+ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool multiplayer) {
   #ifdef _WIN32_WINNT
 		WSADATA d;
 	  if (WSAStartup(MAKEWORD(2, 2), &d)) {
@@ -20,11 +20,11 @@ ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool local) {
     #endif
     exit(EXIT_FAILURE);
   }
-  if(local) {
-    sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  if(multiplayer) {
+    sin.sin_addr.s_addr = htonl(INADDR_ANY);
   }
   else {
-    sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    sin.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
   }
   sin.sin_port = htons(port);
   sin.sin_family = AF_INET;

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://d0oud2clscbk8"]
+[gd_scene load_steps=7 format=3 uid="uid://d0oud2clscbk8"]
 
 [ext_resource type="Script" path="res://menus/menu.gd" id="1_occg0"]
 [ext_resource type="Texture2D" uid="uid://djr3n5lm4m5ed" path="res://resources/materials/cut_stone/Color.jpg" id="2_ap7sj"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_tamjf"]
 [ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="3_h8g0t"]
 [ext_resource type="LabelSettings" uid="uid://dpf5xv4lmcttw" path="res://menus/hud/police/NumbersWhite.tres" id="3_tk4mp"]
+[ext_resource type="PackedScene" uid="uid://b1w6hj8fjnwak" path="res://menus/adventure_selector.tscn" id="6_m58jf"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -41,9 +42,9 @@ vertical_alignment = 1
 [node name="Container" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.05
+anchor_left = 0.1
 anchor_top = 0.7
-anchor_right = 0.8
+anchor_right = 0.9
 anchor_bottom = 0.95
 grow_horizontal = 2
 grow_vertical = 0
@@ -154,6 +155,10 @@ focus_neighbor_right = NodePath("../Singleplayer")
 text = "Quit Game "
 
 [node name="Settings" parent="." instance=ExtResource("3_h8g0t")]
+visible = false
+layout_mode = 1
+
+[node name="AdventureSelector" parent="." instance=ExtResource("6_m58jf")]
 visible = false
 layout_mode = 1
 
