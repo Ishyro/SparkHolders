@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://dck076v421ki4"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://dck076v421ki4"]
 
 [ext_resource type="StyleBox" uid="uid://d13oiu3x564d8" path="res://menus/theme/medium.tres" id="1_dly8o"]
 [ext_resource type="StyleBox" uid="uid://sw6qonrxf7qp" path="res://menus/theme/light.tres" id="1_g0jhi"]
@@ -6,7 +6,20 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ynxo7"]
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_x4bi4"]
+color = Color(0.184314, 0.184314, 0.184314, 1)
+grow_begin = -25.0
+grow_end = -25.0
+thickness = 10
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b3obj"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_6ek46"]
+color = Color(0.184314, 0.184314, 0.184314, 1)
+grow_begin = -25.0
+grow_end = -25.0
+thickness = 10
+vertical = true
 
 [resource]
 Button/colors/font_color = Color(0.74902, 0.74902, 0.74902, 1)
@@ -30,6 +43,7 @@ CheckButton/styles/hover = ExtResource("1_dly8o")
 CheckButton/styles/hover_pressed = ExtResource("2_n10md")
 CheckButton/styles/normal = ExtResource("2_n10md")
 CheckButton/styles/pressed = ExtResource("1_dly8o")
+HSeparator/styles/separator = SubResource("StyleBoxLine_x4bi4")
 Label/colors/font_color = Color(0.184314, 0.184314, 0.184314, 1)
 Label/font_sizes/font_size = 48
 LineEdit/colors/caret_color = Color(0.184314, 0.184314, 0.184314, 1)
@@ -65,3 +79,4 @@ TabContainer/styles/tab_selected = ExtResource("1_g0jhi")
 TabContainer/styles/tab_unselected = ExtResource("2_n10md")
 TooltipLabel/colors/font_color = Color(0.184314, 0.184314, 0.184314, 1)
 TooltipPanel/styles/panel = ExtResource("1_g0jhi")
+VSeparator/styles/separator = SubResource("StyleBoxLine_6ek46")

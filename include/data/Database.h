@@ -36,7 +36,7 @@ class Database {
     const std::string getWayFile(const std::string way);
     const int32_t getRelation(const std::string team1, const std::string team2);
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
-    std::list<std::string> getTranslationPaths();
+    std::list<std::string> getKeysPaths();
 
     void addAttributes(const Attributes * attributes);
     void addAttributesFile(const std::string attributes, const std::string path);
@@ -59,7 +59,7 @@ class Database {
     void addWayFile(const std::string way, const std::string path);
     void addRelation(const std::string team1, const std::string team2, int32_t relation);
     void addWayImcompatibility(const std::string way1, const std::string way2);
-    void addTranslationPath(const std::string path);
+    void addKeyPath(const std::string path);
 
   private:
     std::map<const std::string,const int32_t> macros;

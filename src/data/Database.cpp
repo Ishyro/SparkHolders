@@ -326,7 +326,7 @@ const int32_t Database::getRelation(const std::string team1, const std::string t
   }
 }
 
-std::list<std::string> Database::getTranslationPaths() { return paths; }
+std::list<std::string> Database::getKeysPaths() { return paths; }
 
 std::list<std::pair<const std::string, const std::string>> Database::getWaysIncompatibilities() { return waysIncompatibilities; }
 
@@ -365,4 +365,4 @@ void Database::addRelation(const std::string team1, const std::string team2, int
 void Database::addWayImcompatibility(const std::string way1, const std::string way2) {
   waysIncompatibilities.push_back(std::make_pair(way1, way2));
 }
-void Database::addTranslationPath(const std::string path) { paths.push_back(path); };
+void Database::addKeyPath(const std::string path) { paths.push_back(path); };

@@ -21,11 +21,11 @@ void listener(void * param) {
   }
 }
 
-void GodotLink::initialize(String ip, int64_t port, String lang) {
+void GodotLink::initialize(String ip, int64_t port, String password) {
   s = Socket();
   s.connect(std::string(ip.utf8().get_data()), port);
-  link = new Link(s, std::string(lang.utf8().get_data()));
-  link->initialize("tester", "admin");
+  link = new Link(s);
+  link->initialize(password.utf8().get_data());
   #ifdef _WIN32_WINNT
     thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
   #else
@@ -52,6 +52,10 @@ bool GodotLink::isCompatible(String tocheck, String attributes, String race, Str
     }
   }
   return true;
+}
+
+String GodotLink::getEnglishFromKey(String key) {
+  return link->getEnglishFromKey(key.utf8().get_data()).c_str();
 }
 
 void GodotLink::sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession) {
@@ -736,23 +740,38 @@ void GodotLink::send_action(Dictionary action) {
   link->sendAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range);
 }
 
-void GodotLink::close() {
+void GodotLink::close(bool shutdown) {
   #ifdef LOG
     log << "close()" << std::endl;
   #endif
-  link->markClosed();
-  s.close();
+  link->close(shutdown);
+  #ifdef LOG
+    log << "link closed" << std::endl;
+  #endif
+  if(link != nullptr) {
+    #ifdef LOG
+      log << "link" << std::endl;
+    #endif
+    delete link;
+  }
+  if(state != nullptr) {
+    #ifdef LOG
+      log << "state" << std::endl;
+    #endif
+    delete state;
+  }
+  #ifdef LOG
+    log << "ok" << std::endl;
+  #endif
   #ifdef LOG
     log.close();
   #endif
-  delete link;
-  delete state;
-  delete translator;
 }
 
 void GodotLink::_bind_methods() {
-  ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "lang"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "password"), &GodotLink::initialize);
   ClassDB::bind_method(D_METHOD("isCompatible", "tocheck", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::isCompatible);
+  ClassDB::bind_method(D_METHOD("getEnglishFromKey", "key"), &GodotLink::getEnglishFromKey);
   ClassDB::bind_method(D_METHOD("sendChoices", "character", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::sendChoices);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
@@ -780,5 +799,5 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getStartingAttributes"), &GodotLink::getStartingAttributes);
   ClassDB::bind_method(D_METHOD("getStartingWays"), &GodotLink::getStartingWays);
   ClassDB::bind_method(D_METHOD("send_action", "action"), &GodotLink::send_action);
-  ClassDB::bind_method(D_METHOD("close"), &GodotLink::close);
+  ClassDB::bind_method(D_METHOD("close", "shutdown"), &GodotLink::close);
 }

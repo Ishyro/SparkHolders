@@ -16,7 +16,6 @@
 #include "communication/Socket.h"
 
 #include "clients/Link.h"
-#include "clients/Translator.h"
 
 #include "Values.h"
 
@@ -32,15 +31,15 @@ class GodotLink : public RefCounted {
 public:
   GodotLink():
     link(nullptr),
-    translator(nullptr),
     state(nullptr)
   {
     #ifdef LOG
       log.open("log.txt");
     #endif
   }
-  void initialize(String ip, int64_t port, String lang);
+  void initialize(String ip, int64_t port, String password);
   bool isCompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
+  String getEnglishFromKey(String key);
   void sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession);
   bool hasState();
   bool getState();
@@ -75,19 +74,17 @@ public:
   Array getStartingAttributes();
   Array getStartingWays();
   void send_action(Dictionary action);
-  void close();
+  void close(bool shutdown);
 
 protected:
   static void _bind_methods();
 private:
-  Socket s;
-  Link * link;
-  Translator * translator;
-  StateDisplay * state;
   #ifdef LOG
     std::ofstream log;
   #endif
-  std::map<int64_t, int32_t> mist_nbs = std::map<int64_t, int32_t>();
+  Socket s;
+  Link * link;
+  StateDisplay * state;
   #ifdef _WIN32_WINNT
     HANDLE thread;
   #else

@@ -32,7 +32,6 @@ void Link::listen() {
   int32_t socket_msg_type = String::extract_int(ss);
   switch(socket_msg_type) {
     case SOCKET_MSG_CONNECT:
-      username = String::extract(ss);
       password = String::extract(ss);
       if(password == Settings::getMasterPassword()) {
         master = true;
@@ -78,6 +77,18 @@ void Link::listen() {
       }
       break;
     }
+    case SOCKET_MSG_QUIT:
+      std::cout << "quit" << std::endl;
+      markClosed();
+      break;
+    case SOCKET_MSG_SHUTDOWN:
+        std::cout << "shutdown" << std::endl;
+      if(master) {
+        std::cout << "shutdown real" << std::endl;
+        shuting_down = true;
+      }
+      markClosed();
+      break;
     // server shouldn't receive these
     case SOCKET_MSG_STATE:
       break;
@@ -112,6 +123,7 @@ void Link::sendStart() {
 }
 
 bool Link::isClosed() { return closed; }
+bool Link::isShutingDown() { return master && shuting_down; }
 bool Link::isReady() { return ready; }
 bool Link::isMaster() { return master; }
 void Link::markClosed() { closed = true; }
@@ -139,5 +151,3 @@ bool Link::getNeedToUpdateActions() {
   const std::lock_guard<std::mutex> guard(mutex);
   return character->getCurrentAction() == nullptr;
 }
-
-std::string Link::getUsername() { return username; }

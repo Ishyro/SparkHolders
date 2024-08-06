@@ -182,8 +182,8 @@ Settings.{DAYTIME_DURATION}{30}
 Settings.{DUSK_DURATION}{3}
 Settings.{MONTH_NAMES}{{Agate}{Onyx}{Emerald}{Diamond}{Topaz}{Jacynth}{Jasper}{Amethyst}{Rubis}{Sapphire}{Lapis Lazuli}{Aquamarine}}
 Settings.{DAY_NAMES}{{Laxito Dies}{Pyrra Dies}{Aerina Dies}{Hibero Dies}{Beastiona Dies}{Nubilo Dies}}
-# translations files
-Translation.{data/translations/aytlanta}
+# keys files
+EnglishKeys.{data/english_keys/aytlanta}
 # add starting attributes
 StartingAttributes.{TXT_PARAGON}
 StartingAttributes.{TXT_SPIRITUALIST}

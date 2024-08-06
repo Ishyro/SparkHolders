@@ -12,10 +12,9 @@
 
 #include "util/String.h"
 
-void Link::initialize(std::string username, std::string password) {
+void Link::initialize(std::string password) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, SOCKET_MSG_CONNECT);
-  String::insert(ss, username);
   String::insert(ss, password);
   try {
     s.write(ss->str());
@@ -36,7 +35,7 @@ void Link::listen() {
   switch(socket_msg_type) {
     case SOCKET_MSG_ADVENTURE:
       adventure = Client::receiveAdventure(ss->str(), master);
-      t = new Translator(adventure->getDatabase()->getTranslationPaths(), language);
+      key_holder = new EnglishKeyHolder(adventure->getDatabase()->getKeysPaths());
       started = true;
       break;
     case SOCKET_MSG_READY:
@@ -148,16 +147,25 @@ StateDisplay * Link::getState() {
   return nullptr;
 }
 
-Translator * Link::getTranslator() { return t; }
-
-void Link::changeLanguage(std::string language) {
-  this->language = language;
-  Translator * old = t;
-  delete old;
-  t = new Translator(adventure->getDatabase()->getTranslationPaths(), language);
-}
+std::string Link::getEnglishFromKey(std::string key) { return key_holder->getEnglishFromKey(key); }
 
 bool Link::isClosed() { return closed; }
 bool Link::isReady() { return ready; }
 bool Link::isStarted() { return started; }
-void Link::markClosed() { closed = true; }
+void Link::close(bool shutdown) {
+  closed = true;
+  std::stringstream * ss = new std::stringstream();
+  if(shutdown && master) {
+    String::insert_int(ss, SOCKET_MSG_SHUTDOWN);
+  }
+  else {
+    String::insert_int(ss, SOCKET_MSG_QUIT);
+  }
+  try {
+    s.write(ss->str());
+    s.close();
+    delete ss;
+  } catch (const CloseException &e) {
+    throw e;
+  }
+}

@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://d22svxk6tquby"]
+[gd_scene load_steps=10 format=3 uid="uid://d22svxk6tquby"]
 
 [ext_resource type="Script" path="res://menus/character_creator.gd" id="1_e1whd"]
 [ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="2_15u48"]
+[ext_resource type="PackedScene" uid="uid://f2t5jmvgrm2d" path="res://menus/label_toolip.tscn" id="3_iu0rl"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="3_t8tgw"]
 [ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="4_5xp16"]
 [ext_resource type="PackedScene" uid="uid://32m0hqaidtg" path="res://menus/way.tscn" id="5_8xri3"]
+[ext_resource type="Texture2D" uid="uid://dp6bfrom56h6q" path="res://menus/hud/buttons/arrow_right.png" id="7_ng2mv"]
+[ext_resource type="Texture2D" uid="uid://dab4n7qydvn4f" path="res://menus/hud/buttons/arrow_gold_right.png" id="8_ow5qf"]
+[ext_resource type="Texture2D" uid="uid://dh8u16eq3gnqg" path="res://menus/hud/buttons/void.png" id="9_hw8c3"]
 
 [node name="CharacterCreator" type="Control"]
 layout_mode = 3
@@ -36,41 +40,182 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Ways" type="VBoxContainer" parent="Divider"]
+[node name="Ways1" type="VBoxContainer" parent="Divider"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="Class" parent="Divider/Ways" instance=ExtResource("5_8xri3")]
+[node name="RaceContainer" type="ColorRect" parent="Divider/Ways1"]
 layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
 
-[node name="Origin" parent="Divider/Ways" instance=ExtResource("5_8xri3")]
-layout_mode = 2
+[node name="Background" type="TextureRect" parent="Divider/Ways1/RaceContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
 
-[node name="Religion" parent="Divider/Ways" instance=ExtResource("5_8xri3")]
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways1/RaceContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways1/RaceContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
+tooltip_text = "The Race is a Major Way, granting the most base Stats (600 Points). It also has some influence over which Skills and Stances willl be availlable to the Character."
+mouse_filter = 1
+text = "Race"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Race" parent="Divider/Ways1/RaceContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OriginContainer" type="ColorRect" parent="Divider/Ways1"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
+
+[node name="Background" type="TextureRect" parent="Divider/Ways1/OriginContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
+
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways1/OriginContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways1/OriginContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+tooltip_text = "The Origin is a Minor Way, granting base Stats (300 Points)."
+mouse_filter = 1
+text = "Origin"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Origin" parent="Divider/Ways1/OriginContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ReligionContainer" type="ColorRect" parent="Divider/Ways1"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
+
+[node name="Background" type="TextureRect" parent="Divider/Ways1/ReligionContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
+
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways1/ReligionContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways1/ReligionContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+tooltip_text = "The Religion is a Minor Way with mixed effects, granting 150 starting Stats and 25 stats on level up."
+mouse_filter = 1
+text = "Religion"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Religion" parent="Divider/Ways1/ReligionContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Character" type="VBoxContainer" parent="Divider"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.33
 
-[node name="Dummy" type="Control" parent="Divider/Character"]
+[node name="Name" type="Control" parent="Divider/Character"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.2
+size_flags_stretch_ratio = 0.25
+mouse_filter = 1
 
-[node name="Name" type="LineEdit" parent="Divider/Character"]
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.05
-placeholder_text = "Name"
+[node name="Border" type="ColorRect" parent="Divider/Character/Name"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.184314, 0.184314, 0.184314, 1)
+
+[node name="LineEdit" type="LineEdit" parent="Divider/Character/Name"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+mouse_filter = 1
 alignment = 1
 caret_blink = true
 
 [node name="Dummy2" type="Control" parent="Divider/Character"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.8
+size_flags_stretch_ratio = 0.1
+
+[node name="HSeparator" type="HSeparator" parent="Divider/Character"]
+layout_mode = 2
+
+[node name="Summary" type="Label" parent="Divider/Character"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+text = "Summary"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Divider/Character"]
+layout_mode = 2
 
 [node name="Stats" type="HBoxContainer" parent="Divider/Character"]
 layout_mode = 2
@@ -81,56 +226,58 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Stats" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Stats" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
+tooltip_text = "Stats represent the raw powers of a Character. They are increased on level up, with magical items, or with temporary spells."
+mouse_filter = 1
 text = "Stats"
 horizontal_alignment = 1
 
-[node name="Hp" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Health" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_HP_DESCRIPTION"
+tooltip_text = "The Endurance of a Character, associated with Blood. Reduced when taking damage. The Character die when they reach 0. Each Health Point is worth 1 Stat Point."
 mouse_filter = 1
-text = "Hp"
+text = "Health"
 horizontal_alignment = 1
 
-[node name="Mana" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Mana" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_MANA_DESCRIPTION"
+tooltip_text = "The Life Energy of a Character, associated with Phlegm. Casting spells will usually cost Mana. The Character die when they reach 0. Each Mana Point is worth 1 Stat Point."
 mouse_filter = 1
 text = "Mana"
 horizontal_alignment = 1
 
-[node name="Shield" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Shield" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_SHIELD__DESCRIPTION"
+tooltip_text = "The ability to harden skin and bones, associated with Black Bile. Damages are usually dealt to Shield before Health. Shield regenerate faster than Health. Each Shield Point is worth 3 Stat Points."
 mouse_filter = 1
 text = "Shield"
 horizontal_alignment = 1
 
-[node name="SoulBurn" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Threshold" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_SOULBURN_DESCRIPTION"
+tooltip_text = "The capacity to endure losing Life Energy (Mana) without drawbacks, associated with Yellow Bile. Everytime you use mana (receiving Spirit damage count as well), it will be converted into Soulburn. Every tick, you will lose the maximum between 1 percent of this Threshold and your current Soulburn. Losing any point of Soulburn above this Threshold results in receiving the same amount of True damage (Health damage). Being in this state is refered as \"Soulburning\".  Each Threshold Point is worth 3 Stat Points."
 mouse_filter = 1
-text = "SoulBurn"
+text = "Threshold"
 horizontal_alignment = 1
 
-[node name="Damage" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Strength" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_DAMAGEMULT__DESCRIPTION"
+tooltip_text = "The ability to increase the power and the balance of the Body. Translates to bonus damage  with all weapons and Weaponized Skills (These are a subset of Skills that Classes like Elementalist will usually not rely on. To increase Skill / Spell damage, invest on Flow). Each Strength Point is worth 6 Stat Points. "
 mouse_filter = 1
-text = "Damage"
+text = "Strength"
 horizontal_alignment = 1
 
-[node name="Flow" type="Label" parent="Divider/Character/Stats/Labels"]
+[node name="Flow" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "TXT_FLOW_DESCRIPTION"
+tooltip_text = "The maximum amount of mana you can spend in a single round, which is directly linked to casting speed. Does not apply to mana cost you pay when receiving SPIRIT damage. Each Flow Point is worth 6 Stat Points."
 mouse_filter = 1
 text = "Flow"
 horizontal_alignment = 1
@@ -139,13 +286,15 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Base" type="Label" parent="Divider/Character/Stats/Base"]
+[node name="Base" parent="Divider/Character/Stats/Base" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
+tooltip_text = "The starting Stats of the Character. A Player Character starts with 1200 Stat Points at level 1."
+mouse_filter = 1
 text = "Base"
 horizontal_alignment = 1
 
-[node name="Hp" type="Label" parent="Divider/Character/Stats/Base"]
+[node name="Health" type="Label" parent="Divider/Character/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
@@ -160,12 +309,12 @@ layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
-[node name="SoulBurn" type="Label" parent="Divider/Character/Stats/Base"]
+[node name="Threshold" type="Label" parent="Divider/Character/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
-[node name="Damage" type="Label" parent="Divider/Character/Stats/Base"]
+[node name="Strength" type="Label" parent="Divider/Character/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
@@ -179,13 +328,15 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EachLevel" type="Label" parent="Divider/Character/Stats/Increments"]
+[node name="EachLevel" parent="Divider/Character/Stats/Increments" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-text = "Each level "
+tooltip_text = "The Stats gained on each level up of the Character. A Player Character gains 240 Stat Points per level."
+mouse_filter = 1
+text = "Each level"
 horizontal_alignment = 1
 
-[node name="Hp" type="Label" parent="Divider/Character/Stats/Increments"]
+[node name="Health" type="Label" parent="Divider/Character/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
@@ -200,12 +351,12 @@ layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
-[node name="SoulBurn" type="Label" parent="Divider/Character/Stats/Increments"]
+[node name="Threshold" type="Label" parent="Divider/Character/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
-[node name="Damage" type="Label" parent="Divider/Character/Stats/Increments"]
+[node name="Strength" type="Label" parent="Divider/Character/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
@@ -215,9 +366,35 @@ layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
-[node name="Dummy3" type="Control" parent="Divider/Character"]
+[node name="HSeparator3" type="HSeparator" parent="Divider/Character"]
+layout_mode = 2
+
+[node name="Explanations" type="Label" parent="Divider/Character"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.2
+text = "Explanations"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator4" type="HSeparator" parent="Divider/Character"]
+layout_mode = 2
+
+[node name="ExplanationsContent" type="Label" parent="Divider/Character"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Create your character by chosing his name and his 6 Ways.
+
+The Ways will determine the starting Stats of the  Character, and the Stats he will gain by leveling up.
+
+They will also influence how people will see you.
+
+Some Ways are not compatible with others.
+
+If you leave your mouse over a Way, a Way Category, or a Stat, a tooltip will appear."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="Buttons" type="HBoxContainer" parent="Divider/Character"]
 layout_mode = 2
@@ -238,14 +415,128 @@ text = "Cancel"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Race" parent="Divider/Ways2" instance=ExtResource("5_8xri3")]
+[node name="ClassContainer" type="ColorRect" parent="Divider/Ways2"]
 layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
 
-[node name="Culture" parent="Divider/Ways2" instance=ExtResource("5_8xri3")]
-layout_mode = 2
+[node name="Background" type="TextureRect" parent="Divider/Ways2/ClassContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
 
-[node name="Profession" parent="Divider/Ways2" instance=ExtResource("5_8xri3")]
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways2/ClassContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways2/ClassContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
+tooltip_text = "The Class is a Major Way, granting Stats on level up (100 points), but also determining most of the Skills and Stances that will be availlable to your Character.
+At Level 10, you will chose a Second Class (among the 6 other Clases).
+At Level 20, you will chose a Specialized Class among 5 Choices determined by your First Class and Second Class.
+(2 Sub Class per Class, and 1 Mixed Class)."
+mouse_filter = 1
+text = "Class"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Class" parent="Divider/Ways2/ClassContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CultureContainer" type="ColorRect" parent="Divider/Ways2"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
+
+[node name="Background" type="TextureRect" parent="Divider/Ways2/CultureContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
+
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways2/CultureContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways2/CultureContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+tooltip_text = "The Culture is a Minor Way, granting Stats on level up (50 points)."
+mouse_filter = 1
+text = "Culture"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Culture" parent="Divider/Ways2/CultureContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EducationContainer" type="ColorRect" parent="Divider/Ways2"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.184314, 0.184314, 0.184314, 1)
+
+[node name="Background" type="TextureRect" parent="Divider/Ways2/EducationContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_15u48")
+expand_mode = 1
+
+[node name="Divider" type="VBoxContainer" parent="Divider/Ways2/EducationContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Title" parent="Divider/Ways2/EducationContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+tooltip_text = "The Education is a Minor Way with mixed effects, granting 150 starting Stats and 25 stats on level up."
+mouse_filter = 1
+text = "Education"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Education" parent="Divider/Ways2/EducationContainer/Background/Divider" instance=ExtResource("5_8xri3")]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="WaySelector" type="Control" parent="."]
 visible = false
@@ -276,7 +567,7 @@ anchor_bottom = 0.95
 texture = ExtResource("2_15u48")
 expand_mode = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="WaySelector/Background"]
+[node name="Divider" type="HBoxContainer" parent="WaySelector/Background"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -284,15 +575,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="WaySelector/Background/ScrollContainer"]
+[node name="Left" type="TextureButton" parent="WaySelector/Background/Divider"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+texture_normal = ExtResource("7_ng2mv")
+texture_hover = ExtResource("8_ow5qf")
+texture_disabled = ExtResource("9_hw8c3")
+ignore_texture_size = true
+stretch_mode = 0
+flip_h = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="WaySelector/Background/ScrollContainer/VBoxContainer"]
+[node name="Container" type="GridContainer" parent="WaySelector/Background/Divider"]
 layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="WaySelector/Background/ScrollContainer/VBoxContainer"]
+[node name="Right" type="TextureButton" parent="WaySelector/Background/Divider"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+texture_normal = ExtResource("7_ng2mv")
+texture_hover = ExtResource("8_ow5qf")
+texture_disabled = ExtResource("9_hw8c3")
+ignore_texture_size = true
+stretch_mode = 0
 
-[connection signal="text_submitted" from="Divider/Character/Name" to="." method="_on_name_text_submitted"]
+[connection signal="mouse_entered" from="Divider/Character/Name" to="." method="_on_name_mouse_entered"]
+[connection signal="mouse_exited" from="Divider/Character/Name" to="." method="_on_name_mouse_exited"]
+[connection signal="focus_entered" from="Divider/Character/Name/LineEdit" to="." method="_on_line_edit_focus_entered"]
+[connection signal="focus_exited" from="Divider/Character/Name/LineEdit" to="." method="_on_line_edit_focus_exited"]
+[connection signal="text_changed" from="Divider/Character/Name/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="text_submitted" from="Divider/Character/Name/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="Divider/Character/Buttons/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Divider/Character/Buttons/Cancel" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="WaySelector/Background/Divider/Left" to="." method="_on_left_pressed"]
+[connection signal="pressed" from="WaySelector/Background/Divider/Right" to="." method="_on_right_pressed"]

@@ -61,8 +61,12 @@ const WAY_CULTURE = 4
 const WAY_RELIGION = 5
 const WAY_PROFESSION = 6
 
+# Colors
+const ink = Color("2f2f2f")
+const gold = Color("ffcc00")
+
 # Variables
-var server_pid = -1
+var server_owner = false
 var ip = "127.0.0.1"
 var multiplayer_mode = true
 var link = GodotLink.new()

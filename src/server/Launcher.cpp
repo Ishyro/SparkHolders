@@ -150,20 +150,34 @@ int32_t main(int32_t argc, char ** argv) {
     #endif
   }
   bool started = true;
+  bool noPlayers = false;
+  bool shuting_down = false;
   do {
     usleep(1);
-    for(int32_t i = 0; i < playersNumber; i++) {
-      if(links[i]->isMaster() && links[i]->isReady()) {
+    if(playersNumber <= 0) {
+      shuting_down = true;
+    }
+    std::vector<Link *>::iterator it = links.begin();
+    while(it != links.end()) {
+      if((*it)->isShutingDown()) {
+        shuting_down = true;
+        break;
+      }
+      if((*it)->isMaster() && (*it)->isReady()) {
         started = true;
         break;
       }
-      started &= links[i]->isReady();
+      if((*it)->isClosed()) {
+        playersNumber--;
+        it = links.erase(it);
+        continue;
+      }
+      started &= (*it)->isReady();
     }
-  } while (!started);
+  } while (!started && !shuting_down);
   for(int32_t i = 0; i < playersNumber; i++) {
     links[i]->sendStart();
   }
-  bool noPlayers = false;
   RelinkCommunicationParameter * param = new RelinkCommunicationParameter();
   param->links = &links;
   param->ss = ss;
@@ -176,7 +190,7 @@ int32_t main(int32_t argc, char ** argv) {
   #endif
   std::chrono::_V2::system_clock::time_point start = std::chrono::system_clock::now();
   std::chrono::_V2::system_clock::time_point end;
-  while(!noPlayers) {
+  while(!noPlayers && !shuting_down) {
     adventure->applyIteration();
     for(int32_t i = 0; i < playersNumber; i++) {
       links[i]->sendState();
@@ -205,6 +219,9 @@ int32_t main(int32_t argc, char ** argv) {
     for(int32_t i = 0; i < playersNumber; i++) {
       if(!links[i]->isClosed()) {
         noPlayers = false;
+      }
+      if(links[i]->isShutingDown()) {
+        shuting_down = true;
         break;
       }
     }
@@ -214,4 +231,5 @@ int32_t main(int32_t argc, char ** argv) {
   delete adventure;
   ss->close();
   delete ss;
+  return EXIT_SUCCESS;
 }

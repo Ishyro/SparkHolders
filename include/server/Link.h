@@ -12,6 +12,7 @@ class Link {
     ):
       adventure(adventure),
       closed(false),
+      shuting_down(false),
       ready(false)
     {}
     // non copyable because of mutex
@@ -23,6 +24,7 @@ class Link {
     void sendState();
     void sendStart();
     bool isClosed();
+    bool isShutingDown();
     bool isReady();
     bool isMaster();
     void markClosed();
@@ -38,9 +40,9 @@ class Link {
     Action * action = nullptr;
     Socket s;
     bool closed;
+    bool shuting_down;
     bool ready;
     bool master;
-    std::string username;
     std::string password;
     std::mutex mutex;
 };

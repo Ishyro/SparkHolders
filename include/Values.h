@@ -398,6 +398,8 @@ class SpeechManager;
 #define SOCKET_MSG_CHARACTER 6
 #define SOCKET_MSG_ACTION 7
 #define SOCKET_MSG_STATE 8
-#define SOCKET_MSG_SWITCH 9 
+#define SOCKET_MSG_SWITCH 9
+#define SOCKET_MSG_QUIT 10 
+#define SOCKET_MSG_SHUTDOWN 11
 
 #endif // _VALUES_H_

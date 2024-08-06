@@ -1,5 +1,3 @@
-Choices selector on client
-
 ServerSerttings for tick pause
 Send Settings via socket to client
 

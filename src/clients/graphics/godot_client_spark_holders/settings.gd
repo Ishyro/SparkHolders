@@ -9,3 +9,6 @@ var TerranDay = true
 var Resolution
 var white_light
 var shadows
+
+# Server
+var password

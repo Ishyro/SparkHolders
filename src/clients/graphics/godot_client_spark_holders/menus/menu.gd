@@ -30,8 +30,6 @@ func _on_settings_pressed():
 	settings.visible = true
 
 func _on_quit_pressed():
-	if Values.server_pid != -1:
-		OS.kill(Values.server_pid)
 	get_tree().quit()
 
 func _on_new_single_pressed():
@@ -40,7 +38,8 @@ func _on_new_single_pressed():
 
 func _on_load_single_pressed():
 	Values.multiplayer_mode = false
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+	Values.server_owner = true
+	OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_new_multi_pressed():
@@ -49,9 +48,10 @@ func _on_new_multi_pressed():
 
 func _on_load_multi_pressed():
 	Values.multiplayer_mode = true
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+	Values.server_owner = true
+	OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_join_pressed():
 	Values.multiplayer_mode = true
-	get_tree().change_scene_to_file("res://world/world.tscn")
+	get_tree().change_scene_to_file("res://menus/character_creator.tscn")

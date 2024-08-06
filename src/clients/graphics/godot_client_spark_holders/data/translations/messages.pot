@@ -1,0 +1,203 @@
+# Don't remove the two lines below, they're required for gettext to work correctly.
+msgid ""
+msgstr ""
+
+msgid "Hp"
+msgstr ""
+
+msgid "Health points. Reduced when taking damage. The Character die when they reach 0."
+msgstr ""
+
+msgid "Mana"
+msgstr ""
+
+msgid "Mana points. Casting spells will usually cost mana. The Character die when they reach 0."
+msgstr ""
+
+msgid "Shield"
+msgstr ""
+
+msgid "Damages are usually dealt to Shield before Hp. Shield regenerate faster than Hp."
+msgstr ""
+
+msgid "Soulburn"
+msgstr ""
+
+msgid "Everytime you use mana (receiving SPIRIT damage count as well), it will be converted into Soulburn. Every tick, you will lose the max between 10 percent of this threshold value and your current Soulburn. If you have more Soulburn than this Threshold, losing any amount of Soulburn will result in receiving the same amount of TRUE damage."
+msgstr ""
+
+msgid "Damage"
+msgstr ""
+
+msgid "The bonus damage the Character has with weapons."
+msgstr ""
+
+msgid "Flow"
+msgstr ""
+
+msgid "The maximum amount of mana you can spend in a single round, which is directly linked to casting speed. Does not apply to mana cost you pay when receiving SPIRIT damage."
+msgstr ""
+
+msgid "Vision"
+msgstr ""
+
+msgid "How well you can see other Characters. The blocks around you are always visible."
+msgstr ""
+
+msgid "Experience"
+msgstr ""
+
+msgid "The points you need to level up. Killing another Character grants half his Experience points. The amount of points needed to gain a new level is:
+u(0) = 0
+u(n+1) = n^3 * 60 + u(n)"
+msgstr ""
+
+msgid "Level"
+msgstr ""
+
+msgid "The Character's level. The higher it is, the stronger the Character is."
+msgstr ""
+
+msgid "Gold"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Range"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Capacity"
+msgstr ""
+
+msgid "Ammo type"
+msgstr ""
+
+msgid "Effects"
+msgstr ""
+
+msgid "Class"
+msgstr ""
+
+msgid "Race"
+msgstr ""
+
+msgid "Origin"
+msgstr ""
+
+msgid "Culture"
+msgstr ""
+
+msgid "Religion"
+msgstr ""
+
+msgid "Profession"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Long sword"
+msgstr ""
+
+msgid "Short sword"
+msgstr ""
+
+msgid "Curved sword"
+msgstr ""
+
+msgid "Rapier"
+msgstr ""
+
+msgid "Spear"
+msgstr ""
+
+msgid "Glaive"
+msgstr ""
+
+msgid "Axe"
+msgstr ""
+
+msgid "Warhammer"
+msgstr ""
+
+msgid "Dagger"
+msgstr ""
+
+msgid "Fist"
+msgstr ""
+
+msgid "Bow"
+msgstr ""
+
+msgid "Crossbow"
+msgstr ""
+
+msgid "Magic staff"
+msgstr ""
+
+msgid "Rifle"
+msgstr ""
+
+msgid "Pistol"
+msgstr ""
+
+msgid "Sling"
+msgstr ""
+
+msgid "Fire"
+msgstr ""
+
+msgid "Lightning"
+msgstr ""
+
+msgid "Air"
+msgstr ""
+
+msgid "Arrow"
+msgstr ""
+
+msgid "Bullet"
+msgstr ""
+
+msgid "Special"
+msgstr ""
+
+msgid "Unequipable"
+msgstr ""
+
+msgid "Helmet"
+msgstr ""
+
+msgid "Gauntlets"
+msgstr ""
+
+msgid "Shield"
+msgstr ""
+
+msgid "Boots"
+msgstr ""
+
+msgid "Full Shield"
+msgstr ""
+
+msgid "Ring"
+msgstr ""
+
+msgid "Amulet"
+msgstr ""
+
+msgid "Self"
+msgstr ""
+
+msgid "Target"
+msgstr ""
+
+msgid "Block"
+msgstr ""

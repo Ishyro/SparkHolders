@@ -427,8 +427,8 @@ namespace FileOpener {
       std::string team2 = String::extract(ss);
       database->addRelation(team1, team2, relation);
     }
-    else if(keyword == "Translation" && !isServer) {
-      database->addTranslationPath(String::extract(ss));
+    else if(keyword == "EnglishKeys" && !isServer) {
+      database->addKeyPath(String::extract(ss));
     }
     else if(keyword == "WayImcompatibility") {
       std::string way1 = String::extract(ss);

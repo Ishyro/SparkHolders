@@ -5,37 +5,38 @@ var data = {}
 @onready var title = $Background/Content/Name
 @onready var picture = $Background/Content/Divider/Picture
 @onready var unvalid = $Unvalid
+@onready var border = $Border
 
-@onready var baseHp = $Background/Content/Divider/Stats/Base/Hp
+@onready var baseHealth = $Background/Content/Divider/Stats/Base/Health
 @onready var baseMana = $Background/Content/Divider/Stats/Base/Mana
 @onready var baseShield = $Background/Content/Divider/Stats/Base/Shield
-@onready var baseSoulBurn = $Background/Content/Divider/Stats/Base/SoulBurn
-@onready var baseDamage = $Background/Content/Divider/Stats/Base/Damage
+@onready var baseThreshold = $Background/Content/Divider/Stats/Base/Threshold
+@onready var baseStrength = $Background/Content/Divider/Stats/Base/Strength
 @onready var baseFlow = $Background/Content/Divider/Stats/Base/Flow
 
-@onready var incrHp = $Background/Content/Divider/Stats/Increments/Hp
+@onready var incrHealth = $Background/Content/Divider/Stats/Increments/Health
 @onready var incrMana = $Background/Content/Divider/Stats/Increments/Mana
 @onready var incrShield = $Background/Content/Divider/Stats/Increments/Shield
-@onready var incrSoulBurn = $Background/Content/Divider/Stats/Increments/SoulBurn
-@onready var incrDamage = $Background/Content/Divider/Stats/Increments/Damage
+@onready var incrThreshold = $Background/Content/Divider/Stats/Increments/Threshold
+@onready var incrStrength = $Background/Content/Divider/Stats/Increments/Strength
 @onready var incrFlow = $Background/Content/Divider/Stats/Increments/Flow
 
 func initialize(way: Dictionary):
 	data = way
-	title.text = data["name"]
-	baseHp.text = str(data["baseHp"])
+	title.text = Values.link.getEnglishFromKey(data["name"])
+	baseHealth.text = str(data["baseHp"])
 	baseMana.text = str(data["baseMana"])
 	baseShield.text = str(data["baseShield"])
 	if data["baseDamageMult"] >= 0:
-		baseDamage.text = "+" + str(data["baseDamageMult"]) + "%"
+		baseStrength.text = "+" + str(data["baseDamageMult"]) + "%"
 	else:
-		baseDamage.text = str(data["baseDamageMult"]) + "%"
-	baseSoulBurn.text = str(data["baseSoulBurn"])
+		baseStrength.text = str(data["baseDamageMult"]) + "%"
+	baseThreshold.text = str(data["baseSoulBurn"])
 	baseFlow.text = str(data["baseFlow"])
 	if data["hpIncr"] >= 0:
-		incrHp.text = "+" + str(data["hpIncr"])
+		incrHealth.text = "+" + str(data["hpIncr"])
 	else:
-		incrHp.text = str(data["hpIncr"])
+		incrHealth.text = str(data["hpIncr"])
 	if data["manaIncr"] >= 0:
 		incrMana.text = "+" + str(data["manaIncr"])
 	else:
@@ -45,16 +46,29 @@ func initialize(way: Dictionary):
 	else:
 		incrShield.text = str(data["shieldIncr"])
 	if data["damageMultIncr"] >= 0:
-		incrDamage.text = "+" + str(data["damageMultIncr"]) + "%"
+		incrStrength.text = "+" + str(data["damageMultIncr"]) + "%"
 	else:
-		incrDamage.text = str(data["damageMultIncr"]) + "%"
+		incrStrength.text = str(data["damageMultIncr"]) + "%"
 	if data["soulBurnIncr"] >= 0:
-		incrSoulBurn.text = "+" + str(data["soulBurnIncr"])
+		incrThreshold.text = "+" + str(data["soulBurnIncr"])
 	else:
-		incrSoulBurn.text = str(data["soulBurnIncr"])
+		incrThreshold.text = str(data["soulBurnIncr"])
 	if data["flowIncr"] >= 0:
 		incrFlow.text = "+" + str(data["flowIncr"])
 	else:
 		incrFlow.text = str(data["flowIncr"])
 	picture.texture = load(data["path"])
-	tooltip_text = data["name"] + "_DESCRIPTION"
+	tooltip_text = Values.link.getEnglishFromKey(data["name"] + "_DESC")
+
+func _on_mouse_entered():
+	border.color = Values.gold
+
+func _on_mouse_exited():
+	border.color = Values.ink
+
+func _make_custom_tooltip(for_text):
+	var tooltip = preload("res://menus/tooltip.tscn").instantiate()
+	var length = for_text.length()
+	tooltip.get_node("Label").text = for_text
+	tooltip.custom_minimum_size = Vector2(1000, 80 + length * 1.75)
+	return tooltip

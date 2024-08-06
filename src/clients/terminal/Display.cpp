@@ -36,7 +36,7 @@
 #include "data/ways/Way.h"
 #include "data/ways/Attributes.h"
 
-#include "clients/Translator.h"
+#include "clients/EnglishKeyHolder.h"
 
 #include "clients/terminal/Display.h"
 
@@ -88,7 +88,7 @@ namespace Display {
     mvwprintw(screen, offsetY, offsetX, line.c_str());
   }
 
-  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Translator * t) {
+  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -191,7 +191,7 @@ namespace Display {
     wrefresh(screen);
   }
 
-  void displayStats(Character * player, WINDOW * screen, Translator * t) {
+  void displayStats(Character * player, WINDOW * screen, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -214,7 +214,7 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, Translator * t) {
+  WINDOW * displaySkill(Skill * skill, WINDOW * screen, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -297,7 +297,7 @@ namespace Display {
     return descScreen;
   }
 
-  void displayTarget(CharacterDisplay * target, WINDOW * screen, Translator * t) {
+  void displayTarget(CharacterDisplay * target, WINDOW * screen, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -326,7 +326,7 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displayItem(Item * item, WINDOW * screen, Translator * t) {
+  WINDOW * displayItem(Item * item, WINDOW * screen, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -404,7 +404,7 @@ namespace Display {
     return descScreen;
   }
 
-  void displayCommands(WINDOW * screen, Translator * t) {
+  void displayCommands(WINDOW * screen, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -423,7 +423,7 @@ namespace Display {
     wrefresh(screen);
   }
 
-  WINDOW * displayAttributes(Attributes * attributes, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Translator * t) {
+  WINDOW * displayAttributes(Attributes * attributes, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
     WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_WIDTH, offsetY + 2 + ATTRIBUTES_HEIGHT * place, offsetX + 1);
     wattron(attributesScreen, COLOR_PAIR(color));
     box(attributesScreen, ACS_VLINE, ACS_HLINE);
@@ -441,7 +441,7 @@ namespace Display {
     return attributesScreen;
   }
 
-  WINDOW * displayWay(Way * way, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Translator * t) {
+  WINDOW * displayWay(Way * way, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
     WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_WIDTH, offsetY + 2 + WAY_HEIGHT * place, offsetX + 1);
     wattron(wayScreen, COLOR_PAIR(color));
     box(wayScreen, ACS_VLINE, ACS_HLINE);
@@ -456,7 +456,7 @@ namespace Display {
     return wayScreen;
   }
 
-  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int32_t color, WINDOW * screen, int32_t sizeX, int32_t offsetY, int32_t offsetX, Translator * t) {
+  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int32_t color, WINDOW * screen, int32_t sizeX, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -584,7 +584,7 @@ namespace Display {
     std::vector<Attributes *> startingAttributes,
     std::vector<Way *> startingWays,
     std::list<std::pair<const std::string, const std::string>> waysIncompatibilities,
-    Translator * t)
+    EnglishKeyHolder * t)
   {
     Attributes * selectedAttributes = nullptr;
     Way * selectedRace = nullptr;
@@ -1154,7 +1154,7 @@ namespace Display {
     return result;
   }
 
-  void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, Translator * t) {
+  void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, EnglishKeyHolder * t) {
     while(!link->isReady()) {
       usleep(1);
     }
@@ -1342,7 +1342,7 @@ namespace Display {
     }
   }
 
-  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, Translator * t) {
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, EnglishKeyHolder * t) {
     Skill * result = nullptr;
     bool done = false;
     int32_t cursorX = 0;
@@ -1443,7 +1443,7 @@ namespace Display {
     return result;
   }
 
-  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, Translator * t) {
+  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int32_t & overcharge_power, int32_t & overcharge_duration, int32_t & overcharge_range, EnglishKeyHolder * t) {
     int32_t mana_cost = 0;
     int32_t lines = 0;
     int32_t cols = 0;
@@ -1567,7 +1567,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Translator * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, EnglishKeyHolder * t) {
     bool done = false;
     int32_t lines = 0;
     int32_t cols = 0;
@@ -1685,7 +1685,7 @@ namespace Display {
     return true;
   }
 
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, Translator * t) {
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, EnglishKeyHolder * t) {
       std::string result = "";
       bool done = false;
       int32_t cursorX = 0;
@@ -1788,7 +1788,7 @@ namespace Display {
       return result;
   }
 
-  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Translator * t) {
+  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, EnglishKeyHolder * t) {
     std::string result = "";
     bool done = false;
     int32_t cursorX = 0;

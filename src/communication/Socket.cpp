@@ -9,7 +9,7 @@ Socket::Socket(){
     #ifndef _WIN32_WINNT
       perror("socket");
     #else
-      std::cerr << "accept: " << WSAGetLastError() << std::endl;
+      std::cerr << "socket: " << WSAGetLastError() << std::endl;
     #endif
     exit(1);
   }
@@ -31,7 +31,7 @@ void Socket::connect(const std::string & host, int32_t port) {
     #ifndef _WIN32_WINNT
       perror("connect");
     #else
-      std::cerr << "accept: " << WSAGetLastError() << std::endl;
+      std::cerr << "connect: " << WSAGetLastError() << std::endl;
     #endif
     exit(EXIT_FAILURE);
   }

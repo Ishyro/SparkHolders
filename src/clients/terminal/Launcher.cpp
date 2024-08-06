@@ -13,7 +13,7 @@
 #include "communication/Socket.h"
 
 #include "clients/Link.h"
-#include "clients/Translator.h"
+#include "clients/EnglishKeyHolder.h"
 
 #include "clients/terminal/Display.h"
 
@@ -60,7 +60,7 @@ int32_t main(int32_t argc, char ** argv) {
   std::string IP = "127.0.0.1";
   s.connect(IP, 45678);
   Link * link;
-  Translator * t;
+  EnglishKeyHolder * t;
   if (argc == 2) {
     try {
       link = new Link(s, argv[1]);

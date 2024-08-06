@@ -30,6 +30,7 @@ var adventures_paths = {
 @onready var n_third_era_adventure_value = $"Divider/MarginContainer/TabContainer/Base/Third Era"/HBoxContainer/VBoxContainer/AdventureValue
 @onready var n_third_era_adventure_miniature = $"Divider/MarginContainer/TabContainer/Base/Third Era"/HBoxContainer/VBoxContainer/AdventureMiniature
 @onready var n_third_era_description = $"Divider/MarginContainer/TabContainer/Base/Third Era"/HBoxContainer/Description
+
 # Mods
 @onready var n_mods_adventure_value = $Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer/AdventureValue
 @onready var n_mods_adventure_miniature = $Divider/MarginContainer/TabContainer/Mods/HBoxContainer/VBoxContainer/AdventureMiniature
@@ -52,7 +53,8 @@ func _ready():
 	$Divider/Buttons/Start.grab_focus.call_deferred()
 
 func _on_start_pressed():
-	Values.server_pid = OS.create_process("./SparkHolders.Server.exe", [adventures_paths[selected_adventure], str(Values.multiplayer_mode)])
+	Values.server_owner = true
+	OS.create_process("./SparkHolders.Server.exe", [adventures_paths[selected_adventure], str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://menus/character_creator.tscn")
 
 func _on_close_pressed():

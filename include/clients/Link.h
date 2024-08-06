@@ -5,14 +5,14 @@
 #include <map>
 #include <list>
 
-#include "clients/Translator.h"
+#include "clients/EnglishKeyHolder.h"
 
 #include "Values.h"
 
 class Link {
   public:
-    Link(Socket s, std::string language):s(s),language(language) {}
-    void initialize(std::string username, std::string password);
+    Link(Socket s):s(s) {}
+    void initialize(std::string password);
     void listen();
     void sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
     void sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
@@ -25,12 +25,11 @@ class Link {
     Adventure * getAdventure();
     bool hasState();
     StateDisplay * getState();
-    Translator * getTranslator();
-    void changeLanguage(std::string language);
+    std::string getEnglishFromKey(std::string key);
     bool isClosed();
     bool isReady();
     bool isStarted();
-    void markClosed();
+    void close(bool shutdown);
   private:
     std::vector<Attributes *> * attributes;
     std::vector<Way *> * ways;
@@ -43,7 +42,7 @@ class Link {
     bool closed = false;
     bool started = false;
     Socket s;
-    Translator * t;
+    EnglishKeyHolder * key_holder;
     std::string language;
 };
 

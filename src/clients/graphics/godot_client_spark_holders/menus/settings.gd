@@ -189,6 +189,7 @@ func apply_server_settings():
 	n_serverport.text = server_settings_dic["PORT"]
 	n_seed.text = server_settings_dic["SEED"]
 	n_pasword.text = server_settings_dic["MASTER_PASSWORD"]
+	Settings.password = server_settings_dic["MASTER_PASSWORD"]
 
 func set_resolution():
 	var resolution_str = client_settings_dic["RESOLUTION"]
@@ -316,3 +317,5 @@ func _on_seed_value_text_submitted(new_text):
 
 func _on_password_value_text_submitted(new_text):
 	server_settings_dic["MASTER_PASSWORD"] = new_text
+
+
