@@ -38,7 +38,7 @@ public:
     #endif
   }
   void initialize(String ip, int64_t port, String password);
-  bool isCompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
+  String getIncompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
   String getEnglishFromKey(String key);
   void sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession);
   bool hasState();

@@ -107,7 +107,6 @@ func update_stats():
 		incrFlow.text = str(data["flowIncr"])
 
 func display_ways():
-	print(indice)
 	for way in n_ways:
 		n_choices.remove_child(way)
 	for dummy in n_dummies:
@@ -124,8 +123,10 @@ func display_ways():
 		way.size_flags_vertical = SIZE_EXPAND_FILL
 		way.size_flags_horizontal = SIZE_EXPAND_FILL
 		way.initialize(choices[i])
-		if not Values.link.isCompatible(choices[i]["name"], n_class.data["name"], n_race.data["name"], n_origin.data["name"], n_culture.data["name"], n_religion.data["name"], n_education.data["name"]):
+		var incompatible = Values.link.getIncompatible(choices[i]["name"], n_class.data["name"], n_race.data["name"], n_origin.data["name"], n_culture.data["name"], n_religion.data["name"], n_education.data["name"])
+		if incompatible != "":
 			way.unvalid.visible = true
+			way.tooltip_text = Values.link.getEnglishFromKey(choices[i]["name"]) + " and " + Values.link.getEnglishFromKey(incompatible) + " are incompatible."
 	for i in range(end, indice + 4):
 		var dummy = Control.new()
 		n_dummies.append(dummy)

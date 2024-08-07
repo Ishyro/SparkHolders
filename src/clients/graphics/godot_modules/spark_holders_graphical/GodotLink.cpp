@@ -36,7 +36,7 @@ void GodotLink::initialize(String ip, int64_t port, String password) {
   }
 }
 
-bool GodotLink::isCompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession) {
+String GodotLink::getIncompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession) {
   std::list<String> currents = std::list<String>();
   currents.push_back(attributes);
   currents.push_back(race);
@@ -47,11 +47,11 @@ bool GodotLink::isCompatible(String tocheck, String attributes, String race, Str
   for(String way : currents) {
     for(std::pair<const std::string, const std::string> incompatibility : link->getAdventure()->getDatabase()->getWaysIncompatibilities()) {
       if(incompatibility.first.c_str() == tocheck && incompatibility.second.c_str() == way || incompatibility.first.c_str() == way && incompatibility.second.c_str() == tocheck) {
-        return false;
+        return way;
       }
     }
   }
-  return true;
+  return "";
 }
 
 String GodotLink::getEnglishFromKey(String key) {
@@ -770,7 +770,7 @@ void GodotLink::close(bool shutdown) {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "password"), &GodotLink::initialize);
-  ClassDB::bind_method(D_METHOD("isCompatible", "tocheck", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::isCompatible);
+  ClassDB::bind_method(D_METHOD("getIncompatible", "tocheck", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::getIncompatible);
   ClassDB::bind_method(D_METHOD("getEnglishFromKey", "key"), &GodotLink::getEnglishFromKey);
   ClassDB::bind_method(D_METHOD("sendChoices", "character", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::sendChoices);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
