@@ -11,6 +11,8 @@ namespace Settings {
   int32_t hourDuration;
   int32_t minuteDuration;
   float tickDurationInSeconds;
+  std::chrono::milliseconds tickrate;
+  int32_t pauseMode;
   int32_t startingYear;
   int32_t startingMonth;
   int32_t startingDay;
@@ -30,7 +32,6 @@ namespace Settings {
   std::vector<std::string> dayNames; // weekDuration
   std::array<int32_t, DAMAGE_TYPE_STATUS_NUMBER> statusThreshold;
   float buyingPriceModifier;
-  std::chrono::milliseconds tickTimer;
   int32_t port;
   int64_t seed;
   std::string masterPassword;
@@ -54,7 +55,8 @@ namespace Settings {
   int64_t getLatitudeOrigin() { return latitudeOrigin; }
   float getSecondToMeter() { return secondToMeter; }
   float getTickDurationInSeconds() { return tickDurationInSeconds; }
-  std::chrono::milliseconds getTickTimer() { return tickTimer; }
+  std::chrono::milliseconds getTickRate() { return tickrate; }
+  int32_t getPauseMode() { return pauseMode; }
   int32_t getZenithLightPower(int32_t indice) { return zenithLightPower[indice]; } // week
   int32_t getNightLightPower(int32_t indice) { return nightLightPower[indice]; } // week
   bool getTidalLocked() { return tidalLocked; }
@@ -92,7 +94,8 @@ namespace Settings {
   void setOrigin(int64_t data1, int64_t data2) { longitudeOrigin = data1; latitudeOrigin = data2; }
   void setSecondToMeter(float data) { secondToMeter = data; }
   void setTickDurationInSeconds(float data) {tickDurationInSeconds = data; }
-  void setTickTimer(int32_t data) { tickTimer = std::chrono::milliseconds(data); }
+  void setTickRate(int32_t data) { tickrate = std::chrono::milliseconds(data); }
+  void setPauseMode(int32_t data) { pauseMode = data; }
   void setZenithLightPower(int32_t indice, int32_t data) { zenithLightPower[indice] = data; } // week
   void setNightLightPower(int32_t indice, int32_t data) { nightLightPower[indice] = data; } // week
   void setTidalLocked(bool data) { tidalLocked = data; }

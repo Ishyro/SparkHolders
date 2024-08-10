@@ -1212,3 +1212,5 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_3yetr")
 expand_mode = 1
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

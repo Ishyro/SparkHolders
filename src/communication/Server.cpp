@@ -217,6 +217,7 @@ namespace Server {
       std::stringstream * ss = new std::stringstream();
       String::insert_int(ss, SOCKET_MSG_ADVENTURE);
       String::insert(ss, adventure->filePath);
+      String::insert_long(ss, Settings::getTickRate().count());
       String::insert_bool(ss, master);
       s.write(ss->str());
       delete ss;

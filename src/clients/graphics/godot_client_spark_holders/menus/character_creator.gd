@@ -36,6 +36,8 @@ var indice = 0
 @onready var baseThreshold = $Divider/Character/Stats/Base/Threshold
 @onready var baseStrength = $Divider/Character/Stats/Base/Strength
 @onready var baseFlow = $Divider/Character/Stats/Base/Flow
+@onready var baseAttunement = $Divider/Character/Stats/Base/Attunement
+@onready var baseTranscendence = $Divider/Character/Stats/Base/Transcendence
 
 @onready var incrHealth = $Divider/Character/Stats/Increments/Health
 @onready var incrMana = $Divider/Character/Stats/Increments/Mana
@@ -43,6 +45,8 @@ var indice = 0
 @onready var incrThreshold = $Divider/Character/Stats/Increments/Threshold
 @onready var incrStrength = $Divider/Character/Stats/Increments/Strength
 @onready var incrFlow = $Divider/Character/Stats/Increments/Flow
+@onready var incrAttunement = $Divider/Character/Stats/Increments/Attunement
+@onready var incrTranscendence = $Divider/Character/Stats/Increments/Transcendence
 
 var base_way = preload("res://menus/way.tscn")
 
@@ -70,17 +74,19 @@ func _ready():
 
 func update_stats():
 	var data = {}
-	for stat in ["baseHp", "baseMana", "baseShield", "baseDamageMult", "baseSoulBurn", "baseFlow", "hpIncr", "manaIncr", "shieldIncr", "damageMultIncr", "soulBurnIncr", "flowIncr"]:
+	for stat in ["baseHp", "baseMana", "baseShield", "baseStrength", "baseThreshold", "baseFlow", "baseAttunement", "baseTranscendence", "hpIncr", "manaIncr", "shieldIncr", "strengthIncr", "thresholdIncr", "flowIncr", "attunementIncr", "transcendenceIncr"]:
 		data[stat] = n_class.data[stat] + n_race.data[stat] + n_origin.data[stat] + n_culture.data[stat] + n_religion.data[stat] + n_education.data[stat] 
 	baseHealth.text = str(data["baseHp"])
 	baseMana.text = str(data["baseMana"])
 	baseShield.text = str(data["baseShield"])
-	if data["baseDamageMult"] >= 0:
-		baseStrength.text = "+" + str(data["baseDamageMult"]) + "%"
+	if data["baseStrength"] >= 0:
+		baseStrength.text = "+" + str(data["baseStrength"]) + "%"
 	else:
-		baseStrength.text = str(data["baseDamageMult"]) + "%"
-	baseThreshold.text = str(data["baseSoulBurn"])
+		baseStrength.text = str(data["baseStrength"]) + "%"
+	baseThreshold.text = str(data["baseThreshold"])
 	baseFlow.text = str(data["baseFlow"])
+	baseAttunement.text = str(data["baseAttunement"])
+	baseTranscendence.text = str(data["baseTranscendence"])
 	if data["hpIncr"] >= 0:
 		incrHealth.text = "+" + str(data["hpIncr"])
 	else:
@@ -93,18 +99,26 @@ func update_stats():
 		incrShield.text = "+" + str(data["shieldIncr"])
 	else:
 		incrShield.text = str(data["shieldIncr"])
-	if data["damageMultIncr"] >= 0:
-		incrStrength.text = "+" + str(data["damageMultIncr"]) + "%"
+	if data["strengthIncr"] >= 0:
+		incrStrength.text = "+" + str(data["strengthIncr"]) + "%"
 	else:
-		incrStrength.text = str(data["damageMultIncr"]) + "%"
-	if data["soulBurnIncr"] >= 0:
-		incrThreshold.text = "+" + str(data["soulBurnIncr"])
+		incrStrength.text = str(data["strengthIncr"]) + "%"
+	if data["thresholdIncr"] >= 0:
+		incrThreshold.text = "+" + str(data["thresholdIncr"])
 	else:
-		incrThreshold.text = str(data["soulBurnIncr"])
+		incrThreshold.text = str(data["thresholdIncr"])
 	if data["flowIncr"] >= 0:
 		incrFlow.text = "+" + str(data["flowIncr"])
 	else:
 		incrFlow.text = str(data["flowIncr"])
+	if data["attunementIncr"] >= 0:
+		incrAttunement.text = "+" + str(data["attunementIncr"])
+	else:
+		incrAttunement.text = str(data["attunementIncr"])
+	if data["transcendenceIncr"] >= 0:
+		incrTranscendence.text = "+" + str(data["transcendenceIncr"])
+	else:
+		incrTranscendence.text = str(data["transcendenceIncr"])
 
 func display_ways():
 	for way in n_ways:

@@ -38,6 +38,7 @@ public:
     #endif
   }
   void initialize(String ip, int64_t port, String password);
+  int64_t getTickRate();
   String getIncompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
   String getEnglishFromKey(String key);
   void sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession);
@@ -74,6 +75,8 @@ public:
   Array getStartingAttributes();
   Array getStartingWays();
   void send_action(Dictionary action);
+  void pause();
+  void unpause();
   void close(bool shutdown);
 
 protected:

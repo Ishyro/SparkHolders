@@ -16,7 +16,7 @@ var target_velocity = Vector3.ZERO
 @onready var shape = $Shape
 
 var range_to_clear = 0
-var tick_time = 100. / 1000.
+var tick_time = Values.tickrate / 1000.
 var current_time = 0
 
 func set_color(color: String):

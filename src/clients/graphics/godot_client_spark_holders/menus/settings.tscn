@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dh77c0hereatx"]
+[gd_scene load_steps=5 format=3 uid="uid://dh77c0hereatx"]
 
 [ext_resource type="Script" path="res://menus/settings.gd" id="1_10ddg"]
 [ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="2_20may"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="3_iprn6"]
+[ext_resource type="PackedScene" uid="uid://f2t5jmvgrm2d" path="res://menus/label_toolip.tscn" id="3_rn5ii"]
 
 [node name="Settings" type="Control"]
 layout_mode = 3
@@ -235,6 +236,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
+[node name="TickRate" parent="Divider/MarginContainer/ClientServer/Server/Gameplay" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Tick Rate"
+
+[node name="TickRateValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+caret_blink = true
+
 [node name="BuyingPriceModifier" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -248,6 +261,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
+
+[node name="PauseMode" parent="Divider/MarginContainer/ClientServer/Server/Gameplay" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Pause mode"
+
+[node name="PauseModeValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Dummy" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
@@ -265,26 +289,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Dummy4" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy5" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy6" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy7" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy8" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -416,7 +420,7 @@ text = "Reset to defaults"
 
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/General/LanguageValue" to="." method="_on_language_value_item_selected"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/General/FontValue" to="." method="_on_font_value_item_selected"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Client/General/PortValue" to="." method="_on_port_value_text_submitted"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Client/General/PortValue" to="." method="_on_port_value_text_changed"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/General/TerranDayValue" to="." method="_on_terran_day_value_toggled"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/Video/ResolutionValue" to="." method="_on_resolution_value_item_selected"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Client/Video/WindowTypeValue" to="." method="_on_window_type_value_item_selected"]
@@ -424,11 +428,13 @@ text = "Reset to defaults"
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/VSyncValue" to="." method="_on_v_sync_value_toggled"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/ShadowsValue" to="." method="_on_shadows_value_toggled"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/WhileLightValue" to="." method="_on_while_light_value_toggled"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue" to="." method="_on_tick_duration_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue" to="." method="_on_buying_price_modifier_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/PortValue" to="." method="_on_serverport_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/SeedValue" to="." method="_on_seed_value_text_submitted"]
-[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/PasswordValue" to="." method="_on_password_value_text_submitted"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue" to="." method="_on_tick_duration_value_text_changed"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickRateValue" to="." method="_on_tick_rate_value_text_changed"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue" to="." method="_on_buying_price_modifier_value_text_changed"]
+[connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Server/Gameplay/PauseModeValue" to="." method="_on_pause_mode_value_item_selected"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/PortValue" to="." method="_on_serverport_value_text_changed"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/SeedValue" to="." method="_on_seed_value_text_changed"]
+[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/PasswordValue" to="." method="_on_password_value_text_changed"]
 [connection signal="pressed" from="Divider/Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Divider/Buttons/SaveAndClose" to="." method="_on_save_and_close_pressed"]
 [connection signal="pressed" from="Divider/Buttons/Close" to="." method="_on_close_pressed"]

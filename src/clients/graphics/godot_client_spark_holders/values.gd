@@ -70,6 +70,7 @@ var server_owner = false
 var ip = "127.0.0.1"
 var multiplayer_mode = true
 var link = GodotLink.new()
+var tickrate
 var updating_state = false
 var next_state_ready = false
 var mode = ACTION_MODE_NONE

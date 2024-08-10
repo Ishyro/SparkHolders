@@ -44,6 +44,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Values.tickrate = Values.link.getTickRate()
 	mutex = Mutex.new()
 	Values.link.getState()
 	owned_character = Values.link.getPlayerId()

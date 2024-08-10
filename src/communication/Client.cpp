@@ -18,11 +18,12 @@
 
 namespace Client {
 
-  Adventure * receiveAdventure(std::string msg, bool & master) {
+  Adventure * receiveAdventure(std::string msg, int64_t & tickrate, bool & master) {
     std::stringstream * ss = new std::stringstream(msg);
     // ignore socket_msg_type
     String::extract(ss);
     Adventure * result = FileOpener::AdventureOpener(String::extract(ss), false);
+    tickrate = String::extract_long(ss);
     master = String::extract_bool(ss);
     return result;
   }

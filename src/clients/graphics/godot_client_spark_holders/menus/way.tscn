@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://32m0hqaidtg"]
+[gd_scene load_steps=4 format=3 uid="uid://32m0hqaidtg"]
 
 [ext_resource type="Script" path="res://menus/way.gd" id="1_aw0fa"]
 [ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="1_tl0if"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0u87h"]
+font_size = 36
+font_color = Color(0.184314, 0.184314, 0.184314, 1)
 
 [node name="Way" type="Control"]
 clip_contents = true
@@ -86,42 +90,63 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 text = "Stats"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Health" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Health"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Mana" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Mana"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Shield" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Shield"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Threshold" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Threshold"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Strength" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Strength"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Flow" type="Label" parent="Background/Content/Divider/Stats/Labels"]
 layout_mode = 2
 size_flags_vertical = 6
 text = "Flow"
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Attunement" type="Label" parent="Background/Content/Divider/Stats/Labels"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Attunement"
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Transcendence" type="Label" parent="Background/Content/Divider/Stats/Labels"]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Transcendence"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Base" type="VBoxContainer" parent="Background/Content/Divider/Stats"]
@@ -132,36 +157,55 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 text = "Base"
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Health" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Mana" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Shield" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Threshold" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Strength" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Flow" type="Label" parent="Background/Content/Divider/Stats/Base"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Attunement" type="Label" parent="Background/Content/Divider/Stats/Base"]
+layout_mode = 2
+size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Transcendence" type="Label" parent="Background/Content/Divider/Stats/Base"]
+layout_mode = 2
+size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Increments" type="VBoxContainer" parent="Background/Content/Divider/Stats"]
@@ -172,36 +216,55 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 text = "Each level "
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Health" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Mana" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Shield" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Threshold" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Strength" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Flow" type="Label" parent="Background/Content/Divider/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Attunement" type="Label" parent="Background/Content/Divider/Stats/Increments"]
+layout_mode = 2
+size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
+horizontal_alignment = 1
+
+[node name="Transcendence" type="Label" parent="Background/Content/Divider/Stats/Increments"]
+layout_mode = 2
+size_flags_vertical = 6
+label_settings = SubResource("LabelSettings_0u87h")
 horizontal_alignment = 1
 
 [node name="Dummy2" type="Control" parent="Background/Content"]

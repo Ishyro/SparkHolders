@@ -18,6 +18,9 @@ class Link {
     void sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
     void receiveState(std::string msg);
     void sendReady();
+    void sendPause();
+    void sendUnpause();
+    int64_t getTickRate();
     std::vector<Attributes *> getStartingAttributes();
     std::vector<Way *> getStartingWays();
     std::list<std::pair<const std::string, const std::string>> getWaysIncompatibilities();
@@ -41,6 +44,7 @@ class Link {
     bool master;
     bool closed = false;
     bool started = false;
+    int64_t tickrate;
     Socket s;
     EnglishKeyHolder * key_holder;
     std::string language;

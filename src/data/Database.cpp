@@ -287,10 +287,11 @@ Database::Database() {
   macros.insert(std::make_pair("TEAM_NEUTRAL", TEAM_NEUTRAL));
   macros.insert(std::make_pair("TEAM_ENEMY", TEAM_ENEMY));
 
-  // window_type
-  macros.insert(std::make_pair("WINDOW_FULLSCREEN", WINDOW_FULLSCREEN));
-  macros.insert(std::make_pair("WINDOW_WINDOW", WINDOW_WINDOW));
-  macros.insert(std::make_pair("WINDOW_BORDERLESS", WINDOW_BORDERLESS));
+  // settings
+  macros.insert(std::make_pair("SETTINGS_PAUSE_NO_ACTION", SETTINGS_PAUSE_NO_ACTION));
+  macros.insert(std::make_pair("SETTINGS_PAUSE_ALL", SETTINGS_PAUSE_ALL));
+  macros.insert(std::make_pair("SETTINGS_PAUSE_MASTER", SETTINGS_PAUSE_MASTER));
+  macros.insert(std::make_pair("SETTINGS_PAUSE_NONE", SETTINGS_PAUSE_NONE));
 }
 
 const int32_t Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }

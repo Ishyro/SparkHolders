@@ -38,7 +38,8 @@ void Link::listen() {
       }
       try {
         Server::sendAdventure(s, adventure, master);
-      } catch (const CloseException &e) {
+      }
+      catch (const CloseException &e) {
         markClosed();
       }
       break;
@@ -77,6 +78,15 @@ void Link::listen() {
       }
       break;
     }
+    case SOCKET_MSG_PAUSE:
+      // ignore SETTINGS_PAUSE_NO_ACTION because it's already paused if characer is not moving
+      if(Settings::getPauseMode() == SETTINGS_PAUSE_ALL || (master && Settings::getPauseMode() == SETTINGS_PAUSE_MASTER) ) {
+        pause = true;
+      }
+      break;
+    case SOCKET_MSG_UNPAUSE:
+      pause = false;
+      break;
     case SOCKET_MSG_QUIT:
       std::cout << "quit" << std::endl;
       markClosed();
@@ -136,8 +146,22 @@ bool Link::hasActions() {
 
 std::list<Action *> Link::getAction() {
   std::list<Action *> result = std::list<Action *>();
-  const std::lock_guard<std::mutex> guard(mutex);
+  while(pause && !closed) {
+    usleep(10);
+  }
+  if(Settings::getPauseMode() == SETTINGS_PAUSE_NO_ACTION) {
+    mutex.lock();
+    bool done = action != nullptr;
+    mutex.unlock();
+    while(!done) {
+      mutex.lock();
+      done = action != nullptr || closed;
+      mutex.unlock();
+      usleep(10);
+    }
+  }
   if(action != nullptr) {
+    const std::lock_guard<std::mutex> guard(mutex);
     result.push_front(action);
     if(character->getCurrentAction() == nullptr) {
       character->setCurrentAction(action);
@@ -149,5 +173,5 @@ std::list<Action *> Link::getAction() {
 
 bool Link::getNeedToUpdateActions() {
   const std::lock_guard<std::mutex> guard(mutex);
-  return character->getCurrentAction() == nullptr;
+  return !character->isInWeakState() && character->getCurrentAction() == nullptr;
 }

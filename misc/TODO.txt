@@ -1,11 +1,66 @@
-ServerSerttings for tick pause
-Send Settings via socket to client
+add Stances:
+  - 1 attack skill
+  - 1 block skill
+  - 1 switch to magical stance (stronger attack/block, mana consumption)
 
 add orientation_z to OrientedAction
 Strike/Shoot/SkillAction switch to OrientedAction
 
 Fix Projectile
 
-Add missings attributes (medidation ? Concentration .)
+Add Environment to compute Sanity
 
-Introduce a Reaction system: if an hostile character appears/teleport near a Character, he can replace his next actions with new ones according to the unexpected situation.
+Fix Ways stats:
+Race: 600         Class: +100
+Origin: 300       Culture: +50
+Religion: 150 +25 Education: 150 +25
+
+Switch Profession bonuses to job competences
+
+Stats:
+
+Health: Wind, 1     Strength: Hot, 6
+Mana: Water, 1      Flow: Wet, 6
+Shield: Earth, 3    Attunement: Cold, 6
+Threshold: Fire, 3  Transcendence: Dry ,6
+
+Attunement: scale medidations power, detect and hide from magic.
+
+Add magic footprint: chaneled mana + %active spells.
+Add meditation: subset of skills, mainly to regenerate mana out of combat
+
+Transcendence: interract with Aether and the Divine, Personal Space (mostly telekinesis interractions), Identify.
+
+Economics
+
+Talking
+
+Fix movement (stairs)
+
+Fix AIs
+
+Job competences
+
+Craft (basic) + Tiered Items
+
+Consuming must be a recipe (produces empty container)
+
+All Players sleeping must bypass tickrate
+
+Rework overcharge: all spells charge with flow and time (chaneled mana), apply function mana cost => spell stats
+
+Rework vision => Awareness (vision (fov ?) + hearring + smelling + magical detection)
+
+Build the DEMO
+
+Add perks (like resit heat) (linked to tags?)
+
+Major Arcana Cards for environment 
+
+Craft (advanced)
+
+Relations rework
+
+Biome generation
+
+Add half breeds

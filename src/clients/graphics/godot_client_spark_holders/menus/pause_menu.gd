@@ -34,9 +34,11 @@ func _on_quit_pressed():
 
 func _on_visibility_changed():
 	if visible:
+		Values.link.pause()
 		if hud:
 			hud.visible = false
 		continueButton.grab_focus.call_deferred()
 	else:
 		if hud:
 			hud.visible = true
+		Values.link.unpause()

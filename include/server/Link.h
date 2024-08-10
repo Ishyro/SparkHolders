@@ -13,7 +13,8 @@ class Link {
       adventure(adventure),
       closed(false),
       shuting_down(false),
-      ready(false)
+      ready(false),
+      pause(false)
     {}
     // non copyable because of mutex
     Link(const Link&) = delete;
@@ -42,6 +43,7 @@ class Link {
     bool closed;
     bool shuting_down;
     bool ready;
+    bool pause;
     bool master;
     std::string password;
     std::mutex mutex;

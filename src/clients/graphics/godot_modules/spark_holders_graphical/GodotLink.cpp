@@ -16,7 +16,7 @@
 
 void listener(void * param) {
   Link * link = (Link *) param;
-  while(!link->isClosed()) {
+  while(link != nullptr && !link->isClosed()) {
     link->listen();
   }
 }
@@ -36,6 +36,10 @@ void GodotLink::initialize(String ip, int64_t port, String password) {
   }
 }
 
+int64_t GodotLink::getTickRate() {
+  return link->getTickRate();
+}
+
 String GodotLink::getIncompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession) {
   std::list<String> currents = std::list<String>();
   currents.push_back(attributes);
@@ -46,7 +50,7 @@ String GodotLink::getIncompatible(String tocheck, String attributes, String race
   currents.push_back(profession);
   for(String way : currents) {
     for(std::pair<const std::string, const std::string> incompatibility : link->getAdventure()->getDatabase()->getWaysIncompatibilities()) {
-      if(incompatibility.first.c_str() == tocheck && incompatibility.second.c_str() == way || incompatibility.first.c_str() == way && incompatibility.second.c_str() == tocheck) {
+      if( (incompatibility.first.c_str() == tocheck && incompatibility.second.c_str() == way) || (incompatibility.first.c_str() == way && incompatibility.second.c_str() == tocheck) ) {
         return way;
       }
     }
@@ -334,18 +338,22 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
   result["baseHp"] = attributes->baseHp;
   result["baseMana"] = attributes->baseMana;
   result["baseShield"] = attributes->baseShield;
-  result["baseDamageMult"] = attributes->baseDamageMult;
-  result["baseSoulBurn"] = attributes->baseSoulBurn;
+  result["baseStrength"] = attributes->baseDamageMult;
+  result["baseThreshold"] = attributes->baseSoulBurn;
   result["baseFlow"] = attributes->baseFlow;
+  result["baseTranscendence"] = 0;
+  result["baseAttunement"] = 0;
   result["baseVisionRange"] = attributes->baseVisionRange;
   result["baseVisionPower"] = attributes->baseVisionPower;
   result["baseDetectionRange"] = attributes->baseDetectionRange;
   result["hpIncr"] = attributes->hpIncr;
   result["manaIncr"] = attributes->manaIncr;
   result["shieldIncr"] = attributes->shieldIncr;
-  result["damageMultIncr"] = attributes->damageMultIncr;
-  result["soulBurnIncr"] = attributes->soulBurnIncr;
+  result["strengthIncr"] = attributes->damageMultIncr;
+  result["thresholdIncr"] = attributes->soulBurnIncr;
   result["flowIncr"] = attributes->flowIncr;
+  result["transcendenceIncr"] = 0;
+  result["attunementIncr"] = 0;
   result["path"] = link->getAdventure()->getDatabase()->getAttributesFile(attributes->name).c_str();
   return result;
 }
@@ -364,18 +372,22 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   result["baseHp"] = race->baseHp;
   result["baseMana"] = race->baseMana;
   result["baseShield"] = race->baseShield;
-  result["baseDamageMult"] = race->baseDamageMult;
-  result["baseSoulBurn"] = race->baseSoulBurn;
+  result["baseStrength"] = race->baseDamageMult;
+  result["baseThreshold"] = race->baseSoulBurn;
   result["baseFlow"] = race->baseFlow;
+  result["baseTranscendence"] = 0;
+  result["baseAttunement"] = 0;
   result["baseVisionRange"] = race->baseVisionRange;
   result["baseVisionPower"] = race->baseVisionPower;
   result["baseDetectionRange"] = race->baseDetectionRange;
   result["hpIncr"] = race->hpIncr;
   result["manaIncr"] = race->manaIncr;
   result["shieldIncr"] = race->shieldIncr;
-  result["damageMultIncr"] = race->damageMultIncr;
-  result["soulBurnIncr"] = race->soulBurnIncr;
+  result["strengthIncr"] = race->damageMultIncr;
+  result["thresholdIncr"] = race->soulBurnIncr;
   result["flowIncr"] = race->flowIncr;
+  result["transcendenceIncr"] = 0;
+  result["attunementIncr"] = 0;
   result["size"] = race->size;
   result["need_to_eat"] = race->need_to_eat;
   result["can_eat_food"] = race->can_eat_food;
@@ -405,18 +417,22 @@ Dictionary GodotLink::getDataFromWay(String way_name) {
   result["baseHp"] = way->baseHp;
   result["baseMana"] = way->baseMana;
   result["baseShield"] = way->baseShield;
-  result["baseDamageMult"] = way->baseDamageMult;
-  result["baseSoulBurn"] = way->baseSoulBurn;
+  result["baseStrength"] = way->baseDamageMult;
+  result["baseThreshold"] = way->baseSoulBurn;
   result["baseFlow"] = way->baseFlow;
+  result["baseTranscendence"] = 0;
+  result["baseAttunement"] = 0;
   result["baseVisionRange"] = way->baseVisionRange;
   result["baseVisionPower"] = way->baseVisionPower;
   result["baseDetectionRange"] = way->baseDetectionRange;
   result["hpIncr"] = way->hpIncr;
   result["manaIncr"] = way->manaIncr;
   result["shieldIncr"] = way->shieldIncr;
-  result["damageMultIncr"] = way->damageMultIncr;
-  result["soulBurnIncr"] = way->soulBurnIncr;
+  result["strengthIncr"] = way->damageMultIncr;
+  result["thresholdIncr"] = way->soulBurnIncr;
   result["flowIncr"] = way->flowIncr;
+  result["transcendenceIncr"] = 0;
+  result["attunementIncr"] = 0;
   result["path"] = link->getAdventure()->getDatabase()->getWayFile(way->name).c_str();
   return result;
 }
@@ -474,13 +490,15 @@ Dictionary GodotLink::getStatsFromCharacter() {
   result["maxHp"] = character->getMaxHp();
   result["maxMana"] = character->getMaxMana();
   result["maxShield"] = character->getMaxShield();
-  result["soulBurnThreshold"] = character->getSoulBurnThreshold();
+  result["threshold"] = character->getSoulBurnThreshold();
   result["hp"] = character->getHp();
   result["mana"] = character->getMana();
   result["shield"] = character->getShield();
   result["currentSoulBurn"] = character->getCurrentSoulBurn();
-  result["strengthening"] = (int64_t) std::floor((character->getDamageMultiplier() - 1.F) * 100.F);
+  result["strength"] = (int64_t) std::floor((character->getDamageMultiplier() - 1.F) * 100.F);
   result["flow"] = character->getFlow();
+  result["transcendence"] = 0;
+  result["attunement"] = 0;
   result["cloaking"] = character->cloakPower();
   result["visionRange"] = character->getVisionRange();
   result["visionPower"] = character->getVisionPower();
@@ -740,29 +758,27 @@ void GodotLink::send_action(Dictionary action) {
   link->sendAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range);
 }
 
+void GodotLink::pause() {
+  link->sendPause();
+}
+
+void GodotLink::unpause() {
+  link->sendUnpause();
+}
+
 void GodotLink::close(bool shutdown) {
   #ifdef LOG
     log << "close()" << std::endl;
   #endif
   link->close(shutdown);
-  #ifdef LOG
-    log << "link closed" << std::endl;
-  #endif
   if(link != nullptr) {
-    #ifdef LOG
-      log << "link" << std::endl;
-    #endif
     delete link;
+    link = nullptr;
   }
   if(state != nullptr) {
-    #ifdef LOG
-      log << "state" << std::endl;
-    #endif
     delete state;
+    state = nullptr;
   }
-  #ifdef LOG
-    log << "ok" << std::endl;
-  #endif
   #ifdef LOG
     log.close();
   #endif
@@ -770,6 +786,7 @@ void GodotLink::close(bool shutdown) {
 
 void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("initialize", "ip", "port", "password"), &GodotLink::initialize);
+  ClassDB::bind_method(D_METHOD("getTickRate"), &GodotLink::getTickRate);
   ClassDB::bind_method(D_METHOD("getIncompatible", "tocheck", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::getIncompatible);
   ClassDB::bind_method(D_METHOD("getEnglishFromKey", "key"), &GodotLink::getEnglishFromKey);
   ClassDB::bind_method(D_METHOD("sendChoices", "character", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::sendChoices);
@@ -799,5 +816,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getStartingAttributes"), &GodotLink::getStartingAttributes);
   ClassDB::bind_method(D_METHOD("getStartingWays"), &GodotLink::getStartingWays);
   ClassDB::bind_method(D_METHOD("send_action", "action"), &GodotLink::send_action);
+  ClassDB::bind_method(D_METHOD("pause"), &GodotLink::pause);
+  ClassDB::bind_method(D_METHOD("unpause"), &GodotLink::unpause);
   ClassDB::bind_method(D_METHOD("close", "shutdown"), &GodotLink::close);
 }

@@ -200,8 +200,8 @@ int32_t main(int32_t argc, char ** argv) {
     // wait for tick duration
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> duration = end - start;
-    if(duration < Settings::getTickTimer()) {
-      std::this_thread::sleep_for(Settings::getTickTimer() - duration);
+    if(duration < Settings::getTickRate()) {
+      std::this_thread::sleep_for(Settings::getTickRate() - duration);
     }
     start = std::chrono::system_clock::now();
     // receive playerActions

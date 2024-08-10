@@ -13,6 +13,8 @@ var data = {}
 @onready var baseThreshold = $Background/Content/Divider/Stats/Base/Threshold
 @onready var baseStrength = $Background/Content/Divider/Stats/Base/Strength
 @onready var baseFlow = $Background/Content/Divider/Stats/Base/Flow
+@onready var baseAttunement = $Background/Content/Divider/Stats/Base/Attunement
+@onready var baseTranscendence = $Background/Content/Divider/Stats/Base/Transcendence
 
 @onready var incrHealth = $Background/Content/Divider/Stats/Increments/Health
 @onready var incrMana = $Background/Content/Divider/Stats/Increments/Mana
@@ -20,6 +22,8 @@ var data = {}
 @onready var incrThreshold = $Background/Content/Divider/Stats/Increments/Threshold
 @onready var incrStrength = $Background/Content/Divider/Stats/Increments/Strength
 @onready var incrFlow = $Background/Content/Divider/Stats/Increments/Flow
+@onready var incrAttunement = $Background/Content/Divider/Stats/Increments/Attunement
+@onready var incrTranscendence = $Background/Content/Divider/Stats/Increments/Transcendence
 
 func initialize(way: Dictionary):
 	data = way
@@ -27,12 +31,14 @@ func initialize(way: Dictionary):
 	baseHealth.text = str(data["baseHp"])
 	baseMana.text = str(data["baseMana"])
 	baseShield.text = str(data["baseShield"])
-	if data["baseDamageMult"] >= 0:
-		baseStrength.text = "+" + str(data["baseDamageMult"]) + "%"
+	if data["baseStrength"] >= 0:
+		baseStrength.text = "+" + str(data["baseStrength"]) + "%"
 	else:
-		baseStrength.text = str(data["baseDamageMult"]) + "%"
-	baseThreshold.text = str(data["baseSoulBurn"])
+		baseStrength.text = str(data["baseStrength"]) + "%"
+	baseThreshold.text = str(data["baseThreshold"])
 	baseFlow.text = str(data["baseFlow"])
+	baseAttunement.text = str(data["baseAttunement"])
+	baseTranscendence.text = str(data["baseTranscendence"])
 	if data["hpIncr"] >= 0:
 		incrHealth.text = "+" + str(data["hpIncr"])
 	else:
@@ -45,18 +51,26 @@ func initialize(way: Dictionary):
 		incrShield.text = "+" + str(data["shieldIncr"])
 	else:
 		incrShield.text = str(data["shieldIncr"])
-	if data["damageMultIncr"] >= 0:
-		incrStrength.text = "+" + str(data["damageMultIncr"]) + "%"
+	if data["strengthIncr"] >= 0:
+		incrStrength.text = "+" + str(data["strengthIncr"]) + "%"
 	else:
-		incrStrength.text = str(data["damageMultIncr"]) + "%"
-	if data["soulBurnIncr"] >= 0:
-		incrThreshold.text = "+" + str(data["soulBurnIncr"])
+		incrStrength.text = str(data["strengthIncr"]) + "%"
+	if data["thresholdIncr"] >= 0:
+		incrThreshold.text = "+" + str(data["thresholdIncr"])
 	else:
-		incrThreshold.text = str(data["soulBurnIncr"])
+		incrThreshold.text = str(data["thresholdIncr"])
 	if data["flowIncr"] >= 0:
 		incrFlow.text = "+" + str(data["flowIncr"])
 	else:
 		incrFlow.text = str(data["flowIncr"])
+	if data["attunementIncr"] >= 0:
+		incrAttunement.text = "+" + str(data["attunementIncr"])
+	else:
+		incrAttunement.text = str(data["attunementIncr"])
+	if data["transcendenceIncr"] >= 0:
+		incrTranscendence.text = "+" + str(data["transcendenceIncr"])
+	else:
+		incrTranscendence.text = str(data["transcendenceIncr"])
 	picture.texture = load(data["path"])
 	tooltip_text = Values.link.getEnglishFromKey(data["name"] + "_DESC")
 

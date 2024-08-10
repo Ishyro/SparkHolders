@@ -277,9 +277,25 @@ horizontal_alignment = 1
 [node name="Flow" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 size_flags_vertical = 6
-tooltip_text = "The maximum amount of mana you can spend in a single round, which is directly linked to casting speed. Does not apply to mana cost you pay when receiving SPIRIT damage. Each Flow Point is worth 6 Stat Points."
+tooltip_text = "The maximum amount of mana you can spend in a single round, which is directly linked to casting speed. Does not apply to mana cost you pay when receiving Spirit damage. Each Flow Point is worth 6 Stat Points."
 mouse_filter = 1
 text = "Flow"
+horizontal_alignment = 1
+
+[node name="Attunement" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+size_flags_vertical = 6
+tooltip_text = "The ability understand the World. Increase meditation potency (mainly used for mana regeneration outside of combat), and increase mana detection and mana hiding. Each Attunement Point is worth 6 Stat Points. "
+mouse_filter = 1
+text = "Attunement"
+horizontal_alignment = 1
+
+[node name="Transcendence" parent="Divider/Character/Stats/Labels" instance=ExtResource("3_iu0rl")]
+layout_mode = 2
+size_flags_vertical = 6
+tooltip_text = "The ability to understand the Aether and the Divine. Used to interract the world by telekinesis. Each Transcendence Point is worth 6 Stat Points."
+mouse_filter = 1
+text = "Transcendence"
 horizontal_alignment = 1
 
 [node name="Base" type="VBoxContainer" parent="Divider/Character/Stats"]
@@ -324,6 +340,16 @@ layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1
 
+[node name="Attunement" type="Label" parent="Divider/Character/Stats/Base"]
+layout_mode = 2
+size_flags_vertical = 6
+horizontal_alignment = 1
+
+[node name="Transcendence" type="Label" parent="Divider/Character/Stats/Base"]
+layout_mode = 2
+size_flags_vertical = 6
+horizontal_alignment = 1
+
 [node name="Increments" type="VBoxContainer" parent="Divider/Character/Stats"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -362,6 +388,16 @@ size_flags_vertical = 6
 horizontal_alignment = 1
 
 [node name="Flow" type="Label" parent="Divider/Character/Stats/Increments"]
+layout_mode = 2
+size_flags_vertical = 6
+horizontal_alignment = 1
+
+[node name="Attunement" type="Label" parent="Divider/Character/Stats/Increments"]
+layout_mode = 2
+size_flags_vertical = 6
+horizontal_alignment = 1
+
+[node name="Transcendence" type="Label" parent="Divider/Character/Stats/Increments"]
 layout_mode = 2
 size_flags_vertical = 6
 horizontal_alignment = 1

@@ -34,7 +34,7 @@ void Link::listen() {
   int32_t socket_msg_type = String::extract_int(ss);
   switch(socket_msg_type) {
     case SOCKET_MSG_ADVENTURE:
-      adventure = Client::receiveAdventure(ss->str(), master);
+      adventure = Client::receiveAdventure(ss->str(), tickrate, master);
       key_holder = new EnglishKeyHolder(adventure->getDatabase()->getKeysPaths());
       started = true;
       break;
@@ -52,8 +52,6 @@ void Link::listen() {
       character = new_character;
       break;
     }
-    case SOCKET_MSG_SWITCH:
-      break;
     // client shouldn't receive these
     case SOCKET_MSG_ACTION:
       break;
@@ -116,6 +114,30 @@ void Link::sendReady() {
     throw e;
   }
 }
+
+void Link::sendPause() {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, SOCKET_MSG_PAUSE);
+  try {
+    s.write(ss->str());
+    delete ss;
+  } catch (const CloseException &e) {
+    throw e;
+  }
+}
+
+void Link::sendUnpause() {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, SOCKET_MSG_UNPAUSE);
+  try {
+    s.write(ss->str());
+    delete ss;
+  } catch (const CloseException &e) {
+    throw e;
+  }
+}
+
+int64_t Link::getTickRate() { return tickrate; }
 
 std::vector<Attributes *> Link::getStartingAttributes() {
   std::list<Attributes *> l = adventure->getStartingAttributes();

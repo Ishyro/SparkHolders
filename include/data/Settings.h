@@ -20,7 +20,8 @@ namespace Settings {
   int32_t getDayDurationInRound(); // in rounds
   int32_t getHourDurationInRound(); // in rounds
   float getTickDurationInSeconds();
-  std::chrono::milliseconds getTickTimer();
+  std::chrono::milliseconds getTickRate();
+  int32_t getPauseMode();
   int32_t getStartingYear();
   int32_t getStartingMonth();
   int32_t getStartingDay();
@@ -51,7 +52,8 @@ namespace Settings {
   void setHourDuration(int32_t data); // in minutes
   void setMinuteDuration(int32_t data); // in seconds
   void setTickDurationInSeconds(float data);
-  void setTickTimer(int32_t data);
+  void setTickRate(int32_t data);
+  void setPauseMode(int32_t data);
   void setStartingYear(int32_t data);
   void setStartingMonth(int32_t data);
   void setStartingDay(int32_t data);

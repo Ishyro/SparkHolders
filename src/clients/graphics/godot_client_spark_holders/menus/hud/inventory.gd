@@ -266,3 +266,9 @@ func display_inventory():
 		n_items.add_child(item)
 		item.global_position = slot_belt_content.global_position + coord * SLOT_SIZE
 	visible = true
+
+func _on_visibility_changed():
+	if visible:
+		Values.link.pause()
+	else:
+		Values.link.unpause()

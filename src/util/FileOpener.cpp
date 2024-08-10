@@ -1236,9 +1236,10 @@ namespace FileOpener {
   void SettingsOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     Settings::setTickDurationInSeconds(_stof(values.at("TICK_DURATION")));
-    Settings::setTickTimer(stoi(values.at("TICK_TIMER")));
+    Settings::setTickRate(stoi(values.at("TICK_RATE")));
     Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
+    Settings::setPauseMode(database->getTargetFromMacro(values.at("PAUSE_MODE")));
     std::string seed = values.at("SEED");
     seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stol(seed));
     Settings::setMasterPassword(values.at("MASTER_PASSWORD"));

@@ -185,7 +185,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Concentration" type="Label" parent="Mutable/MainStats"]
+[node name="Strength" type="Label" parent="Mutable/MainStats"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.378
@@ -199,7 +199,7 @@ label_settings = ExtResource("4_b202a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SoulBurnThreshold" type="Label" parent="Mutable/MainStats"]
+[node name="Threshold" type="Label" parent="Mutable/MainStats"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.501
@@ -213,7 +213,7 @@ label_settings = ExtResource("4_b202a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Strengthening" type="Label" parent="Mutable/MainStats"]
+[node name="Transcendence" type="Label" parent="Mutable/MainStats"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.623
@@ -241,7 +241,7 @@ label_settings = ExtResource("4_b202a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Meditation" type="Label" parent="Mutable/MainStats"]
+[node name="Attunement" type="Label" parent="Mutable/MainStats"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.622
@@ -630,3 +630,5 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("6_fucs0")
 expand_mode = 1
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

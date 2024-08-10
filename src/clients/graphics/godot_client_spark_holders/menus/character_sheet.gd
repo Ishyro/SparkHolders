@@ -2,11 +2,11 @@ extends Control
 
 @onready var map = $"../../Map"
 
-@onready var concentrationMax = $Mutable/MainStats/Concentration
-@onready var soulBurnThreshold = $Mutable/MainStats/SoulBurnThreshold
-@onready var strengthening = $Mutable/MainStats/Strengthening
+@onready var strength = $Mutable/MainStats/Strength
+@onready var threshold = $Mutable/MainStats/Threshold
+@onready var transcendence = $Mutable/MainStats/Transcendence
 @onready var shieldMax = $Mutable/MainStats/Shield
-@onready var meditation = $Mutable/MainStats/Meditation
+@onready var attunement = $Mutable/MainStats/Attunement
 @onready var manaMax = $Mutable/MainStats/Mana
 @onready var flow = $Mutable/MainStats/Flow
 @onready var healthMax = $Mutable/MainStats/Health
@@ -90,13 +90,11 @@ func display_stats():
 	# Main
 	set_value(sheet_name, character_stats["name"], 15, text, small_text)
 	set_value(sheet_level, str(character_stats["level"]), 4, small_numbers, numbers)
-	#set_value(concentrationMax, str(character_stats["concentration"]), 4, small_numbers, numbers)
-	set_value(concentrationMax, str(0), 4, small_numbers, numbers)
-	set_value(soulBurnThreshold, str(character_stats["soulBurnThreshold"]), 4, small_numbers, numbers)
-	set_value(strengthening, str(character_stats["strengthening"]), 4, small_numbers, numbers)
+	set_value(strength, str(character_stats["strength"]), 4, small_numbers, numbers)
+	set_value(threshold, str(character_stats["threshold"]), 4, small_numbers, numbers)
+	set_value(transcendence, str(character_stats["transcendence"]), 4, small_numbers, numbers)
 	set_value(shieldMax, str(character_stats["maxShield"]), 4, small_numbers, numbers)
-	#set_value(meditation, str(character_stats["meditation"]), 4, small_numbers, numbers)
-	set_value(meditation, str(0), 4, small_numbers, numbers)
+	set_value(attunement, str(character_stats["attunement"]), 4, small_numbers, numbers)
 	set_value(manaMax, str(character_stats["maxMana"]), 4, small_numbers, numbers)
 	set_value(flow, str(character_stats["flow"]), 4, small_numbers, numbers)
 	set_value(healthMax, str(character_stats["maxHp"]), 4, small_numbers, numbers)
@@ -121,7 +119,7 @@ func display_stats():
 	res_shield.text = str(character_stats["shield"]) + " / " + str(character_stats["maxShield"])
 	res_health.text = str(character_stats["hp"]) + " / " + str(character_stats["maxHp"])
 	res_mana.text = str(character_stats["mana"]) + " / " + str(character_stats["maxMana"])
-	res_soulburn.text = str(character_stats["currentSoulBurn"]) + " / " + str(character_stats["soulBurnThreshold"])
+	res_soulburn.text = str(character_stats["currentSoulBurn"]) + " / " + str(character_stats["threshold"])
 	res_hunger.text = str(map.round_float(character_stats["hunger"])) + "%"
 	res_thirst.text = str(map.round_float(character_stats["thirst"])) + "%"
 	res_stamina.text = str(map.round_float(character_stats["stamina"])) + "%"
@@ -137,3 +135,9 @@ func display_stats():
 	sec_vision_power.text = str(character_stats["visionPower"])
 	sec_vision_range.text = str(character_stats["visionRange"])
 	sec_detection_range.text = str(character_stats["detectionRange"])
+
+func _on_visibility_changed():
+	if visible:
+		Values.link.pause()
+	else:
+		Values.link.unpause()

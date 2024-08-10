@@ -375,18 +375,19 @@ class SpeechManager;
 #define ACTION_ECONOMICS 13
 #define ACTION_BREAKPOINT 14
 
+// settings
+
+#define SETTINGS_PAUSE_NO_ACTION 1
+#define SETTINGS_PAUSE_ALL 2
+#define SETTINGS_PAUSE_MASTER 3
+#define SETTINGS_PAUSE_NONE 4
+
 // teams relations
 
 #define TEAM_SAME 1
 #define TEAM_ALLY 2
 #define TEAM_NEUTRAL 3
 #define TEAM_ENEMY 4
-
-// window_type
-
-#define WINDOW_FULLSCREEN 1
-#define WINDOW_WINDOW 2
-#define WINDOW_BORDERLESS 3
 
 // socket_msg_type
 
@@ -398,8 +399,9 @@ class SpeechManager;
 #define SOCKET_MSG_CHARACTER 6
 #define SOCKET_MSG_ACTION 7
 #define SOCKET_MSG_STATE 8
-#define SOCKET_MSG_SWITCH 9
-#define SOCKET_MSG_QUIT 10 
-#define SOCKET_MSG_SHUTDOWN 11
+#define SOCKET_MSG_PAUSE 9
+#define SOCKET_MSG_UNPAUSE 10
+#define SOCKET_MSG_QUIT 11
+#define SOCKET_MSG_SHUTDOWN 12
 
 #endif // _VALUES_H_

@@ -20,6 +20,11 @@ var window_types = { "Fullscreen": 0, "Windowed": 1, "Borderless Window": 2 }
 var resolutions = { "1280x720": 0, "1280x1080": 1, "1440x1080": 2, "1920x1080": 3, "2880x1920": 4, "3840x2160": 5, "7680x4320": 6 }
 var antialiasings = { "Off": 0, "x2": 1, "x4": 2, "x8": 3 }
 
+# Server
+var pause_modes = { "When no action": 0, "All Players": 1, "Master Only": 2, "Never": 3 }
+var pause_modes_macros = { "When no action": "SETTINGS_PAUSE_NO_ACTION", "All Players": "SETTINGS_PAUSE_ALL", "Master Only": "SETTINGS_PAUSE_MASTER", "Never":"SETTINGS_PAUSE_NONE"}
+var pause_modes_strings = { "SETTINGS_PAUSE_NO_ACTION": "When no action", "SETTINGS_PAUSE_ALL": "All Players", "SETTINGS_PAUSE_MASTER": "Master Only", "SETTINGS_PAUSE_NONE": "Never"}
+
 # General
 @onready var n_language = $Divider/MarginContainer/ClientServer/Client/General/LanguageValue
 @onready var n_font = $Divider/MarginContainer/ClientServer/Client/General/FontValue
@@ -35,13 +40,16 @@ var antialiasings = { "Off": 0, "x2": 1, "x4": 2, "x8": 3 }
 
 # Server
 @onready var n_tickduration = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue
+@onready var n_tickrate = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickRateValue
 @onready var n_buyingpricemodifier = $Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue
+@onready var n_pause_mode = $Divider/MarginContainer/ClientServer/Server/Gameplay/PauseModeValue
 
 @onready var n_serverport = $Divider/MarginContainer/ClientServer/Server/General/PortValue
 @onready var n_seed = $Divider/MarginContainer/ClientServer/Server/General/SeedValue
 @onready var n_pasword = $Divider/MarginContainer/ClientServer/Server/General/PasswordValue
 
 func _ready():
+	# Client
 	# General
 	for language in languages:
 		n_language.add_item(language)
@@ -54,7 +62,10 @@ func _ready():
 		n_window_type.add_item(window_type)
 	for antialiasing in antialiasings:
 		n_antialiasing.add_item(antialiasing)
-	
+	# Server
+	# Gameplay
+	for pause_mode in pause_modes:
+		n_pause_mode.add_item(pause_mode)
 	$Divider/Buttons/Save.grab_focus.call_deferred()
 	load_client_settings()
 	load_server_settings()
@@ -180,11 +191,12 @@ func apply_client_settings(forced_update):
 	if need_to_save:
 		ProjectSettings.save()
 
-
 func apply_server_settings():
 	# Gameplay
 	n_tickduration.text = server_settings_dic["TICK_DURATION"]
+	n_tickrate.text = server_settings_dic["TICK_RATE"]
 	n_buyingpricemodifier.text = server_settings_dic["BUYING_PRICE_MODIFIER"]
+	n_pause_mode.select(pause_modes[pause_modes_strings[server_settings_dic["PAUSE_MODE"]]])
 	# General
 	n_serverport.text = server_settings_dic["PORT"]
 	n_seed.text = server_settings_dic["SEED"]
@@ -235,7 +247,8 @@ func _on_font_value_item_selected(index):
 	client_settings_dic["FONT"] = n_font.get_item_text(index)
 	client_settings_changed["FONT"] = true
 
-func _on_port_value_text_submitted(new_text):
+
+func _on_port_value_text_changed(new_text):
 	if new_text.is_valid_int():
 		client_settings_dic["PORT"] = new_text
 	else:
@@ -291,31 +304,39 @@ func _on_while_light_value_toggled(button_pressed):
 		client_settings_dic["WHITE_LIGHTS"] = "Off"
 	client_settings_changed["WHITE_LIGHTS"] = true
 
-func _on_tick_duration_value_text_submitted(new_text):
+func _on_tick_duration_value_text_changed(new_text):
 	if new_text.is_valid_float():
 		server_settings_dic["TICK_DURATION"] = new_text
 	else:
 		n_serverport.text = server_settings_dic["TICK_DURATION"]
 
-func _on_buying_price_modifier_value_text_submitted(new_text):
+func _on_tick_rate_value_text_changed(new_text):
+	if new_text.is_valid_float():
+		server_settings_dic["TICK_RATE"] = new_text
+	else:
+		n_tickrate.text = server_settings_dic["TICK_RATE"]
+
+func _on_buying_price_modifier_value_text_changed(new_text):
 	if new_text.is_valid_float():
 		server_settings_dic["BUYING_PRICE_MODIFIER"] = new_text
 	else:
 		n_serverport.text = server_settings_dic["BUYING_PRICE_MODIFIER"]
 
-func _on_serverport_value_text_submitted(new_text):
+func _on_pause_mode_value_item_selected(index):
+	server_settings_dic["PAUSE_MODE"] = pause_modes_macros[n_pause_mode.get_item_text(index)]
+	server_settings_changed["PAUSE_MODE"] = true
+
+func _on_serverport_value_text_changed(new_text):
 	if new_text.is_valid_int():
 		server_settings_dic["PORT"] = new_text
 	else:
 		n_serverport.text = server_settings_dic["PORT"]
 
-func _on_seed_value_text_submitted(new_text):
+func _on_seed_value_text_changed(new_text):
 	if new_text.is_valid_int() or new_text == "rand":
 		server_settings_dic["SEED"] = new_text
 	else:
 		n_seed.text = server_settings_dic["SEED"]
 
-func _on_password_value_text_submitted(new_text):
+func _on_password_value_text_changed(new_text):
 	server_settings_dic["MASTER_PASSWORD"] = new_text
-
-
