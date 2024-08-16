@@ -73,6 +73,7 @@ class Way {
     {}
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    std::list<Stance *> getStances();
     std::list<std::string> getTags();
     bool hasTag(std::string tag);
     bool operator == (const Way& w) const { return name == w.name; }
@@ -80,6 +81,7 @@ class Way {
   protected:
     std::list<Effect *> effects;
     std::list<Skill *> skills;
+    std::list<Stance *> stances;
     std::list<std::string> tags;
 };
 

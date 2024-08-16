@@ -4,4 +4,5 @@ target_type = TARGET_BLOCK
 current_block = TXT_SOIL
 new_block = TXT_GRASS
 mana_cost = 0
+scalling_type = SKILL_SCALE_NONE
 effects =

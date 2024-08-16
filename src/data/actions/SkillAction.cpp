@@ -27,8 +27,8 @@ Action * SkillAction::execute(Adventure * adventure) {
     }
   }
   setUserOrientationToTarget(adventure);
-  if(user->hasSkill( (Skill *) skill) && ( (Skill *) skill)->canCast(user, target, adventure, overcharge_power, overcharge_duration, overcharge_range)) {
-    user->useSkill( (Skill *) skill, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+  if(user->hasSkill( (Skill *) skill) && ( (Skill *) skill)->canCast(user, target, adventure, mana_cost)) {
+    user->useSkill( (Skill *) skill, target, adventure, mana_cost);
   }
   if(previous != nullptr) {
     previous->setNext(next);
@@ -49,7 +49,7 @@ Action * SkillAction::execute(Adventure * adventure) {
 }
 
 void SkillAction::computeTime(Adventure * adventure) {
-  time = (float) skill->time / user->getSkillTimeModifier();
+  time = (float) skill->getTime(user) / user->getSkillTimeModifier();
   tick = time;
 }
 

@@ -2,7 +2,7 @@
 
 #include "util/MathUtil.h"
 
-void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   // Target 1 will always be a Character
   // other may be owner
   Character * other = adventure->getCharacter(target->id);
@@ -21,7 +21,7 @@ void TeleportSkill::activate(Character * owner, Target * target, Adventure * adv
 }
 
 // TODO
-bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   // Target 1 will always be a Character
   // other may be owner
   Character * other = adventure->getCharacter(target->id);
@@ -60,14 +60,14 @@ bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adve
   }
 }
 
-int32_t TeleportSkill::getPower() {
-  return 0;
+float TeleportSkill::getPower() {
+  return 0.F;
 }
 
-int32_t TeleportSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
-  return 0;
+float TeleportSkill::getDamageFromType(int32_t damage_type, Character * owner, float overcharge) {
+  return 0.F;
 }
 
-float TeleportSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
-  return 0.;
+float TeleportSkill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
+  return 0.F;
 }

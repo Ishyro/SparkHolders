@@ -350,6 +350,21 @@ float Gear::getDamageReductionFromType(int32_t damage_type) {
   return resistance;
 }
 
+int32_t Gear::getWeaponsCombination() {
+  if(weapon_1 == nullptr && weapon_2 == nullptr) {
+    return ITEM_HAND;
+  }
+  else if(weapon_2 == nullptr) {
+    return weapon_1->subtype;
+  }
+  else if(weapon_1 == nullptr) {
+    return weapon_2->subtype;
+  }
+  else {
+    return weapon_1->subtype * weapon_2->subtype;
+  }
+}
+
 ArmorItem * Gear::getMantle() { return mantle; }
 ArmorItem * Gear::getHelmet() { return helmet; }
 ArmorItem * Gear::getArmor() { return armor; }

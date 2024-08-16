@@ -30,6 +30,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       }
       break;
     }
+    /*
     case ACTION_STRIKE: {
       if(user->getGear()->getWeapon_1()->use_projectile || user->getGear()->getWeapon_1()->use_projectile) {
         Projectile * projectile = user->shoot(target, adventure, ITEM_SLOT_WEAPON_1);
@@ -46,7 +47,6 @@ Action * TargetedAction::execute(Adventure * adventure) {
           }
         }
         else {
-          /*
           for(Character * c : adventure->getWorld()->getMap(user->getCurrentMap()->id)->getCharacters()) {
             if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
               user->attack(c);
@@ -56,7 +56,6 @@ Action * TargetedAction::execute(Adventure * adventure) {
               break;
             }
           }
-          */
         }
       }
       Action * temp = next;
@@ -64,6 +63,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       next->setNext(temp);
       break;
     }
+    */
     case ACTION_ACTIVATION: {
       Furniture * furniture = user->getRegion()->getFurniture(MathUtil::makeVector3i(target->coord));
       if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {

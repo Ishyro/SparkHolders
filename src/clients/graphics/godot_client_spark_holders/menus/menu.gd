@@ -39,7 +39,11 @@ func _on_new_single_pressed():
 func _on_load_single_pressed():
 	Values.multiplayer_mode = false
 	Values.server_owner = true
-	OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+	match OS.get_name():
+		"Windows":
+			OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+		"Linux", "FreeBSD", "NetBSD", "OpenBSD", "BSD":
+			OS.create_process("./SparkHolders.Server.x86_64", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_new_multi_pressed():
@@ -49,7 +53,11 @@ func _on_new_multi_pressed():
 func _on_load_multi_pressed():
 	Values.multiplayer_mode = true
 	Values.server_owner = true
-	OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+	match OS.get_name():
+		"Windows":
+			OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+		"Linux", "FreeBSD", "NetBSD", "OpenBSD", "BSD":
+			OS.create_process("./SparkHolders.Server.x86_64", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://world/world.tscn")
 
 func _on_join_pressed():

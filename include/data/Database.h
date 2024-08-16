@@ -32,6 +32,7 @@ class Database {
     const Skill * getSkill(const std::string skill);
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
+    const Stance * getStance(const std::string stance);
     const Way * getWay(const std::string way);
     const std::string getWayFile(const std::string way);
     const int32_t getRelation(const std::string team1, const std::string team2);
@@ -55,6 +56,7 @@ class Database {
     void addSkill(const Skill * skill);
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
+    void addStance(const Stance * stance);
     void addWay(const Way * way);
     void addWayFile(const std::string way, const std::string path);
     void addRelation(const std::string team1, const std::string team2, int32_t relation);
@@ -81,6 +83,7 @@ class Database {
     std::map<const std::string, const Skill * > skills;
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
+    std::map<const std::string, const Stance * > stances;
     std::map<const std::string, const Way * > ways;
     std::map<const std::string, const std::string> waysFiles;
     std::map<const std::string, std::map<const std::string, int32_t>> relations;

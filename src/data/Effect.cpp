@@ -145,16 +145,16 @@ void Effect::desactivate(Character * target) {
 
 int32_t Effect::getTickLeft() { return tick_left; }
 
-int32_t Effect::getRawDamage() {
-  int32_t power = 0;
+float Effect::getRawDamage() {
+  float power = 0;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += damages[i];
   }
   return power;
 }
 
-int32_t Effect::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
-float Effect::getDamageReductionFromType(int32_t damage_type) { return damage_reductions[damage_type]; }
+float Effect::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
+float Effect::getDamageReductionFromType(int32_t damage_type) { return damages[damage_type]; }
 
 std::string Effect::to_string() {
   std::stringstream * ss = new std::stringstream();
@@ -167,14 +167,9 @@ std::string Effect::to_string() {
   String::insert_float(ss, power);
   String::insert_int(ss, duration);
   String::insert_int(ss, tick_left);
-  if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
-    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-      String::insert_int(ss, damages[i]);
-    }
-  }
   if(type == EFFECT_DAMAGE_REDUCTION) {
     for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-      String::insert_float(ss, damage_reductions[i]);
+      String::insert_float(ss, damages[i]);
     }
   }
   std::string result = ss->str();
@@ -193,18 +188,12 @@ Effect * Effect::from_string(std::string to_read) {
   float power = String::extract_float(ss);
   int32_t duration = String::extract_int(ss);
   int32_t tick_left = String::extract_int(ss);
-  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+  std::array<float, DAMAGE_TYPE_NUMBER> damages;
   if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
     for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-      damages[i] = String::extract_int(ss);
-    }
-  }
-  std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
-  if(type == EFFECT_DAMAGE_REDUCTION) {
-    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-      damage_reductions[i] = String::extract_float(ss);
+      damages[i] = String::extract_float(ss);
     }
   }
   delete ss;
-  return new Effect(name, id, level, attributes, type, duration_type, power, duration, tick_left, damages, damage_reductions);
+  return new Effect(name, id, level, attributes, type, duration_type, power, duration, tick_left, damages);
  }

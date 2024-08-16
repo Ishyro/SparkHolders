@@ -1,6 +1,6 @@
 name = TXT_BONE
 type = ITEM_BASIC
-type2 = ITEM_MATERIAL
+subtype = ITEM_MATERIAL
 tier = 0
 weight = 0.5
 sizeX = 1

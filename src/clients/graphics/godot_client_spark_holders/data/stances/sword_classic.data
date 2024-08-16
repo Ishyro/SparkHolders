@@ -1,0 +1,5 @@
+name = TXT_SWORD_CLASSIC
+magical = false
+attack_skills = TXT_SWORD_CUT%TXT_SWORD_THRUST%
+block_skill = TXT_PARADE
+weapon_types = ITEM_LONG_SWORD%ITEM_SHORT_SWORD%ITEM_DAGGER%

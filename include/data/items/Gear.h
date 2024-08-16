@@ -156,6 +156,7 @@ class Gear {
 
     float getDamageReductionFromType(int32_t damage_type);
 
+    int32_t getWeaponsCombination();
     ArmorItem * getMantle();
     ArmorItem * getHelmet();
     ArmorItem * getArmor();

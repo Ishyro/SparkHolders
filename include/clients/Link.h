@@ -15,7 +15,7 @@ class Link {
     void initialize(std::string password);
     void listen();
     void sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession);
-    void sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    void sendAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost);
     void receiveState(std::string msg);
     void sendReady();
     void sendPause();

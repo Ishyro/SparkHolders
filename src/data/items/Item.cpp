@@ -50,7 +50,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
   std::string name = String::extract(ss);
   int64_t id = String::extract_long(ss);
   int32_t type = String::extract_int(ss);
-  int32_t type2 = String::extract_int(ss);
+  int32_t subtype = String::extract_int(ss);
   int32_t tier = String::extract_int(ss);
   int32_t max_tier = String::extract_int(ss);
   float weight = String::extract_float(ss);
@@ -74,7 +74,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -104,15 +104,15 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       if(ammo_str != "none") {
         ammo = (AmmunitionItem *) from_string(ammo_str, adventure);
       }
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+      std::array<float, DAMAGE_TYPE_NUMBER> damages;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damages[i] = String::extract_int(ss);
+        damages[i] = String::extract_float(ss);
       }
       result = new WeaponItem(
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -140,15 +140,15 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
     }
     case ITEM_ARMOR: {
       int32_t swap_time = String::extract_int(ss);
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+      std::array<float, DAMAGE_TYPE_NUMBER> damages;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damage_reductions[i] = String::extract_float(ss);
+        damages[i] = String::extract_float(ss);
       }
       result = new ArmorItem(
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -161,7 +161,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         use_time,
         *effects,
         swap_time,
-        damage_reductions
+        damages
       );
       break;
     }
@@ -172,7 +172,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -197,7 +197,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -227,7 +227,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,

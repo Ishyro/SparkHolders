@@ -1,0 +1,11 @@
+name = TXT_SWORD_CUT
+level = 1
+attributes =
+target_type = TARGET_ORIENTATION
+is_instant = false
+overcharge_power_type = OVERCHARGE_NONE
+overcharge_duration_type = OVERCHARGE_NONE
+overcharge_range_type = OVERCHARGE_NONE
+range = 1
+time = 1
+skills = TXT_SWORD_CUT%

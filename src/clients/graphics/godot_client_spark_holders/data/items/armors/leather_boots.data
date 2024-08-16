@@ -1,6 +1,6 @@
 name = TXT_LEATHER_BOOTS
 type = ITEM_ARMOR
-type2 = ITEM_BOOTS
+subtype = ITEM_BOOTS
 tier = 10
 weight = 2.5
 sizeX = 2

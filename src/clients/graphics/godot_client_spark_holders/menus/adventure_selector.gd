@@ -54,7 +54,11 @@ func _ready():
 
 func _on_start_pressed():
 	Values.server_owner = true
-	OS.create_process("./SparkHolders.Server.exe", [adventures_paths[selected_adventure], str(Values.multiplayer_mode)])
+	match OS.get_name():
+		"Windows":
+			OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+		"Linux", "FreeBSD", "NetBSD", "OpenBSD", "BSD":
+			OS.create_process("./SparkHolders.Server.x86_64", ["data/adventures/test.data", str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://menus/character_creator.tscn")
 
 func _on_close_pressed():

@@ -1,6 +1,6 @@
 name = TXT_LEATHER_BELT
 type = ITEM_CONTAINER
-type2 = ITEM_BELT
+subtype = ITEM_BELT
 tier = 10
 weight = 1.0
 sizeX = 2

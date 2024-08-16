@@ -1,6 +1,8 @@
 #include "data/skills/SimpleSkill.h"
 
-void SimpleSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+#include "data/items/Gear.h"
+
+void SimpleSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   for(Effect * effect : effects) {
     Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration);
     if(target_type != TARGET_SELF) {
@@ -17,12 +19,12 @@ void SimpleSkill::activate(Character * owner, Target * target, Adventure * adven
   }
 }
 
-bool SimpleSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+bool SimpleSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   return true;
 }
 
-int32_t SimpleSkill::getPower() {
-  int32_t power = 0;
+float SimpleSkill::getPower() {
+  float power = 0;
   for(Effect * effect : effects) {
     if(effect->power != 0) {
       power += effect->power;
@@ -34,21 +36,28 @@ int32_t SimpleSkill::getPower() {
   return power;
 }
 
-int32_t SimpleSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
-  int32_t damage = 0;
+float SimpleSkill::getDamageFromType(int32_t damage_type, Character * owner, float overcharge) {
+  float damage = 0;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_BUFF) {
-      damage += e->getDamageFromType(damage_type) * overcharge_power;
+      damage += e->getDamageFromType(damage_type);
     }
   }
-  return damage;
+  switch(scalling_type) {
+    case SKILL_SCALE_NONE:
+      return damage * overcharge;
+    case SKILL_SCALE_MAIN_WEAPON:
+      return (damage + owner->getGear()->getWeapon_1()->getDamageFromType(damage_type) + owner->getGear()->getWeapon_1()->getDamageFromType(DAMAGE_PHYSICAL) * damage_multipliers[damage_type]) * overcharge;
+    case SKILL_SCALE_SUB_WEAPON:
+      return (damage + owner->getGear()->getWeapon_2()->getDamageFromType(damage_type) + owner->getGear()->getWeapon_2()->getDamageFromType(DAMAGE_PHYSICAL) * damage_multipliers[damage_type]) * overcharge;
+  }
 }
 
-float SimpleSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
+float SimpleSkill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
   float reduction = 0.;
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
-      reduction += e->getDamageReductionFromType(damage_type) * overcharge_power;
+      reduction += e->getDamageReductionFromType(damage_type) * overcharge;
     }
   }
   return reduction;

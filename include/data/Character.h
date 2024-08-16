@@ -52,7 +52,7 @@ typedef struct CharacterDisplay {
   int32_t level;
   Speech * talking_speech;
   std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
-  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+  std::array<float, DAMAGE_TYPE_NUMBER> damages;
   int32_t teamRelation;
 } CharacterDisplay;
 
@@ -326,7 +326,7 @@ class Character {
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
-    std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> getDamageSkills();
+    std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> getDamageSkills();
 
     std::list<Item *> getSellableItems();
     std::list<Effect *> getSellableEffects();
@@ -343,6 +343,13 @@ class Character {
     Way * getReligion();
     Way * getProfession();
     std::list<Way *> getTitles();
+    std::list<Way *> getWays();
+    Stance * getCurrentStance();
+    Stance * getStance(int32_t weapon_type);
+    Stance * getMagicalStance(int32_t weapon_type);
+    std::list<Stance *> getAvaillableStances();
+    std::map<int32_t, Stance *> getActiveStances();
+    std::map<int32_t, Stance *> getActiveMagicalStances();
 
     void setOrientation(float orientation);
     void setSize(float size);
@@ -427,7 +434,8 @@ class Character {
     int32_t cloakPower();
     bool isInWeakState();
 
-    void useSkill(Skill * skill, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
+    void selectStance(Stance *);
+    void useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
     float getRawDamageReductionFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);
@@ -435,12 +443,9 @@ class Character {
     float getStatusReductionFromType(int32_t damage_type);
     Projectile * shoot(Target * target, Adventure * adventure, int32_t slot);
     void reload(ItemSlot * ammo, int32_t slot_weapon);
-    void attack(Character * target, Adventure * adventure, int32_t type);
-    void mainAttack(Character * target, Adventure * adventure, int32_t type);
-    void subAttack(Character * target, Adventure * adventure, int32_t type);
     ItemSlot * canReload(int32_t slot);
-    void receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
-    int32_t tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages);
+    void receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
+    int32_t tryAttack(std::array<float, DAMAGE_TYPE_NUMBER> damages);
     void trade(Character * buyer, int32_t object_type, std::string object_name, float price_modifier);
     std::set<std::string> getTags();
     std::string to_string();
@@ -510,6 +515,9 @@ class Character {
     Way * religion;
     Way * profession;
     std::list<Way *> titles;
+    bool using_magical_stance;
+    std::map<int32_t, Stance *> active_stances;
+    std::map<int32_t, Stance *> active_magical_stances;
     std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status;
 };
 

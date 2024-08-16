@@ -27,7 +27,7 @@ class AI {
     Action * eat(Adventure * adventure, Character * self);
     Action * trackPrey(Adventure * adventure, Character * self);
     std::list<Character *> getThreats(Adventure * adventure, Map * map, Character * self, int32_t range);
-    std::map<Character *, Skill *> getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> skills, Character * self);
+    std::map<Character *, Skill *> getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> skills, Character * self);
     Action * attack(Adventure * adventure, std::list<Character *> threats, Character * self);
 };
 

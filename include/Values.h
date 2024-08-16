@@ -14,6 +14,8 @@ class PlayerAI;
 class Action;
 class Adventure;
 class Attributes;
+class Block;
+class BlocksChunk;
 class Character;
 class Database;
 class Effect;
@@ -27,8 +29,7 @@ class Region;
 class Save;
 class Skill;
 class Speech;
-class Block;
-class BlocksChunk;
+class Stance;
 class Way;
 class Race;
 class World;
@@ -156,23 +157,95 @@ class SpeechManager;
 #define ITEM_CONTAINER 6
 
 // weapon_type
+// use prime numbers only, because combinations are computed
+// by multipling weapon1->subtype with weapon2->subtype
+#define ITEM_HAND 2
+#define ITEM_LONG_SWORD 3
+#define ITEM_SHORT_SWORD 5
+#define ITEM_CURVED_SWORD 7
+#define ITEM_RAPIER 11
+#define ITEM_DAGGER 13
+#define ITEM_AXE 17
+#define ITEM_CLUB 19
+#define ITEM_SPEAR 23
+#define ITEM_PISTOL 29
+#define ITEM_SHIELD 31
+#define ITEM_ZWEIHANDER 37
+#define ITEM_ZWEICURVED 41
+#define ITEM_WARAXE 43
+#define ITEM_HEAVY_SPEAR 47
+#define ITEM_GLAIVE 53
+#define ITEM_WARHAMMER 59
+#define ITEM_BOW 61
+#define ITEM_CROSSBOW 67
+#define ITEM_MAGIC_STAFF 71
+#define ITEM_RIFLE 73
 
-#define ITEM_LONG_SWORD 1
-#define ITEM_SHORT_SWORD 2
-#define ITEM_CURVED_SWORD 3
-#define ITEM_RAPIER 4
-#define ITEM_SPEAR 5
-#define ITEM_GLAIVE 6
-#define ITEM_AXE 7
-#define ITEM_WARHAMMER 8
-#define ITEM_DAGGER 9
-#define ITEM_FIST 10
-#define ITEM_BOW 11
-#define ITEM_CROSSBOW 12
-#define ITEM_MAGIC_STAFF 13
-#define ITEM_RIFLE 14
-#define ITEM_PISTOL 15
-#define ITEM_SLING 16
+// combination_weapon_type
+#define ITEM_COMBO_DUAL_WELDING 9
+#define ITEM_COMBO_LONG_AND_SHORT 15
+#define ITEM_COMBO_LONG_AND_CURVED 21
+#define ITEM_COMBO_LONG_AND_RAPIER 33
+#define ITEM_COMBO_LONG_AND_DAGGER 39
+#define ITEM_COMBO_LONG_AND_AXE 51
+#define ITEM_COMBO_LONG_AND_CLUB 57
+#define ITEM_COMBO_LONG_AND_SPEAR 69
+#define ITEM_COMBO_LONG_AND_PISTOL 87
+#define ITEM_COMBO_LONG_AND_SHIELD 93
+
+#define ITEM_COMBO_DUAL_SHORT 25
+#define ITEM_COMBO_CURVED_AND_SHORT 35
+#define ITEM_COMBO_RAPIER_AND_SHORT 55
+#define ITEM_COMBO_SHORT_AND_DAGGER 65
+#define ITEM_COMBO_SHORT_AND_AXE 85
+#define ITEM_COMBO_SHORT_AND_CLUB 95
+#define ITEM_COMBO_SPEAR_AND_SHORT 115
+#define ITEM_COMBO_SHORT_AND_PISTOL 145
+#define ITEM_COMBO_SHORT_AND_SHIELD 155
+
+#define ITEM_COMBO_DUAL_CURVED 49
+#define ITEM_COMBO_CURVED_AND_RAPIER 77
+#define ITEM_COMBO_CURVED_AND_DAGGER 91
+#define ITEM_COMBO_CURVED_AND_AXE 119
+#define ITEM_COMBO_CURVED_AND_CLUB 133
+#define ITEM_COMBO_CURVED_AND_SPEAR 161
+#define ITEM_COMBO_CURVED_AND_PISTOL 203
+#define ITEM_COMBO_CURVED_AND_SHIELD 217
+
+#define ITEM_COMBO_DUAL_RAPIER 121
+#define ITEM_COMBO_RAPIER_AND_DAGGER 143
+#define ITEM_COMBO_RAPIER_AND_AXE 187
+#define ITEM_COMBO_RAPIER_AND_CLUB 209
+#define ITEM_COMBO_RAPIER_AND_SPEAR 253
+#define ITEM_COMBO_RAPIER_AND_PISTOL 319
+#define ITEM_COMBO_RAPIER_AND_SHIELD 341
+
+#define ITEM_COMBO_DUAL_DAGGER 169
+#define ITEM_COMBO_AXE_AND_DAGGER 221
+#define ITEM_COMBO_CLUB_AND_DAGGER 247
+#define ITEM_COMBO_SPEAR_AND_DAGGER 299
+#define ITEM_COMBO_DAGGER_AND_PISTOL 37
+#define ITEM_COMBO_DAGGER_AND_SHIELD 403
+
+#define ITEM_COMBO_DUAL_AXE 289
+#define ITEM_COMBO_AXE_AND_CLUB 323
+#define ITEM_COMBO_AXE_AND_SPEAR 391
+#define ITEM_COMBO_AXE_AND_PISTOL 493
+#define ITEM_COMBO_AXE_AND_SHIELD 527
+
+#define ITEM_COMBO_DUAL_CLUB 361
+#define ITEM_COMBO_CLUB_AND_SPEAR 437
+#define ITEM_COMBO_CLUB_AND_PISTOL 551
+#define ITEM_COMBO_CLUB_AND_SHIELD 589
+
+#define ITEM_COMBO_DUAL_SPEAR 529
+#define ITEM_COMBO_SPEAR_AND_PISTOL 667
+#define ITEM_COMBO_SPEAR_AND_SHIELD 713
+
+#define ITEM_COMBO_GUNSLINGER 841
+#define ITEM_COMBO_PISTOL_AND_SHIELD 899
+
+#define ITEM_COMBO_WALL 961
 
 // armor_type
 
@@ -249,19 +322,26 @@ class SpeechManager;
 #define TARGET_BLOCK 4
 #define TARGET_PERMISSIVE 5
 #define TARGET_MULTIPLE 6
+#define TARGET_ORIENTATION 7
 
 // skill_type
 
-#define SKILL_CHANNELED 1
-#define SKILL_MAP_LINKER 2
-#define SKILL_MIND_CONTROL 3
-#define SKILL_PROJECTILE 4
-#define SKILL_RESURRECTION 5
-#define SKILL_SIMPLE 6
-#define SKILL_SUMMON 7
-#define SKILL_TEAM_CHANGER 8
-#define SKILL_TELEPORT 9
-#define SKILL_TILE_SWAP 10
+#define SKILL_MAP_LINKER 1
+#define SKILL_MIND_CONTROL 2
+#define SKILL_PROJECTILE 3
+#define SKILL_RESURRECTION 4
+#define SKILL_SIMPLE 5
+#define SKILL_SUMMON 6
+#define SKILL_TEAM_CHANGER 7
+#define SKILL_TELEPORT 8
+#define SKILL_TILE_SWAP 19
+
+// skill_scalling_type
+
+#define SKILL_SCALE_NONE 0
+#define SKILL_SCALE_MAIN_WEAPON 1
+#define SKILL_SCALE_SUB_WEAPON 2
+#define SKILL_SCALE_WEAPONS 3
 
 // skill_overcharge_type
 
@@ -298,7 +378,7 @@ class SpeechManager;
 
 // damage_type
 
-#define DAMAGE_TYPE_NUMBER 13
+#define DAMAGE_TYPE_NUMBER 14
 #define DAMAGE_TYPE_STATUS_NUMBER 9
 
 #define DAMAGE_SLASH 0
@@ -314,6 +394,8 @@ class SpeechManager;
 #define DAMAGE_AETHER 10 // mana damage
 #define DAMAGE_NEUTRAL 11
 #define DAMAGE_TRUE 12
+// DAMAGE_PHYSICAL needs to be the last damage
+#define DAMAGE_PHYSICAL 13 // raw weapon damage (slash + puncture + blunt)
 
 // loot_type
 

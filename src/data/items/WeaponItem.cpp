@@ -10,8 +10,8 @@
 
 #include "util/String.h"
 
-int32_t WeaponItem::getRawDamage() {
-  int32_t power = 0;
+float WeaponItem::getRawDamage() {
+  float power = 0;
   if(ammo != nullptr) {
     power += ammo->getProjectile()->getRawDamage();
   }
@@ -35,8 +35,8 @@ int32_t WeaponItem::getRawDamage() {
   return power;
 }
 
-int32_t WeaponItem::getDamageFromType(int32_t damage_type) {
-  int32_t damage = damages[damage_type];
+float WeaponItem::getDamageFromType(int32_t damage_type) {
+  float damage = damages[damage_type];
   if(ammo != nullptr) {
     damage += ammo->getProjectile()->getDamageFromType(damage_type);
   }
@@ -68,7 +68,7 @@ void WeaponItem::useAmmo() {
 
 AmmunitionItem * WeaponItem::reload(AmmunitionItem * ammo) {
   AmmunitionItem * to_return = nullptr;
-  if(this->ammo == nullptr && ammo_type == ammo->type2) {
+  if(this->ammo == nullptr && ammo_type == ammo->subtype) {
     int32_t to_load = std::min(capacity, ammo->getNumber());
     ammo->reduce(to_load);
     this->ammo = new AmmunitionItem(ammo, ammo->tier, to_load);
@@ -78,7 +78,7 @@ AmmunitionItem * WeaponItem::reload(AmmunitionItem * ammo) {
     ammo->reduce(to_load);
     this->ammo->add(to_load);
   }
-  else if(this->ammo != nullptr && ammo_type == ammo->type2) {
+  else if(this->ammo != nullptr && ammo_type == ammo->subtype) {
     to_return = this->ammo;
     int32_t to_load = std::min(capacity, ammo->getNumber());
     ammo->reduce(to_load);
@@ -92,7 +92,7 @@ std::string WeaponItem::to_string() {
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_int(ss, type);
-  String::insert_int(ss, type2);
+  String::insert_int(ss, subtype);
   String::insert_int(ss, tier);
   String::insert_int(ss, max_tier);
   String::insert_float(ss, weight);
@@ -125,7 +125,7 @@ std::string WeaponItem::to_string() {
     String::insert(ss, "none");
   }
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_int(ss, damages[i]);
+    String::insert_float(ss, damages[i]);
   }
   std::string result = ss->str();
   delete ss;

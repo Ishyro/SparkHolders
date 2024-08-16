@@ -13,7 +13,7 @@ std::string AmmunitionItem::to_string() {
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_int(ss, type);
-  String::insert_int(ss, type2);
+  String::insert_int(ss, subtype);
   String::insert_int(ss, tier);
   String::insert_int(ss, max_tier);
   String::insert_float(ss, weight);

@@ -22,6 +22,7 @@
 #include "ai/RoamerAI.h"
 
 #include "data/Adventure.h"
+#include "data/Block.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
@@ -31,7 +32,7 @@
 #include "data/Settings.h"
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
-#include "data/Block.h"
+#include "data/Stance.h"
 #include "data/World.h"
 #include "data/Database.h"
 
@@ -55,7 +56,6 @@
 #include "data/skills/PseudoSkill.h"
 #include "data/skills/Skill.h"
 
-#include "data/skills/ChanneledSkill.h"
 #include "data/skills/MapLinkerSkill.h"
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"
@@ -634,39 +634,170 @@ namespace FileOpener {
       duration = stoi(values.at("duration"));
     }
     float power = _stof(values.at("power"));
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
     if(type == EFFECT_DAMAGE || type == EFFECT_DAMAGE_BUFF) {
-      damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
-      damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-      damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
-      damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
-      damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
-      damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
-      damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
-      damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
-      damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
-      damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
-      damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
-      damages[DAMAGE_NEUTRAL] = 0;
-      damages[DAMAGE_TRUE] = 0;
+      std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
+      if(it != values.end()) {
+        damages[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("DAMAGE_PUNCTURE");
+      if(it != values.end()) {
+        damages[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PUNCTURE] = 0.F;
+      }
+      it = values.find("DAMAGE_BLUNT");
+      if(it != values.end()) {
+        damages[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("DAMAGE_FIRE");
+      if(it != values.end()) {
+        damages[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("DAMAGE_LIGHTNING");
+      if(it != values.end()) {
+        damages[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("DAMAGE_FROST");
+      if(it != values.end()) {
+        damages[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("DAMAGE_POISON");
+      if(it != values.end()) {
+        damages[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_POISON] = 0.F;
+      }
+      it = values.find("DAMAGE_ACID");
+      if(it != values.end()) {
+        damages[DAMAGE_ACID] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_ACID] = 0.F;
+      }
+      it = values.find("DAMAGE_MIND");
+      if(it != values.end()) {
+        damages[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_MIND] = 0.F;
+      }
+      it = values.find("DAMAGE_SOLAR");
+      if(it != values.end()) {
+        damages[DAMAGE_SOLAR] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SOLAR] = 0.F;
+      }
+      it = values.find("DAMAGE_AETHER");
+      if(it != values.end()) {
+        damages[DAMAGE_AETHER] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_AETHER] = 0.F;
+      }
+      it = values.find("DAMAGE_PHYSICAL");
+      if(it != values.end()) {
+        damages[DAMAGE_PHYSICAL] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PHYSICAL] = 0.F;
+      }
+      it = values.find("DAMAGE_NEUTRAL");
+      if(it != values.end()) {
+        damages[DAMAGE_NEUTRAL] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_NEUTRAL] = 0.F;
+      }
+      it = values.find("DAMAGE_TRUE");
+      if(it != values.end()) {
+        damages[DAMAGE_TRUE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_TRUE] = 0.F;
+      }
     }
     if(type == EFFECT_DAMAGE_REDUCTION) {
-      damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_BLUNT] = _stof(values.at("BLUNT_REDUCTION"));
-      damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[DAMAGE_FROST] = _stof(values.at("COLD_REDUCTION"));
-      damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
-      damage_reductions[DAMAGE_ACID] = 0.;
-      damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_SOLAR] = 0.F;
-      damage_reductions[DAMAGE_AETHER] = 0.F;
-      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
-      damage_reductions[DAMAGE_TRUE] = 0.F;
+      std::map<const std::string, std::string>::iterator it = values.find("SLASH_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("PUNCTURE_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PUNCTURE] = 0.F;
+      }
+      if(it != values.end()) {
+        damages[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("FIRE_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("LIGHTNING_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("FROST_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("POISON_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_POISON] = 0.F;
+      }
+      damages[DAMAGE_ACID] = 0.F;      
+      it = values.find("MIND_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_MIND] = 0.F;
+      }
+      damages[DAMAGE_SOLAR] = 0.F;
+      damages[DAMAGE_AETHER] = 0.F;
+      damages[DAMAGE_NEUTRAL] = 0.F;
+      damages[DAMAGE_TRUE] = 0.F;
     }
-    Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages, damage_reductions);
+    Effect * effect = new Effect(name, 0, level, attributes, type, duration_type, power, duration, damages);
     database->addEffect(effect);
   }
 
@@ -772,7 +903,7 @@ namespace FileOpener {
     std::map<const std::string, std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int32_t type = database->getTargetFromMacro(values.at("type"));
-    int32_t type2 = database->getTargetFromMacro(values.at("type2"));
+    int32_t subtype = database->getTargetFromMacro(values.at("subtype"));
     int32_t max_tier = stoi(values.at("tier"));
     float weight = _stof(values.at("weight"));
     int32_t sizeX = stoi(values.at("sizeX"));
@@ -800,25 +931,72 @@ namespace FileOpener {
     Item * item;
     if(type == ITEM_ARMOR) {
       int32_t swap_time = stoi(values.at("swap_time"));
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
-      damage_reductions[DAMAGE_SLASH] = _stof(values.at("SLASH_REDUCTION"));
-      damage_reductions[DAMAGE_PUNCTURE] = _stof(values.at("PUNCTURE_REDUCTION"));
-      damage_reductions[DAMAGE_BLUNT] = _stof(values.at("BLUNT_REDUCTION"));
-      damage_reductions[DAMAGE_FIRE] = _stof(values.at("FIRE_REDUCTION"));
-      damage_reductions[DAMAGE_LIGHTNING] = _stof(values.at("LIGHTNING_REDUCTION"));
-      damage_reductions[DAMAGE_FROST] = _stof(values.at("FROST_REDUCTION"));
-      damage_reductions[DAMAGE_POISON] = _stof(values.at("POISON_REDUCTION"));
-      damage_reductions[DAMAGE_ACID] = 0.F;
-      damage_reductions[DAMAGE_MIND] = _stof(values.at("MIND_REDUCTION"));
-      damage_reductions[DAMAGE_SOLAR] = 0.F;
-      damage_reductions[DAMAGE_AETHER] = 0.F;
-      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
-      damage_reductions[DAMAGE_TRUE] = 0.F;
+      std::array<float, DAMAGE_TYPE_NUMBER> damages;
+      std::map<const std::string, std::string>::iterator it = values.find("SLASH_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("PUNCTURE_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PUNCTURE] = 0.F;
+      }
+      if(it != values.end()) {
+        damages[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("FIRE_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("LIGHTNING_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("FROST_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("POISON_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_POISON] = 0.F;
+      }
+      damages[DAMAGE_ACID] = 0.F;      
+      it = values.find("MIND_REDUCTION");
+      if(it != values.end()) {
+        damages[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_MIND] = 0.F;
+      }
+      damages[DAMAGE_SOLAR] = 0.F;
+      damages[DAMAGE_AETHER] = 0.F;
+      damages[DAMAGE_NEUTRAL] = 0.F;
+      damages[DAMAGE_TRUE] = 0.F;
       item = new ArmorItem(
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -831,7 +1009,7 @@ namespace FileOpener {
         use_time,
         *effects,
         swap_time,
-        damage_reductions
+        damages
       );
     }
     if(type == ITEM_WEAPON) {
@@ -855,25 +1033,110 @@ namespace FileOpener {
           reload_time = stoi(values.at("reload_time"));
         }
       }
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-      damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
-      damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-      damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
-      damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
-      damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
-      damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
-      damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
-      damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
-      damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_MIND"));
-      damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
-      damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
-      damages[DAMAGE_NEUTRAL] = 0;
-      damages[DAMAGE_TRUE] = 0;
+      std::array<float, DAMAGE_TYPE_NUMBER> damages;
+      std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
+      if(it != values.end()) {
+        damages[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("DAMAGE_PUNCTURE");
+      if(it != values.end()) {
+        damages[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PUNCTURE] = 0.F;
+      }
+      it = values.find("DAMAGE_BLUNT");
+      if(it != values.end()) {
+        damages[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("DAMAGE_FIRE");
+      if(it != values.end()) {
+        damages[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("DAMAGE_LIGHTNING");
+      if(it != values.end()) {
+        damages[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("DAMAGE_FROST");
+      if(it != values.end()) {
+        damages[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("DAMAGE_POISON");
+      if(it != values.end()) {
+        damages[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_POISON] = 0.F;
+      }
+      it = values.find("DAMAGE_ACID");
+      if(it != values.end()) {
+        damages[DAMAGE_ACID] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_ACID] = 0.F;
+      }
+      it = values.find("DAMAGE_MIND");
+      if(it != values.end()) {
+        damages[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_MIND] = 0.F;
+      }
+      it = values.find("DAMAGE_SOLAR");
+      if(it != values.end()) {
+        damages[DAMAGE_SOLAR] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_SOLAR] = 0.F;
+      }
+      it = values.find("DAMAGE_AETHER");
+      if(it != values.end()) {
+        damages[DAMAGE_AETHER] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_AETHER] = 0.F;
+      }
+      it = values.find("DAMAGE_PHYSICAL");
+      if(it != values.end()) {
+        damages[DAMAGE_PHYSICAL] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_PHYSICAL] = 0.F;
+      }
+      it = values.find("DAMAGE_NEUTRAL");
+      if(it != values.end()) {
+        damages[DAMAGE_NEUTRAL] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_NEUTRAL] = 0.F;
+      }
+      it = values.find("DAMAGE_TRUE");
+      if(it != values.end()) {
+        damages[DAMAGE_TRUE] = _stof(it->second);
+      }
+      else {
+        damages[DAMAGE_TRUE] = 0.F;
+      }
       item = new WeaponItem(
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -903,7 +1166,7 @@ namespace FileOpener {
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -923,7 +1186,7 @@ namespace FileOpener {
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -946,7 +1209,7 @@ namespace FileOpener {
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -981,7 +1244,7 @@ namespace FileOpener {
         name,
         0,
         type,
-        type2,
+        subtype,
         0,
         max_tier,
         weight,
@@ -1006,7 +1269,6 @@ namespace FileOpener {
     delete effects;
     return name;
   }
-
   
   std::string FurnitureOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
@@ -1212,20 +1474,105 @@ namespace FileOpener {
     float waste_per_tick = _stof(values.at("waste_per_tick"));
     float waste_per_area = _stof(values.at("waste_per_area"));
     float waste_per_hit = _stof(values.at("waste_per_hit"));
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-    damages[DAMAGE_SLASH] = stoi(values.at("DAMAGE_SLASH"));
-    damages[DAMAGE_PUNCTURE] = stoi(values.at("DAMAGE_PUNCTURE"));
-    damages[DAMAGE_BLUNT] = stoi(values.at("DAMAGE_BLUNT"));
-    damages[DAMAGE_FIRE] = stoi(values.at("DAMAGE_FIRE"));
-    damages[DAMAGE_LIGHTNING] = stoi(values.at("DAMAGE_LIGHTNING"));
-    damages[DAMAGE_FROST] = stoi(values.at("DAMAGE_FROST"));
-    damages[DAMAGE_POISON] = stoi(values.at("DAMAGE_POISON"));
-    damages[DAMAGE_ACID] = stoi(values.at("DAMAGE_ACID"));
-    damages[DAMAGE_MIND] = stoi(values.at("DAMAGE_ACID"));
-    damages[DAMAGE_SOLAR] = stoi(values.at("DAMAGE_SOLAR"));
-    damages[DAMAGE_AETHER] = stoi(values.at("DAMAGE_AETHER"));
-    damages[DAMAGE_NEUTRAL] = 0;
-    damages[DAMAGE_TRUE] = 0;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
+    std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
+    if(it != values.end()) {
+      damages[DAMAGE_SLASH] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_SLASH] = 0.F;
+    }
+    it = values.find("DAMAGE_PUNCTURE");
+    if(it != values.end()) {
+      damages[DAMAGE_PUNCTURE] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_PUNCTURE] = 0.F;
+    }
+    it = values.find("DAMAGE_BLUNT");
+    if(it != values.end()) {
+      damages[DAMAGE_BLUNT] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_BLUNT] = 0.F;
+    }
+    it = values.find("DAMAGE_FIRE");
+    if(it != values.end()) {
+      damages[DAMAGE_FIRE] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_FIRE] = 0.F;
+    }
+    it = values.find("DAMAGE_LIGHTNING");
+    if(it != values.end()) {
+      damages[DAMAGE_LIGHTNING] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_LIGHTNING] = 0.F;
+    }
+    it = values.find("DAMAGE_FROST");
+    if(it != values.end()) {
+      damages[DAMAGE_FROST] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_FROST] = 0.F;
+    }
+    it = values.find("DAMAGE_POISON");
+    if(it != values.end()) {
+      damages[DAMAGE_POISON] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_POISON] = 0.F;
+    }
+    it = values.find("DAMAGE_ACID");
+    if(it != values.end()) {
+      damages[DAMAGE_ACID] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_ACID] = 0.F;
+    }
+    it = values.find("DAMAGE_MIND");
+    if(it != values.end()) {
+      damages[DAMAGE_MIND] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_MIND] = 0.F;
+    }
+    it = values.find("DAMAGE_SOLAR");
+    if(it != values.end()) {
+      damages[DAMAGE_SOLAR] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_SOLAR] = 0.F;
+    }
+    it = values.find("DAMAGE_AETHER");
+    if(it != values.end()) {
+      damages[DAMAGE_AETHER] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_AETHER] = 0.F;
+    }
+    it = values.find("DAMAGE_PHYSICAL");
+    if(it != values.end()) {
+      damages[DAMAGE_PHYSICAL] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_PHYSICAL] = 0.F;
+    }
+    it = values.find("DAMAGE_NEUTRAL");
+    if(it != values.end()) {
+      damages[DAMAGE_NEUTRAL] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_NEUTRAL] = 0.F;
+    }
+    it = values.find("DAMAGE_TRUE");
+    if(it != values.end()) {
+      damages[DAMAGE_TRUE] = _stof(it->second);
+    }
+    else {
+      damages[DAMAGE_TRUE] = 0.F;
+    }
     Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
     database->addProjectile(projectile);
     delete effects;
@@ -1256,21 +1603,21 @@ namespace FileOpener {
     int32_t level = stoi(values.at("level"));
     std::string attributes = values.at("attributes");
     int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
-    std::istringstream is(values.at("is_instant"));
-    bool is_INSTANT_DURATION;
-    is >> std::boolalpha >> is_INSTANT_DURATION;
+    std::istringstream is_instant_duration(values.at("is_instant"));
+    bool instant_duration;
+    is_instant_duration >> std::boolalpha >> instant_duration;
     int32_t overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int32_t overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int32_t overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
-    int32_t range = stoi(values.at("range"));
-    int32_t time = stoi(values.at("time"));
+    float range = _stof(values.at("range"));
+    float time = _stof(values.at("time"));
     std::list<PseudoSkill *> * skills = new std::list<PseudoSkill *>();
     std::istringstream is_skills(values.at("skills"));
     std::string pseudoSkill;
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, is_INSTANT_DURATION, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, instant_duration, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
     database->addSkill(skill);
     delete skills;
   }
@@ -1281,6 +1628,108 @@ namespace FileOpener {
     int32_t skill_type = database->getTargetFromMacro(values.at("skill_type"));
     int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
     int32_t mana_cost = stoi(values.at("mana_cost"));
+    int32_t scalling_type = database->getTargetFromMacro(values.at("scalling_type"));
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers;
+    if(scalling_type != SKILL_SCALE_NONE) {
+      std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("DAMAGE_PUNCTURE");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_PUNCTURE] = 0.F;
+      }
+      it = values.find("DAMAGE_BLUNT");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("DAMAGE_FIRE");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("DAMAGE_LIGHTNING");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("DAMAGE_FROST");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("DAMAGE_POISON");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_POISON] = 0.F;
+      }
+      it = values.find("DAMAGE_ACID");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_ACID] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_ACID] = 0.F;
+      }
+      it = values.find("DAMAGE_MIND");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_MIND] = 0.F;
+      }
+      it = values.find("DAMAGE_SOLAR");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_SOLAR] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_SOLAR] = 0.F;
+      }
+      it = values.find("DAMAGE_AETHER");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_AETHER] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_AETHER] = 0.F;
+      }
+      it = values.find("DAMAGE_PHYSICAL");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_PHYSICAL] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_PHYSICAL] = 0.F;
+      }
+      it = values.find("DAMAGE_NEUTRAL");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_NEUTRAL] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_NEUTRAL] = 0.F;
+      }
+      it = values.find("DAMAGE_TRUE");
+      if(it != values.end()) {
+        damage_multipliers[DAMAGE_TRUE] = _stof(it->second);
+      }
+      else {
+        damage_multipliers[DAMAGE_TRUE] = 0.F;
+      }
+    }
     std::list<Effect *> * effects = new std::list<Effect *>();
     std::istringstream is_effects(values.at("effects"));
     std::string effect;
@@ -1290,23 +1739,23 @@ namespace FileOpener {
     }
     switch(skill_type) {
       case SKILL_SIMPLE:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects);
         break;
       case SKILL_PROJECTILE: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, *effects, projectile);
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, projectile);
         break;
       }
       case SKILL_TELEPORT: {
         int32_t apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
         int32_t movement_type = database->getTargetFromMacro(values.at("movement_type"));
-        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, *effects, apparition_type, movement_type);
+        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, apparition_type, movement_type);
         break;
       }
       case SKILL_TILE_SWAP: {
         Block * current_block = (Block *) database->getBlock(values.at("current_block"));
         Block * new_block = (Block *) database->getBlock(values.at("new_block"));
-        pseudoSkill = new BlockSwapSkill(name, skill_type, target_type, mana_cost, *effects, current_block, new_block);
+        pseudoSkill = new BlockSwapSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, current_block, new_block);
         break;
       }
       case SKILL_SUMMON: {
@@ -1341,6 +1790,8 @@ namespace FileOpener {
           skill_type,
           target_type,
           mana_cost,
+          scalling_type,
+          damage_multipliers,
           *effects,
           character,
           ai_str,
@@ -1361,7 +1812,7 @@ namespace FileOpener {
         break;
       }
       default:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, *effects);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects);
     }
     database->addPseudoSkill(pseudoSkill);
     delete effects;
@@ -1388,6 +1839,30 @@ namespace FileOpener {
     Speech * speech = new Speech(name, type, empty, constant, *options);
     database->addSpeech(speech);
     delete options;
+  }
+
+  void StanceOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    std::istringstream is_magical(values.at("magical"));
+    bool magical;
+    is_magical >> std::boolalpha >> magical;
+    std::vector<Skill *> * attack_skills = new std::vector<Skill *>();
+    std::istringstream is_attack_skills(values.at("attack_skills"));
+    std::string attack_skill;
+    while(getline(is_attack_skills, attack_skill, '%')) {
+      attack_skills->push_back( (Skill *) database->getSkill(attack_skill));
+    }
+    Skill * block_skill = (Skill *) database->getSkill(values.at("block_skill"));
+    std::list<int32_t> * weapon_types = new std::list<int32_t>();
+    std::istringstream is_weapon_types(values.at("weapon_types"));
+    std::string weapon_type;
+    while(getline(is_weapon_types, weapon_type, '%')) {
+      weapon_types->push_back(database->getTargetFromMacro(weapon_type));
+    }
+    Stance * stance = new Stance(name, magical, *attack_skills, block_skill, *weapon_types);
+    database->addStance(stance);
+    delete weapon_types;
   }
 
   std::string WayOpener(std::string fileName, Database * database) {
@@ -1584,6 +2059,9 @@ namespace FileOpener {
     }
     else if(fileName.find("/speechs/") != std::string::npos) {
       SpeechOpener(fileName, database);
+    }
+    else if(fileName.find("/stances/") != std::string::npos) {
+      StanceOpener(fileName, database);
     }
     else if(fileName.find("/ways/") != std::string::npos) {
       std::string way_name = WayOpener(fileName, database);

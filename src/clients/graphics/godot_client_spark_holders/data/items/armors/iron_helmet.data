@@ -1,6 +1,6 @@
 name = TXT_IRON_HELMET
 type = ITEM_ARMOR
-type2 = ITEM_HELMET
+subtype = ITEM_HELMET
 tier = 10
 weight = 5.0
 sizeX = 2

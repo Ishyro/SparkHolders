@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#include "data/Block.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
@@ -8,7 +9,7 @@
 #include "data/Quest.h"
 #include "data/skills/Skill.h"
 #include "data/Speech.h"
-#include "data/Block.h"
+#include "data/Stance.h"
 
 
 #include "data/items/Item.h"
@@ -39,6 +40,7 @@ Database::Database() {
   skills = std::map<const std::string, const Skill * >();
   pseudoSkills = std::map<const std::string, const PseudoSkill *>();
   speechs = std::map<const std::string, const Speech * >();
+  stances = std::map<const std::string, const Stance * >();
   ways = std::map<const std::string, const Way *>();
   waysFiles = std::map<const std::string, const std::string>();
   relations = std::map<const std::string, std::map<const std::string, int32_t>>();
@@ -132,22 +134,93 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_CONTAINER", ITEM_CONTAINER));
 
   // weapon_type
+  macros.insert(std::make_pair("ITEM_HAND", ITEM_HAND));
   macros.insert(std::make_pair("ITEM_LONG_SWORD", ITEM_LONG_SWORD));
   macros.insert(std::make_pair("ITEM_SHORT_SWORD", ITEM_SHORT_SWORD));
   macros.insert(std::make_pair("ITEM_CURVED_SWORD", ITEM_CURVED_SWORD));
   macros.insert(std::make_pair("ITEM_RAPIER", ITEM_RAPIER));
-  macros.insert(std::make_pair("ITEM_SPEAR", ITEM_SPEAR));
-  macros.insert(std::make_pair("ITEM_GLAIVE", ITEM_GLAIVE));
-  macros.insert(std::make_pair("ITEM_AXE", ITEM_AXE));
-  macros.insert(std::make_pair("ITEM_WARHAMMER", ITEM_WARHAMMER));
   macros.insert(std::make_pair("ITEM_DAGGER", ITEM_DAGGER));
-  macros.insert(std::make_pair("ITEM_FIST", ITEM_FIST));
+  macros.insert(std::make_pair("ITEM_AXE", ITEM_AXE));
+  macros.insert(std::make_pair("ITEM_CLUB", ITEM_CLUB));
+  macros.insert(std::make_pair("ITEM_SPEAR", ITEM_SPEAR));
+  macros.insert(std::make_pair("ITEM_PISTOL", ITEM_PISTOL));
+  macros.insert(std::make_pair("ITEM_SHIELD", ITEM_SHIELD));
+  macros.insert(std::make_pair("ITEM_ZWEIHANDER", ITEM_ZWEIHANDER));
+  macros.insert(std::make_pair("ITEM_ZWEICURVED", ITEM_ZWEICURVED));
+  macros.insert(std::make_pair("ITEM_WARAXE", ITEM_WARAXE));
+  macros.insert(std::make_pair("ITEM_HEAVY_SPEAR", ITEM_HEAVY_SPEAR));
+  macros.insert(std::make_pair("ITEM_GLAIVE", ITEM_GLAIVE));
+  macros.insert(std::make_pair("ITEM_WARHAMMER", ITEM_WARHAMMER));
   macros.insert(std::make_pair("ITEM_BOW", ITEM_BOW));
   macros.insert(std::make_pair("ITEM_CROSSBOW", ITEM_CROSSBOW));
   macros.insert(std::make_pair("ITEM_MAGIC_STAFF", ITEM_MAGIC_STAFF));
   macros.insert(std::make_pair("ITEM_RIFLE", ITEM_RIFLE));
-  macros.insert(std::make_pair("ITEM_PISTOL", ITEM_PISTOL));
-  macros.insert(std::make_pair("ITEM_SLING", ITEM_SLING));
+
+  // combination_weapon_type
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_WELDING", ITEM_COMBO_DUAL_WELDING));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_SHORT", ITEM_COMBO_LONG_AND_SHORT));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_CURVED", ITEM_COMBO_LONG_AND_CURVED));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_RAPIER", ITEM_COMBO_LONG_AND_RAPIER));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_DAGGER", ITEM_COMBO_LONG_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_AXE", ITEM_COMBO_LONG_AND_AXE));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_CLUB", ITEM_COMBO_LONG_AND_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_SPEAR", ITEM_COMBO_LONG_AND_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_PISTOL", ITEM_COMBO_LONG_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_LONG_AND_SHIELD", ITEM_COMBO_LONG_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_SHORT", ITEM_COMBO_DUAL_SHORT));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_SHORT", ITEM_COMBO_CURVED_AND_SHORT));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_SHORT", ITEM_COMBO_RAPIER_AND_SHORT));
+  macros.insert(std::make_pair("ITEM_COMBO_SHORT_AND_DAGGER", ITEM_COMBO_SHORT_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_SHORT_AND_AXE", ITEM_COMBO_SHORT_AND_AXE));
+  macros.insert(std::make_pair("ITEM_COMBO_SHORT_AND_CLUB", ITEM_COMBO_SHORT_AND_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_SPEAR_AND_SHORT", ITEM_COMBO_SPEAR_AND_SHORT));
+  macros.insert(std::make_pair("ITEM_COMBO_SHORT_AND_PISTOL", ITEM_COMBO_SHORT_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_SHORT_AND_SHIELD", ITEM_COMBO_SHORT_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_CURVED", ITEM_COMBO_DUAL_CURVED));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_RAPIER", ITEM_COMBO_CURVED_AND_RAPIER));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_DAGGER", ITEM_COMBO_CURVED_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_AXE", ITEM_COMBO_CURVED_AND_AXE));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_CLUB", ITEM_COMBO_CURVED_AND_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_SPEAR", ITEM_COMBO_CURVED_AND_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_PISTOL", ITEM_COMBO_CURVED_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_CURVED_AND_SHIELD", ITEM_COMBO_CURVED_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_RAPIER", ITEM_COMBO_DUAL_RAPIER));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_DAGGER", ITEM_COMBO_RAPIER_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_AXE", ITEM_COMBO_RAPIER_AND_AXE));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_CLUB", ITEM_COMBO_RAPIER_AND_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_SPEAR", ITEM_COMBO_RAPIER_AND_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_PISTOL", ITEM_COMBO_RAPIER_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_RAPIER_AND_SHIELD", ITEM_COMBO_RAPIER_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_DAGGER", ITEM_COMBO_DUAL_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_AXE_AND_DAGGER", ITEM_COMBO_AXE_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_CLUB_AND_DAGGER", ITEM_COMBO_CLUB_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_SPEAR_AND_DAGGER", ITEM_COMBO_SPEAR_AND_DAGGER));
+  macros.insert(std::make_pair("ITEM_COMBO_DAGGER_AND_PISTOL", ITEM_COMBO_DAGGER_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_DAGGER_AND_SHIELD", ITEM_COMBO_DAGGER_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_AXE", ITEM_COMBO_DUAL_AXE));
+  macros.insert(std::make_pair("ITEM_COMBO_AXE_AND_CLUB", ITEM_COMBO_AXE_AND_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_AXE_AND_SPEAR", ITEM_COMBO_AXE_AND_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_AXE_AND_PISTOL", ITEM_COMBO_AXE_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_AXE_AND_SHIELD", ITEM_COMBO_AXE_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_CLUB", ITEM_COMBO_DUAL_CLUB));
+  macros.insert(std::make_pair("ITEM_COMBO_CLUB_AND_SPEAR", ITEM_COMBO_CLUB_AND_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_CLUB_AND_PISTOL", ITEM_COMBO_CLUB_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_CLUB_AND_SHIELD", ITEM_COMBO_CLUB_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_DUAL_SPEAR", ITEM_COMBO_DUAL_SPEAR));
+  macros.insert(std::make_pair("ITEM_COMBO_SPEAR_AND_PISTOL", ITEM_COMBO_SPEAR_AND_PISTOL));
+  macros.insert(std::make_pair("ITEM_COMBO_SPEAR_AND_SHIELD", ITEM_COMBO_SPEAR_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_GUNSLINGER", ITEM_COMBO_GUNSLINGER));
+  macros.insert(std::make_pair("ITEM_COMBO_PISTOL_AND_SHIELD", ITEM_COMBO_PISTOL_AND_SHIELD));
+
+  macros.insert(std::make_pair("ITEM_COMBO_WALL", ITEM_COMBO_WALL));
 
   // armor_type
   macros.insert(std::make_pair("ITEM_MANTLE", ITEM_MANTLE));
@@ -197,9 +270,9 @@ Database::Database() {
   macros.insert(std::make_pair("TARGET_BLOCK", TARGET_BLOCK));
   macros.insert(std::make_pair("TARGET_PERMISSIVE", TARGET_PERMISSIVE));
   macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
+  macros.insert(std::make_pair("TARGET_ORIENTATION", TARGET_ORIENTATION));
 
   // skill_type
-  macros.insert(std::make_pair("SKILL_CHANNELED", SKILL_CHANNELED));
   macros.insert(std::make_pair("SKILL_MAP_LINKER", SKILL_MAP_LINKER));
   macros.insert(std::make_pair("SKILL_MIND_CONTROL", SKILL_MIND_CONTROL));
   macros.insert(std::make_pair("SKILL_PROJECTILE", SKILL_PROJECTILE));
@@ -209,6 +282,12 @@ Database::Database() {
   macros.insert(std::make_pair("SKILL_TEAM_CHANGER", SKILL_TEAM_CHANGER));
   macros.insert(std::make_pair("SKILL_TELEPORT", SKILL_TELEPORT));
   macros.insert(std::make_pair("SKILL_TILE_SWAP", SKILL_TILE_SWAP));
+
+  // skill_scalling_type
+  macros.insert(std::make_pair("SKILL_SCALE_NONE", SKILL_SCALE_NONE));
+  macros.insert(std::make_pair("SKILL_SCALE_MAIN_WEAPON", SKILL_SCALE_MAIN_WEAPON));
+  macros.insert(std::make_pair("SKILL_SCALE_SUB_WEAPON", SKILL_SCALE_SUB_WEAPON));
+  macros.insert(std::make_pair("SKILL_SCALE_WEAPONS", SKILL_SCALE_WEAPONS));
 
   // skill_overcharge_type
   macros.insert(std::make_pair("OVERCHARGE_NONE", OVERCHARGE_NONE));
@@ -314,6 +393,7 @@ const Quest * Database::getQuest(const std::string quest) { return quests.at(que
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
+const Stance * Database::getStance(const std::string stance) { return stances.at(stance); }
 const Way * Database::getWay(const std::string way) { return ways.at(way); }
 const std::string Database::getWayFile(const std::string way) { return waysFiles.at(way); }
 const int32_t Database::getRelation(const std::string team1, const std::string team2) {
@@ -348,6 +428,7 @@ void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(ques
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
+void Database::addStance(const Stance * stance) { stances.insert(std::make_pair(stance->name, stance)); }
 void Database::addWay(const Way * way) { ways.insert(std::make_pair(way->name, way)); }
 void Database::addWayFile(const std::string way, const std::string path) { waysFiles.insert(std::make_pair(way, path)); }
 void Database::addRelation(const std::string team1, const std::string team2, int32_t relation) {

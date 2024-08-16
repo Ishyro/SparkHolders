@@ -15,7 +15,7 @@ class Item {
     const std::string name;
     const int64_t id;
     const int32_t type;
-    const int32_t type2;
+    const int32_t subtype;
     const int32_t tier;
     const int32_t max_tier;
     const float weight;
@@ -32,7 +32,7 @@ class Item {
       std::string name,
       int64_t id,
       int32_t type,
-      int32_t type2,
+      int32_t subtype,
       int32_t tier,
       int32_t max_tier,
       float weight,
@@ -48,7 +48,7 @@ class Item {
       name(name),
       id(id),
       type(type),
-      type2(type2),
+      subtype(subtype),
       tier(tier),
       max_tier(max_tier),
       weight(weight),
@@ -65,7 +65,7 @@ class Item {
       name(item->name),
       id(++item::id_cpt),
       type(item->type),
-      type2(item->type2),
+      subtype(item->subtype),
       tier(std::min(tier, item->max_tier)),
       max_tier(item->max_tier),
       weight(item->weight),

@@ -1,6 +1,6 @@
 name = TXT_WOOD_ARROW
 type = ITEM_AMMUNITION
-type2 = PROJECTILE_ARROW
+subtype = PROJECTILE_ARROW
 tier = 5
 weight = 0.01
 sizeX = 1

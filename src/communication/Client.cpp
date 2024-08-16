@@ -38,7 +38,7 @@ namespace Client {
     return result;
   }
 
-  std::string writeAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  std::string writeAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost) {
     switch(type) {
       case ACTION_IDLE:
       case ACTION_RESPITE:
@@ -61,7 +61,7 @@ namespace Client {
         return writeGearAction(type, (ItemSlot *) arg1, (ItemSlot *) arg2);
         break;
       case ACTION_USE_SKILL:
-        return writeSkillAction(type, (Target *) arg1, (Skill *) arg2, overcharge_power, overcharge_duration, overcharge_range);
+        return writeSkillAction(type, (Target *) arg1, (Skill *) arg2, mana_cost);
         break;
       case ACTION_TALKING:
       case ACTION_ECONOMICS:
@@ -115,14 +115,12 @@ namespace Client {
     return result;
   }
 
-  std::string writeSkillAction(int32_t type, Target * target, Skill * skill, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+  std::string writeSkillAction(int32_t type, Target * target, Skill * skill, int32_t mana_cost) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     String::insert(ss, MathUtil::target_to_string(target));
     String::insert(ss, skill->name);
-    String::insert_int(ss, overcharge_power);
-    String::insert_int(ss, overcharge_duration);
-    String::insert_int(ss, overcharge_range);
+    String::insert_int(ss, mana_cost);
     std::string result = ss->str();
     delete ss;
     return result;

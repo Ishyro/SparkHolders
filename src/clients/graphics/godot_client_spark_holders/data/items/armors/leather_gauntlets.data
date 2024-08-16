@@ -1,6 +1,6 @@
 name = TXT_LEATHER_GAUNTLETS
 type = ITEM_ARMOR
-type2 = ITEM_GAUNTLETS
+subtype = ITEM_GAUNTLETS
 tier = 10
 weight = 2.5
 sizeX = 2

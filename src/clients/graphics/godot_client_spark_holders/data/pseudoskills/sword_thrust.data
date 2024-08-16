@@ -1,0 +1,8 @@
+name = TXT_SWORD_THRUST
+skill_type = SKILL_SIMPLE
+target_type = TARGET_SELF
+mana_cost = 0
+scalling_type = SKILL_SCALE_MAIN_WEAPON
+effects =
+DAMAGE_PIERCING = 0.8
+DAMAGE_BLUNT = 0.2

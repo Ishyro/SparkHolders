@@ -22,7 +22,7 @@ class WeaponItem : public GearItem {
       std::string name,
       int64_t id,
       int32_t type,
-      int32_t type2,
+      int32_t subtype,
       int32_t tier,
       int32_t max_tier,
       float weight,
@@ -44,13 +44,13 @@ class WeaponItem : public GearItem {
       int32_t capacity,
       int32_t reload_time,
       AmmunitionItem * ammo,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       GearItem(
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -94,8 +94,8 @@ class WeaponItem : public GearItem {
         damages[i] = item->damages[i];
       }
     }
-    int32_t getRawDamage();
-    int32_t getDamageFromType(int32_t damage_type);
+    float getRawDamage();
+    float getDamageFromType(int32_t damage_type);
     int32_t getCurrentCapacity();
     AmmunitionItem * getAmmo();
     void useAmmo();
@@ -103,7 +103,7 @@ class WeaponItem : public GearItem {
     std::string to_string();
   private:
     AmmunitionItem * ammo;
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
 };
 
 #endif // _WEAPON_ITEM_H_

@@ -6,7 +6,7 @@ TERRAN_DAY = On
 
 # Video
 RESOLUTION = 3840x2160
-WINDOW_TYPE = Borderless Window
+WINDOW_TYPE = Fullscreen
 ANTI_ALIASING = x8
 VSYNC = On
 SHADOWS = Off

@@ -523,9 +523,7 @@ func send_base_action(type):
 	Values.action["type"] = type
 	Values.action["arg1"] = 0
 	Values.action["arg2"] = 0
-	Values.action["overcharge_power"] = 0
-	Values.action["overcharge_duration"] = 0
-	Values.action["overcharge_range"] = 0
+	Values.action["mana_cost"] = 0
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()
 	
@@ -534,9 +532,7 @@ func send_oriented_action(type, orientation):
 	Values.action["type"] = type
 	Values.action["arg1"] = orientation
 	Values.action["arg2"] = 0
-	Values.action["overcharge_power"] = 0
-	Values.action["overcharge_duration"] = 0
-	Values.action["overcharge_range"] = 0
+	Values.action["mana_cost"] = 0
 	if type == Values.ACTION_MOVE:
 		Values.move_set = true
 	Values.link.send_action(Values.action)
@@ -551,9 +547,7 @@ func send_targeted_action(type, target_type, target_id, pos):
 	target["pos"] = pos
 	Values.action["arg1"] = target
 	Values.action["arg2"] = 0
-	Values.action["overcharge_power"] = 0
-	Values.action["overcharge_duration"] = 0
-	Values.action["overcharge_range"] = 0
+	Values.action["mana_cost"] = 0
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()
 	
@@ -562,13 +556,11 @@ func send_gear_action(type, item_id):
 	Values.action["type"] = type
 	Values.action["arg1"] = item_id
 	Values.action["arg2"] = 0
-	Values.action["overcharge_power"] = 0
-	Values.action["overcharge_duration"] = 0
-	Values.action["overcharge_range"] = 0
+	Values.action["mana_cost"] = 0
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()
 	
-func send_skill_action(type, target_type, target_id, pos, skill, overcharge_power, overcharge_duration, overcharge_range):
+func send_skill_action(type, target_type, target_id, pos, skill, mana_cost):
 	Values.action_mutex.lock()
 	Values.action["type"] = type
 	var target = {}
@@ -577,8 +569,6 @@ func send_skill_action(type, target_type, target_id, pos, skill, overcharge_powe
 	target["pos"] = pos
 	Values.action["arg1"] = target
 	Values.action["arg2"] = skill
-	Values.action["overcharge_power"] = overcharge_power
-	Values.action["overcharge_duration"] = overcharge_duration
-	Values.action["overcharge_range"] = overcharge_range
+	Values.action["mana_cost"] = mana_cost
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()

@@ -7,7 +7,7 @@
 #include "util/String.h"
 
 float ArmorItem::getDamageReductionFromType(int32_t damage_type) {
-  float reduction = damage_reductions[damage_type];
+  float reduction = damages[damage_type];
   for(Effect * e : effects) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
       reduction += e->getDamageReductionFromType(damage_type);
@@ -21,7 +21,7 @@ std::string ArmorItem::to_string() {
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_int(ss, type);
-  String::insert_int(ss, type2);
+  String::insert_int(ss, subtype);
   String::insert_int(ss, tier);
   String::insert_int(ss, max_tier);
   String::insert_float(ss, weight);
@@ -40,7 +40,7 @@ std::string ArmorItem::to_string() {
   delete ss_effects;
   String::insert_int(ss, swap_time);
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_float(ss, damage_reductions[i]);
+    String::insert_float(ss, damages[i]);
   }
   std::string result = ss->str();
   delete ss;

@@ -32,8 +32,7 @@ class Effect {
       int32_t duration_type,
       float power,
       int32_t duration,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages,
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(id),
@@ -47,7 +46,6 @@ class Effect {
       tick_left=(duration_type != DURATION_INFINITE ? duration : -1);
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
-        this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(
@@ -60,8 +58,7 @@ class Effect {
       float power,
       int32_t duration,
       int32_t tick_left,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages,
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(id),
@@ -75,13 +72,12 @@ class Effect {
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
-        this->damage_reductions[i] = damage_reductions[i];
       }
     }
     Effect(
       Effect * base,
-      int32_t overcharge_power,
-      int32_t overcharge_duration
+      float overcharge_power,
+      float overcharge_duration
     ):
       name(base->name),
       id(++effect::id_cpt),
@@ -95,11 +91,10 @@ class Effect {
       tick_left=duration;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge_power;
-        this->damage_reductions[i] = damage_reductions[i] * overcharge_power;
       }
     }
-    int32_t getRawDamage();
-    int32_t getDamageFromType(int32_t damage_type);
+    float getRawDamage();
+    float getDamageFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);
     int32_t getTickLeft();
     void activate(Character * target);
@@ -112,8 +107,7 @@ class Effect {
   private:
     int32_t tick_left;
     Character * owner;
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
 };
 
 #endif // _EFFECT_H_

@@ -18,10 +18,10 @@ bool ContainerItem::add(Item * item, int32_t x, int32_t y) {
   ItemSlot * toadd = new ItemSlot();
   toadd->x = x;
   toadd->y = y;
-  if(type2 == ITEM_BAG) {
+  if(subtype == ITEM_BAG) {
     toadd->slot = ITEM_SLOT_INSIDE_BAG;
   }
-  else if(type2 == ITEM_BELT) {
+  else if(subtype == ITEM_BELT) {
     toadd->slot = ITEM_SLOT_INSIDE_BELT;
   }
   toadd->item = item;
@@ -41,10 +41,10 @@ bool ContainerItem::add(Item * item, int32_t x, int32_t y) {
 
 void ContainerItem::add_all(std::list<Item *> items) {
   int32_t slot_type;
-  if(type2 == ITEM_BAG) {
+  if(subtype == ITEM_BAG) {
     slot_type = ITEM_SLOT_INSIDE_BAG;
   }
-  else if(type2 == ITEM_BELT) {
+  else if(subtype == ITEM_BELT) {
     slot_type = ITEM_SLOT_INSIDE_BELT;
   }
   int32_t current_x = 0;
@@ -107,7 +107,7 @@ std::string ContainerItem::to_string() {
   String::insert(ss, name);
   String::insert_long(ss, id);
   String::insert_int(ss, type);
-  String::insert_int(ss, type2);
+  String::insert_int(ss, subtype);
   String::insert_int(ss, tier);
   String::insert_int(ss, max_tier);
   String::insert_float(ss, weight);

@@ -18,7 +18,7 @@ typedef struct ProjectileDisplay {
   float y;
   float z;
   float orientation;
-  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+  std::array<float, DAMAGE_TYPE_NUMBER> damages;
   float speed;
   float area;
   float waste_per_tick;
@@ -50,7 +50,7 @@ class Projectile {
       float waste_per_tick,
       float waste_per_area,
       float waste_per_hit,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(0),
@@ -74,7 +74,7 @@ class Projectile {
       target = nullptr;
       owner = nullptr;
       orientation = 0.F;
-      overcharge_power = 1;
+      overcharge = 1;
       overcharge_duration = 1;
       overcharge_range = 1;
       current_timer = 0;
@@ -85,12 +85,12 @@ class Projectile {
     }
     Projectile(
       const Projectile * projectile,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages,
+      std::array<float, DAMAGE_TYPE_NUMBER> realDamages,
       World * world,
       int32_t current_map_id,
       Target * target,
       Character * owner,
-      int32_t overcharge_power,
+      float overcharge,
       int32_t overcharge_duration,
       int32_t overcharge_range,
       bool change_owner_orientation
@@ -107,7 +107,7 @@ class Projectile {
       owner(owner),
       speed(projectile->speed * overcharge_range),
       area(projectile->area * overcharge_range),
-      overcharge_power(overcharge_power),
+      overcharge(overcharge),
       overcharge_duration(overcharge_duration),
       overcharge_range(overcharge_range),
       falloff_timer(projectile->falloff_timer),
@@ -122,11 +122,11 @@ class Projectile {
         this->damages[i] = realDamages[i];
         this->current_damages[i] = realDamages[i];
       }
-      init(projectile->effects, overcharge_power, overcharge_duration, world, false, change_owner_orientation);
+      init(projectile->effects, overcharge, overcharge_duration, world, false, change_owner_orientation);
     }
     Projectile(
       const Projectile * projectile,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages,
+      std::array<float, DAMAGE_TYPE_NUMBER> realDamages,
       World * world,
       int32_t current_map_id,
       float x,
@@ -134,7 +134,7 @@ class Projectile {
       float z,
       Target * target,
       Character * owner,
-      int32_t overcharge_power,
+      float overcharge,
       int32_t overcharge_duration,
       int32_t overcharge_range,
       bool change_owner_orientation
@@ -152,7 +152,7 @@ class Projectile {
       owner(owner),
       speed(projectile->speed * overcharge_range),
       area(projectile->area * overcharge_range),
-      overcharge_power(overcharge_power),
+      overcharge(overcharge),
       overcharge_duration(overcharge_duration),
       overcharge_range(overcharge_range),
       falloff_timer(projectile->falloff_timer),
@@ -167,7 +167,7 @@ class Projectile {
         this->damages[i] = realDamages[i];
         this->current_damages[i] = realDamages[i];
       }
-      init(projectile->effects, overcharge_power, overcharge_duration, world, true, change_owner_orientation);
+      init(projectile->effects, overcharge, overcharge_duration, world, true, change_owner_orientation);
     }
     Projectile(
       const std::string name,
@@ -186,14 +186,14 @@ class Projectile {
       float orientation,
       float speed,
       float area,
-      int32_t overcharge_power,
+      float overcharge,
       int32_t overcharge_duration,
       int32_t overcharge_range,
       int32_t falloff_timer,
       float waste_per_tick,
       float waste_per_area,
       float waste_per_hit,
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
       id(id),
@@ -209,7 +209,7 @@ class Projectile {
       orientation(orientation),
       speed(speed),
       area(area),
-      overcharge_power(overcharge_power),
+      overcharge(overcharge),
       overcharge_duration(overcharge_duration),
       overcharge_range(overcharge_range),
       falloff_timer(falloff_timer),
@@ -226,7 +226,7 @@ class Projectile {
         this->current_damages[i] = damages[i];
       }
     }
-    void init(std::list<Effect *> effects, int32_t overcharge_power, int32_t overcharge_duration, World * world, bool teleport, bool change_owner_orientation);
+    void init(std::list<Effect *> effects, float overcharge, int32_t overcharge_duration, World * world, bool teleport, bool change_owner_orientation);
     int32_t getCurrentMapId();
     MathUtil::Vector3 getCoord();
     float getDestX();
@@ -286,7 +286,7 @@ class Projectile {
     float orientation;
     float speed;
     float area;
-    int32_t overcharge_power;
+    float overcharge;
     int32_t overcharge_duration;
     int32_t overcharge_range;
     int32_t falloff_timer;
@@ -294,8 +294,8 @@ class Projectile {
     float waste_per_tick;
     float waste_per_area;
     float waste_per_hit;
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
-    std::array<int32_t, DAMAGE_TYPE_NUMBER> current_damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> current_damages;
     std::list<Character *> previous_targets;
     std::list<Character *> current_targets;
 };

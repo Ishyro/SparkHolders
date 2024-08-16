@@ -1,0 +1,11 @@
+name = TXT_PARADE
+level = 1
+attributes =
+target_type = TARGET_BLOCK
+is_instant = true
+overcharge_power_type = OVERCHARGE_NONE
+overcharge_duration_type = OVERCHARGE_NONE
+overcharge_range_type = OVERCHARGE_NONE
+range = 5
+time = 1
+skills = TXT_PARADE%

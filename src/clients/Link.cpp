@@ -70,10 +70,10 @@ void Link::sendChoices(std::string name, std::string attributes, std::string rac
   }
 }
 
-void Link::sendAction(int32_t type, void * arg1, void * arg2, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
+void Link::sendAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, SOCKET_MSG_ACTION);
-    String::insert(ss, Client::writeAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range));
+    String::insert(ss, Client::writeAction(type, arg1, arg2, mana_cost));
     try {
       s.write(ss->str());
       delete ss;

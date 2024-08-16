@@ -269,7 +269,7 @@ std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Characte
   return threats;
 }
 
-std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
+std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> skills, Character * self) {
   std::map<Character *, Skill *> bestDamageSkills = std::map<Character *, Skill *>();
   for(Character * threat : threats) {
     float range = MathUtil::distance(self->getCoord(), threat->getCoord());
@@ -277,7 +277,7 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
     int32_t maxDamage = 0;
     for(auto pair : skills) {
       if(pair.first != nullptr && pair.first->range >= range) {
-        int32_t rawDamage = threat->tryAttack(pair.second);
+        float rawDamage = threat->tryAttack(pair.second);
         if(rawDamage > maxDamage) {
           skill = pair.first;
           maxDamage = rawDamage;
@@ -299,13 +299,13 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
 }
 
 Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Character * self) {
-  std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> skills = self->getDamageSkills();
+  std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> skills = self->getDamageSkills();
   std::map<Character *, Skill *> bestDamageSkills = getBestDamageSkills(threats, skills, self);
-  int32_t max = 0;
+  float max = 0.F;
   Skill * skill = nullptr;
   Character * target = nullptr;
   for(auto pair : bestDamageSkills) {
-    int32_t rawDamage = pair.first->tryAttack(skills.at(pair.second));
+    float rawDamage = pair.first->tryAttack(skills.at(pair.second));
     if(rawDamage > max) {
       skill = pair.second;
       target = pair.first;
@@ -318,7 +318,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     t->id = target->id;
     // float orientation = MathUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
     if(skill != nullptr) {
-      return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, 1, 1, 1);
+      return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, skill->getManaCost());
     }
     if(!self->getGear()->getWeapon_1()->use_projectile) {
       return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);

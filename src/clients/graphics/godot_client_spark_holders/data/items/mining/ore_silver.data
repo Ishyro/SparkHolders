@@ -1,6 +1,6 @@
 name = TXT_SILVER_ORE
 type = ITEM_BASIC
-type2 = ITEM_MATERIAL
+subtype = ITEM_MATERIAL
 tier = 10
 weight = 1
 sizeX = 1

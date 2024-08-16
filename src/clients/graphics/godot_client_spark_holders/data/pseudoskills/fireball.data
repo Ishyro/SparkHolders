@@ -3,4 +3,5 @@ skill_type = SKILL_PROJECTILE
 target_type = TARGET_PERMISSIVE
 projectile = TXT_FIREBALL
 mana_cost = 10
+scalling_type = SKILL_SCALE_NONE
 effects =

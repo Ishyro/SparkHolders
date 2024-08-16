@@ -251,7 +251,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
   result["name"] = item->name.c_str();
   result["id"] = item->id;
   result["type"] = item->type;
-  result["type2"] = item->type2;
+  result["subtype"] = item->subtype;
   result["tier"] = item->tier;
   result["max_tier"] = item->max_tier;
   result["weight"] = item->weight;
@@ -684,9 +684,7 @@ void GodotLink::send_action(Dictionary action) {
   int32_t type = (int32_t) (int64_t) action["type"];
   void * arg1 = 0;
   void * arg2 = 0;
-  int32_t overcharge_power = 1;
-  int32_t overcharge_duration = 1;
-  int32_t overcharge_range = 1;
+  int32_t mana_cost = 1;
   switch(type) {
     case ACTION_IDLE:
     case ACTION_RESPITE:
@@ -749,13 +747,11 @@ void GodotLink::send_action(Dictionary action) {
       arg1 = (void *) target;
       Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) action["arg2"]).utf8().get_data()));
       arg2 = (void *) skill;
-      overcharge_power = (int32_t) action["overchage_power"];
-      overcharge_duration = (int32_t) action["overchage_duration"];
-      overcharge_range = (int32_t) action["overchage_range"];
+      mana_cost = (int32_t) action["mana_cost"];
       break;
     }
   }
-  link->sendAction(type, arg1, arg2, overcharge_power, overcharge_duration, overcharge_range);
+  link->sendAction(type, arg1, arg2, mana_cost);
 }
 
 void GodotLink::pause() {

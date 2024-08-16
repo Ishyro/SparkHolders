@@ -1,6 +1,6 @@
 name = TXT_HOMO_MEAT
 type = ITEM_BASIC
-type2 = ITEM_FOOD
+subtype = ITEM_FOOD
 tier = 0
 weight = 0.5
 sizeX = 2

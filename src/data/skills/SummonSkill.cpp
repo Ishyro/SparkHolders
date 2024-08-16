@@ -8,7 +8,7 @@
 #include "ai/NocturnalAgressiveAI.h"
 #include "ai/EtheralCasterAI.h"
 
-void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   // Target will be a Block
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
@@ -58,20 +58,20 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
   }
 }
 
-bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range, int32_t range) {
+bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   return true;
 }
 
-int32_t SummonSkill::getPower() {
-  return 0;
+float SummonSkill::getPower() {
+  return 0.F;
 }
 
-int32_t SummonSkill::getDamageFromType(int32_t damage_type, int32_t overcharge_power) {
-  return 0;
+float SummonSkill::getDamageFromType(int32_t damage_type, Character * owner, float overcharge) {
+  return 0.F;
 }
 
-float SummonSkill::getDamageReductionFromType(int32_t damage_type, int32_t overcharge_power) {
-  return 0.;
+float SummonSkill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
+  return 0.F;
 }
 
 Character * SummonSkill::getCharacter() { return character; }

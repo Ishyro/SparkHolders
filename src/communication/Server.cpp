@@ -85,10 +85,8 @@ namespace Server {
       case ACTION_USE_SKILL: {
         Target * target = MathUtil::target_from_string(String::extract(ss));
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
-        int32_t overcharge_power = String::extract_int(ss);
-        int32_t overcharge_duration = String::extract_int(ss);
-        int32_t overcharge_range = String::extract_int(ss);
-        action = new SkillAction(type, adventure, nullptr, user, target, skill, overcharge_power, overcharge_duration, overcharge_range);
+        int32_t mana_cost = String::extract_int(ss);
+        action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
         break;
       }
       case ACTION_TALKING: {

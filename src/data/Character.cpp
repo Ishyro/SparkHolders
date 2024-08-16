@@ -6,6 +6,7 @@
 #include "data/skills/Skill.h"
 #include "data/Settings.h"
 #include "data/Speech.h"
+#include "data/Stance.h"
 #include "data/ways/Way.h"
 #include "data/ways/Race.h"
 #include "data/World.h"
@@ -468,14 +469,14 @@ std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
 std::list<Effect *> Character::getEffects() { return effects; }
 std::list<Skill *> Character::getSkills() { return skills; }
 
-std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
-  std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>>();
+std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
+  std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>>();
   for(Skill * skill : skills) {
-    if(skill->getManaCost(1, 1, 1) < mana) {
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+    if(skill->getManaCost() < mana) {
+      std::array<float, DAMAGE_TYPE_NUMBER> damages;
       bool isDamageSkill = false;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damages[i] = skill->getDamageFromType(i, 1);
+        damages[i] = skill->getDamageFromType(i, this, 1);
         if(damages[i] > 0) {
           isDamageSkill = true;
         }
@@ -485,7 +486,7 @@ std::map<Skill *, std::array<int32_t, DAMAGE_TYPE_NUMBER>> Character::getDamageS
       }
     }
   }
-  std::array<int32_t, DAMAGE_TYPE_NUMBER> damages;
+  std::array<float, DAMAGE_TYPE_NUMBER> damages;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = getDamageFromType(i, ITEM_SLOT_WEAPON_1);
   }
@@ -508,6 +509,73 @@ Way * Character::getReligion() { return religion; }
 Way * Character::getProfession() { return profession; }
 
 std::list<Way *> Character::getTitles() { return titles; }
+
+std::list<Way *> Character::getWays() {
+  std::list<Way *> ways = std::list<Way *>();
+  ways.push_back(main_class);
+  if(second_class != nullptr) {
+    ways.push_back(second_class);
+  }
+  if(spec_class != nullptr) {
+    ways.push_back(spec_class);
+  }
+  ways.push_back(race);
+  ways.push_back(origin);
+  ways.push_back(culture);
+  ways.push_back(religion);
+  ways.push_back(profession);
+  for(Way * way : titles) {
+    ways.push_back(way);
+  }
+  return ways;
+}
+
+Stance * Character::getCurrentStance() {
+  if(using_magical_stance) {
+    return active_magical_stances.at(gear->getWeaponsCombination());
+  }
+  else {
+    return active_stances.at(gear->getWeaponsCombination());
+  }
+}
+
+Stance * Character::getStance(int32_t weapon_type) {
+  std::map<const int32_t, Stance *>::iterator it = active_stances.find(weapon_type);
+  if(it != active_stances.end()) {
+    return it->second;
+  }
+  else {
+    return nullptr;
+  }
+}
+
+Stance * Character::getMagicalStance(int32_t weapon_type) {
+  std::map<const int32_t, Stance *>::iterator it = active_magical_stances.find(weapon_type);
+  if(it != active_magical_stances.end()) {
+    return it->second;
+  }
+  else {
+    return nullptr;
+  }
+}
+
+std::list<Stance *> Character::getAvaillableStances() {
+  std::list<Stance *> stances = std::list<Stance *>();
+  for(Way * way : getWays()) {
+    for(Stance * stance : way->getStances()) {
+      stances.push_back(stance);
+    }
+  }
+  return stances;
+}
+
+std::map<int32_t, Stance *> Character::getActiveStances() {
+  return active_stances;
+}
+
+std::map<int32_t, Stance *> Character::getActiveMagicalStances() {
+  return active_magical_stances;
+}
 
 void Character::setOrientation(float orientation) { this->orientation = orientation; }
 void Character::setSize(float size) { this->size = size; }
@@ -1198,8 +1266,33 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range) {
-  skill->activate(this, target, adventure, overcharge_power, overcharge_duration, overcharge_range);
+void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge) {
+  skill->activate(this, target, adventure, overcharge);
+}
+
+void Character::selectStance(Stance * stance) {
+  for(Stance * tocheck : getAvaillableStances()) {
+    if(stance == tocheck) {
+      int32_t weapon_type = gear->getWeaponsCombination();
+      if(stance->isValid(weapon_type)) {
+        if(stance->magical) {
+          std::map<const int32_t, Stance *>::iterator it = active_magical_stances.find(weapon_type);
+          if(it != active_magical_stances.end()) {
+            active_magical_stances.erase(it);
+          }
+          active_magical_stances.insert(std::make_pair(weapon_type, stance));
+        }
+        else {
+          std::map<const int32_t, Stance *>::iterator it = active_stances.find(weapon_type);
+          if(it != active_stances.end()) {
+            active_stances.erase(it);
+          }
+          active_stances.insert(std::make_pair(weapon_type, stance));
+        }
+        return;
+      }
+    }
+  }
 }
 
 int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
@@ -1281,7 +1374,7 @@ float Character::getStatusReductionFromType(int32_t damage_type) {
 Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t slot) {
   if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
+      std::array<float, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, slot);
       }
@@ -1298,13 +1391,7 @@ Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t sl
   return nullptr;
 }
 
-void Character::attack(Character * target, Adventure * adventure, int32_t type) {
-  mainAttack(target, adventure, type);
-  if(gear->getWeapon_2() != nullptr) {
-    subAttack(target, adventure, type);
-  }
-}
-
+/*
 void Character::mainAttack(Character * target, Adventure * adventure, int32_t type) {
   if(gear->getWeapon_1()->range >= MathUtil::distance(coord, target->getCoord())) {
     if(gear->getWeapon_1()->use_projectile) {
@@ -1314,7 +1401,7 @@ void Character::mainAttack(Character * target, Adventure * adventure, int32_t ty
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_1);
     }
     else {
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
+      std::array<float, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_1);
       }
@@ -1322,24 +1409,7 @@ void Character::mainAttack(Character * target, Adventure * adventure, int32_t ty
     }
   }
 }
-
-void Character::subAttack(Character * target, Adventure * adventure, int32_t type) {
-  if(gear->getWeapon_2()->range >= MathUtil::distance(coord, target->getCoord())) {
-    if(gear->getWeapon_2()->use_projectile) {
-      Target * t_target = new Target();
-      t_target->type = TARGET_CHARACTER;
-      t_target->id = target->id;
-      shoot(t_target, adventure, ITEM_SLOT_WEAPON_2);
-    }
-    else {
-      std::array<int32_t, DAMAGE_TYPE_NUMBER> realDamages;
-      for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-        realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_2);
-      }
-      target->receiveDamage(realDamages, this, this->getStatusPower());
-    }
-  }
-}
+*/
 
 void Character::reload(ItemSlot * ammo, int32_t slot_weapon) {
   if(player_character) {
@@ -1354,7 +1424,7 @@ ItemSlot * Character::canReload(int32_t slot) {
   int32_t number = 0;
   if(slot == ITEM_SLOT_WEAPON_1) {
     for(ItemSlot * current : gear->getBelt()->getItems()) {
-      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_1()->ammo_type == current->item->type2 && ( (AmmunitionItem *) current->item)->getNumber() > number) {
+      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_1()->ammo_type == current->item->subtype && ( (AmmunitionItem *) current->item)->getNumber() > number) {
         ammo = current;
         number = ((AmmunitionItem *) current->item)->getNumber();
       }
@@ -1362,7 +1432,7 @@ ItemSlot * Character::canReload(int32_t slot) {
   }
   else if(slot == ITEM_SLOT_WEAPON_2) {
     for(ItemSlot * current : gear->getBelt()->getItems()) {
-      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_2()->ammo_type == current->item->type2 && ( (AmmunitionItem *) current->item)->getNumber() > number) {
+      if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_2()->ammo_type == current->item->subtype && ( (AmmunitionItem *) current->item)->getNumber() > number) {
         ammo = current;
         number = ((AmmunitionItem *) current->item)->getNumber();
       }
@@ -1371,11 +1441,12 @@ ItemSlot * Character::canReload(int32_t slot) {
   return ammo;
 }
 
-void Character::receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power) {
+void Character::receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power) {
   if(!isInvulnerable() && !isEtheral()) {
     int32_t damage = 0;
     int32_t current_damage = 0;
-    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
+    // skip DAMAGE_PHYSICAL
+    for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER - 1; damage_type++) {
       if(damages[damage_type] > 0) {
         if(damage_type == DAMAGE_ACID) {
           current_damage = damages[damage_type];
@@ -1411,8 +1482,7 @@ void Character::receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, C
     for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_STATUS_NUMBER; damage_type++) {
       while(status[damage_type] > 100.F) {
         status[damage_type] -= 100.F;
-        std::array<int32_t, DAMAGE_TYPE_NUMBER> effect_damages;
-        std::array<float, DAMAGE_TYPE_NUMBER> effect_damage_reductions;
+        std::array<float, DAMAGE_TYPE_NUMBER> effect_damages;
         Effect * effect;
         float potency = 0;
         int32_t duration = 60;
@@ -1420,52 +1490,52 @@ void Character::receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, C
           case DAMAGE_SLASH:
             potency = 4.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_BLEEDING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BLEEDING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_BLEEDING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BLEEDING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_PUNCTURE:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_WEAKENED", ++effect::id_cpt, 1, "", EFFECT_STATUS_WEAKENED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_WEAKENED", ++effect::id_cpt, 1, "", EFFECT_STATUS_WEAKENED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_BLUNT:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_CONFUSED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CONFUSED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_CONFUSED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CONFUSED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_FIRE:
             duration = 12;
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_BURNING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BURNING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_BURNING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BURNING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_LIGHTNING:
             duration = 12;
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_SHOCKED", ++effect::id_cpt, 1, "", EFFECT_STATUS_SHOCKED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_SHOCKED", ++effect::id_cpt, 1, "", EFFECT_STATUS_SHOCKED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_FROST:
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_FROZEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_FROZEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_FROZEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_FROZEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_POISON:
             potency = 10.F * duration;
             effect_damages[DAMAGE_POISON] = getMaxHp() / potency;
-            effect = new Effect("TXT_POISONED", ++effect::id_cpt, 1, "", EFFECT_STATUS_POISONED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_POISONED", ++effect::id_cpt, 1, "", EFFECT_STATUS_POISONED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_ACID:
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_CORRODED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CORRODED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_CORRODED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CORRODED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_MIND:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_BROKEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_BROKEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_BROKEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_BROKEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_SOLAR:
-            effect = new Effect("TXT_DISINTEGRATED", ++effect::id_cpt, 1, "", EFFECT_STATUS_DISINTEGRATED, DURATION_INSTANT, 0.F, 0, effect_damages, effect_damage_reductions);
+            effect = new Effect("TXT_DISINTEGRATED", ++effect::id_cpt, 1, "", EFFECT_STATUS_DISINTEGRATED, DURATION_INSTANT, 0.F, 0, effect_damages);
             break;
         }
         effect->activate(this);
@@ -1478,7 +1548,7 @@ void Character::receiveDamage(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages, C
   }
 }
 
-int32_t Character::tryAttack(std::array<int32_t, DAMAGE_TYPE_NUMBER> damages) {
+int32_t Character::tryAttack(std::array<float, DAMAGE_TYPE_NUMBER> damages) {
   if(isInvulnerable() || isEtheral()) {
     return 0;
   }
@@ -1626,7 +1696,7 @@ std::string Character::to_string() {
     String::insert_float(ss, getDamageReductionFromType(i));
   }
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    String::insert_int(ss, getDamageFromType(i, ITEM_SLOT_WEAPON_1));
+    String::insert_float(ss, getDamageFromType(i, ITEM_SLOT_WEAPON_1));
   }
   std::string result = ss->str();
   delete ss;
@@ -1671,7 +1741,7 @@ CharacterDisplay * Character::from_string(std::string to_read) {
     display->damage_reductions[i] = String::extract_float(ss);
   }
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-    display->damages[i] = String::extract_int(ss);
+    display->damages[i] = String::extract_float(ss);
   }
   delete ss;
   return display;

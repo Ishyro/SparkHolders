@@ -19,8 +19,8 @@ class Skill {
     const int32_t overcharge_power_type;
     const int32_t overcharge_duration_type;
     const int32_t overcharge_range_type;
-    const int32_t range;
-    const int32_t time;
+    const float range;
+    const float time;
     const std::list<PseudoSkill *> skills;
     Skill(
       std::string name,
@@ -31,8 +31,8 @@ class Skill {
       int32_t overcharge_power_type,
       int32_t overcharge_duration_type,
       int32_t overcharge_range_type,
-      int32_t range,
-      int32_t time,
+      float range,
+      float time,
       std::list<PseudoSkill *> skills
     ):
       name(name),
@@ -48,14 +48,16 @@ class Skill {
       skills(skills)
     {}
 
-    void activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
-    bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
-    int32_t getManaCost(int32_t overcharge_power, int32_t overcharge_duration, int32_t overcharge_range);
-    int32_t getPower();
-    int32_t getDamageFromType(int32_t dammage_type, int32_t overcharge_power);
-    float getDamageReductionFromType(int32_t dammage_type, int32_t overcharge_power);
+    void activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent);
+    bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent);
+    void computeOvercharges(int32_t mana_spent, float & overcharge_power, float & overcharge_duration, float & overcharge_range);
+    int32_t getManaCost();
+    float getTime(Character * owner);
+    float getPower();
+    float getDamageFromType(int32_t dammage_type, Character * owner, float overcharge);
+    float getDamageReductionFromType(int32_t dammage_type, float overcharge);
     Block * isEatingSkill();
-    int32_t isTeleportSkill();
+    float isTeleportSkill();
 };
 
 #endif // _SKILL_H_

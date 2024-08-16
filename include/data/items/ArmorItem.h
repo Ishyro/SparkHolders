@@ -14,7 +14,7 @@ class ArmorItem : public GearItem {
       std::string name,
       int64_t id,
       int32_t type,
-      int32_t type2,
+      int32_t subtype,
       int32_t tier,
       int32_t max_tier,
       float weight,
@@ -27,13 +27,13 @@ class ArmorItem : public GearItem {
       int32_t use_time,
       std::list<Effect *> effects,
       int32_t swap_time,
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       GearItem(
         name,
         id,
         type,
-        type2,
+        subtype,
         tier,
         max_tier,
         weight,
@@ -49,20 +49,20 @@ class ArmorItem : public GearItem {
       )
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        this->damage_reductions[i] = damage_reductions[i];
+        this->damages[i] = damages[i];
       }
     }
     ArmorItem(ArmorItem * item, int32_t tier):
       GearItem(item, tier)
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damage_reductions[i] = item->damage_reductions[i];
+        damages[i] = item->damages[i];
       }
     }
     float getDamageReductionFromType(int32_t damage_type);
     std::string to_string();
   private:
-    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+    std::array<float, DAMAGE_TYPE_NUMBER> damages;
 };
 
 #endif // _ARMOR_ITEM_H_

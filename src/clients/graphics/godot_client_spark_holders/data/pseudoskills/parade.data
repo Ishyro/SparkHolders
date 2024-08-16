@@ -1,0 +1,6 @@
+name = TXT_PARADE
+skill_type = SKILL_SIMPLE
+target_type = TARGET_SELF
+mana_cost = 0
+scalling_type = SKILL_SCALE_MAIN_WEAPON
+effects =
