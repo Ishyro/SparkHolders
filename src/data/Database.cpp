@@ -70,11 +70,12 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_MANA", EFFECT_MANA));
   macros.insert(std::make_pair("EFFECT_HP_MAX", EFFECT_HP_MAX));
   macros.insert(std::make_pair("EFFECT_MANA_MAX", EFFECT_MANA_MAX));
+  macros.insert(std::make_pair("EFFECT_SHIELD", EFFECT_SHIELD));
+  macros.insert(std::make_pair("EFFECT_SHIELD_MAX", EFFECT_SHIELD_MAX));
   macros.insert(std::make_pair("EFFECT_HUNGER", EFFECT_HUNGER));
   macros.insert(std::make_pair("EFFECT_THIRST", EFFECT_THIRST));
   macros.insert(std::make_pair("EFFECT_STAMINA", EFFECT_STAMINA));
   macros.insert(std::make_pair("EFFECT_SANITY", EFFECT_SANITY));
-  macros.insert(std::make_pair("EFFECT_SHIELD", EFFECT_SHIELD));
   macros.insert(std::make_pair("EFFECT_SHIELD_MULTIPLIER", EFFECT_SHIELD_MULTIPLIER));
   macros.insert(std::make_pair("EFFECT_SOULBURNTRESHOLD", EFFECT_SOULBURNTRESHOLD));
   macros.insert(std::make_pair("EFFECT_FLOW", EFFECT_FLOW));
@@ -89,9 +90,10 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_STATUS_POWER", EFFECT_STATUS_POWER));
   macros.insert(std::make_pair("EFFECT_STATUS_REDUCTION", EFFECT_STATUS_REDUCTION));
   macros.insert(std::make_pair("EFFECT_CHANNELING", EFFECT_CHANNELING));
-  macros.insert(std::make_pair("EFFECT_STUNNED", EFFECT_STUNNED));
   macros.insert(std::make_pair("EFFECT_SLEEPING", EFFECT_SLEEPING));
   macros.insert(std::make_pair("EFFECT_FLY", EFFECT_FLY));
+  macros.insert(std::make_pair("EFFECT_BLOCKING", EFFECT_BLOCKING));
+  macros.insert(std::make_pair("EFFECT_STUNNED", EFFECT_STUNNED));
   macros.insert(std::make_pair("EFFECT_LIGHT", EFFECT_LIGHT));
   macros.insert(std::make_pair("EFFECT_CLOAKED", EFFECT_CLOAKED));
   macros.insert(std::make_pair("EFFECT_INVISIBLE", EFFECT_INVISIBLE));
@@ -101,7 +103,6 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_HAND_ACTION_TIME_MODIFIER", EFFECT_HAND_ACTION_TIME_MODIFIER));
   macros.insert(std::make_pair("EFFECT_SKILL_TIME_MODIFIER", EFFECT_SKILL_TIME_MODIFIER));
   macros.insert(std::make_pair("EFFECT_MOVEMENT_TIME_MODIFIER", EFFECT_MOVEMENT_TIME_MODIFIER));
-
   // status_type
   macros.insert(std::make_pair("EFFECT_STATUS_BLEEDING", EFFECT_STATUS_BLEEDING));
   macros.insert(std::make_pair("EFFECT_STATUS_WEAKENED", EFFECT_STATUS_WEAKENED));

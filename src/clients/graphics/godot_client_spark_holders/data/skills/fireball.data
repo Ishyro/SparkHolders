@@ -3,6 +3,7 @@ level = 2
 attributes =
 target_type = TARGET_PERMISSIVE
 is_instant = false
+is_toggle = false
 overcharge_power_type = OVERCHARGE_LINEAR
 overcharge_duration_type = OVERCHARGE_LINEAR
 overcharge_range_type = OVERCHARGE_SQUARE

@@ -156,6 +156,10 @@ float Effect::getRawDamage() {
 float Effect::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
 float Effect::getDamageReductionFromType(int32_t damage_type) { return damages[damage_type]; }
 
+bool Effect::isSimilar(Effect * e) {
+  return e->name == name && e->level == level && e->attributes == attributes && e->type == type && e->duration_type == duration_type && e->power == power && e->duration == duration;
+}
+
 std::string Effect::to_string() {
   std::stringstream * ss = new std::stringstream();
   String::insert(ss, name);

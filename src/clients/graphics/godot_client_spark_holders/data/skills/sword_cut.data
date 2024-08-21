@@ -3,6 +3,7 @@ level = 1
 attributes =
 target_type = TARGET_ORIENTATION
 is_instant = false
+is_toggle = false
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE
 overcharge_range_type = OVERCHARGE_NONE

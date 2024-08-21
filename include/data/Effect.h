@@ -100,6 +100,7 @@ class Effect {
     void activate(Character * target);
     void desactivate(Character * target);
     bool tick(Character * target); // if true, delete effect
+    bool isSimilar(Effect * e);
     std::string to_string();
     static Effect * from_string(std::string msg);
     bool operator == (const Effect& e) const { return id == e.id; }

@@ -40,13 +40,14 @@ float WeaponItem::getDamageFromType(int32_t damage_type) {
   if(ammo != nullptr) {
     damage += ammo->getProjectile()->getDamageFromType(damage_type);
   }
-  for(Effect * e : effects) {
-    if(e->type == EFFECT_DAMAGE_BUFF) {
-      damage += e->getDamageFromType(damage_type);
-    }
-  }
   return damage;
 }
+
+float WeaponItem::getDamageReductionFromType(int32_t damage_type) {
+  float reduction = damage_reductions[damage_type];
+  return reduction;
+}
+
 
 int32_t WeaponItem::getCurrentCapacity() {
   if(this->ammo != nullptr) {
@@ -126,6 +127,9 @@ std::string WeaponItem::to_string() {
   }
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, damages[i]);
+  }
+  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+    String::insert_float(ss, damage_reductions[i]);
   }
   std::string result = ss->str();
   delete ss;

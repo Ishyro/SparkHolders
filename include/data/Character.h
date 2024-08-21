@@ -326,6 +326,7 @@ class Character {
     std::list<Item *> getLoot();
     std::list<Effect *> getEffects();
     std::list<Skill *> getSkills();
+    bool getToggled(Skill * s);
     std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> getDamageSkills();
 
     std::list<Item *> getSellableItems();
@@ -414,7 +415,9 @@ class Character {
     void addSkill(Skill * s);
     bool hasSkill(Skill * s);
     void removeEffect(Effect * e);
+    void removeSimilarEffect(Effect * e);
     void removeSkill(Skill * s);
+    bool setToggled(Skill * s);
 
     void setWay(Way * way);
 
@@ -516,8 +519,9 @@ class Character {
     Way * profession;
     std::list<Way *> titles;
     bool using_magical_stance;
-    std::map<int32_t, Stance *> active_stances;
-    std::map<int32_t, Stance *> active_magical_stances;
+    std::map<int32_t, Stance *> active_stances = std::map<int32_t, Stance *>();
+    std::map<int32_t, Stance *> active_magical_stances = std::map<int32_t, Stance *>();
+    std::map<const Skill *, bool> toggled_skills = std::map<const Skill *, bool>();
     std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status;
 };
 

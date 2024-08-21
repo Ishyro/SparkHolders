@@ -41,11 +41,10 @@ class PseudoSkill {
       }
     }
 
-    virtual void activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) = 0;
+    virtual void activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) = 0;
     virtual bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) = 0;
     virtual float getPower() = 0;
     virtual float getDamageFromType(int32_t dammage_type, Character * owner, float overcharge) = 0;
-    virtual float getDamageReductionFromType(int32_t dammage_type, float overcharge) = 0;
   protected:
     std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers;
 };

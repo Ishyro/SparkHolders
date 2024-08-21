@@ -8,11 +8,6 @@
 
 float ArmorItem::getDamageReductionFromType(int32_t damage_type) {
   float reduction = damages[damage_type];
-  for(Effect * e : effects) {
-    if(e->type == EFFECT_DAMAGE_REDUCTION) {
-      reduction += e->getDamageReductionFromType(damage_type);
-    }
-  }
   return reduction;
 }
 

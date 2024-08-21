@@ -431,6 +431,76 @@ float Gear::getWeight() {
   return weight;
 }
 
+std::list<Effect *> Gear::getEffects() {
+  std::list<Effect *> effects = std::list<Effect *>();
+  if(mantle != nullptr) {
+    for(Effect * effect : mantle->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(helmet != nullptr) {
+    for(Effect * effect : helmet->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(gauntlets != nullptr) {
+    for(Effect * effect : gauntlets->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(boots != nullptr) {
+    for(Effect * effect : boots->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(armor != nullptr) {
+    for(Effect * effect : armor->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(lantern != nullptr) {
+    for(Effect * effect : lantern->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(ring_1 != nullptr) {
+    for(Effect * effect : ring_1->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(ring_2 != nullptr) {
+    for(Effect * effect : ring_2->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(amulet != nullptr) {
+    for(Effect * effect : amulet->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(weapon_1 != nullptr) {
+    for(Effect * effect : weapon_1->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(weapon_2 != nullptr) {
+    for(Effect * effect : weapon_2->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(bag != nullptr) {
+    for(Effect * effect : bag->effects) {
+      effects.push_back(effect);
+    }
+  }
+  if(belt != nullptr) {
+    for(Effect * effect : belt->effects) {
+      effects.push_back(effect);
+    }
+  }
+  return effects;
+}
+
 void Gear::useItem(int32_t x, int32_t y, int32_t slot, Character * user) {
   Item * item;
   switch(slot) {

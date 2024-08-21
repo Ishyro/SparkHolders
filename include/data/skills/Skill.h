@@ -15,7 +15,8 @@ class Skill {
     const int32_t level;
     const std::string attributes;
     const int32_t target_type;
-    const bool is_instant;
+    const bool instant;
+    const bool toggle;
     const int32_t overcharge_power_type;
     const int32_t overcharge_duration_type;
     const int32_t overcharge_range_type;
@@ -27,7 +28,8 @@ class Skill {
       int32_t level,
       std::string attributes,
       int32_t target_type,
-      bool is_instant,
+      bool instant,
+      bool toggle,
       int32_t overcharge_power_type,
       int32_t overcharge_duration_type,
       int32_t overcharge_range_type,
@@ -39,7 +41,8 @@ class Skill {
       level(level),
       attributes(attributes),
       target_type(target_type),
-      is_instant(is_instant),
+      instant(instant),
+      toggle(toggle),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),
       overcharge_range_type(overcharge_range_type),
@@ -55,7 +58,6 @@ class Skill {
     float getTime(Character * owner);
     float getPower();
     float getDamageFromType(int32_t dammage_type, Character * owner, float overcharge);
-    float getDamageReductionFromType(int32_t dammage_type, float overcharge);
     Block * isEatingSkill();
     float isTeleportSkill();
 };

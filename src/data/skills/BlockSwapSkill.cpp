@@ -1,6 +1,6 @@
 #include "data/skills/BlockSwapSkill.h"
 
-void BlockSwapSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+void BlockSwapSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   // Target will always be a Block
   int32_t lightening = adventure->getWorld()->getLightening(MathUtil::makeVector3i(target->coord));
   // TODO
@@ -16,10 +16,6 @@ float BlockSwapSkill::getPower() {
 }
 
 float BlockSwapSkill::getDamageFromType(int32_t damage_type, Character * owner, float overcharge) {
-  return 0.F;
-}
-
-float BlockSwapSkill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
   return 0.F;
 }
 

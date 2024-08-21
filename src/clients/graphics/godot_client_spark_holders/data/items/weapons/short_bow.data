@@ -20,3 +20,6 @@ use_ammo = true
 capacity = 1
 reload_time = 5
 DAMAGE_PHYSICAL = 8
+SLASH_REDUCTION = 50
+PUNCTURE_REDUCTION = 50
+BLUNT_REDUCTION = 50

@@ -2,7 +2,7 @@
 
 #include "util/MathUtil.h"
 
-void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   // Target 1 will always be a Character
   // other may be owner
   Character * other = adventure->getCharacter(target->id);
@@ -65,9 +65,5 @@ float TeleportSkill::getPower() {
 }
 
 float TeleportSkill::getDamageFromType(int32_t damage_type, Character * owner, float overcharge) {
-  return 0.F;
-}
-
-float TeleportSkill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
   return 0.F;
 }

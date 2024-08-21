@@ -108,6 +108,10 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = String::extract_float(ss);
       }
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        damage_reductions[i] = String::extract_float(ss);
+      }
       result = new WeaponItem(
         name,
         id,
@@ -134,7 +138,8 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         capacity,
         reload_time,
         ammo,
-        damages
+        damages,
+        damage_reductions
       );
       break;
     }

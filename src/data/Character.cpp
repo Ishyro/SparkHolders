@@ -29,7 +29,7 @@
 Character::~Character() {
       delete ai;
       ai = nullptr;
-      for(Effect * effect : effects) {
+      for(Effect * effect : getEffects()) {
         delete effect;
         effect = nullptr;
       }
@@ -194,7 +194,7 @@ void Character::initSkillsAndEffects() {
 }
 
 void Character::initEffects(std::list<Effect *> effects) {
-  for(Effect * effect : effects) {
+  for(Effect * effect : getEffects()) {
     Effect * toadd = new Effect(effect, 1, 1);
     toadd->activate(this);
   }
@@ -212,7 +212,7 @@ float Character::getOrientation() { return orientation; }
 float Character::getHp() { return hp; }
 int32_t Character::getMaxHp() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_HP_MAX) {
       bonus += e->power;
     }
@@ -225,7 +225,7 @@ float Character::getChanneledMana() { return channeledMana; }
 
 int32_t Character::getMaxMana() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_MANA_MAX) {
       bonus += e->power;
     }
@@ -237,7 +237,7 @@ float Character::getShield() { return shield; }
 
 int32_t Character::getMaxShield() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_SHIELD_MAX) {
       bonus += e->power;
     }
@@ -250,7 +250,7 @@ float Character::getThirst() { return thirst; }
 float Character::getStamina() { return stamina; }
 float Character::getSanity() { 
   float result = sanity;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STATUS_BROKEN) {
       result -= 25;
     }
@@ -259,7 +259,7 @@ float Character::getSanity() {
 
 int32_t Character::getSoulBurnThreshold() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_SOULBURNTRESHOLD) {
       bonus += e->power;
     }
@@ -271,14 +271,14 @@ int32_t Character::getCurrentSoulBurn() { return currentSoulBurn; }
 
 int32_t Character::getFlow() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_FLOW) {
       bonus += e->power;
     }
   }
   int32_t result = std::max(flow + bonus, 0);
   int32_t decrement = result / 10;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STATUS_WEAKENED) {
       result -= decrement;
     }
@@ -292,7 +292,7 @@ int64_t Character::getRawPower() {
 
 int32_t Character::getVisionRange() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_VISION_RANGE) {
       bonus += e->power;
     }
@@ -302,7 +302,7 @@ int32_t Character::getVisionRange() {
 
 int32_t Character::getVisionPower() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_VISION_POWER) {
       bonus += e->power;
     }
@@ -312,7 +312,7 @@ int32_t Character::getVisionPower() {
 
 int32_t Character::getDetectionRange() {
   int32_t bonus = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DETECTION_RANGE) {
       bonus += e->power;
     }
@@ -326,14 +326,14 @@ int32_t Character::getLevel() { return level; }
 
 float Character::getDamageMultiplier() {
   int32_t result = damage_multiplier;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DAMAGE_MULTIPLIER) {
       result += e->power;
     }
   }
   result = std::max(1.F + ((float) result) / 100.F, 0.F);
   int32_t decrement = result / 10;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STATUS_WEAKENED) {
       result -= decrement;
     }
@@ -361,7 +361,7 @@ Gear * Character::getGear() { return gear; }
 
 float Character::getActionTimeModifier() {
   float result = race->getActionTimeModifier(race_modifiers);
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
@@ -371,7 +371,7 @@ float Character::getActionTimeModifier() {
 
 float Character::getHandActionTimeModifier() {
   float result = race->getStrikeTimeModifier(race_modifiers);
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_HAND_ACTION_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
@@ -381,7 +381,7 @@ float Character::getHandActionTimeModifier() {
 
 float Character::getSkillTimeModifier() {
   float result = race->getSkillTimeModifier(race_modifiers);
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_SKILL_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
@@ -391,7 +391,7 @@ float Character::getSkillTimeModifier() {
 
 float Character::getMovementTimeModifier() {
   float result = race->getMovementTimeModifier(race_modifiers);
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_MOVEMENT_TIME_MODIFIER) {
       result += (float) e->power / 100.F;
     }
@@ -457,7 +457,7 @@ float Character::getUseTime(Item * item) {
 
 int32_t Character::getLight() {
   int32_t light = 0;
-  for(Effect * effect : effects) {
+  for(Effect * effect : getEffects()) {
     if(effect->type == EFFECT_LIGHT) {
       light += effect->power;
     }
@@ -466,8 +466,22 @@ int32_t Character::getLight() {
 }
 
 std::list<Item *> Character::getLoot() { return race->getLoot(race_modifiers); }
-std::list<Effect *> Character::getEffects() { return effects; }
+std::list<Effect *> Character::getEffects() {
+  std::list<Effect *> result = effects;
+  for(Effect * effect : gear->getEffects()) {
+    result.push_back(effect);
+  }
+  return result;
+}
 std::list<Skill *> Character::getSkills() { return skills; }
+
+bool Character::getToggled(Skill * s) {
+  std::map<const Skill *, bool>::iterator it = toggled_skills.find(s);
+  if(it != toggled_skills.end()) {
+    return it->second;
+  }
+  return false;
+}
 
 std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> Character::getDamageSkills() {
   std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> result = std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>>();
@@ -841,7 +855,7 @@ void Character::applySpiritNeeds() {
 }
 
 void Character::applyEffects() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->duration_type == DURATION_TEMPORARY) {
       if(player_character) {
         setNeedToSend(true);
@@ -1062,11 +1076,38 @@ void Character::removeEffect(Effect * e) {
   effects.remove(e);
 }
 
+void Character::removeSimilarEffect(Effect * e) {
+  if(player_character) {
+    setNeedToSend(true);
+  }
+  Effect * to_remove = nullptr;
+  for(Effect * effect : effects) {
+    if(e->isSimilar(effect)) {
+      to_remove = effect;
+      break;
+    }
+  }
+  if(to_remove != nullptr) {
+    effects.remove(to_remove);
+  }
+}
+
 void Character::removeSkill(Skill * s) {
   if(player_character) {
     setNeedToSend(true);
   }
   skills.remove(s);
+}
+
+bool Character::setToggled(Skill * s) {
+  bool result = true;
+  std::map<const Skill *, bool>::iterator it = toggled_skills.find(s);
+  if(it != toggled_skills.end()) {
+    result = !it->second;
+    toggled_skills.erase(it);
+  }
+  toggled_skills.insert(std::make_pair(s, result));
+  return result;
 }
 
 void Character::setWay(Way * way) {
@@ -1167,7 +1208,7 @@ void Character::useItem(int32_t x, int32_t y, int32_t slot) {
 }
 
 bool Character::isFlying() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_FLY) {
       return true;
     }
@@ -1176,7 +1217,7 @@ bool Character::isFlying() {
 }
 
 bool Character::isChanneling() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_CHANNELING) {
       return true;
     }
@@ -1185,7 +1226,7 @@ bool Character::isChanneling() {
 }
 
 bool Character::isStunned() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STUNNED) {
       return true;
     }
@@ -1197,7 +1238,7 @@ bool Character::isStunned() {
 }
 
 bool Character::isCloaked() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_CLOAKED) {
       return true;
     }
@@ -1206,7 +1247,7 @@ bool Character::isCloaked() {
 }
 
 bool Character::isInvisible() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_INVISIBLE) {
       return true;
     }
@@ -1215,7 +1256,7 @@ bool Character::isInvisible() {
 }
 
 bool Character::isEtheral() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_ETHERAL) {
       return true;
     }
@@ -1224,7 +1265,7 @@ bool Character::isEtheral() {
 }
 
 bool Character::isInvulnerable() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_INVULNERABLE) {
       return true;
     }
@@ -1233,7 +1274,7 @@ bool Character::isInvulnerable() {
 }
 
 bool Character::isSleeping() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_SLEEPING) {
       return true;
     }
@@ -1247,7 +1288,7 @@ bool Character::isIdling() {
 
 int32_t Character::cloakPower() {
   int32_t max = 0;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_CLOAKED) {
       if(e->power > max) {
         max = e->power;
@@ -1258,7 +1299,7 @@ int32_t Character::cloakPower() {
 }
 
 bool Character::isInWeakState() {
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STUNNED || e->type == EFFECT_SLEEPING || e->type == EFFECT_STATUS_SHOCKED) {
       return true;
     }
@@ -1307,7 +1348,7 @@ int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
       damage = gear->getWeapon_2()->getDamageFromType(damage_type);
     }
   }
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DAMAGE_BUFF) {
       damage += e->getDamageFromType(damage_type);
     }
@@ -1317,13 +1358,17 @@ int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
 
 float Character::getRawDamageReductionFromType(int32_t damage_type) {
   float reduction = gear->getDamageReductionFromType(damage_type);
-  for(Effect * e : effects) {
+  bool blocking = false;
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
+      reduction += e->getDamageReductionFromType(damage_type);
+    }
+    if(e->type == EFFECT_BLOCKING) {
       reduction += e->getDamageReductionFromType(damage_type);
     }
   }
   int32_t decrement = std::max(0.F, reduction / 10);
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STATUS_CORRODED) {
       reduction -= decrement;
     }
@@ -1343,7 +1388,7 @@ float Character::getDamageReductionFromType(int32_t damage_type) {
 
 float Character::getStatusPower() {
   float status_power = 0.F;
-  for(Effect * effect : effects) {
+  for(Effect * effect : getEffects()) {
     if(effect->type == EFFECT_STATUS_POWER) {
       status_power += effect->power;
     }
@@ -1353,7 +1398,7 @@ float Character::getStatusPower() {
 
 float Character::getStatusReductionFromType(int32_t damage_type) {
   float status_reduction = 0.F;
-  for(Effect * e : effects) {
+  for(Effect * e : getEffects()) {
     if(e->type == EFFECT_STATUS_REDUCTION) {
       // no need to use another variable
       status_reduction += e->getDamageReductionFromType(damage_type);
@@ -1796,7 +1841,7 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert(ss, team);
   String::insert(ss, gear->to_string());
   std::stringstream * ss_effects = new std::stringstream();
-  for(Effect * effect : effects) {
+  for(Effect * effect : getEffects()) {
     String::insert(ss_effects, effect->to_string());
   }
   String::insert(ss, ss_effects->str());

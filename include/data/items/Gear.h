@@ -173,6 +173,7 @@ class Gear {
     ContainerItem * getBag();
     ContainerItem * getBelt();
     float getWeight();
+    std::list<Effect *> getEffects();
     void useItem(int32_t x, int32_t y, int32_t slot, Character * user);
     void reload(ItemSlot * ammo, int32_t slot_weapon);
     std::string to_string();

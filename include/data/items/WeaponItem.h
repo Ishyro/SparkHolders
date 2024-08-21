@@ -44,7 +44,8 @@ class WeaponItem : public GearItem {
       int32_t capacity,
       int32_t reload_time,
       AmmunitionItem * ammo,
-      std::array<float, DAMAGE_TYPE_NUMBER> damages
+      std::array<float, DAMAGE_TYPE_NUMBER> damages,
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
     ):
       GearItem(
         name,
@@ -77,6 +78,9 @@ class WeaponItem : public GearItem {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
       }
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        this->damage_reductions[i] = damage_reductions[i];
+      }
     }
     WeaponItem(WeaponItem * item, int32_t tier):
       GearItem(item, tier),
@@ -93,9 +97,13 @@ class WeaponItem : public GearItem {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = item->damages[i];
       }
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        damage_reductions[i] = item->damage_reductions[i];
+      }
     }
     float getRawDamage();
     float getDamageFromType(int32_t damage_type);
+    float getDamageReductionFromType(int32_t damage_type);
     int32_t getCurrentCapacity();
     AmmunitionItem * getAmmo();
     void useAmmo();
@@ -104,6 +112,7 @@ class WeaponItem : public GearItem {
   private:
     AmmunitionItem * ammo;
     std::array<float, DAMAGE_TYPE_NUMBER> damages;
+    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
 };
 
 #endif // _WEAPON_ITEM_H_

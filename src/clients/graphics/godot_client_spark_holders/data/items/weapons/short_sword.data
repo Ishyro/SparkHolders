@@ -16,3 +16,6 @@ strike_time = 5
 status_power = 1.0
 use_projectile = false
 DAMAGE_PHYSICAL = 20
+SLASH_REDUCTION = 50
+PUNCTURE_REDUCTION = 50
+BLUNT_REDUCTION = 50

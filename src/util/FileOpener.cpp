@@ -1132,6 +1132,67 @@ namespace FileOpener {
       else {
         damages[DAMAGE_TRUE] = 0.F;
       }
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
+      it = values.find("SLASH_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_SLASH] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_SLASH] = 0.F;
+      }
+      it = values.find("PUNCTURE_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_PUNCTURE] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_PUNCTURE] = 0.F;
+      }
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_BLUNT] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_BLUNT] = 0.F;
+      }
+      it = values.find("FIRE_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_FIRE] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_FIRE] = 0.F;
+      }
+      it = values.find("LIGHTNING_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_LIGHTNING] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_LIGHTNING] = 0.F;
+      }
+      it = values.find("FROST_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_FROST] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_FROST] = 0.F;
+      }
+      it = values.find("POISON_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_POISON] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_POISON] = 0.F;
+      }
+      damage_reductions[DAMAGE_ACID] = 0.F;      
+      it = values.find("MIND_REDUCTION");
+      if(it != values.end()) {
+        damage_reductions[DAMAGE_MIND] = _stof(it->second);
+      }
+      else {
+        damage_reductions[DAMAGE_MIND] = 0.F;
+      }
+      damage_reductions[DAMAGE_SOLAR] = 0.F;
+      damage_reductions[DAMAGE_AETHER] = 0.F;
+      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
+      damage_reductions[DAMAGE_TRUE] = 0.F;
       item = new WeaponItem(
         name,
         0,
@@ -1158,7 +1219,8 @@ namespace FileOpener {
         capacity,
         reload_time,
         nullptr,
-        damages
+        damages,
+        damage_reductions
       );
     }
     if(type == ITEM_BASIC) {
@@ -1603,9 +1665,12 @@ namespace FileOpener {
     int32_t level = stoi(values.at("level"));
     std::string attributes = values.at("attributes");
     int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
-    std::istringstream is_instant_duration(values.at("is_instant"));
-    bool instant_duration;
-    is_instant_duration >> std::boolalpha >> instant_duration;
+    std::istringstream is_instant(values.at("is_instant"));
+    bool instant;
+    is_instant >> std::boolalpha >> instant;
+    std::istringstream is_toggle(values.at("is_toggle"));
+    bool toggle;
+    is_toggle >> std::boolalpha >> toggle;
     int32_t overcharge_power_type = database->getTargetFromMacro(values.at("overcharge_power_type"));
     int32_t overcharge_duration_type = database->getTargetFromMacro(values.at("overcharge_duration_type"));
     int32_t overcharge_range_type = database->getTargetFromMacro(values.at("overcharge_range_type"));
@@ -1617,7 +1682,7 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, instant_duration, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
+    Skill * skill = new Skill(name, level, attributes, target_type, instant, toggle, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
     database->addSkill(skill);
     delete skills;
   }

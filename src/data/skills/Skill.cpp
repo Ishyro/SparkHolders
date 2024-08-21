@@ -11,13 +11,21 @@ void Skill::activate(Character * owner, Target * target, Adventure * adventure, 
   float overcharge_duration;
   float overcharge_range;
   computeOvercharges(mana_spent, overcharge_power, overcharge_duration, overcharge_range);
+  bool toggle_state = true;
+  if(toggle) {
+    toggle_state = owner->setToggled(this);
+  }
   owner->payMana(mana_spent);
   for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range);
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range, toggle_state);
   }
 }
 
 bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent) {
+  // can always cancel a toggle spell
+  if(owner->getToggled(this)) {
+    return true;
+  }
   float overcharge_power;
   float overcharge_duration;
   float overcharge_range;
@@ -76,14 +84,6 @@ float Skill::getDamageFromType(int32_t damage_type, Character * owner, float ove
     damage += s->getDamageFromType(damage_type, owner, overcharge);
   }
   return damage;
-}
-
-float Skill::getDamageReductionFromType(int32_t damage_type, float overcharge) {
-  float reduction = 0.;
-  for(PseudoSkill * s : skills) {
-    reduction += s->getDamageReductionFromType(damage_type, overcharge);
-  }
-  return reduction;
 }
 
 Block * Skill::isEatingSkill() {
