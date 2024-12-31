@@ -45,6 +45,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Values.tickrate = Values.link.getTickRate()
+	Values.macros = Values.link.getMacros()
 	mutex = Mutex.new()
 	Values.link.getState()
 	owned_character = Values.link.getPlayerId()
@@ -61,11 +62,9 @@ func _ready():
 	furnitures_data = Values.link.getFurnitures()
 	display_map()
 	
-	n_hud.display_team(characters[owned_character], characters_data[owned_character])
-	n_inventory.update_inventory()
 	n_hud.update(characters_data[owned_character])
+	n_inventory.update_inventory()
 	n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight()) / float(Values.link.getMaxLight()))
-	n_hud.move.set_pressed(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -134,7 +133,7 @@ func _physics_process(delta):
 
 func create_blocks():
 	reset_map()
-	current_blocks = Values.link.getBlocks()
+	current_blocks = Values.link.getBlocks(Settings.chunk_height, Settings.chunk_radius)
 	for coord in current_blocks:
 		add_block(coord)
 	baking_done = false
@@ -498,7 +497,6 @@ func add_character(character_id: int, character_data: Dictionary):
 	characters[character_id] = character
 	character.id = character_id
 	character.character = character_data["name"]
-	character.set_attack_range(1 / character_data["size"])
 	n_characters.add_child(character)
 
 func add_projectile(projectile_id: int, projectile_data: Dictionary):

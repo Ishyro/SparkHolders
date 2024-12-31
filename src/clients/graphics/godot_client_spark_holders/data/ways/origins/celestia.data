@@ -18,4 +18,5 @@ soulBurnIncr = 4
 flowIncr = 1
 effects =
 skills =
+stances =
 tags = celestia%mountain_dweller%urban%

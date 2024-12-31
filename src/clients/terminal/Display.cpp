@@ -22,7 +22,6 @@
 #include "data/skills/Skill.h"
 #include "data/skills/PseudoSkill.h"
 
-#include "data/skills/ChanneledSkill.h"
 #include "data/skills/MapLinkerSkill.h"
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"
@@ -88,14 +87,14 @@ namespace Display {
     mvwprintw(screen, offsetY, offsetX, line.c_str());
   }
 
-  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, EnglishKeyHolder * t) {
+  void displayMap(StateDisplay * display, Adventure * adventure, Character * player, WINDOW * screen, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
     Region * region = player->getRegion();
-    //mvwprintw(screen, 1, cols / 2 - t->getMapName(map->name).length() / 2, t->getMapName(map->name).c_str());
+    //mvwprintw(screen, 1, cols / 2 - link->getMapName(map->name).length() / 2, link->getMapName(map->name).c_str());
     for(int32_t y = region->id.y + CHUNK_SIZE * 3 - 1; y >= region->id.y; y--) {
       for(int32_t x = region->id.x; x < region->id.x + CHUNK_SIZE * 3; x++) {
         std::string to_print = "·";
@@ -113,7 +112,7 @@ namespace Display {
     }
     for(CharacterDisplay * character : display->characters) {
       std::string to_print;
-      char ch = t->getCharacterName(character->name).at(0);
+      char ch = link->getEnglishFromKey(character->name).at(0);
       to_print = ch;
       int32_t color;
       switch(character->teamRelation) {
@@ -191,98 +190,98 @@ namespace Display {
     wrefresh(screen);
   }
 
-  void displayStats(Character * player, WINDOW * screen, EnglishKeyHolder * t) {
+  void displayStats(Character * player, WINDOW * screen, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    std::string to_print = player->name + ", " + t->getAttributesName(player->getMainClass()->name);
+    std::string to_print = player->name + ", " + link->getEnglishFromKey(player->getMainClass()->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-    mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
-    mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());
-    mvwprintw(screen, 5, 1, (t->getStandardName("Stamina") + std::string(": ") + std::to_string(player->getStamina()) + std::string(" / ") + std::string("100")).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("Hunger") + std::string(": ") + std::to_string(player->getHunger()) + std::string(" / ") + std::string("100")).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnThreshold())).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(player->getShield())).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
+    mvwprintw(screen, 3, 1, (link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(player->getHp()) + std::string(" / ") + std::to_string(player->getMaxHp())).c_str());
+    mvwprintw(screen, 4, 1, (link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(player->getMana()) + std::string(" / ") + std::to_string(player->getMaxMana())).c_str());
+    mvwprintw(screen, 5, 1, (link->getEnglishFromKey("Stamina") + std::string(": ") + std::to_string(player->getStamina()) + std::string(" / ") + std::string("100")).c_str());
+    mvwprintw(screen, 6, 1, (link->getEnglishFromKey("Hunger") + std::string(": ") + std::to_string(player->getHunger()) + std::string(" / ") + std::string("100")).c_str());
+    mvwprintw(screen, 7, 1, (link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(player->getCurrentSoulBurn()) + std::string(" / ") + std::to_string(player->getSoulBurnThreshold())).c_str());
+    mvwprintw(screen, 8, 1, (link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(player->getFlow())).c_str());
+    mvwprintw(screen, 9, 1, (link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(player->getShield())).c_str());
+    mvwprintw(screen, 10, 1, (link->getEnglishFromKey("Vision Range") + std::string(": ") + std::to_string(player->getVisionRange())).c_str());
+    mvwprintw(screen, 11, 1, (link->getEnglishFromKey("Vision Power") + std::string(": ") + std::to_string(player->getVisionPower())).c_str());
+    mvwprintw(screen, 12, 1, (link->getEnglishFromKey("Detection Range") + std::string(": ") + std::to_string(player->getDetectionRange())).c_str());
+    mvwprintw(screen, 13, 1, (link->getEnglishFromKey("Level") + std::string(": ") + std::to_string(player->getLevel())).c_str());
+    mvwprintw(screen, 14, 1, (link->getEnglishFromKey("Experience") + std::string(": ") + std::to_string(player->getXP()) + std::string(" / ") + std::to_string(1000 * player->getLevel() * player->getLevel())).c_str());
     wrefresh(screen);
   }
 
-  WINDOW * displaySkill(Skill * skill, WINDOW * screen, float overcharge, EnglishKeyHolder * t) {
+  WINDOW * displaySkill(Skill * skill, Character * player, WINDOW * screen, float overcharge, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     wattron(screen, COLOR_PAIR(WHITE));
     box(screen, ACS_VLINE, ACS_HLINE);
-    std::string to_print = t->getSkillName(skill->name);
+    std::string to_print = link->getEnglishFromKey(skill->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-    mvwprintw(screen, 3, 1, (t->getStandardName("Targeting") + std::string(": ") + t->getStandardName(std::string("target_type_") + std::to_string(skill->target_type))).c_str());
-    mvwprintw(screen, 4, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(skill->range * overcharge_range)).c_str());
-    mvwprintw(screen, 5, 1, (t->getStandardName("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge)).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost(overcharge))).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("Time") + std::string(": ") + std::to_string(skill->time)).c_str());
+    mvwprintw(screen, 3, 1, (link->getEnglishFromKey("Targeting") + std::string(": ") + link->getEnglishFromKey(std::string("target_type_") + std::to_string(skill->target_type))).c_str());
+    mvwprintw(screen, 4, 1, (link->getEnglishFromKey("Range") + std::string(": ") + std::to_string(skill->range * overcharge)).c_str());
+    mvwprintw(screen, 5, 1, (link->getEnglishFromKey("Power") + std::string(": ") + std::to_string(skill->getPower() * overcharge)).c_str());
+    mvwprintw(screen, 6, 1, (link->getEnglishFromKey("Mana cost") + std::string(": ") + std::to_string(skill->getManaCost())).c_str());
+    mvwprintw(screen, 7, 1, (link->getEnglishFromKey("Time") + std::string(": ") + std::to_string(skill->time)).c_str());
     int32_t i = 8;
     for(PseudoSkill * pseudoSkill : skill->skills) {
       switch(pseudoSkill->skill_type) {
         case SKILL_PROJECTILE: {
           Projectile * projectile = ((ProjectileSkill *) pseudoSkill)->getProjectile();
-          mvwprintw(screen, i++, 1, (t->getStandardName("Speed") + std::string(": ") + std::to_string(projectile->getSpeed() * overcharge_duration)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Falloff timer") + std::string(": ") + std::to_string(projectile->getFalloffTimer() * overcharge_range)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge_range)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per tick") + std::string(": ") + std::to_string(projectile->getWastePerTick() / overcharge_duration)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerArea() / overcharge_range)).c_str());
-          mvwprintw(screen, i++, 1, (t->getStandardName("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Speed") + std::string(": ") + std::to_string(projectile->getSpeed() * overcharge)).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Falloff timer") + std::string(": ") + std::to_string(projectile->getFalloffTimer() * overcharge)).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Area") + std::string(": ") + std::to_string(projectile->getArea() * overcharge)).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Waste per tick") + std::string(": ") + std::to_string(projectile->getWastePerTick() / overcharge)).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Waste per area") + std::string(": ") + std::to_string(projectile->getWastePerArea() / overcharge)).c_str());
+          mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Waste per hit") + std::string(": ") + std::to_string(projectile->getWastePerHit())).c_str());
         }
         default:
           ;
       }
     }
-    int32_t damage_SLASH = skill->getDamageFromType(DAMAGE_SLASH, overcharge);
+    int32_t damage_SLASH = skill->getDamageFromType(DAMAGE_SLASH, player, overcharge);
     if(damage_SLASH != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SLASH") + std::string(": ") + std::to_string(damage_SLASH)).c_str());
     }
-    int32_t damage_PUNCTURE = skill->getDamageFromType(DAMAGE_PUNCTURE, overcharge);
+    int32_t damage_PUNCTURE = skill->getDamageFromType(DAMAGE_PUNCTURE, player, overcharge);
     if(damage_PUNCTURE != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("PUNCTURE") + std::string(": ") + std::to_string(damage_PUNCTURE)).c_str());
     }
-    int32_t damage_BLUNT = skill->getDamageFromType(DAMAGE_BLUNT, overcharge);
+    int32_t damage_BLUNT = skill->getDamageFromType(DAMAGE_BLUNT, player, overcharge);
     if(damage_BLUNT != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(damage_BLUNT)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("BLUNT") + std::string(": ") + std::to_string(damage_BLUNT)).c_str());
     }
-    int32_t damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, overcharge);
+    int32_t damage_FIRE = skill->getDamageFromType(DAMAGE_FIRE, player, overcharge);
     if(damage_FIRE != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FIRE") + std::string(": ") + std::to_string(damage_FIRE)).c_str());
     }
-    int32_t damage_LIGHTNING = skill->getDamageFromType(DAMAGE_LIGHTNING, overcharge);
+    int32_t damage_LIGHTNING = skill->getDamageFromType(DAMAGE_LIGHTNING, player, overcharge);
     if(damage_LIGHTNING != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("DAMAGE_LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("DAMAGE_LIGHTNING") + std::string(": ") + std::to_string(damage_LIGHTNING)).c_str());
     }
-    int32_t damage_COLD = skill->getDamageFromType(DAMAGE_FROST, overcharge);
+    int32_t damage_COLD = skill->getDamageFromType(DAMAGE_FROST, player, overcharge);
     if(damage_COLD != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(damage_COLD)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FROST") + std::string(": ") + std::to_string(damage_COLD)).c_str());
     }
-    int32_t damage_POISON = skill->getDamageFromType(DAMAGE_POISON, overcharge);
+    int32_t damage_POISON = skill->getDamageFromType(DAMAGE_POISON, player, overcharge);
     if(damage_POISON != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("POISON") + std::string(": ") + std::to_string(damage_POISON)).c_str());
     }
-    int32_t damage_NEUTRAL = skill->getDamageFromType(DAMAGE_ACID, overcharge);
+    int32_t damage_NEUTRAL = skill->getDamageFromType(DAMAGE_ACID, player, overcharge);
     if(damage_NEUTRAL != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("NEUTRAL") + std::string(": ") + std::to_string(damage_NEUTRAL)).c_str());
     }
-    int32_t damage_TRUE = skill->getDamageFromType(DAMAGE_SOLAR, overcharge);
+    int32_t damage_TRUE = skill->getDamageFromType(DAMAGE_SOLAR, player, overcharge);
     if(damage_TRUE != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("TRUE") + std::string(": ") + std::to_string(damage_TRUE)).c_str());
     }
-    int32_t damage_SOUL = skill->getDamageFromType(DAMAGE_AETHER, overcharge);
+    int32_t damage_SOUL = skill->getDamageFromType(DAMAGE_AETHER, player, overcharge);
     if(damage_SOUL != 0) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SOUL") + std::string(": ") + std::to_string(damage_SOUL)).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -290,14 +289,14 @@ namespace Display {
     float ratio = 2.25;
     WINDOW * descScreen = subwin(screen, lines - i - 2, cols - 2, separator + i + 1, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 1);
     wattron(descScreen, COLOR_PAIR(WHITE));
-    print(descScreen, 0, 0, (t->getSkillDesc(skill->name)));
+    print(descScreen, 0, 0, (link->getEnglishFromKey(skill->name)));
     wattroff(descScreen, COLOR_PAIR(WHITE));
     wrefresh(descScreen);
     wrefresh(screen);
     return descScreen;
   }
 
-  void displayTarget(CharacterDisplay * target, WINDOW * screen, EnglishKeyHolder * t) {
+  void displayTarget(CharacterDisplay * target, WINDOW * screen, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -305,91 +304,91 @@ namespace Display {
     box(screen, ACS_VLINE, ACS_HLINE);
     std::string to_print = target->name + ", " + target->team;
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-    mvwprintw(screen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(target->hp) + std::string(" / ") + std::to_string(target->maxHp)).c_str());
-    mvwprintw(screen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(target->mana) + std::string(" / ") + std::to_string(target->maxMana)).c_str());
-    mvwprintw(screen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(target->soulBurn) + std::string(" / ") + std::to_string(target->soulBurnTreshold)).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(target->flow)).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(target->shield)).c_str());
+    mvwprintw(screen, 3, 1, (link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(target->hp) + std::string(" / ") + std::to_string(target->maxHp)).c_str());
+    mvwprintw(screen, 4, 1, (link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(target->mana) + std::string(" / ") + std::to_string(target->maxMana)).c_str());
+    mvwprintw(screen, 5, 1, (link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(target->soulBurn) + std::string(" / ") + std::to_string(target->soulBurnTreshold)).c_str());
+    mvwprintw(screen, 6, 1, (link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(target->flow)).c_str());
+    mvwprintw(screen, 7, 1, (link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(target->shield)).c_str());
 
-    mvwprintw(screen, 7, 1, t->getStandardName("Damages and Reductions").c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(target->shield)).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(target->damages[DAMAGE_SLASH]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_SLASH])).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(target->damages[DAMAGE_PUNCTURE]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_PUNCTURE])).c_str());
-    mvwprintw(screen, 11, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(target->damages[DAMAGE_BLUNT]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_BLUNT])).c_str());
-    mvwprintw(screen, 12, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(target->damages[DAMAGE_FIRE]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_FIRE])).c_str());
-    mvwprintw(screen, 13, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(target->damages[DAMAGE_LIGHTNING]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_LIGHTNING])).c_str());
-    mvwprintw(screen, 14, 1, (t->getStandardName("COLD") + std::string(": ") + std::to_string(target->damages[DAMAGE_FROST]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_FROST])).c_str());
-    mvwprintw(screen, 15, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(target->damages[DAMAGE_POISON]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_POISON])).c_str());
-    mvwprintw(screen, 16, 1, (t->getStandardName("NEUTRAL") + std::string(": ") + std::to_string(target->damages[DAMAGE_ACID])).c_str());
-    mvwprintw(screen, 17, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(target->damages[DAMAGE_SOLAR])).c_str());
-    mvwprintw(screen, 18, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(target->damages[DAMAGE_AETHER])).c_str());
+    mvwprintw(screen, 7, 1, link->getEnglishFromKey("Damages and Reductions").c_str());
+    mvwprintw(screen, 8, 1, (link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(target->shield)).c_str());
+    mvwprintw(screen, 9, 1, (link->getEnglishFromKey("SLASH") + std::string(": ") + std::to_string(target->damages[DAMAGE_SLASH]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_SLASH])).c_str());
+    mvwprintw(screen, 10, 1, (link->getEnglishFromKey("PUNCTURE") + std::string(": ") + std::to_string(target->damages[DAMAGE_PUNCTURE]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_PUNCTURE])).c_str());
+    mvwprintw(screen, 11, 1, (link->getEnglishFromKey("BLUNT") + std::string(": ") + std::to_string(target->damages[DAMAGE_BLUNT]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_BLUNT])).c_str());
+    mvwprintw(screen, 12, 1, (link->getEnglishFromKey("FIRE") + std::string(": ") + std::to_string(target->damages[DAMAGE_FIRE]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_FIRE])).c_str());
+    mvwprintw(screen, 13, 1, (link->getEnglishFromKey("LIGHTNING") + std::string(": ") + std::to_string(target->damages[DAMAGE_LIGHTNING]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_LIGHTNING])).c_str());
+    mvwprintw(screen, 14, 1, (link->getEnglishFromKey("COLD") + std::string(": ") + std::to_string(target->damages[DAMAGE_FROST]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_FROST])).c_str());
+    mvwprintw(screen, 15, 1, (link->getEnglishFromKey("POISON") + std::string(": ") + std::to_string(target->damages[DAMAGE_POISON]) + std::string(" / ") + std::to_string(target->damages[DAMAGE_POISON])).c_str());
+    mvwprintw(screen, 16, 1, (link->getEnglishFromKey("NEUTRAL") + std::string(": ") + std::to_string(target->damages[DAMAGE_ACID])).c_str());
+    mvwprintw(screen, 17, 1, (link->getEnglishFromKey("TRUE") + std::string(": ") + std::to_string(target->damages[DAMAGE_SOLAR])).c_str());
+    mvwprintw(screen, 18, 1, (link->getEnglishFromKey("SOUL") + std::string(": ") + std::to_string(target->damages[DAMAGE_AETHER])).c_str());
     wrefresh(screen);
   }
 
-  WINDOW * displayItem(Item * item, WINDOW * screen, EnglishKeyHolder * t) {
+  WINDOW * displayItem(Item * item, WINDOW * screen, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wattron(screen, COLOR_PAIR(WHITE));
-    std::string to_print = t->getItemName(item->name);
+    std::string to_print = link->getEnglishFromKey(item->name);
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
     int32_t i = 3;
-    mvwprintw(screen, i++, 1, (t->getStandardName("Type") + std::string(": ") + t->getStandardName(std::string("item_type_") + std::to_string(item->type))).c_str());
-    mvwprintw(screen, i++, 1, (t->getStandardName("Value") + std::string(": ") + std::to_string(item->gold_value)).c_str());
+    mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Type") + std::string(": ") + link->getEnglishFromKey(std::string("item_type_") + std::to_string(item->type))).c_str());
+    mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Value") + std::string(": ") + std::to_string(item->gold_value)).c_str());
     if(item->consumable) {
-      mvwprintw(screen, i++, 1, (t->getStandardName("Effects")).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Effects")).c_str());
       for(Effect * effect : item->effects) {
-        mvwprintw(screen, i++, 5, (t->getEffectName(effect->name)).c_str());
+        mvwprintw(screen, i++, 5, (link->getEnglishFromKey(effect->name)).c_str());
       }
     }
     if(item->type == ITEM_AMMUNITION || item->type == ITEM_SERIAL) {
       SerialItem * serial = (SerialItem *) item;
-      mvwprintw(screen, i++, 1, (t->getStandardName("Number") + std::string(": ") + std::to_string(serial->getNumber())).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Number") + std::string(": ") + std::to_string(serial->getNumber())).c_str());
     }
     if(item->type == ITEM_ARMOR) {
       ArmorItem * armor = (ArmorItem *) item;
       if(armor->getDamageReductionFromType(DAMAGE_SLASH) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_SLASH))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SLASH") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_SLASH))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_PUNCTURE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_PUNCTURE))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("PUNCTURE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_PUNCTURE))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_BLUNT) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_BLUNT))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("BLUNT") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_BLUNT))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_FIRE) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FIRE))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FIRE") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FIRE))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_LIGHTNING) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_LIGHTNING))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("LIGHTNING") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_LIGHTNING))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_FROST) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FROST))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FROST") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_FROST))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_POISON) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_POISON))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("POISON") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_POISON))).c_str());
       if(armor->getDamageReductionFromType(DAMAGE_MIND) != 0.F)
-        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_MIND))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("MIND") + std::string(": ") + std::to_string(armor->getDamageReductionFromType(DAMAGE_MIND))).c_str());
     }
     if(item->type == ITEM_WEAPON) {
       WeaponItem * weapon = (WeaponItem *) item;
-      mvwprintw(screen, i++, 1, (t->getStandardName("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
       if(weapon->getDamageFromType(DAMAGE_SLASH) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SLASH))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SLASH))).c_str());
       if(weapon->getDamageFromType(DAMAGE_PUNCTURE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_PUNCTURE))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("PUNCTURE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_PUNCTURE))).c_str());
       if(weapon->getDamageFromType(DAMAGE_BLUNT) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("BLUNT") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_BLUNT))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("BLUNT") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_BLUNT))).c_str());
       if(weapon->getDamageFromType(DAMAGE_FIRE) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FIRE))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FIRE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FIRE))).c_str());
       if(weapon->getDamageFromType(DAMAGE_LIGHTNING) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_LIGHTNING))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("LIGHTNING") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_LIGHTNING))).c_str());
       if(weapon->getDamageFromType(DAMAGE_FROST) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("FROST") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FROST))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("FROST") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_FROST))).c_str());
       if(weapon->getDamageFromType(DAMAGE_POISON) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_POISON))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("POISON") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_POISON))).c_str());
       if(weapon->getDamageFromType(DAMAGE_ACID) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("ACID") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_ACID))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("ACID") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_ACID))).c_str());
       if(weapon->getDamageFromType(DAMAGE_MIND) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("MIND") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_MIND))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("MIND") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_MIND))).c_str());
       if(weapon->getDamageFromType(DAMAGE_SOLAR) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SOLAR))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("TRUE") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SOLAR))).c_str());
       if(weapon->getDamageFromType(DAMAGE_AETHER) > 0)
-        mvwprintw(screen, i++, 1, (t->getStandardName("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_AETHER))).c_str());
+        mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SOUL") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_AETHER))).c_str());
     }
     wattroff(screen, COLOR_PAIR(WHITE));
     // should be constants
@@ -397,66 +396,66 @@ namespace Display {
     float ratio = 2.25;
     WINDOW * descScreen = subwin(screen, lines - 3 - 1, cols - 20 - 1, separator + 3, std::ceil((float) COLS - ratio * (float) (LINES - separator)) + 20);
     wattron(descScreen, COLOR_PAIR(WHITE));
-    print(descScreen, 0, 0, (t->getItemDesc(item->name)));
+    print(descScreen, 0, 0, (link->getEnglishFromKey(item->name)));
     wattroff(descScreen, COLOR_PAIR(WHITE));
     wrefresh(descScreen);
     wrefresh(screen);
     return descScreen;
   }
 
-  void displayCommands(WINDOW * screen, EnglishKeyHolder * t) {
+  void displayCommands(WINDOW * screen, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
     wclear(screen);
     box(screen, ACS_VLINE, ACS_HLINE);
-    std::string to_print = t->getStandardName("CONTROLS");
+    std::string to_print = link->getEnglishFromKey("CONTROLS");
     mvwprintw(screen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
-    mvwprintw(screen, 3, 1, (t->getStandardName("NUMPAD") + std::string(": ") + t->getStandardName("MOVE") + std::string(" / ") +  t->getStandardName("ATTACK")).c_str());
-    mvwprintw(screen, 4, 1, (t->getStandardName("5") + std::string(": ") + t->getStandardName("REST")).c_str());
-    mvwprintw(screen, 5, 1, (t->getStandardName("<") + std::string(": ") + t->getStandardName("OPEN")).c_str());
-    mvwprintw(screen, 6, 1, (t->getStandardName("I") + std::string(": ") + t->getStandardName("INVENTORY")).c_str());
-    mvwprintw(screen, 7, 1, (t->getStandardName("R") + std::string(": ") + t->getStandardName("RELOAD")).c_str());
-    mvwprintw(screen, 8, 1, (t->getStandardName("X") + std::string(": ") + t->getStandardName("USE SKILL")).c_str());
-    mvwprintw(screen, 9, 1, (t->getStandardName("C") + std::string(": ") + t->getStandardName("SHOOT")).c_str());
-    mvwprintw(screen, 10, 1, (t->getStandardName("SPACEBAR") + std::string(": ") + t->getStandardName("LOOT")).c_str());
+    mvwprintw(screen, 3, 1, (link->getEnglishFromKey("NUMPAD") + std::string(": ") + link->getEnglishFromKey("MOVE") + std::string(" / ") +  link->getEnglishFromKey("ATTACK")).c_str());
+    mvwprintw(screen, 4, 1, (link->getEnglishFromKey("5") + std::string(": ") + link->getEnglishFromKey("REST")).c_str());
+    mvwprintw(screen, 5, 1, (link->getEnglishFromKey("<") + std::string(": ") + link->getEnglishFromKey("OPEN")).c_str());
+    mvwprintw(screen, 6, 1, (link->getEnglishFromKey("I") + std::string(": ") + link->getEnglishFromKey("INVENTORY")).c_str());
+    mvwprintw(screen, 7, 1, (link->getEnglishFromKey("R") + std::string(": ") + link->getEnglishFromKey("RELOAD")).c_str());
+    mvwprintw(screen, 8, 1, (link->getEnglishFromKey("X") + std::string(": ") + link->getEnglishFromKey("USE SKILL")).c_str());
+    mvwprintw(screen, 9, 1, (link->getEnglishFromKey("C") + std::string(": ") + link->getEnglishFromKey("SHOOT")).c_str());
+    mvwprintw(screen, 10, 1, (link->getEnglishFromKey("SPACEBAR") + std::string(": ") + link->getEnglishFromKey("LOOT")).c_str());
     wrefresh(screen);
   }
 
-  WINDOW * displayAttributes(Attributes * attributes, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
+  WINDOW * displayAttributes(Attributes * attributes, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Link * link) {
     WINDOW * attributesScreen = subwin(screen, ATTRIBUTES_HEIGHT, ATTRIBUTES_WIDTH, offsetY + 2 + ATTRIBUTES_HEIGHT * place, offsetX + 1);
     wattron(attributesScreen, COLOR_PAIR(color));
     box(attributesScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(attributesScreen, 1, ATTRIBUTES_WIDTH / 2 - t->getAttributesName(attributes->name).length() / 2, t->getAttributesName(attributes->name).c_str());
-    mvwprintw(attributesScreen, 3, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
-    mvwprintw(attributesScreen, 4, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
-    mvwprintw(attributesScreen, 5, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(attributes->baseShield)).c_str());
-    mvwprintw(attributesScreen, 6, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
-    mvwprintw(attributesScreen, 7, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
-    mvwprintw(attributesScreen, 8, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
-    mvwprintw(attributesScreen, 9, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
-    mvwprintw(attributesScreen, 10, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
-    mvwprintw(attributesScreen, 11, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
+    mvwprintw(attributesScreen, 1, ATTRIBUTES_WIDTH / 2 - link->getEnglishFromKey(attributes->name).length() / 2, link->getEnglishFromKey(attributes->name).c_str());
+    mvwprintw(attributesScreen, 3, 1, (link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
+    mvwprintw(attributesScreen, 4, 1, (link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
+    mvwprintw(attributesScreen, 5, 1, (link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(attributes->baseShield)).c_str());
+    mvwprintw(attributesScreen, 6, 1, (link->getEnglishFromKey("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
+    mvwprintw(attributesScreen, 7, 1, (link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+    mvwprintw(attributesScreen, 8, 1, (link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+    mvwprintw(attributesScreen, 9, 1, (link->getEnglishFromKey("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+    mvwprintw(attributesScreen, 10, 1, (link->getEnglishFromKey("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+    mvwprintw(attributesScreen, 11, 1, (link->getEnglishFromKey("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     wattroff(attributesScreen, COLOR_PAIR(color));
     return attributesScreen;
   }
 
-  WINDOW * displayWay(Way * way, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
+  WINDOW * displayWay(Way * way, int32_t place, int32_t color, WINDOW * screen, int32_t offsetY, int32_t offsetX, Link * link) {
     WINDOW * wayScreen = subwin(screen, WAY_HEIGHT, WAY_WIDTH, offsetY + 2 + WAY_HEIGHT * place, offsetX + 1);
     wattron(wayScreen, COLOR_PAIR(color));
     box(wayScreen, ACS_VLINE, ACS_HLINE);
-    mvwprintw(wayScreen, 1, WAY_WIDTH / 2 - t->getWayName(way->name).length() / 2, t->getWayName(way->name).c_str());
-    mvwprintw(wayScreen, 3, 1, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(way->hpIncr)).c_str());
-    mvwprintw(wayScreen, 4, 1, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(way->manaIncr)).c_str());
-    mvwprintw(wayScreen, 5, 1, (std::string("+") + t->getStandardName("Shield") + std::string(": ") + std::to_string(way->shieldIncr)).c_str());
-    mvwprintw(wayScreen, 6, 1, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(way->damageMultIncr) + std::string("%")).c_str());
-    mvwprintw(wayScreen, 7, 1, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
-    mvwprintw(wayScreen, 8, 1, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
+    mvwprintw(wayScreen, 1, WAY_WIDTH / 2 - link->getEnglishFromKey(way->name).length() / 2, link->getEnglishFromKey(way->name).c_str());
+    mvwprintw(wayScreen, 3, 1, (std::string("+") + link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(way->hpIncr)).c_str());
+    mvwprintw(wayScreen, 4, 1, (std::string("+") + link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(way->manaIncr)).c_str());
+    mvwprintw(wayScreen, 5, 1, (std::string("+") + link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(way->shieldIncr)).c_str());
+    mvwprintw(wayScreen, 6, 1, (std::string("+") + link->getEnglishFromKey("Damage") + std::string(": ") + std::to_string(way->damageMultIncr) + std::string("%")).c_str());
+    mvwprintw(wayScreen, 7, 1, (std::string("+") + link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(way->soulBurnIncr)).c_str());
+    mvwprintw(wayScreen, 8, 1, (std::string("+") + link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(way->flowIncr)).c_str());
     wattroff(wayScreen, COLOR_PAIR(color));
     return wayScreen;
   }
 
-  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int32_t color, WINDOW * screen, int32_t sizeX, int32_t offsetY, int32_t offsetX, EnglishKeyHolder * t) {
+  WINDOW * displayCharacter(Attributes * attributes, Way * race, Way * origin, Way * culture, Way * religion, Way * profession, int32_t color, WINDOW * screen, int32_t sizeX, int32_t offsetY, int32_t offsetX, Link * link) {
     int32_t lines = 0;
     int32_t cols = 0;
     getmaxyx(screen, lines, cols);
@@ -511,22 +510,22 @@ namespace Display {
     box(characterScreen, ACS_VLINE, ACS_HLINE);
     int32_t space = cols / 2;
     if(attributes != nullptr) {
-      mvwprintw(characterScreen, 1, 1, (t->getStandardName("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
-      mvwprintw(characterScreen, 2, 1, (t->getStandardName("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
-      mvwprintw(characterScreen, 3, 1, (t->getStandardName("Shield") + std::string(": ") + std::to_string(attributes->shieldIncr)).c_str());
-      mvwprintw(characterScreen, 4, 1, (t->getStandardName("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
-      mvwprintw(characterScreen, 5, 1, (t->getStandardName("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
-      mvwprintw(characterScreen, 6, 1, (t->getStandardName("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
-      mvwprintw(characterScreen, 7, 1, (t->getStandardName("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
-      mvwprintw(characterScreen, 8, 1, (t->getStandardName("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
-      mvwprintw(characterScreen, 9, 1, (t->getStandardName("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
+      mvwprintw(characterScreen, 1, 1, (link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(attributes->baseHp)).c_str());
+      mvwprintw(characterScreen, 2, 1, (link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(attributes->baseMana)).c_str());
+      mvwprintw(characterScreen, 3, 1, (link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(attributes->shieldIncr)).c_str());
+      mvwprintw(characterScreen, 4, 1, (link->getEnglishFromKey("Damage") + std::string(": ") + std::to_string(attributes->baseDamageMult) + std::string("%")).c_str());
+      mvwprintw(characterScreen, 5, 1, (link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(attributes->baseSoulBurn)).c_str());
+      mvwprintw(characterScreen, 6, 1, (link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(attributes->baseFlow)).c_str());
+      mvwprintw(characterScreen, 7, 1, (link->getEnglishFromKey("Vision Range") + std::string(": ") + std::to_string(attributes->baseVisionRange)).c_str());
+      mvwprintw(characterScreen, 8, 1, (link->getEnglishFromKey("Vision Power") + std::string(": ") + std::to_string(attributes->baseVisionPower)).c_str());
+      mvwprintw(characterScreen, 9, 1, (link->getEnglishFromKey("Detection Range") + std::string(": ") + std::to_string(attributes->baseDetectionRange)).c_str());
     }
-    mvwprintw(characterScreen, 1, space, (std::string("+") + t->getStandardName("Hp") + std::string(": ") + std::to_string(hpIncr)).c_str());
-    mvwprintw(characterScreen, 2, space, (std::string("+") + t->getStandardName("Mana") + std::string(": ") + std::to_string(manaIncr)).c_str());
-    mvwprintw(characterScreen, 3, space, (std::string("+") + t->getStandardName("Shield") + std::string(": ") + std::to_string(shieldIncr)).c_str());
-    mvwprintw(characterScreen, 4, space, (std::string("+") + t->getStandardName("Damage") + std::string(": ") + std::to_string(damageMultIncr)).c_str());
-    mvwprintw(characterScreen, 5, space, (std::string("+") + t->getStandardName("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
-    mvwprintw(characterScreen, 6, space, (std::string("+") + t->getStandardName("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
+    mvwprintw(characterScreen, 1, space, (std::string("+") + link->getEnglishFromKey("Hp") + std::string(": ") + std::to_string(hpIncr)).c_str());
+    mvwprintw(characterScreen, 2, space, (std::string("+") + link->getEnglishFromKey("Mana") + std::string(": ") + std::to_string(manaIncr)).c_str());
+    mvwprintw(characterScreen, 3, space, (std::string("+") + link->getEnglishFromKey("Shield") + std::string(": ") + std::to_string(shieldIncr)).c_str());
+    mvwprintw(characterScreen, 4, space, (std::string("+") + link->getEnglishFromKey("Damage") + std::string(": ") + std::to_string(damageMultIncr)).c_str());
+    mvwprintw(characterScreen, 5, space, (std::string("+") + link->getEnglishFromKey("Soulburn") + std::string(": ") + std::to_string(soulBurnIncr)).c_str());
+    mvwprintw(characterScreen, 6, space, (std::string("+") + link->getEnglishFromKey("Flow") + std::string(": ") + std::to_string(flowIncr)).c_str());
     wattroff(characterScreen, COLOR_PAIR(color));
     return characterScreen;
   }
@@ -584,7 +583,7 @@ namespace Display {
     std::vector<Attributes *> startingAttributes,
     std::vector<Way *> startingWays,
     std::list<std::pair<const std::string, const std::string>> waysIncompatibilities,
-    EnglishKeyHolder * t)
+    Link * link)
   {
     Attributes * selectedAttributes = nullptr;
     Way * selectedRace = nullptr;
@@ -668,19 +667,19 @@ namespace Display {
       std::vector<Way *> availableCultures = std::vector<Way *>(cultures.size());
       std::vector<Way *> availableReligions = std::vector<Way *>(religions.size());
       std::vector<Way *> availableProfessions = std::vector<Way *>(professions.size());
-      std::string to_print = t->getStandardName("CHARACTER");
+      std::string to_print = link->getEnglishFromKey("CHARACTER");
       mvwprintw(characterScreen, 1, 1 + characterWidth / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("CLASS");
+      to_print = link->getEnglishFromKey("CLASS");
       mvwprintw(attributesScreen, 1, 1 + ATTRIBUTES_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("RACE");
+      to_print = link->getEnglishFromKey("RACE");
       mvwprintw(raceScreen, 1, 1 + WAY_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("ORIGIN");
+      to_print = link->getEnglishFromKey("ORIGIN");
       mvwprintw(originScreen, 1, 1 + WAY_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("CULTURE");
+      to_print = link->getEnglishFromKey("CULTURE");
       mvwprintw(cultureScreen, 1, 1 + WAY_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("RELIGION");
+      to_print = link->getEnglishFromKey("RELIGION");
       mvwprintw(religionScreen, 1, 1 + WAY_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
-      to_print = t->getStandardName("PROFESSION");
+      to_print = link->getEnglishFromKey("PROFESSION");
       mvwprintw(professionScreen, 1, 1 + WAY_WIDTH / 2 - to_print.length() / 2, to_print.c_str());
       for(Attributes * attributes : startingAttributes) {
         if(skip++ < currentPannel * numberAttributes) {
@@ -693,7 +692,7 @@ namespace Display {
         if(cursorX == 1 && cursorY == attributesCount) {
           color = BLUE;
         }
-        screens.push_back(displayAttributes(attributes, attributesCount++, color, attributesScreen, 0, characterWidth + 2, t));
+        screens.push_back(displayAttributes(attributes, attributesCount++, color, attributesScreen, 0, characterWidth + 2, link));
       }
       wrefresh(attributesScreen);
       skip = 0;
@@ -709,7 +708,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, raceCount, color, raceScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2, t));
+          screens.push_back(displayWay(way, raceCount, color, raceScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2, link));
           availableRaces[raceCount++] = way;
         }
       }
@@ -728,7 +727,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, originCount, color, originScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + WAY_WIDTH + 2, t));
+          screens.push_back(displayWay(way, originCount, color, originScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + WAY_WIDTH + 2, link));
           availableOrigins[originCount++] = way;
         }
       }
@@ -747,7 +746,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, cultureCount, color, cultureScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 2, t));
+          screens.push_back(displayWay(way, cultureCount, color, cultureScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 2, link));
           availableCultures[cultureCount++] = way;
         }
       }
@@ -766,7 +765,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, religionCount, color, religionScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 3, t));
+          screens.push_back(displayWay(way, religionCount, color, religionScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 3, link));
           availableReligions[religionCount++] = way;
         }
       }
@@ -785,7 +784,7 @@ namespace Display {
           if(skip++ < currentPannel * numberWays) {
             continue;
           }
-          screens.push_back(displayWay(way, professionCount, color, professionScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 4, t));
+          screens.push_back(displayWay(way, professionCount, color, professionScreen, 0, characterWidth + 2 + ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 4, link));
           availableProfessions[professionCount++] = way;
         }
       }
@@ -803,13 +802,13 @@ namespace Display {
       screens.push_back(nameScreen);
       wattron(nameScreen, COLOR_PAIR(color));
       box(nameScreen, ACS_VLINE, ACS_HLINE);
-      mvwprintw(nameScreen, 1, 1, (t->getStandardName("Name") + std::string(": ") + characterName).c_str());
+      mvwprintw(nameScreen, 1, 1, (link->getEnglishFromKey("Name") + std::string(": ") + characterName).c_str());
       wattroff(nameScreen, COLOR_PAIR(color));
       color = WHITE;
       if(cursorX == 0 && cursorY == 1) {
         color = BLUE;
       }
-      screens.push_back(displayCharacter(selectedAttributes, selectedRace, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, color, characterScreen, COLS - (ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 5) - 2, 5, 1, t));
+      screens.push_back(displayCharacter(selectedAttributes, selectedRace, selectedOrigin, selectedCulture, selectedReligion, selectedProfession, color, characterScreen, COLS - (ATTRIBUTES_WIDTH + 2 + (WAY_WIDTH + 2) * 5) - 2, 5, 1, link));
       color = WHITE;
       if(characterName != "" && characterName.find(';') == std::string::npos && characterName.find('|') == std::string::npos && characterName.find('@') == std::string::npos
         && characterName.find('&') == std::string::npos && characterName.find('%') == std::string::npos && !nameMode && selectedAttributes != nullptr
@@ -823,18 +822,18 @@ namespace Display {
       switch(cursorX) {
         case 0:
           switch(cursorY) {
-            case 0: to_print = t->getStandardDesc("Name"); break;
-            case 1: to_print = t->getStandardDesc("CHARACTER"); break;
-            case 2: to_print = t->getStandardDesc("CONFIRM CHARACTER CREATION"); break;
+            case 0: to_print = link->getEnglishFromKey("Name"); break;
+            case 1: to_print = link->getEnglishFromKey("CHARACTER"); break;
+            case 2: to_print = link->getEnglishFromKey("CONFIRM CHARACTER CREATION"); break;
             default: to_print = "";
           }
           break;
-        case 1: to_print = t->getAttributesDesc(startingAttributes[cursorY]->name); break;
-        case 2: to_print = t->getWayDesc(availableRaces[cursorY]->name); break;
-        case 3: to_print = t->getWayDesc(availableOrigins[cursorY]->name); break;
-        case 4: to_print = t->getWayDesc(availableCultures[cursorY]->name); break;
-        case 5: to_print = t->getWayDesc(availableReligions[cursorY]->name); break;
-        case 6: to_print = t->getWayDesc(availableProfessions[cursorY]->name); break;
+        case 1: to_print = link->getEnglishFromKey(startingAttributes[cursorY]->name); break;
+        case 2: to_print = link->getEnglishFromKey(availableRaces[cursorY]->name); break;
+        case 3: to_print = link->getEnglishFromKey(availableOrigins[cursorY]->name); break;
+        case 4: to_print = link->getEnglishFromKey(availableCultures[cursorY]->name); break;
+        case 5: to_print = link->getEnglishFromKey(availableReligions[cursorY]->name); break;
+        case 6: to_print = link->getEnglishFromKey(availableProfessions[cursorY]->name); break;
         default: to_print = "";
       }
       print(descriptionScreen, 0, 0, to_print.c_str());
@@ -842,7 +841,7 @@ namespace Display {
       screens.push_back(confirmScreen);
       wattron(confirmScreen, COLOR_PAIR(color));
       box(confirmScreen, ACS_VLINE, ACS_HLINE);
-      to_print = t->getStandardName("CONFIRM CHARACTER CREATION");
+      to_print = link->getEnglishFromKey("CONFIRM CHARACTER CREATION");
       mvwprintw(confirmScreen, 1, characterWidth / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(confirmScreen, COLOR_PAIR(color));
       wrefresh(characterScreen);
@@ -1040,7 +1039,7 @@ namespace Display {
               if(cursorX == 0) {
                 if(cursorY == 0) {
                   nameMode = true;
-                  move(3, 2 + (t->getStandardName("Name") + characterName).length() + 2);
+                  move(3, 2 + (link->getEnglishFromKey("Name") + characterName).length() + 2);
                   curs_set(1);
                 }
                 else if(cursorY == 2) {
@@ -1121,13 +1120,13 @@ namespace Display {
             case KEY_BACKSPACE:
               if(characterName != "") {
                 characterName = characterName.substr(0, characterName.length() - 1);
-                move(3, 2 + (t->getStandardName("Name") + characterName).length() + 2);
+                move(3, 2 + (link->getEnglishFromKey("Name") + characterName).length() + 2);
               }
               done2 = true;
               break;
             default:
               characterName += keyPressed;
-              move(3, 2 + (t->getStandardName("Name") + characterName).length() + 2);
+              move(3, 2 + (link->getEnglishFromKey("Name") + characterName).length() + 2);
               done2 = true;
           }
         }
@@ -1154,7 +1153,7 @@ namespace Display {
     return result;
   }
 
-  void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen, EnglishKeyHolder * t) {
+  void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen) {
     while(!link->isReady()) {
       usleep(1);
     }
@@ -1162,9 +1161,9 @@ namespace Display {
       StateDisplay * display = link->getState();
       Region * region = link->getPlayer()->getRegion();
       if(display->need_to_send_actions) {
-        displayMap(display, link->getAdventure(), link->getPlayer(), mapScreen, t);
-        displayStats(link->getPlayer(), statsScreen, t);
-        displayCommands(targetScreen, t);
+        displayMap(display, link->getAdventure(), link->getPlayer(), mapScreen, link);
+        displayStats(link->getPlayer(), statsScreen, link);
+        displayCommands(targetScreen, link);
         wrefresh(targetScreen);
         bool done = false;
         int32_t type;
@@ -1177,8 +1176,6 @@ namespace Display {
         int32_t target_x;
         int32_t target_y;
         float overcharge;
-        int32_t overcharge_duration;
-        int32_t overcharge_range;
         while(!done) {
           object_type = 0;
           object = "";
@@ -1189,8 +1186,8 @@ namespace Display {
           target_x = (int32_t) std::floor(link->getPlayer()->getCoord().x) - region->id.x;
           target_y = (int32_t) std::floor(link->getPlayer()->getCoord().y) - region->id.y;
           overcharge = 1;
-          overcharge_duration = 1;
-          overcharge_range = 1;
+          overcharge = 1;
+          overcharge = 1;
           flushinp();
           int32_t keyPressed = getch();
           switch(keyPressed) {
@@ -1210,7 +1207,7 @@ namespace Display {
             case '8':
             case KEY_UP:
             case '9':
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, t)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, link)) {
                 type = ACTION_MOVE;
                 done = true;
               }
@@ -1223,8 +1220,8 @@ namespace Display {
             case 'x':
             case 'X':
               type = ACTION_USE_SKILL;
-              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge, t);
-              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(), skill->range, target_id, target_x, target_y, orientation, t))) {
+              skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge, link);
+              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(), skill->range, target_id, target_x, target_y, orientation, link))) {
                 done = true;
                 object = skill->name;
               }
@@ -1232,7 +1229,7 @@ namespace Display {
             case 'c':
             case 'C':
               type = ACTION_STRIKE;
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, t)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, link)) {
                 if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
                   link->getPlayer()->getGear()->getWeapon_1()->useAmmo();
                 }
@@ -1242,7 +1239,7 @@ namespace Display {
             case 'i':
             case 'I':
               type = ACTION_SWAP_GEAR;
-              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, t);
+              object = selectItem(displayScreen, targetScreen, link->getPlayer(), object_type, object_id, link);
               if(object != "") {
                 for(ItemSlot * slot : link->getPlayer()->getGear()->getItems()) {
                   if(slot->item->id == object_id) {
@@ -1261,7 +1258,7 @@ namespace Display {
             case 'R':
               type = ACTION_RELOAD;
               if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
-                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), t);
+                object = selectAmmo(displayScreen, targetScreen, link->getPlayer(), link);
                 if(object != "" && (link->getPlayer()->getGear()->getWeapon_1()->getAmmo() == nullptr
                 || link->getPlayer()->getGear()->getWeapon_1()->getAmmo()->getProjectile()->name != object
                 || link->getPlayer()->getGear()->getWeapon_1()->getCurrentCapacity() < link->getPlayer()->getGear()->getWeapon_1()->capacity)) {
@@ -1278,14 +1275,14 @@ namespace Display {
           case ACTION_RESPITE:
           case ACTION_REST:
           case ACTION_BREAKPOINT:
-            sendAction(link, type, nullptr, nullptr, 0, 0, 0);
+            sendAction(link, type, nullptr, nullptr, 0);
             break;
           case ACTION_MOVE:
           case ACTION_STRIKE:
           case ACTION_USE_SKILL: {
             Target * target = new Target();
             ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
-            ((Target *) target)->id = (target_id == 0 ? 0 : target_id);
+            ((Target *) target)->character = (target_id == 0 ? 0 : target_id);
             ((Target *) target)->coord.x = target_x + 0.5;
             ((Target *) target)->coord.y = target_y + 0.5;
             ((Target *) target)->coord.z = 0;
@@ -1304,7 +1301,7 @@ namespace Display {
                 slot->slot = item->slot;
               }
             }
-            sendAction(link, type, (void *) slot, nullptr, 0, 0, 0);
+            sendAction(link, type, (void *) slot, nullptr, 0);
             break;
           }
           case ACTION_SWAP_GEAR: {
@@ -1320,7 +1317,7 @@ namespace Display {
             dummy->x = 0;
             dummy->y = 0;
             dummy->slot = 0;
-            sendAction(link, type, (void *) slot, (void *) dummy, 0, 0, 0);
+            sendAction(link, type, (void *) slot, (void *) dummy, 0);
             break;
           }
           case ACTION_TALKING:
@@ -1342,7 +1339,7 @@ namespace Display {
     }
   }
 
-  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & overcharge, int32_t & overcharge_duration, int32_t & overcharge_range, EnglishKeyHolder * t) {
+  Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, float & overcharge, Link * link) {
     Skill * result = nullptr;
     bool done = false;
     int32_t cursorX = 0;
@@ -1356,7 +1353,7 @@ namespace Display {
       wclear(targetScreen);
       box(displayScreen, ACS_VLINE, ACS_HLINE);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
-      std::string to_print = t->getStandardName("SKILLS");
+      std::string to_print = link->getEnglishFromKey("SKILLS");
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       int32_t currentX = 0;
       int32_t currentY = 0;
@@ -1377,10 +1374,10 @@ namespace Display {
         else {
           color = WHITE;
         }
-        std::string to_print = t->getSkillName(skill->name);
+        std::string to_print = link->getEnglishFromKey(skill->name);
         if(color == BLUE) {
           result = skill;
-          tempScreen = displaySkill(skill, targetScreen, 1, 1, 1, t);
+          tempScreen = displaySkill(skill, player, targetScreen, 1, link);
         }
         sizeX = std::max(sizeX, (int32_t) to_print.length());
         wattron(displayScreen, COLOR_PAIR(color));
@@ -1421,7 +1418,7 @@ namespace Display {
           break;
         }
         case '\n':
-          done = selectOvercharge(displayScreen, targetScreen, result, player, overcharge, t);
+          done = selectOvercharge(displayScreen, targetScreen, result, player, overcharge, link);
           break;
         case ' ':
           done = true;
@@ -1443,7 +1440,7 @@ namespace Display {
     return result;
   }
 
-  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, int32_t & overcharge, int32_t & overcharge_duration, int32_t & overcharge_range, EnglishKeyHolder * t) {
+  bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, float & overcharge, Link * link) {
     int32_t mana_cost = 0;
     int32_t lines = 0;
     int32_t cols = 0;
@@ -1453,7 +1450,7 @@ namespace Display {
     while(true) {
       wclear(displayScreen);
       box(displayScreen, ACS_VLINE, ACS_HLINE);
-      std::string to_print = t->getStandardName("Overcharging") + std::string(" ") + t->getSkillName(skill->name);
+      std::string to_print = link->getEnglishFromKey("Overcharging") + std::string(" ") + link->getEnglishFromKey(skill->name);
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       if(overcharge_type == 1) {
         color = BLUE;
@@ -1461,7 +1458,7 @@ namespace Display {
       else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Power Overcharging") + std::string(": ") + std::to_string(overcharge) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_power_type));
+      to_print = link->getEnglishFromKey("Power Overcharging") + std::string(": ") + std::to_string(overcharge) + std::string(" - ") + link->getEnglishFromKey(std::string("overcharge_power_type") + std::to_string(skill->overcharge_power_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2 - 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
@@ -1471,7 +1468,7 @@ namespace Display {
       else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Duration Overcharging") + std::string(": ") + std::to_string(overcharge_duration) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_duration_type));
+      to_print = link->getEnglishFromKey("Duration Overcharging") + std::string(": ") + std::to_string(overcharge) + std::string(" - ") + link->getEnglishFromKey(std::string("overcharge_duration_type") + std::to_string(skill->overcharge_duration_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
@@ -1481,13 +1478,13 @@ namespace Display {
       else {
         color = WHITE;
       }
-      to_print = t->getStandardName("Range Overcharging") + std::string(": ") + std::to_string(overcharge_range) + std::string(" - ") + t->getStandardName(std::string("overcharge_type_") + std::to_string(skill->overcharge_range_type));
+      to_print = link->getEnglishFromKey("Range Overcharging") + std::string(": ") + std::to_string(overcharge) + std::string(" - ") + link->getEnglishFromKey(std::string("overcharge_range_type") + std::to_string(skill->overcharge_range_type));
       wattron(displayScreen, COLOR_PAIR(color));
       mvwprintw(displayScreen, lines / 2 + 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       wattroff(displayScreen, COLOR_PAIR(color));
       wrefresh(displayScreen);
       WINDOW * tempScreen = nullptr;
-      tempScreen = displaySkill(skill, targetScreen, overcharge, t);
+      tempScreen = displaySkill(skill, player, targetScreen, overcharge, link);
       flushinp();
       int32_t keyPressed = getch();
       if(tempScreen != nullptr) {
@@ -1504,13 +1501,13 @@ namespace Display {
               }
               break;
             case 2:
-              if(overcharge_duration > 1) {
-                overcharge_duration--;
+              if(overcharge > 1) {
+                overcharge--;
               }
               break;
             case 3:
-              if(overcharge_range > 1) {
-                overcharge_range--;
+              if(overcharge > 1) {
+                overcharge--;
               }
               break;
           }
@@ -1526,21 +1523,21 @@ namespace Display {
         case KEY_RIGHT:
           switch(overcharge_type) {
             case 1:
-              mana_cost = skill->getManaCost(overcharge + 1, overcharge_duration, overcharge_range);
+              mana_cost = skill->getManaCost();
               if(skill->overcharge_power_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
                 overcharge++;
               }
               break;
             case 2:
-              mana_cost = skill->getManaCost(overcharge, overcharge_duration + 1, overcharge_range);
+              mana_cost = skill->getManaCost();
               if(skill->overcharge_duration_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
-                overcharge_duration++;
+                overcharge++;
               }
               break;
             case 3:
-              mana_cost = skill->getManaCost(overcharge + 1);
+              mana_cost = skill->getManaCost();
               if(skill->overcharge_range_type != OVERCHARGE_NONE && player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
-                overcharge_range++;
+                overcharge++;
               }
               break;
           }
@@ -1553,7 +1550,7 @@ namespace Display {
           break;
         }
         case '\n':
-          mana_cost = skill->getManaCost(overcharge);
+          mana_cost = skill->getManaCost();
           if(player->getMana() >= mana_cost && player->getFlow() >= mana_cost) {
             return true;
           }
@@ -1567,7 +1564,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, EnglishKeyHolder * t) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Link * link) {
     bool done = false;
     int32_t lines = 0;
     int32_t cols = 0;
@@ -1668,7 +1665,7 @@ namespace Display {
       for(CharacterDisplay * character : display->characters) {
         if((int32_t) std::floor(character->x) == target_x + region->id.x && (int32_t) std::floor(character->y) == target_y + region->id.y) {
           target_id = character->id;
-          displayTarget(character, targetScreen, t);
+          displayTarget(character, targetScreen, link);
           break;
         }
       }
@@ -1685,7 +1682,7 @@ namespace Display {
     return true;
   }
 
-  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, EnglishKeyHolder * t) {
+  std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, Link * link) {
       std::string result = "";
       bool done = false;
       int32_t cursorX = 0;
@@ -1699,7 +1696,7 @@ namespace Display {
         wclear(targetScreen);
         box(displayScreen, ACS_VLINE, ACS_HLINE);
         box(targetScreen, ACS_VLINE, ACS_HLINE);
-        std::string to_print = t->getStandardName("INVENTORY");
+        std::string to_print = link->getEnglishFromKey("INVENTORY");
         mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
         int32_t currentX = 0;
         int32_t currentY = 0;
@@ -1720,12 +1717,12 @@ namespace Display {
           else {
             color = WHITE;
           }
-          std::string to_print = t->getItemName(slot->item->name);
+          std::string to_print = link->getEnglishFromKey(slot->item->name);
           if(color == BLUE) {
             result = slot->item->name;
             object_id = slot->item->id;
             object_type = OBJECT_ITEM;
-            tempScreen = displayItem(slot->item, targetScreen, t);
+            tempScreen = displayItem(slot->item, targetScreen, link);
           }
           sizeX = std::max(sizeX, (int32_t) to_print.length());
           wattron(displayScreen, COLOR_PAIR(color));
@@ -1788,7 +1785,7 @@ namespace Display {
       return result;
   }
 
-  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, EnglishKeyHolder * t) {
+  std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Link * link) {
     std::string result = "";
     bool done = false;
     int32_t cursorX = 0;
@@ -1802,7 +1799,7 @@ namespace Display {
       wclear(targetScreen);
       box(displayScreen, ACS_VLINE, ACS_HLINE);
       box(targetScreen, ACS_VLINE, ACS_HLINE);
-      std::string to_print = t->getStandardName("AMMUNITION");
+      std::string to_print = link->getEnglishFromKey("AMMUNITION");
       mvwprintw(displayScreen, 1, cols / 2 - to_print.length() / 2, to_print.c_str());
       int32_t currentX = 0;
       int32_t currentY = 0;
@@ -1825,10 +1822,10 @@ namespace Display {
           else {
             color = WHITE;
           }
-          std::string to_print = t->getProjectileName(ammo->getProjectile()->name);
+          std::string to_print = link->getEnglishFromKey(ammo->getProjectile()->name);
           if(color == BLUE) {
             result = ammo->getProjectile()->name;
-            tempScreen = displayItem(ammo, targetScreen, t);
+            tempScreen = displayItem(ammo, targetScreen, link);
           }
           sizeX = std::max(sizeX, (int32_t) to_print.length());
           wattron(displayScreen, COLOR_PAIR(color));

@@ -1,8 +1,10 @@
 name = TXT_TOUCH_SOME_GRASS
 level = 0
+school = SKILL_EARTH
 attributes =
 target_type = TARGET_BLOCK
 is_instant = false
+is_blockable = false
 is_toggle = false
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE

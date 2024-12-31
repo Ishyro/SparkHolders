@@ -44,6 +44,7 @@ public:
   void sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession);
   bool hasState();
   bool getState();
+  Dictionary getMacros();
   float getMoveCost(Vector3 ori, Vector3 dest);
   String getTime();
   String getClock(bool terran_day);
@@ -52,7 +53,7 @@ public:
   int64_t getMaxLight();
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
-  Dictionary getBlocks();
+  Dictionary getBlocks(int64_t height, int64_t radius);
   int64_t getPlayerId();
   Array getLights();
   Array getControlledParty();
@@ -69,7 +70,8 @@ public:
   Dictionary getDataFromCharacter(CharacterDisplay * character);
   Dictionary getStatsFromCharacter();
   Dictionary getInventoryFromCharacter();
-  Dictionary getSkillsFromCharacter();
+  Dictionary getDataFromSkill(String skill_name);
+  Array getSkillsFromCharacter();
   Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
   Dictionary getDataFromFurniture(Furniture * furniture);
   Array getStartingAttributes();

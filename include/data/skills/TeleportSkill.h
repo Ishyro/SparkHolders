@@ -12,13 +12,13 @@ class TeleportSkill : public PseudoSkill {
       int32_t skill_type,
       int32_t target_type,
       int32_t mana_cost,
-      int32_t scalling_type,
+      int32_t scaling_type,
       std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers,
       std::list<Effect *> effects,
       int32_t apparition_type,
       int32_t movement_type
     ):
-      PseudoSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, effects),
+      PseudoSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, effects),
       apparition_type(apparition_type),
       movement_type(movement_type)
     {}

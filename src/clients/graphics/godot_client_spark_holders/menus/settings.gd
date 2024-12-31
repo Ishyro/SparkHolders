@@ -25,6 +25,7 @@ var pause_modes = { "When no action": 0, "All Players": 1, "Master Only": 2, "Ne
 var pause_modes_macros = { "When no action": "SETTINGS_PAUSE_NO_ACTION", "All Players": "SETTINGS_PAUSE_ALL", "Master Only": "SETTINGS_PAUSE_MASTER", "Never":"SETTINGS_PAUSE_NONE"}
 var pause_modes_strings = { "SETTINGS_PAUSE_NO_ACTION": "When no action", "SETTINGS_PAUSE_ALL": "All Players", "SETTINGS_PAUSE_MASTER": "Master Only", "SETTINGS_PAUSE_NONE": "Never"}
 
+# Client
 # General
 @onready var n_language = $Divider/MarginContainer/ClientServer/Client/General/LanguageValue
 @onready var n_font = $Divider/MarginContainer/ClientServer/Client/General/FontValue
@@ -37,13 +38,16 @@ var pause_modes_strings = { "SETTINGS_PAUSE_NO_ACTION": "When no action", "SETTI
 @onready var n_vsync = $Divider/MarginContainer/ClientServer/Client/Video/VSyncValue
 @onready var n_shadows = $Divider/MarginContainer/ClientServer/Client/Video/ShadowsValue
 @onready var n_whitelight = $Divider/MarginContainer/ClientServer/Client/Video/WhileLightValue
+@onready var n_chunk_height = $Divider/MarginContainer/ClientServer/Client/Video/ChunkHeightValue
+@onready var n_chunk_radius = $Divider/MarginContainer/ClientServer/Client/Video/ChunkRadiusValue
 
 # Server
+# Gameplay
 @onready var n_tickduration = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue
 @onready var n_tickrate = $Divider/MarginContainer/ClientServer/Server/Gameplay/TickRateValue
 @onready var n_buyingpricemodifier = $Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue
 @onready var n_pause_mode = $Divider/MarginContainer/ClientServer/Server/Gameplay/PauseModeValue
-
+# General
 @onready var n_serverport = $Divider/MarginContainer/ClientServer/Server/General/PortValue
 @onready var n_seed = $Divider/MarginContainer/ClientServer/Server/General/SeedValue
 @onready var n_pasword = $Divider/MarginContainer/ClientServer/Server/General/PasswordValue
@@ -188,6 +192,12 @@ func apply_client_settings(forced_update):
 			n_whitelight.set_pressed(false)
 			Settings.white_light = false
 		client_settings_changed["WHITE_LIGHTS"] = false
+	if client_settings_changed["CHUNK_HEIGHT"] or forced_update:
+		n_chunk_height.text = client_settings_dic["CHUNK_HEIGHT"]
+		Settings.chunk_height = client_settings_dic["CHUNK_HEIGHT"].to_int()
+	if client_settings_changed["CHUNK_RADIUS"] or forced_update:
+		n_chunk_radius.text = client_settings_dic["CHUNK_RADIUS"]
+		Settings.chunk_radius = client_settings_dic["CHUNK_RADIUS"].to_int()
 	if need_to_save:
 		ProjectSettings.save()
 
@@ -247,7 +257,6 @@ func _on_font_value_item_selected(index):
 	client_settings_dic["FONT"] = n_font.get_item_text(index)
 	client_settings_changed["FONT"] = true
 
-
 func _on_port_value_text_changed(new_text):
 	if new_text.is_valid_int():
 		client_settings_dic["PORT"] = new_text
@@ -303,6 +312,20 @@ func _on_while_light_value_toggled(button_pressed):
 		n_whitelight.set_text("Off")
 		client_settings_dic["WHITE_LIGHTS"] = "Off"
 	client_settings_changed["WHITE_LIGHTS"] = true
+
+func _on_chunk_height_value_text_submitted(new_text: String):
+	if new_text.is_valid_int() && new_text.to_int() > 0:
+		client_settings_dic["CHUNK_HEIGHT"] = new_text
+		client_settings_changed["CHUNK_HEIGHT"] = true
+	else:
+		n_chunk_height.text = client_settings_dic["CHUNK_HEIGHT"]
+
+func _on_chunk_radius_value_text_submitted(new_text: String):
+	if new_text.is_valid_int() && new_text.to_int() > 0:
+		client_settings_dic["CHUNK_RADIUS"] = new_text
+		client_settings_changed["CHUNK_RADIUS"] = true
+	else:
+		n_chunk_radius.text = client_settings_dic["CHUNK_RADIUS"]
 
 func _on_tick_duration_value_text_changed(new_text):
 	if new_text.is_valid_float():

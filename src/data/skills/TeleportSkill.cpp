@@ -5,7 +5,7 @@
 void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   // Target 1 will always be a Character
   // other may be owner
-  Character * other = adventure->getCharacter(target->id);
+  Character * other = target->character;
   // Target 2 will always be a Coordinate
   // maybe swap character teleport in the future ?
   switch(apparition_type) {
@@ -24,7 +24,7 @@ void TeleportSkill::activate(Character * owner, Target * target, Adventure * adv
 bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   // Target 1 will always be a Character
   // other may be owner
-  Character * other = adventure->getCharacter(target->id);
+  Character * other = target->character;
   if(MathUtil::distance(owner->getCoord(), target->coord) > range * overcharge_range) {
     return false;
   }

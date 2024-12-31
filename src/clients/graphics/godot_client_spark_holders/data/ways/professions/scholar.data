@@ -18,4 +18,5 @@ soulBurnIncr = 3
 flowIncr = 3
 effects =
 skills =
+stances =
 tags = scholar%erudite%

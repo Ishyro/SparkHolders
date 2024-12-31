@@ -11,6 +11,7 @@ usable = false
 consumable = false
 effects =
 swap_time = 5
+durability = 1
 
 SLASH_REDUCTION = 15
 PUNCTURE_REDUCTION = 7.5

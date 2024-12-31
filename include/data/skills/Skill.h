@@ -13,9 +13,11 @@ class Skill {
   public:
     const std::string name;
     const int32_t level;
+    const int32_t school;
     const std::string attributes;
     const int32_t target_type;
     const bool instant;
+    const bool blockable;
     const bool toggle;
     const int32_t overcharge_power_type;
     const int32_t overcharge_duration_type;
@@ -26,9 +28,11 @@ class Skill {
     Skill(
       std::string name,
       int32_t level,
+      int32_t school,
       std::string attributes,
       int32_t target_type,
       bool instant,
+      bool blockable,
       bool toggle,
       int32_t overcharge_power_type,
       int32_t overcharge_duration_type,
@@ -39,9 +43,11 @@ class Skill {
     ):
       name(name),
       level(level),
+      school(school),
       attributes(attributes),
       target_type(target_type),
       instant(instant),
+      blockable(blockable),
       toggle(toggle),
       overcharge_power_type(overcharge_power_type),
       overcharge_duration_type(overcharge_duration_type),
@@ -51,7 +57,7 @@ class Skill {
       skills(skills)
     {}
 
-    void activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent);
+    void activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent, bool blocked);
     bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent);
     void computeOvercharges(int32_t mana_spent, float & overcharge_power, float & overcharge_duration, float & overcharge_range);
     int32_t getManaCost();

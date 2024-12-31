@@ -56,7 +56,7 @@ namespace Server {
       }
       case ACTION_STRIKE:
       case ACTION_ACTIVATION: {
-        Target * target = MathUtil::target_from_string(String::extract(ss));
+        Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
@@ -83,7 +83,7 @@ namespace Server {
         break;
       }
       case ACTION_USE_SKILL: {
-        Target * target = MathUtil::target_from_string(String::extract(ss));
+        Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
         int32_t mana_cost = String::extract_int(ss);
         action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);

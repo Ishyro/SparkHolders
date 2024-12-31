@@ -6,7 +6,6 @@ const MOVEMENT_FRICTION = 0.5
 var _mouse_motion = Vector2.ZERO
 var velocity = Vector3.ZERO
 var pause_state = false
-var free_mouse_state = false
 
 @onready var camera = $Camera
 @onready var camera_attributes = camera.attributes
@@ -29,68 +28,22 @@ func update_mouse_coordinates():
 	from = camera.project_ray_origin(mouse_coords)
 	to = from + camera.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
-	var mask
-	if Values.mode == Values.ACTION_MODE_ACTIVATION:
-		mask = 0x40
-	else:
-		mask = 0x3
-	var query = PhysicsRayQueryParameters3D.create(from, to, mask)
+	var query = PhysicsRayQueryParameters3D.create(from, to, 0x40)
 	var result = space.intersect_ray(query)
 	if not result.is_empty():
-		if Values.mode == Values.ACTION_MODE_ACTIVATION:
-			Values.coord = map.colliders.find_key(result["collider"])
-			if not Values.coord:
-				Values.coord = result["position"]
-		else:
+		Values.coord = map.colliders.find_key(result["collider"])
+		if not Values.coord:
 			Values.coord = result["position"]
-		if Input.is_action_pressed("select"):
-			Values.selection_changed = true
-			var selection = result["collider"]
-			if Values.selected_target:
-				Values.selected_target.unselect()
-			if "character" in selection:
-				var owned = false
-				for character_id in map.owned_characters:
-					if character_id == selection.id:
-						owned = true
-						break
-				if not owned:
-					Values.selected_target = selection
-				Values.selected_projectile = null
-				Values.selected_block = null
-			if "projectile" in selection:
-				Values.selected_projectile = selection
-				Values.selected_target = null
-				Values.selected_block = null
-			if "block" in selection:
-				Values.selected_projectile = null
-				Values.selected_target = null
-				Values.selected_block = selection
-	if not pause_state:
-		hud.update_mouse_box(mouse_coords)
 
 func _process(_delta):
 	if not pause_state:
 		# Mouse movement.
-		if not free_mouse_state:
+		if not Values.free_mouse_state:
 			_mouse_motion.y = clamp(_mouse_motion.y, -1560, 1560)
 			camera.transform.basis = Basis.from_euler(Vector3(_mouse_motion.y * -0.001, _mouse_motion.x * -0.001, 0))
-		if Values.selection_changed:
-			Values.selection_changed = false
-			if Values.selected_projectile:
-				hud.display_projectile(Values.selected_projectile, map.projectiles_data[Values.selected_projectile.id])
-			if Values.selected_target:
-				if map.characters_data.has(Values.selected_target.id):
-					hud.display_target(Values.selected_target, map.characters_data[Values.selected_target.id])
-				else:
-					Values.selected_target = null
-			if Values.selected_block:
-				if map.tiles_img.has(Values.selected_block.block):
-					$"../HUD/Block/Picture".texture = map.tiles_img[Values.selected_block.block]
-					hud.display_block(Values.selected_block, map.tiles_data[Values.selected_block.block])
 
 func _physics_process(_delta):
-	if not pause_state and not free_mouse_state:
+	if not pause_state and not Values.free_mouse_state:
 		update_mouse_coordinates()
 		camera.transform.origin = map.characters[map.owned_character].transform.origin + Vector3(0, 1.6, 0)
 		var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -114,10 +67,10 @@ func _unhandled_input(event):
 	if not pause_state:
 		if event.is_action_pressed("free_mouse"):
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			free_mouse_state = true
+			Values.free_mouse_state = true
 		if event.is_action_released("free_mouse"):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			free_mouse_state = false
+			Values.free_mouse_state = false
 		elif event is InputEventMouseMotion:
 			_mouse_motion += event.relative
 		if event.is_action_pressed("skill_tab_1"):
@@ -144,14 +97,6 @@ func _unhandled_input(event):
 			hud.skill_button_11.set_pressed(true)
 		if event.is_action_pressed("skill_tab_12"):
 			hud.skill_button_12.set_pressed(true)
-		if event.is_action_pressed("action_move"):
-			hud.move.set_pressed(true)
-		if event.is_action_pressed("action_attack"):
-			hud.attack.set_pressed(true)
-		if event.is_action_pressed("action_interact"):
-			hud.interact.set_pressed(true)
-		if event.is_action_pressed("action_rest"):
-			hud.rest.set_pressed(true)
 		if event.is_action_pressed("display_stats"):
 			if not character_sheet.visible:
 				character_sheet.display_stats()
@@ -159,19 +104,27 @@ func _unhandled_input(event):
 				character_sheet.visible = false
 		if event.is_action_pressed("inventory"):
 			if not hud.inventory.visible:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				Values.free_mouse_state = true
 				hud.inventory.display_inventory()
 			else:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+				Values.free_mouse_state = false
 				hud.inventory.visible = false
-		if event.is_action_pressed("action") and not Values.updating_state and not Values.link.hasState():
-			if Values.mode == Values.ACTION_MODE_ACTIVATION:
+		if event.is_action_pressed("skill_book"):
+			if not hud.skillbook.visible:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				Values.free_mouse_state = true
+				hud.display_skillbook()
+			else:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+				Values.free_mouse_state = false
+				hud.skillbook.visible = false
+		# Actions
+		if not Values.free_mouse_state and Values.updating_state and not Values.link.hasState():
+			if event.is_action_pressed("interact"):
 				map.send_targeted_action(Values.ACTION_ACTIVATION, Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
-			if Values.mode == Values.ACTION_MODE_ATTACK:
+			if event.is_action_pressed("attack"):
 				map.send_targeted_action(Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
-
-func fix_vec(vec: Vector3):
-	var space = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(vec, vec + Vector3(0, -10, 0), 0x1)
-	var result = space.intersect_ray(query)
-	if not result.is_empty():
-		vec = result["position"]
-	return map.round_vec(vec)
+			if event.is_action_pressed("skill"):
+				map.send_targeted_action(Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)

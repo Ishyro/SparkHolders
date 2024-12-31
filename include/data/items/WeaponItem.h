@@ -1,6 +1,7 @@
 #ifndef _WEAPON_ITEM_H_
 #define _WEAPON_ITEM_H_
 
+#include <array>
 #include <list>
 #include <string>
 
@@ -35,6 +36,8 @@ class WeaponItem : public GearItem {
       int32_t use_time,
       std::list<Effect *> effects,
       int32_t swap_time,
+      int32_t max_durability,
+      int32_t durability,
       float range,
       int32_t strike_time,
       float status_power,
@@ -44,8 +47,7 @@ class WeaponItem : public GearItem {
       int32_t capacity,
       int32_t reload_time,
       AmmunitionItem * ammo,
-      std::array<float, DAMAGE_TYPE_NUMBER> damages,
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions
+      std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       GearItem(
         name,
@@ -63,7 +65,9 @@ class WeaponItem : public GearItem {
         consumable,
         use_time,
         effects,
-        swap_time
+        swap_time,
+        max_durability,
+        durability
       ),
       range(range),
       strike_time(strike_time),
@@ -77,9 +81,6 @@ class WeaponItem : public GearItem {
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = damages[i];
-      }
-      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        this->damage_reductions[i] = damage_reductions[i];
       }
     }
     WeaponItem(WeaponItem * item, int32_t tier):
@@ -97,13 +98,9 @@ class WeaponItem : public GearItem {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         damages[i] = item->damages[i];
       }
-      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
-        damage_reductions[i] = item->damage_reductions[i];
-      }
     }
     float getRawDamage();
     float getDamageFromType(int32_t damage_type);
-    float getDamageReductionFromType(int32_t damage_type);
     int32_t getCurrentCapacity();
     AmmunitionItem * getAmmo();
     void useAmmo();
@@ -112,7 +109,6 @@ class WeaponItem : public GearItem {
   private:
     AmmunitionItem * ammo;
     std::array<float, DAMAGE_TYPE_NUMBER> damages;
-    std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
 };
 
 #endif // _WEAPON_ITEM_H_

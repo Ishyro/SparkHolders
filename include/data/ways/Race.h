@@ -45,6 +45,7 @@ class Race : public Way {
       int32_t flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      std::list<Stance *> stances,
       std::list<std::string> tags,
       int32_t race_type,
       float size,
@@ -81,6 +82,7 @@ class Race : public Way {
         flowIncr,
         effects,
         skills,
+        stances,
         tags
       ),
       race_type(race_type),

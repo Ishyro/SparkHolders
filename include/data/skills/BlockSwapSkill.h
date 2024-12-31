@@ -10,13 +10,13 @@ class BlockSwapSkill : public PseudoSkill {
       int32_t skill_type,
       int32_t target_type,
       int32_t mana_cost,
-      int32_t scalling_type,
+      int32_t scaling_type,
       std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers,
       std::list<Effect *> effects,
       Block * current_block,
       Block * new_block
     ):
-      PseudoSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, effects),
+      PseudoSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, effects),
       current_block(current_block),
       new_block(new_block)
     {}

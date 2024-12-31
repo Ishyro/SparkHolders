@@ -18,14 +18,14 @@ class PseudoSkill {
     const int32_t skill_type;
     const int32_t target_type;
     const int32_t mana_cost;
-    const int32_t scalling_type;
+    const int32_t scaling_type;
     const std::list<Effect *> effects;
     PseudoSkill(
       std::string name,
       int32_t skill_type,
       int32_t target_type,
       int32_t mana_cost,
-      int32_t scalling_type,
+      int32_t scaling_type,
       std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers,
       std::list<Effect *> effects
     ):
@@ -33,7 +33,7 @@ class PseudoSkill {
       skill_type(skill_type),
       target_type(target_type),
       mana_cost(mana_cost),
-      scalling_type(scalling_type),
+      scaling_type(scaling_type),
       effects(effects)
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

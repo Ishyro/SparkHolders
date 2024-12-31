@@ -62,6 +62,7 @@ func _on_start_pressed():
 	get_tree().change_scene_to_file("res://menus/character_creator.tscn")
 
 func _on_close_pressed():
+	print("close")
 	visible = false
 
 func _on_tutorial_value_item_selected(index):

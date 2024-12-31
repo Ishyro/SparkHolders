@@ -60,70 +60,35 @@ int32_t main(int32_t argc, char ** argv) {
   std::string IP = "127.0.0.1";
   s.connect(IP, 45678);
   Link * link;
-  EnglishKeyHolder * t;
-  if (argc == 2) {
-    try {
-      link = new Link(s, argv[1]);
-      link->initialize("tester", "admin");
-    } catch (CloseException &e) {
-      endwin();
-      s.close();
-      delete link;
-      return EXIT_FAILURE;
-    }
-    #ifdef _WIN32_WINNT
-      thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
-    #else
-      thread = std::thread(listener, (void *) link);
-    #endif
-    while(!link->isStarted()) {
-      usleep(1);
-    }
-    t = link->getTranslator();
-    std::vector<std::string> choices;
-    choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), t);
-    try {
-      link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
-      link->sendReady();
-    } catch (CloseException &e) {
-      endwin();
-      s.close();
-      delete link;
-      return EXIT_FAILURE;
-    }
+  try {
+    link = new Link(s);
+    link->initialize("admin");
   }
-  else if (argc == 3) {
-    // reconnect mode
-    try {
-      if(s.read() != "RECONNECT") {
-        endwin();
-        s.close();
-        delete link;
-        return EXIT_FAILURE;
-      }
-      s.write(std::string(argv[2]));
-      if(s.read() != "OK") {
-        endwin();
-        s.close();
-        delete link;
-        return EXIT_FAILURE;
-      }
-      link = new Link(s, argv[1]);
-      #ifdef _WIN32_WINNT
-        HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
-      #else
-        std::thread thread = std::thread(listener, (void *) link);
-      #endif
-      while(!link->isStarted()) {
-        usleep(1);
-      }
-      t = link->getTranslator();
-    } catch (CloseException &e) {
-      endwin();
-      s.close();
-      delete link;
-      return EXIT_FAILURE;
-    }
+  catch (CloseException &e) {
+    endwin();
+    s.close();
+    delete link;
+    return EXIT_FAILURE;
+  }
+  #ifdef _WIN32_WINNT
+    thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
+  #else
+    thread = std::thread(listener, (void *) link);
+  #endif
+  while(!link->isStarted()) {
+    usleep(1);
+  }
+  std::vector<std::string> choices;
+  choices = Display::selectChoices(link->getStartingAttributes(), link->getStartingWays(), link->getWaysIncompatibilities(), link);
+  try {
+    link->sendChoices(choices[0], choices[1], choices[2], choices[3], choices[4], choices[5], choices[6]);
+    link->sendReady();
+  }
+  catch (CloseException &e) {
+    endwin();
+    s.close();
+    delete link;
+    return EXIT_FAILURE;
   }
   int32_t separator = (float) LINES * 3 / 5;
   float ratio = 2.25;
@@ -131,7 +96,7 @@ int32_t main(int32_t argc, char ** argv) {
   WINDOW * statsScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, 0);
   WINDOW * displayScreen = subwin(stdscr, LINES - separator, std::ceil((float) COLS - 2. * ratio * (float) (LINES - separator)), separator, ratio * (LINES - separator));
   WINDOW * targetScreen = subwin(stdscr, LINES - separator, ratio * (LINES - separator), separator, std::ceil((float) COLS - ratio * (float) (LINES - separator)));
-  std::string to_print = t->getStandardName("WAITING FOR OTHER PLAYERS...");
+  std::string to_print = "WAITING FOR OTHER PLAYERS...";
   mvwprintw(stdscr, LINES / 2, COLS / 2 - to_print.length() / 2, to_print.c_str());
   wrefresh(stdscr);
   clear();
@@ -140,7 +105,7 @@ int32_t main(int32_t argc, char ** argv) {
   box(displayScreen, ACS_VLINE, ACS_HLINE);
   box(targetScreen, ACS_VLINE, ACS_HLINE);
   try {
-    Display::commandLoop(link, mapScreen, statsScreen, displayScreen, targetScreen, t);
+    Display::commandLoop(link, mapScreen, statsScreen, displayScreen, targetScreen);
   } catch (CloseException &e) {
 
   }

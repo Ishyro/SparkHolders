@@ -6,6 +6,7 @@
 #include "Values.h"
 
 #include "data/Character.h"
+#include "data/items/Gear.h"
 
 #include "util/FileOpener.h"
 
@@ -91,6 +92,38 @@ class Effect {
       tick_left=duration;
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
         this->damages[i] = base->damages[i] * overcharge_power;
+      }
+    }
+    Effect(
+      Effect * base,
+      float overcharge_power,
+      float overcharge_duration,
+      int32_t scaling_type,
+      std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers,
+      Character * owner
+    ):
+      name(base->name),
+      id(++effect::id_cpt),
+      level(base->level),
+      attributes(base->attributes),
+      type(base->type),
+      duration_type(base->duration_type),
+      power(base->power * overcharge_power),
+      duration(base->duration * overcharge_duration)
+    {
+      tick_left=duration;
+      for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+        switch(scaling_type) {
+          case SKILL_SCALE_NONE:
+            this->damages[i] = base->damages[i] * overcharge_power;
+            break;
+          case SKILL_SCALE_MAIN_WEAPON:
+            this->damages[i] = (base->damages[i] + owner->getGear()->getWeapon_1()->getDamageFromType(i) + owner->getGear()->getWeapon_1()->getDamageFromType(DAMAGE_PHYSICAL) * damage_multipliers[i]) * overcharge_power;
+            break;
+          case SKILL_SCALE_SUB_WEAPON:
+            this->damages[i] = (base->damages[i] + owner->getGear()->getWeapon_2()->getDamageFromType(i) + owner->getGear()->getWeapon_2()->getDamageFromType(DAMAGE_PHYSICAL) * damage_multipliers[i]) * overcharge_power;
+            break;
+        }
       }
     }
     float getRawDamage();

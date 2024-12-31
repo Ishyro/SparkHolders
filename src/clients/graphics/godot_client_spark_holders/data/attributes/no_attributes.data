@@ -18,6 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
+stances =
 tags = 
 and_requirements = 
 or_requirements = 

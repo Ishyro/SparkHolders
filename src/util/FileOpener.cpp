@@ -470,6 +470,12 @@ namespace FileOpener {
     while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
+    std::list<Stance *> * stances = new std::list<Stance *>();
+    std::istringstream is_stances(values.at("stances"));
+    std::string stance;
+    while(getline(is_stances, stance, '%')) {
+      stances->push_back((Stance *) database->getStance(stance));
+    }
     std::list<std::string> * tags = new std::list<std::string>();
     std::istringstream is_tags(values.at("tags"));
     std::string tag;
@@ -513,6 +519,7 @@ namespace FileOpener {
       flowIncr,
       *effects,
       *skills,
+      *stances,
       *tags,
       *and_requirements,
       *or_requirements,
@@ -931,6 +938,7 @@ namespace FileOpener {
     Item * item;
     if(type == ITEM_ARMOR) {
       int32_t swap_time = stoi(values.at("swap_time"));
+      int32_t durability = stoi(values.at("durability"));
       std::array<float, DAMAGE_TYPE_NUMBER> damages;
       std::map<const std::string, std::string>::iterator it = values.find("SLASH_REDUCTION");
       if(it != values.end()) {
@@ -1009,11 +1017,14 @@ namespace FileOpener {
         use_time,
         *effects,
         swap_time,
+        durability,
+        durability,
         damages
       );
     }
     if(type == ITEM_WEAPON) {
       int32_t swap_time = stoi(values.at("swap_time"));
+      int32_t durability = stoi(values.at("durability"));
       float range = _stof(values.at("range"));
       int32_t strike_time = stoi(values.at("strike_time"));
       float status_power = _stof(values.at("status_power"));
@@ -1132,67 +1143,6 @@ namespace FileOpener {
       else {
         damages[DAMAGE_TRUE] = 0.F;
       }
-      std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
-      it = values.find("SLASH_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_SLASH] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_SLASH] = 0.F;
-      }
-      it = values.find("PUNCTURE_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_PUNCTURE] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_PUNCTURE] = 0.F;
-      }
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_BLUNT] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_BLUNT] = 0.F;
-      }
-      it = values.find("FIRE_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_FIRE] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_FIRE] = 0.F;
-      }
-      it = values.find("LIGHTNING_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_LIGHTNING] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_LIGHTNING] = 0.F;
-      }
-      it = values.find("FROST_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_FROST] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_FROST] = 0.F;
-      }
-      it = values.find("POISON_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_POISON] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_POISON] = 0.F;
-      }
-      damage_reductions[DAMAGE_ACID] = 0.F;      
-      it = values.find("MIND_REDUCTION");
-      if(it != values.end()) {
-        damage_reductions[DAMAGE_MIND] = _stof(it->second);
-      }
-      else {
-        damage_reductions[DAMAGE_MIND] = 0.F;
-      }
-      damage_reductions[DAMAGE_SOLAR] = 0.F;
-      damage_reductions[DAMAGE_AETHER] = 0.F;
-      damage_reductions[DAMAGE_NEUTRAL] = 0.F;
-      damage_reductions[DAMAGE_TRUE] = 0.F;
       item = new WeaponItem(
         name,
         0,
@@ -1210,6 +1160,8 @@ namespace FileOpener {
         use_time,
         *effects,
         swap_time,
+        durability,
+        durability,
         range,
         strike_time,
         status_power,
@@ -1219,8 +1171,7 @@ namespace FileOpener {
         capacity,
         reload_time,
         nullptr,
-        damages,
-        damage_reductions
+        damages
       );
     }
     if(type == ITEM_BASIC) {
@@ -1290,6 +1241,7 @@ namespace FileOpener {
     }
     if(type == ITEM_CONTAINER) {
       int32_t swap_time = stoi(values.at("swap_time"));
+      int32_t durability = stoi(values.at("durability"));
       std::istringstream is_can_take_from(values.at("can_take_from"));
       bool can_take_from;
       is_can_take_from >> std::boolalpha >> can_take_from;
@@ -1319,6 +1271,8 @@ namespace FileOpener {
         use_time,
         *effects,
         swap_time,
+        durability,
+        durability,
         can_take_from,
         repercute_weight,
         limited,
@@ -1659,15 +1613,19 @@ namespace FileOpener {
     delete ss_status_threshold;
   }
 
-  void SkillOpener(std::string fileName, Database * database) {
+  std::string SkillOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int32_t level = stoi(values.at("level"));
+    int32_t school = database->getTargetFromMacro(values.at("school"));
     std::string attributes = values.at("attributes");
     int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
     std::istringstream is_instant(values.at("is_instant"));
     bool instant;
     is_instant >> std::boolalpha >> instant;
+    std::istringstream is_blockable(values.at("is_blockable"));
+    bool blockable;
+    is_blockable >> std::boolalpha >> blockable;
     std::istringstream is_toggle(values.at("is_toggle"));
     bool toggle;
     is_toggle >> std::boolalpha >> toggle;
@@ -1682,9 +1640,10 @@ namespace FileOpener {
     while(getline(is_skills, pseudoSkill, '%')) {
       skills->push_back((PseudoSkill *) database->getPseudoSkill(pseudoSkill));
     }
-    Skill * skill = new Skill(name, level, attributes, target_type, instant, toggle, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
+    Skill * skill = new Skill(name, level, school, attributes, target_type, instant, blockable, toggle, overcharge_power_type, overcharge_duration_type, overcharge_range_type, range, time, *skills);
     database->addSkill(skill);
     delete skills;
+    return name;
   }
 
   void PseudoSkillOpener(std::string fileName, Database * database) {
@@ -1693,9 +1652,9 @@ namespace FileOpener {
     int32_t skill_type = database->getTargetFromMacro(values.at("skill_type"));
     int32_t target_type = database->getTargetFromMacro(values.at("target_type"));
     int32_t mana_cost = stoi(values.at("mana_cost"));
-    int32_t scalling_type = database->getTargetFromMacro(values.at("scalling_type"));
+    int32_t scaling_type = database->getTargetFromMacro(values.at("scaling_type"));
     std::array<float, DAMAGE_TYPE_NUMBER> damage_multipliers;
-    if(scalling_type != SKILL_SCALE_NONE) {
+    if(scaling_type != SKILL_SCALE_NONE) {
       std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
       if(it != values.end()) {
         damage_multipliers[DAMAGE_SLASH] = _stof(it->second);
@@ -1804,23 +1763,23 @@ namespace FileOpener {
     }
     switch(skill_type) {
       case SKILL_SIMPLE:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects);
         break;
       case SKILL_PROJECTILE: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, projectile);
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, projectile);
         break;
       }
       case SKILL_TELEPORT: {
         int32_t apparition_type = database->getTargetFromMacro(values.at("apparition_type"));
         int32_t movement_type = database->getTargetFromMacro(values.at("movement_type"));
-        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, apparition_type, movement_type);
+        pseudoSkill = new TeleportSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, apparition_type, movement_type);
         break;
       }
       case SKILL_TILE_SWAP: {
         Block * current_block = (Block *) database->getBlock(values.at("current_block"));
         Block * new_block = (Block *) database->getBlock(values.at("new_block"));
-        pseudoSkill = new BlockSwapSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects, current_block, new_block);
+        pseudoSkill = new BlockSwapSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, current_block, new_block);
         break;
       }
       case SKILL_SUMMON: {
@@ -1855,7 +1814,7 @@ namespace FileOpener {
           skill_type,
           target_type,
           mana_cost,
-          scalling_type,
+          scaling_type,
           damage_multipliers,
           *effects,
           character,
@@ -1877,7 +1836,7 @@ namespace FileOpener {
         break;
       }
       default:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scalling_type, damage_multipliers, *effects);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects);
     }
     database->addPseudoSkill(pseudoSkill);
     delete effects;
@@ -1962,6 +1921,12 @@ namespace FileOpener {
     while(getline(is_skills, skill, '%')) {
       skills->push_back((Skill *) database->getSkill(skill));
     }
+    std::list<Stance *> * stances = new std::list<Stance *>();
+    std::istringstream is_stances(values.at("stances"));
+    std::string stance;
+    while(getline(is_stances, stance, '%')) {
+      stances->push_back((Stance *) database->getStance(stance));
+    }
     std::list<std::string> * tags = new std::list<std::string>();
     std::istringstream is_tags(values.at("tags"));
     std::string tag;
@@ -2018,6 +1983,7 @@ namespace FileOpener {
         flowIncr,
         *effects,
         *skills,
+        *stances,
         *tags,
         race_type,
         size,
@@ -2061,6 +2027,7 @@ namespace FileOpener {
         flowIncr,
         *effects,
         *skills,
+        *stances,
         *tags
       );
       database->addWay(way);
@@ -2117,7 +2084,10 @@ namespace FileOpener {
       QuestOpener(fileName, database);
     }
     else if(fileName.find("/skills/") != std::string::npos) {
-      SkillOpener(fileName, database);
+      std::string skill_name = SkillOpener(fileName, database);
+      if(!isServer) {
+        database->addSkillFile(skill_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
+      }
     }
     else if(fileName.find("/pseudoskills/") != std::string::npos) {
       PseudoSkillOpener(fileName, database);

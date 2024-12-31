@@ -1,8 +1,10 @@
 name = TXT_SWORD_CUT
 level = 1
+school = SKILL_AIR
 attributes =
-target_type = TARGET_ORIENTATION
+target_type = TARGET_FRONT
 is_instant = false
+is_blockable = true
 is_toggle = false
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE

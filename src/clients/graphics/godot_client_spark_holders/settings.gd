@@ -9,6 +9,8 @@ var TerranDay = true
 var Resolution
 var white_light
 var shadows
+var chunk_height
+var chunk_radius
 
 # Server
 var password

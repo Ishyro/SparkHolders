@@ -48,11 +48,11 @@ const ACTION_BREAKPOINT = 15
 
 const TARGET_NONE = 0
 const TARGET_SELF = 1
-const TARGET_CHARACTER = 2
-const TARGET_COORDINATES = 3
-const TARGET_BLOCK = 4
-const TARGET_PERMISSIVE = 5
-const TARGET_MULTIPLE = 6
+const TARGET_MULTIPLE = 2
+const TARGET_CHARACTER = 3
+const TARGET_COORDINATES = 4
+const TARGET_BLOCK = 5
+const TARGET_FRONT = 6
 
 const WAY_CLASS = 1
 const WAY_RACE = 2
@@ -64,22 +64,21 @@ const WAY_PROFESSION = 6
 # Colors
 const ink = Color("2f2f2f")
 const gold = Color("ffcc00")
+const transparent_gold = Color("ffcc003f")
 
 # Variables
 var server_owner = false
 var ip = "127.0.0.1"
 var multiplayer_mode = true
 var link = GodotLink.new()
+var macros = {}
+var free_mouse_state = false
 var tickrate
 var updating_state = false
 var next_state_ready = false
-var mode = ACTION_MODE_NONE
+#var mode = ACTION_MODE_NONE
 
 var coord = Vector3.ZERO
-var selection_changed = false
-var selected_target = null
-var selected_projectile = null
-var selected_block = null
 
 var action = {}
 var move_set = false

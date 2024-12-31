@@ -3,7 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <chrono>
+
+#include "Values.h"
 
 #include "util/MathUtil.h"
 

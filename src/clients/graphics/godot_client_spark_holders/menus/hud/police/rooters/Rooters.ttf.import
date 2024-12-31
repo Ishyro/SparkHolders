@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/Rooters.ttf-73012f2178bc94b97e3886b4a6d5ee7f.
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

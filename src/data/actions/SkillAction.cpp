@@ -27,8 +27,17 @@ Action * SkillAction::execute(Adventure * adventure) {
     }
   }
   setUserOrientationToTarget(adventure);
-  if(user->hasSkill( (Skill *) skill) && ( (Skill *) skill)->canCast(user, target, adventure, mana_cost)) {
-    user->useSkill( (Skill *) skill, target, adventure, mana_cost);
+  if(user->hasSkill(skill) && skill->canCast(user, target, adventure, mana_cost)) {
+    bool blocked = false;
+    if(skill->blockable) {
+      for(Character * blocker : adventure->getWorld()->computeTarget(user, target)) {
+        if(blocker->isBlocking()) {
+          blocked = true;
+          break;
+        }
+      }
+    }
+    user->useSkill(skill, target, adventure, mana_cost, blocked);
   }
   if(previous != nullptr) {
     previous->setNext(next);

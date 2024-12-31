@@ -7,6 +7,8 @@
 
 #include "data/items/Gear.h"
 
+#include "data/skills/Skill.h"
+
 #include "data/ways/Way.h"
 #include "data/ways/Attributes.h"
 #include "data/ways/Race.h"
@@ -22,6 +24,9 @@ void listener(void * param) {
 }
 
 void GodotLink::initialize(String ip, int64_t port, String password) {
+  #ifdef LOG
+    log << "initialize(" << ip.utf8().get_data() << ", " << port << ", " << password.utf8().get_data() <<")" << std::endl;
+  #endif
   s = Socket();
   s.connect(std::string(ip.utf8().get_data()), port);
   link = new Link(s);
@@ -87,6 +92,17 @@ bool GodotLink::getState() {
   delete state;
   state = link->getState();
   return state != nullptr;
+}
+
+Dictionary GodotLink::getMacros() {
+  #ifdef LOG
+    log << "getMacros()" << std::endl;
+  #endif
+  Dictionary result = Dictionary();
+  for(auto pair : link->getAdventure()->getDatabase()->getMacros()) {
+    result[pair.first.c_str()] = (int64_t) pair.second;
+  }
+  return result;
 }
 
 float GodotLink::getMoveCost(Vector3 ori, Vector3 dest) {
@@ -160,13 +176,21 @@ Array GodotLink::getAvaillableBlocks() {
   return result;
 }
 
-Dictionary GodotLink::getBlocks() {
+Dictionary GodotLink::getBlocks(int64_t height, int64_t radius) {
   #ifdef LOG
     log << "getBlocks()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  for(auto pair : link->getPlayer()->getRegion()->getBlocks()) {
-    result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
+  MathUtil::Vector3i coord = MathUtil::makeVector3i(link->getPlayer()->getCoord());
+  MathUtil::Vector3i current;
+  for(current.z = coord.z - height * CHUNK_SIZE; current.z <= coord.z + height * CHUNK_SIZE; current.z += CHUNK_SIZE) {
+    for(current.y = coord.y - radius * CHUNK_SIZE; current.y <= coord.y + radius * CHUNK_SIZE; current.y += CHUNK_SIZE) {
+      for(current.x = coord.x - radius * CHUNK_SIZE; current.x <= coord.x + radius * CHUNK_SIZE; current.x += CHUNK_SIZE) {
+        for(auto pair : link->getAdventure()->getWorld()->getChunk(current)->getBlocks()) {
+          result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
+        }
+      }
+    }
   }
   return result;
 }
@@ -590,12 +614,39 @@ Dictionary GodotLink::getInventoryFromCharacter() {
   return result;
 }
 
-Dictionary GodotLink::getSkillsFromCharacter() {
+Dictionary GodotLink::getDataFromSkill(String skill_name) {
+  #ifdef LOG
+    log << "getDataFromSkill(" << skill_name.utf8().get_data() << ")" << std::endl;
+  #endif
+  Dictionary result = Dictionary();
+  if(skill_name == "") {
+    return result;
+  }
+  Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string(skill_name.utf8().get_data()));
+  result["name"] = skill->name.c_str();
+  result["level"] = (int64_t) skill->level;
+  result["school"] = (int64_t) skill->school;
+  result["target_type"] = (int64_t) skill->target_type;
+  result["instant"] = skill->instant;
+  result["blockable"] = skill->blockable;
+  result["toggle"] = skill->toggle;
+  result["overcharge_power_type"] = (int64_t) skill->overcharge_power_type;
+  result["overcharge_duration_type"] = (int64_t) skill->overcharge_duration_type;
+  result["overcharge_range_type"] = (int64_t) skill->overcharge_range_type;
+  result["range"] = skill->range;
+  result["time"] = skill->time;
+  result["path"] = link->getAdventure()->getDatabase()->getSkillFile(skill->name).c_str();
+  return result;
+}
+
+Array GodotLink::getSkillsFromCharacter() {
   #ifdef LOG
     log << "getSkillsFromCharacter()" << std::endl;
   #endif
-  Dictionary result = Dictionary();
-
+  Array result = Array();
+  for(Skill * skill : link->getPlayer()->getSkills()) {
+    result.push_back(getDataFromSkill(skill->name.c_str()));
+  }
   return result;
 }
 
@@ -681,7 +732,7 @@ void GodotLink::send_action(Dictionary action) {
   #ifdef LOG
     log << "send_action()" << std::endl;
   #endif
-  int32_t type = (int32_t) (int64_t) action["type"];
+  int32_t type = (int32_t) action["type"];
   void * arg1 = 0;
   void * arg2 = 0;
   int32_t mana_cost = 1;
@@ -704,8 +755,8 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_ACTIVATION: {
       Dictionary target_ori = action["arg1"];
       Target * target = new Target();
-      target->type = (int32_t) (int64_t) target_ori["type"];
-      target->id = (int64_t) (int64_t) target_ori["id"];
+      target->type = (int32_t) target_ori["type"];
+      target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
       Vector3 pos = (Vector3) target_ori["pos"];
       target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
       arg1 = (void *) target;
@@ -716,32 +767,32 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_USE_ITEM: {
       Dictionary slot_ori = action["arg1"];
       ItemSlot * slot = new ItemSlot();
-      slot->x = (int32_t) (int64_t) slot_ori["x"];
-      slot->y = (int32_t) (int64_t) slot_ori["y"];
-      slot->slot = (int32_t) (int64_t) slot_ori["slot"];
+      slot->x = (int32_t) slot_ori["x"];
+      slot->y = (int32_t) slot_ori["y"];
+      slot->slot = (int32_t) slot_ori["slot"];
       arg1 = (void *) slot;
       break;
     }
     case ACTION_SWAP_GEAR: {
       Dictionary slot1_ori = action["arg1"];
       ItemSlot * slot1 = new ItemSlot();
-      slot1->x = (int32_t) (int64_t) slot1_ori["x"];
-      slot1->y = (int32_t) (int64_t) slot1_ori["y"];
-      slot1->slot = (int32_t) (int64_t) slot1_ori["slot"];
+      slot1->x = (int32_t) slot1_ori["x"];
+      slot1->y = (int32_t) slot1_ori["y"];
+      slot1->slot = (int32_t) slot1_ori["slot"];
       arg1 = (void *) slot1;
       Dictionary slot2_ori = action["arg2"];
       ItemSlot * slot2 = new ItemSlot();
-      slot2->x = (int32_t) (int64_t) slot2_ori["x"];
-      slot2->y = (int32_t) (int64_t) slot2_ori["y"];
-      slot2->slot = (int32_t) (int64_t) slot2_ori["slot"];
+      slot2->x = (int32_t) slot2_ori["x"];
+      slot2->y = (int32_t) slot2_ori["y"];
+      slot2->slot = (int32_t) slot2_ori["slot"];
       arg2 = (void *) slot2;
       break;
     }
     case ACTION_USE_SKILL: {
       Dictionary target_ori = action["arg1"];
       Target * target = new Target();
-      target->type = (int32_t) (int64_t) target_ori["type"];
-      target->id = (int64_t) (int64_t) target_ori["id"];
+      target->type = (int32_t) target_ori["type"];
+      target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
       Vector3 pos = (Vector3) target_ori["pos"];
       target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
       arg1 = (void *) target;
@@ -788,6 +839,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("sendChoices", "character", "attributes", "race", "origin", "culture", "religion", "profession"), &GodotLink::sendChoices);
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
+  ClassDB::bind_method(D_METHOD("getMacros"), &GodotLink::getMacros);
   ClassDB::bind_method(D_METHOD("getMoveCost", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
   ClassDB::bind_method(D_METHOD("getClock", "terran_day"), &GodotLink::getClock);
@@ -796,7 +848,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
-  ClassDB::bind_method(D_METHOD("getBlocks"), &GodotLink::getBlocks);
+  ClassDB::bind_method(D_METHOD("getBlocks", "height", "radius"), &GodotLink::getBlocks);
   ClassDB::bind_method(D_METHOD("getPlayerId"), &GodotLink::getPlayerId);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
@@ -808,6 +860,8 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getDataFromRace", "race"), &GodotLink::getDataFromRace);
   ClassDB::bind_method(D_METHOD("getDataFromWay", "way"), &GodotLink::getDataFromWay);
   ClassDB::bind_method(D_METHOD("getStatsFromCharacter"), &GodotLink::getStatsFromCharacter);
+  ClassDB::bind_method(D_METHOD("getDataFromSkill", "skill"), &GodotLink::getDataFromSkill);
+  ClassDB::bind_method(D_METHOD("getSkillsFromCharacter"), &GodotLink::getSkillsFromCharacter);
   ClassDB::bind_method(D_METHOD("getInventoryFromCharacter"), &GodotLink::getInventoryFromCharacter);
   ClassDB::bind_method(D_METHOD("getStartingAttributes"), &GodotLink::getStartingAttributes);
   ClassDB::bind_method(D_METHOD("getStartingWays"), &GodotLink::getStartingWays);

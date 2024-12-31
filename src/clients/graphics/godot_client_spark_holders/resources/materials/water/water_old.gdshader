@@ -37,13 +37,13 @@ void vertex() {
 void fragment() {
 	vec2 _uv = uv_scale * UV;
 	vec2 _suv = UV;
-	
+
 	_uv.x += sin(TIME * time_scale + (_uv.x + _uv.y) * 25.0) * 0.01;
 	_uv.y += cos(TIME * time_scale + (_uv.x - _uv.y) * 25.0) * 0.01;
-	
+
 	_suv.x += sin(TIME * time_scale + (_suv.x + _suv.y) * 25.0) * 0.01;
 	_suv.y += cos(TIME * time_scale + (_suv.x - _suv.y) * 25.0) * 0.01;
-	
+
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
 	vec3 surface_color = mix(albedo, albedo2, fresnel);
 
@@ -55,14 +55,14 @@ void fragment() {
 	/*
 	vec2 time = (TIME * wave_direction) * time_scale;
 	vec2 time2 = (TIME * wave_direction2) * time_scale;
-	
+
 	vec3 normal_blend = mix(texture(texture_normal, world_pos.xz + time).rgb, texture(texture_normal2, world_pos.xz + time2).rgb, 0.5);
-	
+
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
 	vec3 fresnel_color = fresnel_glow(5.0, 5.0, albedo2, NORMAL, VIEW);
 	vec3 surface_color = mix(albedo, albedo2, fresnel);
 	//surface_color = albedo + fresnel_color;
-	
+
 	ALBEDO = surface_color;
 	METALLIC = metallic;
 	ROUGHNESS = roughness;

@@ -674,7 +674,7 @@ std::string MathUtil::target_to_string(Target * target) {
   String::insert_int(ss, target->type);
   if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
     if(target->type == TARGET_CHARACTER) {
-      String::insert_long(ss, target->id);
+      String::insert_long(ss, target->character->id);
     }
     else {
       String::insert_float(ss, target->coord.x);
@@ -693,13 +693,13 @@ std::string MathUtil::target_to_string(Target * target) {
   return result;
 }
 
-Target * MathUtil::target_from_string(std::string to_read) {
+Target * MathUtil::target_from_string(std::string to_read, Adventure * adventure) {
   std::stringstream * ss = new std::stringstream(to_read);
   Target * target = new Target();
   target->type = String::extract_int(ss);
   if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
     if(target->type == TARGET_CHARACTER) {
-      target->id = String::extract_long(ss);
+      target->character = adventure->getCharacter(String::extract_long(ss));
     }
     else {
       float x = String::extract_float(ss);
@@ -711,7 +711,7 @@ Target * MathUtil::target_from_string(std::string to_read) {
   if(target->type != TARGET_NONE) {
     std::string next = String::extract(ss);
     if(next != "END") {
-      target->next = target_from_string(next);
+      target->next = target_from_string(next, adventure);
     }
     else {
       target->next = nullptr;

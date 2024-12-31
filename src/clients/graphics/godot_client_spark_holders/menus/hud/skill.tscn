@@ -10,3 +10,17 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 script = ExtResource("1_abvyg")
+
+[node name="Selector" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.8, 0, 0.247059)
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

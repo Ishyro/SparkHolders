@@ -1273,6 +1273,15 @@ bool Character::isInvulnerable() {
   return false;
 }
 
+bool Character::isBlocking() {
+  for(Effect * e : getEffects()) {
+    if(e->type == EFFECT_BLOCKING) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Character::isSleeping() {
   for(Effect * e : getEffects()) {
     if(e->type == EFFECT_SLEEPING) {
@@ -1307,8 +1316,8 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge) {
-  skill->activate(this, target, adventure, overcharge);
+void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge, bool blocked) {
+  skill->activate(this, target, adventure, overcharge, blocked);
 }
 
 void Character::selectStance(Stance * stance) {
@@ -1361,9 +1370,6 @@ float Character::getRawDamageReductionFromType(int32_t damage_type) {
   bool blocking = false;
   for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
-      reduction += e->getDamageReductionFromType(damage_type);
-    }
-    if(e->type == EFFECT_BLOCKING) {
       reduction += e->getDamageReductionFromType(damage_type);
     }
   }

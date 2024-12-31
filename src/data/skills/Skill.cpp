@@ -6,7 +6,7 @@
 
 #include "util/String.h"
 
-void Skill::activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent) {
+void Skill::activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent, bool blocked) {
   float overcharge_power;
   float overcharge_duration;
   float overcharge_range;
@@ -16,8 +16,11 @@ void Skill::activate(Character * owner, Target * target, Adventure * adventure, 
     toggle_state = owner->setToggled(this);
   }
   owner->payMana(mana_spent);
-  for(PseudoSkill * skill : skills) {
-    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range, toggle_state);
+  // blocked toggled spells will not work, but there is no scenario where a toggled spell should be blockable
+  if(!blocked) {
+    for(PseudoSkill * skill : skills) {
+      skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range, toggle_state);
+    }
   }
 }
 
@@ -42,7 +45,10 @@ bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, i
 }
 
 void Skill::computeOvercharges(int32_t mana_spent, float & overcharge_power, float & overcharge_duration, float & overcharge_range) {
-  
+  // TODO
+  overcharge_power = 1;
+  overcharge_duration = 1;
+  overcharge_range = 1;
 }
 
 int32_t Skill::getManaCost() {
@@ -55,13 +61,13 @@ int32_t Skill::getManaCost() {
 
 float Skill::getTime(Character * owner) {
   /*
-  if(scalling_type == SKILL_SCALE_MAIN_WEAPON) {
+  if(scaling_type == SKILL_SCALE_MAIN_WEAPON) {
     return owner->getGear()->getWeapon_1()->strike_time;
   }
-  else if(scalling_type == SKILL_SCALE_SUB_WEAPON) {
+  else if(scaling_type == SKILL_SCALE_SUB_WEAPON) {
     return owner->getGear()->getWeapon_2()->strike_time;
   }
-  else if(scalling_type == SKILL_SCALE_WEAPONS) {
+  else if(scaling_type == SKILL_SCALE_WEAPONS) {
     return owner->getGear()->getWeapon_1()->strike_time + owner->getGear()->getWeapon_2()->strike_time;
   }
   else {

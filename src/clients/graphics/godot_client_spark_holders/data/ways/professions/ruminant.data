@@ -17,5 +17,6 @@ damageMultIncr = 0
 soulBurnIncr = 0
 flowIncr = 0
 effects =
+stances =
 skills = TXT_TOUCH_SOME_GRASS%
 tags = herbivorous%

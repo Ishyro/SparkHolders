@@ -68,13 +68,21 @@ namespace MathUtil {
   std::list<Pair> getPathFromCartesianEquation(float a, int32_t range);
   std::list<Pair> getPathFromOrientation(float x, float y, float orientation, float size, float range);
   std::string target_to_string(Target * target);
-  Target * target_from_string(std::string to_read);
+  Target * target_from_string(std::string to_read, Adventure * adventure);
 };
+
+typedef struct Hitbox {
+  int32_t type;
+  float x;
+  float y;
+  float z;
+} Hitbox;
 
 typedef struct Target {
   int32_t type;
-  int64_t id;
+  Character * character;
   MathUtil::Vector3 coord;
+  Hitbox hitbox;
   Target * next;
 } Target;
 

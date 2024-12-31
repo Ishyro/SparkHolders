@@ -31,4 +31,5 @@ movement_time_modifier = 1.0
 loot = TXT_BONE%
 effects =
 skills =
+stances =
 tags = skeleton%nubilo%undead%cave_dweller%

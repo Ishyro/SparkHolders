@@ -125,6 +125,8 @@ std::string ContainerItem::to_string() {
   String::insert(ss, ss_effects->str());
   delete ss_effects;
   String::insert_int(ss, swap_time);
+  String::insert_int(ss, max_durability);
+  String::insert_int(ss, durability);
   String::insert_bool(ss, canTakeFrom);
   String::insert_bool(ss, repercuteWeight);
   String::insert_bool(ss, isLimited);

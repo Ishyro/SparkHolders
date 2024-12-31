@@ -47,6 +47,7 @@ class Way {
       int32_t flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      std::list<Stance *> stances,
       std::list<std::string> tags
     ):
       name(name),
@@ -69,6 +70,7 @@ class Way {
       flowIncr(flowIncr),
       effects(effects),
       skills(skills),
+      stances(stances),
       tags(tags)
     {}
     std::list<Effect *> getEffects();

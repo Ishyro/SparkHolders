@@ -27,7 +27,8 @@ void Link::listen() {
   std::string msg;
   try {
     msg = s.read();
-  } catch (const CloseException &e) {
+  }
+  catch (const CloseException &e) {
     closed = true;
   }
   std::stringstream * ss = new std::stringstream(msg);

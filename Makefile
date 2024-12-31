@@ -1,3 +1,9 @@
+SHELL:=/bin/bash
+
+# Options
+
+JOBS=$(filter -j%, $(MAKEFLAGS))
+
 # Base directories
 
 BIN_WIN=bin_win
@@ -12,7 +18,7 @@ SCRIPTS=scripts
 # Targets
 
 TARGET_TEST=$(EXEC)/TestLauncher.x86_64
-#TARGET_CLIENT_TERMINAL=$(EXEC)/Client_terminal.x86_64
+TARGET_CLIENT_TERMINAL=$(EXEC)/Client_terminal.x86_64
 
 TARGET_SERVER_WIN=$(EXEC)/SparkHolders.Server.exe
 TARGET_SERVER_UNIX=$(EXEC)/SparkHolders.Server.x86_64
@@ -159,9 +165,9 @@ CLIENTS_HEADERS=$(wildcard $(INCLUDE_CLIENTS)/*.h)
 CLIENTS_SOURCES=$(patsubst $(INCLUDE_CLIENTS)/%.h,$(SRC_CLIENTS)/%.cpp,$(CLIENTS_HEADERS))
 CLIENTS_BINAIRIES=$(patsubst $(INCLUDE_CLIENTS)/%.h,$(BIN_CLIENTS)/%.o,$(CLIENTS_HEADERS))
 
-#CLIENT_TERMINAL_HEADERS=$(wildcard $(INCLUDE_CLIENT_TERMINAL)/*.h)
-#CLIENT_TERMINAL_SOURCES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(SRC_CLIENT_TERMINAL)/%.cpp,$(CLIENT_TERMINAL_HEADERS))
-#CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT_TERMINAL)/%.o,$(CLIENT_TERMINAL_HEADERS))
+CLIENT_TERMINAL_HEADERS=$(wildcard $(INCLUDE_CLIENT_TERMINAL)/*.h)
+CLIENT_TERMINAL_SOURCES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(SRC_CLIENT_TERMINAL)/%.cpp,$(CLIENT_TERMINAL_HEADERS))
+CLIENT_TERMINAL_BINAIRIES=$(patsubst $(INCLUDE_CLIENT_TERMINAL)/%.h,$(BIN_CLIENT_TERMINAL)/%.o,$(CLIENT_TERMINAL_HEADERS))
 
 # Rules
 
@@ -180,8 +186,8 @@ $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRI
 	$(AR) $@ $^
 
 godot:
-	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) debug=$(GODOT_DEBUG)
-	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=$(GODOT_TARGET_MODE) arch=x86_64
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) debug=$(GODOT_DEBUG) $(JOBS)
+	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=$(GODOT_TARGET_MODE) arch=x86_64 $(JOBS)
 
 $(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)

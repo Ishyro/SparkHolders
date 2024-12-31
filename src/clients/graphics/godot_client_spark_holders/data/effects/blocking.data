@@ -1,0 +1,7 @@
+name = TXT_BLOCKING
+level = 0
+attributes =
+type = EFFECT_BLOCKING
+duration_type = DURATION_INFINITE
+duration = 0
+power = 1

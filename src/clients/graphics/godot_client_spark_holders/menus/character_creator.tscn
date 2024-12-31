@@ -76,7 +76,6 @@ size_flags_vertical = 3
 [node name="Title" parent="Divider/Ways1/RaceContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 tooltip_text = "The Race is a Major Way, granting the most base Stats (600 Points). It also has some influence over which Skills and Stances willl be availlable to the Character."
-mouse_filter = 1
 text = "Race"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -116,7 +115,6 @@ size_flags_vertical = 3
 [node name="Title" parent="Divider/Ways1/OriginContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 tooltip_text = "The Origin is a Minor Way, granting base Stats (300 Points)."
-mouse_filter = 1
 text = "Origin"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -156,7 +154,6 @@ size_flags_vertical = 3
 [node name="Title" parent="Divider/Ways1/ReligionContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 tooltip_text = "The Religion is a Minor Way with mixed effects, granting 150 starting Stats and 25 stats on level up."
-mouse_filter = 1
 text = "Religion"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -230,7 +227,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "Stats represent the raw powers of a Character. They are increased on level up, with magical items, or with temporary spells."
-mouse_filter = 1
 text = "Stats"
 horizontal_alignment = 1
 
@@ -238,7 +234,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The Endurance of a Character, associated with Blood. Reduced when taking damage. The Character die when they reach 0. Each Health Point is worth 1 Stat Point."
-mouse_filter = 1
 text = "Health"
 horizontal_alignment = 1
 
@@ -246,7 +241,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The Life Energy of a Character, associated with Phlegm. Casting spells will usually cost Mana. The Character die when they reach 0. Each Mana Point is worth 1 Stat Point."
-mouse_filter = 1
 text = "Mana"
 horizontal_alignment = 1
 
@@ -254,7 +248,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The ability to harden skin and bones, associated with Black Bile. Damages are usually dealt to Shield before Health. Shield regenerate faster than Health. Each Shield Point is worth 3 Stat Points."
-mouse_filter = 1
 text = "Shield"
 horizontal_alignment = 1
 
@@ -262,7 +255,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The capacity to endure losing Life Energy (Mana) without drawbacks, associated with Yellow Bile. Everytime you use mana (receiving Spirit damage count as well), it will be converted into Soulburn. Every tick, you will lose the maximum between 1 percent of this Threshold and your current Soulburn. Losing any point of Soulburn above this Threshold results in receiving the same amount of True damage (Health damage). Being in this state is refered as \"Soulburning\".  Each Threshold Point is worth 3 Stat Points."
-mouse_filter = 1
 text = "Threshold"
 horizontal_alignment = 1
 
@@ -270,7 +262,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The ability to increase the power and the balance of the Body. Translates to bonus damage  with all weapons and Weaponized Skills (These are a subset of Skills that Classes like Elementalist will usually not rely on. To increase Skill / Spell damage, invest on Flow). Each Strength Point is worth 6 Stat Points. "
-mouse_filter = 1
 text = "Strength"
 horizontal_alignment = 1
 
@@ -278,7 +269,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The maximum amount of mana you can spend in a single round, which is directly linked to casting speed. Does not apply to mana cost you pay when receiving Spirit damage. Each Flow Point is worth 6 Stat Points."
-mouse_filter = 1
 text = "Flow"
 horizontal_alignment = 1
 
@@ -286,7 +276,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The ability understand the World. Increase meditation potency (mainly used for mana regeneration outside of combat), and increase mana detection and mana hiding. Each Attunement Point is worth 6 Stat Points. "
-mouse_filter = 1
 text = "Attunement"
 horizontal_alignment = 1
 
@@ -294,7 +283,6 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The ability to understand the Aether and the Divine. Used to interract the world by telekinesis. Each Transcendence Point is worth 6 Stat Points."
-mouse_filter = 1
 text = "Transcendence"
 horizontal_alignment = 1
 
@@ -306,7 +294,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The starting Stats of the Character. A Player Character starts with 1200 Stat Points at level 1."
-mouse_filter = 1
 text = "Base"
 horizontal_alignment = 1
 
@@ -358,7 +345,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 6
 tooltip_text = "The Stats gained on each level up of the Character. A Player Character gains 240 Stat Points per level."
-mouse_filter = 1
 text = "Each level"
 horizontal_alignment = 1
 
@@ -485,7 +471,6 @@ tooltip_text = "The Class is a Major Way, granting Stats on level up (100 points
 At Level 10, you will chose a Second Class (among the 6 other Clases).
 At Level 20, you will chose a Specialized Class among 5 Choices determined by your First Class and Second Class.
 (2 Sub Class per Class, and 1 Mixed Class)."
-mouse_filter = 1
 text = "Class"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -525,7 +510,6 @@ size_flags_vertical = 3
 [node name="Title" parent="Divider/Ways2/CultureContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 tooltip_text = "The Culture is a Minor Way, granting Stats on level up (50 points)."
-mouse_filter = 1
 text = "Culture"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -565,7 +549,6 @@ size_flags_vertical = 3
 [node name="Title" parent="Divider/Ways2/EducationContainer/Background/Divider" instance=ExtResource("3_iu0rl")]
 layout_mode = 2
 tooltip_text = "The Education is a Minor Way with mixed effects, granting 150 starting Stats and 25 stats on level up."
-mouse_filter = 1
 text = "Education"
 horizontal_alignment = 1
 vertical_alignment = 1

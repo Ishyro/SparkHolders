@@ -54,7 +54,7 @@ float ProjectileSkill::getDamageFromType(int32_t damage_type, Character * owner,
       damage += e->getDamageFromType(damage_type);
     }
   }
-  switch(scalling_type) {
+  switch(scaling_type) {
     case SKILL_SCALE_NONE:
       return damage * overcharge;
     case SKILL_SCALE_MAIN_WEAPON:

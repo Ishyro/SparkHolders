@@ -1,14 +1,24 @@
 # Database initialization
 
 # blocks
+data/blocks/cut_stone.data
+data/blocks/glass.data
 data/blocks/grass.data
+data/blocks/lava.data
+data/blocks/mist.data
+data/blocks/road_stone.data
 data/blocks/rock.data
 data/blocks/soil.data
+data/blocks/void.data
+data/blocks/water.data
+data/blocks/wood.data
 # effects
 data/effects/experience_10.data
 data/effects/hunger_10.data
 data/effects/etheral.data
 data/effects/flying.data
+data/effects/blocking.data
+data/effects/dummy_damage.data
 # items
 data/items/bone.data
 data/items/homo_meat.data
@@ -29,9 +39,15 @@ data/pseudoskills/dash.data
 data/pseudoskills/eat_grass.data
 data/pseudoskills/grow_grass.data
 data/pseudoskills/nourish_with_grass.data
+data/pseudoskills/parade.data
+data/pseudoskills/sword_cut.data
+data/pseudoskills/sword_thrust.data
 # skills without summoning or projectile
 data/skills/touch_some_soil.data
 data/skills/dash.data
+data/skills/parade.data
+data/skills/sword_cut.data
+data/skills/sword_thrust.data
 # projectiles
 data/projectiles/wood_arrow.data
 data/projectiles/fireball.data
@@ -57,22 +73,24 @@ data/speechs/woof.data
 data/pseudoskills/fireball.data
 # skills with projectile
 data/skills/fireball.data
+# stances
+data/stances/sword_classic.data
 # ways without summoning skill
+data/ways/races/humans/caeleran.data
+data/ways/races/humans/camelidan.data
+data/ways/races/humans/capran.data
+data/ways/races/humans/chamaelean.data
+data/ways/races/humans/hominidan.data
+data/ways/races/humans/lepidopteran.data
+data/ways/races/humans/muridan.data
+data/ways/races/humans/pantheran.data
+data/ways/races/humans/urodelan.data
+data/ways/races/humans/ursidan.data
 data/ways/races/ancient_one.data
-data/ways/races/caeleran.data
-data/ways/races/camelidan.data
-data/ways/races/capran.data
-data/ways/races/chamaelean.data
-data/ways/races/human.data
-data/ways/races/lepidopteran.data
-data/ways/races/muridan.data
 data/ways/races/no_race.data
-data/ways/races/pantheran.data
 data/ways/races/sheep.data
 data/ways/races/skeleton.data
 data/ways/races/spark_holder.data
-data/ways/races/urodelan.data
-data/ways/races/ursidan.data
 data/ways/races/wolf.data
 data/ways/origins/armythas.data
 data/ways/origins/bridge_town.data
@@ -96,7 +114,6 @@ data/ways/cultures/woodland.data
 data/ways/cultures/yllian.data
 data/ways/religions/aerina.data
 data/ways/religions/alba.data
-data/ways/religions/amphitryona.data
 data/ways/religions/atheist.data
 data/ways/religions/beastiona.data
 data/ways/religions/godless.data
@@ -141,7 +158,10 @@ data/furnitures/fireplace.data
 data/furnitures/torch_ground.data
 data/furnitures/torch_wall.data
 # maps
-data/maps/cavern.data
+data/maps/cave.data
+data/maps/central_square.data
+data/maps/house.data
+data/maps/open_grassland.data
 !end
 
 # Commands
@@ -182,7 +202,7 @@ StartingAttributes.{TXT_ELEMENTALIST}
 StartingAttributes.{TXT_MENDER}
 StartingAttributes.{TXT_GUARDIAN}
 # add starting ways
-StartingWay.{TXT_HUMAN}
+StartingWay.{TXT_HOMINIDAN}
 StartingWay.{TXT_LEPIDOPTERAN}
 StartingWay.{TXT_CHAMAELEAN}
 StartingWay.{TXT_URODELAN}
@@ -218,9 +238,9 @@ StartingWay.{TXT_SCHOLAR}
 StartingWay.{TXT_BATTLEMAGE}
 StartingWay.{TXT_ASSASSIN}
 # add ways incompatibility
-WayImcompatibility.{TXT_HUMAN}{TXT_GREEN_TOWN}
-WayImcompatibility.{TXT_HUMAN}{TXT_ENCLAVE}
-WayImcompatibility.{TXT_HUMAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_AHOZ}
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ARMYTHAS} 
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ELLINKA}
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ENCLAVE}

@@ -11,6 +11,7 @@
 class GearItem : public Item {
   public:
     const int32_t swap_time;
+    const int32_t max_durability;
     GearItem(
       std::string name,
       int64_t id,
@@ -27,7 +28,9 @@ class GearItem : public Item {
       bool consumable,
       int32_t use_time,
       std::list<Effect *> effects,
-      int32_t swap_time
+      int32_t swap_time,
+      int32_t max_durability,
+      int32_t durability
     ):
       Item(
         name,
@@ -46,14 +49,22 @@ class GearItem : public Item {
         use_time,
         effects
       ),
-      swap_time(swap_time)
+      swap_time(swap_time),
+      max_durability(max_durability),
+      durability(durability)
     {}
     GearItem(GearItem * item, int32_t tier):
       Item(item, tier),
-      swap_time(item->swap_time)
+      swap_time(item->swap_time),
+      max_durability(item->max_durability),
+      durability(item->durability)
     {}
     float getWeight();
+    int32_t getDurability();
+    bool reduceDurability(int32_t damage);
     virtual std::string to_string() = 0;
+  protected:
+    int32_t durability;
 };
 
 #endif // _GEAR_ITEM_H_

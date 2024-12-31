@@ -1,6 +1,6 @@
 name = TXT_ANCIENT_ONE
 type = WAY_RACE
-race_type = RACE_GOD
+race_type = RACE_ELDRITCH
 tier = 10
 baseHp = 0
 baseMana = 0
@@ -31,4 +31,5 @@ movement_time_modifier = 1.0
 loot =
 effects =
 skills =
+stances =
 tags = ancient_one%aether_child%aether_dweller%god%omnivorous%

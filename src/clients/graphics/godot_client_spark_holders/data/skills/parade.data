@@ -1,8 +1,10 @@
 name = TXT_PARADE
 level = 1
+school = SKILL_EARTH
 attributes =
-target_type = TARGET_BLOCK
+target_type = TARGET_SELF
 is_instant = true
+is_blockable = false
 is_toggle = true
 overcharge_power_type = OVERCHARGE_NONE
 overcharge_duration_type = OVERCHARGE_NONE

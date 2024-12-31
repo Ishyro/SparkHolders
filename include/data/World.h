@@ -39,6 +39,7 @@ class World {
     MapLink * getMapLink(int32_t x, int32_t y, int64_t mapId);
     std::list<Character *> getCharacters();
     Character * getCharacter(int64_t id);
+    std::list<Character *> computeTarget(Character * origin, Target * target);
     Furniture * getFurniture(int64_t id);
     Map * getMap(int32_t x, int32_t y, int32_t z);
     Map * getMap(float x, float y, float z);

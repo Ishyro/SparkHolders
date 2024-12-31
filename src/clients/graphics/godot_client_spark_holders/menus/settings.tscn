@@ -14,13 +14,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_10ddg")
 
-[node name="Sprite2D" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.25
-anchor_right = 0.75
-anchor_bottom = 0.75
+anchor_left = 0.15
+anchor_top = 0.15
+anchor_right = 0.85
+anchor_bottom = 0.85
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_20may")
@@ -29,10 +29,10 @@ expand_mode = 1
 [node name="Divider" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.25
-anchor_right = 0.75
-anchor_bottom = 0.75
+anchor_left = 0.15
+anchor_top = 0.15
+anchor_right = 0.85
+anchor_bottom = 0.85
 
 [node name="MarginContainer" type="MarginContainer" parent="Divider"]
 layout_mode = 2
@@ -44,25 +44,28 @@ theme_override_constants/margin_right = 64
 layout_mode = 2
 size_flags_vertical = 3
 tab_alignment = 1
+current_tab = 0
 
 [node name="Client" type="TabContainer" parent="Divider/MarginContainer/ClientServer"]
 layout_mode = 2
 size_flags_vertical = 3
 tab_alignment = 1
+current_tab = 0
 use_hidden_tabs_for_min_size = true
+metadata/_tab_index = 0
 
 [node name="General" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Client"]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
+metadata/_tab_index = 0
 
-[node name="Language" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="Language" parent="Divider/MarginContainer/ClientServer/Client/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
+tooltip_text = "The language of the game"
 text = "Language"
 
 [node name="LanguageValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Client/General"]
@@ -70,12 +73,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Font" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="Font" parent="Divider/MarginContainer/ClientServer/Client/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
+tooltip_text = "The font used in all texts. The game need to be closed for this setting to be updated."
 text = "Font"
 
 [node name="FontValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Client/General"]
@@ -83,12 +85,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Port" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="Port" parent="Divider/MarginContainer/ClientServer/Client/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
+tooltip_text = "The port used in TCP connection."
 text = "Port"
 
 [node name="PortValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Client/General"]
@@ -97,11 +98,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="TerranDay" type="Label" parent="Divider/MarginContainer/ClientServer/Client/General"]
+[node name="TerranDay" parent="Divider/MarginContainer/ClientServer/Client/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Terran Day"
+tooltip_text = "If on, use 24h instead of 60h days."
+text = "24h Day"
 
 [node name="TerranDayValue" type="CheckButton" parent="Divider/MarginContainer/ClientServer/Client/General"]
 layout_mode = 2
@@ -127,19 +129,39 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Dummy5" type="Control" parent="Divider/MarginContainer/ClientServer/Client/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy6" type="Control" parent="Divider/MarginContainer/ClientServer/Client/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy7" type="Control" parent="Divider/MarginContainer/ClientServer/Client/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy8" type="Control" parent="Divider/MarginContainer/ClientServer/Client/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Video" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Client"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
+metadata/_tab_index = 1
 
-[node name="Resolution" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="Resolution" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
+tooltip_text = "If your monitor resolution is not in availlable, you can force it in the settings file."
 text = "Resolution"
 
 [node name="ResolutionValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Client/Video"]
@@ -147,18 +169,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="WindowType" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="WindowType" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Screen mode"
+text = "Screen Mode"
 
 [node name="WindowTypeValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Client/Video"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="AntiAliasing" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="AntiAliasing" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -169,7 +191,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VSync" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="VSync" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -179,7 +201,7 @@ text = "V-Sync"
 layout_mode = 2
 text = "Off"
 
-[node name="Shadows" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="Shadows" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -189,46 +211,77 @@ text = "Shadows"
 layout_mode = 2
 text = "Off"
 
-[node name="WhiteLight" type="Label" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+[node name="WhiteLight" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+tooltip_text = "Set the color of all lights to white."
 text = "White Lights"
 
 [node name="WhileLightValue" type="CheckButton" parent="Divider/MarginContainer/ClientServer/Client/Video"]
 layout_mode = 2
 text = "Off"
 
+[node name="ChunkHeight" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "The number of chunks loaded by the client up and down. Doesn't affect the 9x9 chunks really loaded by the server."
+text = "Chunk Height"
+
+[node name="ChunkHeightValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+caret_blink = true
+
+[node name="ChunkRadius" parent="Divider/MarginContainer/ClientServer/Client/Video" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "The number of chunks loaded by the client around the character. Doesn't affect the 9x9 chunks really loaded by the server."
+text = "Chunk Radius"
+
+[node name="ChunkRadiusValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Client/Video"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+caret_blink = true
+
 [node name="Audio" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Client"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
+metadata/_tab_index = 2
 
 [node name="Input" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Client"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
+metadata/_tab_index = 3
 
 [node name="Server" type="TabContainer" parent="Divider/MarginContainer/ClientServer"]
 visible = false
 layout_mode = 2
 tab_alignment = 1
+current_tab = 0
+metadata/_tab_index = 1
 
 [node name="Gameplay" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Server"]
 layout_mode = 2
 theme_override_constants/h_separation = 16
 theme_override_constants/v_separation = 16
 columns = 2
+metadata/_tab_index = 0
 
-[node name="TickDuration" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+[node name="TickDuration" parent="Divider/MarginContainer/ClientServer/Server/Gameplay" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
-text = "TickDuration"
+tooltip_text = "The duration of a game tick in seconds. Does not affect the client which is always 60hz."
+text = "Tick Duration"
 
 [node name="TickDurationValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
@@ -240,7 +293,9 @@ caret_blink = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = "Tick Rate"
+tooltip_text = "The duration of a game tick in seconds. Does not affect the client which is always 60hz."
+text = "Tick Rate
+"
 
 [node name="TickRateValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
 layout_mode = 2
@@ -248,12 +303,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="BuyingPriceModifier" type="Label" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+[node name="BuyingPriceModifier" parent="Divider/MarginContainer/ClientServer/Server/Gameplay" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
 text = "BuyingPriceModifier"
 
 [node name="BuyingPriceModifierValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
@@ -266,6 +319,8 @@ caret_blink = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+tooltip_text = "Determines how the game auto pause.
+When no action: the game pause itself without output from all the players."
 text = "Pause mode"
 
 [node name="PauseModeValue" type="OptionButton" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
@@ -293,17 +348,37 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Dummy5" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy6" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy7" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy8" type="Control" parent="Divider/MarginContainer/ClientServer/Server/Gameplay"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="General" type="GridContainer" parent="Divider/MarginContainer/ClientServer/Server"]
 visible = false
 layout_mode = 2
 columns = 2
+metadata/_tab_index = 1
 
-[node name="Port" type="Label" parent="Divider/MarginContainer/ClientServer/Server/General"]
+[node name="Port" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
+tooltip_text = "The port used in TCP connection."
 text = "Port"
 
 [node name="PortValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
@@ -312,12 +387,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="Seed" type="Label" parent="Divider/MarginContainer/ClientServer/Server/General"]
+[node name="Seed" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
 text = "Seed"
 
 [node name="SeedValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
@@ -326,21 +399,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="Password" type="Label" parent="Divider/MarginContainer/ClientServer/Server/General"]
+[node name="Password" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tooltip_text = "Oki"
-mouse_filter = 1
 text = "Password"
 
 [node name="PasswordValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+caret_blink = true
 secret = true
 secret_character = "*"
-caret_blink = true
 
 [node name="Dummy" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
 layout_mode = 2
@@ -392,6 +463,26 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Dummy11" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy12" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy13" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Dummy14" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Buttons" type="HBoxContainer" parent="Divider"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -428,6 +519,8 @@ text = "Reset to defaults"
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/VSyncValue" to="." method="_on_v_sync_value_toggled"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/ShadowsValue" to="." method="_on_shadows_value_toggled"]
 [connection signal="toggled" from="Divider/MarginContainer/ClientServer/Client/Video/WhileLightValue" to="." method="_on_while_light_value_toggled"]
+[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Client/Video/ChunkHeightValue" to="." method="_on_chunk_height_value_text_submitted"]
+[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Client/Video/ChunkRadiusValue" to="." method="_on_chunk_radius_value_text_submitted"]
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickDurationValue" to="." method="_on_tick_duration_value_text_changed"]
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/TickRateValue" to="." method="_on_tick_rate_value_text_changed"]
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue" to="." method="_on_buying_price_modifier_value_text_changed"]

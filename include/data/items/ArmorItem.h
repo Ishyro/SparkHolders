@@ -27,6 +27,8 @@ class ArmorItem : public GearItem {
       int32_t use_time,
       std::list<Effect *> effects,
       int32_t swap_time,
+      int32_t max_durability,
+      int32_t durability,
       std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       GearItem(
@@ -45,7 +47,9 @@ class ArmorItem : public GearItem {
         consumable,
         use_time,
         effects,
-        swap_time
+        swap_time,
+        max_durability,
+        durability
       )
     {
       for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {

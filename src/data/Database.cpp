@@ -38,6 +38,7 @@ Database::Database() {
   projectiles = std::map<const std::string, const Projectile *>();
   quests = std::map<const std::string, const Quest * >();
   skills = std::map<const std::string, const Skill * >();
+  skillsFiles = std::map<const std::string, const std::string>();
   pseudoSkills = std::map<const std::string, const PseudoSkill *>();
   speechs = std::map<const std::string, const Speech * >();
   stances = std::map<const std::string, const Stance * >();
@@ -266,13 +267,17 @@ Database::Database() {
   // target_type
   macros.insert(std::make_pair("TARGET_NONE", TARGET_NONE));
   macros.insert(std::make_pair("TARGET_SELF", TARGET_SELF));
+  macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
   macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
   macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
   macros.insert(std::make_pair("TARGET_BLOCK", TARGET_BLOCK));
-  macros.insert(std::make_pair("TARGET_PERMISSIVE", TARGET_PERMISSIVE));
-  macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
-  macros.insert(std::make_pair("TARGET_ORIENTATION", TARGET_ORIENTATION));
+  macros.insert(std::make_pair("TARGET_FRONT", TARGET_FRONT));
 
+  // skill_school
+  macros.insert(std::make_pair("SKILL_FIRE", SKILL_FIRE));
+  macros.insert(std::make_pair("SKILL_AIR", SKILL_AIR));
+  macros.insert(std::make_pair("SKILL_WATER", SKILL_WATER));
+  macros.insert(std::make_pair("SKILL_EARTH", SKILL_EARTH));
   // skill_type
   macros.insert(std::make_pair("SKILL_MAP_LINKER", SKILL_MAP_LINKER));
   macros.insert(std::make_pair("SKILL_MIND_CONTROL", SKILL_MIND_CONTROL));
@@ -284,11 +289,11 @@ Database::Database() {
   macros.insert(std::make_pair("SKILL_TELEPORT", SKILL_TELEPORT));
   macros.insert(std::make_pair("SKILL_TILE_SWAP", SKILL_TILE_SWAP));
 
-  // skill_scalling_type
+  // skill_scaling_type
   macros.insert(std::make_pair("SKILL_SCALE_NONE", SKILL_SCALE_NONE));
   macros.insert(std::make_pair("SKILL_SCALE_MAIN_WEAPON", SKILL_SCALE_MAIN_WEAPON));
   macros.insert(std::make_pair("SKILL_SCALE_SUB_WEAPON", SKILL_SCALE_SUB_WEAPON));
-  macros.insert(std::make_pair("SKILL_SCALE_WEAPONS", SKILL_SCALE_WEAPONS));
+  macros.insert(std::make_pair("SKILL_SCALE_BOTH_WEAPONS", SKILL_SCALE_BOTH_WEAPONS));
 
   // skill_overcharge_type
   macros.insert(std::make_pair("OVERCHARGE_NONE", OVERCHARGE_NONE));
@@ -312,12 +317,12 @@ Database::Database() {
   // race_type
   macros.insert(std::make_pair("RACE_NONE", RACE_NONE));
   macros.insert(std::make_pair("RACE_NATURE", RACE_NATURE));
-  macros.insert(std::make_pair("RACE_HOMO", RACE_HOMO));
+  macros.insert(std::make_pair("RACE_HUMAN", RACE_HUMAN));
   macros.insert(std::make_pair("RACE_OMONCULUS", RACE_OMONCULUS));
-  macros.insert(std::make_pair("RACE_MECANICUS", RACE_MECANICUS));
+  macros.insert(std::make_pair("RACE_AUTOMATA", RACE_AUTOMATA));
+  macros.insert(std::make_pair("RACE_ROBOT", RACE_ROBOT));
   macros.insert(std::make_pair("RACE_UNDEAD", RACE_UNDEAD));
-  macros.insert(std::make_pair("RACE_WALL", RACE_WALL));
-  macros.insert(std::make_pair("RACE_GOD", RACE_GOD));
+  macros.insert(std::make_pair("RACE_ELDRITCH", RACE_ELDRITCH));
 
   // damage_type
   macros.insert(std::make_pair("DAMAGE_TYPE_NUMBER", DAMAGE_TYPE_NUMBER));
@@ -374,6 +379,7 @@ Database::Database() {
   macros.insert(std::make_pair("SETTINGS_PAUSE_NONE", SETTINGS_PAUSE_NONE));
 }
 
+std::map<const std::string, const int32_t> Database::getMacros() { return macros; }
 const int32_t Database::getTargetFromMacro(const std::string macro) { return macros.find(macro) != macros.end() ? macros.at(macro) : stoi(macro); }
 
 const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
@@ -392,6 +398,7 @@ const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
 const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
+const std::string Database::getSkillFile(const std::string skill) { return skillsFiles.at(skill); }
 const PseudoSkill * Database::getPseudoSkill(const std::string pseudoSkill) { return pseudoSkills.at(pseudoSkill); }
 const Speech * Database::getSpeech(const std::string speech) { return speechs.at(speech); }
 const Stance * Database::getStance(const std::string stance) { return stances.at(stance); }
@@ -427,6 +434,7 @@ void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, m
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
 void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }
+void Database::addSkillFile(const std::string skill, const std::string path) { skillsFiles.insert(std::make_pair(skill, path)); }
 void Database::addPseudoSkill(const PseudoSkill * pseudoSkill) { pseudoSkills.insert(std::make_pair(pseudoSkill->name, pseudoSkill)); }
 void Database::addSpeech(const Speech * speech) { speechs.insert(std::make_pair(speech->name, speech)); }
 void Database::addStance(const Stance * stance) { stances.insert(std::make_pair(stance->name, stance)); }

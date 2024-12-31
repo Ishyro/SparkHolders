@@ -80,6 +80,26 @@ Character * World::getCharacter(int64_t id) {
   return nullptr;
 }
 
+std::list<Character *> World::computeTarget(Character * origin, Target * target) {
+  std::list<Character *> targets = std::list<Character *>();
+  if(!targets.empty()) {
+    delete target;
+    target = new Target();
+    target->type = TARGET_MULTIPLE;
+    Target * iter = target;
+    for(Character * character : targets) {
+      Target * next;
+      next = new Target();
+      next->type = TARGET_CHARACTER;
+      next->character = character;
+      next->next = nullptr;
+      iter->next = next;
+      iter = next;
+    }
+  }
+  return targets;
+}
+
 Furniture * World::getFurniture(int64_t id) {
   if(id != 0) {
     for(auto pair : chunks) {
@@ -191,7 +211,7 @@ float World::setPathToTarget(Region * region, float x, float y, Target * target)
       target_y = target->coord.y;
       break;
     case TARGET_CHARACTER: {
-      Character * other = getCharacter(target->id);
+      Character * other = target->character;
       target_x = other->getCoord().x;
       target_y = other->getCoord().y;
       break;

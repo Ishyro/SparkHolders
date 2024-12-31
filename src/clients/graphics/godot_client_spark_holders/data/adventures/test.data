@@ -17,6 +17,8 @@ data/effects/experience_10.data
 data/effects/hunger_10.data
 data/effects/etheral.data
 data/effects/flying.data
+data/effects/blocking.data
+data/effects/dummy_damage.data
 # items
 data/items/bone.data
 data/items/homo_meat.data
@@ -74,21 +76,21 @@ data/skills/fireball.data
 # stances
 data/stances/sword_classic.data
 # ways without summoning skill
+data/ways/races/humans/caeleran.data
+data/ways/races/humans/camelidan.data
+data/ways/races/humans/capran.data
+data/ways/races/humans/chamaelean.data
+data/ways/races/humans/hominidan.data
+data/ways/races/humans/lepidopteran.data
+data/ways/races/humans/muridan.data
+data/ways/races/humans/pantheran.data
+data/ways/races/humans/urodelan.data
+data/ways/races/humans/ursidan.data
 data/ways/races/ancient_one.data
-data/ways/races/caeleran.data
-data/ways/races/camelidan.data
-data/ways/races/capran.data
-data/ways/races/chamaelean.data
-data/ways/races/human.data
-data/ways/races/lepidopteran.data
-data/ways/races/muridan.data
 data/ways/races/no_race.data
-data/ways/races/pantheran.data
 data/ways/races/sheep.data
 data/ways/races/skeleton.data
 data/ways/races/spark_holder.data
-data/ways/races/urodelan.data
-data/ways/races/ursidan.data
 data/ways/races/wolf.data
 data/ways/origins/armythas.data
 data/ways/origins/bridge_town.data
@@ -112,7 +114,6 @@ data/ways/cultures/woodland.data
 data/ways/cultures/yllian.data
 data/ways/religions/aerina.data
 data/ways/religions/alba.data
-data/ways/religions/amphitryona.data
 data/ways/religions/atheist.data
 data/ways/religions/beastiona.data
 data/ways/religions/godless.data
@@ -201,7 +202,7 @@ StartingAttributes.{TXT_ELEMENTALIST}
 StartingAttributes.{TXT_MENDER}
 StartingAttributes.{TXT_GUARDIAN}
 # add starting ways
-StartingWay.{TXT_HUMAN}
+StartingWay.{TXT_HOMINIDAN}
 StartingWay.{TXT_LEPIDOPTERAN}
 StartingWay.{TXT_CHAMAELEAN}
 StartingWay.{TXT_URODELAN}
@@ -237,9 +238,9 @@ StartingWay.{TXT_SCHOLAR}
 StartingWay.{TXT_BATTLEMAGE}
 StartingWay.{TXT_ASSASSIN}
 # add ways incompatibility
-WayImcompatibility.{TXT_HUMAN}{TXT_GREEN_TOWN}
-WayImcompatibility.{TXT_HUMAN}{TXT_ENCLAVE}
-WayImcompatibility.{TXT_HUMAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_AHOZ}
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ARMYTHAS} 
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ELLINKA}
 WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ENCLAVE}
@@ -429,15 +430,15 @@ Character.{TXT_WOLF}{{50}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_
 Character.{TXT_WOLF}{{51}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_WOLF}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_NO_PROFESSION}{}{100}{0}
 Character.{TXT_WOLF}{{52}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_WOLF}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_NO_PROFESSION}{}{100}{0}
 
-Character.{TXT_HOMO}{{48}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
-Character.{TXT_HOMO}{{49}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
-Character.{TXT_HOMO}{{50}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{48}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{49}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{50}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 
-Character.{TXT_HOMO}{{53}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
-Character.{TXT_HOMO}{{54}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{53}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{54}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 
-Character.{TXT_HOMO}{{41}{116}{0}}{undead}{GuardAI}{TXT_ELEMENTALIST}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_LIGHT}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+Character.{TXT_HOMO}{{41}{116}{0}}{undead}{GuardAI}{TXT_ELEMENTALIST}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_LIGHT}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
 
-Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
-Character.{TXT_HOMO}{{61}{125}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
-Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HUMAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{10000}{500}
+Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
+Character.{TXT_HOMO}{{61}{125}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
+Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{10000}{500}

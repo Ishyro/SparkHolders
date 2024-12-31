@@ -18,4 +18,5 @@ soulBurnIncr = 1
 flowIncr = 2
 effects =
 skills =
+stances =
 tags = religious%alba%

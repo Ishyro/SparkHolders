@@ -1,6 +1,8 @@
 #ifndef _VALUES_H_
 #define _VALUES_H_
 
+#include <cstdint>
+
 // resolve cyclic mess
 
 // AI
@@ -56,6 +58,7 @@ typedef struct ProjectileDisplay ProjectileDisplay;
 typedef struct Spawn Spawn;
 typedef struct StateDisplay StateDisplay;
 typedef struct Step Step;
+typedef struct Hitbox Hitbox;
 typedef struct Target Target;
 typedef struct Time Time;
 
@@ -318,12 +321,18 @@ class SpeechManager;
 
 #define TARGET_NONE 0
 #define TARGET_SELF 1
-#define TARGET_CHARACTER 2
-#define TARGET_COORDINATES 3
-#define TARGET_BLOCK 4
-#define TARGET_PERMISSIVE 5
-#define TARGET_MULTIPLE 6
-#define TARGET_ORIENTATION 7
+#define TARGET_MULTIPLE 2
+#define TARGET_CHARACTER 3
+#define TARGET_COORDINATES 4
+#define TARGET_BLOCK 5
+#define TARGET_FRONT 6
+
+// skill_school
+
+#define SKILL_FIRE 1
+#define SKILL_AIR 2
+#define SKILL_WATER 3
+#define SKILL_EARTH 4
 
 // skill_type
 
@@ -337,12 +346,12 @@ class SpeechManager;
 #define SKILL_TELEPORT 8
 #define SKILL_TILE_SWAP 19
 
-// skill_scalling_type
+// skill_scaling_type
 
 #define SKILL_SCALE_NONE 0
 #define SKILL_SCALE_MAIN_WEAPON 1
 #define SKILL_SCALE_SUB_WEAPON 2
-#define SKILL_SCALE_WEAPONS 3
+#define SKILL_SCALE_BOTH_WEAPONS 3
 
 // skill_overcharge_type
 
@@ -370,12 +379,12 @@ class SpeechManager;
 
 #define RACE_NONE 0
 #define RACE_NATURE 1
-#define RACE_HOMO 2
+#define RACE_HUMAN 2
 #define RACE_OMONCULUS 3
-#define RACE_MECANICUS 4
-#define RACE_UNDEAD 5
-#define RACE_WALL 6
-#define RACE_GOD 7
+#define RACE_AUTOMATA 4
+#define RACE_ROBOT 5
+#define RACE_UNDEAD 6
+#define RACE_ELDRITCH 7
 
 // damage_type
 

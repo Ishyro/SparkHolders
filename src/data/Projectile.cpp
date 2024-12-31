@@ -114,7 +114,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
   if(target != nullptr && (target->getTeam() == owner->getTeam() || alreadyHit(target))) {
     return;
   }
-  if(this->target->type == TARGET_CHARACTER && target->id == this->target->id) {
+  if(this->target->type == TARGET_CHARACTER && target == this->target->character) {
     setLost(true);
   }
   if(area == 0.F) {
@@ -122,8 +122,8 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
     if(skill != nullptr) {
       Target * t = new Target();
       t->type = TARGET_CHARACTER;
-      t->id = target->id;
-      skill->activate(owner, t, adventure, overcharge);
+      t->character = target;
+      skill->activate(owner, t, adventure, overcharge, false);
     }
   }
   else {
@@ -146,8 +146,8 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
           if(skill != nullptr) {
             Target * t = new Target();
             t->type = TARGET_CHARACTER;
-            t->id = target->id;
-            skill->activate(owner, t, adventure, overcharge);
+            t->character = target;
+            skill->activate(owner, t, adventure, overcharge, false);
           }
         }
       }

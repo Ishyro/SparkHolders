@@ -12,6 +12,7 @@
 class Database {
   public:
     Database();
+    std::map<const std::string, const int32_t> getMacros();
     const int32_t getTargetFromMacro(const std::string macro);
 
     const Attributes * getAttributes(const std::string attributes);
@@ -30,6 +31,7 @@ class Database {
     const Projectile * getProjectile(const std::string projectile);
     const Quest * getQuest(const std::string quest);
     const Skill * getSkill(const std::string skill);
+    const std::string getSkillFile(const std::string skill);
     const PseudoSkill * getPseudoSkill(const std::string pseudoSkill);
     const Speech * getSpeech(const std::string speech);
     const Stance * getStance(const std::string stance);
@@ -54,6 +56,7 @@ class Database {
     void addProjectile(const Projectile * projectile);
     void addQuest(const Quest * quest);
     void addSkill(const Skill * skill);
+    void addSkillFile(const std::string skill, const std::string path);
     void addPseudoSkill(const PseudoSkill * pseudoSkill);
     void addSpeech(const Speech * speech);
     void addStance(const Stance * stance);
@@ -64,7 +67,7 @@ class Database {
     void addKeyPath(const std::string path);
 
   private:
-    std::map<const std::string,const int32_t> macros;
+    std::map<const std::string, const int32_t> macros;
 
     std::map<const std::string, const Attributes * > attributes;
     std::map<const std::string, const std::string> attributesFiles;
@@ -81,6 +84,7 @@ class Database {
     std::map<const std::string, const Projectile * > projectiles;
     std::map<const std::string, const Quest * > quests;
     std::map<const std::string, const Skill * > skills;
+    std::map<const std::string, const std::string> skillsFiles;
     std::map<const std::string, const PseudoSkill * > pseudoSkills;
     std::map<const std::string, const Speech * > speechs;
     std::map<const std::string, const Stance * > stances;

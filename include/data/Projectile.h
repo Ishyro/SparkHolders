@@ -1,6 +1,7 @@
 #ifndef _PROJECTILE_H_
 #define _PROJECTILE_H_
 
+#include <array>
 #include <string>
 #include <list>
 #include <cmath>

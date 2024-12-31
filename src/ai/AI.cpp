@@ -315,7 +315,7 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
   if(target != nullptr) {
     Target * t = new Target();
     t->type = TARGET_CHARACTER;
-    t->id = target->id;
+    t->character = target;
     // float orientation = MathUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
     if(skill != nullptr) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, skill->getManaCost());

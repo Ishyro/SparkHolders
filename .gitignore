@@ -5,3 +5,4 @@ externals/godot
 src/clients/graphics/godot_modules/spark_holders_graphical/__pycache__/
 src/clients/graphics/godot_modules/spark_holders_graphical/*.o
 *.tmp
+*:Zone.Identifier

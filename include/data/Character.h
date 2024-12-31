@@ -432,13 +432,14 @@ class Character {
     bool isInvisible();
     bool isEtheral();
     bool isInvulnerable();
+    bool isBlocking();
     bool isSleeping();
     bool isIdling();
     int32_t cloakPower();
     bool isInWeakState();
 
     void selectStance(Stance *);
-    void useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge);
+    void useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge, bool blocked);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
     float getRawDamageReductionFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);

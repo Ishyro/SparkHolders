@@ -14,6 +14,6 @@ attributes = TXT_NO_ATTRIBUTES
 titles =
 apparition_type = APPARITION_SOFT
 mana_cost = 0
-scalling_type = SKILL_SCALE_NONE
+scaling_type = SKILL_SCALE_NONE
 xp = 0
 effects =

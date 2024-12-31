@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/Rooters Italic.otf-29b4e08c80ee5fd8ea99696276
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

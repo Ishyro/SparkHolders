@@ -42,6 +42,8 @@ class ContainerItem : public GearItem {
       int32_t use_time,
       std::list<Effect *> effects,
       int32_t swap_time,
+      int32_t max_durability,
+      int32_t durability,
       const bool canTakeFrom,
       const bool repercuteWeight,
       const bool isLimited,
@@ -64,7 +66,9 @@ class ContainerItem : public GearItem {
         consumable,
         use_time,
         effects,
-        swap_time
+        swap_time,
+        max_durability,
+        durability
       ),
       canTakeFrom(canTakeFrom),
       repercuteWeight(repercuteWeight),

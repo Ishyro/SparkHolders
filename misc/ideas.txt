@@ -12,6 +12,11 @@ Elementalist - Hibero - Blue - Lead - Water - Prudence - Cold - The Clock (Time)
 Mender - Aerina - Red - Quicksilver (Mercury) - Wind - Temperance - Lightning - The Compass (Intensity)
 Guardian - Beastiona - Green - Tin - Earth - Justice - Poison - The Scale (Mass)
 
+Forgotten Gods: 
+
+Caupo (The Shopkeeper) - Zinc - Aether
+??? (The Oracle)
+
 CLASSES UPGRADES 
 
 Can be selected as the Third Class if the Required Class as been taken as the First or Second Class. => 2 + 2 = 4 choices
@@ -68,11 +73,13 @@ Shield Bearer (Elementalist + Guardian): specializes in shield, and shield magic
 
 RACES
 
+All playable races races are called human.
+
 1 Lord of Gods
 Caeleran (Amphytryona): angel
 
 3 Unique Gods
-Human (Alba)
+Hominidan (Alba): "Featureless" Human
 Lepidopteran (Laxito): Guy with pointy ears, butterfly wings, and maybe butterfly antenae (elf).
 Chamaeleonidan (Nubilo) : Chameleon guy with scaly skin, can change color. Eyes can look in different direction.
 
@@ -84,14 +91,28 @@ Muridan (Hibero + Beastiona) : Rat guy, small, can eat basicaly anything, like d
 Ursidan (Hibero + Aerina) : Bear guy, strong claws and fangs. Can eat other guys without issue, heavier and bigger than other guys, need to eat more, resist cold, but not heat (Kinda orc).
 Capran (Beastiona + Aerina): Goat guy, cannot eat meat, good balance, resist cold.
 
-6 Paired Gods - Demi Humans, not playable characters, without advanced societies. (Human as sentient, so demi-sentient more than looks like a human).
+12 Paired Gods - Demi Humans, not playable characters, without advanced societies. (Human as sentient, so demi-sentient but doesn't look like a human).
 Terminaison in "oid" instead of "an" because they are inferior.
-Draconoid (Pyrra + Hibero): Crocodil/Land Dragon, can swim and breath fire. Lives alone / Female with kids. Extremely territorial, especialy when with kids. Is a predator.
-Ardoroid (Pyrra + Aerina): Phenix, is used as a mean of transportation.
-Herpestoid (Pyrra + Beastiona): Hyena, hunts in pack, flee when things are not looking good. Is a predator.
-Castoroid (Hibero + Beastiona): Castor, piss of everyone by building digs and shutting of rivers. Is a prey.
-Canisoid (Hibero + Aerina): Wolf, hunts in pack, flee when the leader is down, unless things are looking really good. Is a predator.
-Sciuridoid (Beastiona + Aerina): Marmot, lives in big groups in the ground, with some specimen on the lookout. Is a prey.
+
+Aerina
+Anatoid (Alba): Cygnus (Lake)
+Corvidoid (Laxito): Crown (Plain / Mountain / Swamp)
+Canisoid (Nubilo): Wolf, hunts in pack with a male leader, flee when the leader is down, unless things are looking really good. Used as mounts by the Trackers. Is a predator. (Plain / Moutain / Forest)
+
+Beastiona
+Herpestoid (Alba): Hyena, hunts in pack with a female leader, flee when things are not looking good. Is a predator. (Plain)
+Cervidoid (Laxito): Deer, lives in packs in forest, used as mounts by Lepidotperans. Is a prey. (Forest)
+Arachnoid (Nubilo): Giant spider, live in a single big community with a single egg laying member (the Matriarch). Iron grows from their bodies. Is a predator. (Forest / Cave)
+
+Pyrra
+Testudoid (Alba): Tortoise, lives in family. Very intelligent creature, only attacks to feed or when provoked. Is a predator. (Mountain)
+Ardoroid (Laxito): Phenix, is used as a mean of transportation. Is a predator. (The Tower / Mountain)
+Termitoid (Nubilo): Termits, lives in huge communities in the Scorched Lands. Cultivate mushrooms in their galeries. Is a prey, but not a lot of things would dare to attack them in their homes. (Desert)
+
+Hibero:
+Castoroid (Alba): Castor, piss of everyone by building digs and shutting of rivers. Is a prey. (River)
+Bufonoid (Laxito): Toad (Swamp)
+Cephaloid (Nubilo): Octopus (Ocean / Depth)
 
 TALENTS
 
@@ -110,7 +131,7 @@ TAROT - MAJOR ARCANA
 
 01 - The City (Urbi)
 02 - The Emperor
-03 - The Ground (The Bellow) (3)
+03 - The Land (The Bellow) (3)
 04 - The Sky (The Above) (4)
 05 - The Strength
 06 - The Justice

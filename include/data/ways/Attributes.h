@@ -29,6 +29,7 @@ class Attributes : public Way {
       int32_t flowIncr,
       std::list<Effect *> effects,
       std::list<Skill *> skills,
+      std::list<Stance *> stances,
       std::list<std::string> tags,
       std::list<std::string> and_requirements,
       std::list<std::string> or_requirements,
@@ -55,6 +56,7 @@ class Attributes : public Way {
         flowIncr,
         effects,
         skills,
+        stances,
         tags
       ),
       and_requirements(and_requirements),

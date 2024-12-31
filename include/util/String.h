@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 
+#include "Values.h"
+
 namespace String {
   std::string extract(std::stringstream * ss);
   bool extract_bool(std::stringstream * ss);

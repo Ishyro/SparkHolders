@@ -11,6 +11,7 @@ usable = false
 consumable = false
 effects =
 swap_time = 10
+durability = 100
 range = 10.0
 strike_time = 5
 status_power = 1.0

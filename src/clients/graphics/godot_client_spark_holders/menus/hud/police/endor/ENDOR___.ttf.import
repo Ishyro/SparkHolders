@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/ENDOR___.ttf-7e5394fb12dac3e3d310bf738be9e959
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48

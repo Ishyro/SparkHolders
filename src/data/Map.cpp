@@ -437,19 +437,6 @@ void Map::setBlock(const MathUtil::Vector3i coord, Block * block) {
   }
 }
 
-void Map::crumble(int32_t x, int32_t y) {
-  for(Character * character : characters) {
-    if(character->getCoord().x == x && character->getCoord().y == y) {
-      if(character->getType() == RACE_WALL) {
-        removeCharacter(character);
-        character->markDead(true);
-        character = nullptr;
-      }
-      else break;
-    }
-  }
-}
-
 void Map::addCharacter(Character * c) { characters.push_back(c); }
 void Map::addProjectile(Projectile * p) { projectiles.push_back(p); }
 

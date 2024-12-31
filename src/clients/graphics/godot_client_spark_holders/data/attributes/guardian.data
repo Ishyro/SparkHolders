@@ -18,6 +18,7 @@ soulBurnIncr = 0
 flowIncr = 0
 effects =
 skills =
+stances = TXT_SWORD_CLASSIC%
 tags = guardian%beastiona%warrior%protector%
 and_requirements = 
 or_requirements = 

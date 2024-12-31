@@ -40,7 +40,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       }
       else {
         if(target->type == TARGET_CHARACTER) {
-          Character * other = adventure->getCharacter(target->id); 
+          Character * other = target->character; 
           user->attack(other, adventure, ACTION_STRIKE);
           if(!other->isAlive()) {
             //adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
@@ -121,7 +121,7 @@ void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
     user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
   }
   else if(target->type == TARGET_CHARACTER) {
-    Character * other = adventure->getCharacter(target->id);
+    Character * other = target->character;
     user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCoord().x, other->getCoord().y));
   }
 }
@@ -131,7 +131,7 @@ float TargetedAction::rangeFromTarget(Adventure * adventure) {
     return MathUtil::distance2(user->getCoord(), target->coord);
   }
   else if(target->type == TARGET_CHARACTER) {
-    Character * other = adventure->getCharacter(target->id);
+    Character * other = target->character;
     return MathUtil::distance(user->getCoord(), other->getCoord());
   }
   return 0.F;
