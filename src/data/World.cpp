@@ -10,8 +10,6 @@
 #include "data/BlocksChunk.h"
 #include "data/Region.h"
 
-#include <iostream>
-
 void World::addMap(Map * map) {
   int32_t lightening = map->lightening;
   MathUtil::Vector3i coord = MathUtil::Vector3i();

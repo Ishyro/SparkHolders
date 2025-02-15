@@ -83,10 +83,12 @@ namespace Client {
   std::string writeGearAction(int32_t type, ItemSlot * slot1, ItemSlot * slot2) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
+    String::insert_long(ss, slot1->id);
     String::insert_int(ss, slot1->x);
     String::insert_int(ss, slot1->y);
     String::insert_int(ss, slot1->slot);
     if(slot2 != nullptr) {
+      String::insert_long(ss, slot2->id);
       String::insert_int(ss, slot2->x);
       String::insert_int(ss, slot2->y);
       String::insert_int(ss, slot2->slot);

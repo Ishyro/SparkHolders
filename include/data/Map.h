@@ -24,8 +24,6 @@
 
 #include "util/MathUtil.h"
 
-#include <iostream>
-
 typedef struct Loot {
   int32_t type;
   float x;

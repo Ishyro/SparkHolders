@@ -54,16 +54,22 @@ var base_way = preload("res://menus/way.tscn")
 func _ready():
 	Values.link.initialize(Values.ip, Settings.Port, Settings.password)
 	var attributess = Values.link.getStartingAttributes()
+	Values.tickrate = Values.link.getTickRate()
+	Values.macros = Values.link.getMacros()
 	for way in attributess:
 		classes.append(way)
 	var ways = Values.link.getStartingWays()
 	for way in ways:
-		match(way["type"]):
-			Values.WAY_RACE : races.append(way)
-			Values.WAY_ORIGIN : origins.append(way)
-			Values.WAY_CULTURE : cultures.append(way)
-			Values.WAY_RELIGION : religions.append(way)
-			Values.WAY_PROFESSION : educations.append(way)
+		if way["type"] == Values.macros["WAY_RACE"]:
+			races.append(way)
+		elif way["type"] == Values.macros["WAY_ORIGIN"]:
+			origins.append(way)
+		elif way["type"] == Values.macros["WAY_CULTURE"]:
+			cultures.append(way)
+		elif way["type"] == Values.macros["WAY_RELIGION"]:
+			religions.append(way)
+		elif way["type"] == Values.macros["WAY_PROFESSION"]:
+			educations.append(way)
 	n_class.initialize(classes[0])
 	n_race.initialize(races[0])
 	n_origin.initialize(origins[0])
@@ -164,13 +170,18 @@ func _input(event):
 		if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT and not event.is_pressed():
 			for n_way in n_ways:
 				if not n_way.unvalid.visible and n_way.get_global_rect().has_point(event.global_position):
-					match n_way.data["type"]:
-						Values.WAY_CLASS : n_class.initialize(n_way.data)
-						Values.WAY_RACE : n_race.initialize(n_way.data)
-						Values.WAY_ORIGIN : n_origin.initialize(n_way.data)
-						Values.WAY_CULTURE : n_culture.initialize(n_way.data)
-						Values.WAY_RELIGION : n_religion.initialize(n_way.data)
-						Values.WAY_PROFESSION : n_education.initialize(n_way.data)
+					if n_way.data["type"] == Values.macros["WAY_CLASS"]:
+						n_class.initialize(n_way.data)
+					elif n_way.data["type"] == Values.macros["WAY_RACE"]:
+						n_race.initialize(n_way.data)
+					elif n_way.data["type"] == Values.macros["WAY_ORIGIN"]:
+						n_origin.initialize(n_way.data)
+					elif n_way.data["type"] == Values.macros["WAY_CULTURE"]:
+						n_culture.initialize(n_way.data)
+					elif n_way.data["type"] == Values.macros["WAY_RELIGION"]:
+						n_religion.initialize(n_way.data)
+					elif n_way.data["type"] == Values.macros["WAY_PROFESSION"]:
+						n_education.initialize(n_way.data)
 					way_selector.visible = false
 					update_stats()
 					start_button.disabled = character_name == "" or n_class.data.is_empty() or n_race.data.is_empty() or n_origin.data.is_empty() or n_culture.data.is_empty() or n_religion.data.is_empty() or n_education.data.is_empty()
@@ -214,10 +225,10 @@ func _on_name_mouse_exited():
 		name_border.color = Values.ink
 
 func _on_line_edit_focus_entered():
-	name_border.visible = true
+	name_border.color = Values.gold
 
 func _on_line_edit_focus_exited():
-	name_border.visible = false
+	name_border.color = Values.ink
 
 func _on_left_pressed():
 	indice = max(0, indice - 4)

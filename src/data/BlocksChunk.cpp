@@ -1,7 +1,5 @@
 #include "data/BlocksChunk.h"
 
-#include <iostream>
-
 Block * BlocksChunk::getBlock(MathUtil::Vector3i coord) {
   std::map<const MathUtil::Vector3i, LightenedBlock *>::iterator it = blocks.find(coord);
   if(it != blocks.end()) {

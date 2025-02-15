@@ -247,7 +247,6 @@ Array GodotLink::getUpdatedFurnitures() {
   return result;
 }
 
-
 String GodotLink::getRelation(String team1, String team2) {
   #ifdef LOG
     log << "getUpdatedFurnitures(" << team1.utf8().get_data() << ", " << team2.utf8().get_data() << ")" << std::endl;
@@ -324,6 +323,12 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
     result["limit_type"] = ((ContainerItem *) item)->limit_type;
     result["contentX"] = ((ContainerItem *) item)->contentX;
     result["contentY"] = ((ContainerItem *) item)->contentY;
+    Dictionary content = Dictionary();
+    for(ItemSlot * slot : ((ContainerItem *) item)->getItems()) {
+      Vector2 vec = Vector2(slot->x, slot->y);
+      content[vec] = getDataFromItem(slot->item);
+    }
+    result["content"] = content;
   }
   String path = link->getAdventure()->getDatabase()->getItemFile(item->name).c_str();
   result["path"] = path;
@@ -345,7 +350,6 @@ Dictionary GodotLink::getDataFromBlock(String tile_name) {
   result["material"] = block->material.c_str();
   return result;
 }
-
 
 Dictionary GodotLink::getDataFromClass(String class_name) {
   #ifdef LOG
@@ -381,6 +385,7 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
   result["path"] = link->getAdventure()->getDatabase()->getAttributesFile(attributes->name).c_str();
   return result;
 }
+
 Dictionary GodotLink::getDataFromRace(String race_name) {
   #ifdef LOG
     log << "getDataFromRace(" << race_name.utf8().get_data() << ")" << std::endl;
@@ -426,6 +431,7 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   result["path_3d"] = path.replace(".png", ".glb");
   return result;
 }
+
 Dictionary GodotLink::getDataFromWay(String way_name) {
   #ifdef LOG
     log << "getDataFromWay(" << way_name.utf8().get_data() << ")" << std::endl;
@@ -595,20 +601,20 @@ Dictionary GodotLink::getInventoryFromCharacter() {
   result["ring_2"] = getDataFromItem(gear->getRing_2());
   result["weapon_1"] = getDataFromItem(gear->getWeapon_1());
   result["weapon_2"] = getDataFromItem(gear->getWeapon_2());
-  result["backup_weapon_1"] = getDataFromItem(gear->getBackupWeapon_1());
-  result["backup_weapon_2"] = getDataFromItem(gear->getBackupWeapon_2());
+  result["backup_weapon"] = getDataFromItem(gear->getBackupWeapon());
   result["bag"] = getDataFromItem(gear->getBag());
-  result["belt"] = getDataFromItem(gear->getBelt());
-  Dictionary belt_content = Dictionary();
-  for(ItemSlot * slot : gear->getBelt()->getItems()) {
+  Dictionary base_inventory = Dictionary();
+  for(ItemSlot * slot : gear->getBaseInventory()->getItems()) {
     Vector2 vec = Vector2(slot->x, slot->y);
-    belt_content[vec] = getDataFromItem(slot->item);
+    base_inventory[vec] = getDataFromItem(slot->item);
   }
-  result["belt_content"] = belt_content;
+  result["base_inventory"] = base_inventory;
   Dictionary bag_content = Dictionary();
-  for(ItemSlot * slot : gear->getBag()->getItems()) {
-    Vector2 vec = Vector2(slot->x, slot->y);
-    bag_content[vec] = getDataFromItem(slot->item);
+  if(gear->getBag() != nullptr) {
+    for(ItemSlot * slot : gear->getBag()->getItems()) {
+      Vector2 vec = Vector2(slot->x, slot->y);
+      bag_content[vec] = getDataFromItem(slot->item);
+    }
   }
   result["bag_content"] = bag_content;
   return result;
@@ -649,7 +655,6 @@ Array GodotLink::getSkillsFromCharacter() {
   }
   return result;
 }
-
 
 Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   #ifdef LOG
@@ -711,7 +716,6 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   return result;
 }
 
-
 Array GodotLink::getStartingAttributes() {
   Array result;
   for(Attributes * attributes : link->getAdventure()->getStartingAttributes()) {
@@ -726,6 +730,19 @@ Array GodotLink::getStartingWays() {
     result.push_back(getDataFromWay(way->name.c_str()));
   }
   return result;
+}
+
+Dictionary GodotLink::getItemSlot(int64_t item_id) {
+  Dictionary result;
+  for(ItemSlot * slot : link->getPlayer()->getGear()->getItems()) {
+    if(slot->item->id == item_id) {
+      result["id"] = link->getPlayer()->id;
+      result["x"] = slot->x;
+      result["y"] = slot->y;
+      result["slot"] = slot->slot;
+      return result;
+    }
+  }
 }
 
 void GodotLink::send_action(Dictionary action) {
@@ -767,6 +784,7 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_USE_ITEM: {
       Dictionary slot_ori = action["arg1"];
       ItemSlot * slot = new ItemSlot();
+      slot->id = (int64_t) slot_ori["id"];
       slot->x = (int32_t) slot_ori["x"];
       slot->y = (int32_t) slot_ori["y"];
       slot->slot = (int32_t) slot_ori["slot"];
@@ -776,12 +794,14 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_SWAP_GEAR: {
       Dictionary slot1_ori = action["arg1"];
       ItemSlot * slot1 = new ItemSlot();
+      slot1->id = (int64_t) slot1_ori["id"];
       slot1->x = (int32_t) slot1_ori["x"];
       slot1->y = (int32_t) slot1_ori["y"];
       slot1->slot = (int32_t) slot1_ori["slot"];
       arg1 = (void *) slot1;
       Dictionary slot2_ori = action["arg2"];
       ItemSlot * slot2 = new ItemSlot();
+      slot2->id = (int64_t) slot2_ori["id"];
       slot2->x = (int32_t) slot2_ori["x"];
       slot2->y = (int32_t) slot2_ori["y"];
       slot2->slot = (int32_t) slot2_ori["slot"];
@@ -865,6 +885,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getInventoryFromCharacter"), &GodotLink::getInventoryFromCharacter);
   ClassDB::bind_method(D_METHOD("getStartingAttributes"), &GodotLink::getStartingAttributes);
   ClassDB::bind_method(D_METHOD("getStartingWays"), &GodotLink::getStartingWays);
+  ClassDB::bind_method(D_METHOD("getItemSlot", "item_id"), &GodotLink::getItemSlot);
   ClassDB::bind_method(D_METHOD("send_action", "action"), &GodotLink::send_action);
   ClassDB::bind_method(D_METHOD("pause"), &GodotLink::pause);
   ClassDB::bind_method(D_METHOD("unpause"), &GodotLink::unpause);

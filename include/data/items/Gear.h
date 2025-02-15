@@ -25,10 +25,9 @@ class Gear {
       ArmorItem * ring_2,
       WeaponItem * weapon_1,
       WeaponItem * weapon_2,
-      WeaponItem * backup_weapon_1,
-      WeaponItem * backup_weapon_2,
+      WeaponItem * backup_weapon,
+      ContainerItem * base_inventory,
       ContainerItem * bag,
-      ContainerItem * belt,
       std::list<Item *> items
     ):
       name(name),
@@ -43,10 +42,9 @@ class Gear {
       ring_2(ring_2),
       weapon_1(weapon_1),
       weapon_2(weapon_2),
-      backup_weapon_1(backup_weapon_1),
-      backup_weapon_2(backup_weapon_2),
+      backup_weapon(backup_weapon),
+      base_inventory(base_inventory),
       bag(bag),
-      belt(belt),
       items(items)
     {}
     Gear(const Gear * gear):
@@ -62,10 +60,9 @@ class Gear {
       ring_2(nullptr),
       weapon_1(nullptr),
       weapon_2(nullptr),
-      backup_weapon_1(nullptr),
-      backup_weapon_2(nullptr),
+      backup_weapon(nullptr),
+      base_inventory(nullptr),
       bag(nullptr),
-      belt(nullptr),
       items(std::list<Item *>())
     {
       if(gear->mantle != nullptr) {
@@ -101,17 +98,14 @@ class Gear {
       if(gear->weapon_2 != nullptr) {
         weapon_2 = new WeaponItem(gear->weapon_2, gear->weapon_2->tier);
       }
-      if(gear->backup_weapon_1 != nullptr) {
-        backup_weapon_1 = new WeaponItem(gear->backup_weapon_1, gear->backup_weapon_1->tier);
+      if(gear->backup_weapon != nullptr) {
+        backup_weapon = new WeaponItem(gear->backup_weapon, gear->backup_weapon->tier);
       }
-      if(gear->backup_weapon_2 != nullptr) {
-        backup_weapon_2 = new WeaponItem(gear->backup_weapon_2, gear->backup_weapon_2->tier);
+      if(gear->base_inventory != nullptr) {
+        base_inventory = new ContainerItem(gear->base_inventory, gear->base_inventory->tier);
       }
       if(gear->bag != nullptr) {
         bag = new ContainerItem(gear->bag, gear->bag->tier);
-      }
-      if(gear->belt != nullptr) {
-        belt = new ContainerItem(gear->belt, gear->belt->tier);
       }
       std::list<Item *> toadds = std::list<Item *>();
       for(Item * item : gear->items) {
@@ -125,7 +119,7 @@ class Gear {
         toadds.push_back(toadd);
       }
       if(!toadds.empty()) {
-        belt->add_all(toadds);
+        base_inventory->add_all(toadds);
       }
     }
     Gear():
@@ -141,10 +135,9 @@ class Gear {
       ring_2(nullptr),
       weapon_1(nullptr),
       weapon_2(nullptr),
-      backup_weapon_1(nullptr),
-      backup_weapon_2(nullptr),
+      backup_weapon(nullptr),
+      base_inventory(nullptr),
       bag(nullptr),
-      belt(nullptr),
       items(std::list<Item *>())
     {}
     void equip(GearItem * new_item, int32_t slot);
@@ -168,10 +161,9 @@ class Gear {
     ArmorItem * getRing_2();
     WeaponItem * getWeapon_1();
     WeaponItem * getWeapon_2();
-    WeaponItem * getBackupWeapon_1();
-    WeaponItem * getBackupWeapon_2();
+    WeaponItem * getBackupWeapon();
+    ContainerItem * getBaseInventory();
     ContainerItem * getBag();
-    ContainerItem * getBelt();
     float getWeight();
     std::list<Effect *> getEffects();
     void useItem(int32_t x, int32_t y, int32_t slot, Character * user);
@@ -193,10 +185,9 @@ class Gear {
     ArmorItem * ring_2;
     WeaponItem * weapon_1;
     WeaponItem * weapon_2;
-    WeaponItem * backup_weapon_1;
-    WeaponItem * backup_weapon_2;
+    WeaponItem * backup_weapon;
+    ContainerItem * base_inventory;
     ContainerItem * bag;
-    ContainerItem * belt;
     std::list<Item *> items;
 };
 

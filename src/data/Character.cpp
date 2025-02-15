@@ -407,10 +407,7 @@ float Character::getStrikeTime(int32_t slot) {
     return (float) gear->getWeapon_2()->strike_time / getHandActionTimeModifier();
   }
   else if(slot == ITEM_SLOT_WEAPON_3) {
-    return (float) gear->getBackupWeapon_1()->strike_time / getHandActionTimeModifier();
-  }
-  else if(slot == ITEM_SLOT_WEAPON_4) {
-    return (float) gear->getBackupWeapon_2()->strike_time / getHandActionTimeModifier();
+    return (float) gear->getBackupWeapon()->strike_time / getHandActionTimeModifier();
   }
   return 0.F;
 }
@@ -423,10 +420,7 @@ float Character::getReloadTime(int32_t slot) {
     return (float) gear->getWeapon_2()->reload_time / getHandActionTimeModifier();
   }
   else if(slot == ITEM_SLOT_WEAPON_3) {
-    return (float) gear->getBackupWeapon_1()->reload_time / getHandActionTimeModifier();
-  }
-  else if(slot == ITEM_SLOT_WEAPON_4) {
-    return (float) gear->getBackupWeapon_2()->reload_time / getHandActionTimeModifier();
+    return (float) gear->getBackupWeapon()->reload_time / getHandActionTimeModifier();
   }
   return 0.F;
 }
@@ -434,18 +428,12 @@ float Character::getReloadTime(int32_t slot) {
 float Character::getSwapTime(int32_t slot1, int32_t slot2) {
   if(slot1 == ITEM_SLOT_WEAPON_1) {
     if(slot2 == ITEM_SLOT_WEAPON_3) {
-      return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon_1()->swap_time) / getHandActionTimeModifier();
-    }
-    else if(slot2 == ITEM_SLOT_WEAPON_4) {
-      return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon_2()->swap_time) / getHandActionTimeModifier();
+      return ((float) gear->getWeapon_1()->swap_time + gear->getBackupWeapon()->swap_time) / getHandActionTimeModifier();
     }
   }
   else if(slot1 == ITEM_SLOT_WEAPON_2) {
     if(slot2 == ITEM_SLOT_WEAPON_3) {
-      return ((float) gear->getWeapon_2()->swap_time + gear->getBackupWeapon_1()->swap_time) / getHandActionTimeModifier();
-    }
-    else if(slot2 == ITEM_SLOT_WEAPON_4) {
-      return ((float) gear->getWeapon_2()->swap_time + gear->getBackupWeapon_2()->swap_time) / getHandActionTimeModifier();
+      return ((float) gear->getWeapon_2()->swap_time + gear->getBackupWeapon()->swap_time) / getHandActionTimeModifier();
     }
   }
   return 0.F;
@@ -1021,8 +1009,8 @@ void Character::add(Item * item, int32_t slot, int32_t x, int32_t y) {
   if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->add(item, x, y);
   }
-  else if(slot == ITEM_SLOT_INSIDE_BELT) {
-    gear->getBelt()->add(item, x, y);
+  else if(slot == ITEM_SLOT_INSIDE_BASE_INVENTORY) {
+    gear->getBaseInventory()->add(item, x, y);
   }
 }
 
@@ -1034,8 +1022,8 @@ Item * Character::remove(int32_t slot, int32_t x, int32_t y) {
   if(slot == ITEM_SLOT_INSIDE_BAG) {
     item = gear->getBag()->remove(x, y);
   }
-  else if(slot == ITEM_SLOT_INSIDE_BELT) {
-    item = gear->getBelt()->remove(x, y);
+  else if(slot == ITEM_SLOT_INSIDE_BASE_INVENTORY) {
+    item = gear->getBaseInventory()->remove(x, y);
   }
   return item;
 }
@@ -1186,7 +1174,7 @@ void Character::addItem(Item * i, int32_t x, int32_t y, int32_t slot) {
   if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->add(i, x, y);
   }
-  else if(slot == ITEM_SLOT_INSIDE_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BASE_INVENTORY) {
     gear->getBag()->add(i, x, y);
   }
 }
@@ -1198,7 +1186,7 @@ void Character::removeItem(int32_t x, int32_t y, int32_t slot) {
   if(slot == ITEM_SLOT_INSIDE_BAG) {
     gear->getBag()->remove(x, y);
   }
-  else if(slot == ITEM_SLOT_INSIDE_BELT) {
+  else if(slot == ITEM_SLOT_INSIDE_BASE_INVENTORY) {
     gear->getBag()->remove(x, y);
   }
 }
@@ -1474,7 +1462,7 @@ ItemSlot * Character::canReload(int32_t slot) {
   ItemSlot * ammo = nullptr;
   int32_t number = 0;
   if(slot == ITEM_SLOT_WEAPON_1) {
-    for(ItemSlot * current : gear->getBelt()->getItems()) {
+    for(ItemSlot * current : gear->getBaseInventory()->getItems()) {
       if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_1()->ammo_type == current->item->subtype && ( (AmmunitionItem *) current->item)->getNumber() > number) {
         ammo = current;
         number = ((AmmunitionItem *) current->item)->getNumber();
@@ -1482,7 +1470,7 @@ ItemSlot * Character::canReload(int32_t slot) {
     }
   }
   else if(slot == ITEM_SLOT_WEAPON_2) {
-    for(ItemSlot * current : gear->getBelt()->getItems()) {
+    for(ItemSlot * current : gear->getBaseInventory()->getItems()) {
       if(current->item->type == ITEM_AMMUNITION && gear->getWeapon_2()->ammo_type == current->item->subtype && ( (AmmunitionItem *) current->item)->getNumber() > number) {
         ammo = current;
         number = ((AmmunitionItem *) current->item)->getNumber();

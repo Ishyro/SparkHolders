@@ -23,12 +23,15 @@ Action * GearAction::execute(Adventure * adventure) {
       user->reload(slot1, ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_SWAP_GEAR:
-      if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3 || slot1->slot == ITEM_SLOT_WEAPON_4) &&
-        (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3 || slot2->slot == ITEM_SLOT_WEAPON_4)) {
-        user->getGear()->swapWeapon(slot1->slot, slot2->slot);
-      }
-      else {
-        user->getGear()->swapItem(slot1, slot2);
+      if((slot1->id == user->id && slot2->id == user->id) || (slot1->id == user->getGear()->getBag()->id && slot2->id == user->getGear()->getBag()->id)) {
+        if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3) &&
+          (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3)) {
+          user->getGear()->swapWeapon(slot1->slot, slot2->slot);
+        }
+        else {
+          user->getGear()->swapItem(slot1, slot2);
+        }
+        user->setNeedToSend(true);
       }
       break;
     case ACTION_GRAB:
@@ -63,9 +66,12 @@ void GearAction::computeTime(Adventure * adventure) {
       time = user->getReloadTime(ITEM_SLOT_WEAPON_1);
       break;
     case ACTION_SWAP_GEAR:
-      if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3 || slot1->slot == ITEM_SLOT_WEAPON_4) &&
-        (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3 || slot2->slot == ITEM_SLOT_WEAPON_4)) {
+      if((slot1->slot == ITEM_SLOT_WEAPON_1 || slot1->slot == ITEM_SLOT_WEAPON_2 || slot1->slot == ITEM_SLOT_WEAPON_3) &&
+        (slot2->slot == ITEM_SLOT_WEAPON_1 || slot2->slot == ITEM_SLOT_WEAPON_2 || slot2->slot == ITEM_SLOT_WEAPON_3)) {
         time = user->getSwapTime(slot1->slot, slot2->slot);
+      }
+      else {
+        time = 5;
       }
       break;
     case ACTION_USE_ITEM:

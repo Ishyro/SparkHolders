@@ -9,6 +9,7 @@
 #include "Values.h"
 
 typedef struct ItemSlot {
+  int64_t id;
   int32_t x;
   int32_t y;
   int32_t slot;
@@ -93,6 +94,7 @@ class ContainerItem : public GearItem {
     void add_all(std::list<Item *> items);
     Item * remove(int32_t x, int32_t y);
     bool move(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+    bool trymove(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
     float getWeight();
     std::list<ItemSlot *> getItems();
     std::string to_string();

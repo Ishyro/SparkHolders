@@ -51,12 +51,18 @@ func _physics_process(_delta):
 			# invert x axis
 			movement_vec2.x = -movement_vec2.x
 			movement_vec2 = movement_vec2.rotated(camera.rotation.y - PI / 2.)
-			map.send_oriented_action(Values.ACTION_MOVE, rad_to_deg(movement_vec2.angle()))
+			map.send_oriented_action(Values.macros["ACTION_MOVE"], rad_to_deg(movement_vec2.angle()))
 
 func _unhandled_input(event):
 	if event.is_action_pressed("pause"):
 		if character_sheet.visible:
 			character_sheet.visible = false
+		elif hud.inventory.visible:
+			hud.inventory.visible = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		elif hud.skillbook.visible:
+			hud.skillbook.visible = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			pause_state = not pause_state
 			if pause_state:
@@ -106,7 +112,7 @@ func _unhandled_input(event):
 			if not hud.inventory.visible:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				Values.free_mouse_state = true
-				hud.inventory.display_inventory()
+				hud.inventory.display_inventory(false, false)
 			else:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				Values.free_mouse_state = false
@@ -123,8 +129,8 @@ func _unhandled_input(event):
 		# Actions
 		if not Values.free_mouse_state and Values.updating_state and not Values.link.hasState():
 			if event.is_action_pressed("interact"):
-				map.send_targeted_action(Values.ACTION_ACTIVATION, Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
+				map.send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
 			if event.is_action_pressed("attack"):
-				map.send_targeted_action(Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
+				map.send_targeted_action(Values.macros["ACTION_STRIKE"], Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
 			if event.is_action_pressed("skill"):
-				map.send_targeted_action(Values.ACTION_STRIKE, Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
+				map.send_targeted_action(Values.macros["ACTION_STRIKE"], Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)

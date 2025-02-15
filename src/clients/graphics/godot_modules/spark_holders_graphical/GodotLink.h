@@ -74,6 +74,7 @@ public:
   Array getSkillsFromCharacter();
   Dictionary getDataFromProjectile(ProjectileDisplay * projectile);
   Dictionary getDataFromFurniture(Furniture * furniture);
+  Dictionary getItemSlot(int64_t item_id);
   Array getStartingAttributes();
   Array getStartingWays();
   void send_action(Dictionary action);

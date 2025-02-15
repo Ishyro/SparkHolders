@@ -226,7 +226,6 @@ int32_t main(int32_t argc, char ** argv) {
       }
     }
     adventure->incrTick();
-    std::cout << adventure->getTime().to_string_clock() << std::endl;
   }
   delete adventure;
   ss->close();

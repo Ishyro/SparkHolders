@@ -103,6 +103,7 @@ func update(character_data: Dictionary):
 	change_amount("HEALTH", character_data["hp"], character_data["maxHp"])
 	change_amount("MANA", character_data["mana"], character_data["maxMana"])
 	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
+	inventory.update_inventory()
 
 # Skills
 func display_skillbook():
@@ -128,6 +129,12 @@ func _on_skillbook_close_pressed():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	Values.free_mouse_state = false
 	skillbook.visible = false
+
+func _on_skill_book_visibility_changed():
+	if visible:
+		Values.link.pause()
+	else:
+		Values.link.unpause()
 
 func get_skill(number: int):
 	return current_skills[current_skill_slot][number].data

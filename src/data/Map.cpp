@@ -20,8 +20,6 @@
 #include "util/String.h"
 #include "util/MathUtil.h"
 
-#include <iostream>
-
 std::list<Character *> Map::getCharacters() { return characters; }
 std::list<Projectile *> Map::getProjectiles() { return projectiles; }
 std::list<Furniture *> Map::getFurnitures() { return furnitures; }

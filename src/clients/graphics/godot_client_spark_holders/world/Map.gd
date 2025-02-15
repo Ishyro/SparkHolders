@@ -44,8 +44,6 @@ var base_projectile = preload("res://models/projectile.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Values.tickrate = Values.link.getTickRate()
-	Values.macros = Values.link.getMacros()
 	mutex = Mutex.new()
 	Values.link.getState()
 	owned_character = Values.link.getPlayerId()
@@ -151,31 +149,30 @@ func add_block(coord: Vector3):
 	collider.collision_mask = 0x0
 	collider.set_transform(Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
 	var shape = CollisionShape3D.new()
-	match blocks_data[current_blocks[coord]]["type"]:
-		Values.BLOCK_SOLID:
-			shape.shape = BoxShape3D.new()
-		Values.BLOCK_LIQUID:
-			shape.shape = BoxShape3D.new()
-		Values.BLOCK_SLOPE:
-			shape.shape = ConvexPolygonShape3D.new()
-			shape.shape.set_points(
-				PackedVector3Array(
-					[
-						Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
-						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
-					]
-				)
+	if blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_SOLID"]:
+		shape.shape = BoxShape3D.new()
+	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_LIQUID"]:
+		shape.shape = BoxShape3D.new()
+	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_SLOPE"]:
+		shape.shape = ConvexPolygonShape3D.new()
+		shape.shape.set_points(
+			PackedVector3Array(
+				[
+					Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
+					Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
+				]
 			)
-		Values.BLOCK_STAIRS:
-			shape.shape = ConvexPolygonShape3D.new()
-			shape.shape.set_points(
-				PackedVector3Array(
-					[
-						Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
-						Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
-					]
-				)
+		)
+	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_STAIRS"]:
+		shape.shape = ConvexPolygonShape3D.new()
+		shape.shape.set_points(
+			PackedVector3Array(
+				[
+					Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
+					Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
+				]
 			)
+		)
 	shape.rotation_degrees = Vector3(0, 90 + blocks_data[current_blocks[coord]]["orientation"], 0)
 	collider.add_child(shape)
 	n_ground.add_child(collider)
@@ -218,19 +215,18 @@ func display_map():
 		var block_type = current_blocks[block]
 		var coord = Vector3.ZERO
 		var angle_offset
-		match blocks_data[block_type]["type"]:
-			Values.BLOCK_SOLID:
-				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
-				angle_offset = 90
-			Values.BLOCK_LIQUID:
-				coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
-				angle_offset = 90
-			Values.BLOCK_SLOPE:
-				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
-				angle_offset = 90
-			Values.BLOCK_STAIRS:
-				coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
-				angle_offset = 180
+		if blocks_data[block_type]["type"] == Values.macros["BLOCK_SOLID"]:
+			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+			angle_offset = 90
+		elif blocks_data[block_type]["type"] == Values.macros["BLOCK_LIQUID"]:
+			coord = Vector3(block.x + 0.5, block.y + 0.8, block.z + 0.5)
+			angle_offset = 90
+		elif blocks_data[block_type]["type"] == Values.macros["BLOCK_SLOPE"]:
+			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+			angle_offset = 90
+		elif blocks_data[block_type]["type"] == Values.macros["BLOCK_STAIRS"]:
+			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+			angle_offset = 180
 		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(angle_offset + blocks_data[block_type]["orientation"])))
 		block_current[block_type] = block_current[block_type] + 1
 	for coord in furnitures_data:
@@ -244,19 +240,18 @@ func initialize_block(block: String):
 		var multimeshinstance = MultiMeshInstance3D.new()
 		var multimesh = MultiMesh.new()
 		var mesh = BoxMesh.new()
-		match blocks_data[block]["type"]:
-			Values.BLOCK_SOLID:
-				mesh.set_size(Vector3.ONE)
-			Values.BLOCK_LIQUID:
-				mesh = PlaneMesh.new()
-				mesh.orientation = PlaneMesh.FACE_Y
-				mesh.set_size(Vector2(1, 1))
-			Values.BLOCK_SLOPE:
-				mesh = PrismMesh.new()
-				mesh.left_to_right = 0
-			Values.BLOCK_STAIRS:
-				mesh = ArrayMesh.new()
-				var vertices = PackedVector3Array(
+		if blocks_data[block]["type"] == Values.macros["BLOCK_SOLID"]:
+			mesh.set_size(Vector3.ONE)
+		elif blocks_data[block]["type"] == Values.macros["BLOCK_LIQUID"]:
+			mesh = PlaneMesh.new()
+			mesh.orientation = PlaneMesh.FACE_Y
+			mesh.set_size(Vector2(1, 1))
+		elif blocks_data[block]["type"] == Values.macros["BLOCK_SLOPE"]:
+			mesh = PrismMesh.new()
+			mesh.left_to_right = 0
+		elif blocks_data[block]["type"] == Values.macros["BLOCK_STAIRS"]:
+			mesh = ArrayMesh.new()
+			var vertices = PackedVector3Array(
 					[
 						# front bottom
 						Vector3(-0.5, 0, 0), Vector3(0.5, 0, 0),#0-1
@@ -297,8 +292,8 @@ func initialize_block(block: String):
 						Vector3(0.5, 0.25, -0.5), Vector3(0.5, 0.25, -0.25), Vector3(0.5, 0.25, 0), #49-50-51
 						Vector3(0.5, 0.5, -0.5), Vector3(0.5, 0.5, -0.25), #52-53
 					]
-				)
-				var indexes = PackedInt32Array(
+			)
+			var indexes = PackedInt32Array(
 					[
 						# front bottom
 						0,1,2, 1,3,2,
@@ -330,9 +325,9 @@ func initialize_block(block: String):
 						46,47,49, 47,51,49,
 						49,50,52, 50,53,52,
 					]
-				)
-				# our FRONT is x axis instead of z, so FRONT is LEFT
-				var normals = PackedVector3Array(
+			)
+			# our FRONT is x axis instead of z, so FRONT is LEFT
+			var normals = PackedVector3Array(
 					[
 						# front bottom
 						(Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(), (Vector3.MODEL_FRONT + Vector3.MODEL_TOP).normalized(),#0-1
@@ -373,8 +368,8 @@ func initialize_block(block: String):
 						Vector3.MODEL_LEFT, Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #49-50-51
 						Vector3.MODEL_LEFT, (Vector3.MODEL_LEFT + Vector3.MODEL_TOP).normalized(), #52-53
 					]
-				)
-				var uvs = PackedVector2Array(
+			)
+			var uvs = PackedVector2Array(
 					[
 						# front bottom
 						Vector2(0, 0), Vector2(1.0 / 3.0, 0),#0-1
@@ -415,20 +410,20 @@ func initialize_block(block: String):
 						Vector2(0, 0.125), Vector2(0.25 / 3.0, 0.125), Vector2(0.5 / 3.0, 0.125), #49-50-51
 						Vector2(0, 0), Vector2(0.25 / 3.0, 0), #52-53
 					]
-				)
-				var tool = SurfaceTool.new()
-				tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-				for i in range(vertices.size()):
-					tool.set_uv(uvs[i])
-					tool.set_normal(normals[i])
-					tool.add_vertex(vertices[i])
-				for index in indexes:
-					tool.add_index(index)
-				#tool.generate_normals()
-				tool.generate_tangents()
-				mesh = tool.commit()
+			)
+			var tool = SurfaceTool.new()
+			tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+			for i in range(vertices.size()):
+				tool.set_uv(uvs[i])
+				tool.set_normal(normals[i])
+				tool.add_vertex(vertices[i])
+			for index in indexes:
+				tool.add_index(index)
+			#tool.generate_normals()
+			tool.generate_tangents()
+			mesh = tool.commit()
 		var material = materials[block]
-		if blocks_data[block]["type"] == Values.BLOCK_SOLID || blocks_data[block]["type"] == Values.BLOCK_STAIRS:
+		if blocks_data[block]["type"] == Values.macros["BLOCK_SOLID"] || blocks_data[block]["type"] == Values.macros["BLOCK_STAIRS"]:
 			material.uv1_scale = Vector3(3.0, 2.0, 1.0)
 		mesh.surface_set_material(0, material)
 		multimesh.set_mesh(mesh)
@@ -437,7 +432,7 @@ func initialize_block(block: String):
 		multiMeshInstances[block] = multimeshinstance
 		n_blocks.add_child(multimeshinstance)
 		
-		if blocks_data[block]["type"] != Values.BLOCK_LIQUID && blocks_data[block]["type"] != Values.BLOCK_GAS && material.albedo_texture:
+		if blocks_data[block]["type"] != Values.macros["BLOCK_LIQUID"] && blocks_data[block]["type"] != Values.macros["BLOCK_GAS"] && material.albedo_texture:
 			var img = material.albedo_texture.get_image()
 			blocks_img[block] = ImageTexture.create_from_image(img)
 
@@ -531,7 +526,7 @@ func send_oriented_action(type, orientation):
 	Values.action["arg1"] = orientation
 	Values.action["arg2"] = 0
 	Values.action["mana_cost"] = 0
-	if type == Values.ACTION_MOVE:
+	if type == Values.macros["ACTION_MOVE"]:
 		Values.move_set = true
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()
@@ -548,16 +543,7 @@ func send_targeted_action(type, target_type, target_id, pos):
 	Values.action["mana_cost"] = 0
 	Values.link.send_action(Values.action)
 	Values.action_mutex.unlock()
-	
-func send_gear_action(type, item_id):
-	Values.action_mutex.lock()
-	Values.action["type"] = type
-	Values.action["arg1"] = item_id
-	Values.action["arg2"] = 0
-	Values.action["mana_cost"] = 0
-	Values.link.send_action(Values.action)
-	Values.action_mutex.unlock()
-	
+
 func send_skill_action(type, target_type, target_id, pos, skill, mana_cost):
 	Values.action_mutex.lock()
 	Values.action["type"] = type

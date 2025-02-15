@@ -26,8 +26,8 @@ data/items/armors/iron_boots.data
 data/items/armors/iron_cuirass.data
 data/items/armors/iron_gauntlets.data
 data/items/armors/iron_helmet.data
+data/items/inventory.data
 data/items/leather_bag.data
-data/items/leather_belt.data
 data/items/armors/leather_boots.data
 data/items/armors/leather_cuirass.data
 data/items/armors/leather_gauntlets.data

@@ -239,9 +239,26 @@ Database::Database() {
   macros.insert(std::make_pair("ITEM_MATERIAL", ITEM_MATERIAL));
   macros.insert(std::make_pair("ITEM_POTION", ITEM_POTION));
   macros.insert(std::make_pair("ITEM_BAG", ITEM_BAG));
-  macros.insert(std::make_pair("ITEM_BELT", ITEM_BELT));
+  macros.insert(std::make_pair("ITEM_BASE_INVENTORY", ITEM_BASE_INVENTORY));
   macros.insert(std::make_pair("ITEM_POUCH", ITEM_POUCH));
   macros.insert(std::make_pair("ITEM_MAGIC_BOX", ITEM_MAGIC_BOX));
+
+  // item_slot_type
+  macros.insert(std::make_pair("ITEM_SLOT_MANTLE", ITEM_SLOT_MANTLE));
+  macros.insert(std::make_pair("ITEM_SLOT_HELMET", ITEM_SLOT_HELMET));
+  macros.insert(std::make_pair("ITEM_SLOT_GAUNTLETS", ITEM_SLOT_GAUNTLETS));
+  macros.insert(std::make_pair("ITEM_SLOT_ARMOR", ITEM_SLOT_ARMOR));
+  macros.insert(std::make_pair("ITEM_SLOT_BOOTS", ITEM_SLOT_BOOTS));
+  macros.insert(std::make_pair("ITEM_SLOT_LANTERN", ITEM_SLOT_LANTERN));
+  macros.insert(std::make_pair("ITEM_SLOT_AMULET", ITEM_SLOT_AMULET));
+  macros.insert(std::make_pair("ITEM_SLOT_RING_1", ITEM_SLOT_RING_1));
+  macros.insert(std::make_pair("ITEM_SLOT_RING_2", ITEM_SLOT_RING_2));
+  macros.insert(std::make_pair("ITEM_SLOT_WEAPON_1", ITEM_SLOT_WEAPON_1));
+  macros.insert(std::make_pair("ITEM_SLOT_WEAPON_2", ITEM_SLOT_WEAPON_2));
+  macros.insert(std::make_pair("ITEM_SLOT_WEAPON_3", ITEM_SLOT_WEAPON_3));
+  macros.insert(std::make_pair("ITEM_SLOT_BAG", ITEM_SLOT_BAG));
+  macros.insert(std::make_pair("ITEM_SLOT_INSIDE_BASE_INVENTORY", ITEM_SLOT_INSIDE_BASE_INVENTORY));
+  macros.insert(std::make_pair("ITEM_SLOT_INSIDE_BAG", ITEM_SLOT_INSIDE_BAG));
 
   // furniture_type
   macros.insert(std::make_pair("FURNITURE_BASIC", FURNITURE_BASIC)); 
@@ -377,6 +394,37 @@ Database::Database() {
   macros.insert(std::make_pair("SETTINGS_PAUSE_ALL", SETTINGS_PAUSE_ALL));
   macros.insert(std::make_pair("SETTINGS_PAUSE_MASTER", SETTINGS_PAUSE_MASTER));
   macros.insert(std::make_pair("SETTINGS_PAUSE_NONE", SETTINGS_PAUSE_NONE));
+
+  // action_type
+  macros.insert(std::make_pair("ACTION_IDLE", ACTION_IDLE));
+  macros.insert(std::make_pair("ACTION_MOVE", ACTION_MOVE));
+  macros.insert(std::make_pair("ACTION_STRIKE", ACTION_STRIKE));
+  macros.insert(std::make_pair("ACTION_RESPITE", ACTION_RESPITE));
+  macros.insert(std::make_pair("ACTION_ACTIVATION", ACTION_ACTIVATION));
+  macros.insert(std::make_pair("ACTION_CHANNEL", ACTION_CHANNEL));
+  macros.insert(std::make_pair("ACTION_USE_SKILL", ACTION_USE_SKILL));
+  macros.insert(std::make_pair("ACTION_USE_ITEM", ACTION_USE_ITEM));
+  macros.insert(std::make_pair("ACTION_RELOAD", ACTION_RELOAD));
+  macros.insert(std::make_pair("ACTION_GRAB", ACTION_GRAB));
+  macros.insert(std::make_pair("ACTION_SWAP_GEAR", ACTION_SWAP_GEAR));
+  macros.insert(std::make_pair("ACTION_REST", ACTION_REST));
+  macros.insert(std::make_pair("ACTION_TALKING", ACTION_TALKING));
+  macros.insert(std::make_pair("ACTION_ECONOMICS", ACTION_ECONOMICS));
+  macros.insert(std::make_pair("ACTION_BREAKPOINT", ACTION_BREAKPOINT));
+
+  // socket_msg_type
+  macros.insert(std::make_pair("SOCKET_MSG_CONNECT", SOCKET_MSG_CONNECT));
+  macros.insert(std::make_pair("SOCKET_MSG_RECONNECT", SOCKET_MSG_RECONNECT));
+  macros.insert(std::make_pair("SOCKET_MSG_ADVENTURE", SOCKET_MSG_ADVENTURE));
+  macros.insert(std::make_pair("SOCKET_MSG_CHOICE", SOCKET_MSG_CHOICE));
+  macros.insert(std::make_pair("SOCKET_MSG_READY", SOCKET_MSG_READY));
+  macros.insert(std::make_pair("SOCKET_MSG_CHARACTER", SOCKET_MSG_CHARACTER));
+  macros.insert(std::make_pair("SOCKET_MSG_ACTION", SOCKET_MSG_ACTION));
+  macros.insert(std::make_pair("SOCKET_MSG_STATE", SOCKET_MSG_STATE));
+  macros.insert(std::make_pair("SOCKET_MSG_PAUSE", SOCKET_MSG_PAUSE));
+  macros.insert(std::make_pair("SOCKET_MSG_UNPAUSE", SOCKET_MSG_UNPAUSE));
+  macros.insert(std::make_pair("SOCKET_MSG_QUIT", SOCKET_MSG_QUIT));
+  macros.insert(std::make_pair("SOCKET_MSG_SHUTDOWN", SOCKET_MSG_SHUTDOWN));
 }
 
 std::map<const std::string, const int32_t> Database::getMacros() { return macros; }

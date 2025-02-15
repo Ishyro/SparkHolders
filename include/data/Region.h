@@ -22,8 +22,6 @@
 
 #include "util/MathUtil.h"
 
-#include <iostream>
-
 class Region {
   public:
     const MathUtil::Vector3i id;

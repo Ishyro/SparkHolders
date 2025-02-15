@@ -332,14 +332,9 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       return new GearAction(ACTION_RELOAD, adventure, nullptr, self, slot, nullptr);
     }
     WeaponItem * weapon = nullptr;
-    weapon = self->getGear()->getBackupWeapon_1();
+    weapon = self->getGear()->getBackupWeapon();
     if(weapon != nullptr) {
       slot->slot = ITEM_SLOT_WEAPON_3;
-      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
-    }
-    weapon = self->getGear()->getBackupWeapon_2();
-    if(weapon != nullptr) {
-      slot->slot = ITEM_SLOT_WEAPON_4;
       return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
     }
   }
@@ -351,14 +346,9 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
       return new GearAction(ACTION_RELOAD, adventure, nullptr, self, slot, nullptr);
     }
     WeaponItem * weapon = nullptr;
-    weapon = self->getGear()->getBackupWeapon_1();
+    weapon = self->getGear()->getBackupWeapon();
     if(weapon != nullptr) {
       slot->slot = ITEM_SLOT_WEAPON_3;
-      return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
-    }
-    weapon = self->getGear()->getBackupWeapon_2();
-    if(weapon != nullptr) {
-      slot->slot = ITEM_SLOT_WEAPON_4;
       return new GearAction(ACTION_SWAP_GEAR, adventure, nullptr, self, slot, nullptr);
     }
   }

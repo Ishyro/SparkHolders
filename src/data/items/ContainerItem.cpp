@@ -21,8 +21,8 @@ bool ContainerItem::add(Item * item, int32_t x, int32_t y) {
   if(subtype == ITEM_BAG) {
     toadd->slot = ITEM_SLOT_INSIDE_BAG;
   }
-  else if(subtype == ITEM_BELT) {
-    toadd->slot = ITEM_SLOT_INSIDE_BELT;
+  else if(subtype == ITEM_BASE_INVENTORY) {
+    toadd->slot = ITEM_SLOT_INSIDE_BASE_INVENTORY;
   }
   toadd->item = item;
   if(y > contentY - item->sizeY || x > contentX - item->sizeX) {
@@ -44,8 +44,8 @@ void ContainerItem::add_all(std::list<Item *> items) {
   if(subtype == ITEM_BAG) {
     slot_type = ITEM_SLOT_INSIDE_BAG;
   }
-  else if(subtype == ITEM_BELT) {
-    slot_type = ITEM_SLOT_INSIDE_BELT;
+  else if(subtype == ITEM_BASE_INVENTORY) {
+    slot_type = ITEM_SLOT_INSIDE_BASE_INVENTORY;
   }
   int32_t current_x = 0;
   int32_t current_y = 0;
@@ -90,6 +90,19 @@ bool ContainerItem::move(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
     return false;
   }
   return true;
+}
+
+bool ContainerItem::trymove(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
+  Item * item = remove(x1, y1);
+  if(!add(item, x2, y2)) {
+    add(item, x1, y1);
+    return false;
+  }
+  else {
+    remove(x2, y2);
+    add(item, x1, y1);
+    return true;
+  }
 }
 
 float ContainerItem::getWeight() {

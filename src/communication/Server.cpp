@@ -64,6 +64,7 @@ namespace Server {
       case ACTION_GRAB:
       case ACTION_USE_ITEM: {
         ItemSlot * slot = new ItemSlot();
+        slot->id = String::extract_long(ss);
         slot->x = String::extract_int(ss);
         slot->y = String::extract_int(ss);
         slot->slot = String::extract_int(ss);
@@ -72,10 +73,12 @@ namespace Server {
       }
       case ACTION_SWAP_GEAR: {
         ItemSlot * slot1 = new ItemSlot();
+        slot1->id = String::extract_long(ss);
         slot1->x = String::extract_int(ss);
         slot1->y = String::extract_int(ss);
         slot1->slot = String::extract_int(ss);
         ItemSlot * slot2 = new ItemSlot();
+        slot2->id = String::extract_long(ss);
         slot2->x = String::extract_int(ss);
         slot2->y = String::extract_int(ss);
         slot2->slot = String::extract_int(ss);

@@ -276,11 +276,9 @@ class SpeechManager;
 #define ITEM_SLOT_WEAPON_1 10
 #define ITEM_SLOT_WEAPON_2 11
 #define ITEM_SLOT_WEAPON_3 12
-#define ITEM_SLOT_WEAPON_4 13
-#define ITEM_SLOT_BAG 14
-#define ITEM_SLOT_BELT 15
-#define ITEM_SLOT_INSIDE_BAG 16
-#define ITEM_SLOT_INSIDE_BELT 17
+#define ITEM_SLOT_BAG 13
+#define ITEM_SLOT_INSIDE_BASE_INVENTORY 14
+#define ITEM_SLOT_INSIDE_BAG 15
 
 // other_items_type
 
@@ -288,7 +286,7 @@ class SpeechManager;
 #define ITEM_MATERIAL 2
 #define ITEM_POTION 3
 #define ITEM_BAG 4
-#define ITEM_BELT 5
+#define ITEM_BASE_INVENTORY 5
 #define ITEM_POUCH 6
 #define ITEM_MAGIC_BOX 7
 

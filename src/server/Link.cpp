@@ -94,7 +94,7 @@ void Link::listen() {
     case SOCKET_MSG_SHUTDOWN:
         std::cout << "shutdown" << std::endl;
       if(master) {
-        std::cout << "shutdown real" << std::endl;
+        std::cout << "master shutdown" << std::endl;
         shuting_down = true;
       }
       markClosed();

@@ -93,7 +93,7 @@ namespace FileOpener {
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cout << "File not found: " + fileName << std::endl;
+      std::cerr << "File not found: " + fileName << std::endl;
     }
     std::string line;
     std::string delimiter = "=";
@@ -146,7 +146,7 @@ namespace FileOpener {
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cout << "File not found: " + fileName << std::endl;
+      std::cerr << "File not found: " + fileName << std::endl;
     }
     std::string line;
     std::string name;
@@ -857,21 +857,17 @@ namespace FileOpener {
     WeaponItem * weapon_2 = weapon_2_str != "none" ? (WeaponItem *) Item::init(
       database->getItem(weapon_2_str.substr(0, weapon_2_str.find('|'))), stoi(weapon_2_str.substr(weapon_2_str.find('|') + 1, weapon_2_str.length())), 1
     ) : nullptr;
-    std::string weapon_3_str = values.at("backup_weapon_1");
-    WeaponItem * backup_weapon_1 = weapon_3_str != "none" ? (WeaponItem *) Item::init(
+    std::string weapon_3_str = values.at("backup_weapon");
+    WeaponItem * backup_weapon = weapon_3_str != "none" ? (WeaponItem *) Item::init(
       database->getItem(weapon_3_str.substr(0, weapon_3_str.find('|'))), stoi(weapon_3_str.substr(weapon_3_str.find('|') + 1, weapon_3_str.length())), 1
     ) : nullptr;
-    std::string weapon_4_str = values.at("backup_weapon_2");
-    WeaponItem * backup_weapon_2 = weapon_4_str != "none" ? (WeaponItem *) Item::init(
-      database->getItem(weapon_4_str.substr(0, weapon_4_str.find('|'))), stoi(weapon_4_str.substr(weapon_4_str.find('|') + 1, weapon_4_str.length())), 1
+    std::string base_inventory_str = values.at("base_inventory");
+    ContainerItem * base_inventory = base_inventory_str != "none" ? (ContainerItem *) Item::init(
+      database->getItem(base_inventory_str.substr(0, base_inventory_str.find('|'))), stoi(base_inventory_str.substr(base_inventory_str.find('|') + 1, base_inventory_str.length())), 1
     ) : nullptr;
     std::string bag_str = values.at("bag");
     ContainerItem * bag = bag_str != "none" ? (ContainerItem *) Item::init(
       database->getItem(bag_str.substr(0, bag_str.find('|'))), stoi(bag_str.substr(bag_str.find('|') + 1, bag_str.length())), 1
-    ) : nullptr;
-    std::string belt_str = values.at("belt");
-    ContainerItem * belt = belt_str != "none" ? (ContainerItem *) Item::init(
-      database->getItem(belt_str.substr(0, belt_str.find('|'))), stoi(belt_str.substr(belt_str.find('|') + 1, belt_str.length())), 1
     ) : nullptr;
     std::list<Item *> * items = new std::list<Item *>();
     std::istringstream is_items(values.at("items"));
@@ -896,10 +892,9 @@ namespace FileOpener {
       ring_2,
       weapon_1,
       weapon_2,
-      backup_weapon_1,
-      backup_weapon_2,
+      backup_weapon,
+      base_inventory,
       bag,
-      belt,
       *items
     );
     database->addGear(gear);
@@ -1376,7 +1371,7 @@ namespace FileOpener {
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cout << "File not found: " + fileName << std::endl;
+      std::cerr << "File not found: " + fileName << std::endl;
     }
     // skip lines until we reach the map itself
     while(getline(file, line) && line != "!end");
@@ -2112,7 +2107,7 @@ namespace FileOpener {
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cout << "File not found: " + fileName << std::endl;
+      std::cerr << "File not found: " + fileName << std::endl;
     }
     std::string line;
     while(getline(file,line)) {
