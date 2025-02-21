@@ -29,12 +29,12 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     t->x = origin_x;
     t->y = origin_y;
     result = new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   if(++current_round < target_round) {
     result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   else {
@@ -46,7 +46,7 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     target->y = origin_y;
     // EhteralCasters should have only one skill
     result = new SkillAction(ACTION_USE_SKILL, adventure, nullptr, c, target, c->getSkills().front(), 1, 1, 1);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   */

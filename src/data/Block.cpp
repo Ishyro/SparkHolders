@@ -11,7 +11,7 @@ std::string Block::to_string() {
   String::insert_bool(ss, opaque);
   String::insert_int(ss, light);
   String::insert_int(ss, orientation);
-  String::insert_float(ss, ap_cost);
+  String::insert_float(ss, speed);
   std::string result = ss->str();
   delete ss;
   return result;
@@ -26,7 +26,7 @@ Block * Block::from_string(std::string to_read) {
   bool opaque = String::extract_bool(ss);
   int32_t light = String::extract_int(ss);
   int32_t orientation = String::extract_int(ss);
-  float ap_cost = String::extract_float(ss);
+  float speed = String::extract_float(ss);
   delete ss;
-  return new Block(name, type, material, unwalkable, opaque, light, orientation, ap_cost);
+  return new Block(name, type, material, unwalkable, opaque, light, orientation, speed);
 }

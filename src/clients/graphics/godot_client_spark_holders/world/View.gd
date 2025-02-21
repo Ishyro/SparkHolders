@@ -51,10 +51,10 @@ func _physics_process(_delta):
 			# invert x axis
 			movement_vec2.x = -movement_vec2.x
 			movement_vec2 = movement_vec2.rotated(camera.rotation.y - PI / 2.)
-			map.send_oriented_action(Values.macros["ACTION_MOVE"], rad_to_deg(movement_vec2.angle()))
+			send_oriented_action(Values.macros["ACTION_MOVE"], rad_to_deg(movement_vec2.angle()))
 
 func _unhandled_input(event):
-	if event.is_action_pressed("pause"):
+	if event.is_action_released("pause"):
 		if character_sheet.visible:
 			character_sheet.visible = false
 		elif hud.inventory.visible:
@@ -79,36 +79,36 @@ func _unhandled_input(event):
 			Values.free_mouse_state = false
 		elif event is InputEventMouseMotion:
 			_mouse_motion += event.relative
-		if event.is_action_pressed("skill_tab_1"):
+		if event.is_action_released("skill_tab_1"):
 			hud.skill_button_1.set_pressed(true)
-		if event.is_action_pressed("skill_tab_2"):
+		if event.is_action_released("skill_tab_2"):
 			hud.skill_button_2.set_pressed(true)
-		if event.is_action_pressed("skill_tab_3"):
+		if event.is_action_released("skill_tab_3"):
 			hud.skill_button_3.set_pressed(true)
-		if event.is_action_pressed("skill_tab_4"):
+		if event.is_action_released("skill_tab_4"):
 			hud.skill_button_4.set_pressed(true)
-		if event.is_action_pressed("skill_tab_5"):
+		if event.is_action_released("skill_tab_5"):
 			hud.skill_button_5.set_pressed(true)
-		if event.is_action_pressed("skill_tab_6"):
+		if event.is_action_released("skill_tab_6"):
 			hud.skill_button_6.set_pressed(true)
-		if event.is_action_pressed("skill_tab_7"):
+		if event.is_action_released("skill_tab_7"):
 			hud.skill_button_7.set_pressed(true)
-		if event.is_action_pressed("skill_tab_8"):
+		if event.is_action_released("skill_tab_8"):
 			hud.skill_button_8.set_pressed(true)
-		if event.is_action_pressed("skill_tab_9"):
+		if event.is_action_released("skill_tab_9"):
 			hud.skill_button_9.set_pressed(true)
-		if event.is_action_pressed("skill_tab_10"):
+		if event.is_action_released("skill_tab_10"):
 			hud.skill_button_10.set_pressed(true)
-		if event.is_action_pressed("skill_tab_11"):
+		if event.is_action_released("skill_tab_11"):
 			hud.skill_button_11.set_pressed(true)
-		if event.is_action_pressed("skill_tab_12"):
+		if event.is_action_released("skill_tab_12"):
 			hud.skill_button_12.set_pressed(true)
-		if event.is_action_pressed("display_stats"):
+		if event.is_action_released("display_stats"):
 			if not character_sheet.visible:
 				character_sheet.display_stats()
 			else:
 				character_sheet.visible = false
-		if event.is_action_pressed("inventory"):
+		if event.is_action_released("inventory"):
 			if not hud.inventory.visible:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				Values.free_mouse_state = true
@@ -117,7 +117,7 @@ func _unhandled_input(event):
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 				Values.free_mouse_state = false
 				hud.inventory.visible = false
-		if event.is_action_pressed("skill_book"):
+		if event.is_action_released("skill_book"):
 			if not hud.skillbook.visible:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				Values.free_mouse_state = true
@@ -127,10 +127,68 @@ func _unhandled_input(event):
 				Values.free_mouse_state = false
 				hud.skillbook.visible = false
 		# Actions
-		if not Values.free_mouse_state and Values.updating_state and not Values.link.hasState():
-			if event.is_action_pressed("interact"):
-				map.send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.TARGET_BLOCK, 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
-			if event.is_action_pressed("attack"):
-				map.send_targeted_action(Values.macros["ACTION_STRIKE"], Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
-			if event.is_action_pressed("skill"):
-				map.send_targeted_action(Values.macros["ACTION_STRIKE"], Values.TARGET_CHARACTER, Values.selected_target.id, Vector3.ZERO)
+		if not Values.free_mouse_state: #and not Values.updating_state and not Values.link.hasState():
+			if event.is_action_released("interact"):
+				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_BLOCK"], 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
+			if event.is_action_released("attack"):
+				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_target.id, Vector3.ZERO)
+			if event.is_action_released("skill"):
+				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_target.id, Vector3.ZERO)
+			if event.is_action_released("jump"):
+				send_base_action(Values.macros["ACTION_JUMP"])
+			if event.is_action_pressed("run") or event.is_action_released("run"):
+				send_base_action(Values.macros["ACTION_RUN"])
+
+func send_base_action(type):
+	if type != Values.macros["ACTION_JUMP"] and type != Values.macros["ACTION_RUN"]:
+		Values.action_mutex.lock()
+	Values.action["type"] = type
+	Values.action["arg1"] = 0
+	Values.action["arg2"] = 0
+	Values.action["mana_cost"] = 0
+	Values.link.send_action(Values.action)
+	if type != Values.macros["ACTION_JUMP"] and type != Values.macros["ACTION_RUN"]:
+		Values.action_mutex.unlock()
+	
+func send_oriented_action(type, orientation):
+	if type == Values.macros["ACTION_MOVE"]:
+		Values.action_move_mutex.lock()
+	else:
+		Values.action_mutex.lock()
+	Values.action["type"] = type
+	Values.action["arg1"] = orientation
+	Values.action["arg2"] = 0
+	Values.action["mana_cost"] = 0
+	if type == Values.macros["ACTION_MOVE"]:
+		Values.move_set = true
+	Values.link.send_action(Values.action)
+	if type == Values.macros["ACTION_MOVE"]:
+		Values.action_move_mutex.unlock()
+	else:
+		Values.action_mutex.unlock()
+	
+func send_targeted_action(type, target_type, target_id, pos):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
+	var target = {}
+	target["type"] = target_type
+	target["id"] = target_id
+	target["pos"] = pos
+	Values.action["arg1"] = target
+	Values.action["arg2"] = 0
+	Values.action["mana_cost"] = 0
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()
+
+func send_skill_action(type, target_type, target_id, pos, skill, mana_cost):
+	Values.action_mutex.lock()
+	Values.action["type"] = type
+	var target = {}
+	target["type"] = target_type
+	target["id"] = target_id
+	target["pos"] = pos
+	Values.action["arg1"] = target
+	Values.action["arg2"] = skill
+	Values.action["mana_cost"] = mana_cost
+	Values.link.send_action(Values.action)
+	Values.action_mutex.unlock()

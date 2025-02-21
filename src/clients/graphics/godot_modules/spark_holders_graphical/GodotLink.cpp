@@ -346,7 +346,7 @@ Dictionary GodotLink::getDataFromBlock(String tile_name) {
   result["opaque"] = block->opaque;
   result["light"] = block->light;
   result["orientation"] = block->orientation;
-  result["ap_cost"] = block->ap_cost;
+  result["speed"] = block->speed;
   result["material"] = block->material.c_str();
   return result;
 }
@@ -491,6 +491,9 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["x"] = character->x;
   result["y"] = character->y;
   result["z"] = character->z;
+  result["vx"] = character->vx;
+  result["vy"] = character->vy;
+  result["vz"] = character->vz;
   result["size"] = character->size;
   result["orientation"] = character->orientation;
   result["team"] = character->team.c_str();
@@ -717,6 +720,9 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
 }
 
 Array GodotLink::getStartingAttributes() {
+  #ifdef LOG
+    log << "getStartingAttributes()" << std::endl;
+  #endif
   Array result;
   for(Attributes * attributes : link->getAdventure()->getStartingAttributes()) {
     result.push_back(getDataFromClass(attributes->name.c_str()));
@@ -725,6 +731,9 @@ Array GodotLink::getStartingAttributes() {
 }
 
 Array GodotLink::getStartingWays() {
+  #ifdef LOG
+    log << "getStartingWays()" << std::endl;
+  #endif
   Array result;
   for(Way * way : link->getAdventure()->getStartingWays()) {
     result.push_back(getDataFromWay(way->name.c_str()));
@@ -733,6 +742,9 @@ Array GodotLink::getStartingWays() {
 }
 
 Dictionary GodotLink::getItemSlot(int64_t item_id) {
+  #ifdef LOG
+    log << "getItemSlot(" << item_id << ")" << std::endl;
+  #endif
   Dictionary result;
   for(ItemSlot * slot : link->getPlayer()->getGear()->getItems()) {
     if(slot->item->id == item_id) {
@@ -757,6 +769,8 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_IDLE:
     case ACTION_RESPITE:
     case ACTION_REST:
+    case ACTION_RUN:
+    case ACTION_JUMP:
     case ACTION_BREAKPOINT:
     case ACTION_CHANNEL:
       break;
@@ -826,10 +840,16 @@ void GodotLink::send_action(Dictionary action) {
 }
 
 void GodotLink::pause() {
+  #ifdef LOG
+    log << "pause()" << std::endl;
+  #endif
   link->sendPause();
 }
 
 void GodotLink::unpause() {
+  #ifdef LOG
+    log << "unpause()" << std::endl;
+  #endif
   link->sendUnpause();
 }
 

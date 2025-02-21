@@ -26,7 +26,7 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
   float orientation = 0.F;
   if(!threats.empty()) {
     result = attack(adventure, threats, c);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   selectHungriness(c);
@@ -35,13 +35,13 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
     Action * eat_food = eat(adventure, c);
     if(eat_food != nullptr) {
       result = eat_food;
-      c->setCurrentAction(result);
+      c->setAction(result);
       return result;
     }
   }
   if(sleepy && adventure->getLight() < 4) {
     result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
@@ -52,14 +52,14 @@ Action * RoamerAI::getActions(Adventure * adventure, Character * c) {
     t->x = origin_x;
     t->y = origin_y;
     result = new TargetedAction(ACTION_MOVE, adventure, nullptr, c, t);
-    c->setCurrentAction(result);
+    c->setAction(result);
     return result;
   }
   // we are at destination
   origin_x = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeX;
   origin_y = rand() % adventure->getWorld()->getMap(c->getCurrentMap()->id)->sizeY;
   result = new BaseAction(ACTION_IDLE, adventure, nullptr, c);
-  c->setCurrentAction(result);
+  c->setAction(result);
   return result;
   */
 }

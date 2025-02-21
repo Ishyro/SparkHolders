@@ -66,6 +66,10 @@ typedef struct Time Time;
 
 class SpeechManager;
 
+// special_constants
+
+#define CHUNK_SIZE 16
+
 // block_type
 
 #define BLOCK_SOLID 1
@@ -451,19 +455,21 @@ class SpeechManager;
 
 #define ACTION_IDLE 0
 #define ACTION_MOVE 1
-#define ACTION_STRIKE 2
-#define ACTION_RESPITE 3
-#define ACTION_ACTIVATION 4
-#define ACTION_CHANNEL 5
-#define ACTION_USE_SKILL 6
-#define ACTION_USE_ITEM 7
-#define ACTION_RELOAD 8
-#define ACTION_GRAB 9
-#define ACTION_SWAP_GEAR 10
-#define ACTION_REST 11
-#define ACTION_TALKING 12
-#define ACTION_ECONOMICS 13
-#define ACTION_BREAKPOINT 14
+#define ACTION_RUN 2
+#define ACTION_JUMP 3
+#define ACTION_STRIKE 4
+#define ACTION_RESPITE 5
+#define ACTION_ACTIVATION 6
+#define ACTION_CHANNEL 7
+#define ACTION_USE_SKILL 8
+#define ACTION_USE_ITEM 9
+#define ACTION_RELOAD 10
+#define ACTION_GRAB 11
+#define ACTION_SWAP_GEAR 12
+#define ACTION_REST 13
+#define ACTION_TALKING 14
+#define ACTION_ECONOMICS 15
+#define ACTION_BREAKPOINT 16
 
 // settings
 

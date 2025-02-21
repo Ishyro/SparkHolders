@@ -139,60 +139,6 @@ std::list<Projectile *> Adventure::getProjectiles() {
   return projectiles;
 }
 
-void Adventure::getNPCsActions() {
-  for(Character * npc : getCharacters()) {
-    if(!npc->player_character && npc->getCurrentAction() == nullptr) {
-      Action * action = npc->getAI()->getActions(this, npc);
-      action->computeTime(this);
-      if(action != nullptr) {
-        Action * to_remove = nullptr;
-        for(Action * a : actions) {
-          if(a->getUser() == npc) {
-            to_remove = a;
-            break;
-          }
-        }
-        if(to_remove != nullptr) {
-          actions.remove(to_remove);
-          delete to_remove;
-        }
-        actions.push_back(action);
-        //npc->setCurrentAction(nullptr);
-      }
-    }
-  }
-  actions.sort();
-}
-
-void Adventure::mergeActions(std::list<Action *> to_add) {
-  to_add.sort();
-  actions.merge(to_add);
-}
-
-void Adventure::executeActions() {
-  std::list<Action *> next_actions;
-  for(Action * action : actions) {
-    // the user might have been killed and deleted
-    if(action != nullptr && !action->getUser()->isMarkedDead()) {
-      if(action->getTick() <= 1.F) {
-        Action * next = action->execute(this);
-        if(next != nullptr) {
-          next_actions.push_back(next);
-        }
-        delete action;
-        action = nullptr;
-      }
-      else {
-        action->computeTick(1);
-        next_actions.push_back(action);
-      }
-    }
-  }
-  actions.clear();
-  actions = next_actions;
-  actions.sort();
-}
-
 void Adventure::actAllProjectiles() {
   std::list<Projectile *> projectiles = std::list<Projectile *>();
   /*
@@ -269,6 +215,7 @@ void Adventure::applyIteration() {
       c->applySoulNeeds();
       c->applySpiritNeeds();
       c->applySoulBurn();
+      c->getRegion()->move(c, world);
       Environment e;
       c->hungerStep(e);
       c->thirstStep(e);
@@ -276,6 +223,28 @@ void Adventure::applyIteration() {
       c->sanityStep(e);
       if(!c->isAlive()) {
         //getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
+      }
+      Action * action = c->getAction();
+      if(action != nullptr) {
+        if(action->getTick() <= 1.F) {
+          Action * next = action->execute(this);
+          delete action;
+          action = nullptr;
+        }
+        else {
+          action->computeTick(1);
+        }
+      }
+      action = c->getLegAction();
+      if(action != nullptr) {
+        if(action->getTick() <= 1.F) {
+          Action * next = action->execute(this);
+          delete action;
+          action = nullptr;
+        }
+        else {
+          action->computeTick(1);
+        }
       }
     }
     if(!c->isAlive()) {

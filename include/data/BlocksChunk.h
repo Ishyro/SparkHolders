@@ -24,7 +24,7 @@
 
 #include "util/MathUtil.h"
 
-#define CHUNK_SIZE 16
+#include "Values.h"
 
 class BlocksChunk {
 

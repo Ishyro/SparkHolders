@@ -64,8 +64,6 @@ int32_t main(int32_t argc, char ** argv) {
     //
     adventure->applyIteration();
     SpeechManager::clear();
-    adventure->getNPCsActions();
-    adventure->executeActions();
     adventure->actAllProjectiles();
     adventure->incrTick();
   }

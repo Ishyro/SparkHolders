@@ -185,14 +185,14 @@ $(BIN):
 $(BIN)/%.a: $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(CLIENTS_BINAIRIES)
 	$(AR) $@ $^
 
-godot:
+godot: $(BIN)/libsparkholders.a
 	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) debug=$(GODOT_DEBUG) $(JOBS)
 	cd externals/godot;	scons custom_modules=../../src/clients/graphics/godot_modules platform=$(PLATFORM) target=$(GODOT_TARGET_MODE) arch=x86_64 $(JOBS)
 
-$(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp
+$(BIN)/clients/terminal/%.o: $(SRC)/clients/terminal/%.cpp $(BIN)
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES) $(NCURSES_LIBRARIES)
 
-$(BIN)/%.o: $(SRC)/%.cpp
+$(BIN)/%.o: $(SRC)/%.cpp $(BIN)
 	$(CC) $(CC_FLAGS) $(CC_INCLUDES) -c $< -o $@ $(CC_LIBRARIES)
 
 $(TARGET_SERVER): $(AI_BINAIRIES) $(COM_BINAIRIES) $(DATA_BINAIRIES) $(ACTIONS_BINAIRIES) $(ITEMS_BINAIRIES) $(FURNITURES_BINAIRIES) $(SKILLS_BINAIRIES) $(WAYS_BINAIRIES) $(UTIL_BINAIRIES) $(SERVER_BINAIRIES)

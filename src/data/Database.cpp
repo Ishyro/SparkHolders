@@ -398,6 +398,8 @@ Database::Database() {
   // action_type
   macros.insert(std::make_pair("ACTION_IDLE", ACTION_IDLE));
   macros.insert(std::make_pair("ACTION_MOVE", ACTION_MOVE));
+  macros.insert(std::make_pair("ACTION_RUN", ACTION_RUN));
+  macros.insert(std::make_pair("ACTION_JUMP", ACTION_JUMP));
   macros.insert(std::make_pair("ACTION_STRIKE", ACTION_STRIKE));
   macros.insert(std::make_pair("ACTION_RESPITE", ACTION_RESPITE));
   macros.insert(std::make_pair("ACTION_ACTIVATION", ACTION_ACTIVATION));
@@ -425,6 +427,9 @@ Database::Database() {
   macros.insert(std::make_pair("SOCKET_MSG_UNPAUSE", SOCKET_MSG_UNPAUSE));
   macros.insert(std::make_pair("SOCKET_MSG_QUIT", SOCKET_MSG_QUIT));
   macros.insert(std::make_pair("SOCKET_MSG_SHUTDOWN", SOCKET_MSG_SHUTDOWN));
+
+  // special_constants
+  macros.insert(std::make_pair("CHUNK_SIZE", CHUNK_SIZE));
 }
 
 std::map<const std::string, const int32_t> Database::getMacros() { return macros; }

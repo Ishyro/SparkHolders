@@ -45,6 +45,8 @@ namespace Server {
       case ACTION_IDLE:
       case ACTION_RESPITE:
       case ACTION_REST:
+      case ACTION_RUN:
+      case ACTION_JUMP:
       case ACTION_BREAKPOINT:
       case ACTION_CHANNEL:
         action = new BaseAction(type, adventure, nullptr, user);
@@ -205,7 +207,7 @@ namespace Server {
       std::stringstream * ss = new std::stringstream();
       String::insert_int(ss, SOCKET_MSG_STATE);
       String::insert(ss, adventure->state_to_string(character));
-      String::insert_bool(ss, character->getCurrentAction() == nullptr);
+      String::insert_bool(ss, character->getAction() == nullptr);
       s.write(ss->str());
       delete ss;
     } catch (const CloseException &e) {

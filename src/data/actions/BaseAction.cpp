@@ -15,6 +15,12 @@ Action * BaseAction::execute(Adventure * adventure) {
     case ACTION_REST:
       user->rest();
       break;
+    case ACTION_RUN:
+      user->run();
+      break;
+    case ACTION_JUMP:
+      user->jump();
+      break;
     case ACTION_BREAKPOINT:
       break;
     case ACTION_CHANNEL:
@@ -23,17 +29,21 @@ Action * BaseAction::execute(Adventure * adventure) {
   }
   if(previous != nullptr) {
     previous->setNext(next);
-    next->setPrevious(previous);
+    if(next != nullptr) {
+      next->setPrevious(previous);
+    }
   }
   else {
     if(next != nullptr) {
       next->setPrevious(nullptr);
       // tick is in range [0;1]
       next->computeTick(1 - tick);
-      user->setCurrentAction(next);
+    }
+    if(type == ACTION_RUN || type == ACTION_JUMP) {
+      user->setLegAction(next);
     }
     else {
-      user->setCurrentAction(nullptr);
+      user->setAction(next);
     }
   }
   return next;
@@ -52,6 +62,8 @@ void BaseAction::computeTime(Adventure * adventure) {
       time = 1.F;
       break;
     case ACTION_BREAKPOINT:
+    case ACTION_RUN:
+    case ACTION_JUMP:
       time = 0.F;
       break;
     default:

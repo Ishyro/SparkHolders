@@ -2,7 +2,7 @@ extends Node3D
 
 var mutex
 var timer = 0
-var baking_done = false
+var real_delta = 0
 
 var owned_character
 
@@ -45,6 +45,7 @@ var base_projectile = preload("res://models/projectile.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	mutex = Mutex.new()
+	Values.chunk_size = Values.macros["CHUNK_SIZE"]
 	Values.link.getState()
 	owned_character = Values.link.getPlayerId()
 	characters_data = Values.link.getCharacters()
@@ -71,24 +72,30 @@ func _process(_delta):
 		while Values.link.hasState():
 			Values.link.getState()
 			Values.next_state_ready = true
-			n_hud.update(characters_data[owned_character])
 			Values.move_set = false
 		Values.action_mutex.unlock()
 		if Values.next_state_ready:
 			# set sky light
 			n_sun.set_param(Light3D.PARAM_ENERGY, 2.5 * float(Values.link.getBaseLight()) / float(Values.link.getMaxLight()))
 			var next_characters_data = Values.link.getCharacters()
+			n_hud.update(next_characters_data[owned_character])
 			for character_id in characters_data.keys():
 				if !next_characters_data.has(character_id):
 					n_characters.remove_child(characters[character_id])
 					characters.erase(character_id)
+			var update = false
+			if floor(next_characters_data[owned_character]["x"] / Values.chunk_size) != floor(characters_data[owned_character]["x"] / Values.chunk_size) \
+				or floor(next_characters_data[owned_character]["y"] / Values.chunk_size) != floor(characters_data[owned_character]["y"] / Values.chunk_size) \
+				or floor(next_characters_data[owned_character]["z"] / Values.chunk_size) != floor(characters_data[owned_character]["z"] / Values.chunk_size):
+				update = true
+				create_blocks()
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
-			var update = false
-			if floor(next_characters_data[owned_character]["x"] / 16) != floor(characters_data[owned_character]["x"] / 16) || floor(next_characters_data[owned_character]["y"] / 16) != floor(characters_data[owned_character]["y"] / 16) || floor(next_characters_data[owned_character]["z"] / 16) != floor(characters_data[owned_character]["z"] / 16):
-				update = true
-				create_blocks()
+				var character = characters[character_id]
+				var pos = Vector3(next_characters_data[character_id]["y"], next_characters_data[character_id]["z"], next_characters_data[character_id]["x"])
+				if update or character.global_position.distance_to(pos) >= 0.5:
+					character.global_position = pos
 			update_furnitures()
 			if update:
 				furnitures_data = Values.link.getFurnitures()
@@ -104,37 +111,42 @@ func _process(_delta):
 					add_projectile(projectile_id, next_projectiles_data[projectile_id])
 			projectiles_data = next_projectiles_data
 			n_inventory.update_inventory()
-			Values.updating_state = true
+			Values.next_state_ready = false
 		mutex.unlock()
 
 func _physics_process(delta):
+	real_delta += delta
 	timer += delta
 	if mutex.try_lock():
-		if Values.updating_state:
-			var done = true
-			for character_id in characters_data:
-				var character = characters[character_id]
-				var dest = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
-				done = done && character.move_towards(dest, timer)
-			#for projectile_id in projectiles_data:
-			#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
-			#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
-			#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-			#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
-			#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
-			#		projectiles[projectile_id].transform.origin = dest
-			#	done = done && (projectiles[projectile_id].transform.origin == dest)
-			Values.updating_state = !done
-			Values.next_state_ready = !done
+		var done = timer >= Values.tickrate / 1000.
+		for character_id in characters_data:
+			var character = characters[character_id]
+			var speed = Vector3(characters_data[character_id]["vy"], characters_data[character_id]["vz"], characters_data[character_id]["vx"])
+			character.move(speed, real_delta)
+		#for projectile_id in projectiles_data:
+		#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
+		#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
+		#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+		#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
+		#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
+		#		projectiles[projectile_id].transform.origin = dest
+		#	done = done && (projectiles[projectile_id].transform.origin == dest)
+		real_delta = 0
+		if done:
 			timer = 0
 		mutex.unlock()
+		
+func _physics_process_old(_delta):
+	for character_id in characters_data:
+		var character = characters[character_id]
+		var speed = Vector3(characters_data[character_id]["vy"], characters_data[character_id]["vz"], characters_data[character_id]["vx"])
+		character.global_position = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
 
 func create_blocks():
 	reset_map()
 	current_blocks = Values.link.getBlocks(Settings.chunk_height, Settings.chunk_radius)
 	for coord in current_blocks:
 		add_block(coord)
-	baking_done = false
 
 func add_block(coord: Vector3):
 	if current_blocks[coord] == "TXT_MIST" || current_blocks[coord] == "TXT_VOID":
@@ -191,19 +203,14 @@ func reset_map():
 
 func update_furnitures():
 	var updated_furnitures = Values.link.getUpdatedFurnitures()
-	var need_to_bake = false
 	if not updated_furnitures.is_empty():
 		var new_furnitures_data = Values.link.getFurnitures()
 		for coord in updated_furnitures:
-			# interaction with a door or a similar furniture
-			if furnitures_data[coord]["unwalkable"] != new_furnitures_data[coord]["unwalkable"]:
-				need_to_bake = true
 			n_furnitures.remove_child(furnitures[coord])
 			furnitures.erase(coord)
 			n_ground.remove_child(colliders[coord])
 			colliders.erase(coord)
 			add_furniture(new_furnitures_data[coord], coord)
-		baking_done = not need_to_bake
 
 func display_map():
 	var block_current = {}
@@ -510,49 +517,3 @@ func round_float(number: float):
 
 func round_vec(vec: Vector3):
 	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))
-
-func send_base_action(type):
-	Values.action_mutex.lock()
-	Values.action["type"] = type
-	Values.action["arg1"] = 0
-	Values.action["arg2"] = 0
-	Values.action["mana_cost"] = 0
-	Values.link.send_action(Values.action)
-	Values.action_mutex.unlock()
-	
-func send_oriented_action(type, orientation):
-	Values.action_mutex.lock()
-	Values.action["type"] = type
-	Values.action["arg1"] = orientation
-	Values.action["arg2"] = 0
-	Values.action["mana_cost"] = 0
-	if type == Values.macros["ACTION_MOVE"]:
-		Values.move_set = true
-	Values.link.send_action(Values.action)
-	Values.action_mutex.unlock()
-	
-func send_targeted_action(type, target_type, target_id, pos):
-	Values.action_mutex.lock()
-	Values.action["type"] = type
-	var target = {}
-	target["type"] = target_type
-	target["id"] = target_id
-	target["pos"] = pos
-	Values.action["arg1"] = target
-	Values.action["arg2"] = 0
-	Values.action["mana_cost"] = 0
-	Values.link.send_action(Values.action)
-	Values.action_mutex.unlock()
-
-func send_skill_action(type, target_type, target_id, pos, skill, mana_cost):
-	Values.action_mutex.lock()
-	Values.action["type"] = type
-	var target = {}
-	target["type"] = target_type
-	target["id"] = target_id
-	target["pos"] = pos
-	Values.action["arg1"] = target
-	Values.action["arg2"] = skill
-	Values.action["mana_cost"] = mana_cost
-	Values.link.send_action(Values.action)
-	Values.action_mutex.unlock()

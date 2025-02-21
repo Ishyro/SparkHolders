@@ -44,6 +44,9 @@ typedef struct CharacterDisplay {
   float x;
   float y;
   float z;
+  float vx;
+  float vy;
+  float vz;
   float size;
   float height;
   float orientation;
@@ -130,6 +133,7 @@ class Character {
       last_level_xp(0),
       level(1),
       coord(MathUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
+      speed(MathUtil::makeVector3(0.F, 0.F, 0.F)),
       orientation(orientation),
       region(region),
       merchant(from_database->merchant),
@@ -187,6 +191,7 @@ class Character {
       Speech * death_speech,
       Speech * talking_speech,
       MathUtil::Vector3 coord,
+      MathUtil::Vector3 speed,
       float size,
       float height,
       float orientation,
@@ -238,6 +243,7 @@ class Character {
       death_speech(death_speech),
       talking_speech(talking_speech),
       coord(coord),
+      speed(speed),
       size(size),
       height(height),
       orientation(orientation),
@@ -274,6 +280,7 @@ class Character {
     bool isAlive();
     bool isSoulBurning();
     MathUtil::Vector3 getCoord();
+    MathUtil::Vector3 getSpeed();
     MathUtil::Coords getWorldCoords();
     float getOrientation();
     float getSize();
@@ -297,7 +304,8 @@ class Character {
     int32_t getVisionPower();
     int32_t getDetectionRange();
     Region * getRegion();
-    Action * getCurrentAction();
+    Action * getAction();
+    Action * getLegAction();
     int64_t getGold();
     int64_t getXP();
     int32_t getLevel();
@@ -355,6 +363,9 @@ class Character {
     void setOrientation(float orientation);
     void setSize(float size);
     void move(MathUtil::Vector3 coord, float orientation, World * world);
+    void run();
+    void jump();
+    void setSpeed(MathUtil::Vector3 speed);
     void hpHeal(float hp);
     void incrMaxHp();
     void setHp(float hp);
@@ -380,7 +391,8 @@ class Character {
     void incrVisionPower();
     void incrDetectionRange();
     void setRegion(Region * region);
-    void setCurrentAction(Action * action);
+    void setAction(Action * action);
+    void setLegAction(Action * action);
 
     void applySoulBurn();
     void applyManaWaste();
@@ -464,11 +476,13 @@ class Character {
     void initSkillsAndEffects();
     void initEffects(std::list<Effect *> effects);
     MathUtil::Vector3 coord;
+    MathUtil::Vector3 speed;
     float size;
     float height;
     float orientation;
     Region * region;
-    Action * current_action = nullptr;
+    Action * action = nullptr;
+    Action * leg_action = nullptr;
     float hp;
     int32_t maxHp;
     float mana;
@@ -489,6 +503,7 @@ class Character {
     int32_t detectionRange;
     bool need_to_send = false;
     bool dead = false;
+    bool running = false;
 
     int64_t gold;
     int64_t xp;

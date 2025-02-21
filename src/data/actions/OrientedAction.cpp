@@ -19,7 +19,7 @@ Action * OrientedAction::execute(Adventure * adventure) {
   }
   switch(type) {
     case ACTION_MOVE:
-      user->getRegion()->move(user, orientation, adventure->getWorld());
+      user->getRegion()->setSpeed(user, orientation);
       break;
     default: ;
   }
@@ -34,10 +34,12 @@ Action * OrientedAction::execute(Adventure * adventure) {
       next->setPrevious(nullptr);
       // tick is in range [0;1]
       next->computeTick(1 - tick);
-      user->setCurrentAction(next);
+    }
+    if(type == ACTION_MOVE) {
+      user->setLegAction(next);
     }
     else {
-      user->setCurrentAction(nullptr);
+      user->setAction(next);
     }
   }
   return next;

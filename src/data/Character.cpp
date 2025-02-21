@@ -9,6 +9,7 @@
 #include "data/Stance.h"
 #include "data/ways/Way.h"
 #include "data/ways/Race.h"
+#include "data/Region.h"
 #include "data/World.h"
 
 #include "data/actions/Action.h"
@@ -205,6 +206,7 @@ bool Character::isMarkedDead() { return dead; }
 void Character::markDead(bool dead) { this->dead = dead; }
 bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 MathUtil::Vector3 Character::getCoord() { return coord; }
+MathUtil::Vector3 Character::getSpeed() { return speed; }
 MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
 float Character::getSize() { return size; }
 float Character::getHeight() { return height; }
@@ -355,7 +357,8 @@ Speech * Character::getTalkingSpeech() { return talking_speech; }
 int32_t Character::getType() { return race->getType(race_modifiers); }
 
 Region * Character::getRegion() { return region; }
-Action * Character::getCurrentAction() { return current_action; }
+Action * Character::getAction() { return action; }
+Action * Character::getLegAction() { return leg_action; }
 
 Gear * Character::getGear() { return gear; }
 
@@ -396,7 +399,7 @@ float Character::getMovementTimeModifier() {
       result += (float) e->power / 100.F;
     }
   }
-  return result * getActionTimeModifier();
+  return running ? result * getActionTimeModifier() * 2.F : result * getActionTimeModifier();
 }
 
 float Character::getStrikeTime(int32_t slot) {
@@ -588,6 +591,20 @@ void Character::move(MathUtil::Vector3 coord, float orientation, World * world) 
   world->checkRegion(this, ori, coord);
 }
 
+void Character::run() {
+  running = !running;
+}
+
+void Character::jump() {
+  if(region->getBlock(MathUtil::makeVector3i(coord.x, coord.y, coord.z - 0.01F)) != nullptr) {
+    // running doesn't make jumping higher
+    // TODO: verify we cannot time a jump to avoid fall damage
+    speed.z = (running ? 2.5F * getMovementTimeModifier() : 5.F * getMovementTimeModifier());
+  }
+}
+
+void Character::setSpeed(MathUtil::Vector3 speed) { this->speed = speed; }
+
 void Character::hpHeal(float hp) { this->hp = std::min(this->hp + hp, (float) getMaxHp()); }
 void Character::incrMaxHp() {
   if(player_character) {
@@ -748,7 +765,8 @@ void Character::incrDetectionRange() {
 
 void Character::setRegion(Region * region) { this->region = region; }
 
-void Character::setCurrentAction(Action * action) { this->current_action = action; }
+void Character::setAction(Action * action) { this->action = action; }
+void Character::setLegAction(Action * action) { leg_action = action; }
 
 void Character::applySoulBurn() {
   float soulBurnReduction = std::max( (float) currentSoulBurn / 100.F, (float) soulBurnTreshold / 100.F);
@@ -1280,7 +1298,7 @@ bool Character::isSleeping() {
 }
 
 bool Character::isIdling() {
-  return current_action == nullptr || current_action->type == ACTION_IDLE;
+  return (action == nullptr || action->type == ACTION_IDLE) && leg_action == nullptr;
 }
 
 int32_t Character::cloakPower() {
@@ -1719,6 +1737,9 @@ std::string Character::to_string() {
   String::insert_float(ss, coord.x);
   String::insert_float(ss, coord.y);
   String::insert_float(ss, coord.z);
+  String::insert_float(ss, speed.x);
+  String::insert_float(ss, speed.y);
+  String::insert_float(ss, speed.z);
   String::insert_float(ss, getSize());
   String::insert_float(ss, getHeight());
   String::insert_float(ss, orientation);
@@ -1765,6 +1786,9 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->x = String::extract_float(ss);
   display->y = String::extract_float(ss);
   display->z = String::extract_float(ss);
+  display->vx = String::extract_float(ss);
+  display->vy = String::extract_float(ss);
+  display->vz = String::extract_float(ss);
   display->size = String::extract_float(ss);
   display->height = String::extract_float(ss);
   display->orientation = String::extract_float(ss);
@@ -1824,6 +1848,9 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, coord.x);
   String::insert_float(ss, coord.y);
   String::insert_float(ss, coord.z);
+  String::insert_float(ss, speed.x);
+  String::insert_float(ss, speed.y);
+  String::insert_float(ss, speed.z);
   String::insert_float(ss, size);
   String::insert_float(ss, height);
   String::insert_float(ss, orientation);
@@ -1937,6 +1964,10 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   coord.x = String::extract_float(ss);
   coord.y = String::extract_float(ss);
   coord.z = String::extract_float(ss);
+  MathUtil::Vector3 speed = MathUtil::Vector3();
+  speed.x = String::extract_float(ss);
+  speed.y = String::extract_float(ss);
+  speed.z = String::extract_float(ss);
   float size = String::extract_float(ss);
   float height = String::extract_float(ss);
   float orientation = String::extract_float(ss);
@@ -2031,6 +2062,7 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     death_speech,
     talking_speech,
     coord,
+    speed,
     size,
     height,
     orientation,

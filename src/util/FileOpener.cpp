@@ -548,19 +548,19 @@ namespace FileOpener {
     is_opaque >> std::boolalpha >> opaque;
     int32_t light = stoi(values.at("light"));
     int32_t orientation = stoi(values.at("orientation"));
-    float ap_cost = _stof(values.at("ap_cost"));
-    Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation, ap_cost);
+    float speed = _stof(values.at("speed"));
+    Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation, speed);
     database->addBlock(block);
     // add all type of blocks for solids
     if(type == BLOCK_SOLID) {
-      database->addBlock(new Block(name + "_SLOPE#EAST", BLOCK_SLOPE, material, unwalkable, opaque, light, 0, ap_cost));
-      database->addBlock(new Block(name + "_SLOPE#NORTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 90, ap_cost));
-      database->addBlock(new Block(name + "_SLOPE#WEST", BLOCK_SLOPE, material, unwalkable, opaque, light, 180, ap_cost));
-      database->addBlock(new Block(name + "_SLOPE#SOUTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 270, ap_cost));
-      database->addBlock(new Block(name + "_STAIRS#EAST", BLOCK_STAIRS, material, unwalkable, opaque, light, 0, ap_cost));
-      database->addBlock(new Block(name + "_STAIRS#NORTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 90, ap_cost));
-      database->addBlock(new Block(name + "_STAIRS#WEST", BLOCK_STAIRS, material, unwalkable, opaque, light, 180, ap_cost));
-      database->addBlock(new Block(name + "_STAIRS#SOUTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 270, ap_cost));
+      database->addBlock(new Block(name + "_SLOPE#EAST", BLOCK_SLOPE, material, unwalkable, opaque, light, 0, speed));
+      database->addBlock(new Block(name + "_SLOPE#NORTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 90, speed));
+      database->addBlock(new Block(name + "_SLOPE#WEST", BLOCK_SLOPE, material, unwalkable, opaque, light, 180, speed));
+      database->addBlock(new Block(name + "_SLOPE#SOUTH", BLOCK_SLOPE, material, unwalkable, opaque, light, 270, speed));
+      database->addBlock(new Block(name + "_STAIRS#EAST", BLOCK_STAIRS, material, unwalkable, opaque, light, 0, speed));
+      database->addBlock(new Block(name + "_STAIRS#NORTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 90, speed));
+      database->addBlock(new Block(name + "_STAIRS#WEST", BLOCK_STAIRS, material, unwalkable, opaque, light, 180, speed));
+      database->addBlock(new Block(name + "_STAIRS#SOUTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 270, speed));
     }
   }
 

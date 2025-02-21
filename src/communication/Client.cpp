@@ -43,6 +43,8 @@ namespace Client {
       case ACTION_IDLE:
       case ACTION_RESPITE:
       case ACTION_REST:
+      case ACTION_RUN:
+      case ACTION_JUMP:
       case ACTION_BREAKPOINT:
       case ACTION_CHANNEL:
         return writeBaseAction(type);

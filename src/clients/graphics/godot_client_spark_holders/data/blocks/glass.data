@@ -5,4 +5,4 @@ unwalkable = false
 opaque = false
 light = 0
 orientation = 0
-ap_cost = 5.0
+speed = 1.5

@@ -1,5 +1,9 @@
 #include "data/Region.h"
 
+#include "data/Settings.h"
+
+#include <iostream>
+
 void Region::addCharacter(Character * character) {
   MathUtil::Vector3 coord = character->getCoord();
   int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
@@ -92,7 +96,7 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
       float current_range = std::min(MathUtil::distance(next, dest), range);
       if(current_range != range) {
         done = true;
-        float range_with_cost = c->getMovementTimeModifier() * current_range / block->ap_cost;
+        float range_with_cost = c->getMovementTimeModifier() * current_range / block->speed;
         next.x += factor_x * range_with_cost;
         next.y += factor_y * range_with_cost;
         next.z += factor_z * range_with_cost;
@@ -101,7 +105,7 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
       else {
         next = current;
       }
-      ap_cost += current_range * block->ap_cost / c->getMovementTimeModifier();
+      ap_cost += current_range * block->speed / c->getMovementTimeModifier();
     }
     return MathUtil::round(ap_cost);
   }
@@ -170,87 +174,47 @@ bool Region::intersect(Character * character, MathUtil::Vector3 dest, Furniture 
   return false;
 }
 
-bool Region::move(Character * c, float orientation, MathUtil::Vector3 dest, float ap, World * world) {
-  MathUtil::Vector3 ori = c->getCoord();
-  if(ori == dest) {
-    return false;
+void Region::move(Character * character, World * world) {
+  MathUtil::Vector3 current = character->getCoord();
+  MathUtil::Vector3 speed = character->getSpeed();
+  Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01));
+  if(under == nullptr) {
+    // TODO slow down and gravity
+    std::cout << "coord=" << current.x << " " << current.y << " " << current.z << std::endl;
+    speed.z -= 9.0F * Settings::getTickRate().count() / 1000.F;
+    std::cout << "speed=" << speed.x << " " << speed.y << " " << speed.z << std::endl;
   }
-  MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
-  float orientation_z = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
-  float cos_long = std::cos(orientation * 3.141593F / 180.F);
-  float sin_long = std::sin(orientation * 3.141593F / 180.F);
-  float cos_colat = std::cos(orientation_z);
-  float sin_colat = std::sin(orientation_z);
-  //
-  float factor_x = sin_colat * cos_long;
-  float factor_y = sin_colat * sin_long;
-  float factor_z = cos_colat;
-  if(c->isFlying()) {
-    float range_with_cost = c->getMovementTimeModifier() * ap / 5.F;
-    next.x += factor_x * range_with_cost;
-    next.y += factor_y * range_with_cost;
-    next.z += factor_z * range_with_cost;
-    next = MathUtil::round(next);
+  MathUtil::Vector3 dest = MathUtil::round(MathUtil::makeVector3(
+    current.x + speed.x * Settings::getTickRate().count() / 1000.F,
+    current.y + speed.y * Settings::getTickRate().count() / 1000.F,
+    current.z + speed.z * Settings::getTickRate().count() / 1000.F
+  ));
+  if(tryMove(character, dest)) {
+    character->move(dest, 0.F, world);
   }
   else {
-    int32_t x_direction = 1;
-    int32_t y_direction = 1;
-    int32_t z_direction = 1;
-    if(orientation > 180.F) {
-      y_direction = -1;
-    }
-    if(orientation > 90.F && orientation < 270.F) {
-      x_direction = -1;
-    }
-    if(orientation_z > 3.141593F / 2.F && orientation_z < 1.5F * 3.141593F) {
-      z_direction = -1;
-    }
-    float ap_cost = 0.F;
-    bool done = false; 
-    while(!done) {
-      float range;
-      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
-      Block * block = getBlock(current);
-      if(block == nullptr) {
-        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
-        // no path
-        if(block == nullptr) {
-          return false;
+    // check if we collided with ground
+    for(int64_t z = (int64_t) std::floor(current.z); z > (int64_t) std::floor(dest.z); z--) {
+      Block * block = getBlock(MathUtil::makeVector3i(dest.x, dest.y, z));
+      if(block != nullptr) {
+        std::cout << "z= " << z << std::endl;
+        dest.z = z + 1;
+        character->move(dest, 0.F, world);
+        // TODO fall damage
+        std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
+        damages[DAMAGE_BLUNT] = 0.1F * speed.z * speed.z;
+        if(damages[DAMAGE_BLUNT] >= 5.F) {
+          character->receiveDamage(damages, nullptr, 0.5F);
         }
+        speed.z = 0.F;
+        break;
       }
-      float border_ap = range * block->ap_cost / c->getMovementTimeModifier();
-      float current_ap = std::min(ap - ap_cost, border_ap);
-      if(current_ap != border_ap) {
-        done = true;
-        float range_with_cost = c->getMovementTimeModifier() * current_ap / block->ap_cost;
-        next.x += factor_x * range_with_cost;
-        next.y += factor_y * range_with_cost;
-        next.z += factor_z * range_with_cost;
-        next = MathUtil::round(next);
-      }
-      else {
-        next = current;
-      }
-      ap_cost += current_ap;
     }
   }
-  // check if we went too far
-  if(MathUtil::distance(ori, dest) < MathUtil::distance(ori, next)) {
-    next = MathUtil::round(dest);
-  }
-  if(tryMove(c, next)) {
-    c->move(next, orientation, world);
-    return true;
-  }
-  else {
-    return false;
-  }
+  character->setSpeed(MathUtil::makeVector3(0, 0, speed.z));
 }
 
-bool Region::move(Character * c, float orientation, World * world) {
-  float ap = 1.F;
-  MathUtil::Vector3 ori = c->getCoord();
-  MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
+void Region::setSpeed(Character * character, float orientation) {
   float orientation_z = std::abs(std::acos(0.F)); //3.141593F / 2.F;
   float cos_long = std::cos(orientation * 3.141593F / 180.F);
   float sin_long = std::sin(orientation * 3.141593F / 180.F);
@@ -260,68 +224,33 @@ bool Region::move(Character * c, float orientation, World * world) {
   float factor_x = sin_colat * cos_long;
   float factor_y = sin_colat * sin_long;
   float factor_z = cos_colat;
-  // arbitrary far destination
-  MathUtil::Vector3 dest = MathUtil::makeVector3(ori.x + factor_x * 100.F, ori.y + factor_y * 100.F, ori.z + factor_z * 100.F);
-  if(c->isFlying()) {
-    float range_with_cost = c->getMovementTimeModifier() * ap / 5.F;
-    next.x += factor_x * range_with_cost;
-    next.y += factor_y * range_with_cost;
-    next.z += factor_z * range_with_cost;
-    next = MathUtil::round(next);
+  MathUtil::Vector3 speed = character->getSpeed();
+  if(character->isFlying()) {
+    float range_with_cost = character->getMovementTimeModifier() * 1.5F;
+    speed.x += factor_x * range_with_cost;
+    speed.y += factor_y * range_with_cost;
+    speed.z += factor_z * range_with_cost;
+    speed = MathUtil::round(speed);
   }
   else {
-    int32_t x_direction = 1;
-    int32_t y_direction = 1;
-    int32_t z_direction = 1;
-    if(orientation > 180.F) {
-      y_direction = -1;
+    MathUtil::Vector3 current = character->getCoord();
+    Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01)); 
+    float range_with_cost;
+    if(under != nullptr) {
+      range_with_cost = character->getMovementTimeModifier() * under->speed;
+      speed.x += factor_x * range_with_cost;
+      speed.y += factor_y * range_with_cost;
+      speed.z += factor_z * range_with_cost;
     }
-    if(orientation > 90.F && orientation < 270.F) {
-      x_direction = -1;
+    else {
+      range_with_cost = character->getMovementTimeModifier() * 1.5F;
+      speed.x += factor_x * range_with_cost;
+      speed.y += factor_y * range_with_cost;
+      speed.z += factor_z * range_with_cost;
     }
-    if(orientation_z > 3.141593F / 2.F && orientation_z < 1.5F * 3.141593F) {
-      z_direction = -1;
-    }
-    float ap_cost = 0.F;
-    bool done = false; 
-    while(!done) {
-      float range;
-      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
-      Block * block = getBlock(current);
-      if(block == nullptr) {
-        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
-        // no path
-        if(block == nullptr) {
-          return false;
-        }
-      }
-      float border_ap = range * block->ap_cost / c->getMovementTimeModifier();
-      float current_ap = std::min(ap - ap_cost, border_ap);
-      if(current_ap != border_ap) {
-        done = true;
-        float range_with_cost = c->getMovementTimeModifier() * current_ap / block->ap_cost;
-        next.x += factor_x * range_with_cost;
-        next.y += factor_y * range_with_cost;
-        next.z += factor_z * range_with_cost;
-        next = MathUtil::round(next);
-      }
-      else {
-        next = current;
-      }
-      ap_cost += current_ap;
-    }
+    speed = MathUtil::round(speed);
   }
-  // check if we went too far
-  if(MathUtil::distance(ori, dest) < MathUtil::distance(ori, next)) {
-    next = MathUtil::round(dest);
-  }
-  if(tryMove(c, next)) {
-    c->move(next, orientation, world);
-    return true;
-  }
-  else {
-    return false;
-  }
+  character->setSpeed(speed);
 }
 
 MathUtil::Vector3 Region::getCoordsOnSlope(Character * character, MathUtil::Vector3 dest, int32_t orientation, float z) {

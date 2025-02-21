@@ -34,8 +34,8 @@ class Region {
     float getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     bool tryMove(Character * c, MathUtil::Vector3 dest);
     bool intersect(Character * character, MathUtil::Vector3 dest, Furniture * furniture);
-    bool move(Character * c, float orientation, MathUtil::Vector3 dest, float ap, World * world);
-    bool move(Character * c, float orientation, World * world);
+    void move(Character * character, World * world);
+    void setSpeed(Character * character, float orientation);
     MathUtil::Vector3 getCoordsOnSlope(Character * character, MathUtil::Vector3 dest, int32_t orientation, float z);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters();

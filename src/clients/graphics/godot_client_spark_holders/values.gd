@@ -26,7 +26,7 @@ var link = GodotLink.new()
 var macros = {}
 var free_mouse_state = false
 var tickrate
-var updating_state = false
+var chunk_size
 var next_state_ready = false
 #var mode = ACTION_MODE_NONE
 
@@ -35,3 +35,4 @@ var coord = Vector3.ZERO
 var action = {}
 var move_set = false
 var action_mutex = Mutex.new()
+var action_move_mutex = Mutex.new()

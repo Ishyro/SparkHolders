@@ -8,6 +8,6 @@
 Action * PlayerAI::getActions(Adventure * adventure, Character * c) {
   Action * result;
   result = nullptr;
-  //c->setCurrentAction(result);
+  //c->setAction(result);
   return result;
 }

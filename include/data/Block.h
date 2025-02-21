@@ -14,7 +14,7 @@ class Block {
     const bool opaque;
     const int32_t light;
     const int32_t orientation;
-    const float ap_cost;
+    const float speed;
     Block(
       std::string name,
       int32_t type,
@@ -23,7 +23,7 @@ class Block {
       bool opaque,
       int32_t light,
       int32_t orientation,
-      float ap_cost
+      float speed
     ):
       name(name),
       type(type),
@@ -32,7 +32,7 @@ class Block {
       opaque(opaque),
       light(light),
       orientation(orientation),
-      ap_cost(ap_cost)
+      speed(speed)
     {}
     std::string to_string();
     static Block * from_string(std::string to_read);

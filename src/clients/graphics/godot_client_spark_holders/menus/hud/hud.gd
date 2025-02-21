@@ -131,7 +131,7 @@ func _on_skillbook_close_pressed():
 	skillbook.visible = false
 
 func _on_skill_book_visibility_changed():
-	if visible:
+	if skillbook.visible:
 		Values.link.pause()
 	else:
 		Values.link.unpause()

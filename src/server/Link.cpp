@@ -62,19 +62,35 @@ void Link::listen() {
       break;
     }
     case SOCKET_MSG_ACTION: {
-      Action * new_action = Server::receiveAction(ss->str(), character, adventure);
-      new_action->computeTime(adventure);
+      Action * action = Server::receiveAction(ss->str(), character, adventure);
+      action->computeTime(adventure);
       const std::lock_guard<std::mutex> guard(mutex);
-      if(action == nullptr) {
-        action = new_action;
+      // select between standard and leg action
+      if(action->type == ACTION_MOVE || action->type == ACTION_JUMP || action->type == ACTION_RUN) {
+        Action * tmp = character->getLegAction();
+        if(tmp == nullptr) {
+          character->setLegAction(action);
+        }
+        else {
+          while(tmp->getNext() != nullptr) {
+            tmp = tmp->getNext();
+          }
+          tmp->setNext(action);
+          action->setPrevious(tmp);
+        }
       }
       else {
-        Action * tmp = action;
-        while(tmp->getNext() != nullptr) {
-          tmp = tmp->getNext();
+        Action * tmp = character->getAction();
+        if(tmp == nullptr) {
+          character->setAction(action);
         }
-        tmp->setNext(new_action);
-        new_action->setPrevious(tmp);
+        else {
+          while(tmp->getNext() != nullptr) {
+            tmp = tmp->getNext();
+          }
+          tmp->setNext(action);
+          action->setPrevious(tmp);
+        }
       }
       break;
     }
@@ -139,39 +155,10 @@ bool Link::isMaster() { return master; }
 void Link::markClosed() { closed = true; }
 Character * Link::getCharacter() { return character; }
 void Link::changeSocket(Socket s) { this->s = s; closed = false; }
-bool Link::hasActions() {
-  const std::lock_guard<std::mutex> guard(mutex);
-  return action != nullptr;
+bool Link::isPaused() {
+  return !closed && (pause || (Settings::getPauseMode() == SETTINGS_PAUSE_NO_ACTION && character->getAction() == nullptr && character->getLegAction() == nullptr));
 }
-
-std::list<Action *> Link::getAction() {
-  std::list<Action *> result = std::list<Action *>();
-  while(pause && !closed) {
-    usleep(10);
-  }
-  if(Settings::getPauseMode() == SETTINGS_PAUSE_NO_ACTION) {
-    mutex.lock();
-    bool done = action != nullptr;
-    mutex.unlock();
-    while(!done) {
-      mutex.lock();
-      done = action != nullptr || closed;
-      mutex.unlock();
-      usleep(10);
-    }
-  }
-  if(action != nullptr) {
-    const std::lock_guard<std::mutex> guard(mutex);
-    result.push_front(action);
-    if(character->getCurrentAction() == nullptr) {
-      character->setCurrentAction(action);
-    }
-    action = nullptr;
-  }
-  return result;
-}
-
 bool Link::getNeedToUpdateActions() {
   const std::lock_guard<std::mutex> guard(mutex);
-  return !character->isInWeakState() && character->getCurrentAction() == nullptr;
+  return !character->isInWeakState() && character->getAction() == nullptr;
 }

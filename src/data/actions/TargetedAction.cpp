@@ -19,17 +19,6 @@ Action * TargetedAction::execute(Adventure * adventure) {
   }
   user->setOrientation(adventure->getWorld()->setPathToTarget(user->getRegion(), user->getCoord().x, user->getCoord().y, target));
   switch(type) {
-    case ACTION_MOVE: {
-      float ap = 1.F;
-      if(user->getRegion()->move(user, user->getOrientation(), target->coord, ap, adventure->getWorld()) 
-      && target->next == nullptr && rangeFromTarget(adventure) > 0.01F) {
-        Action * temp = next;
-        next = new TargetedAction(ACTION_MOVE, adventure, nullptr, user, target);
-        next->setNext(temp);
-        user->setCurrentAction(next);
-      }
-      break;
-    }
     /*
     case ACTION_STRIKE: {
       if(user->getGear()->getWeapon_1()->use_projectile || user->getGear()->getWeapon_1()->use_projectile) {
@@ -84,11 +73,8 @@ Action * TargetedAction::execute(Adventure * adventure) {
       next->setPrevious(nullptr);
       // tick is in range [0;1]
       next->computeTick(1 - tick);
-      user->setCurrentAction(next);
     }
-    else {
-      user->setCurrentAction(nullptr);
-    }
+    user->setAction(next);
   }
   return next;
 }

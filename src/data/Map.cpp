@@ -582,7 +582,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       next_x = std::floor(next_x);
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_x = next_x;
     }
@@ -591,13 +591,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(x_direction == -1) {
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       current_x = next_x;
@@ -605,13 +605,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
     if(x_direction == -1) {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+        ap_cost -= block->speed * MathUtil::distance(current_x, current_y, x, y);
       }
     }
     else {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+        ap_cost += block->speed * MathUtil::distance(current_x, current_y, x, y);
       }
     }
   }
@@ -620,7 +620,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       next_y = std::floor(next_y);
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+        ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
       }
       current_y = next_y;
     }
@@ -629,13 +629,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(y_direction == -1) {
         Block * block = getBlock(next_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
       }
       current_y = next_y;
@@ -643,13 +643,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
     if(y_direction == -1) {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+        ap_cost -= block->speed * MathUtil::distance(current_x, current_y, x, y);
       }
     }
     else {
       Block * block = getBlock(current_x, current_y);
       if(block != nullptr) {
-        ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+        ap_cost += block->speed * MathUtil::distance(current_x, current_y, x, y);
       }
     }
   }
@@ -662,7 +662,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         next_y = a * next_x + b;
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         current_x = next_x;
         current_y = next_y;
@@ -673,13 +673,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         if(x_direction == -1) {
           Block * block = getBlock(next_x, next_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         else {
           Block * block = getBlock(current_x, current_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         current_x = next_x;
@@ -688,13 +688,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(x_direction == -1) {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+          ap_cost -= block->speed * MathUtil::distance(current_x, current_y, x, y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, x, y);
         }
       }
     }
@@ -704,7 +704,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         next_x = (next_y - b) / a;
         Block * block = getBlock(next_x, next_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
         }
         current_x = next_x;
         current_y = next_y;
@@ -715,13 +715,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
         if(y_direction == -1) {
           Block * block = getBlock(next_x, next_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         else {
           Block * block = getBlock(current_x, current_y);
           if(block != nullptr) {
-            ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, next_x, next_y);
+            ap_cost += block->speed * MathUtil::distance(current_x, current_y, next_x, next_y);
           }
         }
         current_x = next_x;
@@ -730,13 +730,13 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
       if(y_direction == -1) {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost -= block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+          ap_cost -= block->speed * MathUtil::distance(current_x, current_y, x, y);
         }
       }
       else {
         Block * block = getBlock(current_x, current_y);
         if(block != nullptr) {
-          ap_cost += block->ap_cost * MathUtil::distance(current_x, current_y, x, y);
+          ap_cost += block->speed * MathUtil::distance(current_x, current_y, x, y);
         }
       }
     }

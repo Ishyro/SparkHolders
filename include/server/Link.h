@@ -31,14 +31,11 @@ class Link {
     void markClosed();
     Character * getCharacter();
     void changeSocket(Socket s);
-    bool hasActions();
-    std::list<Action *> getAction();
+    bool isPaused();
     bool getNeedToUpdateActions();
-    std::string getUsername();
   private:
     Adventure * adventure;
     Character * character = nullptr;
-    Action * action = nullptr;
     Socket s;
     bool closed;
     bool shuting_down;
