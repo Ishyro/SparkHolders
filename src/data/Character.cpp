@@ -599,7 +599,7 @@ void Character::jump() {
   if(region->getBlock(MathUtil::makeVector3i(coord.x, coord.y, coord.z - 0.01F)) != nullptr) {
     // running doesn't make jumping higher
     // TODO: verify we cannot time a jump to avoid fall damage
-    speed.z = (running ? 2.5F * getMovementTimeModifier() : 5.F * getMovementTimeModifier());
+    speed.z = (running ? 2.F * getMovementTimeModifier() : 4.F * getMovementTimeModifier());
   }
 }
 

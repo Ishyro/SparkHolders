@@ -88,18 +88,13 @@ func _process(_delta):
 				or floor(next_characters_data[owned_character]["y"] / Values.chunk_size) != floor(characters_data[owned_character]["y"] / Values.chunk_size) \
 				or floor(next_characters_data[owned_character]["z"] / Values.chunk_size) != floor(characters_data[owned_character]["z"] / Values.chunk_size):
 				update = true
-				create_blocks()
 			for character_id in next_characters_data:
 				if !characters_data.has(character_id):
 					add_character(character_id, next_characters_data[character_id])
 				var character = characters[character_id]
 				var pos = Vector3(next_characters_data[character_id]["y"], next_characters_data[character_id]["z"], next_characters_data[character_id]["x"])
-				if update or character.global_position.distance_to(pos) >= 0.5:
+				if character.global_position.distance_to(pos) >= 0.5:
 					character.global_position = pos
-			update_furnitures()
-			if update:
-				furnitures_data = Values.link.getFurnitures()
-				display_map()
 			characters_data = next_characters_data
 			var next_projectiles_data = Values.link.getProjectiles()
 			for projectile_id in projectiles_data.keys():
@@ -110,9 +105,17 @@ func _process(_delta):
 				if !projectiles_data.has(projectile_id):
 					add_projectile(projectile_id, next_projectiles_data[projectile_id])
 			projectiles_data = next_projectiles_data
-			n_inventory.update_inventory()
 			Values.next_state_ready = false
-		mutex.unlock()
+			mutex.unlock()
+			# costly operations out of mutex
+			n_inventory.update_inventory()
+			update_furnitures()
+			if update:
+				create_blocks()
+				furnitures_data = Values.link.getFurnitures()
+				display_map()
+		else:
+			mutex.unlock()
 
 func _physics_process(delta):
 	real_delta += delta
@@ -136,10 +139,9 @@ func _physics_process(delta):
 			timer = 0
 		mutex.unlock()
 		
-func _physics_process_old(_delta):
+func _physics_process_fast(_delta):
 	for character_id in characters_data:
 		var character = characters[character_id]
-		var speed = Vector3(characters_data[character_id]["vy"], characters_data[character_id]["vz"], characters_data[character_id]["vx"])
 		character.global_position = Vector3(characters_data[character_id]["y"], characters_data[character_id]["z"], characters_data[character_id]["x"])
 
 func create_blocks():

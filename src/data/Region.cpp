@@ -1,8 +1,8 @@
+#include "data/items/Gear.h"
+
 #include "data/Region.h"
 
 #include "data/Settings.h"
-
-#include <iostream>
 
 void Region::addCharacter(Character * character) {
   MathUtil::Vector3 coord = character->getCoord();
@@ -117,16 +117,14 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   }
   // check on foot
   Block * block = getBlock(dest);
-  if(block != nullptr && block->unwalkable) {
-    if(!(block->type == BLOCK_SLOPE || block->type == BLOCK_STAIRS)) {
-      return false;
-    }
+  if(block != nullptr && block->type == BLOCK_SOLID) {
+    return false;
   }
   // check on height
   for(int i = 1; i < c->getHeight(); i++) {
     MathUtil::Vector3 vec_up = MathUtil::makeVector3(dest.x, dest.y, dest.z + i);
     Block * up = getBlock(vec_up);
-    if(up != nullptr && (up->type != BLOCK_LIQUID && up->type != BLOCK_GAS)) {
+    if(up != nullptr && up->type != BLOCK_LIQUID && up->type != BLOCK_GAS) {
       return false;
     }
   }
@@ -180,60 +178,83 @@ void Region::move(Character * character, World * world) {
   Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01));
   if(under == nullptr) {
     // TODO slow down and gravity
-    std::cout << "coord=" << current.x << " " << current.y << " " << current.z << std::endl;
     speed.z -= 9.0F * Settings::getTickRate().count() / 1000.F;
-    std::cout << "speed=" << speed.x << " " << speed.y << " " << speed.z << std::endl;
   }
   MathUtil::Vector3 dest = MathUtil::round(MathUtil::makeVector3(
     current.x + speed.x * Settings::getTickRate().count() / 1000.F,
     current.y + speed.y * Settings::getTickRate().count() / 1000.F,
     current.z + speed.z * Settings::getTickRate().count() / 1000.F
   ));
+  float distance = MathUtil::distance(current, dest);
+  MathUtil::Vector3 direction = MathUtil::makeVector3((dest.x - current.x) / distance, (dest.y - current.y) / distance, (dest.z - current.z) / distance);
+  for(float step = 0.1F; step < distance; step += 0.1F) {
+    MathUtil::Vector3 coord = MathUtil::makeVector3(current.x + step * direction.x, current.y + step * direction.y, current.z + step * direction.z);
+    Block * block = getBlock(coord);
+    if(block != nullptr && block->type != BLOCK_LIQUID && block->type != BLOCK_GAS) {
+      // collide
+      std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
+      damages[DAMAGE_BLUNT] = 0.01F * distance * distance * character->getGear()->getWeight();
+      if(damages[DAMAGE_BLUNT] >= 5.F) {
+        character->receiveDamage(damages, nullptr, 0.5F);
+      }
+      speed.z = 0.F;
+      // TODO find closest place to move
+      if(block->type == BLOCK_SOLID) {
+        if(direction.z < 0.F) {
+          dest.z = std::ceil(coord.z);
+        }
+        else {
+          dest.x = coord.x - direction.x;
+          dest.y = coord.y - direction.y;
+          dest.z = coord.z - direction.z;
+        }
+      }
+      else {
+        // correct coords on slope / stairs
+        dest = getCoordsOnSlope(dest, block->orientation);
+      }
+      break;
+    }
+  }
   if(tryMove(character, dest)) {
     character->move(dest, 0.F, world);
-  }
-  else {
-    // check if we collided with ground
-    for(int64_t z = (int64_t) std::floor(current.z); z > (int64_t) std::floor(dest.z); z--) {
-      Block * block = getBlock(MathUtil::makeVector3i(dest.x, dest.y, z));
-      if(block != nullptr) {
-        std::cout << "z= " << z << std::endl;
-        dest.z = z + 1;
-        character->move(dest, 0.F, world);
-        // TODO fall damage
-        std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
-        damages[DAMAGE_BLUNT] = 0.1F * speed.z * speed.z;
-        if(damages[DAMAGE_BLUNT] >= 5.F) {
-          character->receiveDamage(damages, nullptr, 0.5F);
-        }
-        speed.z = 0.F;
-        break;
-      }
-    }
   }
   character->setSpeed(MathUtil::makeVector3(0, 0, speed.z));
 }
 
-void Region::setSpeed(Character * character, float orientation) {
-  float orientation_z = std::abs(std::acos(0.F)); //3.141593F / 2.F;
+void Region::setSpeed(Character * character, float orientation, float given_orientation_z = 90.F) {
+  float orientation_z;
+  MathUtil::Vector3 current = character->getCoord();
+  Block * inside = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z));
+  // TODO, with this we can walk on water
+  if(character->isFlying() || (inside != nullptr && inside->type == BLOCK_LIQUID)) {
+    orientation_z = given_orientation_z;
+  }
+  else {
+    if(inside != nullptr && (inside->type == BLOCK_STAIRS || inside->type == BLOCK_SLOPE)) {
+      orientation_z = getOrientationZOnSlope(orientation, inside->orientation);
+    }
+    else {
+      orientation_z = 90.F;
+    }
+  }
   float cos_long = std::cos(orientation * 3.141593F / 180.F);
   float sin_long = std::sin(orientation * 3.141593F / 180.F);
-  float cos_colat = std::cos(orientation_z);
-  float sin_colat = std::sin(orientation_z);
+  float cos_colat = std::cos(orientation_z * 3.141593F / 180.F);
+  float sin_colat = std::sin(orientation_z * 3.141593F / 180.F);
   //
   float factor_x = sin_colat * cos_long;
   float factor_y = sin_colat * sin_long;
   float factor_z = cos_colat;
   MathUtil::Vector3 speed = character->getSpeed();
   if(character->isFlying()) {
-    float range_with_cost = character->getMovementTimeModifier() * 1.5F;
+    float range_with_cost = character->getMovementTimeModifier() * 2.F;
     speed.x += factor_x * range_with_cost;
     speed.y += factor_y * range_with_cost;
     speed.z += factor_z * range_with_cost;
     speed = MathUtil::round(speed);
   }
   else {
-    MathUtil::Vector3 current = character->getCoord();
     Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01)); 
     float range_with_cost;
     if(under != nullptr) {
@@ -243,7 +264,7 @@ void Region::setSpeed(Character * character, float orientation) {
       speed.z += factor_z * range_with_cost;
     }
     else {
-      range_with_cost = character->getMovementTimeModifier() * 1.5F;
+      range_with_cost = character->getMovementTimeModifier() * 2.F;
       speed.x += factor_x * range_with_cost;
       speed.y += factor_y * range_with_cost;
       speed.z += factor_z * range_with_cost;
@@ -253,23 +274,44 @@ void Region::setSpeed(Character * character, float orientation) {
   character->setSpeed(speed);
 }
 
-MathUtil::Vector3 Region::getCoordsOnSlope(Character * character, MathUtil::Vector3 dest, int32_t orientation, float z) {
-  MathUtil::Vector3 result = MathUtil::makeVector3(dest.x, dest.y, character->getCoord().z);
-  switch(orientation) {
+MathUtil::Vector3 Region::getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block_orientation) {
+  MathUtil::Vector3 result = MathUtil::makeVector3(dest.x, dest.y, std::floor(dest.z));
+  switch(block_orientation) {
     case 0:
-      result.z = MathUtil::round(z + (result.x - std::floor(result.x)));
+      result.z = MathUtil::round(result.z + (dest.x - std::floor(dest.x)));
       break;
     case 90:
-      result.z = MathUtil::round(z + (result.y - std::floor(result.y)));
+      result.z = MathUtil::round(result.z + (dest.y - std::floor(dest.y)));
       break;
     case 180:
-      result.z = MathUtil::round(z + 1 - (result.x - std::floor(result.x)));
+      result.z = MathUtil::round(result.z + 1 - (dest.x - std::floor(dest.x)));
       break;
     case 270:
-      result.z = MathUtil::round(z + 1 - (result.y - std::floor(result.y)));
+      result.z = MathUtil::round(result.z + 1 - (dest.y - std::floor(dest.y)));
       break;
   }
   return result;
+}
+
+float Region::getOrientationZOnSlope(float character_orientation, int32_t block_orientation) {
+  int32_t x_direction = 1;
+  int32_t y_direction = 1;
+  if(character_orientation > 180.F) {
+    y_direction = -1;
+  }
+  if(character_orientation > 90.F && character_orientation < 270.F) {
+    x_direction = -1;
+  }
+  switch(block_orientation) {
+    case 0:
+      return x_direction == 1 ? 45.F : 135.F;
+    case 180:
+      return x_direction == -1 ? 45.F : 135.F;
+    case 90:
+      return y_direction == 1 ? 45.F : 135.F;
+    case 270:
+      return y_direction == -1 ? 45.F : 135.F;
+  }
 }
 
 bool Region::canSee(Character * watcher, Character * target) {

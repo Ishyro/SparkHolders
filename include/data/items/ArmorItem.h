@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <array>
 
 #include "data/items/GearItem.h"
 

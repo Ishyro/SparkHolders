@@ -180,6 +180,33 @@ float MathUtil::getOrientationToTarget(float x1, float y1, float x2, float y2) {
   return angle * 180.F / 3.141593F;
 }
 
+float MathUtil::getOrientationToTarget(MathUtil::Vector3 coord) {
+  if(coord.y == 0.F) {
+    if(coord.x > 0.F) {
+      return 0.F;
+    }
+    if(coord.x < 0.F) {
+      return 180.F;
+    }
+    if(coord.x == 0.F) {
+      return 360.F;
+    }
+  }
+  if(coord.x == 0.F) {
+    if(coord.y > 0) {
+      return 90.F;
+    }
+    if(coord.y < 0) {
+      return 270.F;
+    }
+  }
+  float angle = std::atan2(coord.y, coord.x);
+  if(angle < 0) {
+    angle += 2 * 3.141593F;
+  }
+  return angle * 180.F / 3.141593F;
+}
+
 MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil::Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range) {
   float range_x = 0.F;
   if(factor_x != 0.F) {

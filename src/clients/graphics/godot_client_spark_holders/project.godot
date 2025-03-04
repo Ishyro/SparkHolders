@@ -274,6 +274,10 @@ locale/translations_pot_files=PackedStringArray("res://menus/adventure_selector.
 3d_physics/layer_6="Unwalkable"
 3d_physics/layer_7="Furnitures"
 
+[physics]
+
+3d/run_on_separate_thread=true
+
 [rendering]
 
 anti_aliasing/quality/msaa_3d=3

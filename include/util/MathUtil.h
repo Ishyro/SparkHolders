@@ -57,6 +57,7 @@ namespace MathUtil {
   double distanceSquare(MathUtil::Vector3 coord1, MathUtil::Vector3 coord2);
   float distance2(MathUtil::Vector3 coord1, MathUtil::Vector3 coord2);
   float getOrientationToTarget(float x1, float y1, float x2, float y2);
+  float getOrientationToTarget(MathUtil::Vector3 coord);
   MathUtil::Vector3 selectClosestVector(MathUtil::Vector3 next, MathUtil::Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range);
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int32_t offsetX, int32_t offsetY);

@@ -51,7 +51,10 @@ func _physics_process(_delta):
 			# invert x axis
 			movement_vec2.x = -movement_vec2.x
 			movement_vec2 = movement_vec2.rotated(camera.rotation.y - PI / 2.)
-			send_oriented_action(Values.macros["ACTION_MOVE"], rad_to_deg(movement_vec2.angle()))
+			var angle = rad_to_deg(movement_vec2.angle())
+			if angle < 0: 
+				angle = angle + 360
+			send_oriented_action(Values.macros["ACTION_MOVE"], angle)
 
 func _unhandled_input(event):
 	if event.is_action_released("pause"):
