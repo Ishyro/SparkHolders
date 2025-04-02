@@ -13,13 +13,13 @@
 
 #include "Values.h"
 
-typedef struct Spawn {
+struct Spawn {
   int32_t x;
   int32_t y;
   int32_t z;
-} Spawn;
+};
 
-typedef struct Time {
+struct Time {
   int32_t year;
   int32_t month;
   int32_t week;
@@ -98,16 +98,16 @@ typedef struct Time {
     std::string result = ss.str();
     return result;
   }
-} Time;
+};
 
-typedef struct StateDisplay {
+struct StateDisplay {
   std::list<CharacterDisplay *> characters;
   std::list<ProjectileDisplay *> projectiles;
   std::list<Loot *> loots;
   std::list<Speech *> speeches;
   std::list<Furniture *> changed_furnitures;
   bool need_to_send_actions;
-} StateDisplay;
+};
 
 class Adventure {
   public:

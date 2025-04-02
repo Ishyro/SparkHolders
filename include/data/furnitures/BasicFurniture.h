@@ -46,14 +46,14 @@ class BasicFurniture : public Furniture {
       const int32_t x,
       const int32_t y,
       const int32_t z,
-      const float orientation
+      const float orientation_z
     ):
       Furniture(
         furniture,
         x,
         y,
         z,
-        orientation
+        orientation_z
       )
     {}
     

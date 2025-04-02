@@ -15,6 +15,7 @@
 #include "communication/Client.h"
 
 #include "util/String.h"
+#include "util/MathUtil.h"
 
 namespace Client {
 
@@ -50,11 +51,11 @@ namespace Client {
         return writeBaseAction(type);
         break;
       case ACTION_MOVE:
+      case ACTION_STRIKE:
         return writeOrientedAction(type, *((float *) arg1));
         break;
-      case ACTION_STRIKE:
       case ACTION_ACTIVATION:
-        return writeTargetedAction(type, (Target *) arg1);
+        return writeTargetedAction(type, (MathUtil::Target *) arg1);
         break;
       case ACTION_RELOAD:
       case ACTION_SWAP_GEAR:
@@ -63,7 +64,7 @@ namespace Client {
         return writeGearAction(type, (ItemSlot *) arg1, (ItemSlot *) arg2);
         break;
       case ACTION_USE_SKILL:
-        return writeSkillAction(type, (Target *) arg1, (Skill *) arg2, mana_cost);
+        return writeSkillAction(type, (MathUtil::Target *) arg1, (Skill *) arg2, mana_cost);
         break;
       case ACTION_TALKING:
       case ACTION_ECONOMICS:
@@ -100,17 +101,17 @@ namespace Client {
     return result;
   }
 
-  std::string writeOrientedAction(int32_t type, float orientation) {
+  std::string writeOrientedAction(int32_t type, float orientation_z, float orientation_x = 90.F) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert_float(ss, orientation);
+    String::insert_float(ss, orientation_z);
+    String::insert_float(ss, orientation_x);
     std::string result = ss->str();
     delete ss;
     return result;
   }
 
-
-  std::string writeTargetedAction(int32_t type, Target * target) {
+  std::string writeTargetedAction(int32_t type, MathUtil::Target * target) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     String::insert(ss, MathUtil::target_to_string(target));
@@ -119,7 +120,7 @@ namespace Client {
     return result;
   }
 
-  std::string writeSkillAction(int32_t type, Target * target, Skill * skill, int32_t mana_cost) {
+  std::string writeSkillAction(int32_t type, MathUtil::Target * target, Skill * skill, int32_t mana_cost) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     String::insert(ss, MathUtil::target_to_string(target));

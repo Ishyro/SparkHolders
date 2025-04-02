@@ -126,7 +126,7 @@ func display_stats():
 	res_sanity.text = str(map.round_float(character_stats["sanity"])) + "%"
 
 	# Secondaries
-	sec_size.text = str(map.round_float(character_stats["size"]))
+	sec_size.text = str(map.round_float(character_stats["sizeX"]))
 	sec_cloaking.text = str(0)
 	sec_global_speed.text = str(character_stats["globalSpeed"] * 100) + "%"
 	sec_movement_speed.text = str(character_stats["movementSpeed"] * 100) + "%"

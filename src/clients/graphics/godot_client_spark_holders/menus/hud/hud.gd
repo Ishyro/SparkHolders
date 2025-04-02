@@ -15,6 +15,9 @@ extends Control
 @onready var hour_box = $HourBox
 @onready var hour_label = $HourBox/Label
 
+@onready var cursor = $Cursor
+@onready var selection = $Selection
+
 @onready var inventory = $Inventory
 @onready var skillbook = $Skills/SkillBook
 
@@ -104,6 +107,12 @@ func update(character_data: Dictionary):
 	change_amount("MANA", character_data["mana"], character_data["maxMana"])
 	change_amount("SOULBURN", character_data["currentSoulBurn"], character_data["soulBurnThreshold"])
 	inventory.update_inventory()
+
+func update_selection():
+	if Values.selected_data.is_empty():
+		selection.text = ""
+	else:
+		selection.text = Values.link.getEnglishFromKey(Values.selected_data["name"])
 
 # Skills
 func display_skillbook():

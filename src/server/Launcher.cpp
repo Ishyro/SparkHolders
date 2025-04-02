@@ -36,19 +36,19 @@
 #include <ctime>
 
 // Windows is great
-typedef struct StartCommunicationParameter {
+struct StartCommunicationParameter {
   Link * link;
   ServerSocket * ss;
   Adventure * adventure;
-} StartCommunicationParameter;
+};
 
 // Windows is great
-typedef struct RelinkCommunicationParameter {
+struct RelinkCommunicationParameter {
   std::vector<Link *> * links;
   ServerSocket * ss;
   Adventure * adventure;
   int32_t playersNumber;
-} RelinkCommunicationParameter;
+};
 
 void listener(void * param) {
   Link * link = ((StartCommunicationParameter *) param)->link;

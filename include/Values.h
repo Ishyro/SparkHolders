@@ -12,7 +12,6 @@ class PassiveAI;
 class PlayerAI;
 
 // data
-
 class Action;
 class Adventure;
 class Attributes;
@@ -50,17 +49,23 @@ class CraftingFurniture;
 class LinkedFurniture;
 class SkillFurniture;
 class SwitchFurniture;
-typedef struct CharacterDisplay CharacterDisplay;
-typedef struct ItemSlot ItemSlot;
-typedef struct Loot Loot;
-typedef struct MapLink MapLink;
-typedef struct ProjectileDisplay ProjectileDisplay;
-typedef struct Spawn Spawn;
-typedef struct StateDisplay StateDisplay;
-typedef struct Step Step;
-typedef struct Hitbox Hitbox;
-typedef struct Target Target;
-typedef struct Time Time;
+struct CharacterDisplay;
+struct ItemSlot;
+struct Loot;
+struct MapLink;
+struct ProjectileDisplay;
+struct Spawn;
+struct StateDisplay;
+struct Step;
+struct Time;
+
+namespace MathUtil {
+  struct Vector3;
+  struct Vector3i;
+  struct Coords;
+  struct Hitbox;
+  struct Target;
+}
 
 // communication
 
@@ -322,12 +327,18 @@ class SpeechManager;
 // target_type
 
 #define TARGET_NONE 0
-#define TARGET_SELF 1
-#define TARGET_MULTIPLE 2
+#define TARGET_FRONT 1
+#define TARGET_SELF 2
 #define TARGET_CHARACTER 3
-#define TARGET_COORDINATES 4
-#define TARGET_BLOCK 5
-#define TARGET_FRONT 6
+#define TARGET_FURNITURE 4
+#define TARGET_COORDINATES 5
+#define TARGET_MULTIPLE 6
+
+// hitbox_type
+
+#define HITBOX_BALL 1
+#define HITBOX_AABB 2
+#define HITBOX_OBB 3
 
 // skill_school
 

@@ -53,7 +53,7 @@ public:
   int64_t getMaxLight();
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
-  Dictionary getBlocks(int64_t height, int64_t radius);
+  Dictionary getBlocks(int64_t sizeZ, int64_t radius);
   int64_t getPlayerId();
   Array getLights();
   Array getControlledParty();

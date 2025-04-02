@@ -33,8 +33,7 @@ bool Region::removeCharacter(Character * character) {
 }
 
 Block * Region::getBlock(MathUtil::Vector3 coord) {
-  MathUtil::Vector3 asked = coord;
-  return getBlock(MathUtil::makeVector3i(coord));
+  return getBlock(MathUtil::Vector3i(coord));
 }
 
 Block * Region::getBlock(MathUtil::Vector3i coord) {
@@ -57,13 +56,13 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
     return MathUtil::distance(ori, dest) * 5.F / c->getMovementTimeModifier();
   }
   else {
-    MathUtil::Vector3 next = MathUtil::makeVector3(ori.x, ori.y, ori.z);
-    float orientation = MathUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y);
-    float orientation_z = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
-    float cos_long = std::cos(orientation * 3.141593F / 180.F);
-    float sin_long = std::sin(orientation * 3.141593F / 180.F);
-    float cos_colat = std::cos(orientation_z);
-    float sin_colat = std::sin(orientation_z);
+    MathUtil::Vector3 next = MathUtil::Vector3(ori.x, ori.y, ori.z);
+    float orientation_z = MathUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y);
+    float orientation_x = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
+    float cos_long = std::cos(orientation_z * M_PI / 180.F);
+    float sin_long = std::sin(orientation_z * M_PI / 180.F);
+    float cos_colat = std::cos(orientation_x);
+    float sin_colat = std::sin(orientation_x);
     //
     float factor_x = sin_colat * cos_long;
     float factor_y = sin_colat * sin_long;
@@ -72,13 +71,13 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
     int32_t x_direction = 1;
     int32_t y_direction = 1;
     int32_t z_direction = 1;
-    if(orientation > 180.F) {
+    if(orientation_z > 180.F) {
       y_direction = -1;
     }
-    if(orientation > 90.F && orientation < 270.F) {
+    if(orientation_z > 90.F && orientation_z < 270.F) {
       x_direction = -1;
     }
-    if(orientation_z > 3.141593F / 2.F && orientation_z < 1.5F * 3.141593F) {
+    if(orientation_x > M_PI / 2.F && orientation_x < 1.5F * M_PI) {
       z_direction = -1;
     }
     bool done = false;
@@ -87,7 +86,7 @@ float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector
       MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
       Block * block = getBlock(current);
       if(block == nullptr) {
-        block = getBlock(MathUtil::makeVector3(current.x, current.y, current.z - 1));
+        block = getBlock(MathUtil::Vector3(current.x, current.y, current.z - 1));
         // no path
         if(block == nullptr) {
           return -1.F;
@@ -120,75 +119,46 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   if(block != nullptr && block->type == BLOCK_SOLID) {
     return false;
   }
-  // check on height
-  for(int i = 1; i < c->getHeight(); i++) {
-    MathUtil::Vector3 vec_up = MathUtil::makeVector3(dest.x, dest.y, dest.z + i);
+  // check on sizeZ
+  for(int i = 1; i < c->getSizeZ(); i++) {
+    MathUtil::Vector3 vec_up = MathUtil::Vector3(dest.x, dest.y, dest.z + i);
     Block * up = getBlock(vec_up);
     if(up != nullptr && up->type != BLOCK_LIQUID && up->type != BLOCK_GAS) {
       return false;
     }
   }
+  MathUtil::HitboxOBB * hitbox = new MathUtil::HitboxOBB(c->getHitbox());
+  hitbox->applyMove(dest, c->getOrientationX(), 0.F, c->getOrientationZ());
   for(Character * other : getCharacters()) {
-    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::distance(dest, other->getCoord()) <= c->getSize() + other->getSize()) {
+    if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::collide(hitbox, other->getHitbox())) {
       return false;
     }
   }
   for(Furniture * furniture : getFurnitures()) {
-    if(intersect(c, dest, furniture)) {
+    if(furniture->getSolid() && MathUtil::collide(hitbox, furniture->getHitbox())) {
       return false;
     }
   }
   return true;
 }
 
-bool Region::intersect(Character * character, MathUtil::Vector3 dest, Furniture * furniture) {
-  if(!furniture->getUnwalkable() || dest.z < furniture->getCoord().z || dest.z > furniture->getCoord().z + furniture->sizeZ) {
-    return false;
-  }
-  float testX = dest.x;
-  float testY = dest.y;
-  // test left edge
-  if(dest.x < furniture->getCoord().x) {
-    testX = furniture->getCoord().x;
-  }
-  // test left edge
-  else if(dest.x > furniture->getCoord().x + furniture->sizeX) {
-    testX = furniture->getCoord().x + furniture->sizeX;
-  }
-  // test left edge
-  if(dest.y < furniture->getCoord().y) {
-    testY = furniture->getCoord().y;
-  }
-  // test left edge
-  else if(dest.y > furniture->getCoord().y + furniture->sizeY) {
-    testY = furniture->getCoord().y + furniture->sizeY;
-  }
-  float distX = dest.x - testX;
-  float distY = dest.y - testY;
-  float distance2 = sqrt( (distX*distX) + (distY*distY) );
-  if (distance2 <= character->getSize()) {
-    return true;
-  }
-  return false;
-}
-
 void Region::move(Character * character, World * world) {
   MathUtil::Vector3 current = character->getCoord();
   MathUtil::Vector3 speed = character->getSpeed();
-  Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01));
+  Block * under = getBlock(MathUtil::Vector3i(current.x, current.y, current.z - 0.01));
   if(under == nullptr) {
     // TODO slow down and gravity
     speed.z -= 9.0F * Settings::getTickRate().count() / 1000.F;
   }
-  MathUtil::Vector3 dest = MathUtil::round(MathUtil::makeVector3(
+  MathUtil::Vector3 dest = MathUtil::round(MathUtil::Vector3(
     current.x + speed.x * Settings::getTickRate().count() / 1000.F,
     current.y + speed.y * Settings::getTickRate().count() / 1000.F,
     current.z + speed.z * Settings::getTickRate().count() / 1000.F
   ));
   float distance = MathUtil::distance(current, dest);
-  MathUtil::Vector3 direction = MathUtil::makeVector3((dest.x - current.x) / distance, (dest.y - current.y) / distance, (dest.z - current.z) / distance);
+  MathUtil::Vector3 direction = MathUtil::Vector3((dest.x - current.x) / distance, (dest.y - current.y) / distance, (dest.z - current.z) / distance);
   for(float step = 0.1F; step < distance; step += 0.1F) {
-    MathUtil::Vector3 coord = MathUtil::makeVector3(current.x + step * direction.x, current.y + step * direction.y, current.z + step * direction.z);
+    MathUtil::Vector3 coord = MathUtil::Vector3(current.x + step * direction.x, current.y + step * direction.y, current.z + step * direction.z);
     Block * block = getBlock(coord);
     if(block != nullptr && block->type != BLOCK_LIQUID && block->type != BLOCK_GAS) {
       // collide
@@ -211,37 +181,37 @@ void Region::move(Character * character, World * world) {
       }
       else {
         // correct coords on slope / stairs
-        dest = getCoordsOnSlope(dest, block->orientation);
+        dest = getCoordsOnSlope(dest, block->orientation_z);
       }
       break;
     }
   }
   if(tryMove(character, dest)) {
-    character->move(dest, 0.F, world);
+    character->move(dest, 0.F, 0.F, world);
   }
-  character->setSpeed(MathUtil::makeVector3(0, 0, speed.z));
+  character->setSpeed(MathUtil::Vector3(0, 0, speed.z));
 }
 
-void Region::setSpeed(Character * character, float orientation, float given_orientation_z = 90.F) {
-  float orientation_z;
+void Region::setSpeed(Character * character, float orientation_z, float given_orientation_x = 90.F) {
+  float orientation_x;
   MathUtil::Vector3 current = character->getCoord();
-  Block * inside = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z));
+  Block * inside = getBlock(MathUtil::Vector3i(current.x, current.y, current.z));
   // TODO, with this we can walk on water
   if(character->isFlying() || (inside != nullptr && inside->type == BLOCK_LIQUID)) {
-    orientation_z = given_orientation_z;
+    orientation_x = given_orientation_x;
   }
   else {
     if(inside != nullptr && (inside->type == BLOCK_STAIRS || inside->type == BLOCK_SLOPE)) {
-      orientation_z = getOrientationZOnSlope(orientation, inside->orientation);
+      orientation_x = getOrientationZOnSlope(orientation_z, inside->orientation_z);
     }
     else {
-      orientation_z = 90.F;
+      orientation_x = 90.F;
     }
   }
-  float cos_long = std::cos(orientation * 3.141593F / 180.F);
-  float sin_long = std::sin(orientation * 3.141593F / 180.F);
-  float cos_colat = std::cos(orientation_z * 3.141593F / 180.F);
-  float sin_colat = std::sin(orientation_z * 3.141593F / 180.F);
+  float cos_long = std::cos(orientation_z * M_PI / 180.F);
+  float sin_long = std::sin(orientation_z * M_PI / 180.F);
+  float cos_colat = std::cos(orientation_x * M_PI / 180.F);
+  float sin_colat = std::sin(orientation_x * M_PI / 180.F);
   //
   float factor_x = sin_colat * cos_long;
   float factor_y = sin_colat * sin_long;
@@ -255,7 +225,7 @@ void Region::setSpeed(Character * character, float orientation, float given_orie
     speed = MathUtil::round(speed);
   }
   else {
-    Block * under = getBlock(MathUtil::makeVector3i(current.x, current.y, current.z - 0.01)); 
+    Block * under = getBlock(MathUtil::Vector3i(current.x, current.y, current.z - 0.01)); 
     float range_with_cost;
     if(under != nullptr) {
       range_with_cost = character->getMovementTimeModifier() * under->speed;
@@ -275,7 +245,7 @@ void Region::setSpeed(Character * character, float orientation, float given_orie
 }
 
 MathUtil::Vector3 Region::getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block_orientation) {
-  MathUtil::Vector3 result = MathUtil::makeVector3(dest.x, dest.y, std::floor(dest.z));
+  MathUtil::Vector3 result = MathUtil::Vector3(dest.x, dest.y, std::floor(dest.z));
   switch(block_orientation) {
     case 0:
       result.z = MathUtil::round(result.z + (dest.x - std::floor(dest.x)));
@@ -319,13 +289,13 @@ bool Region::canSee(Character * watcher, Character * target) {
     return false;
   }
   MathUtil::Vector3 watcher_head = watcher->getCoord();
-  watcher_head.z += watcher->getHeight();
+  watcher_head.z += watcher->getSizeZ();
   MathUtil::Vector3 target_head = target->getCoord();
-  target_head.z += target->getHeight();
+  target_head.z += target->getSizeZ();
   float distance = MathUtil::distance(watcher_head, target_head);
-  MathUtil::Vector3 direction = MathUtil::makeVector3((target_head.x - watcher_head.x) / distance, (target_head.y - watcher_head.y) / distance, (target_head.z - watcher_head.z) / distance);
+  MathUtil::Vector3 direction = MathUtil::Vector3((target_head.x - watcher_head.x) / distance, (target_head.y - watcher_head.y) / distance, (target_head.z - watcher_head.z) / distance);
   for(int32_t step = 1; step < distance; step++) {
-    MathUtil::Vector3 coord = MathUtil::makeVector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
+    MathUtil::Vector3 coord = MathUtil::Vector3(watcher_head.x + step * direction.x, watcher_head.y + step * direction.y, watcher_head.z + step * direction.z);
     Block * block = getBlock(coord);
     if(block != nullptr && block->opaque) {
       return false;

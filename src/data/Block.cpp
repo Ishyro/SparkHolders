@@ -10,7 +10,7 @@ std::string Block::to_string() {
   String::insert_bool(ss, unwalkable);
   String::insert_bool(ss, opaque);
   String::insert_int(ss, light);
-  String::insert_int(ss, orientation);
+  String::insert_int(ss, orientation_z);
   String::insert_float(ss, speed);
   std::string result = ss->str();
   delete ss;
@@ -25,8 +25,8 @@ Block * Block::from_string(std::string to_read) {
   bool unwalkable = String::extract_bool(ss);
   bool opaque = String::extract_bool(ss);
   int32_t light = String::extract_int(ss);
-  int32_t orientation = String::extract_int(ss);
+  int32_t orientation_z = String::extract_int(ss);
   float speed = String::extract_float(ss);
   delete ss;
-  return new Block(name, type, material, unwalkable, opaque, light, orientation, speed);
+  return new Block(name, type, material, unwalkable, opaque, light, orientation_z, speed);
 }

@@ -15,7 +15,6 @@ var colliders = {}
 var characters = {}
 var projectiles = {}
 var furnitures = {}
-var furnitures_colliders = {}
 var blocks_data = {}
 var characters_data = {}
 var projectiles_data = {}
@@ -130,7 +129,7 @@ func _physics_process(delta):
 		#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
 		#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
 		#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-		#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation"], 0)
+		#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation_z"], 0)
 		#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
 		#		projectiles[projectile_id].transform.origin = dest
 		#	done = done && (projectiles[projectile_id].transform.origin == dest)
@@ -187,7 +186,7 @@ func add_block(coord: Vector3):
 				]
 			)
 		)
-	shape.rotation_degrees = Vector3(0, 90 + blocks_data[current_blocks[coord]]["orientation"], 0)
+	shape.rotation_degrees = Vector3(0, 90 + blocks_data[current_blocks[coord]]["orientation_z"], 0)
 	collider.add_child(shape)
 	n_ground.add_child(collider)
 	colliders[coord] = collider
@@ -236,7 +235,7 @@ func display_map():
 		elif blocks_data[block_type]["type"] == Values.macros["BLOCK_STAIRS"]:
 			coord = Vector3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
 			angle_offset = 180
-		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(angle_offset + blocks_data[block_type]["orientation"])))
+		multiMeshInstances[block_type].multimesh.set_instance_transform(block_current[block_type], Transform3D.IDENTITY.translated(coord).rotated_local(Vector3.UP, deg_to_rad(angle_offset + blocks_data[block_type]["orientation_z"])))
 		block_current[block_type] = block_current[block_type] + 1
 	for coord in furnitures_data:
 		add_furniture(furnitures_data[coord], coord)
@@ -455,7 +454,7 @@ func add_furniture(furniture_data: Dictionary, coord: Vector3):
 			else:
 				base_furnitures_off[furniture_data["name"]] = model
 	var furniture
-	if  furniture_data["isOn"]:
+	if furniture_data["isOn"]:
 		furniture = base_furnitures[furniture_data["name"]].instantiate()
 	else:
 		furniture = base_furnitures_off[furniture_data["name"]].instantiate()
@@ -463,7 +462,7 @@ func add_furniture(furniture_data: Dictionary, coord: Vector3):
 	if furniture_data["light"] > 0:
 		furniture.add_child(add_fire(furniture_data["fire_pos"], furniture_data["fire_size"], furniture_data["light"]))
 	furniture.transform.origin = Vector3(coord.x + float(furniture_data["sizeY"]) / 2.0, coord.y + float(furniture_data["sizeZ"]) / 2.0, coord.z + float(furniture_data["sizeX"]) / 2.0)
-	furniture.rotation_degrees = Vector3(0, furniture_data["orientation"], 0)
+	furniture.rotation_degrees = Vector3(0, furniture_data["orientation_z"], 0)
 	furnitures[coord] = furniture
 	var collider = StaticBody3D.new()
 	
@@ -494,20 +493,22 @@ func get_color(character_data: Dictionary):
 
 func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
-	character.scale_object_local(Vector3(character_data["size"], character_data["size"], character_data["size"]))
+	character.scale_object_local(Vector3(character_data["sizeY"], character_data["sizeZ"], character_data["sizeX"]))
 	character.set_color(get_color(character_data))
 	character.transform.origin = Vector3(character_data["y"], character_data["z"] + 0, character_data["x"])
-	character.rotation_degrees = Vector3(0, character_data["orientation"], 0)
+	character.rotation_degrees = Vector3(0, character_data["orientation_z"], character_data["orientation_x"])
 	characters[character_id] = character
 	character.id = character_id
 	character.character = character_data["name"]
 	n_characters.add_child(character)
+	if owned_character == character_id:
+		character.visible = false
 
 func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	var projectile = base_projectile.instantiate()
-	projectile.scale_object_local(Vector3(projectile_data["size"], projectile_data["size"], projectile_data["size"]))
+	projectile.scale_object_local(Vector3(projectile_data["sizeY"], projectile_data["sizeZ"], projectile_data["sizeX"]))
 	projectile.transform.origin = Vector3(projectile_data["y"], projectile_data["z"] + 1, projectile_data["x"])
-	projectile.rotation_degrees = Vector3(0, projectile_data["orientation"], 0)
+	projectile.rotation_degrees = Vector3(0, projectile_data["orientation_z"], projectile_data["orientation_x"])
 	projectiles[projectile_id] = projectile
 	projectile.id = projectile_id
 	projectile.projectile = projectile_data["name"]

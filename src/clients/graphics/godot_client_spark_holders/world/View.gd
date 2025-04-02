@@ -30,10 +30,23 @@ func update_mouse_coordinates():
 	var space = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to, 0x40)
 	var result = space.intersect_ray(query)
+	Values.selection_mutex.lock()
 	if not result.is_empty():
 		Values.coord = map.colliders.find_key(result["collider"])
 		if not Values.coord:
 			Values.coord = result["position"]
+		else:
+			if map.furnitures.has(Values.coord) \
+				and (map.characters[map.owned_character].global_position).distance_to(map.furnitures[Values.coord].global_position) \
+				< 0.5 + (map.characters_data[map.owned_character]["sizeX"] + map.characters_data[map.owned_character]["sizeY"]) * 0.25 \
+				+ (map.furnitures_data[Values.coord]["sizeX"] + map.characters_data[map.owned_character]["sizeY"]) * 0.25:
+				Values.selected = map.furnitures[Values.coord]
+				Values.selected_data = map.furnitures_data[Values.coord]
+	else:
+		Values.selected = null
+		Values.selected_data = {}
+	hud.update_selection()
+	Values.selection_mutex.unlock()
 
 func _process(_delta):
 	if not pause_state:
@@ -131,16 +144,18 @@ func _unhandled_input(event):
 				hud.skillbook.visible = false
 		# Actions
 		if not Values.free_mouse_state: #and not Values.updating_state and not Values.link.hasState():
-			if event.is_action_released("interact"):
-				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_BLOCK"], 0, Vector3(floor(Values.coord.z), floor(Values.coord.x), floor(Values.coord.y)))
+			Values.selection_mutex.lock()
+			if event.is_action_released("interact") and Values.selected != null:
+				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_FURNITURE"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("attack"):
-				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_target.id, Vector3.ZERO)
+				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("skill"):
-				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_target.id, Vector3.ZERO)
+				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("jump"):
 				send_base_action(Values.macros["ACTION_JUMP"])
 			if event.is_action_pressed("run") or event.is_action_released("run"):
 				send_base_action(Values.macros["ACTION_RUN"])
+			Values.selection_mutex.unlock()
 
 func send_base_action(type):
 	if type != Values.macros["ACTION_JUMP"] and type != Values.macros["ACTION_RUN"]:
@@ -153,13 +168,13 @@ func send_base_action(type):
 	if type != Values.macros["ACTION_JUMP"] and type != Values.macros["ACTION_RUN"]:
 		Values.action_mutex.unlock()
 	
-func send_oriented_action(type, orientation):
+func send_oriented_action(type, orientation_z):
 	if type == Values.macros["ACTION_MOVE"]:
 		Values.action_move_mutex.lock()
 	else:
 		Values.action_mutex.lock()
 	Values.action["type"] = type
-	Values.action["arg1"] = orientation
+	Values.action["arg1"] = orientation_z
 	Values.action["arg2"] = 0
 	Values.action["mana_cost"] = 0
 	if type == Values.macros["ACTION_MOVE"]:

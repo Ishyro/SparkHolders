@@ -4,5 +4,5 @@ material = resources/materials/glass.tres
 unwalkable = false
 opaque = false
 light = 0
-orientation = 0
+orientation_z = 0
 speed = 2

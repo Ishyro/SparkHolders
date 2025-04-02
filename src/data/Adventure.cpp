@@ -33,11 +33,11 @@ void Adventure::softMoveCharacterToMap(Character * character, MathUtil::Vector3 
     }
     // recalculate path since the homing projectile always knows where is its target 
     else if(p->homing) {
-      p->setOrientation(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
+      p->setOrientationZ(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
     }
   }
   */
-  character->move(coord, character->getOrientation(), world);
+  character->move(coord, character->getOrientationX(), character->getOrientationZ(), world);
   world->changeRegion(character);
 }
 
@@ -68,11 +68,11 @@ void Adventure::hardMoveCharacterToMap(Character * character, MathUtil::Vector3 
     }
     // recalculate path since the homing projectile always knows where is its target 
     else if(p->homing) {
-      p->setOrientation(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
+      p->setOrientationZ(world->setPathToTarget(p->getCurrentMapId(), p->getX(), p->getY(), p->getTarget()));
     }
   }
   map->addCharacter(character);
-  character->move(x, y, z, character->getOrientation(), world);
+  character->move(x, y, z, character->getOrientationZ(), world);
   */
 }
 
@@ -180,6 +180,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     spawn->x,
     spawn->y,
     spawn->z,
+    0.F,
     90.F,
     nullptr,
     "party",
@@ -227,7 +228,7 @@ void Adventure::applyIteration() {
       Action * action = c->getAction();
       if(action != nullptr) {
         if(action->getTick() <= 1.F) {
-          Action * next = action->execute(this);
+          action->execute(this);
           delete action;
           action = nullptr;
         }
@@ -238,7 +239,7 @@ void Adventure::applyIteration() {
       action = c->getLegAction();
       if(action != nullptr) {
         if(action->getTick() <= 1.F) {
-          Action * next = action->execute(this);
+          action->execute(this);
           delete action;
           action = nullptr;
         }
@@ -274,11 +275,13 @@ int32_t Adventure::getLight(MathUtil::Vector3i coord) {
       return base_light;
     case LIGHTENING_DARK:
       return 0;
+    default:
+      return 0;
   }
 }
 
 int32_t Adventure::getLight(MathUtil::Vector3 coord) {
-  return getLight(MathUtil::makeVector3i(coord));
+  return getLight(MathUtil::Vector3i(coord));
 }
 
 std::string Adventure::state_to_string(Character * player) {
@@ -360,7 +363,7 @@ StateDisplay * Adventure::update_state(std::string to_read) {
     int32_t y = String::extract_int(ss_block);
     int32_t z = String::extract_int(ss_block);
     bool outside = String::extract_bool(ss_block);
-    world->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)), outside);
+    world->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)), outside);
     delete ss_block;
   }
   delete ss_blocks;

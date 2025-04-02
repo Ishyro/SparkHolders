@@ -13,7 +13,7 @@ class Block {
     const bool unwalkable;
     const bool opaque;
     const int32_t light;
-    const int32_t orientation;
+    const int32_t orientation_z;
     const float speed;
     Block(
       std::string name,
@@ -22,7 +22,7 @@ class Block {
       bool unwalkable,
       bool opaque,
       int32_t light,
-      int32_t orientation,
+      int32_t orientation_z,
       float speed
     ):
       name(name),
@@ -31,7 +31,7 @@ class Block {
       unwalkable(unwalkable),
       opaque(opaque),
       light(light),
-      orientation(orientation),
+      orientation_z(orientation_z),
       speed(speed)
     {}
     std::string to_string();

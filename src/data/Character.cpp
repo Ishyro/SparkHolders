@@ -28,17 +28,18 @@
 #include "util/String.h"
 
 Character::~Character() {
-      delete ai;
-      ai = nullptr;
-      for(Effect * effect : getEffects()) {
-        delete effect;
-        effect = nullptr;
-      }
-    }
+  delete ai;
+  ai = nullptr;
+  for(Effect * effect : getEffects()) {
+    delete effect;
+    effect = nullptr;
+  }
+}
 
 void Character::initializeCharacter(Gear * gear) {
-  size = race->getSize(race_modifiers);
-  height = race->getHeight(race_modifiers);
+  sizeX = race->getSizeX(race_modifiers);
+  sizeY = race->getSizeY(race_modifiers);
+  sizeZ = race->getSizeZ(race_modifiers);
   maxHp = main_class->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
     maxHp += way->baseHp;
@@ -89,7 +90,10 @@ void Character::initializeCharacter(Gear * gear) {
     status[i] = 0.F;
   }
   initSkillsAndEffects();
+  hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSizeX(), getSizeY(), getSizeZ());
+  hitbox->applyMove(coord, orientation_x, 0.F, orientation_z);
 }
+
 void Character::initSkillsAndEffects() {
   for(Skill * skill : main_class->getSkills()) {
     if(skill->level == 0) {
@@ -208,9 +212,12 @@ bool Character::isSoulBurning() { return currentSoulBurn >= soulBurnTreshold; }
 MathUtil::Vector3 Character::getCoord() { return coord; }
 MathUtil::Vector3 Character::getSpeed() { return speed; }
 MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
-float Character::getSize() { return size; }
-float Character::getHeight() { return height; }
-float Character::getOrientation() { return orientation; }
+MathUtil::HitboxOBB * Character::getHitbox() { return hitbox; }
+float Character::getSizeX() { return sizeX; }
+float Character::getSizeY() { return sizeY; }
+float Character::getSizeZ() { return sizeZ; }
+float Character::getOrientationX() { return orientation_x; }
+float Character::getOrientationZ() { return orientation_z; }
 float Character::getHp() { return hp; }
 int32_t Character::getMaxHp() {
   int32_t bonus = 0;
@@ -582,12 +589,19 @@ std::map<int32_t, Stance *> Character::getActiveMagicalStances() {
   return active_magical_stances;
 }
 
-void Character::setOrientation(float orientation) { this->orientation = orientation; }
-void Character::setSize(float size) { this->size = size; }
-void Character::move(MathUtil::Vector3 coord, float orientation, World * world) {
+void Character::setOrientationX(float orientation_x) { this->orientation_x = orientation_x; }
+void Character::setOrientationZ(float orientation_z) { this->orientation_z = orientation_z; }
+void Character::setSizeX(float size) { sizeX = size; }
+void Character::setSizeY(float size) { sizeY = size; }
+void Character::setSizeZ(float size) { sizeZ = size; }
+void Character::move(MathUtil::Vector3 coord, float orientation_x, float orientation_z, World * world) {
   MathUtil::Vector3 ori = this->coord;
   this->coord = coord;
-  this->orientation = orientation;
+  float delta_x = this->orientation_x - orientation_x;
+  float delta_z = this->orientation_z - orientation_z;
+  this->orientation_x = orientation_x;
+  this->orientation_z = orientation_z;
+  hitbox->applyMove(coord, delta_x, 0.F, delta_z);
   world->checkRegion(this, ori, coord);
 }
 
@@ -596,7 +610,7 @@ void Character::run() {
 }
 
 void Character::jump() {
-  if(region->getBlock(MathUtil::makeVector3i(coord.x, coord.y, coord.z - 0.01F)) != nullptr) {
+  if(region->getBlock(MathUtil::Vector3i(coord.x, coord.y, coord.z - 0.01F)) != nullptr) {
     // running doesn't make jumping higher
     // TODO: verify we cannot time a jump to avoid fall damage
     speed.z = (running ? 2.F * getMovementTimeModifier() : 4.F * getMovementTimeModifier());
@@ -1322,7 +1336,7 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge, bool blocked) {
+void Character::useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge, bool blocked) {
   skill->activate(this, target, adventure, overcharge, blocked);
 }
 
@@ -1428,7 +1442,7 @@ float Character::getStatusReductionFromType(int32_t damage_type) {
   }
 }
 
-Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t slot) {
+Projectile * Character::shoot(MathUtil::Target * target, Adventure * adventure, int32_t slot) {
   if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
       std::array<float, DAMAGE_TYPE_NUMBER> realDamages;
@@ -1452,7 +1466,7 @@ Projectile * Character::shoot(Target * target, Adventure * adventure, int32_t sl
 void Character::mainAttack(Character * target, Adventure * adventure, int32_t type) {
   if(gear->getWeapon_1()->range >= MathUtil::distance(coord, target->getCoord())) {
     if(gear->getWeapon_1()->use_projectile) {
-      Target * t_target = new Target();
+      MathUtil::Target * t_target = new MathUtil::Target();
       t_target->type = TARGET_CHARACTER;
       t_target->id = target->id;
       shoot(t_target, adventure, ITEM_SLOT_WEAPON_1);
@@ -1740,9 +1754,11 @@ std::string Character::to_string() {
   String::insert_float(ss, speed.x);
   String::insert_float(ss, speed.y);
   String::insert_float(ss, speed.z);
-  String::insert_float(ss, getSize());
-  String::insert_float(ss, getHeight());
-  String::insert_float(ss, orientation);
+  String::insert_float(ss, getSizeX());
+  String::insert_float(ss, getSizeZ());
+  String::insert_float(ss, getSizeZ());
+  String::insert_float(ss, orientation_x);
+  String::insert_float(ss, orientation_z);
   String::insert(ss, team);
   String::insert_int(ss, xp);
   String::insert_int(ss, level);
@@ -1789,9 +1805,11 @@ CharacterDisplay * Character::from_string(std::string to_read) {
   display->vx = String::extract_float(ss);
   display->vy = String::extract_float(ss);
   display->vz = String::extract_float(ss);
-  display->size = String::extract_float(ss);
-  display->height = String::extract_float(ss);
-  display->orientation = String::extract_float(ss);
+  display->sizeX = String::extract_float(ss);
+  display->sizeY = String::extract_float(ss);
+  display->sizeZ = String::extract_float(ss);
+  display->orientation_x = String::extract_float(ss);
+  display->orientation_z = String::extract_float(ss);
   display->team = String::extract(ss);
   display->xp = String::extract_int(ss);
   display->level = String::extract_int(ss);
@@ -1851,9 +1869,11 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, speed.x);
   String::insert_float(ss, speed.y);
   String::insert_float(ss, speed.z);
-  String::insert_float(ss, size);
-  String::insert_float(ss, height);
-  String::insert_float(ss, orientation);
+  String::insert_float(ss, sizeX);
+  String::insert_float(ss, sizeY);
+  String::insert_float(ss, sizeZ);
+  String::insert_float(ss, orientation_x);
+  String::insert_float(ss, orientation_z);
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);
@@ -1968,9 +1988,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   speed.x = String::extract_float(ss);
   speed.y = String::extract_float(ss);
   speed.z = String::extract_float(ss);
-  float size = String::extract_float(ss);
-  float height = String::extract_float(ss);
-  float orientation = String::extract_float(ss);
+  float sizeX = String::extract_float(ss);
+  float sizeY = String::extract_float(ss);
+  float sizeZ = String::extract_float(ss);
+  float orientation_x = String::extract_float(ss);
+  float orientation_z = String::extract_float(ss);
   bool merchant = String::extract_bool(ss);
   int64_t gold = String::extract_long(ss);
   int64_t xp = String::extract_long(ss);
@@ -2063,9 +2085,11 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     talking_speech,
     coord,
     speed,
-    size,
-    height,
-    orientation,
+    sizeX,
+    sizeY,
+    sizeZ,
+    orientation_x,
+    orientation_z,
     nullptr,
     merchant,
     gold,

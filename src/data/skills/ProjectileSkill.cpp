@@ -5,7 +5,7 @@
 #include "util/String.h"
 #include "util/MathUtil.h"
 
-void ProjectileSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
+void ProjectileSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   std::array<float, DAMAGE_TYPE_NUMBER> realDamages;
   for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
     realDamages[damage_type] = projectile->getDamageFromType(damage_type) * overcharge_power;
@@ -30,7 +30,7 @@ void ProjectileSkill::activate(Character * owner, Target * target, Adventure * a
   adventure->getWorld()->getMap(0)->addProjectile(to_add);
 }
 
-bool ProjectileSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+bool ProjectileSkill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   return true;
 }
 

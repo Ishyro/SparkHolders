@@ -109,7 +109,7 @@ float GodotLink::getMoveCost(Vector3 ori, Vector3 dest) {
   #ifdef LOG
     log << "getMoveCost( (" << ori.x << "," << ori.y << "," << ori.z << "), (" << dest.x << "," << dest.y << "," << dest.z << ") )" << std::endl;
   #endif
-  float result = link->getPlayer()->getRegion()->getMoveCost(link->getPlayer(), MathUtil::makeVector3(ori.z, ori.x, ori.y), MathUtil::makeVector3(dest.z, dest.x, dest.y));
+  float result = link->getPlayer()->getRegion()->getMoveCost(link->getPlayer(), MathUtil::Vector3(ori.z, ori.x, ori.y), MathUtil::Vector3(dest.z, dest.x, dest.y));
   return result;
 }
 
@@ -176,14 +176,14 @@ Array GodotLink::getAvaillableBlocks() {
   return result;
 }
 
-Dictionary GodotLink::getBlocks(int64_t height, int64_t radius) {
+Dictionary GodotLink::getBlocks(int64_t sizeZ, int64_t radius) {
   #ifdef LOG
     log << "getBlocks()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  MathUtil::Vector3i coord = MathUtil::makeVector3i(link->getPlayer()->getCoord());
+  MathUtil::Vector3i coord = MathUtil::Vector3i(link->getPlayer()->getCoord());
   MathUtil::Vector3i current;
-  for(current.z = coord.z - height * CHUNK_SIZE; current.z <= coord.z + height * CHUNK_SIZE; current.z += CHUNK_SIZE) {
+  for(current.z = coord.z - sizeZ * CHUNK_SIZE; current.z <= coord.z + sizeZ * CHUNK_SIZE; current.z += CHUNK_SIZE) {
     for(current.y = coord.y - radius * CHUNK_SIZE; current.y <= coord.y + radius * CHUNK_SIZE; current.y += CHUNK_SIZE) {
       for(current.x = coord.x - radius * CHUNK_SIZE; current.x <= coord.x + radius * CHUNK_SIZE; current.x += CHUNK_SIZE) {
         for(auto pair : link->getAdventure()->getWorld()->getChunk(current)->getBlocks()) {
@@ -345,7 +345,7 @@ Dictionary GodotLink::getDataFromBlock(String tile_name) {
   result["unwalkable"] = block->unwalkable;
   result["opaque"] = block->opaque;
   result["light"] = block->light;
-  result["orientation"] = block->orientation;
+  result["orientation_z"] = block->orientation_z;
   result["speed"] = block->speed;
   result["material"] = block->material.c_str();
   return result;
@@ -417,7 +417,9 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   result["flowIncr"] = race->flowIncr;
   result["transcendenceIncr"] = 0;
   result["attunementIncr"] = 0;
-  result["size"] = race->size;
+  result["sizeX"] = race->sizeX;
+  result["sizeY"] = race->sizeY;
+  result["sizeZ"] = race->sizeZ;
   result["need_to_eat"] = race->need_to_eat;
   result["can_eat_food"] = race->can_eat_food;
   result["need_to_sleep"] = race->need_to_sleep;
@@ -494,8 +496,11 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["vx"] = character->vx;
   result["vy"] = character->vy;
   result["vz"] = character->vz;
-  result["size"] = character->size;
-  result["orientation"] = character->orientation;
+  result["sizeX"] = character->sizeX;
+  result["sizeY"] = character->sizeY;
+  result["sizeZ"] = character->sizeZ;
+  result["orientation_x"] = character->orientation_x;
+  result["orientation_z"] = character->orientation_z;
   result["team"] = character->team.c_str();
   result["xp"] = character->xp;
   result["level"] = character->level;
@@ -541,7 +546,9 @@ Dictionary GodotLink::getStatsFromCharacter() {
   result["stamina"] = character->getStamina();
   result["sanity"] = character->getSanity();
   //result["channeledMana"] = character->getChanneledMana();
-  result["size"] = character->getSize();
+  result["sizeX"] = character->getSizeX();
+  result["sizeY"] = character->getSizeY();
+  result["sizeZ"] = character->getSizeZ();
   result["xp"] = (int64_t) character->getXP();
   result["level"] = character->getLevel();
   result["rawPower"] = (int64_t) character->getRawPower();
@@ -670,7 +677,7 @@ Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   result["x"] = projectile->x;
   result["y"] = projectile->y;
   result["z"] = projectile->z;
-  result["orientation"] = projectile->orientation;
+  result["orientation_z"] = projectile->orientation_z;
   Array damages = Array();
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages.push_back(projectile->damages[i]);
@@ -689,12 +696,13 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
     log << "getDataFromFurniture(" << furniture->name << ")" << std::endl;
   #endif
   Dictionary result = Dictionary();
+  result["id"] = furniture->id;
   result["name"] = furniture->name.c_str();
   result["type"] = furniture->type;
   result["sizeX"] = furniture->sizeX;
   result["sizeY"] = furniture->sizeY;
   result["sizeZ"] = furniture->sizeZ;
-  result["orientation"] = furniture->getOrientation();
+  result["orientation_z"] = furniture->getOrientationZ();
   result["opaque"] = furniture->getOpaque();
   result["solid"] = furniture->getSolid();
   result["unwalkable"] = furniture->getUnwalkable();
@@ -775,21 +783,32 @@ void GodotLink::send_action(Dictionary action) {
     case ACTION_CHANNEL:
       break;
     case ACTION_MOVE: {
-      float orientation = action["arg1"];
+      float orientation_z = action["arg1"];
+      float orientation_x = action["arg2"];
       #ifdef LOG
-        log << "orientation: " << orientation << std::endl;
+        log << "orientation_z: " << orientation_z << std::endl;
       #endif
-      arg1 = (void *) &orientation;
+      arg1 = (void *) &orientation_z;
+      arg2 = (void *) &orientation_x;
       break;
     }
     case ACTION_STRIKE:
     case ACTION_ACTIVATION: {
       Dictionary target_ori = action["arg1"];
-      Target * target = new Target();
+      MathUtil::Target * target = new MathUtil::Target();
       target->type = (int32_t) target_ori["type"];
-      target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
-      Vector3 pos = (Vector3) target_ori["pos"];
-      target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
+      target->next = nullptr;
+      switch(target->type) {
+        case TARGET_CHARACTER:
+        case TARGET_FURNITURE:
+          target->id = target_ori["id"];
+          break;
+        case TARGET_COORDINATES: {
+          Vector3 pos = (Vector3) target_ori["pos"];
+          target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
+          break;
+        }
+      }
       arg1 = (void *) target;
       break;
     }
@@ -824,11 +843,11 @@ void GodotLink::send_action(Dictionary action) {
     }
     case ACTION_USE_SKILL: {
       Dictionary target_ori = action["arg1"];
-      Target * target = new Target();
+      MathUtil::Target * target = new MathUtil::Target();
       target->type = (int32_t) target_ori["type"];
       target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
       Vector3 pos = (Vector3) target_ori["pos"];
-      target->coord = MathUtil::makeVector3(pos.x, pos.y, pos.z);
+      target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
       arg1 = (void *) target;
       Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) action["arg2"]).utf8().get_data()));
       arg2 = (void *) skill;
@@ -888,7 +907,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
-  ClassDB::bind_method(D_METHOD("getBlocks", "height", "radius"), &GodotLink::getBlocks);
+  ClassDB::bind_method(D_METHOD("getBlocks", "sizeZ", "radius"), &GodotLink::getBlocks);
   ClassDB::bind_method(D_METHOD("getPlayerId"), &GodotLink::getPlayerId);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);

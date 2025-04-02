@@ -2,11 +2,11 @@
 
 #include "util/MathUtil.h"
 
-void TeleportSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
-  // Target 1 will always be a Character
+void TeleportSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
+  // MathUtil::Target 1 will always be a Character
   // other may be owner
   Character * other = target->character;
-  // Target 2 will always be a Coordinate
+  // MathUtil::Target 2 will always be a Coordinate
   // maybe swap character teleport in the future ?
   switch(apparition_type) {
     case APPARITION_SOFT:
@@ -21,8 +21,8 @@ void TeleportSkill::activate(Character * owner, Target * target, Adventure * adv
 }
 
 // TODO
-bool TeleportSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
-  // Target 1 will always be a Character
+bool TeleportSkill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+  // MathUtil::Target 1 will always be a Character
   // other may be owner
   Character * other = target->character;
   if(MathUtil::distance(owner->getCoord(), target->coord) > range * overcharge_range) {

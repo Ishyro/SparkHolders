@@ -23,8 +23,8 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
     adventure->getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
   }
   if(c->getX() != origin_x || c->getY() != origin_y) {
-    Target * t = new Target();
-    t->type = TARGET_BLOCK;
+    MathUtil::Target * t = new MathUtil::Target();
+    t->type = TARGET_COORDINATES;
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;
@@ -39,8 +39,8 @@ Action * EtheralCasterAI::getActions(Adventure * adventure, Character * c) {
   }
   else {
     casted = true;
-    Target * target = new Target();
-    target->type = TARGET_BLOCK;
+    MathUtil::Target * target = new MathUtil::Target();
+    target->type = TARGET_COORDINATES;
     target->id = c->getCurrentMap()->id;
     target->x = origin_x;
     target->y = origin_y;

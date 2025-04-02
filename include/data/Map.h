@@ -24,13 +24,13 @@
 
 #include "util/MathUtil.h"
 
-typedef struct Loot {
+struct Loot {
   int32_t type;
   float x;
   float y;
   float size;
   std::list<Item *> items;
-} Loot;
+};
 
 namespace map {
   static int64_t id_cpt = 0;
@@ -123,10 +123,10 @@ class Map {
         }
         // oriented block
         if(block->name.find('#') != std::string::npos) {
-          int32_t orientation = rotation + block->orientation;
-          orientation = orientation >= 360.F ? orientation - 360.F : orientation;
+          int32_t orientation_z = rotation + block->orientation_z;
+          orientation_z = orientation_z >= 360.F ? orientation_z - 360.F : orientation_z;
           std::string the_name = std::string(block->name);
-          switch(orientation) {
+          switch(orientation_z) {
             case 0:
               setBlock(new_coord, (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#EAST"));
               break;
@@ -343,7 +343,7 @@ class Map {
     float getMoveCost(Character * c, float ori_x, float ori_y, float x, float y);
     bool tryMove(Character * c, float destX, float destY);
     float move(Character * c, float y, float x, World * world);
-    float move(Character * c, float orientation, float destX, float destY, float ap, World * world);
+    float move(Character * c, float orientation_z, float destX, float destY, float ap, World * world);
     float actProjectile(Projectile * p, Adventure * adventure, float speed);
     void clearProjectiles();
     std::string block_to_string(int32_t x, int32_t y);

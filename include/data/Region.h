@@ -33,9 +33,8 @@ class Region {
     std::map<const MathUtil::Vector3i, Block *> getBlocks();
     float getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     bool tryMove(Character * c, MathUtil::Vector3 dest);
-    bool intersect(Character * character, MathUtil::Vector3 dest, Furniture * furniture);
     void move(Character * character, World * world);
-    void setSpeed(Character * character, float orientation, float given_orientation_z = 90.F);
+    void setSpeed(Character * character, float orientation_z, float given_orientation_x = 90.F);
     MathUtil::Vector3 getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block_orientation);
     float getOrientationZOnSlope(float character_orientation, int32_t block_orientation);
     bool canSee(Character * watcher, Character * target);

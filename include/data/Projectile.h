@@ -10,7 +10,7 @@
 
 #include "Values.h"
 
-typedef struct ProjectileDisplay {
+struct ProjectileDisplay {
   std::string name;
   int64_t id;
   int32_t projectile_type;
@@ -18,14 +18,14 @@ typedef struct ProjectileDisplay {
   float x;
   float y;
   float z;
-  float orientation;
+  float orientation_z;
   std::array<float, DAMAGE_TYPE_NUMBER> damages;
   float speed;
   float area;
   float waste_per_tick;
   float waste_per_area;
   float waste_per_hit;
-} ProjectileDisplay;
+};
 
 namespace projectile {
   static int64_t id_cpt = 0;
@@ -71,10 +71,10 @@ class Projectile {
     {
       lost = false;
       current_map_id = 0;
-      coord = MathUtil::makeVector3(0.F, 0.F, 0.F);
+      coord = MathUtil::Vector3(0.F, 0.F, 0.F);
       target = nullptr;
       owner = nullptr;
-      orientation = 0.F;
+      orientation_z = 0.F;
       overcharge = 1;
       overcharge_duration = 1;
       overcharge_range = 1;
@@ -89,7 +89,7 @@ class Projectile {
       std::array<float, DAMAGE_TYPE_NUMBER> realDamages,
       World * world,
       int32_t current_map_id,
-      Target * target,
+      MathUtil::Target * target,
       Character * owner,
       float overcharge,
       int32_t overcharge_duration,
@@ -133,7 +133,7 @@ class Projectile {
       float x,
       float y,
       float z,
-      Target * target,
+      MathUtil::Target * target,
       Character * owner,
       float overcharge,
       int32_t overcharge_duration,
@@ -146,7 +146,7 @@ class Projectile {
       size(projectile->size),
       homing(projectile->homing),
       current_map_id(current_map_id),
-      coord(MathUtil::makeVector3(x, y, z)),
+      coord(MathUtil::Vector3(x, y, z)),
       skill(projectile->skill),
       effects(std::list<Effect *>()),
       target(target),
@@ -182,9 +182,9 @@ class Projectile {
       float z,
       Skill * skill,
       std::list<Effect *> effects,
-      Target * target,
+      MathUtil::Target * target,
       Character * owner,
-      float orientation,
+      float orientation_z,
       float speed,
       float area,
       float overcharge,
@@ -202,12 +202,12 @@ class Projectile {
       size(size),
       homing(homing),
       current_map_id(current_map_id),
-      coord(MathUtil::makeVector3(x, y, z)),
+      coord(MathUtil::Vector3(x, y, z)),
       skill(skill),
       effects(effects),
       target(target),
       owner(owner),
-      orientation(orientation),
+      orientation_z(orientation_z),
       speed(speed),
       area(area),
       overcharge(overcharge),
@@ -232,7 +232,7 @@ class Projectile {
     MathUtil::Vector3 getCoord();
     float getDestX();
     float getDestY();
-    float getOrientation();
+    float getOrientationZ();
     bool isLost();
     int32_t getRawDamage();
     int32_t getDamageFromType(int32_t damage_type);
@@ -246,24 +246,24 @@ class Projectile {
     int32_t getLight();
     Skill * getSkill();
     std::list<Effect *> getEffects();
-    Target * getTarget();
+    MathUtil::Target * getTarget();
     Character * getOwner();
     bool isAtDest();
     bool noDamage();
     void setX(float setX);
     void setY(float setY);
-    void setOrientation(float orientation);
+    void setOrientationZ(float orientation_z);
     void setSpeed(float speed);
     void setArea(float area);
     void setFalloffTimer(int32_t falloff_timer);
     void setWastePerTick(float waste_per_tick);
     void setWastePerArea(float waste_per_area);
     void setWastePerHit(float waste_per_hit);
-    void setTarget(Target * target);
+    void setTarget(MathUtil::Target * target);
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(MathUtil::Vector3 coord, float orientation);
+    void move(MathUtil::Vector3 coord, float orientation_z);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -282,9 +282,9 @@ class Projectile {
     bool lost;
     Skill * skill;
     std::list<Effect *> effects;
-    Target * target;
+    MathUtil::Target * target;
     Character * owner;
-    float orientation;
+    float orientation_z;
     float speed;
     float area;
     float overcharge;

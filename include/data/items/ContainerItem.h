@@ -8,13 +8,13 @@
 
 #include "Values.h"
 
-typedef struct ItemSlot {
+struct ItemSlot {
   int64_t id;
   int32_t x;
   int32_t y;
   int32_t slot;
   Item * item;
-} ItemSlot;
+};
 
 
 class ContainerItem : public GearItem {

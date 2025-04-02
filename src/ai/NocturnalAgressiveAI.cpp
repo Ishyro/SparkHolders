@@ -21,11 +21,11 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
   Map * visionMap = updateMap(adventure, c);
   Action * result;
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
-  float orientation = 0.F;
+  float orientation_z = 0.F;
   if(!threats.empty()) {
     Character * target = threats.front();
-    // orientation = getFollowOrientation(adventure, c, target->getX(), target->getY());
-    Target * t = new Target();
+    // orientation_z = getFollowOrientation(adventure, c, target->getX(), target->getY());
+    MathUtil::Target * t = new MathUtil::Target();
     t->type = TARGET_CHARACTER;
     t->id = c->getCurrentMap()->id;
     t->x = target->getX();
@@ -49,10 +49,10 @@ Action * NocturnalAgressiveAI::getActions(Adventure * adventure, Character * c) 
     c->setAction(result);
     return result;
   }
-  orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-  if(orientation != 360.F) {
-    Target * t = new Target();
-    t->type = TARGET_BLOCK;
+  orientation_z = getFollowOrientation(adventure, c, origin_x, origin_y);
+  if(orientation_z != 360.F) {
+    MathUtil::Target * t = new MathUtil::Target();
+    t->type = TARGET_COORDINATES;
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;

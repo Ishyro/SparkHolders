@@ -257,6 +257,7 @@ namespace FileOpener {
         x,
         y,
         z,
+        0.F,
         90.F,
         nullptr,
         team,
@@ -298,9 +299,6 @@ namespace FileOpener {
       coord = String::extract(ss);
       getCoordinates(coord, link->x2, link->y2, link->z2);
       link->type = database->getTargetFromMacro(String::extract(ss));
-      //link->map1 = world->getMap(link->x1, link->y1, link->z1);
-      //link->map2 = world->getMap(link->x2, link->y2, link->z2);
-      world->addMapLink(link);
       world->addMapLink(link);
     }
     else if(keyword == "Loot" && isServer) {
@@ -547,9 +545,9 @@ namespace FileOpener {
     bool opaque;
     is_opaque >> std::boolalpha >> opaque;
     int32_t light = stoi(values.at("light"));
-    int32_t orientation = stoi(values.at("orientation"));
+    int32_t orientation_z = stoi(values.at("orientation_z"));
     float speed = _stof(values.at("speed"));
-    Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation, speed);
+    Block * block = new Block(name, type, material, unwalkable, opaque, light, orientation_z, speed);
     database->addBlock(block);
     // add all type of blocks for solids
     if(type == BLOCK_SOLID) {
@@ -1386,7 +1384,7 @@ namespace FileOpener {
           std::string block;
           getline(is, block, ' ');
           if(values.at(block) != "TXT_VOID") {
-            map->setBlock(MathUtil::makeVector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
+            map->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
           }
         }
       }
@@ -1423,9 +1421,9 @@ namespace FileOpener {
     int32_t x = String::extract_int(ss);
     int32_t y = String::extract_int(ss);
     int32_t z = String::extract_int(ss);
-    float orientation = String::extract_float(ss);
+    float orientation_z = String::extract_float(ss);
     if(keyword == FURNITURE_BASIC) {
-      map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation));
+      map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation_z));
     }
     else {
       bool isLocked = String::extract_bool(ss);
@@ -1434,13 +1432,13 @@ namespace FileOpener {
         key_name = String::extract(ss);
       }
       if(keyword == FURNITURE_SWITCH) {
-        map->addFurniture(new SwitchFurniture( (SwitchFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+        map->addFurniture(new SwitchFurniture( (SwitchFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
       }
       if(keyword == FURNITURE_CRAFTING) {
-        map->addFurniture(new CraftingFurniture( (CraftingFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+        map->addFurniture(new CraftingFurniture( (CraftingFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
       }
       if(keyword == FURNITURE_SKILL) {
-        map->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name));
+        map->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
       }
       if(keyword == FURNITURE_CONTAINER) {
         int64_t gold = String::extract_long(ss);
@@ -1449,13 +1447,13 @@ namespace FileOpener {
         while(ss_items->rdbuf()->in_avail() != 0) {
           items->push_back((Item *) database->getItem(String::extract(ss_items)));
         }
-        map->addFurniture(new ContainerFurniture( (ContainerFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, gold, *items));
+        map->addFurniture(new ContainerFurniture( (ContainerFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name, gold, *items));
         delete ss_items;
       }
       if(keyword == FURNITURE_LINKED) {
         int64_t linked_x = String::extract_long(ss);
         int64_t linked_y = String::extract_long(ss);
-        map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
+        map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
       }
     }
   }
@@ -1930,8 +1928,9 @@ namespace FileOpener {
     }
     if(type == WAY_RACE) {
       int32_t race_type = database->getTargetFromMacro(values.at("race_type"));
-      float size = _stof(values.at("size"));
-      float height = _stof(values.at("height"));
+      float sizeX = _stof(values.at("sizeX"));
+      float sizeY = _stof(values.at("sizeY"));
+      float sizeZ = _stof(values.at("sizeZ"));
       std::istringstream is_need_to_eat(values.at("need_to_eat"));
       bool need_to_eat;
       is_need_to_eat >> std::boolalpha >> need_to_eat;
@@ -1981,8 +1980,9 @@ namespace FileOpener {
         *stances,
         *tags,
         race_type,
-        size,
-        height,
+        sizeX,
+        sizeY,
+        sizeZ,
         need_to_eat,
         can_eat_food,
         need_to_sleep,

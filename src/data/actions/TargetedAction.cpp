@@ -17,46 +17,11 @@ Action * TargetedAction::execute(Adventure * adventure) {
       next->execute(adventure);
     }
   }
-  user->setOrientation(adventure->getWorld()->setPathToTarget(user->getRegion(), user->getCoord().x, user->getCoord().y, target));
+  user->setOrientationZ(adventure->getWorld()->setPathToTarget(user->getRegion(), user->getCoord().x, user->getCoord().y, target));
   switch(type) {
-    /*
-    case ACTION_STRIKE: {
-      if(user->getGear()->getWeapon_1()->use_projectile || user->getGear()->getWeapon_1()->use_projectile) {
-        Projectile * projectile = user->shoot(target, adventure, ITEM_SLOT_WEAPON_1);
-        if(projectile != nullptr) {
-          //adventure->getWorld()->getMap(user->getCurrentMap()->id)->addProjectile(projectile);
-        }
-      }
-      else {
-        if(target->type == TARGET_CHARACTER) {
-          Character * other = target->character; 
-          user->attack(other, adventure, ACTION_STRIKE);
-          if(!other->isAlive()) {
-            //adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, other);
-          }
-        }
-        else {
-          for(Character * c : adventure->getWorld()->getMap(user->getCurrentMap()->id)->getCharacters()) {
-            if(c != nullptr && c != user && !c->isEtheral() && c->getX() == target_x && c->getY() == target_y) {
-              user->attack(c);
-              if(!c->isAlive()) {
-                adventure->getWorld()->getMap(user->getCurrentMap()->id)->killCharacter(user, c);
-              }
-              break;
-            }
-          }
-        }
-      }
-      Action * temp = next;
-      next = new BaseAction(ACTION_RESPITE, adventure, nullptr, user);
-      next->setNext(temp);
-      break;
-    }
-    */
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MathUtil::makeVector3i(target->coord));
-      if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
-        ((ActivableFurniture *) furniture)->activate(user, false);
+      if(target->furniture != nullptr && target->furniture->type != FURNITURE_BASIC) {
+        ((ActivableFurniture *) target->furniture)->activate(user, false);
       }
       break;
     }
@@ -81,16 +46,9 @@ Action * TargetedAction::execute(Adventure * adventure) {
 
 void TargetedAction::computeTime(Adventure * adventure) {
   switch(type) {
-    case ACTION_MOVE:
-      time = 1.F;
-      break;
-    case ACTION_STRIKE:
-      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1);
-      break;
     case ACTION_ACTIVATION: {
-      Furniture * furniture = user->getRegion()->getFurniture(MathUtil::makeVector3i(target->coord));
-      if(furniture != nullptr && furniture->type != FURNITURE_BASIC) {
-        time = user->getHandActionTimeModifier() * ((ActivableFurniture *) furniture)->activation_time;
+      if(target->furniture != nullptr && target->furniture->type != FURNITURE_BASIC) {
+        time = user->getHandActionTimeModifier() * ((ActivableFurniture *) target->furniture)->activation_time;
       }
       break;
     }
@@ -100,25 +58,33 @@ void TargetedAction::computeTime(Adventure * adventure) {
   tick = time;
 }
 
-Target * TargetedAction::getTarget() { return target; }
+MathUtil::Target * TargetedAction::getTarget() { return target; }
 
 void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
-  if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
-    user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
+  if(target->type == TARGET_COORDINATES) {
+    user->setOrientationZ(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, target->coord.x, target->coord.y));
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = target->character;
-    user->setOrientation(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCoord().x, other->getCoord().y));
+    user->setOrientationZ(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCoord().x, other->getCoord().y));
+  }
+  else if(target->type == TARGET_FURNITURE) {
+    Furniture * other = target->furniture;
+    user->setOrientationZ(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCenter().x, other->getCenter().y));
   }
 }
 
 float TargetedAction::rangeFromTarget(Adventure * adventure) {
-  if(target->type == TARGET_COORDINATES || target->type == TARGET_BLOCK) {
+  if(target->type == TARGET_COORDINATES) {
     return MathUtil::distance2(user->getCoord(), target->coord);
   }
   else if(target->type == TARGET_CHARACTER) {
     Character * other = target->character;
     return MathUtil::distance(user->getCoord(), other->getCoord());
+  }
+  else if(target->type == TARGET_FURNITURE) {
+    Furniture * other = target->furniture;
+    return MathUtil::distance(user->getCoord(), other->getCenter());
   }
   return 0.F;
 }

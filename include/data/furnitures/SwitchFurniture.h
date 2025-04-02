@@ -56,7 +56,7 @@ class SwitchFurniture : public ActivableFurniture  {
       const int32_t x,
       const int32_t y,
       const int32_t z,
-      const float orientation,
+      const float orientation_z,
       const bool isLocked,
       const std::string key_name
     ):
@@ -65,7 +65,7 @@ class SwitchFurniture : public ActivableFurniture  {
         x,
         y,
         z,
-        orientation,
+        orientation_z,
         isLocked,
         key_name
       ),
@@ -84,7 +84,7 @@ class SwitchFurniture : public ActivableFurniture  {
       light_off(furniture->light_off),
       isOn(furniture->isOn)
     {}
-    float getOrientation();
+    float getOrientationZ();
     bool getUnwalkable();
     bool getOpaque();
     bool getSolid();

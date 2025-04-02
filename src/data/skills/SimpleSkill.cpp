@@ -2,7 +2,7 @@
 
 #include "data/items/Gear.h"
 
-void SimpleSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
+void SimpleSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   for(Effect * effect : effects) {
     Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration, scaling_type, damage_multipliers, owner);
     switch(target_type) {
@@ -24,13 +24,13 @@ void SimpleSkill::activate(Character * owner, Target * target, Adventure * adven
         break;
       case TARGET_MULTIPLE:
         if(toggle_state) {
-          Target * iter = target->next;
+          MathUtil::Target * iter = target->next;
           for(iter = target->next; iter != nullptr; iter = iter->next) {
             to_add->activate(iter->character);
           }
         }
         else {
-          Target * iter = target->next;
+          MathUtil::Target * iter = target->next;
           for(iter = target->next; iter != nullptr; iter = iter->next) {
             iter->character->removeSimilarEffect(to_add);
           }
@@ -44,7 +44,7 @@ void SimpleSkill::activate(Character * owner, Target * target, Adventure * adven
   }
 }
 
-bool SimpleSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+bool SimpleSkill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   return true;
 }
 

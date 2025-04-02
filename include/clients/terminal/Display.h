@@ -43,7 +43,7 @@ namespace Display {
   void commandLoop(Link * link, WINDOW * mapScreen, WINDOW * statsScreen, WINDOW * displayScreen, WINDOW * targetScreen);
   Skill * selectSkill(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, float & overcharge, Link * link);
   bool selectOvercharge(WINDOW * displayScreen, WINDOW * targetScreen, Skill * skill, Character * player, float & overcharge, Link * link);
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Link * link);
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation_z, Link * link);
   std::string selectItem(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, int32_t & object_type, int32_t & object_id, Link * link);
   std::string selectAmmo(WINDOW * displayScreen, WINDOW * targetScreen, Character * player, Link * link);
   void sendAction(Link * link, int32_t type, void * arg1, void * arg2, float overcharge);

@@ -28,10 +28,10 @@
 
 class BlocksChunk {
 
-  typedef struct LightenedBlock {
+  struct LightenedBlock {
     Block * raw_block;
     int32_t lightening;
-  } LightenedBlock;
+  };
 
   public:
     const MathUtil::Vector3i id;

@@ -21,7 +21,7 @@ Action * GuardAI::getActions(Adventure * adventure, Character * c) {
   Map * visionMap = updateMap(adventure, c);
   Action * result;
   std::list<Character *> threats = getThreats(adventure, visionMap, c, 5);
-  float orientation = 0.F;
+  float orientation_z = 0.F;
   if(!threats.empty() && visionMap->getBlock(origin_x, origin_y)->name != "TXT_MIST") {
     result = attack(adventure, threats, c);
     c->setAction(result);
@@ -42,10 +42,10 @@ Action * GuardAI::getActions(Adventure * adventure, Character * c) {
     c->setAction(result);
     return result;
   }
-  orientation = getFollowOrientation(adventure, c, origin_x, origin_y);
-  if(orientation != 360.F) {
-    Target * t = new Target();
-    t->type = TARGET_BLOCK;
+  orientation_z = getFollowOrientation(adventure, c, origin_x, origin_y);
+  if(orientation_z != 360.F) {
+    MathUtil::Target * t = new MathUtil::Target();
+    t->type = TARGET_COORDINATES;
     t->id = c->getCurrentMap()->id;
     t->x = origin_x;
     t->y = origin_y;

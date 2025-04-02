@@ -13,7 +13,7 @@ class SkillAction : public TargetedAction {
       Adventure * adventure,
       const Action * previous,
       Character * user,
-      Target * target,
+      MathUtil::Target * target,
       Skill * skill,
       const int32_t mana_cost
     ):

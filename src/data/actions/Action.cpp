@@ -26,7 +26,7 @@
       }
       break;
     case ECONOMICS:
-      ((Character *) target)->trade(user, orientation, object, Settings::getBuyingPriceModifier());
+      ((Character *) target)->trade(user, orientation_z, object, Settings::getBuyingPriceModifier());
       break;
     default: ;
   }

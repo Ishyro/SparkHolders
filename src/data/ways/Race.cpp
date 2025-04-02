@@ -128,18 +128,26 @@ int32_t Race::getFlowIncr(std::list<Race *> race_modifiers) {
   return result;
 }
 
-float Race::getSize(std::list<Race *> race_modifiers) {
-  float result = size;
+float Race::getSizeX(std::list<Race *> race_modifiers) {
+  float result = sizeX;
   for(Race * modifier : race_modifiers) {
-    result = std::max(result, modifier->size);
+    result = std::max(result, modifier->sizeX);
   }
   return result;
 }
 
-float Race::getHeight(std::list<Race *> race_modifiers) {
-  float result = height;
+float Race::getSizeY(std::list<Race *> race_modifiers) {
+  float result = sizeY;
   for(Race * modifier : race_modifiers) {
-    result = std::max(result, modifier->height);
+    result = std::max(result, modifier->sizeY);
+  }
+  return result;
+}
+
+float Race::getSizeZ(std::list<Race *> race_modifiers) {
+  float result = sizeZ;
+  for(Race * modifier : race_modifiers) {
+    result = std::max(result, modifier->sizeZ);
   }
   return result;
 }

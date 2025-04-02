@@ -98,7 +98,7 @@ namespace Display {
     for(int32_t y = region->id.y + CHUNK_SIZE * 3 - 1; y >= region->id.y; y--) {
       for(int32_t x = region->id.x; x < region->id.x + CHUNK_SIZE * 3; x++) {
         std::string to_print = "·";
-        Block * block = region->getBlock(MathUtil::makeVector3i(x, y, -1));
+        Block * block = region->getBlock(MathUtil::Vector3i(x, y, -1));
         if(block != nullptr) {
           if(block->unwalkable) {
             to_print = "#";
@@ -137,7 +137,7 @@ namespace Display {
     }
     for(ProjectileDisplay * projectile : display->projectiles) {
       std::string to_print = "";
-      switch((int32_t) std::floor(projectile->orientation)) {
+      switch((int32_t) std::floor(projectile->orientation_z)) {
         case 90:
           to_print = "↑";
           break;
@@ -176,7 +176,7 @@ namespace Display {
       mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int32_t) std::floor(loot->y - region->id.y), (int32_t) std::floor(loot->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
-    std::string to_print = std::to_string(player->getOrientation());
+    std::string to_print = std::to_string(player->getOrientationZ());
     // player position
     mvwprintw(screen, lines - 4, 1, to_print.c_str());
     to_print = std::string("X: ") + std::to_string(player->getCoord().x);
@@ -1170,7 +1170,7 @@ namespace Display {
         int32_t object_type;
         std::string object;
         int32_t object_id;
-        float orientation;
+        float orientation_z;
         Skill * skill;
         int32_t target_id;
         int32_t target_x;
@@ -1180,7 +1180,7 @@ namespace Display {
           object_type = 0;
           object = "";
           object_id = 0;
-          orientation = link->getPlayer()->getOrientation();
+          orientation_z = link->getPlayer()->getOrientationZ();
           skill = nullptr;
           target_id = 0;
           target_x = (int32_t) std::floor(link->getPlayer()->getCoord().x) - region->id.x;
@@ -1207,7 +1207,7 @@ namespace Display {
             case '8':
             case KEY_UP:
             case '9':
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation, link)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getVisionRange(), target_id, target_x, target_y, orientation_z, link)) {
                 type = ACTION_MOVE;
                 done = true;
               }
@@ -1221,7 +1221,7 @@ namespace Display {
             case 'X':
               type = ACTION_USE_SKILL;
               skill = selectSkill(displayScreen, targetScreen, link->getPlayer(), overcharge, link);
-              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(), skill->range, target_id, target_x, target_y, orientation, link))) {
+              if(skill != nullptr && (skill->target_type == TARGET_SELF || selectTarget(mapScreen, targetScreen, display, link->getPlayer(), skill->range, target_id, target_x, target_y, orientation_z, link))) {
                 done = true;
                 object = skill->name;
               }
@@ -1229,7 +1229,7 @@ namespace Display {
             case 'c':
             case 'C':
               type = ACTION_STRIKE;
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation, link)) {
+              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation_z, link)) {
                 if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
                   link->getPlayer()->getGear()->getWeapon_1()->useAmmo();
                 }
@@ -1280,13 +1280,13 @@ namespace Display {
           case ACTION_MOVE:
           case ACTION_STRIKE:
           case ACTION_USE_SKILL: {
-            Target * target = new Target();
-            ((Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
-            ((Target *) target)->character = (target_id == 0 ? 0 : target_id);
-            ((Target *) target)->coord.x = target_x + 0.5;
-            ((Target *) target)->coord.y = target_y + 0.5;
-            ((Target *) target)->coord.z = 0;
-            ((Target *) target)->next = nullptr;
+            MathUtil::Target * target = new MathUtil::Target();
+            ((MathUtil::Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);
+            ((MathUtil::Target *) target)->character = (target_id == 0 ? 0 : target_id);
+            ((MathUtil::Target *) target)->coord.x = target_x + 0.5;
+            ((MathUtil::Target *) target)->coord.y = target_y + 0.5;
+            ((MathUtil::Target *) target)->coord.z = 0;
+            ((MathUtil::Target *) target)->next = nullptr;
             sendAction(link, type, (void *) target, skill, overcharge);
             break;
           }
@@ -1564,7 +1564,7 @@ namespace Display {
     return false;
   }
 
-  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation, Link * link) {
+  bool selectTarget(WINDOW * mapScreen, WINDOW * targetScreen, StateDisplay * display, Character * player, int32_t range, int32_t & target_id, int32_t & target_x, int32_t & target_y, float & orientation_z, Link * link) {
     bool done = false;
     int32_t lines = 0;
     int32_t cols = 0;
@@ -1639,7 +1639,7 @@ namespace Display {
           break;
         case '\n': {
           done = true;
-          orientation = MathUtil::getOrientationToTarget(player_x, player_y, target_x + region->id.x, target_y + region->id.y);
+          orientation_z = MathUtil::getOrientationToTarget(player_x, player_y, target_x + region->id.x, target_y + region->id.y);
           break;
         }
         case ' ': {

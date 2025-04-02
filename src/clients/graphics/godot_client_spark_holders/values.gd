@@ -31,6 +31,9 @@ var next_state_ready = false
 #var mode = ACTION_MODE_NONE
 
 var coord = Vector3.ZERO
+var selected = null
+var selected_data = {}
+var selection_mutex = Mutex.new()
 
 var action = {}
 var move_set = false

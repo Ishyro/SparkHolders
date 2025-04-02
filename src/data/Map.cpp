@@ -563,7 +563,7 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
   if(c->isFlying()) {
     return MathUtil::distance(ori_x, ori_y, x, y) * 10.F / c->getMovementTimeModifier();
   }
-  float orientation = MathUtil::getOrientationToTarget(ori_x, ori_y, x, y);
+  float orientation_z = MathUtil::getOrientationToTarget(ori_x, ori_y, x, y);
   float ap_cost = 0.F;
   float current_x = ori_x;
   float current_y = ori_y;
@@ -571,10 +571,10 @@ float Map::getMoveCost(Character * c, float ori_x, float ori_y, float x, float y
   float next_y = current_y;
   int32_t x_direction = 1;
   int32_t y_direction = 1;
-  if(orientation > 180.F) {
+  if(orientation_z > 180.F) {
     y_direction = -1;
   }
-  if(orientation > 90.F && orientation < 270.F) {
+  if(orientation_z > 90.F && orientation_z < 270.F) {
     x_direction = -1;
   }
   if(ori_y == y) {
@@ -762,12 +762,12 @@ bool Map::tryMove(Character * c, float destX, float destY) {
 float Map::move(Character * c, float destX, float destY, World * world) {
   int32_t x = destX;
   int32_t y = destY;
-  float orientation = MathUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
-  if(orientation == 360.F) {
+  float orientation_z = MathUtil::getOrientationToTarget(c->getX(), c->getY(), x, y);
+  if(orientation_z == 360.F) {
     return 0.F;
   }
   float range = MathUtil::distance(c->getX(), c->getY(), x, y);
-  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), range);
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation_z, c->getSize(), range);
   for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid || (!c->isFlying() && getBlock(pair.y, pair.x)->unwalkable)) {
       break;
@@ -781,7 +781,7 @@ float Map::move(Character * c, float destX, float destY, World * world) {
   }
   float ap_cost = getMoveCost(c, c->getX(), c->getY(), y, x);
   if(tryMove(c, y, x)) {
-    c->move(x, y, offsetZ, orientation, world);
+    c->move(x, y, offsetZ, orientation_z, world);
     return ap_cost;
   }
   else {
@@ -789,7 +789,7 @@ float Map::move(Character * c, float destX, float destY, World * world) {
   }
 }
 
-float Map::move(Character * c, float orientation, float destX, float destY, float ap, World * world) {
+float Map::move(Character * c, float orientation_z, float destX, float destY, float ap, World * world) {
   int32_t lim_x = c->getX();
   int32_t lim_y = c->getY();
   float ap_cost = 0.F;
@@ -800,14 +800,14 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   float next_y = current_y;
   int32_t x_direction = 1;
   int32_t y_direction = 1;
-  if(orientation > 180.F) {
+  if(orientation_z > 180.F) {
     y_direction = -1;
   }
-  if(orientation > 90.F && orientation < 270.F) {
+  if(orientation_z > 90.F && orientation_z < 270.F) {
     x_direction = -1;
   }
   MapLink * link = nullptr;
-  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation, c->getSize(), std::max(3.F, ap / 10.F));
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(c->getX(), c->getY(), orientation_z, c->getSize(), std::max(3.F, ap / 10.F));
   for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || std::floor(pair.x) >= sizeX + offsetX || pair.y < offsetY || std::floor(pair.y) >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid || (!c->isFlying() && getBlock(pair.x, pair.y)->unwalkable)) {
       break;
@@ -820,8 +820,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     lim_y = pair.y;
   }
   if(c->isFlying()) {
-    next_x = std::cos(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getX();
-    next_y = std::sin(orientation * 3.141593F / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getY();
+    next_x = std::cos(orientation_z * M_PI / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getX();
+    next_y = std::sin(orientation_z * M_PI / 180.F) * c->getMovementTimeModifier() * ap / 10.F + c->getY();
     if(std::floor(next_x) == std::floor(lim_x) + x_direction || std::floor(next_y) == std::floor(lim_y) + y_direction) {
       next_x = lim_x;
       next_y = lim_y;
@@ -829,7 +829,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
     current_cost = getMoveCost(c, c->getX(), c->getY(), next_y, next_x);
   }
   else {
-    if(orientation == 0.F || orientation == 180.F) {
+    if(orientation_z == 0.F || orientation_z == 180.F) {
       if(x_direction == -1) {
         next_x = std::floor(next_x);
         ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
@@ -861,7 +861,7 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         current_cost = ap_cost;
       }
     }
-    else if(orientation == 90.F || orientation == 270.F) {
+    else if(orientation_z == 90.F || orientation_z == 270.F) {
       if(y_direction == -1) {
         next_y = std::floor(next_y);
         ap_cost += getBlock(current_x, current_y)->ap_cost / c->getMovementTimeModifier() * MathUtil::distance(current_x, current_y, next_x, next_y);
@@ -894,8 +894,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
       }
     }
     else {
-      float cos = std::cos(orientation * 3.141593F / 180.F);
-      float sin = std::sin(orientation * 3.141593F / 180.F);
+      float cos = std::cos(orientation_z * M_PI / 180.F);
+      float sin = std::sin(orientation_z * M_PI / 180.F);
       float range_x = std::abs(-(current_x - std::floor(current_x)) / cos);
       float range_y = std::abs(-(current_y - std::floor(current_y)) / sin);
       float range;
@@ -955,12 +955,12 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   next_x = MathUtil::round(next_x);
   next_y = MathUtil::round(next_y);
   if(next_x < offsetX || std::floor(next_x) >= sizeX + offsetX || next_y < offsetY || std::floor(next_y) >= sizeY + offsetY || getBlock(next_x, next_y)->solid || (!c->isFlying() && getBlock(next_x, next_y)->unwalkable)) {
-    c->move(lim_x, lim_y, offsetZ, orientation, world);
+    c->move(lim_x, lim_y, offsetZ, orientation_z, world);
     return -1;
   }
   if(link != nullptr && next_x == lim_x && next_y == lim_y) {
     Map * next_map;
-    float dest_orientation = orientation;
+    float dest_orientation = orientation_z;
     float diff = 0.F;
     float next_dx = MathUtil::round(next_x - std::floor(next_x));
     float next_dy = MathUtil::round(next_y - std::floor(next_y));
@@ -1023,10 +1023,10 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(next_x, next_y)->solid || (!c->isFlying() && next_map->getBlock(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_y, lim_x)) {
             if(MathUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
-              c->move(destX, destY, next_map->offsetZ, orientation, world);
+              c->move(destX, destY, next_map->offsetZ, orientation_z, world);
               return -1.F;
             }
-            c->move(lim_x, lim_y, offsetZ, orientation, world);
+            c->move(lim_x, lim_y, offsetZ, orientation_z, world);
             return 0.F;
           }
           else {
@@ -1050,8 +1050,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           link->map2->addCharacter(c);
           next_x = link->x2 - x_direction;
           next_y = link->y2;
-          // BOUNCE orientation
-          diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 270 || orientation_z < 90 ? 180 - orientation_z : orientation_z);
         }
         else if((next_dx == low_limit || next_dx == high_limit) && link->map2 == this && link->x2 == next_x + x_direction && link->y2 == next_y) {
           next_map = link->map1;
@@ -1059,8 +1059,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           link->map1->addCharacter(c);
           next_x = link->x1 - x_direction;
           next_y = link->y1;
-          // BOUNCE orientation
-          diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 270 || orientation_z < 90 ? 180 - orientation_z : orientation_z);
         }
         else if((next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->y1 == next_y + y_direction && link->x1 == next_x) {
           next_map = link->map2;
@@ -1068,8 +1068,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           link->map2->addCharacter(c);
           next_x = link->x2;
           next_y = link->y2 - y_direction;
-          // BOUNCE orientation
-          diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 180 ? 270 - orientation_z : 90 - orientation_z);
         }
         else if((next_dy == low_limit || next_dy == high_limit) && link->map2 == this && link->y2 == next_y + y_direction && link->x2 == next_x) {
           next_map = link->map1;
@@ -1077,8 +1077,8 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           link->map1->addCharacter(c);
           next_x = link->x1;
           next_y = link->y1 - y_direction;
-          // BOUNCE orientation
-          diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 180 ? 270 - orientation_z : 90 - orientation_z);
         }
         else if((next_dx == low_limit || next_dx == high_limit) && (next_dy == low_limit || next_dy == high_limit) && link->map1 == this && link->x1 == next_x + x_direction && link->y1 == next_y + y_direction) {
           next_map = link->map2;
@@ -1095,10 +1095,10 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
           next_y = link->y1 - y_direction;
         }
         if(link->type == MAPLINK_BOUNCE) {
-          dest_orientation = 180 + orientation + 2.F * diff;
+          dest_orientation = 180 + orientation_z + 2.F * diff;
         }
         else if(link->type == MAPLINK_BACK) {
-          dest_orientation = orientation + 180.F;
+          dest_orientation = orientation_z + 180.F;
         }
         while(dest_orientation >= 360.F) {
           dest_orientation -= 360.F;
@@ -1106,10 +1106,10 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
         if(next_x < next_map->offsetX || std::floor(next_x) >= next_map->sizeX + next_map->offsetX || next_y < next_map->offsetY || std::floor(next_y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(next_x, next_y)->solid || (!c->isFlying() && next_map->getBlock(next_x, next_y)->unwalkable)) {
           if(tryMove(c, lim_x, lim_y)) {
             if(MathUtil::distance(c->getX(), c->getY(), lim_x, lim_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
-              c->move(destX, destY, offsetZ, orientation, world);
+              c->move(destX, destY, offsetZ, orientation_z, world);
               return -1.F;
             }
-            c->move(lim_x, lim_y, offsetZ,orientation, world);
+            c->move(lim_x, lim_y, offsetZ,orientation_z, world);
             return low_limit;
           }
           else {
@@ -1131,13 +1131,13 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
   else {
     if(tryMove(c, next_x, next_y)) {
       if(MathUtil::distance(c->getX(), c->getY(), next_x, next_y) > MathUtil::distance(c->getX(), c->getY(), destX, destY)) {
-        c->move(destX, destY, offsetZ, orientation, world);
+        c->move(destX, destY, offsetZ, orientation_z, world);
         return -1.F;
       }
       if(next_x == c->getX() && next_y == c->getY()) {
         return -1.F;
       }
-      c->move(next_x, next_y, offsetZ,orientation, world);
+      c->move(next_x, next_y, offsetZ,orientation_z, world);
       return 0.F;
     }
     else {
@@ -1149,14 +1149,14 @@ float Map::move(Character * c, float orientation, float destX, float destY, floa
 float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   bool to_destroy = false;
   if(!p->isLost() && p->getTarget()->type == TARGET_CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMap()->id == id) {
-    p->setOrientation(MathUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
+    p->setOrientationZ(MathUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
-  float x = MathUtil::round(std::cos(p->getOrientation() * 3.141593F / 180.F) * speed + p->getX());
-  float y = MathUtil::round(std::sin(p->getOrientation() * 3.141593F / 180.F) * speed + p->getY());
+  float x = MathUtil::round(std::cos(p->getOrientationZ() * M_PI / 180.F) * speed + p->getX());
+  float y = MathUtil::round(std::sin(p->getOrientationZ() * M_PI / 180.F) * speed + p->getY());
   float max_x;
   float max_y;
   MapLink * link = nullptr;
-  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation(), p->size , speed);
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientationZ(), p->size , speed);
   for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || pair.x >= sizeX + offsetX || pair.y < offsetY || pair.y >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid) {
       to_destroy = true;
@@ -1208,7 +1208,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
   }
   else {
-    float tan = std::tan(p->getOrientation() * 3.141593F / 180.F);
+    float tan = std::tan(p->getOrientationZ() * M_PI / 180.F);
     for(Character * c : characters) {
       if(!c->isMarkedDead() && ((c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= p->getX() - c->getSize() - p->getSize()) ||
         (c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) )) {
@@ -1231,7 +1231,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
       MathUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
       >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
-        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
+        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientationZ());
         p->attack(nullptr, characters, adventure);
       }
     p->attack(character, characters, adventure);
@@ -1243,7 +1243,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     MathUtil::distance(p->getX(), p->getY(), x, y)
     >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
       // exploding on targeted zone when no other target where found
-      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation());
+      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientationZ());
       p->attack(nullptr, characters, adventure);
   }
   std::list<Character *> tokill = std::list<Character *>();
@@ -1270,15 +1270,15 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     float old_y = y;
     float range = MathUtil::distance(x, y, p->getX(), p->getY());
     Map * next_map;
-    float orientation = p->getOrientation();
-    float dest_orientation = orientation;
+    float orientation_z = p->getOrientationZ();
+    float dest_orientation = orientation_z;
     float diff = 0.F;
     int32_t x_direction = 1;
     int32_t y_direction = 1;
-    if(orientation > 180.F) {
+    if(orientation_z > 180.F) {
       y_direction = -1;
     }
-    if(orientation > 90.F && orientation < 270.F) {
+    if(orientation_z > 90.F && orientation_z < 270.F) {
       x_direction = -1;
     }
     float dx = MathUtil::round(x - std::floor(x));
@@ -1328,7 +1328,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           dy = (dy == low_limit ? high_limit : low_limit);
         }
         if(x < next_map->offsetX || std::floor(x) >= next_map->sizeX + next_map->offsetX || y < next_map->offsetY || std::floor(y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(x, y)->solid) {
-          p->move(old_x, old_y, offsetZ, orientation);
+          p->move(old_x, old_y, offsetZ, orientation_z);
           return 0.F;
         }
         else {
@@ -1341,29 +1341,29 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           next_map = link->map2;
           x = link->x2 - x_direction;
           y = link->y2;
-          // BOUNCE orientation
-          diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 270 || orientation_z < 90 ? 180 - orientation_z : orientation_z);
         }
         else if((dx == low_limit || dx == high_limit) && link->map2 == this && link->x2 == x + x_direction && link->y2 == y) {
           next_map = link->map1;
           x = link->x1 - x_direction;
           y = link->y1;
-          // BOUNCE orientation
-          diff = (orientation > 270 || orientation < 90 ? 180 - orientation : orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 270 || orientation_z < 90 ? 180 - orientation_z : orientation_z);
         }
         else if((dy == low_limit || dy == high_limit) && link->map1 == this && link->y1 == y + y_direction && link->x1 == x) {
           next_map = link->map2;
           x = link->x2;
           y = link->y2 - y_direction;
-          // BOUNCE orientation
-          diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 180 ? 270 - orientation_z : 90 - orientation_z);
         }
         else if((dy == low_limit || dy == high_limit) && link->map2 == this && link->y2 == y + y_direction && link->x2 == x) {
           next_map = link->map1;
           x = link->x1;
           y = link->y1 - y_direction;
-          // BOUNCE orientation
-          diff = (orientation > 180 ? 270 - orientation : 90 - orientation);
+          // BOUNCE orientation_z
+          diff = (orientation_z > 180 ? 270 - orientation_z : 90 - orientation_z);
         }
         else if((dx == low_limit || dx == high_limit) && (dy == low_limit || dy == high_limit) && link->map1 == this && link->x1 == x + x_direction && link->y1 == y + y_direction) {
           next_map = link->map2;
@@ -1376,16 +1376,16 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
           y = link->y1 - y_direction;
         }
         if(link->type == MAPLINK_BOUNCE) {
-          dest_orientation = 180 + orientation + 2.F * diff;
+          dest_orientation = 180 + orientation_z + 2.F * diff;
         }
         else if(link->type == MAPLINK_BACK) {
-          dest_orientation = orientation + 180.F;
+          dest_orientation = orientation_z + 180.F;
         }
         while(dest_orientation >= 360.F) {
           dest_orientation -= 360.F;
         }
         if(x < next_map->offsetX || std::floor(x) >= next_map->sizeX + next_map->offsetX || y < next_map->offsetY || std::floor(y) >= next_map->sizeY + next_map->offsetY || next_map->getBlock(x, y)->solid) {
-          p->move(old_x, old_y, offsetZ, orientation);
+          p->move(old_x, old_y, offsetZ, orientation_z);
           return 0.F;
         }
         else {
@@ -1395,7 +1395,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
     return speed - range;
   }
-  p->move(x, y, offsetZ, p->getOrientation());
+  p->move(x, y, offsetZ, p->getOrientationZ());
   return 0.F;
 }
 
@@ -1409,7 +1409,7 @@ std::string Map::block_to_string(int32_t x, int32_t y) {
   String::insert_long(ss, id);
   String::insert_int(ss, x);
   String::insert_int(ss, y);
-  String::insert(ss, getBlock(MathUtil::makeVector3i(x, y, 0))->name);
+  String::insert(ss, getBlock(MathUtil::Vector3i(x, y, 0))->name);
   std::string result = ss->str();
   delete ss;
   return result;

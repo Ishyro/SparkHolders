@@ -4,5 +4,5 @@ material = resources/materials/lava.tres
 unwalkable = true
 opaque = true
 light = 5
-orientation = 0
+orientation_z = 0
 speed = 2

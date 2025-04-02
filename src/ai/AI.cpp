@@ -20,6 +20,8 @@
 #include "data/actions/TalkingAction.h"
 #include "data/actions/TargetedAction.h"
 
+#include "util/MathUtil.h"
+
 #include "ai/AI.h"
 
 Action * AI::getActions(Adventure * adventure, Character * c) {
@@ -32,12 +34,12 @@ float AI::getFollowOrientation(Adventure * adventure, Character * self, int32_t 
 }
 
 float AI::getFleeOrientation(Adventure * adventure, Character * self, int32_t x, int32_t y) {
-  float orientation = getFollowOrientation(adventure, self, x, y);
-  if(orientation == 360.F) {
-    return orientation;
+  float orientation_z = getFollowOrientation(adventure, self, x, y);
+  if(orientation_z == 360.F) {
+    return orientation_z;
   }
-  orientation += 180.F;
-  return orientation >= 360.F ? orientation - 360.F : orientation;
+  orientation_z += 180.F;
+  return orientation_z >= 360.F ? orientation_z - 360.F : orientation_z;
 }
 
 std::vector<MathUtil::Pair> AI::getFollowPath(Adventure * adventure, Character * self, int32_t x, int32_t y) {
@@ -83,8 +85,8 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int32_t target
     if(skill != nullptr) {
       int32_t tp_index = std::min(tp_range, range) - 1; // path[0] is at range 1
       MathUtil::Pair tp_target = path[tp_index];
-      Target * target = new Target();
-      target->type = TARGET_BLOCK;
+      MathUtil::Target * target = new MathUtil::Target();
+      target->type = TARGET_COORDINATES;
       target->id = self->getCurrentMap()->id;
       target->x = tp_target.x;
       target->y = tp_target.y;
@@ -94,8 +96,8 @@ Action * AI::moveTowards(Adventure * adventure, Character * self, int32_t target
   }
   if(path.size() > 0) {
     MathUtil::Pair next = path[0];
-    Target * target = new Target();
-    target->type = TARGET_BLOCK;
+    MathUtil::Target * target = new MathUtil::Target();
+    target->type = TARGET_COORDINATES;
     target->id = self->getCurrentMap()->id;
     target->x = next.x;
     target->y = next.y;
@@ -179,8 +181,8 @@ Action * AI::eat(Adventure * adventure, Character * self) {
         continue;
       }
     }
-    Target * t = new Target();
-    t->type = TARGET_BLOCK;
+    MathUtil::Target * t = new MathUtil::Target();
+    t->type = TARGET_COORDINATES;
     t->id = self->getCurrentMap()->id;
     t->x = i;
     t->y = j;
@@ -242,8 +244,8 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
       return new GearAction(ACTION_GRAB, adventure, nullptr, self, nullptr, nullptr);
     }
     else {
-      Target * target = new Target();
-      target->type = TARGET_BLOCK;
+      MathUtil::Target * target = new MathUtil::Target();
+      target->type = TARGET_COORDINATES;
       target->id = self->getCurrentMap()->id;
       target->x = corpse->x;
       target->y = corpse->y;
@@ -313,10 +315,10 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     }
   }
   if(target != nullptr) {
-    Target * t = new Target();
+    MathUtil::Target * t = new MathUtil::Target();
     t->type = TARGET_CHARACTER;
     t->character = target;
-    // float orientation = MathUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
+    // float orientation_z = MathUtil::getOrientationToTarget(target->getX(), target->getY(), self->getX(), self->getY());
     if(skill != nullptr) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, skill->getManaCost());
     }

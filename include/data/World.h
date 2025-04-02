@@ -9,7 +9,7 @@
 
 #include "util/MathUtil.h"
 
-typedef struct MapLink {
+struct MapLink {
     int32_t x1;
     int32_t y1;
     int32_t z1;
@@ -19,7 +19,7 @@ typedef struct MapLink {
     int32_t type;
     Map * map1;
     Map * map2;
-} MapLink;
+};
 
 class World {
   public:
@@ -39,7 +39,7 @@ class World {
     MapLink * getMapLink(int32_t x, int32_t y, int64_t mapId);
     std::list<Character *> getCharacters();
     Character * getCharacter(int64_t id);
-    std::list<Character *> computeTarget(Character * origin, Target * target);
+    std::list<Character *> computeTarget(Character * origin, MathUtil::Target * target);
     Furniture * getFurniture(int64_t id);
     Map * getMap(int32_t x, int32_t y, int32_t z);
     Map * getMap(float x, float y, float z);
@@ -51,8 +51,8 @@ class World {
     void removeCharacter(Character * character);
     void checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     void changeRegion(Character * character);
-    float setPathToTarget(Region * region, float x, float y, Target * target);
-    float distance(int64_t map_id, float x, float y, Target * target);
+    float setPathToTarget(Region * region, float x, float y, MathUtil::Target * target);
+    float distance(int64_t map_id, float x, float y, MathUtil::Target * target);
   private:
     std::map<const int64_t, Map *> maps;
     std::map<const MathUtil::Vector3i, BlocksChunk *> chunks;

@@ -8,8 +8,8 @@
 #include "ai/NocturnalAgressiveAI.h"
 #include "ai/EtheralCasterAI.h"
 
-void SummonSkill::activate(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
-  // Target will be a Block
+void SummonSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
+  // MathUtil::Target will be a Block
   AI * ai;
   if (ai_str == "DiurnalPassiveAI") {
     ai = new DiurnalPassiveAI(target->coord.x, target->coord.y);
@@ -34,7 +34,8 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
     (int32_t) target->coord.x,
     (int32_t) target->coord.y,
     (int32_t) target->coord.z,
-    owner->getOrientation(),
+    owner->getOrientationX(),
+    owner->getOrientationZ(),
     nullptr,
     team == "" ? owner->getTeam() : team,
     ai,
@@ -58,7 +59,7 @@ void SummonSkill::activate(Character * owner, Target * target, Adventure * adven
   }
 }
 
-bool SummonSkill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
+bool SummonSkill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {
   return true;
 }
 

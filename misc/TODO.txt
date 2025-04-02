@@ -3,7 +3,7 @@ add Stances:
   - 1 block skill
   - 1 switch to magical stance (stronger attack/block, mana consumption)
 
-add orientation_z to OrientedAction
+add orientation_x to OrientedAction
 Strike/Shoot/SkillAction switch to OrientedAction
 
 Fix Projectile

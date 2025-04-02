@@ -51,14 +51,19 @@ namespace Server {
       case ACTION_CHANNEL:
         action = new BaseAction(type, adventure, nullptr, user);
         break;
-      case ACTION_MOVE: {
-        float orientation = String::extract_float(ss);
-        action = new OrientedAction(type, adventure, nullptr, user, orientation);
+      case ACTION_MOVE:
+      case ACTION_STRIKE: {
+        float orientation_z = String::extract_float(ss);
+        float orientation_x = String::extract_float(ss);
+        action = new OrientedAction(type, adventure, nullptr, user, orientation_z, orientation_x);
         break;
       }
-      case ACTION_STRIKE:
       case ACTION_ACTIVATION: {
-        Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
+        std::string msg2 = String::extract(ss);
+        std::cout << msg2 << std::endl;
+        //MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
+        MathUtil::Target * target = MathUtil::target_from_string(msg2, adventure);
+        std::cout << target->furniture->id << std::endl;
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
@@ -88,7 +93,7 @@ namespace Server {
         break;
       }
       case ACTION_USE_SKILL: {
-        Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
+        MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
         Skill * skill = (Skill *) adventure->getDatabase()->getSkill(String::extract(ss));
         int32_t mana_cost = String::extract_int(ss);
         action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);

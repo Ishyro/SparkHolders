@@ -12,7 +12,7 @@ class TargetedAction : public Action {
       Adventure * adventure,
       const Action * previous,
       Character * user,
-      Target * target
+      MathUtil::Target * target
     ):
       Action(
         type,
@@ -24,11 +24,11 @@ class TargetedAction : public Action {
     {}
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
-    Target * getTarget();
+    MathUtil::Target * getTarget();
     void setUserOrientationToTarget(Adventure * adventure);
     float rangeFromTarget(Adventure * adventure);
   protected:
-    Target * target;
+    MathUtil::Target * target;
 };
 
 #endif // _TARGETED_ACTION_H_

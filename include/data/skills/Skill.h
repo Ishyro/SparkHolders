@@ -57,8 +57,8 @@ class Skill {
       skills(skills)
     {}
 
-    void activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent, bool blocked);
-    bool canCast(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent);
+    void activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent, bool blocked);
+    bool canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent);
     void computeOvercharges(int32_t mana_spent, float & overcharge_power, float & overcharge_duration, float & overcharge_range);
     int32_t getManaCost();
     float getTime(Character * owner);

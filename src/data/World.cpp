@@ -78,16 +78,16 @@ Character * World::getCharacter(int64_t id) {
   return nullptr;
 }
 
-std::list<Character *> World::computeTarget(Character * origin, Target * target) {
+std::list<Character *> World::computeTarget(Character * origin, MathUtil::Target * target) {
   std::list<Character *> targets = std::list<Character *>();
   if(!targets.empty()) {
     delete target;
-    target = new Target();
+    target = new MathUtil::Target();
     target->type = TARGET_MULTIPLE;
-    Target * iter = target;
+    MathUtil::Target * iter = target;
     for(Character * character : targets) {
-      Target * next;
-      next = new Target();
+      MathUtil::Target * next;
+      next = new MathUtil::Target();
       next->type = TARGET_CHARACTER;
       next->character = character;
       next->next = nullptr;
@@ -196,17 +196,13 @@ void World::changeRegion(Character * character) {
   }
 }
 
-float World::setPathToTarget(Region * region, float x, float y, Target * target) {
+float World::setPathToTarget(Region * region, float x, float y, MathUtil::Target * target) {
   float target_x;
   float target_y;
   switch(target->type) {
-    case TARGET_BLOCK:
+    case TARGET_COORDINATES:
       target_x = target->coord.x + 0.5F;
       target_y = target->coord.y + 0.5F;
-      break;
-    case TARGET_COORDINATES:
-      target_x = target->coord.x;
-      target_y = target->coord.y;
       break;
     case TARGET_CHARACTER: {
       Character * other = target->character;
@@ -214,11 +210,17 @@ float World::setPathToTarget(Region * region, float x, float y, Target * target)
       target_y = other->getCoord().y;
       break;
     }
+    case TARGET_FURNITURE: {
+      Furniture * other = target->furniture;
+      target_x = other->getCenter().x;
+      target_y = other->getCenter().y;
+      break;
+    }
     default: ;
   }
   return MathUtil::getOrientationToTarget(x, y, target_x, target_y);
 }
 
-float World::distance(int64_t map_id, float x, float y, Target * target) {
+float World::distance(int64_t map_id, float x, float y, MathUtil::Target * target) {
   return 0.F;
 }

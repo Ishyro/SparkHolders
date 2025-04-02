@@ -283,12 +283,12 @@ Database::Database() {
 
   // target_type
   macros.insert(std::make_pair("TARGET_NONE", TARGET_NONE));
-  macros.insert(std::make_pair("TARGET_SELF", TARGET_SELF));
-  macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
-  macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
-  macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
-  macros.insert(std::make_pair("TARGET_BLOCK", TARGET_BLOCK));
   macros.insert(std::make_pair("TARGET_FRONT", TARGET_FRONT));
+  macros.insert(std::make_pair("TARGET_SELF", TARGET_SELF));
+  macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
+  macros.insert(std::make_pair("TARGET_FURNITURE", TARGET_FURNITURE));
+  macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
+  macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
 
   // skill_school
   macros.insert(std::make_pair("SKILL_FIRE", SKILL_FIRE));

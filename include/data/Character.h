@@ -23,7 +23,7 @@ namespace character {
   static int64_t id_cpt = 0;
 }
 
-typedef struct CharacterDisplay {
+struct CharacterDisplay {
   std::string name;
   int64_t id;
   float hp;
@@ -47,9 +47,11 @@ typedef struct CharacterDisplay {
   float vx;
   float vy;
   float vz;
-  float size;
-  float height;
-  float orientation;
+  float sizeX;
+  float sizeY;
+  float sizeZ;
+  float orientation_x;
+  float orientation_z;
   std::string team;
   int32_t xp;
   int32_t level;
@@ -57,17 +59,17 @@ typedef struct CharacterDisplay {
   std::array<float, DAMAGE_TYPE_NUMBER> damage_reductions;
   std::array<float, DAMAGE_TYPE_NUMBER> damages;
   int32_t teamRelation;
-} CharacterDisplay;
+};
 
-typedef struct Environment {
+struct Environment {
   int64_t light;
   int32_t lightening;
   float temperature;
   int32_t biome_type;
   int32_t weather_type;
-  int32_t depth;
+  int32_t sizeY;
   bool making_effort;
-} Environment;
+};
 
 class Character {
   public:
@@ -107,7 +109,8 @@ class Character {
       int32_t x,
       int32_t y,
       int32_t z,
-      float orientation,
+      float orientation_x,
+      float orientation_z,
       Region * region,
       std::string team,
       AI * ai,
@@ -132,9 +135,9 @@ class Character {
       xp(xp),
       last_level_xp(0),
       level(1),
-      coord(MathUtil::makeVector3(x + 0.5F, y + 0.5F, z)),
-      speed(MathUtil::makeVector3(0.F, 0.F, 0.F)),
-      orientation(orientation),
+      coord(MathUtil::Vector3(x + 0.5F, y + 0.5F, z)),
+      speed(MathUtil::Vector3(0.F, 0.F, 0.F)),
+      orientation_z(orientation_z),
       region(region),
       merchant(from_database->merchant),
       team(team),
@@ -192,9 +195,11 @@ class Character {
       Speech * talking_speech,
       MathUtil::Vector3 coord,
       MathUtil::Vector3 speed,
-      float size,
-      float height,
-      float orientation,
+      float sizeX,
+      float sizeY,
+      float sizeZ,
+      float orientation_x,
+      float orientation_z,
       Region * region,
       bool merchant,
       int64_t gold,
@@ -244,9 +249,11 @@ class Character {
       talking_speech(talking_speech),
       coord(coord),
       speed(speed),
-      size(size),
-      height(height),
-      orientation(orientation),
+      sizeX(sizeX),
+      sizeY(sizeY),
+      sizeZ(sizeZ),
+      orientation_x(orientation_x),
+      orientation_z(orientation_z),
       region(region),
       merchant(merchant),
       gold(gold),
@@ -271,7 +278,10 @@ class Character {
       religion(religion),
       profession(profession),
       titles(titles)
-    {}
+    {
+      hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSizeX(), getSizeY(), getSizeZ());
+      hitbox->applyMove(coord, orientation_x, 0.F, orientation_z);
+    }
 
     ~Character();
     
@@ -282,9 +292,12 @@ class Character {
     MathUtil::Vector3 getCoord();
     MathUtil::Vector3 getSpeed();
     MathUtil::Coords getWorldCoords();
-    float getOrientation();
-    float getSize();
-    float getHeight();
+    MathUtil::HitboxOBB * getHitbox();
+    float getOrientationZ();
+    float getOrientationX();
+    float getSizeX();
+    float getSizeY();
+    float getSizeZ();
     float getHp();
     int32_t getMaxHp();
     float getMana();
@@ -360,9 +373,12 @@ class Character {
     std::map<int32_t, Stance *> getActiveStances();
     std::map<int32_t, Stance *> getActiveMagicalStances();
 
-    void setOrientation(float orientation);
-    void setSize(float size);
-    void move(MathUtil::Vector3 coord, float orientation, World * world);
+    void setOrientationX(float orientation_x);
+    void setOrientationZ(float orientation_z);
+    void setSizeX(float sizeX);
+    void setSizeY(float sizeY);
+    void setSizeZ(float sizeZ);
+    void move(MathUtil::Vector3 coord, float orientation_x, float orientation_z, World * world);
     void run();
     void jump();
     void setSpeed(MathUtil::Vector3 speed);
@@ -451,13 +467,13 @@ class Character {
     bool isInWeakState();
 
     void selectStance(Stance *);
-    void useSkill(Skill * skill, Target * target, Adventure * adventure, float overcharge, bool blocked);
+    void useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge, bool blocked);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
     float getRawDamageReductionFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);
     float getStatusPower();
     float getStatusReductionFromType(int32_t damage_type);
-    Projectile * shoot(Target * target, Adventure * adventure, int32_t slot);
+    Projectile * shoot(MathUtil::Target * target, Adventure * adventure, int32_t slot);
     void reload(ItemSlot * ammo, int32_t slot_weapon);
     ItemSlot * canReload(int32_t slot);
     void receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
@@ -477,9 +493,12 @@ class Character {
     void initEffects(std::list<Effect *> effects);
     MathUtil::Vector3 coord;
     MathUtil::Vector3 speed;
-    float size;
-    float height;
-    float orientation;
+    MathUtil::HitboxOBB * hitbox;
+    float sizeX;
+    float sizeY;
+    float sizeZ;
+    float orientation_x;
+    float orientation_z;
     Region * region;
     Action * action = nullptr;
     Action * leg_action = nullptr;

@@ -47,7 +47,7 @@ class LinkedFurniture : public ActivableFurniture  {
       const int32_t x,
       const int32_t y,
       const int32_t z,
-      const float orientation,
+      const float orientation_z,
       const bool isLocked,
       const std::string key_name,
       ActivableFurniture * linked_furniture
@@ -57,7 +57,7 @@ class LinkedFurniture : public ActivableFurniture  {
         x,
         y,
         z,
-        orientation,
+        orientation_z,
         isLocked,
         key_name
       ),

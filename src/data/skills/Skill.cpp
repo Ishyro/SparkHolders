@@ -6,7 +6,7 @@
 
 #include "util/String.h"
 
-void Skill::activate(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent, bool blocked) {
+void Skill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent, bool blocked) {
   float overcharge_power;
   float overcharge_duration;
   float overcharge_range;
@@ -24,7 +24,7 @@ void Skill::activate(Character * owner, Target * target, Adventure * adventure, 
   }
 }
 
-bool Skill::canCast(Character * owner, Target * target, Adventure * adventure, int32_t mana_spent) {
+bool Skill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent) {
   // can always cancel a toggle spell
   if(owner->getToggled(this)) {
     return true;

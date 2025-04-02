@@ -4,14 +4,14 @@
 #include <string>
 #include <list>
 
-typedef struct Step {
+struct Step {
   const int32_t type;
   const Character * target;
   const Item * goal_item;
   const int32_t discover_map_id;
   Speech * todo;
   Speech * when_done;
-} Step;
+};
 
 namespace quest {
   static int64_t id_cpt = 0;
