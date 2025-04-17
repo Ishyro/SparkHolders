@@ -11,7 +11,6 @@ Action * BaseAction::execute(Adventure * adventure) {
   }
   switch(type) {
     case ACTION_IDLE:
-    case ACTION_RESPITE:
     case ACTION_REST:
       user->rest();
       break;
@@ -23,8 +22,6 @@ Action * BaseAction::execute(Adventure * adventure) {
       break;
     case ACTION_BREAKPOINT:
       break;
-    case ACTION_CHANNEL:
-      user->channel(-1);
     default: ;
   }
   if(previous != nullptr) {
@@ -51,12 +48,8 @@ Action * BaseAction::execute(Adventure * adventure) {
 
 void BaseAction::computeTime(Adventure * adventure) {
   switch(type) {
-    case ACTION_CHANNEL:
     case ACTION_IDLE:
       time = 1.F;
-      break;
-    case ACTION_RESPITE:
-      time = user->getStrikeTime(ITEM_SLOT_WEAPON_1) * 2;
       break;
     case ACTION_REST:
       time = 1.F;

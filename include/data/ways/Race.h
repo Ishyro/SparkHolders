@@ -8,14 +8,14 @@
 
 #include "data/ways/Way.h"
 
+#include "util/MathUtil.h"
+
 #include "Values.h"
 
 class Race : public Way {
   public:
     const int32_t race_type;
-    const float sizeX;
-    const float sizeY;
-    const float sizeZ;
+    const MathUtil::Vector3 size;
     const bool need_to_eat;
     const bool can_eat_food;
     const bool need_to_sleep;
@@ -88,9 +88,7 @@ class Race : public Way {
         tags
       ),
       race_type(race_type),
-      sizeX(sizeX),
-      sizeY(sizeY),
-      sizeZ(sizeZ),
+      size(sizeX, sizeY, sizeZ),
       need_to_eat(need_to_eat),
       can_eat_food(can_eat_food),
       need_to_sleep(need_to_sleep),
@@ -122,9 +120,7 @@ class Race : public Way {
     int32_t getDamageMultIncr(std::list<Race *> race_modifiers);
     int32_t getSoulBurnIncr(std::list<Race *> race_modifiers);
     int32_t getFlowIncr(std::list<Race *> race_modifiers);
-    float getSizeX(std::list<Race *> race_modifiers);
-    float getSizeY(std::list<Race *> race_modifiers);
-    float getSizeZ(std::list<Race *> race_modifiers);
+    MathUtil::Vector3 getSize(std::list<Race *> race_modifiers);
     bool getNeedToEat(std::list<Race *> race_modifiers);
     bool getCanEatFood(std::list<Race *> race_modifiers);
     bool getNeedToSleep(std::list<Race *> race_modifiers);

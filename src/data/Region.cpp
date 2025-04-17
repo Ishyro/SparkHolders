@@ -4,6 +4,13 @@
 
 #include "data/Settings.h"
 
+namespace hitbox {
+  bool left_to_right(const HitboxOwner * h1, const HitboxOwner * h2) { return h1->angle < h2->angle; }
+  bool right_to_left(const HitboxOwner * h1, const HitboxOwner * h2) { return h1->angle > h2->angle; }
+  bool front_to_back(const HitboxOwner * h1, const HitboxOwner * h2) { return h1->distance < h2->distance; }
+  bool back_to_front(const HitboxOwner * h1, const HitboxOwner * h2) { return h1->distance > h2->distance; }
+}
+
 void Region::addCharacter(Character * character) {
   MathUtil::Vector3 coord = character->getCoord();
   int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
@@ -30,6 +37,17 @@ bool Region::removeCharacter(Character * character) {
     }
   }
   return false;
+}
+
+
+void Region::addShield(Shield * shield) {
+  // always middle chunk
+  chunks[13]->addShield(shield);
+}
+
+void Region::removeShield(Shield * shield) {
+  // always middle chunk
+  chunks[13]->removeShield(shield);
 }
 
 Block * Region::getBlock(MathUtil::Vector3 coord) {
@@ -120,7 +138,7 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
     return false;
   }
   // check on sizeZ
-  for(int i = 1; i < c->getSizeZ(); i++) {
+  for(int i = 1; i < c->getSize().z; i++) {
     MathUtil::Vector3 vec_up = MathUtil::Vector3(dest.x, dest.y, dest.z + i);
     Block * up = getBlock(vec_up);
     if(up != nullptr && up->type != BLOCK_LIQUID && up->type != BLOCK_GAS) {
@@ -128,7 +146,7 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
     }
   }
   MathUtil::HitboxOBB * hitbox = new MathUtil::HitboxOBB(c->getHitbox());
-  hitbox->applyMove(dest, c->getOrientationX(), 0.F, c->getOrientationZ());
+  hitbox->applyMove(dest, c->getOrientation().x, 0.F, c->getOrientation().z);
   for(Character * other : getCharacters()) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::collide(hitbox, other->getHitbox())) {
       return false;
@@ -187,18 +205,19 @@ void Region::move(Character * character, World * world) {
     }
   }
   if(tryMove(character, dest)) {
-    character->move(dest, 0.F, 0.F, world);
+    character->move(dest, MathUtil::Vector3(0.F, 0.F, 0.F), world);
   }
   character->setSpeed(MathUtil::Vector3(0, 0, speed.z));
 }
 
-void Region::setSpeed(Character * character, float orientation_z, float given_orientation_x = 90.F) {
+void Region::setSpeed(Character * character, MathUtil::Vector3 orientation) {
+  float orientation_z = orientation.z;
   float orientation_x;
   MathUtil::Vector3 current = character->getCoord();
   Block * inside = getBlock(MathUtil::Vector3i(current.x, current.y, current.z));
   // TODO, with this we can walk on water
   if(character->isFlying() || (inside != nullptr && inside->type == BLOCK_LIQUID)) {
-    orientation_x = given_orientation_x;
+    orientation_x = orientation.x;
   }
   else {
     if(inside != nullptr && (inside->type == BLOCK_STAIRS || inside->type == BLOCK_SLOPE)) {
@@ -289,9 +308,9 @@ bool Region::canSee(Character * watcher, Character * target) {
     return false;
   }
   MathUtil::Vector3 watcher_head = watcher->getCoord();
-  watcher_head.z += watcher->getSizeZ();
+  watcher_head.z += watcher->getSize().z;
   MathUtil::Vector3 target_head = target->getCoord();
-  target_head.z += target->getSizeZ();
+  target_head.z += target->getSize().z;
   float distance = MathUtil::distance(watcher_head, target_head);
   MathUtil::Vector3 direction = MathUtil::Vector3((target_head.x - watcher_head.x) / distance, (target_head.y - watcher_head.y) / distance, (target_head.z - watcher_head.z) / distance);
   for(int32_t step = 1; step < distance; step++) {
@@ -344,6 +363,16 @@ std::list<Furniture *> Region::getFurnitures(Character * character) {
   return result;
 }
 
+std::list<Shield *> Region::getShields() {
+  std::list<Shield *> result = std::list<Shield *>();
+  for(BlocksChunk * chunk : chunks) {
+    for(Shield * shield : chunk->getShields()) {
+      result.push_front(shield);
+    }
+  }
+  return result;
+}
+
 std::map<const MathUtil::Vector3i, Block *> Region::getBlocks() {
   std::map<const MathUtil::Vector3i, Block *> result = std::map<const MathUtil::Vector3i, Block *>();
   for(BlocksChunk * chunk : chunks) {
@@ -363,4 +392,77 @@ Furniture * Region::getFurniture(MathUtil::Vector3i coord) {
     }
   }
   return nullptr;
+}
+
+std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
+  std::list<HitboxOwner *> result = std::list<HitboxOwner *>();
+  for(Character * other : getCharacters()) {
+    if(attack->owner != other && MathUtil::collide(attack->hitbox, other->getHitbox())) {
+      HitboxOwner * hitbox = new HitboxOwner();
+      hitbox->type = HITBOX_OWNER_CHARACTER;
+      hitbox->owner = other;
+      switch(attack->type) {
+        case ATTACK_LEFT_TO_RIGHT:
+        case ATTACK_RIGHT_TO_LEFT:
+          hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - other->getHitbox()->origin);
+          break;
+        case ATTACK_FRONT_TO_BACK:
+        case ATTACK_BACK_TO_FRONT:
+          hitbox->distance = MathUtil::distanceSquare(attack->hitbox->origin, other->getHitbox()->origin);
+          break;
+      }
+      result.push_back(hitbox);
+    }
+  }
+  for(Shield * shield : getShields()) {
+    if(attack->owner != shield->owner && MathUtil::collide(attack->hitbox, shield->hitbox)) {
+      HitboxOwner * hitbox = new HitboxOwner();
+      hitbox->type = HITBOX_OWNER_SHIELD;
+      hitbox->owner = shield->owner;
+      switch(attack->type) {
+        case ATTACK_LEFT_TO_RIGHT:
+        case ATTACK_RIGHT_TO_LEFT:
+          hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - shield->hitbox->origin);
+          break;
+        case ATTACK_FRONT_TO_BACK:
+        case ATTACK_BACK_TO_FRONT:
+          hitbox->distance = MathUtil::distanceSquare(attack->hitbox->origin, shield->hitbox->origin);
+          break;
+      }
+      result.push_back(hitbox);
+    }
+  }
+  for(Furniture * furniture : getFurnitures()) {
+    if(MathUtil::collide(attack->hitbox, furniture->getHitbox())) {
+      HitboxOwner * hitbox = new HitboxOwner();
+      hitbox->type = HITBOX_OWNER_FURNITURE;
+      hitbox->owner = nullptr;
+      switch(attack->type) {
+        case ATTACK_LEFT_TO_RIGHT:
+        case ATTACK_RIGHT_TO_LEFT:
+          hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - furniture->getHitbox()->origin);
+          break;
+        case ATTACK_FRONT_TO_BACK:
+        case ATTACK_BACK_TO_FRONT:
+          hitbox->distance = MathUtil::distanceSquare(attack->hitbox->origin, furniture->getHitbox()->origin);
+          break;
+      }
+      result.push_back(hitbox);
+    }
+  }
+  switch(attack->type) {
+    case ATTACK_LEFT_TO_RIGHT:
+      result.sort(hitbox::left_to_right);
+      break;
+    case ATTACK_RIGHT_TO_LEFT:
+      result.sort(hitbox::right_to_left);
+      break;
+    case ATTACK_FRONT_TO_BACK:
+      result.sort(hitbox::front_to_back);
+      break;
+    case ATTACK_BACK_TO_FRONT:
+      result.sort(hitbox::back_to_front);
+      break;
+  }
+  return result;
 }

@@ -37,9 +37,7 @@ Character::~Character() {
 }
 
 void Character::initializeCharacter(Gear * gear) {
-  sizeX = race->getSizeX(race_modifiers);
-  sizeY = race->getSizeY(race_modifiers);
-  sizeZ = race->getSizeZ(race_modifiers);
+  size = race->getSize(race_modifiers);
   maxHp = main_class->baseHp + race->getBaseHp(race_modifiers) + origin->baseHp + culture->baseHp + religion->baseHp + profession->baseHp;
   for(Way * way : titles) {
     maxHp += way->baseHp;
@@ -90,8 +88,8 @@ void Character::initializeCharacter(Gear * gear) {
     status[i] = 0.F;
   }
   initSkillsAndEffects();
-  hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSizeX(), getSizeY(), getSizeZ());
-  hitbox->applyMove(coord, orientation_x, 0.F, orientation_z);
+  hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
+  hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
 }
 
 void Character::initSkillsAndEffects() {
@@ -213,11 +211,20 @@ MathUtil::Vector3 Character::getCoord() { return coord; }
 MathUtil::Vector3 Character::getSpeed() { return speed; }
 MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
 MathUtil::HitboxOBB * Character::getHitbox() { return hitbox; }
-float Character::getSizeX() { return sizeX; }
-float Character::getSizeY() { return sizeY; }
-float Character::getSizeZ() { return sizeZ; }
-float Character::getOrientationX() { return orientation_x; }
-float Character::getOrientationZ() { return orientation_z; }
+
+Shield * Character::produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size) {
+  outer_shield = new Shield(shield_type, shield_hp, size, this);
+  region->addShield(outer_shield);
+}
+
+void Character::stopShield() {
+  region->removeShield(outer_shield);
+  delete outer_shield;
+  outer_shield = nullptr;
+}
+
+MathUtil::Vector3 Character::getSize() { return size; }
+MathUtil::Vector3 Character::getOrientation() { return orientation; }
 float Character::getHp() { return hp; }
 int32_t Character::getMaxHp() {
   int32_t bonus = 0;
@@ -589,18 +596,15 @@ std::map<int32_t, Stance *> Character::getActiveMagicalStances() {
   return active_magical_stances;
 }
 
-void Character::setOrientationX(float orientation_x) { this->orientation_x = orientation_x; }
-void Character::setOrientationZ(float orientation_z) { this->orientation_z = orientation_z; }
-void Character::setSizeX(float size) { sizeX = size; }
-void Character::setSizeY(float size) { sizeY = size; }
-void Character::setSizeZ(float size) { sizeZ = size; }
-void Character::move(MathUtil::Vector3 coord, float orientation_x, float orientation_z, World * world) {
+void Character::setOrientationX(float orientation_x) { orientation.x = orientation_x; }
+void Character::setOrientationZ(float orientation_z) { orientation.z = orientation_z; }
+void Character::move(MathUtil::Vector3 coord, MathUtil::Vector3 orientation, World * world) {
   MathUtil::Vector3 ori = this->coord;
   this->coord = coord;
-  float delta_x = this->orientation_x - orientation_x;
-  float delta_z = this->orientation_z - orientation_z;
-  this->orientation_x = orientation_x;
-  this->orientation_z = orientation_z;
+  float delta_x = this->orientation.x - orientation.x;
+  float delta_z = this->orientation.z - orientation.z;
+  this->orientation.x = orientation.x;
+  this->orientation.z = orientation.z;
   hitbox->applyMove(coord, delta_x, 0.F, delta_z);
   world->checkRegion(this, ori, coord);
 }
@@ -1293,14 +1297,6 @@ bool Character::isInvulnerable() {
   return false;
 }
 
-bool Character::isBlocking() {
-  for(Effect * e : getEffects()) {
-    if(e->type == EFFECT_BLOCKING) {
-      return true;
-    }
-  }
-  return false;
-}
 
 bool Character::isSleeping() {
   for(Effect * e : getEffects()) {
@@ -1336,8 +1332,8 @@ bool Character::isInWeakState() {
   return false;
 }
 
-void Character::useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge, bool blocked) {
-  skill->activate(this, target, adventure, overcharge, blocked);
+void Character::useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge) {
+  skill->activate(this, target, adventure, overcharge);
 }
 
 void Character::selectStance(Stance * stance) {
@@ -1413,7 +1409,7 @@ float Character::getDamageReductionFromType(int32_t damage_type) {
 }
 
 float Character::getStatusPower() {
-  float status_power = 0.F;
+  float status_power = 1.F;
   for(Effect * effect : getEffects()) {
     if(effect->type == EFFECT_STATUS_POWER) {
       status_power += effect->power;
@@ -1443,7 +1439,7 @@ float Character::getStatusReductionFromType(int32_t damage_type) {
 }
 
 Projectile * Character::shoot(MathUtil::Target * target, Adventure * adventure, int32_t slot) {
-  if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
+  if(gear->getWeapon_1()->use_projectile && gear->getWeapon_1()->range.y >= std::max(abs(coord.x - target->coord.x), abs(coord.y - target->coord.y))) {
     if(!gear->getWeapon_1()->use_ammo || gear->getWeapon_1()->getCurrentCapacity() > 0) {
       std::array<float, DAMAGE_TYPE_NUMBER> realDamages;
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
@@ -1754,11 +1750,11 @@ std::string Character::to_string() {
   String::insert_float(ss, speed.x);
   String::insert_float(ss, speed.y);
   String::insert_float(ss, speed.z);
-  String::insert_float(ss, getSizeX());
-  String::insert_float(ss, getSizeZ());
-  String::insert_float(ss, getSizeZ());
-  String::insert_float(ss, orientation_x);
-  String::insert_float(ss, orientation_z);
+  String::insert_float(ss, getSize().x);
+  String::insert_float(ss, getSize().y);
+  String::insert_float(ss, getSize().z);
+  String::insert_float(ss, orientation.x);
+  String::insert_float(ss, orientation.z);
   String::insert(ss, team);
   String::insert_int(ss, xp);
   String::insert_int(ss, level);
@@ -1869,11 +1865,11 @@ std::string Character::full_to_string(Adventure * adventure) {
   String::insert_float(ss, speed.x);
   String::insert_float(ss, speed.y);
   String::insert_float(ss, speed.z);
-  String::insert_float(ss, sizeX);
-  String::insert_float(ss, sizeY);
-  String::insert_float(ss, sizeZ);
-  String::insert_float(ss, orientation_x);
-  String::insert_float(ss, orientation_z);
+  String::insert_float(ss, size.x);
+  String::insert_float(ss, size.y);
+  String::insert_float(ss, size.z);
+  String::insert_float(ss, orientation.x);
+  String::insert_float(ss, orientation.z);
   String::insert_bool(ss, merchant);
   String::insert_long(ss, gold);
   String::insert_long(ss, xp);

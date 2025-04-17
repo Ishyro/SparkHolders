@@ -269,14 +269,9 @@ locale/translations_pot_files=PackedStringArray("res://menus/adventure_selector.
 3d_physics/layer_1="World"
 3d_physics/layer_2="Characters"
 3d_physics/layer_3="Projectiles"
-3d_physics/layer_4="Phantoms"
-3d_physics/layer_5="Physical"
-3d_physics/layer_6="Unwalkable"
-3d_physics/layer_7="Furnitures"
-
-[physics]
-
-3d/run_on_separate_thread=true
+3d_physics/layer_4="Furnitures"
+3d_physics/layer_5="Solid"
+3d_physics/layer_6="Slope"
 
 [rendering]
 

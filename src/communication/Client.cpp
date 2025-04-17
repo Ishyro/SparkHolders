@@ -42,17 +42,14 @@ namespace Client {
   std::string writeAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost) {
     switch(type) {
       case ACTION_IDLE:
-      case ACTION_RESPITE:
       case ACTION_REST:
       case ACTION_RUN:
       case ACTION_JUMP:
       case ACTION_BREAKPOINT:
-      case ACTION_CHANNEL:
         return writeBaseAction(type);
         break;
       case ACTION_MOVE:
-      case ACTION_STRIKE:
-        return writeOrientedAction(type, *((float *) arg1));
+        return writeOrientedAction(type, *((MathUtil::Vector3 *) arg1));
         break;
       case ACTION_ACTIVATION:
         return writeTargetedAction(type, (MathUtil::Target *) arg1);
@@ -101,11 +98,12 @@ namespace Client {
     return result;
   }
 
-  std::string writeOrientedAction(int32_t type, float orientation_z, float orientation_x = 90.F) {
+  std::string writeOrientedAction(int32_t type, MathUtil::Vector3 orientation) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
-    String::insert_float(ss, orientation_z);
-    String::insert_float(ss, orientation_x);
+    String::insert_float(ss, orientation.x);
+    String::insert_float(ss, orientation.y);
+    String::insert_float(ss, orientation.z);
     std::string result = ss->str();
     delete ss;
     return result;

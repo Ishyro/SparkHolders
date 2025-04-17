@@ -1,47 +1,98 @@
 #include "data/skills/SimpleSkill.h"
 
 #include "data/items/Gear.h"
+#include "data/Region.h"
 
-void SimpleSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
-  for(Effect * effect : effects) {
-    Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration, scaling_type, damage_multipliers, owner);
-    switch(target_type) {
-      case TARGET_SELF:
-        if(toggle_state) {
-          to_add->activate(owner);
-        }
-        else {
-          owner->removeSimilarEffect(to_add);
-        }
+void SimpleSkill::activate(
+  Character * owner,
+  MathUtil::Target * target,
+  Adventure * adventure,
+  int32_t overcharge_power_type,
+  int32_t overcharge_duration_type,
+  int32_t overcharge_range_type,
+  float overcharge_power,
+  float overcharge_duration,
+  float overcharge_range,
+  int32_t range,
+  bool toggle_state
+) {
+  if(target_type == TARGET_ORIENTATION) {
+    Attack * attack = new Attack();
+    attack->owner = owner;
+    attack->status_power = status_power;
+    MathUtil::Vector3 h_size = size * overcharge_range;
+    switch(scaling_type) {
+      case SKILL_SCALE_NONE:
         break;
-      case TARGET_CHARACTER:
-        if(toggle_state) {
-          to_add->activate(target->character);
-        }
-        else {
-          target->character->removeSimilarEffect(to_add);
-        }
+      case SKILL_SCALE_MAIN_WEAPON:
+        h_size = h_size + owner->getGear()->getWeapon_1()->range * overcharge_range;
+        attack->status_power *= owner->getStatusPower();
         break;
-      case TARGET_MULTIPLE:
-        if(toggle_state) {
-          MathUtil::Target * iter = target->next;
-          for(iter = target->next; iter != nullptr; iter = iter->next) {
-            to_add->activate(iter->character);
-          }
-        }
-        else {
-          MathUtil::Target * iter = target->next;
-          for(iter = target->next; iter != nullptr; iter = iter->next) {
-            iter->character->removeSimilarEffect(to_add);
-          }
-        }
-        break;
-      //TODO
-      default:
+      case SKILL_SCALE_SUB_WEAPON:
+        h_size = h_size + owner->getGear()->getWeapon_2()->range * overcharge_range;
+        attack->status_power *= owner->getStatusPower();
         break;
     }
-    delete target;
+    attack->hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, owner->getCoord(), h_size.x, h_size.y, h_size.z);
+    for(HitboxOwner * hit : owner->getRegion()->sortHitboxes(attack)) {
+      if(hit->type == HITBOX_OWNER_FURNITURE) {
+        break;
+      }
+      else if(hit->type == HITBOX_OWNER_CHARACTER) {
+        hit->owner->receiveDamage(attack->damages, owner, attack->status_power);
+        for(Effect * effect : effects) {
+          Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration, scaling_type, damage_multipliers, owner);
+          if(toggle_state) {
+            to_add->activate(hit->owner);
+          }
+          else {
+            hit->owner->removeSimilarEffect(to_add);
+          }
+        }
+      }
+    }
   }
+  else {
+    for(Effect * effect : effects) {
+      Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration, scaling_type, damage_multipliers, owner);
+      switch(target_type) {
+        case TARGET_SELF:
+          if(toggle_state) {
+            to_add->activate(owner);
+          }
+          else {
+            owner->removeSimilarEffect(to_add);
+          }
+          break;
+        case TARGET_CHARACTER:
+          if(toggle_state) {
+            to_add->activate(target->character);
+          }
+          else {
+            target->character->removeSimilarEffect(to_add);
+          }
+          break;
+        case TARGET_MULTIPLE:
+          if(toggle_state) {
+            MathUtil::Target * iter = target->next;
+            for(iter = target->next; iter != nullptr; iter = iter->next) {
+              to_add->activate(iter->character);
+            }
+          }
+          else {
+            MathUtil::Target * iter = target->next;
+            for(iter = target->next; iter != nullptr; iter = iter->next) {
+              iter->character->removeSimilarEffect(to_add);
+            }
+          }
+          break;
+        //TODO
+        default:
+          break;
+      }
+    }
+  }
+  delete target;
 }
 
 bool SimpleSkill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range) {

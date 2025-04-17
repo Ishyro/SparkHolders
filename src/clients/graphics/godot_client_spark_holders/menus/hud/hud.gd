@@ -1,7 +1,5 @@
 extends Control
 
-@onready var map = $"../Map"
-
 @onready var shield = $Orbs/Divider/Body/Shield/Shader
 @onready var health = $Orbs/Divider/Body/Health/Shader
 @onready var mana = $Orbs/Divider/Soul/Mana/Shader

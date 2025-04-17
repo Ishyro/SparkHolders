@@ -1151,12 +1151,12 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
   if(!p->isLost() && p->getTarget()->type == TARGET_CHARACTER && adventure->getCharacter(p->getTarget()->id)->getCurrentMap()->id == id) {
     p->setOrientationZ(MathUtil::getOrientationToTarget(p->getX(), p->getY(), p->getTarget()->x, p->getTarget()->y));
   }
-  float x = MathUtil::round(std::cos(p->getOrientationZ() * M_PI / 180.F) * speed + p->getX());
-  float y = MathUtil::round(std::sin(p->getOrientationZ() * M_PI / 180.F) * speed + p->getY());
+  float x = MathUtil::round(std::cos(p->getOrientation().z * M_PI / 180.F) * speed + p->getX());
+  float y = MathUtil::round(std::sin(p->getOrientation().z * M_PI / 180.F) * speed + p->getY());
   float max_x;
   float max_y;
   MapLink * link = nullptr;
-  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientationZ(), p->size , speed);
+  std::list<MathUtil::Pair> path = MathUtil::getPathFromOrientation(p->getX(), p->getY(), p->getOrientation().z, p->size , speed);
   for(MathUtil::Pair pair : path) {
     if(pair.x < offsetX || pair.x >= sizeX + offsetX || pair.y < offsetY || pair.y >= sizeY + offsetY || getBlock(pair.x, pair.y)->solid) {
       to_destroy = true;
@@ -1208,7 +1208,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
   }
   else {
-    float tan = std::tan(p->getOrientationZ() * M_PI / 180.F);
+    float tan = std::tan(p->getOrientation().z * M_PI / 180.F);
     for(Character * c : characters) {
       if(!c->isMarkedDead() && ((c->getX() <= x + c->getSize() + p->getSize() && c->getX() >= p->getX() - c->getSize() - p->getSize()) ||
         (c->getX() <= p->getX() + c->getSize() + p->getSize() && c->getX() >= x - c->getSize() - p->getSize()) )) {
@@ -1231,7 +1231,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
       MathUtil::distance(p->getX(), p->getY(), character->getX(), character->getY())
       >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
         // exploding on targeted zone when other targets where found
-        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientationZ());
+        p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation().z);
         p->attack(nullptr, characters, adventure);
       }
     p->attack(character, characters, adventure);
@@ -1243,7 +1243,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     MathUtil::distance(p->getX(), p->getY(), x, y)
     >= MathUtil::distance(p->getX(), p->getY(), p->getDestX(), p->getDestY()) ) {
       // exploding on targeted zone when no other target where found
-      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientationZ());
+      p->move(p->getDestX(), p->getDestY(), offsetZ, p->getOrientation().z);
       p->attack(nullptr, characters, adventure);
   }
   std::list<Character *> tokill = std::list<Character *>();
@@ -1270,7 +1270,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     float old_y = y;
     float range = MathUtil::distance(x, y, p->getX(), p->getY());
     Map * next_map;
-    float orientation_z = p->getOrientationZ();
+    float orientation_z = p->getOrientation().z;
     float dest_orientation = orientation_z;
     float diff = 0.F;
     int32_t x_direction = 1;
@@ -1395,7 +1395,7 @@ float Map::actProjectile(Projectile * p, Adventure * adventure, float speed) {
     }
     return speed - range;
   }
-  p->move(x, y, offsetZ, p->getOrientationZ());
+  p->move(x, y, offsetZ, p->getOrientation().z);
   return 0.F;
 }
 

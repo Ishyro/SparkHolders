@@ -1,66 +1,20 @@
-[gd_scene load_steps=10 format=3 uid="uid://dhv0dj6a57no3"]
+[gd_scene load_steps=4 format=3 uid="uid://dhv0dj6a57no3"]
 
 [ext_resource type="Script" path="res://models/character.gd" id="1_au3f8"]
-[ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://resources/materials/board_material.tres" id="2_bvgpr"]
 [ext_resource type="PackedScene" uid="uid://cu02blmr4xp8t" path="res://chess/Kingpiece.1.glb" id="3_r3sm8"]
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_o6018"]
-height = 5.4
-radius = 1.0
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_lwiiu"]
-material = ExtResource("2_bvgpr")
-top_radius = 1.0
-bottom_radius = 1.0
-height = 0.025
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_t5xkk"]
-material = ExtResource("2_bvgpr")
-top_radius = 0.85
-bottom_radius = 0.9
-height = 0.025
-
-[sub_resource type="TorusMesh" id="TorusMesh_bef1l"]
-inner_radius = 0.9
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_moo85"]
-
-[sub_resource type="TextMesh" id="TextMesh_3uq5c"]
-material = SubResource("StandardMaterial3D_moo85")
-text = "^"
+[sub_resource type="BoxShape3D" id="BoxShape3D_sqlh4"]
 
 [node name="Character" type="CharacterBody3D"]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 18
 motion_mode = 1
 wall_min_slide_angle = 0.0
 floor_max_angle = 1.0472
 script = ExtResource("1_au3f8")
 
 [node name="Shape" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
-shape = SubResource("CylinderShape3D_o6018")
-
-[node name="LowerBasement" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-mesh = SubResource("CylinderMesh_lwiiu")
-skeleton = NodePath("")
-
-[node name="UpperBasement" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
-mesh = SubResource("CylinderMesh_t5xkk")
-
-[node name="Color" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
-mesh = SubResource("TorusMesh_bef1l")
-
-[node name="Orientation" type="MeshInstance3D" parent="."]
-transform = Transform3D(15, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0.1, 0.7)
-mesh = SubResource("TextMesh_3uq5c")
+shape = SubResource("BoxShape3D_sqlh4")
 
 [node name="Placeholder" parent="." instance=ExtResource("3_r3sm8")]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0.15, 0)
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 0.25
-target_desired_distance = 0.25
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

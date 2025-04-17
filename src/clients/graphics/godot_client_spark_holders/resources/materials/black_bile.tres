@@ -5,7 +5,7 @@
 [resource]
 resource_local_to_scene = true
 shader = ExtResource("1_rw5px")
-shader_parameter/back_fluid_color = Color(0.0627451, 0.0627451, 0.0627451, 1)
-shader_parameter/front_fluid_color = Color(0.12549, 0.12549, 0.12549, 1)
+shader_parameter/back_fluid_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+shader_parameter/front_fluid_color = Color(0.121569, 0.121569, 0.121569, 1)
 shader_parameter/fresnel_color = Color(0, 0.2, 0.3, 1)
 shader_parameter/level = 0.75

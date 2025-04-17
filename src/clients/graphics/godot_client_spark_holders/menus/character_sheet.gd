@@ -1,6 +1,6 @@
 extends Control
 
-@onready var map = $"../../Map"
+@onready var world = $"../../../World"
 
 @onready var strength = $Mutable/MainStats/Strength
 @onready var threshold = $Mutable/MainStats/Threshold
@@ -120,13 +120,13 @@ func display_stats():
 	res_health.text = str(character_stats["hp"]) + " / " + str(character_stats["maxHp"])
 	res_mana.text = str(character_stats["mana"]) + " / " + str(character_stats["maxMana"])
 	res_soulburn.text = str(character_stats["currentSoulBurn"]) + " / " + str(character_stats["threshold"])
-	res_hunger.text = str(map.round_float(character_stats["hunger"])) + "%"
-	res_thirst.text = str(map.round_float(character_stats["thirst"])) + "%"
-	res_stamina.text = str(map.round_float(character_stats["stamina"])) + "%"
-	res_sanity.text = str(map.round_float(character_stats["sanity"])) + "%"
+	res_hunger.text = str(world.round_float(character_stats["hunger"])) + "%"
+	res_thirst.text = str(world.round_float(character_stats["thirst"])) + "%"
+	res_stamina.text = str(world.round_float(character_stats["stamina"])) + "%"
+	res_sanity.text = str(world.round_float(character_stats["sanity"])) + "%"
 
 	# Secondaries
-	sec_size.text = str(map.round_float(character_stats["sizeX"]))
+	sec_size.text = str(world.round_float(character_stats["sizeX"]))
 	sec_cloaking.text = str(0)
 	sec_global_speed.text = str(character_stats["globalSpeed"] * 100) + "%"
 	sec_movement_speed.text = str(character_stats["movementSpeed"] * 100) + "%"

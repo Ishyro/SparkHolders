@@ -5,3 +5,4 @@ projectile = TXT_FIREBALL
 mana_cost = 10
 scaling_type = SKILL_SCALE_NONE
 effects =
+status_power = 1.5

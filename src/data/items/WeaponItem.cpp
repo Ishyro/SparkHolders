@@ -107,7 +107,9 @@ std::string WeaponItem::to_string() {
   String::insert_int(ss, swap_time);
   String::insert_int(ss, max_durability);
   String::insert_int(ss, durability);
-  String::insert_float(ss, range);
+  String::insert_float(ss, range.x);
+  String::insert_float(ss, range.y);
+  String::insert_float(ss, range.z);
   String::insert_int(ss, strike_time);
   String::insert_float(ss, status_power);
   String::insert_bool(ss, use_projectile);

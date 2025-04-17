@@ -12,8 +12,7 @@ class OrientedAction : public Action {
       Adventure * adventure,
       const Action * previous,
       Character * user,
-      float orientation_z,
-      float orientation_x = 90.F
+      MathUtil::Vector3 orientation
     ):
       Action(
         type,
@@ -21,15 +20,13 @@ class OrientedAction : public Action {
         previous,
         user
       ),
-      orientation_z(orientation_z),
-      orientation_x(orientation_x)
+      orientation(orientation)
     {}
     Action * execute(Adventure * adventure);
     void computeTime(Adventure * adventure);
-    float getOrientationZ();
+    MathUtil::Vector3 getOrientation();
   protected:
-    float orientation_z;
-    float orientation_x;
+    MathUtil::Vector3 orientation;
 };
 
 #endif // _OIRENTED_ACTION_H_

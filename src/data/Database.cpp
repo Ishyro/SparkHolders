@@ -93,7 +93,6 @@ Database::Database() {
   macros.insert(std::make_pair("EFFECT_CHANNELING", EFFECT_CHANNELING));
   macros.insert(std::make_pair("EFFECT_SLEEPING", EFFECT_SLEEPING));
   macros.insert(std::make_pair("EFFECT_FLY", EFFECT_FLY));
-  macros.insert(std::make_pair("EFFECT_BLOCKING", EFFECT_BLOCKING));
   macros.insert(std::make_pair("EFFECT_STUNNED", EFFECT_STUNNED));
   macros.insert(std::make_pair("EFFECT_LIGHT", EFFECT_LIGHT));
   macros.insert(std::make_pair("EFFECT_CLOAKED", EFFECT_CLOAKED));
@@ -288,6 +287,7 @@ Database::Database() {
   macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
   macros.insert(std::make_pair("TARGET_FURNITURE", TARGET_FURNITURE));
   macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
+  macros.insert(std::make_pair("TARGET_ORIENTATION", TARGET_ORIENTATION));
   macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
 
   // skill_school
@@ -301,6 +301,7 @@ Database::Database() {
   macros.insert(std::make_pair("SKILL_PROJECTILE", SKILL_PROJECTILE));
   macros.insert(std::make_pair("SKILL_RESURRECTION", SKILL_RESURRECTION));
   macros.insert(std::make_pair("SKILL_SIMPLE", SKILL_SIMPLE));
+  macros.insert(std::make_pair("SKILL_SHIELD", SKILL_SHIELD));
   macros.insert(std::make_pair("SKILL_SUMMON", SKILL_SUMMON));
   macros.insert(std::make_pair("SKILL_TEAM_CHANGER", SKILL_TEAM_CHANGER));
   macros.insert(std::make_pair("SKILL_TELEPORT", SKILL_TELEPORT));
@@ -400,10 +401,7 @@ Database::Database() {
   macros.insert(std::make_pair("ACTION_MOVE", ACTION_MOVE));
   macros.insert(std::make_pair("ACTION_RUN", ACTION_RUN));
   macros.insert(std::make_pair("ACTION_JUMP", ACTION_JUMP));
-  macros.insert(std::make_pair("ACTION_STRIKE", ACTION_STRIKE));
-  macros.insert(std::make_pair("ACTION_RESPITE", ACTION_RESPITE));
   macros.insert(std::make_pair("ACTION_ACTIVATION", ACTION_ACTIVATION));
-  macros.insert(std::make_pair("ACTION_CHANNEL", ACTION_CHANNEL));
   macros.insert(std::make_pair("ACTION_USE_SKILL", ACTION_USE_SKILL));
   macros.insert(std::make_pair("ACTION_USE_ITEM", ACTION_USE_ITEM));
   macros.insert(std::make_pair("ACTION_RELOAD", ACTION_RELOAD));

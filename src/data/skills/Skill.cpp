@@ -6,7 +6,7 @@
 
 #include "util/String.h"
 
-void Skill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent, bool blocked) {
+void Skill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent) {
   float overcharge_power;
   float overcharge_duration;
   float overcharge_range;
@@ -16,16 +16,13 @@ void Skill::activate(Character * owner, MathUtil::Target * target, Adventure * a
     toggle_state = owner->setToggled(this);
   }
   owner->payMana(mana_spent);
-  // blocked toggled spells will not work, but there is no scenario where a toggled spell should be blockable
-  if(!blocked) {
-    for(PseudoSkill * skill : skills) {
-      skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range, toggle_state);
-    }
+  for(PseudoSkill * skill : skills) {
+    skill->activate(owner, target, adventure, overcharge_power_type, overcharge_duration_type, overcharge_range_type, overcharge_power, overcharge_duration, overcharge_range, range, toggle_state);
   }
 }
 
 bool Skill::canCast(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t mana_spent) {
-  // can always cancel a toggle spell
+  // can always cancel a toggled spell
   if(owner->getToggled(this)) {
     return true;
   }

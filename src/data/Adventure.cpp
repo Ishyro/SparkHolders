@@ -37,7 +37,7 @@ void Adventure::softMoveCharacterToMap(Character * character, MathUtil::Vector3 
     }
   }
   */
-  character->move(coord, character->getOrientationX(), character->getOrientationZ(), world);
+  character->move(coord, character->getOrientation(), world);
   world->changeRegion(character);
 }
 
@@ -72,7 +72,7 @@ void Adventure::hardMoveCharacterToMap(Character * character, MathUtil::Vector3 
     }
   }
   map->addCharacter(character);
-  character->move(x, y, z, character->getOrientationZ(), world);
+  character->move(x, y, z, character->getOrientation().z, world);
   */
 }
 

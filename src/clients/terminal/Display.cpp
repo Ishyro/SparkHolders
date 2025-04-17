@@ -176,7 +176,7 @@ namespace Display {
       mvwprintw(screen, lines / 2 - CHUNK_SIZE * 3 / 2 + CHUNK_SIZE * 3 - 1 - (int32_t) std::floor(loot->y - region->id.y), (int32_t) std::floor(loot->x - region->id.x) + cols / 2 - CHUNK_SIZE * 3 / 2, to_print.c_str());
       wattroff(screen, COLOR_PAIR(YELLOW));
     }
-    std::string to_print = std::to_string(player->getOrientationZ());
+    std::string to_print = std::to_string(player->getOrientation().z);
     // player position
     mvwprintw(screen, lines - 4, 1, to_print.c_str());
     to_print = std::string("X: ") + std::to_string(player->getCoord().x);
@@ -366,7 +366,7 @@ namespace Display {
     }
     if(item->type == ITEM_WEAPON) {
       WeaponItem * weapon = (WeaponItem *) item;
-      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Range") + std::string(": ") + std::to_string(weapon->range)).c_str());
+      mvwprintw(screen, i++, 1, (link->getEnglishFromKey("Range") + std::string(": ") + std::to_string(weapon->range.y)).c_str());
       if(weapon->getDamageFromType(DAMAGE_SLASH) > 0)
         mvwprintw(screen, i++, 1, (link->getEnglishFromKey("SLASH") + std::string(": ") + std::to_string(weapon->getDamageFromType(DAMAGE_SLASH))).c_str());
       if(weapon->getDamageFromType(DAMAGE_PUNCTURE) > 0)
@@ -1180,7 +1180,7 @@ namespace Display {
           object_type = 0;
           object = "";
           object_id = 0;
-          orientation_z = link->getPlayer()->getOrientationZ();
+          orientation_z = link->getPlayer()->getOrientation().z;
           skill = nullptr;
           target_id = 0;
           target_x = (int32_t) std::floor(link->getPlayer()->getCoord().x) - region->id.x;
@@ -1226,16 +1226,6 @@ namespace Display {
                 object = skill->name;
               }
               break;
-            case 'c':
-            case 'C':
-              type = ACTION_STRIKE;
-              if(selectTarget(mapScreen, targetScreen, display, link->getPlayer(), link->getPlayer()->getGear()->getWeapon_1()->range, target_id, target_x, target_y, orientation_z, link)) {
-                if(link->getPlayer()->getGear()->getWeapon_1()->use_ammo) {
-                  link->getPlayer()->getGear()->getWeapon_1()->useAmmo();
-                }
-                done = true;
-              }
-              break;
             case 'i':
             case 'I':
               type = ACTION_SWAP_GEAR;
@@ -1272,13 +1262,11 @@ namespace Display {
         }
         switch(type) {
           case ACTION_IDLE:
-          case ACTION_RESPITE:
           case ACTION_REST:
           case ACTION_BREAKPOINT:
             sendAction(link, type, nullptr, nullptr, 0);
             break;
           case ACTION_MOVE:
-          case ACTION_STRIKE:
           case ACTION_USE_SKILL: {
             MathUtil::Target * target = new MathUtil::Target();
             ((MathUtil::Target *) target)->type = (target_id == 0 ? TARGET_COORDINATES : TARGET_CHARACTER);

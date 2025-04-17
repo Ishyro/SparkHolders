@@ -1,6 +1,9 @@
 name = TXT_PARADE
-skill_type = SKILL_SIMPLE
+skill_type = SKILL_SHIELD
 target_type = TARGET_SELF
 mana_cost = 0
 scaling_type = SKILL_SCALE_MAIN_WEAPON
-effects = TXT_BLOCKING%
+effects =
+rangeX = 0.25
+rangeY = 0.25
+rangeZ = 0.25

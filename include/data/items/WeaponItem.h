@@ -7,11 +7,13 @@
 
 #include "data/items/GearItem.h"
 
+#include "util/MathUtil.h"
+
 #include "Values.h"
 
 class WeaponItem : public GearItem {
   public:
-    const float range;
+    const MathUtil::Vector3 range;
     const int32_t strike_time;
     const float status_power;
     const bool use_projectile;
@@ -38,7 +40,9 @@ class WeaponItem : public GearItem {
       int32_t swap_time,
       int32_t max_durability,
       int32_t durability,
-      float range,
+      float rangeX,
+      float rangeY,
+      float rangeZ,
       int32_t strike_time,
       float status_power,
       bool use_projectile,
@@ -69,7 +73,7 @@ class WeaponItem : public GearItem {
         max_durability,
         durability
       ),
-      range(range),
+      range(rangeX, rangeY, rangeZ),
       strike_time(strike_time),
       status_power(status_power),
       use_projectile(use_projectile),

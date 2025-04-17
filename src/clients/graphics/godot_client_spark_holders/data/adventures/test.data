@@ -17,7 +17,6 @@ data/effects/experience_10.data
 data/effects/hunger_10.data
 data/effects/etheral.data
 data/effects/flying.data
-data/effects/blocking.data
 data/effects/dummy_damage.data
 # items
 data/items/bone.data

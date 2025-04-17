@@ -87,7 +87,7 @@ void Link::receiveState(std::string msg) {
   StateDisplay * game_state = Client::receiveState(msg, adventure);
   for(CharacterDisplay * display : game_state->characters) {
     if(character->id == display->id) {
-      character->move(MathUtil::Vector3(display->x, display->y, display->z), display->orientation_x, display->orientation_z, adventure->getWorld());
+      character->move(MathUtil::Vector3(display->x, display->y, display->z), MathUtil::Vector3(display->orientation_x, 0.F, display->orientation_z), adventure->getWorld());
       character->setHp(display->hp);
       character->setMana(display->mana);
       character->setShield(display->shield);

@@ -14,13 +14,13 @@ void::Projectile::init(std::list<Effect *> effects, float overcharge, int32_t ov
     this->effects.push_back(toadd);
   }
   lost = false;
-  orientation_z = world->setPathToTarget(current_map_id, owner->getCoord().x, owner->getCoord().y, target);
+  orientation.z = world->setPathToTarget(current_map_id, owner->getCoord().x, owner->getCoord().y, target);
   if(change_owner_orientation) {
-    owner->setOrientationZ(orientation_z);
+    owner->setOrientationZ(orientation.z);
   }
   if(!teleport) {
-    coord.x = owner->getCoord().x + (owner->getSizeX() + size) * std::cos(orientation_z * M_PI / 180.F);
-    coord.y = owner->getCoord().y + (owner->getSizeY() + size) * std::sin(orientation_z * M_PI / 180.F);
+    coord.x = owner->getCoord().x + (owner->getSize().x + size) * std::cos(orientation.z * M_PI / 180.F);
+    coord.y = owner->getCoord().y + (owner->getSize().y + size) * std::sin(orientation.z * M_PI / 180.F);
     coord.z = owner->getCoord().z;
   }
 }
@@ -34,7 +34,7 @@ float Projectile::getDestY() {
   return target->coord.y;
 }
 
-float Projectile::getOrientationZ() { return orientation_z; }
+MathUtil::Vector3 Projectile::getOrientation() { return orientation; }
 bool Projectile::isLost() { return lost; }
 int32_t Projectile::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
 int32_t Projectile::getRawDamage() {
@@ -75,7 +75,7 @@ bool Projectile::noDamage() { return getRawDamage() <= 0; }
 
 void Projectile::setX(float x) { coord.x = x; }
 void Projectile::setY(float y) { coord.y = y; }
-void Projectile::setOrientationZ(float orientation_z) { this->orientation_z = orientation_z; }
+void Projectile::setOrientationZ(float orientation_z) { orientation.z = orientation_z; }
 void Projectile::setSpeed(float speed) { this->speed = speed; }
 void Projectile::setArea(float area) { this->area = area; }
 void Projectile::setFalloffTimer(int32_t falloff_timer) { this->falloff_timer = falloff_timer; }
@@ -91,9 +91,9 @@ void Projectile::markDestroyed() {
   }
 }
 
-void::Projectile::move(MathUtil::Vector3 coord, float orientation_z) {
+void::Projectile::move(MathUtil::Vector3 coord, MathUtil::Vector3 orientation) {
   this->coord = coord;
-  this->orientation_z = orientation_z;
+  this->orientation.z = orientation.z;
 }
 
 void Projectile::reduceDamageTick() {
@@ -123,7 +123,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
       MathUtil::Target * t = new MathUtil::Target();
       t->type = TARGET_CHARACTER;
       t->character = target;
-      skill->activate(owner, t, adventure, overcharge, false);
+      skill->activate(owner, t, adventure, overcharge);
     }
   }
   else {
@@ -137,7 +137,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
         else {
           range = MathUtil::distance(target->getCoord(), c->getCoord());
         }
-        if(range <= area - c->getSizeX()) {
+        if(range <= area - c->getSize().x) {
           std::array<float, DAMAGE_TYPE_NUMBER> reducedDamages;
           for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
             reducedDamages[i] = current_damages[i] * pow(1 - waste_per_area, range);
@@ -147,7 +147,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
             MathUtil::Target * t = new MathUtil::Target();
             t->type = TARGET_CHARACTER;
             t->character = target;
-            skill->activate(owner, t, adventure, overcharge, false);
+            skill->activate(owner, t, adventure, overcharge);
           }
         }
       }
@@ -190,7 +190,7 @@ std::string Projectile::to_string() {
   String::insert_float(ss, coord.x);
   String::insert_float(ss, coord.y);
   String::insert_float(ss, coord.z);
-  String::insert_float(ss, orientation_z);
+  String::insert_float(ss, orientation.z);
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, current_damages[i]);
   }
@@ -227,7 +227,7 @@ std::string Projectile::full_to_string() {
   }
   String::insert(ss, ss_effects->str());
   delete ss_effects;
-  String::insert_float(ss, orientation_z);
+  String::insert_float(ss, orientation.z);
   String::insert_float(ss, speed);
   String::insert_float(ss, area);
   String::insert_int(ss, overcharge);

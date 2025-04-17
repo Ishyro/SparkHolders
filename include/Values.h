@@ -54,6 +54,7 @@ struct ItemSlot;
 struct Loot;
 struct MapLink;
 struct ProjectileDisplay;
+struct Shield;
 struct Spawn;
 struct StateDisplay;
 struct Step;
@@ -124,17 +125,16 @@ class SpeechManager;
 #define EFFECT_CHANNELING 24
 #define EFFECT_SLEEPING 25
 #define EFFECT_FLY 26
-#define EFFECT_BLOCKING 27
-#define EFFECT_STUNNED 28
-#define EFFECT_LIGHT 29
-#define EFFECT_CLOAKED 30
-#define EFFECT_INVISIBLE 31
-#define EFFECT_ETHERAL 32
-#define EFFECT_INVULNERABLE 33
-#define EFFECT_ACTION_TIME_MODIFIER 34
-#define EFFECT_HAND_ACTION_TIME_MODIFIER 35
-#define EFFECT_SKILL_TIME_MODIFIER 36
-#define EFFECT_MOVEMENT_TIME_MODIFIER 37
+#define EFFECT_STUNNED 27
+#define EFFECT_LIGHT 28
+#define EFFECT_CLOAKED 29
+#define EFFECT_INVISIBLE 30
+#define EFFECT_ETHERAL 31
+#define EFFECT_INVULNERABLE 32
+#define EFFECT_ACTION_TIME_MODIFIER 33
+#define EFFECT_HAND_ACTION_TIME_MODIFIER 34
+#define EFFECT_SKILL_TIME_MODIFIER 35
+#define EFFECT_MOVEMENT_TIME_MODIFIER 36
 
 //status_type
 
@@ -332,13 +332,27 @@ class SpeechManager;
 #define TARGET_CHARACTER 3
 #define TARGET_FURNITURE 4
 #define TARGET_COORDINATES 5
-#define TARGET_MULTIPLE 6
+#define TARGET_ORIENTATION 6
+#define TARGET_MULTIPLE 7
 
 // hitbox_type
 
 #define HITBOX_BALL 1
 #define HITBOX_AABB 2
 #define HITBOX_OBB 3
+
+
+// hitbox_owner_type
+
+#define HITBOX_OWNER_CHARACTER 1
+#define HITBOX_OWNER_SHIELD 2
+#define HITBOX_OWNER_FURNITURE 3
+
+// shield skill type
+
+#define SHIELD_PHYSICAL 1
+#define SHIELD_MAGICAL 2
+#define SHIELD FORCEFIELD 3
 
 // skill_school
 
@@ -353,11 +367,12 @@ class SpeechManager;
 #define SKILL_MIND_CONTROL 2
 #define SKILL_PROJECTILE 3
 #define SKILL_RESURRECTION 4
-#define SKILL_SIMPLE 5
-#define SKILL_SUMMON 6
-#define SKILL_TEAM_CHANGER 7
-#define SKILL_TELEPORT 8
-#define SKILL_TILE_SWAP 19
+#define SKILL_SHIELD 6
+#define SKILL_SIMPLE 7
+#define SKILL_SUMMON 8
+#define SKILL_TEAM_CHANGER 9
+#define SKILL_TELEPORT 10
+#define SKILL_TILE_SWAP 11
 
 // skill_scaling_type
 
@@ -372,6 +387,13 @@ class SpeechManager;
 #define OVERCHARGE_LINEAR 1
 #define OVERCHARGE_SQUARE 2
 #define OVERCHARGE_EXPONENTIAL 3
+
+// attack_type
+
+#define ATTACK_LEFT_TO_RIGHT 1
+#define ATTACK_RIGHT_TO_LEFT 2
+#define ATTACK_FRONT_TO_BACK 3
+#define ATTACK_BACK_TO_FRONT 4
 
 // map_link type
 
@@ -468,19 +490,16 @@ class SpeechManager;
 #define ACTION_MOVE 1
 #define ACTION_RUN 2
 #define ACTION_JUMP 3
-#define ACTION_STRIKE 4
-#define ACTION_RESPITE 5
-#define ACTION_ACTIVATION 6
-#define ACTION_CHANNEL 7
-#define ACTION_USE_SKILL 8
-#define ACTION_USE_ITEM 9
-#define ACTION_RELOAD 10
-#define ACTION_GRAB 11
-#define ACTION_SWAP_GEAR 12
-#define ACTION_REST 13
-#define ACTION_TALKING 14
-#define ACTION_ECONOMICS 15
-#define ACTION_BREAKPOINT 16
+#define ACTION_ACTIVATION 4
+#define ACTION_USE_SKILL 5
+#define ACTION_USE_ITEM 6
+#define ACTION_RELOAD 7
+#define ACTION_GRAB 8
+#define ACTION_SWAP_GEAR 9
+#define ACTION_REST 10
+#define ACTION_TALKING 11
+#define ACTION_ECONOMICS 12
+#define ACTION_BREAKPOINT 13
 
 // settings
 

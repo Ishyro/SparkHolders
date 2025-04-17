@@ -6,3 +6,7 @@ scaling_type = SKILL_SCALE_MAIN_WEAPON
 effects = TXT_DUMMY_DAMAGE%
 DAMAGE_SLASH = 0.8
 DAMAGE_BLUNT = 0.2
+status_power = 1.0
+rangeX = 0.5
+rangeY = 0.0
+rangeZ = 0.0

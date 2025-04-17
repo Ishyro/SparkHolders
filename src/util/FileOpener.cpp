@@ -60,6 +60,7 @@
 #include "data/skills/MindControlSkill.h"
 #include "data/skills/ProjectileSkill.h"
 #include "data/skills/ResurrectionSkill.h"
+#include "data/skills/ShieldSkill.h"
 #include "data/skills/SimpleSkill.h"
 #include "data/skills/SummonSkill.h"
 #include "data/skills/TeamChangerSkill.h"
@@ -1018,7 +1019,9 @@ namespace FileOpener {
     if(type == ITEM_WEAPON) {
       int32_t swap_time = stoi(values.at("swap_time"));
       int32_t durability = stoi(values.at("durability"));
-      float range = _stof(values.at("range"));
+      float rangeX = _stof(values.at("rangeX"));
+      float rangeY = _stof(values.at("rangeY"));
+      float rangeZ = _stof(values.at("rangeZ"));
       int32_t strike_time = stoi(values.at("strike_time"));
       float status_power = _stof(values.at("status_power"));
       std::istringstream is_use_projectile(values.at("use_projectile"));
@@ -1155,7 +1158,9 @@ namespace FileOpener {
         swap_time,
         durability,
         durability,
-        range,
+        rangeX,
+        rangeY,
+        rangeZ,
         strike_time,
         status_power,
         use_projectile,
@@ -1754,13 +1759,34 @@ namespace FileOpener {
     while(getline(is_effects, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
+    float status_power = 1.F;
+    std::map<const std::string, std::string>::iterator it = values.find("status_power");
+    if(it != values.end()) {
+      status_power = _stof(it->second);
+    }
     switch(skill_type) {
-      case SKILL_SIMPLE:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects);
+      case SKILL_SIMPLE: {
+        if(target_type == TARGET_ORIENTATION) {
+          float sizeX = _stof(values.at("rangeX"));
+          float sizeY = _stof(values.at("rangeY"));
+          float sizeZ = _stof(values.at("rangeZ"));
+          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power, sizeX, sizeY, sizeZ);
+        }
+        else {
+          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power);
+        }
         break;
+      }
+      case SKILL_SHIELD: {
+        float sizeX = _stof(values.at("rangeX"));
+        float sizeY = _stof(values.at("rangeY"));
+        float sizeZ = _stof(values.at("rangeZ"));
+        pseudoSkill = new ShieldSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, sizeX, sizeY, sizeZ);
+        break;
+      }
       case SKILL_PROJECTILE: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, projectile);
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power, projectile);
         break;
       }
       case SKILL_TELEPORT: {
@@ -1829,7 +1855,7 @@ namespace FileOpener {
         break;
       }
       default:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power);
     }
     database->addPseudoSkill(pseudoSkill);
     delete effects;

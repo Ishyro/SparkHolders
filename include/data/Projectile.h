@@ -74,7 +74,7 @@ class Projectile {
       coord = MathUtil::Vector3(0.F, 0.F, 0.F);
       target = nullptr;
       owner = nullptr;
-      orientation_z = 0.F;
+      orientation = MathUtil::Vector3(0.F, 0.F, 0.F);
       overcharge = 1;
       overcharge_duration = 1;
       overcharge_range = 1;
@@ -207,7 +207,7 @@ class Projectile {
       effects(effects),
       target(target),
       owner(owner),
-      orientation_z(orientation_z),
+      orientation(0.F, 0.F, orientation_z),
       speed(speed),
       area(area),
       overcharge(overcharge),
@@ -232,7 +232,7 @@ class Projectile {
     MathUtil::Vector3 getCoord();
     float getDestX();
     float getDestY();
-    float getOrientationZ();
+    MathUtil::Vector3 getOrientation();
     bool isLost();
     int32_t getRawDamage();
     int32_t getDamageFromType(int32_t damage_type);
@@ -263,7 +263,7 @@ class Projectile {
     void setOwner(Character * owner);
     void setLost(bool state);
     void markDestroyed();
-    void move(MathUtil::Vector3 coord, float orientation_z);
+    void move(MathUtil::Vector3 coord, MathUtil::Vector3 orientation);
     void reduceDamageTick();
     void reduceDamageHit();
     void attack(Character * target, std::list<Character *> characters, Adventure * adventure);
@@ -284,7 +284,7 @@ class Projectile {
     std::list<Effect *> effects;
     MathUtil::Target * target;
     Character * owner;
-    float orientation_z;
+    MathUtil::Vector3 orientation;
     float speed;
     float area;
     float overcharge;

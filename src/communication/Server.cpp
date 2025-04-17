@@ -43,19 +43,17 @@ namespace Server {
     Action * action;
     switch(type) {
       case ACTION_IDLE:
-      case ACTION_RESPITE:
       case ACTION_REST:
       case ACTION_RUN:
       case ACTION_JUMP:
       case ACTION_BREAKPOINT:
-      case ACTION_CHANNEL:
         action = new BaseAction(type, adventure, nullptr, user);
         break;
-      case ACTION_MOVE:
-      case ACTION_STRIKE: {
-        float orientation_z = String::extract_float(ss);
-        float orientation_x = String::extract_float(ss);
-        action = new OrientedAction(type, adventure, nullptr, user, orientation_z, orientation_x);
+      case ACTION_MOVE: {
+        float x = String::extract_float(ss);
+        float y = String::extract_float(ss);
+        float z = String::extract_float(ss);
+        action = new OrientedAction(type, adventure, nullptr, user, MathUtil::Vector3(x, y, z));
         break;
       }
       case ACTION_ACTIVATION: {

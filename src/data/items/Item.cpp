@@ -93,7 +93,9 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       int32_t swap_time = String::extract_int(ss);
       int32_t max_durability = String::extract_int(ss);
       int32_t durability = String::extract_int(ss);
-      float range = String::extract_float(ss);
+      float rangeX = String::extract_float(ss);
+      float rangeY = String::extract_float(ss);
+      float rangeZ = String::extract_float(ss);
       int32_t strike_time = String::extract_int(ss);
       float status_power = String::extract_float(ss);
       bool use_projectile = String::extract_bool(ss);
@@ -129,7 +131,9 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         swap_time,
         max_durability,
         durability,
-        range,
+        rangeX,
+        rangeY,
+        rangeZ,
         strike_time,
         status_power,
         use_projectile,

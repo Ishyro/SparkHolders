@@ -285,7 +285,7 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
           maxDamage = rawDamage;
         }
       }
-      else if(pair.first == nullptr && self->getGear()->getWeapon_1()->range >= range) {
+      else if(pair.first == nullptr && self->getGear()->getWeapon_1()->range.y >= range) {
         int32_t rawDamage = threat->tryAttack(pair.second);
         if(rawDamage > maxDamage) {
           skill = pair.first;
@@ -293,7 +293,7 @@ std::map<Character *, Skill *> AI::getBestDamageSkills(std::list<Character *> th
         }
       }
     }
-    if(skill != nullptr || self->getGear()->getWeapon_1()->range >= range) {
+    if(skill != nullptr || self->getGear()->getWeapon_1()->range.y >= range) {
       bestDamageSkills.insert(std::make_pair(threat, skill));
     }
   }
@@ -322,12 +322,14 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     if(skill != nullptr) {
       return new SkillAction(ACTION_USE_SKILL, adventure, nullptr, self, t, skill, skill->getManaCost());
     }
+    /*
     if(!self->getGear()->getWeapon_1()->use_projectile) {
       return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
     }
     if(!self->getGear()->getWeapon_1()->use_ammo || self->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
       return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
     }
+      */
     ItemSlot * slot = nullptr;
     slot = self->canReload(ITEM_SLOT_WEAPON_1);
     if(slot != nullptr) {

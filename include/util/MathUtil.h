@@ -103,6 +103,64 @@ namespace MathUtil {
 
         return corners;
     }
+    void applyMove(float range, float thetaX, float thetaY, float thetaZ) {
+      float radX = thetaX * M_PI / 180.F;
+      float radY = thetaY * M_PI / 180.F;
+      float radZ = thetaZ * M_PI / 180.F;
+      float cosX = std::cos(radX), sinX = std::sin(radX);
+      float cosY = std::cos(radY), sinY = std::sin(radY);
+      float cosZ = std::cos(radZ), sinZ = std::sin(radZ);
+      origin.x += range * cosZ;
+      origin.y += range * sinZ;
+
+      float rotX[3][3] = {
+        {1, 0, 0},
+        {0, cosX, -sinX},
+        {0, sinX, cosX}
+      };
+      float rotY[3][3] = {
+        {cosY, 0, sinY},
+        {0, 1, 0},
+        {-sinY, 0, cosY}
+      };
+      float rotZ[3][3] = {
+        {cosZ, -sinZ, 0},
+        {sinZ, cosZ, 0},
+        {0, 0, 1}
+      };
+      float result[3][3] = {0};
+
+      // R = Rz * Ry
+      float temp[3][3] = {0};
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          for (int k = 0; k < 3; ++k) {
+            temp[i][j] += rotZ[i][k] * rotY[k][j];
+          }
+        }
+      }
+
+      // R = (Rz * Ry) * Rx
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          for (int k = 0; k < 3; ++k) {
+            result[i][j] += temp[i][k] * rotX[k][j];
+          }
+        }
+      }
+      
+      x_axis = Vector3(result[0][0] * x_axis.x + result[0][1] * x_axis.y + result[0][2] * x_axis.z,
+                       result[1][0] * x_axis.x + result[1][1] * x_axis.y + result[1][2] * x_axis.z,
+                       result[2][0] * x_axis.x + result[2][1] * x_axis.y + result[2][2] * x_axis.z);
+
+      y_axis = Vector3(result[0][0] * y_axis.x + result[0][1] * y_axis.y + result[0][2] * y_axis.z,
+                       result[1][0] * y_axis.x + result[1][1] * y_axis.y + result[1][2] * y_axis.z,
+                       result[2][0] * y_axis.x + result[2][1] * y_axis.y + result[2][2] * y_axis.z);
+
+      z_axis = Vector3(result[0][0] * z_axis.x + result[0][1] * z_axis.y + result[0][2] * z_axis.z,
+                       result[1][0] * z_axis.x + result[1][1] * z_axis.y + result[1][2] * z_axis.z,
+                       result[2][0] * z_axis.x + result[2][1] * z_axis.y + result[2][2] * z_axis.z);
+    }
     void applyMove(Vector3 coord, float thetaX, float thetaY, float thetaZ) {
       origin = coord;
       origin.z += sizeZ * .5F;

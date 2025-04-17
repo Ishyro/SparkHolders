@@ -12,7 +12,7 @@ var pause_state = false
 @onready var pause = $"../Menus/Pause"
 @onready var character_sheet = $"../Menus/CharacterSheet"
 @onready var hud = $"../HUD"
-@onready var map = $"../Map"
+@onready var world = $".."
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -28,23 +28,25 @@ func update_mouse_coordinates():
 	from = camera.project_ray_origin(mouse_coords)
 	to = from + camera.project_ray_normal(mouse_coords) * 1000.0
 	var space = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(from, to, 0x40)
+	var query = PhysicsRayQueryParameters3D.create(from, to, 0x1)
 	var result = space.intersect_ray(query)
 	Values.selection_mutex.lock()
 	if not result.is_empty():
-		Values.coord = map.colliders.find_key(result["collider"])
-		if not Values.coord:
-			Values.coord = result["position"]
+		Values.coord = result["position"]
+		var coord = world.colliders.find_key(result["collider"])
+		if coord:
+			if world.furnitures.has(coord) \
+				and (world.characters[world.owned_character].transform.origin).distance_to(world.furnitures[coord].transform.origin) \
+				< 1. + (world.characters_data[world.owned_character]["size"].x + world.characters_data[world.owned_character]["size"].y) * 0.25 \
+				+ (world.furnitures_data[coord]["size"].x + world.furnitures_data[coord]["size"].y) * 0.25:
+				Values.selected = world.furnitures[coord]
+				Values.selected_data = world.furnitures_data[coord]
+			else:
+				Values.selected = null
+				Values.selected_data = {}
 		else:
-			if map.furnitures.has(Values.coord) \
-				and (map.characters[map.owned_character].global_position).distance_to(map.furnitures[Values.coord].global_position) \
-				< 0.5 + (map.characters_data[map.owned_character]["sizeX"] + map.characters_data[map.owned_character]["sizeY"]) * 0.25 \
-				+ (map.furnitures_data[Values.coord]["sizeX"] + map.characters_data[map.owned_character]["sizeY"]) * 0.25:
-				Values.selected = map.furnitures[Values.coord]
-				Values.selected_data = map.furnitures_data[Values.coord]
-	else:
-		Values.selected = null
-		Values.selected_data = {}
+			Values.selected = null
+			Values.selected_data = {}
 	hud.update_selection()
 	Values.selection_mutex.unlock()
 
@@ -58,15 +60,17 @@ func _process(_delta):
 func _physics_process(_delta):
 	if not pause_state and not Values.free_mouse_state:
 		update_mouse_coordinates()
-		camera.transform.origin = map.characters[map.owned_character].transform.origin + Vector3(0, 1.6, 0)
+		camera.transform.origin = world.characters[world.owned_character].transform.origin + Vector3(0, world.characters_data[world.owned_character]["size"].z / 2. - 0.1, 0)
 		var movement_vec2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		if movement_vec2 != Vector2.ZERO and not Values.move_set:
 			# invert x axis
 			movement_vec2.x = -movement_vec2.x
 			movement_vec2 = movement_vec2.rotated(camera.rotation.y - PI / 2.)
-			var angle = rad_to_deg(movement_vec2.angle())
-			if angle < 0: 
-				angle = angle + 360
+			var angle = Vector3.ZERO
+			angle.z = rad_to_deg(movement_vec2.angle())
+			if angle.z < 0: 
+				angle.z = angle.z + 360
+			angle.x = camera.rotation_degrees.z
 			send_oriented_action(Values.macros["ACTION_MOVE"], angle)
 
 func _unhandled_input(event):
@@ -148,9 +152,17 @@ func _unhandled_input(event):
 			if event.is_action_released("interact") and Values.selected != null:
 				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_FURNITURE"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("attack"):
-				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
+				var orientation = Vector3.ZERO
+				orientation.x = camera.rotation_degrees.z
+				orientation.z = camera.rotation_degrees.y
+				send_oriented_action(Values.macros["ACTION_STRIKE"], orientation)
+			if event.is_action_released("block"):
+				var orientation = Vector3.ZERO
+				orientation.x = camera.rotation_degrees.z
+				orientation.z = camera.rotation_degrees.y
+				send_oriented_action(Values.macros["ACTION_BLOCK"], orientation)
 			if event.is_action_released("skill"):
-				send_targeted_action(Values.macros["ACTION_STRIKE"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
+				send_targeted_action(Values.macros["ACTION_SKILL"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("jump"):
 				send_base_action(Values.macros["ACTION_JUMP"])
 			if event.is_action_pressed("run") or event.is_action_released("run"):
@@ -168,13 +180,13 @@ func send_base_action(type):
 	if type != Values.macros["ACTION_JUMP"] and type != Values.macros["ACTION_RUN"]:
 		Values.action_mutex.unlock()
 	
-func send_oriented_action(type, orientation_z):
+func send_oriented_action(type, orientation):
 	if type == Values.macros["ACTION_MOVE"]:
 		Values.action_move_mutex.lock()
 	else:
 		Values.action_mutex.lock()
 	Values.action["type"] = type
-	Values.action["arg1"] = orientation_z
+	Values.action["arg1"] = orientation
 	Values.action["arg2"] = 0
 	Values.action["mana_cost"] = 0
 	if type == Values.macros["ACTION_MOVE"]:

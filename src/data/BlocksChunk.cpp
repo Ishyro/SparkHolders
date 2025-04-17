@@ -43,6 +43,7 @@ std::map<const MathUtil::Vector3i, Block *> BlocksChunk::getBlocks() {
 
 std::list<Character *> BlocksChunk::getCharacters() { return characters; }
 std::list<Furniture *> BlocksChunk::getFurnitures() { return furnitures; }
+std::list<Shield *> BlocksChunk::getShields() { return shields; }
 
 MathUtil::Vector3i BlocksChunk::getChunkId(MathUtil::Vector3 ori) {
   MathUtil::Vector3i coord = MathUtil::Vector3i();
@@ -62,8 +63,14 @@ MathUtil::Vector3i BlocksChunk::getChunkId(MathUtil::Vector3i ori) {
 
 void BlocksChunk::addCharacter(Character * character) { characters.push_back(character); }
 void BlocksChunk::addFurniture(Furniture * furniture) { furnitures.push_back(furniture); }
+void BlocksChunk::addShield(Shield * shield) { shields.push_back(shield); }
 
 bool BlocksChunk::removeCharacter(Character * character) {
   characters.remove(character);
+  return characters.empty();
+}
+
+bool BlocksChunk::removeShield(Shield * shield) {
+  shields.remove(shield);
   return characters.empty();
 }

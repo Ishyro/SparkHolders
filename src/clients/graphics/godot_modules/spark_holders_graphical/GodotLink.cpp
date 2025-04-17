@@ -303,7 +303,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
     result["damage_reductions"] = damage_reductions;
   }
   if(item->type == ITEM_WEAPON) {
-    result["range"] = ((WeaponItem *) item)->range;
+    result["range"] = Vector3( ((WeaponItem *) item)->range.x, ((WeaponItem *) item)->range.y, ((WeaponItem *) item)->range.z);
     result["strike_time"] = ((WeaponItem *) item)->strike_time;
     result["use_projectile"] = ((WeaponItem *) item)->use_projectile;
     result["use_ammo"] = ((WeaponItem *) item)->use_ammo;
@@ -417,9 +417,7 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
   result["flowIncr"] = race->flowIncr;
   result["transcendenceIncr"] = 0;
   result["attunementIncr"] = 0;
-  result["sizeX"] = race->sizeX;
-  result["sizeY"] = race->sizeY;
-  result["sizeZ"] = race->sizeZ;
+  result["size"] = Vector3(race->size.x, race->size.y, race->size.z);
   result["need_to_eat"] = race->need_to_eat;
   result["can_eat_food"] = race->can_eat_food;
   result["need_to_sleep"] = race->need_to_sleep;
@@ -490,17 +488,10 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   result["flow"] = character->flow;
   result["player_character"] = character->player_character;
   result["type"] = character->type;
-  result["x"] = character->x;
-  result["y"] = character->y;
-  result["z"] = character->z;
-  result["vx"] = character->vx;
-  result["vy"] = character->vy;
-  result["vz"] = character->vz;
-  result["sizeX"] = character->sizeX;
-  result["sizeY"] = character->sizeY;
-  result["sizeZ"] = character->sizeZ;
-  result["orientation_x"] = character->orientation_x;
-  result["orientation_z"] = character->orientation_z;
+  result["coord"] = Vector3(character->x, character->y, character->z);
+  result["speed"] = Vector3(character->vx, character->vy, character->vz);
+  result["size"] = Vector3(character->sizeX, character->sizeY, character->sizeZ);
+  result["orientation"] = Vector3(character->orientation_x, 0.F, character->orientation_z);
   result["team"] = character->team.c_str();
   result["xp"] = character->xp;
   result["level"] = character->level;
@@ -546,9 +537,9 @@ Dictionary GodotLink::getStatsFromCharacter() {
   result["stamina"] = character->getStamina();
   result["sanity"] = character->getSanity();
   //result["channeledMana"] = character->getChanneledMana();
-  result["sizeX"] = character->getSizeX();
-  result["sizeY"] = character->getSizeY();
-  result["sizeZ"] = character->getSizeZ();
+  result["sizeX"] = character->getSize().x;
+  result["sizeY"] = character->getSize().y;
+  result["sizeZ"] = character->getSize().z;
   result["xp"] = (int64_t) character->getXP();
   result["level"] = character->getLevel();
   result["rawPower"] = (int64_t) character->getRawPower();
@@ -699,9 +690,7 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   result["id"] = furniture->id;
   result["name"] = furniture->name.c_str();
   result["type"] = furniture->type;
-  result["sizeX"] = furniture->sizeX;
-  result["sizeY"] = furniture->sizeY;
-  result["sizeZ"] = furniture->sizeZ;
+  result["size"] = Vector3(furniture->sizeX, furniture->sizeY, furniture->sizeZ);
   result["orientation_z"] = furniture->getOrientationZ();
   result["opaque"] = furniture->getOpaque();
   result["solid"] = furniture->getSolid();
@@ -775,24 +764,22 @@ void GodotLink::send_action(Dictionary action) {
   int32_t mana_cost = 1;
   switch(type) {
     case ACTION_IDLE:
-    case ACTION_RESPITE:
     case ACTION_REST:
     case ACTION_RUN:
     case ACTION_JUMP:
     case ACTION_BREAKPOINT:
-    case ACTION_CHANNEL:
       break;
     case ACTION_MOVE: {
-      float orientation_z = action["arg1"];
-      float orientation_x = action["arg2"];
+      Vector3 given = (Vector3) action["arg1"];
+      MathUtil::Vector3 orientation = MathUtil::Vector3(given.x, given.y, given.z);
       #ifdef LOG
-        log << "orientation_z: " << orientation_z << std::endl;
+        log << "orientation_x: " << orientation.x << std::endl;
+        log << "orientation_y: " << orientation.y << std::endl;
+        log << "orientation_z: " << orientation.z << std::endl;
       #endif
-      arg1 = (void *) &orientation_z;
-      arg2 = (void *) &orientation_x;
+      arg1 = (void *) &orientation;
       break;
     }
-    case ACTION_STRIKE:
     case ACTION_ACTIVATION: {
       Dictionary target_ori = action["arg1"];
       MathUtil::Target * target = new MathUtil::Target();

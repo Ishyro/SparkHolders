@@ -671,7 +671,7 @@ std::string MathUtil::target_to_string(MathUtil::Target * target) {
     if(target->type == TARGET_CHARACTER || target->type == TARGET_FURNITURE) {
       String::insert_long(ss, target->id);
     }
-    else {
+    else if(target->type == TARGET_COORDINATES || target->type == TARGET_ORIENTATION) {
       String::insert_float(ss, target->coord.x);
       String::insert_float(ss, target->coord.y);
       String::insert_float(ss, target->coord.z);
@@ -701,7 +701,7 @@ MathUtil::Target * MathUtil::target_from_string(std::string to_read, Adventure *
     else if(type == TARGET_FURNITURE) {
       furniture = adventure->getFurniture(String::extract_long(ss));
     }
-    else if(type == TARGET_COORDINATES) {
+    else if(type == TARGET_COORDINATES || type == TARGET_ORIENTATION) {
       coord.x = String::extract_float(ss);
       coord.y = String::extract_float(ss);
       coord.z = String::extract_float(ss);

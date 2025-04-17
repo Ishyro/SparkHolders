@@ -67,7 +67,7 @@ struct Environment {
   float temperature;
   int32_t biome_type;
   int32_t weather_type;
-  int32_t sizeY;
+  int32_t sizeZ;
   bool making_effort;
 };
 
@@ -137,7 +137,7 @@ class Character {
       level(1),
       coord(MathUtil::Vector3(x + 0.5F, y + 0.5F, z)),
       speed(MathUtil::Vector3(0.F, 0.F, 0.F)),
-      orientation_z(orientation_z),
+      orientation(orientation_x, 0.F, orientation_z),
       region(region),
       merchant(from_database->merchant),
       team(team),
@@ -249,11 +249,8 @@ class Character {
       talking_speech(talking_speech),
       coord(coord),
       speed(speed),
-      sizeX(sizeX),
-      sizeY(sizeY),
-      sizeZ(sizeZ),
-      orientation_x(orientation_x),
-      orientation_z(orientation_z),
+      size(sizeX, sizeY, sizeZ),
+      orientation(orientation_x, 0.F, orientation_z),
       region(region),
       merchant(merchant),
       gold(gold),
@@ -279,8 +276,8 @@ class Character {
       profession(profession),
       titles(titles)
     {
-      hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSizeX(), getSizeY(), getSizeZ());
-      hitbox->applyMove(coord, orientation_x, 0.F, orientation_z);
+      hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
+      hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
     }
 
     ~Character();
@@ -293,11 +290,10 @@ class Character {
     MathUtil::Vector3 getSpeed();
     MathUtil::Coords getWorldCoords();
     MathUtil::HitboxOBB * getHitbox();
-    float getOrientationZ();
-    float getOrientationX();
-    float getSizeX();
-    float getSizeY();
-    float getSizeZ();
+    Shield * produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size);
+    void stopShield();
+    MathUtil::Vector3 getOrientation();
+    MathUtil::Vector3 getSize();
     float getHp();
     int32_t getMaxHp();
     float getMana();
@@ -375,10 +371,7 @@ class Character {
 
     void setOrientationX(float orientation_x);
     void setOrientationZ(float orientation_z);
-    void setSizeX(float sizeX);
-    void setSizeY(float sizeY);
-    void setSizeZ(float sizeZ);
-    void move(MathUtil::Vector3 coord, float orientation_x, float orientation_z, World * world);
+    void move(MathUtil::Vector3 coord, MathUtil::Vector3 orientation, World * world);
     void run();
     void jump();
     void setSpeed(MathUtil::Vector3 speed);
@@ -460,14 +453,13 @@ class Character {
     bool isInvisible();
     bool isEtheral();
     bool isInvulnerable();
-    bool isBlocking();
     bool isSleeping();
     bool isIdling();
     int32_t cloakPower();
     bool isInWeakState();
 
     void selectStance(Stance *);
-    void useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge, bool blocked);
+    void useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
     float getRawDamageReductionFromType(int32_t damage_type);
     float getDamageReductionFromType(int32_t damage_type);
@@ -494,11 +486,8 @@ class Character {
     MathUtil::Vector3 coord;
     MathUtil::Vector3 speed;
     MathUtil::HitboxOBB * hitbox;
-    float sizeX;
-    float sizeY;
-    float sizeZ;
-    float orientation_x;
-    float orientation_z;
+    MathUtil::Vector3 size;
+    MathUtil::Vector3 orientation;
     Region * region;
     Action * action = nullptr;
     Action * leg_action = nullptr;
@@ -535,6 +524,7 @@ class Character {
     Speech * talking_speech;
 
     Gear * gear;
+    Shield * outer_shield;
     std::list<Effect *> effects;
     std::list<Skill *> skills;
 
@@ -558,6 +548,22 @@ class Character {
     std::map<int32_t, Stance *> active_magical_stances = std::map<int32_t, Stance *>();
     std::map<const Skill *, bool> toggled_skills = std::map<const Skill *, bool>();
     std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status;
+};
+
+struct Shield {
+  int32_t type;
+  float hp;
+  MathUtil::HitboxOBB * hitbox;
+  Character * owner;
+  Shield(int32_t type, float hp, MathUtil::Vector3 size, Character * character):
+  type(type), hp(hp), owner(character) {
+    hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, character->getCoord() + character->getSize() * 0.5F, size.x, size.y, size.z);
+    hitbox->applyMove(std::max(
+      character->getSize().x, character->getSize().y),
+      // rotate the weapon
+      character->getOrientation().x + 90.F, character->getOrientation().y, character->getOrientation().z
+    );
+  }
 };
 
 #endif // _CHARACTER_H_
