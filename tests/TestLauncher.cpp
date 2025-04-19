@@ -16,6 +16,11 @@
 #include "data/Region.h"
 #include "data/BlocksChunk.h"
 #include "data/Map.h"
+#include "data/Stance.h"
+
+#include "data/ways/Race.h"
+
+#include "data/skills/Skill.h"
 
 #include "data/Settings.h"
 
@@ -51,6 +56,22 @@ int32_t main(int32_t argc, char ** argv) {
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
   Character * dasheep = adventure->getWorld()->getCharacters().front();
+  Character * dahuman;
+  for(Character * c : adventure->getWorld()->getCharacters()) {
+    if(c->getRace()->name == "TXT_HOMINIDAN") {
+      dahuman = c;
+      break;
+    }
+  }
+  Skill * attack = dahuman->getAttack();
+  Stance * stance = dahuman->getStance(ITEM_SHORT_SWORD);
+  Skill * s0 = stance->getAttack(0);
+  Skill * s1 = stance->getAttack(1);
+  Skill * s2 = stance->getAttack(2);
+  Skill * block = dahuman->getDefense();
+  std::cout << block->name << std::endl;
+  std::cout << attack->name << std::endl;
+
   MathUtil::Coords coords = dasheep->getWorldCoords();
   Time time = adventure->getTime();
   std::cout << time.to_string_clock_terra() << std::endl;

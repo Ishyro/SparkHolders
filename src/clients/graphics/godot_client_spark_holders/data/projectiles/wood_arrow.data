@@ -8,6 +8,6 @@ area = 0.0
 falloff_timer = 2
 waste_per_tick = 0.25
 waste_per_area = 1.0
-waste_per_hit = 1.0
+pierce_power = 0.0
 effects =
 DAMAGE_PHYSICAL = 24

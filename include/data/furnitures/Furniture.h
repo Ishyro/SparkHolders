@@ -8,7 +8,7 @@
 #include "Values.h"
 
 namespace furniture {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Furniture {
@@ -82,7 +82,7 @@ class Furniture {
       hitbox->applyMove(center, 0.F, 0.F, orientation_z);
     }
     Furniture(Furniture * furniture, Map * map):
-      id(++furniture::id_cpt),
+      id(++furniture::id_counter),
       name(furniture->name),
       type(furniture->type),
       sizeX(furniture->sizeX),

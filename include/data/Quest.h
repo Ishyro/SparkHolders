@@ -14,12 +14,12 @@ struct Step {
 };
 
 namespace quest {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Quest {
   public:
-    const int64_t id = ++quest::id_cpt;
+    const int64_t id = ++quest::id_counter;
     const std::string name;
     const bool holdEvent;
     std::list<Item *> items_rewards;

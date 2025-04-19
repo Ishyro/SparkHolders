@@ -1,4 +1,4 @@
-name = TXT_SWORD_CUT
+name = TXT_SWORD_CUT_RIGHT
 level = 1
 school = SKILL_AIR
 attributes =
@@ -11,4 +11,4 @@ overcharge_duration_type = OVERCHARGE_NONE
 overcharge_range_type = OVERCHARGE_NONE
 range = 1
 time = 1
-skills = TXT_SWORD_CUT%
+skills = TXT_SWORD_CUT_RIGHT%

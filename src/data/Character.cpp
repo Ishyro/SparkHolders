@@ -90,6 +90,19 @@ void Character::initializeCharacter(Gear * gear) {
   initSkillsAndEffects();
   hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
   hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
+  stance_attack = 0;
+  // TODO real stance manager
+  int32_t weapon_combinaison = gear->getWeaponsCombination();
+  for(Stance * stance : getAvaillableStances()) {
+    if(stance->isValid(weapon_combinaison)) {
+      if(stance->magical) {
+        active_magical_stances.insert(std::make_pair(weapon_combinaison, stance));
+      }
+      else {
+        active_stances.insert(std::make_pair(weapon_combinaison, stance));
+      }
+    }
+  }
 }
 
 void Character::initSkillsAndEffects() {
@@ -271,6 +284,7 @@ float Character::getSanity() {
       result -= 25;
     }
   }
+  return result;
 }
 
 int32_t Character::getSoulBurnThreshold() {
@@ -594,6 +608,16 @@ std::map<int32_t, Stance *> Character::getActiveStances() {
 
 std::map<int32_t, Stance *> Character::getActiveMagicalStances() {
   return active_magical_stances;
+}
+
+Skill * Character::getAttack() {
+  Skill * result = getCurrentStance()->getAttack(stance_attack);
+  stance_attack = (stance_attack + 1) % getCurrentStance()->attack_skills_number;
+  return result;
+}
+
+Skill * Character::getDefense() {
+  return getCurrentStance()->getBlock();
 }
 
 void Character::setOrientationX(float orientation_x) { orientation.x = orientation_x; }
@@ -1336,9 +1360,9 @@ void Character::useSkill(Skill * skill, MathUtil::Target * target, Adventure * a
   skill->activate(this, target, adventure, overcharge);
 }
 
-void Character::selectStance(Stance * stance) {
-  for(Stance * tocheck : getAvaillableStances()) {
-    if(stance == tocheck) {
+bool Character::selectStance(Stance * stance) {
+  for(Stance * to_check : getAvaillableStances()) {
+    if(stance == to_check) {
       int32_t weapon_type = gear->getWeaponsCombination();
       if(stance->isValid(weapon_type)) {
         if(stance->magical) {
@@ -1355,7 +1379,10 @@ void Character::selectStance(Stance * stance) {
           }
           active_stances.insert(std::make_pair(weapon_type, stance));
         }
-        return;
+        return true;
+      }
+      else {
+        return false;
       }
     }
   }
@@ -1472,7 +1499,7 @@ void Character::mainAttack(Character * target, Adventure * adventure, int32_t ty
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, ITEM_SLOT_WEAPON_1);
       }
-      target->receiveDamage(realDamages, this, this->getStatusPower());
+      target->receiveDamages(realDamages, this, this->getStatusPower());
     }
   }
 }
@@ -1508,7 +1535,7 @@ ItemSlot * Character::canReload(int32_t slot) {
   return ammo;
 }
 
-void Character::receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power) {
+void Character::receiveDamages(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power) {
   if(!isInvulnerable() && !isEtheral()) {
     int32_t damage = 0;
     int32_t current_damage = 0;
@@ -1557,52 +1584,52 @@ void Character::receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Cha
           case DAMAGE_SLASH:
             potency = 4.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_BLEEDING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BLEEDING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_BLEEDING", ++effect::id_counter, 1, "", EFFECT_STATUS_BLEEDING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_PUNCTURE:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_WEAKENED", ++effect::id_cpt, 1, "", EFFECT_STATUS_WEAKENED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_WEAKENED", ++effect::id_counter, 1, "", EFFECT_STATUS_WEAKENED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_BLUNT:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_CONFUSED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CONFUSED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_CONFUSED", ++effect::id_counter, 1, "", EFFECT_STATUS_CONFUSED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_FIRE:
             duration = 12;
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_BURNING", ++effect::id_cpt, 1, "", EFFECT_STATUS_BURNING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_BURNING", ++effect::id_counter, 1, "", EFFECT_STATUS_BURNING, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_LIGHTNING:
             duration = 12;
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_SHOCKED", ++effect::id_cpt, 1, "", EFFECT_STATUS_SHOCKED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_SHOCKED", ++effect::id_counter, 1, "", EFFECT_STATUS_SHOCKED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_FROST:
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_FROZEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_FROZEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_FROZEN", ++effect::id_counter, 1, "", EFFECT_STATUS_FROZEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_POISON:
             potency = 10.F * duration;
             effect_damages[DAMAGE_POISON] = getMaxHp() / potency;
-            effect = new Effect("TXT_POISONED", ++effect::id_cpt, 1, "", EFFECT_STATUS_POISONED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_POISONED", ++effect::id_counter, 1, "", EFFECT_STATUS_POISONED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_ACID:
             potency = 10.F * duration;
             effect_damages[DAMAGE_NEUTRAL] = getMaxHp() / potency;
-            effect = new Effect("TXT_CORRODED", ++effect::id_cpt, 1, "", EFFECT_STATUS_CORRODED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_CORRODED", ++effect::id_counter, 1, "", EFFECT_STATUS_CORRODED, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_MIND:
             potency = 10.F * duration;
             effect_damages[DAMAGE_TRUE] = getMaxHp() / potency;
-            effect = new Effect("TXT_BROKEN", ++effect::id_cpt, 1, "", EFFECT_STATUS_BROKEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
+            effect = new Effect("TXT_BROKEN", ++effect::id_counter, 1, "", EFFECT_STATUS_BROKEN, DURATION_TEMPORARY, getStatusPower(), duration, effect_damages);
             break;
           case DAMAGE_SOLAR:
-            effect = new Effect("TXT_DISINTEGRATED", ++effect::id_cpt, 1, "", EFFECT_STATUS_DISINTEGRATED, DURATION_INSTANT, 0.F, 0, effect_damages);
+            effect = new Effect("TXT_DISINTEGRATED", ++effect::id_counter, 1, "", EFFECT_STATUS_DISINTEGRATED, DURATION_INSTANT, 0.F, 0, effect_damages);
             break;
         }
         effect->activate(this);
@@ -1938,6 +1965,32 @@ std::string Character::full_to_string(Adventure * adventure) {
   }
   String::insert(ss, ss_titles->str());
   delete ss_titles;
+  String::insert_bool(ss, using_magical_stance);
+  String::insert_int(ss, stance_attack); 
+  std::stringstream * ss_active_stances = new std::stringstream();
+  for(std::pair<const int32_t, Stance *> pair : active_stances) {
+    String::insert_int(ss_active_stances, pair.first);
+    String::insert(ss_active_stances, pair.second->name);
+  }
+  String::insert(ss, ss_active_stances->str());
+  delete ss_active_stances;
+  std::stringstream * ss_active_magical_stances = new std::stringstream();
+  for(std::pair<const int32_t, Stance *> pair : active_magical_stances) {
+    String::insert_int(ss_active_magical_stances, pair.first);
+    String::insert(ss_active_magical_stances, pair.second->name);
+  }
+  String::insert(ss, ss_active_magical_stances->str());
+  delete ss_active_magical_stances;  
+  std::stringstream * ss_toggled_skills = new std::stringstream();
+  for(std::pair<const Skill *, bool> pair : toggled_skills) {
+    String::insert(ss_toggled_skills, pair.first->name);
+    String::insert_bool(ss_toggled_skills, pair.second);
+  }
+  String::insert(ss, ss_toggled_skills->str());
+  delete ss_toggled_skills;
+  for(int32_t i = 0; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {
+    String::insert_float(ss, status[i]);
+  }
   std::string result = ss->str();
   delete ss;
   return result;
@@ -2054,6 +2107,34 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     titles->push_back((Way *) adventure->getDatabase()->getWay(String::extract(ss_titles)));
   }
   delete ss_titles;
+  bool using_magical_stance = String::extract_bool(ss);
+  int32_t stance_attack = String::extract_int(ss);
+  std::stringstream * ss_active_stances = new std::stringstream(String::extract(ss));
+  std::map<int32_t, Stance *> * active_stances = new std::map<int32_t, Stance *>();
+  while(ss_active_stances->rdbuf()->in_avail() != 0) {
+    int32_t weapon_type = String::extract_int(ss_active_stances);
+    active_stances->insert(std::make_pair(weapon_type, (Stance *) adventure->getDatabase()->getStance(String::extract(ss_active_stances))));
+  }
+  delete ss_active_stances;
+  std::stringstream * ss_active_magical_stances = new std::stringstream(String::extract(ss));
+  std::map<int32_t, Stance *> * active_magical_stances = new std::map<int32_t, Stance *>();
+  while(ss_active_magical_stances->rdbuf()->in_avail() != 0) {
+    int32_t weapon_type = String::extract_int(ss_active_magical_stances);
+    active_magical_stances->insert(std::make_pair(weapon_type, (Stance *) adventure->getDatabase()->getStance(String::extract(ss_active_magical_stances))));
+  }
+  delete ss_active_magical_stances;
+  std::stringstream * ss_toggled_skills = new std::stringstream(String::extract(ss));
+  std::map<const Skill *, bool> * toggled_skills = new std::map<const Skill *, bool>();
+  while(ss_toggled_skills->rdbuf()->in_avail() != 0) {
+    const Skill * skill = adventure->getDatabase()->getSkill(String::extract(ss_toggled_skills));
+    bool state = String::extract_bool(ss_toggled_skills);
+    toggled_skills->insert(std::make_pair(skill, state));
+  }
+  delete ss_toggled_skills;
+  std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status;
+  for(int32_t i = 0; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {
+    status[i] = String::extract_float(ss);
+  }
   delete ss;
   Character * result = new Character(
     maxHp,
@@ -2108,7 +2189,13 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
     culture,
     religion,
     profession,
-    *titles
+    *titles,
+    using_magical_stance,
+    stance_attack,
+    *active_stances,
+    *active_magical_stances,
+    *toggled_skills,
+    status
   );
   delete effects;
   delete skills;
@@ -2117,5 +2204,8 @@ Character * Character::full_from_string(std::string to_read, Adventure * adventu
   delete sellable_skills;
   delete race_modifiers;
   delete titles;
+  delete active_stances;
+  delete active_magical_stances;
+  delete toggled_skills;
   return result;
 }

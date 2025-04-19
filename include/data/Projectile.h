@@ -24,11 +24,11 @@ struct ProjectileDisplay {
   float area;
   float waste_per_tick;
   float waste_per_area;
-  float waste_per_hit;
+  float pierce_power;
 };
 
 namespace projectile {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Projectile {
@@ -50,7 +50,7 @@ class Projectile {
       int32_t falloff_timer,
       float waste_per_tick,
       float waste_per_area,
-      float waste_per_hit,
+      float pierce_power,
       std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
@@ -65,7 +65,7 @@ class Projectile {
       falloff_timer(falloff_timer),
       waste_per_tick(waste_per_tick),
       waste_per_area(waste_per_area),
-      waste_per_hit(waste_per_hit),
+      pierce_power(pierce_power),
       previous_targets(std::list<Character *>()),
       current_targets(std::list<Character *>())
     {
@@ -97,7 +97,7 @@ class Projectile {
       bool change_owner_orientation
     ):
       name(projectile->name),
-      id(++projectile::id_cpt),
+      id(++projectile::id_counter),
       projectile_type(projectile->projectile_type),
       size(projectile->size),
       homing(projectile->homing),
@@ -115,7 +115,7 @@ class Projectile {
       current_timer(projectile->current_timer),
       waste_per_tick(projectile->waste_per_tick / overcharge_duration),
       waste_per_area(projectile->waste_per_area / overcharge_range),
-      waste_per_hit(projectile->waste_per_hit),
+      pierce_power(projectile->pierce_power),
       previous_targets(std::list<Character *>()),
       current_targets(std::list<Character *>())
     {
@@ -141,7 +141,7 @@ class Projectile {
       bool change_owner_orientation
     ):
       name(projectile->name),
-      id(++projectile::id_cpt),
+      id(++projectile::id_counter),
       projectile_type(projectile->projectile_type),
       size(projectile->size),
       homing(projectile->homing),
@@ -160,7 +160,7 @@ class Projectile {
       current_timer(projectile->current_timer),
       waste_per_tick(projectile->waste_per_tick / overcharge_duration),
       waste_per_area(projectile->waste_per_area / overcharge_range),
-      waste_per_hit(projectile->waste_per_hit),
+      pierce_power(projectile->pierce_power),
       previous_targets(std::list<Character *>()),
       current_targets(std::list<Character *>())
     {
@@ -193,7 +193,7 @@ class Projectile {
       int32_t falloff_timer,
       float waste_per_tick,
       float waste_per_area,
-      float waste_per_hit,
+      float pierce_power,
       std::array<float, DAMAGE_TYPE_NUMBER> damages
     ):
       name(name),
@@ -216,7 +216,7 @@ class Projectile {
       falloff_timer(falloff_timer),
       waste_per_tick(waste_per_tick),
       waste_per_area(waste_per_area),
-      waste_per_hit(waste_per_hit),
+      pierce_power(pierce_power),
       previous_targets(std::list<Character *>()),
       current_targets(std::list<Character *>())
     {
@@ -258,7 +258,7 @@ class Projectile {
     void setFalloffTimer(int32_t falloff_timer);
     void setWastePerTick(float waste_per_tick);
     void setWastePerArea(float waste_per_area);
-    void setWastePerHit(float waste_per_hit);
+    void setWastePerHit(float pierce_power);
     void setTarget(MathUtil::Target * target);
     void setOwner(Character * owner);
     void setLost(bool state);
@@ -294,7 +294,7 @@ class Projectile {
     int32_t current_timer;
     float waste_per_tick;
     float waste_per_area;
-    float waste_per_hit;
+    float pierce_power;
     std::array<float, DAMAGE_TYPE_NUMBER> damages;
     std::array<float, DAMAGE_TYPE_NUMBER> current_damages;
     std::list<Character *> previous_targets;

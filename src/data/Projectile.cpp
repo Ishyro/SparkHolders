@@ -50,7 +50,7 @@ float Projectile::getSize() { return size; }
 int32_t Projectile::getFalloffTimer() { return falloff_timer; }
 float Projectile::getWastePerTick() { return waste_per_tick; }
 float Projectile::getWastePerArea() { return waste_per_area; }
-float Projectile::getWastePerHit() { return waste_per_hit; }
+float Projectile::getWastePerHit() { return pierce_power; }
 MathUtil::Target * Projectile::getTarget() { return target; }
 Character * Projectile::getOwner() { return owner; }
 
@@ -81,7 +81,7 @@ void Projectile::setArea(float area) { this->area = area; }
 void Projectile::setFalloffTimer(int32_t falloff_timer) { this->falloff_timer = falloff_timer; }
 void Projectile::setWastePerTick(float waste_per_tick) { this->waste_per_tick = waste_per_tick; }
 void Projectile::setWastePerArea(float waste_per_area) { this->waste_per_area = waste_per_area; }
-void Projectile::setWastePerHit(float waste_per_hit) { this->waste_per_hit = waste_per_hit; }
+void Projectile::setWastePerHit(float pierce_power) { this->pierce_power = pierce_power; }
 void Projectile::setTarget(MathUtil::Target * target) { this->target = target; }
 void Projectile::setOwner(Character * owner) { this->owner = owner; }
 void Projectile::setLost(bool state) { lost = state; }
@@ -106,7 +106,7 @@ void Projectile::reduceDamageTick() {
 
 void Projectile::reduceDamageHit() {
   for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
-    current_damages[damage_type] = (int32_t) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * waste_per_hit));
+    current_damages[damage_type] = (int32_t) std::max(0., ceil( (float) current_damages[damage_type] - (float) damages[damage_type] * pierce_power));
   }
 }
 
@@ -118,7 +118,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
     setLost(true);
   }
   if(area == 0.F) {
-    target->receiveDamage(current_damages, owner, owner->getStatusPower());
+    target->receiveDamages(current_damages, owner, owner->getStatusPower());
     if(skill != nullptr) {
       MathUtil::Target * t = new MathUtil::Target();
       t->type = TARGET_CHARACTER;
@@ -142,7 +142,7 @@ void Projectile::attack(Character * target, std::list<Character *> characters, A
           for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
             reducedDamages[i] = current_damages[i] * pow(1 - waste_per_area, range);
           }
-          target->receiveDamage(reducedDamages, owner, owner->getStatusPower());
+          target->receiveDamages(reducedDamages, owner, owner->getStatusPower());
           if(skill != nullptr) {
             MathUtil::Target * t = new MathUtil::Target();
             t->type = TARGET_CHARACTER;
@@ -198,7 +198,7 @@ std::string Projectile::to_string() {
   String::insert_float(ss, area);
   String::insert_float(ss, waste_per_tick);
   String::insert_float(ss, waste_per_area);
-  String::insert_float(ss, waste_per_hit);
+  String::insert_float(ss, pierce_power);
   std::string result = ss->str();
   delete ss;
   return result;
@@ -236,7 +236,7 @@ std::string Projectile::full_to_string() {
   String::insert_int(ss, falloff_timer);
   String::insert_float(ss, waste_per_tick);
   String::insert_float(ss, waste_per_area);
-  String::insert_float(ss, waste_per_hit);
+  String::insert_float(ss, pierce_power);
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     String::insert_float(ss, damages[i]);
   }
@@ -263,7 +263,7 @@ ProjectileDisplay * Projectile::from_string(std::string to_read) {
   display->area = String::extract_float(ss);
   display->waste_per_tick = String::extract_float(ss);
   display->waste_per_area = String::extract_float(ss);
-  display->waste_per_hit = String::extract_float(ss);
+  display->pierce_power = String::extract_float(ss);
   delete ss;
   return display;
 }
@@ -301,7 +301,7 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
   int32_t falloff_timer = String::extract_int(ss);
   float waste_per_tick = String::extract_float(ss);
   float waste_per_area = String::extract_float(ss);
-  float waste_per_hit = String::extract_float(ss);
+  float pierce_power = String::extract_float(ss);
   std::array<float, DAMAGE_TYPE_NUMBER> damages;
   for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     damages[i] = String::extract_float(ss);
@@ -330,7 +330,7 @@ Projectile * Projectile::full_from_string(std::string to_read, Adventure * adven
     falloff_timer,
     waste_per_tick,
     waste_per_area,
-    waste_per_hit,
+    pierce_power,
     damages
   );
 }

@@ -98,6 +98,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
       float rangeZ = String::extract_float(ss);
       int32_t strike_time = String::extract_int(ss);
       float status_power = String::extract_float(ss);
+      float pierce_power = String::extract_float(ss);
       bool use_projectile = String::extract_bool(ss);
       bool use_ammo = String::extract_bool(ss);
       int32_t ammo_type = String::extract_int(ss);
@@ -136,6 +137,7 @@ Item * Item::from_string(std::string to_read, Adventure * adventure) {
         rangeZ,
         strike_time,
         status_power,
+        pierce_power,
         use_projectile,
         use_ammo,
         ammo_type,

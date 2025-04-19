@@ -183,7 +183,7 @@ void Region::move(Character * character, World * world) {
       std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
       damages[DAMAGE_BLUNT] = 0.01F * distance * distance * character->getGear()->getWeight();
       if(damages[DAMAGE_BLUNT] >= 5.F) {
-        character->receiveDamage(damages, nullptr, 0.5F);
+        character->receiveDamages(damages, nullptr, 0.5F);
       }
       speed.z = 0.F;
       // TODO find closest place to move
@@ -401,7 +401,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_CHARACTER;
       hitbox->owner = other;
-      switch(attack->type) {
+      switch(attack->hit_order) {
         case ATTACK_LEFT_TO_RIGHT:
         case ATTACK_RIGHT_TO_LEFT:
           hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - other->getHitbox()->origin);
@@ -419,7 +419,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_SHIELD;
       hitbox->owner = shield->owner;
-      switch(attack->type) {
+      switch(attack->hit_order) {
         case ATTACK_LEFT_TO_RIGHT:
         case ATTACK_RIGHT_TO_LEFT:
           hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - shield->hitbox->origin);
@@ -437,7 +437,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_FURNITURE;
       hitbox->owner = nullptr;
-      switch(attack->type) {
+      switch(attack->hit_order) {
         case ATTACK_LEFT_TO_RIGHT:
         case ATTACK_RIGHT_TO_LEFT:
           hitbox->angle = MathUtil::getOrientationToTarget(attack->hitbox->origin - furniture->getHitbox()->origin);
@@ -450,7 +450,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       result.push_back(hitbox);
     }
   }
-  switch(attack->type) {
+  switch(attack->hit_order) {
     case ATTACK_LEFT_TO_RIGHT:
       result.sort(hitbox::left_to_right);
       break;

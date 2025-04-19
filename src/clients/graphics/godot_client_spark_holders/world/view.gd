@@ -155,14 +155,14 @@ func _unhandled_input(event):
 				var orientation = Vector3.ZERO
 				orientation.x = camera.rotation_degrees.z
 				orientation.z = camera.rotation_degrees.y
-				send_oriented_action(Values.macros["ACTION_STRIKE"], orientation)
+				send_skill_action(Values.macros["ACTION_ATTACK"], Values.macros["TARGET_FRONT"], 0, orientation, "", 0)
 			if event.is_action_released("block"):
 				var orientation = Vector3.ZERO
 				orientation.x = camera.rotation_degrees.z
 				orientation.z = camera.rotation_degrees.y
-				send_oriented_action(Values.macros["ACTION_BLOCK"], orientation)
+				send_skill_action(Values.macros["ACTION_BLOCK"], Values.macros["TARGET_FRONT"], 0, orientation, "", 0)
 			if event.is_action_released("skill"):
-				send_targeted_action(Values.macros["ACTION_SKILL"], Values.macros["TARGET_CHARACTER"], Values.selected_data["id"], Vector3.ZERO)
+				send_skill_action(Values.macros["ACTION_SKILL"], Values.macros["TARGET_FRONT"], 0, Vector3.ZERO, "skill", 0)
 			if event.is_action_released("jump"):
 				send_base_action(Values.macros["ACTION_JUMP"])
 			if event.is_action_pressed("run") or event.is_action_released("run"):

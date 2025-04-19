@@ -16,6 +16,7 @@ class WeaponItem : public GearItem {
     const MathUtil::Vector3 range;
     const int32_t strike_time;
     const float status_power;
+    const float pierce_power;
     const bool use_projectile;
     const bool use_ammo;
     const int32_t ammo_type;
@@ -45,6 +46,7 @@ class WeaponItem : public GearItem {
       float rangeZ,
       int32_t strike_time,
       float status_power,
+      float pierce_power,
       bool use_projectile,
       bool use_ammo,
       int32_t ammo_type,
@@ -76,6 +78,7 @@ class WeaponItem : public GearItem {
       range(rangeX, rangeY, rangeZ),
       strike_time(strike_time),
       status_power(status_power),
+      pierce_power(pierce_power),
       use_projectile(use_projectile),
       use_ammo(use_ammo),
       ammo_type(ammo_type),
@@ -92,6 +95,7 @@ class WeaponItem : public GearItem {
       range(item->range),
       strike_time(item->strike_time),
       status_power(item->status_power),
+      pierce_power(item->pierce_power),
       use_projectile(item->use_projectile),
       use_ammo(item->use_ammo),
       ammo_type(item->ammo_type),

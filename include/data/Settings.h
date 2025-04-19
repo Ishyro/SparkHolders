@@ -66,7 +66,9 @@ namespace Settings {
   void setZenithLightPower(int32_t indice, int32_t data); // week, in lux
   void setNightLightPower(int32_t indice, int32_t data); // week, in lux
   void setTidalLocked(bool data);
-  void setShadowAngle(MathUtil::Vector3i data);
+  // The Shadow of the Moon is bigger than the Moon because the planet's surface is curved
+  // ShadowAngle = arcsin(MoonR / PlanetR)
+  void setShadowAngle(MathUtil::Vector3i data); // in degrees (h/m/s)
   void setNightDuration(int32_t data);
   void setDawnDuration(int32_t data);
   void setDaytimeDuration(int32_t data);

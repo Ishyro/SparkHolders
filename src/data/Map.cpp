@@ -479,10 +479,10 @@ void Map::killCharacter(Character * killer, Character * victim) {
   else {
     std::array<float, DAMAGE_TYPE_NUMBER> damages;
     int32_t xp = victim->getXP();
-    Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_cpt, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages);
+    Effect * effect = new Effect("TXT_GAIN_XP", ++effect::id_counter, victim->getLevel(), "", EFFECT_EXPERIENCE, DURATION_INSTANT, xp, 0, damages);
     std::list<Effect *> * effects = new std::list<Effect *>();
     effects->push_back(effect);
-    loot->items.push_back(new BasicItem("TXT_PERL_OF_WISDOM", ++item::id_cpt, ITEM_BASIC, ITEM_POTION, xp, xp, 1.F, 1, 1, xp * 10, true, true, true, 5, *effects));
+    loot->items.push_back(new BasicItem("TXT_PERL_OF_WISDOM", ++item::id_counter, ITEM_BASIC, ITEM_POTION, xp, xp, 1.F, 1, 1, xp * 10, true, true, true, 5, *effects));
     delete effects;
   }
   if(loot->items.empty()) {

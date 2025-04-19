@@ -32,5 +32,5 @@ movement_time_modifier = 1.0
 loot = TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%TXT_HOMO_MEAT%
 effects =
 skills =
-stances =
+stances = TXT_SWORD_CLASSIC%
 tags = human%camelidan%pyrra%aerina%used_to_hot%used_to_dry%used_to_fast%desert_dweller%herbivorous%

@@ -1,12 +1,14 @@
-name = TXT_SWORD_CUT
+name = TXT_SWORD_CUT_LEFT
 skill_type = SKILL_SIMPLE
-target_type = TARGET_SELF
+target_type = TARGET_FRONT
 mana_cost = 0
 scaling_type = SKILL_SCALE_MAIN_WEAPON
 effects = TXT_DUMMY_DAMAGE%
 DAMAGE_SLASH = 0.8
 DAMAGE_BLUNT = 0.2
+hit_order = ATTACK_LEFT_TO_RIGHT
 status_power = 1.0
+pierce_power = 0.1
 rangeX = 0.5
 rangeY = 0.0
 rangeZ = 0.0

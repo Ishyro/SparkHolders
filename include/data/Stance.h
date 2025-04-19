@@ -11,15 +11,18 @@ class Stance {
   public:
     const std::string name;
     const bool magical;
+    const int32_t attack_skills_number;
     Stance(
       std::string name,
       bool magical,
+      int32_t attack_skill_number,
       std::vector<Skill *> attack_skills,
       Skill * block_skill,
       std::list<int32_t> weapon_types
     ):
       name(name),
       magical(magical),
+      attack_skills_number(attack_skills_number),
       attack_skills(std::vector<Skill *>()),
       block_skill(block_skill),
       weapon_types(std::list<int32_t>())

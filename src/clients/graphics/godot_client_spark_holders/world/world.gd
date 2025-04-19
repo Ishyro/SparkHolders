@@ -98,13 +98,13 @@ func _ready():
 	n_map_2.add_child(n_furnitures_2)
 	
 	add_child(n_map_1)
-	next_map_1 = true
-	next_n_map = n_map_1
-	next_n_colliders = n_colliders_1
-	next_n_furnitures = n_furnitures_1
-	next_furnitures = furnitures_1
-	next_colliders = colliders_1
-	next_multi_mesh_instances = multi_mesh_instances_1
+	next_map_1 = false
+	next_n_map = n_map_2
+	next_n_colliders = n_colliders_2
+	next_n_furnitures = n_furnitures_2
+	next_furnitures = furnitures_2
+	next_colliders = colliders_2
+	next_multi_mesh_instances = multi_mesh_instances_2
 	
 	# no need to launch a thread for the initialization
 	process_new_map()
@@ -615,3 +615,10 @@ func add_projectile(projectile_id: int, projectile_data: Dictionary):
 	projectile.id = projectile_id
 	projectile.projectile = projectile_data["name"]
 	n_projectiles.add_child(projectile)
+
+func round_float(number: float):
+	var value = int(number * 1000. + 0.5)
+	return float(value) / 1000.
+
+func round_vec(vec: Vector3):
+	return Vector3(round_float(vec.x), round_float(vec.y), round_float(vec.z))

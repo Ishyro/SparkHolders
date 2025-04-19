@@ -1,6 +1,6 @@
 name = TXT_FIREBALL
 skill_type = SKILL_PROJECTILE
-target_type = TARGET_COORDINATES
+target_type = TARGET_FRONT
 projectile = TXT_FIREBALL
 mana_cost = 10
 scaling_type = SKILL_SCALE_NONE

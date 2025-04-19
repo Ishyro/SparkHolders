@@ -17,6 +17,7 @@ rangeY = 0.5
 rangeZ = 0.1
 strike_time = 5
 status_power = 1.0
+pierce_power = 0.0
 use_projectile = false
 DAMAGE_PHYSICAL = 5
 SLASH_REDUCTION = 50

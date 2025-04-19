@@ -32,5 +32,5 @@ movement_time_modifier = 1.0
 loot =
 effects =
 skills =
-stances =
+stances = TXT_SWORD_CLASSIC%
 tags = ancient_one%aether_child%aether_dweller%god%omnivorous%

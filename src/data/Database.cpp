@@ -287,7 +287,6 @@ Database::Database() {
   macros.insert(std::make_pair("TARGET_CHARACTER", TARGET_CHARACTER));
   macros.insert(std::make_pair("TARGET_FURNITURE", TARGET_FURNITURE));
   macros.insert(std::make_pair("TARGET_COORDINATES", TARGET_COORDINATES));
-  macros.insert(std::make_pair("TARGET_ORIENTATION", TARGET_ORIENTATION));
   macros.insert(std::make_pair("TARGET_MULTIPLE", TARGET_MULTIPLE));
 
   // skill_school
@@ -318,6 +317,12 @@ Database::Database() {
   macros.insert(std::make_pair("OVERCHARGE_LINEAR", OVERCHARGE_LINEAR));
   macros.insert(std::make_pair("OVERCHARGE_SQUARE", OVERCHARGE_SQUARE));
   macros.insert(std::make_pair("OVERCHARGE_EXPONENTIAL", OVERCHARGE_EXPONENTIAL));
+
+  // attack_order
+  macros.insert(std::make_pair("ATTACK_LEFT_TO_RIGHT", ATTACK_LEFT_TO_RIGHT));
+  macros.insert(std::make_pair("ATTACK_RIGHT_TO_LEFT", ATTACK_RIGHT_TO_LEFT));
+  macros.insert(std::make_pair("ATTACK_FRONT_TO_BACK", ATTACK_FRONT_TO_BACK));
+  macros.insert(std::make_pair("ATTACK_BACK_TO_FRONT", ATTACK_BACK_TO_FRONT));
 
   // map_link type
   macros.insert(std::make_pair("MAPLINK_THROUGH", MAPLINK_THROUGH));
@@ -411,6 +416,9 @@ Database::Database() {
   macros.insert(std::make_pair("ACTION_TALKING", ACTION_TALKING));
   macros.insert(std::make_pair("ACTION_ECONOMICS", ACTION_ECONOMICS));
   macros.insert(std::make_pair("ACTION_BREAKPOINT", ACTION_BREAKPOINT));
+  // client only
+  macros.insert(std::make_pair("ACTION_ATTACK", ACTION_ATTACK));
+  macros.insert(std::make_pair("ACTION_BLOCK", ACTION_BLOCK));
 
   // socket_msg_type
   macros.insert(std::make_pair("SOCKET_MSG_CONNECT", SOCKET_MSG_CONNECT));

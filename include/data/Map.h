@@ -33,7 +33,7 @@ struct Loot {
 };
 
 namespace map {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Map {
@@ -78,7 +78,7 @@ class Map {
     Map(Map * map, std::string name, int32_t offsetX, int32_t offsetY, int32_t offsetZ, int32_t rotation, int32_t lightening, Database * database):
       name(name),
       baseName(map->name),
-      id(++map::id_cpt),
+      id(++map::id_counter),
       offsetX(offsetX),
       offsetY(offsetY),
       offsetZ(offsetZ),

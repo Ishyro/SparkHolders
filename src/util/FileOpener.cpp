@@ -1024,6 +1024,7 @@ namespace FileOpener {
       float rangeZ = _stof(values.at("rangeZ"));
       int32_t strike_time = stoi(values.at("strike_time"));
       float status_power = _stof(values.at("status_power"));
+      float pierce_power = _stof(values.at("pierce_power"));
       std::istringstream is_use_projectile(values.at("use_projectile"));
       bool use_projectile;
       is_use_projectile >> std::boolalpha >> use_projectile;
@@ -1163,6 +1164,7 @@ namespace FileOpener {
         rangeZ,
         strike_time,
         status_power,
+        pierce_power,
         use_projectile,
         use_ammo,
         ammo_type,
@@ -1487,7 +1489,7 @@ namespace FileOpener {
     int32_t falloff_timer = stoi(values.at("falloff_timer"));
     float waste_per_tick = _stof(values.at("waste_per_tick"));
     float waste_per_area = _stof(values.at("waste_per_area"));
-    float waste_per_hit = _stof(values.at("waste_per_hit"));
+    float pierce_power = _stof(values.at("pierce_power"));
     std::array<float, DAMAGE_TYPE_NUMBER> damages;
     std::map<const std::string, std::string>::iterator it = values.find("DAMAGE_SLASH");
     if(it != values.end()) {
@@ -1587,7 +1589,7 @@ namespace FileOpener {
     else {
       damages[DAMAGE_TRUE] = 0.F;
     }
-    Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, waste_per_hit, damages);
+    Projectile * projectile = new Projectile(name, projectile_type, size, homing, skill, *effects, speed, area, falloff_timer, waste_per_tick, waste_per_area, pierce_power, damages);
     database->addProjectile(projectile);
     delete effects;
   }
@@ -1764,16 +1766,26 @@ namespace FileOpener {
     if(it != values.end()) {
       status_power = _stof(it->second);
     }
+    float pierce_power = 0.F;
+    it = values.find("pierce_power");
+    if(it != values.end()) {
+      pierce_power = _stof(it->second);
+    }
+    int32_t hit_order = ATTACK_LEFT_TO_RIGHT;
+    it = values.find("hit_order");
+    if(it != values.end()) {
+      hit_order = database->getTargetFromMacro(it->second);
+    }
     switch(skill_type) {
       case SKILL_SIMPLE: {
-        if(target_type == TARGET_ORIENTATION) {
+        if(target_type == TARGET_FRONT) {
           float sizeX = _stof(values.at("rangeX"));
           float sizeY = _stof(values.at("rangeY"));
           float sizeZ = _stof(values.at("rangeZ"));
-          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power, sizeX, sizeY, sizeZ);
+          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, hit_order, status_power, pierce_power, sizeX, sizeY, sizeZ);
         }
         else {
-          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power);
+          pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, hit_order, status_power, pierce_power);
         }
         break;
       }
@@ -1786,7 +1798,7 @@ namespace FileOpener {
       }
       case SKILL_PROJECTILE: {
         Projectile * projectile = (Projectile *) database->getProjectile(values.at("projectile"));
-        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power, projectile);
+        pseudoSkill = new ProjectileSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power, pierce_power, projectile);
         break;
       }
       case SKILL_TELEPORT: {
@@ -1855,7 +1867,7 @@ namespace FileOpener {
         break;
       }
       default:
-        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, status_power);
+        pseudoSkill = new SimpleSkill(name, skill_type, target_type, mana_cost, scaling_type, damage_multipliers, *effects, hit_order, status_power, pierce_power);
     }
     database->addPseudoSkill(pseudoSkill);
     delete effects;
@@ -1893,8 +1905,10 @@ namespace FileOpener {
     std::vector<Skill *> * attack_skills = new std::vector<Skill *>();
     std::istringstream is_attack_skills(values.at("attack_skills"));
     std::string attack_skill;
+    int32_t attack_skill_number = 0;
     while(getline(is_attack_skills, attack_skill, '%')) {
       attack_skills->push_back( (Skill *) database->getSkill(attack_skill));
+      attack_skill_number++;
     }
     Skill * block_skill = (Skill *) database->getSkill(values.at("block_skill"));
     std::list<int32_t> * weapon_types = new std::list<int32_t>();
@@ -1903,8 +1917,9 @@ namespace FileOpener {
     while(getline(is_weapon_types, weapon_type, '%')) {
       weapon_types->push_back(database->getTargetFromMacro(weapon_type));
     }
-    Stance * stance = new Stance(name, magical, *attack_skills, block_skill, *weapon_types);
+    Stance * stance = new Stance(name, magical, attack_skill_number, *attack_skills, block_skill, *weapon_types);
     database->addStance(stance);
+    delete attack_skills;
     delete weapon_types;
   }
 

@@ -7,7 +7,7 @@
 #include "Values.h"
 
 namespace item {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Item {
@@ -63,7 +63,7 @@ class Item {
     {}
     Item(const Item * item, int32_t tier):
       name(item->name),
-      id(++item::id_cpt),
+      id(++item::id_counter),
       type(item->type),
       subtype(item->subtype),
       tier(std::min(tier, item->max_tier)),

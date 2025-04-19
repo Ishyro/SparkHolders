@@ -678,7 +678,7 @@ Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   result["area"] = projectile->area;
   result["waste_per_tick"] = projectile->waste_per_tick;
   result["waste_per_area"] = projectile->waste_per_area;
-  result["waste_per_hit"] = projectile->waste_per_hit;
+  result["pierce_power"] = projectile->pierce_power;
   return result;
 }
 
@@ -828,15 +828,22 @@ void GodotLink::send_action(Dictionary action) {
       arg2 = (void *) slot2;
       break;
     }
-    case ACTION_USE_SKILL: {
+    case ACTION_USE_SKILL:
+    case ACTION_ATTACK:
+    case ACTION_BLOCK: {
       Dictionary target_ori = action["arg1"];
       MathUtil::Target * target = new MathUtil::Target();
       target->type = (int32_t) target_ori["type"];
-      target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
+      if((int64_t) target_ori["id"] != 0) {
+        target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
+      }
       Vector3 pos = (Vector3) target_ori["pos"];
       target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
       arg1 = (void *) target;
-      Skill * skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) action["arg2"]).utf8().get_data()));
+      Skill * skill = nullptr;
+      if(type == ACTION_USE_SKILL) {
+        skill = (Skill *) link->getAdventure()->getDatabase()->getSkill(std::string( ( (String) action["arg2"]).utf8().get_data()));
+      }
       arg2 = (void *) skill;
       mana_cost = (int32_t) action["mana_cost"];
       break;

@@ -23,12 +23,13 @@
 #include "util/MathUtil.h"
 
 struct Attack {
-  int32_t type;
+  int32_t hit_order;
   MathUtil::Hitbox * hitbox;
   Character * owner;
   std::array<float, DAMAGE_TYPE_NUMBER> damages;
   std::list<Effect *> effects;
   float status_power;
+  float pierce_power;
 };
 
 struct HitboxOwner {

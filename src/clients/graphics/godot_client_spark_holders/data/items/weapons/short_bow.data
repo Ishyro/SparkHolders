@@ -17,6 +17,7 @@ rangeY = 0.2
 rangeZ = 0.5
 strike_time = 5
 status_power = 1.0
+pierce_power = 0.0
 use_projectile = true
 ammo_type = PROJECTILE_ARROW
 use_ammo = true

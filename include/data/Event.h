@@ -7,13 +7,13 @@
 #include "Values.h"
 
 namespace event {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 
 class Event {
   public:
-    const int64_t id = ++event::id_cpt;
+    const int64_t id = ++event::id_counter;
     const std::string name;
     const int32_t type;
     const int32_t character_apparition_type;

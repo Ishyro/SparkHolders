@@ -324,10 +324,10 @@ Action * AI::attack(Adventure * adventure, std::list<Character *> threats, Chara
     }
     /*
     if(!self->getGear()->getWeapon_1()->use_projectile) {
-      return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
+      return new TargetedAction(ACTION_ATTACK, adventure, nullptr, self, t);
     }
     if(!self->getGear()->getWeapon_1()->use_ammo || self->getGear()->getWeapon_1()->getCurrentCapacity() > 0) {
-      return new TargetedAction(ACTION_STRIKE, adventure, nullptr, self, t);
+      return new TargetedAction(ACTION_ATTACK, adventure, nullptr, self, t);
     }
       */
     ItemSlot * slot = nullptr;

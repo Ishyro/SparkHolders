@@ -57,20 +57,31 @@ int32_t Skill::getManaCost() {
 }
 
 float Skill::getTime(Character * owner) {
-  /*
+  int32_t scaling_type = SKILL_SCALE_NONE;
+  for(PseudoSkill * pseudo_skill : skills) {
+    if(pseudo_skill->scaling_type != SKILL_SCALE_NONE) {
+      if(scaling_type == SKILL_SCALE_NONE) {
+        scaling_type = pseudo_skill->scaling_type;
+      }
+      else {
+        // both scaling is max scalling
+        scaling_type = SKILL_SCALE_BOTH_WEAPONS;
+        break;
+      }
+    }
+  }
+  if(scaling_type == SKILL_SCALE_NONE) {
+    return time;
+  }
   if(scaling_type == SKILL_SCALE_MAIN_WEAPON) {
     return owner->getGear()->getWeapon_1()->strike_time;
   }
   else if(scaling_type == SKILL_SCALE_SUB_WEAPON) {
     return owner->getGear()->getWeapon_2()->strike_time;
   }
-  else if(scaling_type == SKILL_SCALE_WEAPONS) {
+  else if(scaling_type == SKILL_SCALE_BOTH_WEAPONS) {
     return owner->getGear()->getWeapon_1()->strike_time + owner->getGear()->getWeapon_2()->strike_time;
   }
-  else {
-  */
-    return time;
-  //}
 }
 
 float Skill::getPower() {

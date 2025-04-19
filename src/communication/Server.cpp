@@ -19,6 +19,8 @@
 #include "data/ways/Attributes.h"
 #include "data/ways/Race.h"
 
+#include "data/skills/Skill.h"
+
 #include "communication/Socket.h"
 
 #include "communication/Server.h"
@@ -97,11 +99,28 @@ namespace Server {
         action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
         break;
       }
+      case ACTION_ATTACK: {
+        MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
+        Skill * skill = user->getAttack();
+        std::cout << skill->name << std::endl;
+        int32_t mana_cost = String::extract_int(ss);
+        action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
+        break;
+      }
+      case ACTION_BLOCK: {
+        MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
+        Skill * skill = user->getDefense();
+        int32_t mana_cost = String::extract_int(ss);
+        action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
+        break;
+      }
       case ACTION_TALKING: {
         action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
+        break;
       }
       case ACTION_ECONOMICS: {
         action = new BaseAction(ACTION_IDLE, adventure, nullptr, user);
+        break;
       }
       default:
         delete ss;

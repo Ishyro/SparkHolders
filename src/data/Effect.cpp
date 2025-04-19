@@ -56,7 +56,7 @@ void Effect::activate(Character * target) {
         target->incrDetectionRange();
         break;
       case EFFECT_DAMAGE:
-        target->receiveDamage(damages, owner, power);
+        target->receiveDamages(damages, owner, power);
         break;
       case EFFECT_EXPERIENCE:
         target->gainXP(power);
@@ -91,45 +91,45 @@ bool Effect::tick(Character * target) {
       target->addSanity((float) power);
       break;
     case EFFECT_DAMAGE:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_EXPERIENCE:
       target->gainXP(power);
       break;
     case EFFECT_STATUS_BLEEDING: {
       float potency = 4.F * duration;
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       target->addHunger(-100.F / potency);
       target->addThirst(-100.F / potency);
       target->addStamina(-100.F / potency);
       break;
     }
     case EFFECT_STATUS_WEAKENED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_CONFUSED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_BURNING:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_FROZEN:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_SHOCKED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_POISONED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_CORRODED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_BROKEN:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     case EFFECT_STATUS_DISINTEGRATED:
-      target->receiveDamage(damages, owner, power);
+      target->receiveDamages(damages, owner, power);
       break;
     default:
       ;

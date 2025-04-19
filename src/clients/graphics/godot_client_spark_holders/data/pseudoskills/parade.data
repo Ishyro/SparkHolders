@@ -1,6 +1,6 @@
 name = TXT_PARADE
 skill_type = SKILL_SHIELD
-target_type = TARGET_SELF
+target_type = TARGET_FRONT
 mana_cost = 0
 scaling_type = SKILL_SCALE_MAIN_WEAPON
 effects =

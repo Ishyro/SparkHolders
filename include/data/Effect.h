@@ -11,7 +11,7 @@
 #include "util/FileOpener.h"
 
 namespace effect {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 class Effect {
@@ -81,7 +81,7 @@ class Effect {
       float overcharge_duration
     ):
       name(base->name),
-      id(++effect::id_cpt),
+      id(++effect::id_counter),
       level(base->level),
       attributes(base->attributes),
       type(base->type),
@@ -103,7 +103,7 @@ class Effect {
       Character * owner
     ):
       name(base->name),
-      id(++effect::id_cpt),
+      id(++effect::id_counter),
       level(base->level),
       attributes(base->attributes),
       type(base->type),

@@ -61,6 +61,8 @@ namespace Client {
         return writeGearAction(type, (ItemSlot *) arg1, (ItemSlot *) arg2);
         break;
       case ACTION_USE_SKILL:
+      case ACTION_ATTACK:
+      case ACTION_BLOCK:
         return writeSkillAction(type, (MathUtil::Target *) arg1, (Skill *) arg2, mana_cost);
         break;
       case ACTION_TALKING:
@@ -122,7 +124,9 @@ namespace Client {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, type);
     String::insert(ss, MathUtil::target_to_string(target));
-    String::insert(ss, skill->name);
+    if(type == ACTION_USE_SKILL) {
+      String::insert(ss, skill->name);
+    }
     String::insert_int(ss, mana_cost);
     std::string result = ss->str();
     delete ss;

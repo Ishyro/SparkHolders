@@ -332,8 +332,7 @@ class SpeechManager;
 #define TARGET_CHARACTER 3
 #define TARGET_FURNITURE 4
 #define TARGET_COORDINATES 5
-#define TARGET_ORIENTATION 6
-#define TARGET_MULTIPLE 7
+#define TARGET_MULTIPLE 6
 
 // hitbox_type
 
@@ -388,7 +387,7 @@ class SpeechManager;
 #define OVERCHARGE_SQUARE 2
 #define OVERCHARGE_EXPONENTIAL 3
 
-// attack_type
+// attack_order
 
 #define ATTACK_LEFT_TO_RIGHT 1
 #define ATTACK_RIGHT_TO_LEFT 2
@@ -500,6 +499,9 @@ class SpeechManager;
 #define ACTION_TALKING 11
 #define ACTION_ECONOMICS 12
 #define ACTION_BREAKPOINT 13
+// shortcut for client only
+#define ACTION_ATTACK 101
+#define ACTION_BLOCK 102
 
 // settings
 

@@ -39,13 +39,15 @@ data/pseudoskills/eat_grass.data
 data/pseudoskills/grow_grass.data
 data/pseudoskills/nourish_with_grass.data
 data/pseudoskills/parade.data
-data/pseudoskills/sword_cut.data
+data/pseudoskills/sword_cut_left.data
+data/pseudoskills/sword_cut_right.data
 data/pseudoskills/sword_thrust.data
 # skills without summoning or projectile
 data/skills/touch_some_soil.data
 data/skills/dash.data
 data/skills/parade.data
-data/skills/sword_cut.data
+data/skills/sword_cut_left.data
+data/skills/sword_cut_right.data
 data/skills/sword_thrust.data
 # projectiles
 data/projectiles/wood_arrow.data

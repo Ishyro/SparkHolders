@@ -20,7 +20,7 @@
 #include "Values.h"
 
 namespace character {
-  static int64_t id_cpt = 0;
+  static int64_t id_counter = 0;
 }
 
 struct CharacterDisplay {
@@ -127,7 +127,7 @@ class Character {
       std::list<Way *> titles
     ):
       name(name),
-      id(++character::id_cpt),
+      id(++character::id_counter),
       player_character(from_database->player_character),
       death_speech(from_database->death_speech),
       talking_speech(from_database->talking_speech),
@@ -222,7 +222,13 @@ class Character {
       Way * culture,
       Way * religion,
       Way * profession,
-      std::list<Way *> titles
+      std::list<Way *> titles,
+      bool using_magical_stance,
+      int32_t stance_attack,
+      std::map<int32_t, Stance *> active_stances,
+      std::map<int32_t, Stance *> active_magical_stances,
+      std::map<const Skill *, bool> toggled_skills,
+      std::array<float, DAMAGE_TYPE_STATUS_NUMBER> status
     ):
       maxHp(maxHp),
       maxMana(maxMana),
@@ -274,7 +280,13 @@ class Character {
       culture(culture),
       religion(religion),
       profession(profession),
-      titles(titles)
+      titles(titles),
+      using_magical_stance(using_magical_stance),
+      stance_attack(stance_attack),
+      active_stances(active_stances),
+      active_magical_stances(active_magical_stances),
+      toggled_skills(toggled_skills),
+      status(status)
     {
       hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
       hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
@@ -368,6 +380,8 @@ class Character {
     std::list<Stance *> getAvaillableStances();
     std::map<int32_t, Stance *> getActiveStances();
     std::map<int32_t, Stance *> getActiveMagicalStances();
+    Skill * getAttack();
+    Skill * getDefense();
 
     void setOrientationX(float orientation_x);
     void setOrientationZ(float orientation_z);
@@ -458,7 +472,7 @@ class Character {
     int32_t cloakPower();
     bool isInWeakState();
 
-    void selectStance(Stance *);
+    bool selectStance(Stance *);
     void useSkill(Skill * skill, MathUtil::Target * target, Adventure * adventure, float overcharge);
     int32_t getDamageFromType(int32_t damage_type, int32_t slot);
     float getRawDamageReductionFromType(int32_t damage_type);
@@ -468,7 +482,7 @@ class Character {
     Projectile * shoot(MathUtil::Target * target, Adventure * adventure, int32_t slot);
     void reload(ItemSlot * ammo, int32_t slot_weapon);
     ItemSlot * canReload(int32_t slot);
-    void receiveDamage(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
+    void receiveDamages(std::array<float, DAMAGE_TYPE_NUMBER> damages, Character * attacker, float status_power);
     int32_t tryAttack(std::array<float, DAMAGE_TYPE_NUMBER> damages);
     void trade(Character * buyer, int32_t object_type, std::string object_name, float price_modifier);
     std::set<std::string> getTags();
@@ -544,6 +558,7 @@ class Character {
     Way * profession;
     std::list<Way *> titles;
     bool using_magical_stance;
+    int32_t stance_attack;
     std::map<int32_t, Stance *> active_stances = std::map<int32_t, Stance *>();
     std::map<int32_t, Stance *> active_magical_stances = std::map<int32_t, Stance *>();
     std::map<const Skill *, bool> toggled_skills = std::map<const Skill *, bool>();

@@ -16,10 +16,16 @@ void SimpleSkill::activate(
   int32_t range,
   bool toggle_state
 ) {
-  if(target_type == TARGET_ORIENTATION) {
+  if(target_type == TARGET_FRONT) {
     Attack * attack = new Attack();
     attack->owner = owner;
+    attack->hit_order = hit_order;
     attack->status_power = status_power;
+    attack->pierce_power = pierce_power;
+    attack->damages = std::array<float, DAMAGE_TYPE_NUMBER>();
+    for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+      attack->damages[i] = getDamageFromType(i, owner, overcharge_power);
+    }
     MathUtil::Vector3 h_size = size * overcharge_range;
     switch(scaling_type) {
       case SKILL_SCALE_NONE:
@@ -27,28 +33,47 @@ void SimpleSkill::activate(
       case SKILL_SCALE_MAIN_WEAPON:
         h_size = h_size + owner->getGear()->getWeapon_1()->range * overcharge_range;
         attack->status_power *= owner->getStatusPower();
+        attack->pierce_power += owner->getGear()->getWeapon_1()->pierce_power;
         break;
       case SKILL_SCALE_SUB_WEAPON:
         h_size = h_size + owner->getGear()->getWeapon_2()->range * overcharge_range;
         attack->status_power *= owner->getStatusPower();
+        attack->pierce_power += owner->getGear()->getWeapon_2()->pierce_power;
         break;
     }
     attack->hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, owner->getCoord(), h_size.x, h_size.y, h_size.z);
+    std::array<float, DAMAGE_TYPE_NUMBER> current_damages = attack->damages;
     for(HitboxOwner * hit : owner->getRegion()->sortHitboxes(attack)) {
-      if(hit->type == HITBOX_OWNER_FURNITURE) {
-        break;
-      }
-      else if(hit->type == HITBOX_OWNER_CHARACTER) {
-        hit->owner->receiveDamage(attack->damages, owner, attack->status_power);
+      if(hit->type == HITBOX_OWNER_CHARACTER) {
+        hit->owner->receiveDamages(attack->damages, owner, attack->status_power);
         for(Effect * effect : effects) {
           Effect * to_add = new Effect(effect, overcharge_power, overcharge_duration, scaling_type, damage_multipliers, owner);
           if(toggle_state) {
             to_add->activate(hit->owner);
+            hit->owner->receiveDamages(current_damages, owner, attack->status_power);
+            // reduce damages according to pierce_power
+            bool no_damage = true;
+            for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+              current_damages[i] = attack->damages[i] * attack->pierce_power;
+              if(current_damages[i] > 0) {
+                no_damage = false;
+              }
+            }
+            if(no_damage) {
+              break;
+            }
           }
           else {
             hit->owner->removeSimilarEffect(to_add);
           }
         }
+      }
+      else if(hit->type == HITBOX_OWNER_FURNITURE) {
+        break;
+      }
+      else if(hit->type == HITBOX_OWNER_SHIELD) {
+        // TODO damage to shield
+        break;
       }
     }
   }
