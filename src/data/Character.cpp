@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "ai/AI.h"
 #include "data/Database.h"
 #include "data/Effect.h"
@@ -27,14 +25,17 @@
 
 #include "util/String.h"
 
+/*
 Character::~Character() {
   delete ai;
-  ai = nullptr;
+  delete hitbox;
   for(Effect * effect : getEffects()) {
     delete effect;
-    effect = nullptr;
   }
+  skills.clear();
+  titles.clear();
 }
+*/
 
 void Character::initializeCharacter(Gear * gear) {
   size = race->getSize(race_modifiers);
@@ -89,7 +90,7 @@ void Character::initializeCharacter(Gear * gear) {
   }
   initSkillsAndEffects();
   hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
-  hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
+  hitbox->applyMove(coord, MathUtil::getDirectionFromOrientation(orientation));
   stance_attack = 0;
   // TODO real stance manager
   int32_t weapon_combinaison = gear->getWeaponsCombination();
@@ -612,8 +613,11 @@ std::map<int32_t, Stance *> Character::getActiveMagicalStances() {
 
 Skill * Character::getAttack() {
   Skill * result = getCurrentStance()->getAttack(stance_attack);
-  stance_attack = (stance_attack + 1) % getCurrentStance()->attack_skills_number;
   return result;
+}
+
+void Character::incrAttack() {
+  stance_attack = (stance_attack + 1) % (getCurrentStance()->attack_skills_number);
 }
 
 Skill * Character::getDefense() {
@@ -625,11 +629,9 @@ void Character::setOrientationZ(float orientation_z) { orientation.z = orientati
 void Character::move(MathUtil::Vector3 coord, MathUtil::Vector3 orientation, World * world) {
   MathUtil::Vector3 ori = this->coord;
   this->coord = coord;
-  float delta_x = this->orientation.x - orientation.x;
-  float delta_z = this->orientation.z - orientation.z;
   this->orientation.x = orientation.x;
   this->orientation.z = orientation.z;
-  hitbox->applyMove(coord, delta_x, 0.F, delta_z);
+  hitbox->applyMove(coord, MathUtil::getDirectionFromOrientation(orientation));
   world->checkRegion(this, ori, coord);
 }
 

@@ -1176,6 +1176,7 @@ namespace Display {
         int32_t target_x;
         int32_t target_y;
         float overcharge;
+        /*
         while(!done) {
           object_type = 0;
           object = "";
@@ -1313,6 +1314,15 @@ namespace Display {
             break;
           default: ;
         }
+        */
+        
+        MathUtil::Target * target = new MathUtil::Target();
+        target->type = TARGET_FRONT;
+        target->coord.x = 35.9587;
+        target->coord.y = 0;
+        target->coord.z = -3.0129;
+        target->next = nullptr;
+        sendAction(link, ACTION_ATTACK, (void *) target, skill, overcharge);
       }
       for(CharacterDisplay * character : display->characters) {
         delete character;

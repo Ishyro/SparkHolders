@@ -62,7 +62,7 @@ class Region {
     void move(Character * character, World * world);
     void setSpeed(Character * character, MathUtil::Vector3 orientation);
     MathUtil::Vector3 getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block_orientation);
-    float getOrientationZOnSlope(float character_orientation, int32_t block_orientation);
+    float getOrientationXOnSlope(float character_orientation, int32_t block_orientation);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters();
     std::list<Character *> getCharacters(Character * character);

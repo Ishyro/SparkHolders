@@ -146,7 +146,7 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
     }
   }
   MathUtil::HitboxOBB * hitbox = new MathUtil::HitboxOBB(c->getHitbox());
-  hitbox->applyMove(dest, c->getOrientation().x, 0.F, c->getOrientation().z);
+  hitbox->applyMove(dest, MathUtil::getDirectionFromOrientation(c->getOrientation()));
   for(Character * other : getCharacters()) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::collide(hitbox, other->getHitbox())) {
       return false;
@@ -168,46 +168,51 @@ void Region::move(Character * character, World * world) {
     // TODO slow down and gravity
     speed.z -= 9.0F * Settings::getTickRate().count() / 1000.F;
   }
-  MathUtil::Vector3 dest = MathUtil::round(MathUtil::Vector3(
-    current.x + speed.x * Settings::getTickRate().count() / 1000.F,
-    current.y + speed.y * Settings::getTickRate().count() / 1000.F,
-    current.z + speed.z * Settings::getTickRate().count() / 1000.F
-  ));
-  float distance = MathUtil::distance(current, dest);
-  MathUtil::Vector3 direction = MathUtil::Vector3((dest.x - current.x) / distance, (dest.y - current.y) / distance, (dest.z - current.z) / distance);
-  for(float step = 0.1F; step < distance; step += 0.1F) {
-    MathUtil::Vector3 coord = MathUtil::Vector3(current.x + step * direction.x, current.y + step * direction.y, current.z + step * direction.z);
-    Block * block = getBlock(coord);
-    if(block != nullptr && block->type != BLOCK_LIQUID && block->type != BLOCK_GAS) {
-      // collide
-      std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
-      damages[DAMAGE_BLUNT] = 0.01F * distance * distance * character->getGear()->getWeight();
-      if(damages[DAMAGE_BLUNT] >= 5.F) {
-        character->receiveDamages(damages, nullptr, 0.5F);
-      }
-      speed.z = 0.F;
-      // TODO find closest place to move
-      if(block->type == BLOCK_SOLID) {
-        if(direction.z < 0.F) {
-          dest.z = std::ceil(coord.z);
+  // speed is not 0
+  if(MathUtil::distanceSquare(MathUtil::Vector3(0.F, 0.F, 0.F), speed) >= 0.01F) {
+    MathUtil::Vector3 dest = MathUtil::round(MathUtil::Vector3(
+      current.x + speed.x * Settings::getTickRate().count() / 1000.F,
+      current.y + speed.y * Settings::getTickRate().count() / 1000.F,
+      current.z + speed.z * Settings::getTickRate().count() / 1000.F
+    ));
+    float distance = MathUtil::distance(current, dest);
+    MathUtil::Vector3 direction = MathUtil::Vector3((dest.x - current.x) / distance, (dest.y - current.y) / distance, (dest.z - current.z) / distance);
+    for(float step = 0.1F; step < distance; step += 0.1F) {
+      MathUtil::Vector3 coord = MathUtil::Vector3(current.x + step * direction.x, current.y + step * direction.y, current.z + step * direction.z);
+      Block * block = getBlock(coord);
+      if(block != nullptr && block->type != BLOCK_LIQUID && block->type != BLOCK_GAS) {
+        // collide
+        std::array<float, DAMAGE_TYPE_NUMBER> damages = {0.F};
+        damages[DAMAGE_BLUNT] = 0.01F * distance * distance * character->getGear()->getWeight();
+        if(damages[DAMAGE_BLUNT] >= 5.F) {
+          character->receiveDamages(damages, nullptr, 0.5F);
+        }
+        speed.z = 0.F;
+        // TODO find closest place to move
+        if(block->type == BLOCK_SOLID) {
+          if(direction.z < 0.F) {
+            dest.z = std::ceil(coord.z);
+          }
+          else {
+            dest.x = coord.x - direction.x;
+            dest.y = coord.y - direction.y;
+            dest.z = coord.z - direction.z;
+          }
         }
         else {
-          dest.x = coord.x - direction.x;
-          dest.y = coord.y - direction.y;
-          dest.z = coord.z - direction.z;
+          // correct coords on slope / stairs
+          dest = getCoordsOnSlope(dest, block->orientation_z);
         }
+        break;
       }
-      else {
-        // correct coords on slope / stairs
-        dest = getCoordsOnSlope(dest, block->orientation_z);
-      }
-      break;
     }
+    if(tryMove(character, dest)) {
+      MathUtil::Vector3 orientation = MathUtil::getOrientationFromDirection(speed);
+      orientation.x = 90.F;
+      character->move(dest, orientation, world);
+    }
+    character->setSpeed(MathUtil::Vector3(0, 0, speed.z));
   }
-  if(tryMove(character, dest)) {
-    character->move(dest, MathUtil::Vector3(0.F, 0.F, 0.F), world);
-  }
-  character->setSpeed(MathUtil::Vector3(0, 0, speed.z));
 }
 
 void Region::setSpeed(Character * character, MathUtil::Vector3 orientation) {
@@ -221,7 +226,7 @@ void Region::setSpeed(Character * character, MathUtil::Vector3 orientation) {
   }
   else {
     if(inside != nullptr && (inside->type == BLOCK_STAIRS || inside->type == BLOCK_SLOPE)) {
-      orientation_x = getOrientationZOnSlope(orientation_z, inside->orientation_z);
+      orientation_x = getOrientationXOnSlope(orientation_z, inside->orientation_z);
     }
     else {
       orientation_x = 90.F;
@@ -282,7 +287,7 @@ MathUtil::Vector3 Region::getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block
   return result;
 }
 
-float Region::getOrientationZOnSlope(float character_orientation, int32_t block_orientation) {
+float Region::getOrientationXOnSlope(float character_orientation, int32_t block_orientation) {
   int32_t x_direction = 1;
   int32_t y_direction = 1;
   if(character_orientation > 180.F) {

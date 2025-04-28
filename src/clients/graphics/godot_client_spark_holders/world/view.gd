@@ -70,7 +70,9 @@ func _physics_process(_delta):
 			angle.z = rad_to_deg(movement_vec2.angle())
 			if angle.z < 0: 
 				angle.z = angle.z + 360
-			angle.x = camera.rotation_degrees.z
+			angle.x = camera.rotation_degrees.y - 90
+			if angle.x < 0: 
+				angle.x = angle.x + 360
 			send_oriented_action(Values.macros["ACTION_MOVE"], angle)
 
 func _unhandled_input(event):
@@ -153,18 +155,24 @@ func _unhandled_input(event):
 				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_FURNITURE"], Values.selected_data["id"], Vector3.ZERO)
 			if event.is_action_released("attack"):
 				var orientation = Vector3.ZERO
-				orientation.x = camera.rotation_degrees.z
-				orientation.z = camera.rotation_degrees.y
+				orientation.x = camera.rotation_degrees.y - 90
+				if orientation.x < 0: 
+					orientation.x = orientation.x + 360
+				orientation.z = camera.rotation_degrees.x
 				send_skill_action(Values.macros["ACTION_ATTACK"], Values.macros["TARGET_FRONT"], 0, orientation, "", 0)
-			if event.is_action_released("block"):
+			# toggle
+			if event.is_action_pressed("block") or event.is_action_released("block"):
 				var orientation = Vector3.ZERO
-				orientation.x = camera.rotation_degrees.z
-				orientation.z = camera.rotation_degrees.y
+				orientation.x = camera.rotation_degrees.y - 90
+				if orientation.x < 0: 
+					orientation.x = orientation.x + 360
+				orientation.z = camera.rotation_degrees.x
 				send_skill_action(Values.macros["ACTION_BLOCK"], Values.macros["TARGET_FRONT"], 0, orientation, "", 0)
 			if event.is_action_released("skill"):
 				send_skill_action(Values.macros["ACTION_SKILL"], Values.macros["TARGET_FRONT"], 0, Vector3.ZERO, "skill", 0)
 			if event.is_action_released("jump"):
 				send_base_action(Values.macros["ACTION_JUMP"])
+			# toggle
 			if event.is_action_pressed("run") or event.is_action_released("run"):
 				send_base_action(Values.macros["ACTION_RUN"])
 			Values.selection_mutex.unlock()

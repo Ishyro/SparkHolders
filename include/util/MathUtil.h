@@ -9,6 +9,8 @@
 
 #include "Values.h"
 
+#include <iostream>
+
 namespace MathUtil {
   struct Pair {
     float x;
@@ -38,6 +40,12 @@ namespace MathUtil {
           z * other.x - x * other.z,
           x * other.y - y * other.x
       );
+    }
+    void normalize() {
+      float size = sqrt(x*x + y*y + z*z);
+      x /= size;
+      y /= size;
+      z /= size;
     }
   };
   
@@ -74,10 +82,8 @@ namespace MathUtil {
   };
 
   struct HitboxAABB : public Hitbox {
-    float sizeX;
-    float sizeY;
-    float sizeZ;
-    HitboxAABB(int64_t type, Vector3 origin, float sizeX, float sizeY, float sizeZ): Hitbox(type, origin), sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) {}
+    Vector3 size;
+    HitboxAABB(int64_t type, Vector3 origin, float sizeX, float sizeY, float sizeZ): Hitbox(type, origin), size(sizeX, sizeY, sizeZ) {}
   };
 
   struct HitboxOBB : public HitboxAABB {
@@ -87,10 +93,10 @@ namespace MathUtil {
     HitboxOBB(int64_t type, Vector3 origin, float sizeX, float sizeY, float sizeZ):
       HitboxAABB(type, origin, sizeX, sizeY, sizeZ), x_axis(Vector3(1, 0, 0)), y_axis(Vector3(0, 1, 0)), z_axis(Vector3(0, 0, 1)) {}
     HitboxOBB(HitboxOBB * hitbox):
-      HitboxAABB(hitbox->type, hitbox->origin, hitbox->sizeX, hitbox->sizeY, hitbox->sizeZ), x_axis(hitbox->x_axis), y_axis(hitbox->y_axis), z_axis(hitbox->z_axis) {}
+      HitboxAABB(hitbox->type, hitbox->origin, hitbox->size.x, hitbox->size.y, hitbox->size.z), x_axis(hitbox->x_axis), y_axis(hitbox->y_axis), z_axis(hitbox->z_axis) {}
     std::vector<Vector3> getCorners() const {
         std::vector<Vector3> corners(8);
-        Vector3 halfExtents(sizeX / 2, sizeY / 2, sizeZ / 2);
+        Vector3 halfExtents(size.x / 2, size.y / 2, size.z / 2);
 
         corners[0] = origin + x_axis * halfExtents.x + y_axis * halfExtents.y + z_axis * halfExtents.z;
         corners[1] = origin + x_axis * halfExtents.x + y_axis * halfExtents.y - z_axis * halfExtents.z;
@@ -103,121 +109,26 @@ namespace MathUtil {
 
         return corners;
     }
-    void applyMove(float range, float thetaX, float thetaY, float thetaZ) {
-      float radX = thetaX * M_PI / 180.F;
-      float radY = thetaY * M_PI / 180.F;
-      float radZ = thetaZ * M_PI / 180.F;
-      float cosX = std::cos(radX), sinX = std::sin(radX);
-      float cosY = std::cos(radY), sinY = std::sin(radY);
-      float cosZ = std::cos(radZ), sinZ = std::sin(radZ);
-      origin.x += range * cosZ;
-      origin.y += range * sinZ;
-
-      float rotX[3][3] = {
-        {1, 0, 0},
-        {0, cosX, -sinX},
-        {0, sinX, cosX}
-      };
-      float rotY[3][3] = {
-        {cosY, 0, sinY},
-        {0, 1, 0},
-        {-sinY, 0, cosY}
-      };
-      float rotZ[3][3] = {
-        {cosZ, -sinZ, 0},
-        {sinZ, cosZ, 0},
-        {0, 0, 1}
-      };
-      float result[3][3] = {0};
-
-      // R = Rz * Ry
-      float temp[3][3] = {0};
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          for (int k = 0; k < 3; ++k) {
-            temp[i][j] += rotZ[i][k] * rotY[k][j];
-          }
-        }
-      }
-
-      // R = (Rz * Ry) * Rx
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          for (int k = 0; k < 3; ++k) {
-            result[i][j] += temp[i][k] * rotX[k][j];
-          }
-        }
-      }
-      
-      x_axis = Vector3(result[0][0] * x_axis.x + result[0][1] * x_axis.y + result[0][2] * x_axis.z,
-                       result[1][0] * x_axis.x + result[1][1] * x_axis.y + result[1][2] * x_axis.z,
-                       result[2][0] * x_axis.x + result[2][1] * x_axis.y + result[2][2] * x_axis.z);
-
-      y_axis = Vector3(result[0][0] * y_axis.x + result[0][1] * y_axis.y + result[0][2] * y_axis.z,
-                       result[1][0] * y_axis.x + result[1][1] * y_axis.y + result[1][2] * y_axis.z,
-                       result[2][0] * y_axis.x + result[2][1] * y_axis.y + result[2][2] * y_axis.z);
-
-      z_axis = Vector3(result[0][0] * z_axis.x + result[0][1] * z_axis.y + result[0][2] * z_axis.z,
-                       result[1][0] * z_axis.x + result[1][1] * z_axis.y + result[1][2] * z_axis.z,
-                       result[2][0] * z_axis.x + result[2][1] * z_axis.y + result[2][2] * z_axis.z);
+    void applyMove(float range, Vector3 direction) {
+      Vector3 up = Vector3(0, 0, 1);
+      origin = origin + direction * range;
+      direction.normalize();
+      y_axis = up.cross(direction);
+      y_axis.normalize();
+      z_axis = direction.cross(y_axis);
+      z_axis.normalize();
+      x_axis = direction;
     }
-    void applyMove(Vector3 coord, float thetaX, float thetaY, float thetaZ) {
+    void applyMove(Vector3 coord, Vector3 direction) {
       origin = coord;
-      origin.z += sizeZ * .5F;
-      float radX = thetaX * M_PI / 180.F;
-      float radY = thetaY * M_PI / 180.F;
-      float radZ = thetaZ * M_PI / 180.F;
-      float cosX = std::cos(radX), sinX = std::sin(radX);
-      float cosY = std::cos(radY), sinY = std::sin(radY);
-      float cosZ = std::cos(radZ), sinZ = std::sin(radZ);
-
-      float rotX[3][3] = {
-        {1, 0, 0},
-        {0, cosX, -sinX},
-        {0, sinX, cosX}
-      };
-      float rotY[3][3] = {
-        {cosY, 0, sinY},
-        {0, 1, 0},
-        {-sinY, 0, cosY}
-      };
-      float rotZ[3][3] = {
-        {cosZ, -sinZ, 0},
-        {sinZ, cosZ, 0},
-        {0, 0, 1}
-      };
-      float result[3][3] = {0};
-
-      // R = Rz * Ry
-      float temp[3][3] = {0};
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          for (int k = 0; k < 3; ++k) {
-            temp[i][j] += rotZ[i][k] * rotY[k][j];
-          }
-        }
-      }
-
-      // R = (Rz * Ry) * Rx
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          for (int k = 0; k < 3; ++k) {
-            result[i][j] += temp[i][k] * rotX[k][j];
-          }
-        }
-      }
-      
-      x_axis = Vector3(result[0][0] * x_axis.x + result[0][1] * x_axis.y + result[0][2] * x_axis.z,
-                       result[1][0] * x_axis.x + result[1][1] * x_axis.y + result[1][2] * x_axis.z,
-                       result[2][0] * x_axis.x + result[2][1] * x_axis.y + result[2][2] * x_axis.z);
-
-      y_axis = Vector3(result[0][0] * y_axis.x + result[0][1] * y_axis.y + result[0][2] * y_axis.z,
-                       result[1][0] * y_axis.x + result[1][1] * y_axis.y + result[1][2] * y_axis.z,
-                       result[2][0] * y_axis.x + result[2][1] * y_axis.y + result[2][2] * y_axis.z);
-
-      z_axis = Vector3(result[0][0] * z_axis.x + result[0][1] * z_axis.y + result[0][2] * z_axis.z,
-                       result[1][0] * z_axis.x + result[1][1] * z_axis.y + result[1][2] * z_axis.z,
-                       result[2][0] * z_axis.x + result[2][1] * z_axis.y + result[2][2] * z_axis.z);
+      origin.z += size.z * .5F;
+      Vector3 up = Vector3(0, 0, 1);
+      direction.normalize();
+      y_axis = up.cross(direction);
+      y_axis.normalize();
+      z_axis = direction.cross(y_axis);
+      z_axis.normalize();
+      x_axis = direction;
     }
   };
 
@@ -246,6 +157,8 @@ namespace MathUtil {
   float distance2(Vector3 coord1, Vector3 coord2);
   float getOrientationToTarget(float x1, float y1, float x2, float y2);
   float getOrientationToTarget(Vector3 coord);
+  Vector3 getOrientationFromDirection(Vector3 direction);
+  Vector3 getDirectionFromOrientation(Vector3 orientation);
   Vector3 selectClosestVector(Vector3 next, Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range);
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int32_t offsetX, int32_t offsetY);

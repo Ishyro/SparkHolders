@@ -19,7 +19,7 @@ Action * OrientedAction::execute(Adventure * adventure) {
   }
   switch(type) {
     case ACTION_MOVE:
-      user->getRegion()->setSpeed(user, MathUtil::Vector3(orientation.x + 90.F, orientation.y, orientation.z));
+      user->getRegion()->setSpeed(user, orientation);
       break;
     default: ;
   }

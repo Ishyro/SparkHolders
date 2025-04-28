@@ -596,7 +596,7 @@ func add_fire(coord: Vector3, size: float, light_power: int):
 func add_character(character_id: int, character_data: Dictionary):
 	var character = base_character.instantiate()
 	character.transform.origin = Vector3(character_data["coord"].x, character_data["coord"].z + character_data["size"].z / 2., character_data["coord"].x)
-	character.rotation_degrees = Vector3(0, character_data["orientation"].z, character_data["orientation"].x)
+	character.rotation_degrees = Vector3(0, character_data["orientation"].z, character_data["orientation"].x - 90.)
 	characters[character_id] = character
 	character.id = character_id
 	character.character = character_data["name"]

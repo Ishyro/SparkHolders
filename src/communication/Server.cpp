@@ -60,10 +60,8 @@ namespace Server {
       }
       case ACTION_ACTIVATION: {
         std::string msg2 = String::extract(ss);
-        std::cout << msg2 << std::endl;
         //MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
         MathUtil::Target * target = MathUtil::target_from_string(msg2, adventure);
-        std::cout << target->furniture->id << std::endl;
         action = new TargetedAction(type, adventure, nullptr, user, target);
         break;
       }
@@ -101,17 +99,14 @@ namespace Server {
       }
       case ACTION_ATTACK: {
         MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
-        Skill * skill = user->getAttack();
-        std::cout << skill->name << std::endl;
         int32_t mana_cost = String::extract_int(ss);
-        action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
+        action = new SkillAction(type, adventure, nullptr, user, target, nullptr, mana_cost);
         break;
       }
       case ACTION_BLOCK: {
         MathUtil::Target * target = MathUtil::target_from_string(String::extract(ss), adventure);
-        Skill * skill = user->getDefense();
         int32_t mana_cost = String::extract_int(ss);
-        action = new SkillAction(type, adventure, nullptr, user, target, skill, mana_cost);
+        action = new SkillAction(type, adventure, nullptr, user, target, nullptr, mana_cost);
         break;
       }
       case ACTION_TALKING: {

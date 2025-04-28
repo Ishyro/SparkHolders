@@ -209,7 +209,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
 
 void Adventure::applyIteration() {
   for(Character * c : getCharacters()) {
-    if(!c->isMarkedDead()) {
+    if(c != nullptr && !c->isMarkedDead()) {
       c->gainLevel();
       c->applyEffects();
       c->applyBodyNeeds();
@@ -249,7 +249,9 @@ void Adventure::applyIteration() {
       }
     }
     if(!c->isAlive()) {
+      c->getRegion()->removeCharacter(c);
       delete c;
+      c = nullptr;
     }
   }
 }

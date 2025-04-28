@@ -41,7 +41,9 @@ void SimpleSkill::activate(
         attack->pierce_power += owner->getGear()->getWeapon_2()->pierce_power;
         break;
     }
+    //target->coord.x += 90.F;
     attack->hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, owner->getCoord(), h_size.x, h_size.y, h_size.z);
+    ((MathUtil::HitboxOBB *) attack->hitbox)->applyMove(owner->getCoord(), MathUtil::getDirectionFromOrientation(target->coord));
     std::array<float, DAMAGE_TYPE_NUMBER> current_damages = attack->damages;
     for(HitboxOwner * hit : owner->getRegion()->sortHitboxes(attack)) {
       if(hit->type == HITBOX_OWNER_CHARACTER) {

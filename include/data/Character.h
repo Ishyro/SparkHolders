@@ -289,10 +289,10 @@ class Character {
       status(status)
     {
       hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, coord, getSize().x, getSize().y, getSize().z);
-      hitbox->applyMove(coord, orientation.x, 0.F, orientation.z);
+      hitbox->applyMove(coord, MathUtil::getDirectionFromOrientation(orientation));
     }
 
-    ~Character();
+    //~Character();
     
     bool isMarkedDead();
     void markDead(bool dead);
@@ -381,6 +381,7 @@ class Character {
     std::map<int32_t, Stance *> getActiveStances();
     std::map<int32_t, Stance *> getActiveMagicalStances();
     Skill * getAttack();
+    void incrAttack();
     Skill * getDefense();
 
     void setOrientationX(float orientation_x);
@@ -576,7 +577,7 @@ struct Shield {
     hitbox->applyMove(std::max(
       character->getSize().x, character->getSize().y),
       // rotate the weapon
-      character->getOrientation().x + 90.F, character->getOrientation().y, character->getOrientation().z
+      MathUtil::getDirectionFromOrientation(MathUtil::Vector3(character->getOrientation().x - 90.F, character->getOrientation().y, character->getOrientation().z))
     );
   }
 };

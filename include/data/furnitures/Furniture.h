@@ -79,7 +79,7 @@ class Furniture {
     {
       hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, MathUtil::Vector3(x, y, z), sizeX, sizeY, sizeZ);
       center = MathUtil::Vector3( (float) x + (float) sizeX * .5F, (float) y + (float) sizeY * .5F, (float) z + (float) sizeZ * .5F);
-      hitbox->applyMove(center, 0.F, 0.F, orientation_z);
+      hitbox->applyMove(center, MathUtil::getDirectionFromOrientation(MathUtil::Vector3(90.F, 0.F, orientation_z)));
     }
     Furniture(Furniture * furniture, Map * map):
       id(++furniture::id_counter),

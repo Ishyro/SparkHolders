@@ -61,6 +61,7 @@ void Socket::write(std::string msg) {
       int32_t sent = send(fd, length.c_str(), (ssize_t) length.length() + 1, 0);
     #endif
     if (sent == -1) {
+        std::cerr << "Error number: " << errno << std::endl;
         close();
         throw CloseException();
       }
@@ -80,6 +81,7 @@ void Socket::write(std::string msg) {
     if(send(fd, end_number, (ssize_t) 1, 0) == -1)
   #endif
   {
+    std::cerr << "Error number: " << errno << std::endl;
     close();
     throw CloseException();
   }
@@ -102,6 +104,7 @@ void Socket::write(std::string msg) {
     // it just works
     usleep(1);
     if (sent == -1) {
+      std::cerr << "Error number: " << errno << std::endl;
       close();
       throw CloseException();
     }

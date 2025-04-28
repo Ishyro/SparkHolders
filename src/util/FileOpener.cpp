@@ -258,7 +258,7 @@ namespace FileOpener {
         x,
         y,
         z,
-        0.F,
+        90.F,
         90.F,
         nullptr,
         team,
@@ -1905,10 +1905,10 @@ namespace FileOpener {
     std::vector<Skill *> * attack_skills = new std::vector<Skill *>();
     std::istringstream is_attack_skills(values.at("attack_skills"));
     std::string attack_skill;
-    int32_t attack_skill_number = 0;
+    int32_t attack_skills_number = 0;
     while(getline(is_attack_skills, attack_skill, '%')) {
       attack_skills->push_back( (Skill *) database->getSkill(attack_skill));
-      attack_skill_number++;
+      attack_skills_number++;
     }
     Skill * block_skill = (Skill *) database->getSkill(values.at("block_skill"));
     std::list<int32_t> * weapon_types = new std::list<int32_t>();
@@ -1917,7 +1917,7 @@ namespace FileOpener {
     while(getline(is_weapon_types, weapon_type, '%')) {
       weapon_types->push_back(database->getTargetFromMacro(weapon_type));
     }
-    Stance * stance = new Stance(name, magical, attack_skill_number, *attack_skills, block_skill, *weapon_types);
+    Stance * stance = new Stance(name, magical, attack_skills_number, *attack_skills, block_skill, *weapon_types);
     database->addStance(stance);
     delete attack_skills;
     delete weapon_types;

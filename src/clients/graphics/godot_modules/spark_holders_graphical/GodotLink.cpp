@@ -129,7 +129,7 @@ String GodotLink::getTime() {
 
 String GodotLink::getClock(bool terran_day) {
   #ifdef LOG
-    log << "getClock( " << terran_day << " )" << std::endl;
+    log << "getClock(" << terran_day << ")" << std::endl;
   #endif
   if(terran_day) {
     return link->getAdventure()->getTime().to_string_clock_terra().c_str();
@@ -773,9 +773,7 @@ void GodotLink::send_action(Dictionary action) {
       Vector3 given = (Vector3) action["arg1"];
       MathUtil::Vector3 orientation = MathUtil::Vector3(given.x, given.y, given.z);
       #ifdef LOG
-        log << "orientation_x: " << orientation.x << std::endl;
-        log << "orientation_y: " << orientation.y << std::endl;
-        log << "orientation_z: " << orientation.z << std::endl;
+        log << "MOVE: " << orientation.x << " " << orientation.y << "" << orientation.z << std::endl;
       #endif
       arg1 = (void *) &orientation;
       break;
@@ -834,11 +832,23 @@ void GodotLink::send_action(Dictionary action) {
       Dictionary target_ori = action["arg1"];
       MathUtil::Target * target = new MathUtil::Target();
       target->type = (int32_t) target_ori["type"];
+      #ifdef LOG
+        log << "target.type: " << target->type << std::endl;
+      #endif
       if((int64_t) target_ori["id"] != 0) {
         target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
+        #ifdef LOG
+          log << "target.id: " << target->character->id << std::endl;
+        #endif
       }
       Vector3 pos = (Vector3) target_ori["pos"];
       target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
+      #ifdef LOG
+        log << "target.pos_x: " << target->coord.x << std::endl;
+        log << "target.pos_y: " << target->coord.y << std::endl;
+        log << "target.pos_z: " << target->coord.z << std::endl;
+      #endif
+      target->next = nullptr;
       arg1 = (void *) target;
       Skill * skill = nullptr;
       if(type == ACTION_USE_SKILL) {
@@ -846,6 +856,9 @@ void GodotLink::send_action(Dictionary action) {
       }
       arg2 = (void *) skill;
       mana_cost = (int32_t) action["mana_cost"];
+      #ifdef LOG
+        log << "mana_cost: " << mana_cost << std::endl;
+      #endif
       break;
     }
   }

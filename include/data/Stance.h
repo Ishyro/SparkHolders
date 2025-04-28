@@ -15,7 +15,7 @@ class Stance {
     Stance(
       std::string name,
       bool magical,
-      int32_t attack_skill_number,
+      int32_t attack_skills_number,
       std::vector<Skill *> attack_skills,
       Skill * block_skill,
       std::list<int32_t> weapon_types

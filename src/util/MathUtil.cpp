@@ -175,6 +175,77 @@ float MathUtil::getOrientationToTarget(MathUtil::Vector3 coord) {
   return angle * 180.F / M_PI;
 }
 
+MathUtil::Vector3 MathUtil::getOrientationFromDirection(MathUtil::Vector3 direction) {
+  MathUtil::Vector3 angle = MathUtil::Vector3(0.F, 0.F, 0.F);
+  if(direction.y == 0.F) {
+    if(direction.x > 0.F) {
+      angle.z = 0.F;
+    }
+    if(direction.x < 0.F) {
+      angle.z = 180.F;
+    }
+    if(direction.x == 0.F) {
+      angle.z = 360.F;
+    }
+  }
+  else if(direction.x == 0.F) {
+    if(direction.y > 0) {
+      angle.z = 90.F;
+    }
+    if(direction.y < 0) {
+      angle.z = 270.F;
+    }
+  }
+  else {
+    angle.z = std::atan2(direction.y, direction.x);
+    if(angle.z < 0) {
+      angle.z += 2 * M_PI;
+    }
+  }
+
+  if(direction.z == 0.F) {
+    if(direction.y > 0.F) {
+      angle.x = 0.F;
+    }
+    if(direction.y < 0.F) {
+      angle.x = 180.F;
+    }
+    if(direction.y == 0.F) {
+      angle.x = 360.F;
+    }
+  }
+  else if(direction.y == 0.F) {
+    if(direction.z > 0) {
+      angle.x = 90.F;
+    }
+    if(direction.z < 0) {
+      angle.x = 270.F;
+    }
+  }
+  else {
+    angle.x = std::atan2(direction.z, direction.y);
+    if(angle.x < 0) {
+      angle.x += 2 * M_PI;
+    }
+  }
+  angle = angle * (180.F / M_PI);
+  angle.x += 90.F;
+  return angle;
+}
+
+MathUtil::Vector3 MathUtil::getDirectionFromOrientation(MathUtil::Vector3 orientation) {
+  // no orientation.y
+  float cos_long = std::cos(orientation.z * M_PI / 180.F);
+  float sin_long = std::sin(orientation.z * M_PI / 180.F);
+  float cos_colat = std::cos(orientation.x * M_PI / 180.F);
+  float sin_colat = std::sin(orientation.x * M_PI / 180.F);
+  //
+  MathUtil::Vector3 direction = Vector3(sin_colat * cos_long, sin_colat * sin_long, cos_colat);
+  direction.normalize();
+  return direction;
+}
+
+
 MathUtil::Vector3 MathUtil::selectClosestVector(MathUtil::Vector3 next, MathUtil::Vector3 dest, int32_t x_direction, int32_t y_direction, int32_t z_direction, float factor_x, float factor_y, float factor_z, float & range) {
   float range_x = 0.F;
   if(factor_x != 0.F) {
@@ -772,9 +843,9 @@ bool MathUtil::collideBalls(MathUtil::HitboxBall * box1, MathUtil::HitboxBall * 
 }
 
 bool MathUtil::collideAABB(MathUtil::HitboxAABB * box1, MathUtil::HitboxAABB * box2) {
-  if((box1->origin.x + box1->sizeX < box2->origin.x || box1->origin.x > + box2->sizeX)
-    || (box1->origin.y + box1->sizeY < box2->origin.y || box1->origin.y > + box2->sizeY) 
-    || (box1->origin.z + box1->sizeZ < box2->origin.z || box1->origin.z > + box2->sizeZ)) {
+  if((box1->origin.x + box1->size.x < box2->origin.x || box1->origin.x > + box2->size.x)
+    || (box1->origin.y + box1->size.y < box2->origin.y || box1->origin.y > + box2->size.y) 
+    || (box1->origin.z + box1->size.z < box2->origin.z || box1->origin.z > + box2->size.z)) {
     return false;
   }
   return true;
@@ -824,9 +895,9 @@ bool MathUtil::collideOBB(MathUtil::HitboxOBB * box1, MathUtil::HitboxOBB * box2
 }
 
 bool MathUtil::collideBallAABB(MathUtil::HitboxBall * box1, MathUtil::HitboxAABB * box2) {
-  float px = std::fmax(box2->origin.x, std::fmin(box1->origin.x, box2->origin.x + box2->sizeX));
-  float py = std::fmax(box2->origin.y, std::fmin(box1->origin.y, box2->origin.y + box2->sizeY));
-  float pz = std::fmax(box2->origin.z, std::fmin(box1->origin.z, box2->origin.z + box2->sizeZ));
+  float px = std::fmax(box2->origin.x, std::fmin(box1->origin.x, box2->origin.x + box2->size.x));
+  float py = std::fmax(box2->origin.y, std::fmin(box1->origin.y, box2->origin.y + box2->size.y));
+  float pz = std::fmax(box2->origin.z, std::fmin(box1->origin.z, box2->origin.z + box2->size.z));
   float distance = (px - box1->origin.x) * (px - box1->origin.x) +
                     (py - box1->origin.y) * (py - box1->origin.y) +
                     (pz - box1->origin.z) * (pz - box1->origin.z);
@@ -838,31 +909,31 @@ bool MathUtil::collideBallOBB(MathUtil::HitboxBall * box1, MathUtil::HitboxOBB *
   float distance;
 
   distance = std::abs(diff.dot(box2->x_axis));
-  if (distance > (box2->sizeX / 2) + box1->radius) return false;
+  if (distance > (box2->size.x / 2) + box1->radius) return false;
 
   distance = std::abs(diff.dot(box2->y_axis));
-  if (distance > (box2->sizeY / 2) + box1->radius) return false;
+  if (distance > (box2->size.y / 2) + box1->radius) return false;
 
   distance = std::abs(diff.dot(box2->z_axis));
-  if (distance > (box2->sizeZ / 2) + box1->radius) return false;
+  if (distance > (box2->size.z / 2) + box1->radius) return false;
 
   // no separation
   return true;
 }
 
 std::vector<MathUtil::Vector3> transformAABBToOBBSystem(MathUtil::HitboxAABB * box1, MathUtil::HitboxOBB * box2) {
-  MathUtil::Vector3 halfExtents = MathUtil::Vector3(box1->sizeX, box1->sizeY, box1->sizeZ) * 0.5;
+  MathUtil::Vector3 halfExtents = MathUtil::Vector3(box1->size.x, box1->size.y, box1->size.z) * 0.5;
   MathUtil::Vector3 centerOffset = box2->origin - (box1->origin + halfExtents);
 
   std::vector<MathUtil::Vector3> aabbCorners = {
     MathUtil::Vector3(box1->origin.x, box1->origin.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y, box1->origin.z + box1->sizeZ),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->sizeY, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->sizeY, box1->origin.z + box1->sizeZ),
-    MathUtil::Vector3(box1->origin.x + box1->sizeX, box1->origin.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x + box1->sizeX, box1->origin.y, box1->origin.z + box1->sizeZ),
-    MathUtil::Vector3(box1->origin.x + box1->sizeX, box1->origin.y + box1->sizeY, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x + box1->sizeX, box1->origin.y + box1->sizeY, box1->origin.z + box1->sizeZ)
+    MathUtil::Vector3(box1->origin.x, box1->origin.y, box1->origin.z + box1->size.z),
+    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->size.y, box1->origin.z),
+    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->size.y, box1->origin.z + box1->size.z),
+    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y, box1->origin.z),
+    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y, box1->origin.z + box1->size.z),
+    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y + box1->size.y, box1->origin.z),
+    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y + box1->size.y, box1->origin.z + box1->size.z)
   };
 
   std::vector<MathUtil::Vector3> transformedCorners;

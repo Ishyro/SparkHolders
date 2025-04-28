@@ -32,7 +32,7 @@ void Furniture::init(Map * map, MathUtil::Vector3i coord) {
   }
   orientation_z = orientation_z >= 360.F ? orientation_z - 360.F : orientation_z;
   center = MathUtil::Vector3( (float) this->coord.x + (float) sizeX * .5F, (float) this->coord.y + (float) sizeY * .5F, (float) this->coord.z + (float) sizeZ * .5F);
-  hitbox->applyMove(center, 0.F, 0.F, orientation_z);
+  hitbox->applyMove(center, MathUtil::getDirectionFromOrientation(MathUtil::Vector3(90.F, 0.F, orientation_z)));
 }
 
 MathUtil::Vector3i Furniture::getCoord() { return coord; }
