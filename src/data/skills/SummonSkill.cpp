@@ -10,7 +10,7 @@
 
 void SummonSkill::activate(Character * owner, MathUtil::Target * target, Adventure * adventure, int32_t overcharge_power_type, int32_t overcharge_duration_type, int32_t overcharge_range_type, float overcharge_power, float overcharge_duration, float overcharge_range, int32_t range, bool toggle_state) {
   // MathUtil::Target will be a Block
-  AI * ai;
+  AI * ai = nullptr;
   if (ai_str == "DiurnalPassiveAI") {
     ai = new DiurnalPassiveAI(target->coord.x, target->coord.y);
   }

@@ -62,72 +62,6 @@ Block * Region::getBlock(MathUtil::Vector3i coord) {
   return chunk_indice >= 0 && chunk_indice < 27 ? chunks[a + b * 3 + c * 9]->getBlock(coord) : nullptr;
 }
 
-float Region::getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest) {
-  MathUtil::Vector3 the_ori = c->getCoord();
-  if(ori == dest) {
-    return 0.F;
-  }
-  if(!tryMove(c, dest)) {
-    return -1.F;
-  }
-  if(c->isFlying()) {
-    return MathUtil::distance(ori, dest) * 5.F / c->getMovementTimeModifier();
-  }
-  else {
-    MathUtil::Vector3 next = MathUtil::Vector3(ori.x, ori.y, ori.z);
-    float orientation_z = MathUtil::getOrientationToTarget(ori.x, ori.y, dest.x, dest.y);
-    float orientation_x = std::abs(std::acos((dest.z - ori.z) / MathUtil::distance(ori, dest))); // colatitude is non oriented
-    float cos_long = std::cos(orientation_z * M_PI / 180.F);
-    float sin_long = std::sin(orientation_z * M_PI / 180.F);
-    float cos_colat = std::cos(orientation_x);
-    float sin_colat = std::sin(orientation_x);
-    //
-    float factor_x = sin_colat * cos_long;
-    float factor_y = sin_colat * sin_long;
-    float factor_z = cos_colat;
-    float ap_cost = 0.F;
-    int32_t x_direction = 1;
-    int32_t y_direction = 1;
-    int32_t z_direction = 1;
-    if(orientation_z > 180.F) {
-      y_direction = -1;
-    }
-    if(orientation_z > 90.F && orientation_z < 270.F) {
-      x_direction = -1;
-    }
-    if(orientation_x > M_PI / 2.F && orientation_x < 1.5F * M_PI) {
-      z_direction = -1;
-    }
-    bool done = false;
-    while(!done) {
-      float range;
-      MathUtil::Vector3 current = MathUtil::selectClosestVector(next, dest, x_direction, y_direction, z_direction, factor_x, factor_y, factor_z, range);
-      Block * block = getBlock(current);
-      if(block == nullptr) {
-        block = getBlock(MathUtil::Vector3(current.x, current.y, current.z - 1));
-        // no path
-        if(block == nullptr) {
-          return -1.F;
-        }
-      }
-      float current_range = std::min(MathUtil::distance(next, dest), range);
-      if(current_range != range) {
-        done = true;
-        float range_with_cost = c->getMovementTimeModifier() * current_range / block->speed;
-        next.x += factor_x * range_with_cost;
-        next.y += factor_y * range_with_cost;
-        next.z += factor_z * range_with_cost;
-        next = MathUtil::round(next);
-      }
-      else {
-        next = current;
-      }
-      ap_cost += current_range * block->speed / c->getMovementTimeModifier();
-    }
-    return MathUtil::round(ap_cost);
-  }
-}
-
 bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   if(c->isEtheral()) {
     return true;
@@ -305,6 +239,9 @@ float Region::getOrientationXOnSlope(float character_orientation, int32_t block_
       return y_direction == 1 ? 45.F : 135.F;
     case 270:
       return y_direction == -1 ? 45.F : 135.F;
+    // no happening
+    default:
+      return 0.F;
   }
 }
 

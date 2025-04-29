@@ -10,10 +10,10 @@ void TeleportSkill::activate(Character * owner, MathUtil::Target * target, Adven
   // maybe swap character teleport in the future ?
   switch(apparition_type) {
     case APPARITION_SOFT:
-      adventure->softMoveCharacterToMap(other, target->coord);
+      adventure->softMoveCharacterToMap(other, target->next->coord);
       break;
     case APPARITION_HARD:
-      adventure->hardMoveCharacterToMap(other, target->coord);
+      adventure->hardMoveCharacterToMap(other, target->next->coord);
       break;
     default:
       ;
@@ -25,12 +25,12 @@ bool TeleportSkill::canCast(Character * owner, MathUtil::Target * target, Advent
   // MathUtil::Target 1 will always be a Character
   // other may be owner
   Character * other = target->character;
-  if(MathUtil::distance(owner->getCoord(), target->coord) > range * overcharge_range) {
+  if(MathUtil::distance(owner->getCoord(), other->getCoord()) > range * overcharge_range) {
     return false;
   }
   switch(movement_type) {
     case MOVEMENT_TELEPORT:
-      if(range * overcharge_range >= MathUtil::distance(owner->getCoord(), target->next->coord)) {
+      if(range * overcharge_range >= MathUtil::distance(other->getCoord(), target->next->coord)) {
         return true;
       }
       else {

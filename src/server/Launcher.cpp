@@ -39,21 +39,11 @@
 struct StartCommunicationParameter {
   Link * link;
   ServerSocket * ss;
-  Adventure * adventure;
-};
-
-// Windows is great
-struct RelinkCommunicationParameter {
-  std::vector<Link *> * links;
-  ServerSocket * ss;
-  Adventure * adventure;
-  int32_t playersNumber;
 };
 
 void listener(void * param) {
   Link * link = ((StartCommunicationParameter *) param)->link;
   ServerSocket * ss = ((StartCommunicationParameter *) param)->ss;
-  Adventure * adventure = ((StartCommunicationParameter *) param)->adventure;
   bool done = false;
   while(!done) {
     try {
@@ -70,44 +60,7 @@ void listener(void * param) {
   }
 }
 
-void relinkCommunication(void * param) {
-  std::vector<Link *> * links = ((RelinkCommunicationParameter *) param)->links;
-  ServerSocket * ss = ((RelinkCommunicationParameter *) param)->ss;
-  Adventure * adventure = ((RelinkCommunicationParameter *) param)->adventure;
-  int32_t playersNumber = ((RelinkCommunicationParameter *) param)->playersNumber;
-  while(true) {
-    Socket newSocket = ss->accept();
-    bool used = false;
-    std::string playerName;
-    try {
-      newSocket.write(std::string("RECONNECT"));
-      playerName = newSocket.read();
-    } catch (CloseException &e) {
-      continue;
-    }
-    /* TODO
-    for(int32_t i = 0; i < playersNumber; i++) {
-      if((*links)[i]->isClosed() && (*links)[i]->getPlayer()->name == playerName) {
-        (*links)[i]->changeSocket(newSocket);
-        used = true;
-        try {
-          newSocket.write(std::string("OK"));
-          break;
-        } catch (CloseException &e) {
-          used = false;
-          (*links)[i]->markClosed();
-        }
-      }
-    }
-    */
-    if(!used) {
-      newSocket.close();
-    }
-  }
-}
-
 int32_t main(int32_t argc, char ** argv) {
-
   if (argc < 3) {
     std::cerr << "Expected: ./Launcher <adventureFile> <multi>" << std::endl;
     return EXIT_FAILURE;
@@ -142,7 +95,6 @@ int32_t main(int32_t argc, char ** argv) {
     params[i] = new StartCommunicationParameter();
     params[i]->link = links[i];
     params[i]->ss = ss;
-    params[i]->adventure = adventure;
     #ifdef _WIN32_WINNT
       threads[i] = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) params[i], 0, NULL);
     #else
@@ -178,16 +130,6 @@ int32_t main(int32_t argc, char ** argv) {
   for(int32_t i = 0; i < playersNumber; i++) {
     links[i]->sendStart();
   }
-  RelinkCommunicationParameter * param = new RelinkCommunicationParameter();
-  param->links = &links;
-  param->ss = ss;
-  param->adventure = adventure;
-  param->playersNumber = playersNumber;
-  #ifdef _WIN32_WINNT
-    HANDLE thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) relinkCommunication, (void *) param, 0, NULL);
-  #else
-    std::thread thread = std::thread(relinkCommunication, (void *) param);
-  #endif
   std::chrono::_V2::system_clock::time_point start = std::chrono::system_clock::now();
   for(int32_t i = 0; i < playersNumber; i++) {
     links[i]->sendState();

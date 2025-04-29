@@ -105,14 +105,6 @@ Dictionary GodotLink::getMacros() {
   return result;
 }
 
-float GodotLink::getMoveCost(Vector3 ori, Vector3 dest) {
-  #ifdef LOG
-    log << "getMoveCost( (" << ori.x << "," << ori.y << "," << ori.z << "), (" << dest.x << "," << dest.y << "," << dest.z << ") )" << std::endl;
-  #endif
-  float result = link->getPlayer()->getRegion()->getMoveCost(link->getPlayer(), MathUtil::Vector3(ori.z, ori.x, ori.y), MathUtil::Vector3(dest.z, dest.x, dest.y));
-  return result;
-}
-
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   #ifdef LOG
     log << "getOrientationToTarget( (" << a.x << "," << a.y << "), (" << b.x << "," << b.y << ") )" << std::endl;
@@ -906,7 +898,6 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("hasState"), &GodotLink::hasState);
   ClassDB::bind_method(D_METHOD("getState"), &GodotLink::getState);
   ClassDB::bind_method(D_METHOD("getMacros"), &GodotLink::getMacros);
-  ClassDB::bind_method(D_METHOD("getMoveCost", "ori", "dest"), &GodotLink::getMoveCost);
   ClassDB::bind_method(D_METHOD("getTime"), &GodotLink::getTime);
   ClassDB::bind_method(D_METHOD("getClock", "terran_day"), &GodotLink::getClock);
   ClassDB::bind_method(D_METHOD("getLight"), &GodotLink::getLight);

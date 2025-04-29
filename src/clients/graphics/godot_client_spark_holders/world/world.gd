@@ -603,6 +603,7 @@ func add_character(character_id: int, character_data: Dictionary):
 	n_characters.add_child(character)
 	#character.scale_object_local(Vector3(character_data["size"].y, character_data["size"].z, character_data["size"].x))
 	character.shape.shape.set_size(Vector3(character_data["size"].y, character_data["size"].z, character_data["size"].x))
+	character.mesh_debug.mesh.set_size(Vector3(character_data["size"].y, character_data["size"].z, character_data["size"].x))
 	if owned_character == character_id:
 		character.visible = false
 

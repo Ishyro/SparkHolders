@@ -45,7 +45,6 @@ public:
   bool hasState();
   bool getState();
   Dictionary getMacros();
-  float getMoveCost(Vector3 ori, Vector3 dest);
   String getTime();
   String getClock(bool terran_day);
   int64_t getLight();

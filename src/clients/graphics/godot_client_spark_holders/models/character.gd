@@ -4,6 +4,7 @@ var character
 var id
 
 @onready var shape = $Shape
+@onready var mesh_debug = $Debug
 
 func move(speed: Vector3, delta: float):
 	velocity = speed * delta

@@ -61,6 +61,8 @@ float ProjectileSkill::getDamageFromType(int32_t damage_type, Character * owner,
       return (damage + owner->getGear()->getWeapon_1()->getDamageFromType(damage_type) + (projectile->getDamageFromType(DAMAGE_PHYSICAL) + owner->getGear()->getWeapon_1()->getDamageFromType(DAMAGE_PHYSICAL)) * damage_multipliers[damage_type]) * overcharge;
     case SKILL_SCALE_SUB_WEAPON:
       return (damage + owner->getGear()->getWeapon_2()->getDamageFromType(damage_type) + (projectile->getDamageFromType(DAMAGE_PHYSICAL) + owner->getGear()->getWeapon_2()->getDamageFromType(DAMAGE_PHYSICAL)) * damage_multipliers[damage_type]) * overcharge;
+    default:
+      return damage * overcharge;
   }
 }
 

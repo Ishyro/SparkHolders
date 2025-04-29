@@ -198,7 +198,8 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     *titles
   );
   world->addCharacter(player);
-  for(auto pair : player->getRegion()->getBlocks()) {
+  for(std::pair<const MathUtil::Vector3i, Block *> pair : player->getRegion()->getBlocks()) {
+    // TODO
     ;
   }
   delete spawn;
@@ -208,6 +209,7 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
 }
 
 void Adventure::applyIteration() {
+  std::list<Character *> to_remove = std::list<Character *>();
   for(Character * c : getCharacters()) {
     if(c != nullptr && !c->isMarkedDead()) {
       c->gainLevel();
@@ -249,10 +251,11 @@ void Adventure::applyIteration() {
       }
     }
     if(!c->isAlive()) {
-      c->getRegion()->removeCharacter(c);
-      delete c;
-      c = nullptr;
+      to_remove.push_back(c);
     }
+  }
+  for(Character * c : to_remove) {
+    world->eraseCharacter(c);
   }
 }
 

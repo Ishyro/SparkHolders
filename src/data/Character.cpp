@@ -226,7 +226,7 @@ MathUtil::Vector3 Character::getSpeed() { return speed; }
 MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
 MathUtil::HitboxOBB * Character::getHitbox() { return hitbox; }
 
-Shield * Character::produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size) {
+void Character::produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size) {
   outer_shield = new Shield(shield_type, shield_hp, size, this);
   region->addShield(outer_shield);
 }
@@ -1388,6 +1388,7 @@ bool Character::selectStance(Stance * stance) {
       }
     }
   }
+  return false;
 }
 
 int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
@@ -1412,7 +1413,6 @@ int32_t Character::getDamageFromType(int32_t damage_type, int32_t slot) {
 
 float Character::getRawDamageReductionFromType(int32_t damage_type) {
   float reduction = gear->getDamageReductionFromType(damage_type);
-  bool blocking = false;
   for(Effect * e : getEffects()) {
     if(e->type == EFFECT_DAMAGE_REDUCTION) {
       reduction += e->getDamageReductionFromType(damage_type);
@@ -1474,7 +1474,7 @@ Projectile * Character::shoot(MathUtil::Target * target, Adventure * adventure, 
       for(int32_t damage_type = 0; damage_type < DAMAGE_TYPE_NUMBER; damage_type++) {
         realDamages[damage_type] = getDamageFromType(damage_type, slot);
       }
-      Projectile * base_projectile = (Projectile *) gear->getWeapon_1()->getAmmo()->getProjectile();
+      //Projectile * base_projectile = (Projectile *) gear->getWeapon_1()->getAmmo()->getProjectile();
       if(gear->getWeapon_1()->use_ammo) {
         if(player_character) {
           setNeedToSend(true);

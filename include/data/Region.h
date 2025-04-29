@@ -57,7 +57,6 @@ class Region {
     Block * getBlock(MathUtil::Vector3 coord);
     Block * getBlock(MathUtil::Vector3i coord);
     std::map<const MathUtil::Vector3i, Block *> getBlocks();
-    float getMoveCost(Character * c, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     bool tryMove(Character * c, MathUtil::Vector3 dest);
     void move(Character * character, World * world);
     void setSpeed(Character * character, MathUtil::Vector3 orientation);

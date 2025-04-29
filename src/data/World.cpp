@@ -155,10 +155,9 @@ void World::addCharacter(Character * character) {
   changeRegion(character);
 }
 
-void World::removeCharacter(Character * character) {
-  characters.remove(character);
+void World::eraseCharacter(Character * character) {
   character->getRegion()->removeCharacter(character);
-  delete character;
+  characters.erase(character);
 }
 
 void World::checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest) {
@@ -194,31 +193,6 @@ void World::changeRegion(Character * character) {
     region->addCharacter(character);
     regions.insert(std::make_pair(coord, region));
   }
-}
-
-float World::setPathToTarget(Region * region, float x, float y, MathUtil::Target * target) {
-  float target_x;
-  float target_y;
-  switch(target->type) {
-    case TARGET_COORDINATES:
-      target_x = target->coord.x + 0.5F;
-      target_y = target->coord.y + 0.5F;
-      break;
-    case TARGET_CHARACTER: {
-      Character * other = target->character;
-      target_x = other->getCoord().x;
-      target_y = other->getCoord().y;
-      break;
-    }
-    case TARGET_FURNITURE: {
-      Furniture * other = target->furniture;
-      target_x = other->getCenter().x;
-      target_y = other->getCenter().y;
-      break;
-    }
-    default: ;
-  }
-  return MathUtil::getOrientationToTarget(x, y, target_x, target_y);
 }
 
 float World::distance(int64_t map_id, float x, float y, MathUtil::Target * target) {

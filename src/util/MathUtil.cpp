@@ -926,14 +926,14 @@ std::vector<MathUtil::Vector3> transformAABBToOBBSystem(MathUtil::HitboxAABB * b
   MathUtil::Vector3 centerOffset = box2->origin - (box1->origin + halfExtents);
 
   std::vector<MathUtil::Vector3> aabbCorners = {
-    MathUtil::Vector3(box1->origin.x, box1->origin.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y, box1->origin.z + box1->size.z),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->size.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x, box1->origin.y + box1->size.y, box1->origin.z + box1->size.z),
-    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y, box1->origin.z + box1->size.z),
-    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y + box1->size.y, box1->origin.z),
-    MathUtil::Vector3(box1->origin.x + box1->size.x, box1->origin.y + box1->size.y, box1->origin.z + box1->size.z)
+    MathUtil::Vector3(centerOffset.x, centerOffset.y, centerOffset.z),
+    MathUtil::Vector3(centerOffset.x, centerOffset.y, centerOffset.z + box1->size.z),
+    MathUtil::Vector3(centerOffset.x, centerOffset.y + box1->size.y, centerOffset.z),
+    MathUtil::Vector3(centerOffset.x, centerOffset.y + box1->size.y, centerOffset.z + box1->size.z),
+    MathUtil::Vector3(centerOffset.x + box1->size.x, centerOffset.y, centerOffset.z),
+    MathUtil::Vector3(centerOffset.x + box1->size.x, centerOffset.y, centerOffset.z + box1->size.z),
+    MathUtil::Vector3(centerOffset.x + box1->size.x, centerOffset.y + box1->size.y, centerOffset.z),
+    MathUtil::Vector3(centerOffset.x + box1->size.x, centerOffset.y + box1->size.y, centerOffset.z + box1->size.z)
   };
 
   std::vector<MathUtil::Vector3> transformedCorners;

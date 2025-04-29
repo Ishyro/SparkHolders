@@ -40,7 +40,7 @@ bool ContainerItem::add(Item * item, int32_t x, int32_t y) {
 }
 
 void ContainerItem::add_all(std::list<Item *> items) {
-  int32_t slot_type;
+  int32_t slot_type = 0;
   if(subtype == ITEM_BAG) {
     slot_type = ITEM_SLOT_INSIDE_BAG;
   }

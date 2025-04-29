@@ -119,7 +119,11 @@ class Map {
             new_coord.y = sizeX - 1 - coord.x + offsetY;
             new_coord.z = coord.z + offsetZ;
             break;
-          default:;
+          // not happening
+          default:
+            new_coord.x = coord.x + offsetX;
+            new_coord.y = coord.y + offsetY;
+            new_coord.z = coord.z + offsetZ;
         }
         // oriented block
         if(block->name.find('#') != std::string::npos) {

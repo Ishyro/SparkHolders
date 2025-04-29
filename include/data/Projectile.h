@@ -234,8 +234,8 @@ class Projectile {
     float getDestY();
     MathUtil::Vector3 getOrientation();
     bool isLost();
-    int32_t getRawDamage();
-    int32_t getDamageFromType(int32_t damage_type);
+    float getDamageFromType(int32_t damage_type);
+    float getRawDamage();
     float getSpeed();
     float getArea();
     float getSize();

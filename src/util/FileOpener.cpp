@@ -231,7 +231,7 @@ namespace FileOpener {
       delete ss_titles;
       int64_t xp = String::extract_long(ss);
       int64_t gold = String::extract_long(ss);
-      AI * ai;
+      AI * ai = nullptr;
       if (ai_str == "DiurnalPassiveAI") {
         ai = new DiurnalPassiveAI(x, y);
       }
@@ -929,7 +929,7 @@ namespace FileOpener {
     while(getline(is_3, effect, '%')) {
       effects->push_back((Effect *) database->getEffect(effect));
     }
-    Item * item;
+    Item * item = nullptr;
     if(type == ITEM_ARMOR) {
       int32_t swap_time = stoi(values.at("swap_time"));
       int32_t durability = stoi(values.at("durability"));
@@ -1317,7 +1317,7 @@ namespace FileOpener {
     if(type != FURNITURE_BASIC) {
       activation_time = stof(values.at("activation_time"));
     }
-    Furniture * furniture;
+    Furniture * furniture = nullptr;
     switch(type) {
       case FURNITURE_BASIC:
         furniture = new BasicFurniture(name, type, sizeX, sizeY, sizeZ, unwalkable, opaque, solid, light, fire_size, fire_posX, fire_posY, fire_posZ);

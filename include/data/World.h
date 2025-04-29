@@ -48,10 +48,9 @@ class World {
     BlocksChunk * getChunk(MathUtil::Vector3 coord);
     BlocksChunk * getChunk(MathUtil::Vector3i ori);
     void addCharacter(Character * character);
-    void removeCharacter(Character * character);
+    void eraseCharacter(Character * character);
     void checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     void changeRegion(Character * character);
-    float setPathToTarget(Region * region, float x, float y, MathUtil::Target * target);
     float distance(int64_t map_id, float x, float y, MathUtil::Target * target);
   private:
     std::map<const int64_t, Map *> maps;

@@ -14,7 +14,7 @@ void::Projectile::init(std::list<Effect *> effects, float overcharge, int32_t ov
     this->effects.push_back(toadd);
   }
   lost = false;
-  orientation.z = world->setPathToTarget(current_map_id, owner->getCoord().x, owner->getCoord().y, target);
+  //orientation.z = world->setPathToTarget(current_map_id, owner->getCoord().x, owner->getCoord().y, target);
   if(change_owner_orientation) {
     owner->setOrientationZ(orientation.z);
   }
@@ -36,10 +36,10 @@ float Projectile::getDestY() {
 
 MathUtil::Vector3 Projectile::getOrientation() { return orientation; }
 bool Projectile::isLost() { return lost; }
-int32_t Projectile::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
-int32_t Projectile::getRawDamage() {
-  int32_t power = 0;
-  for(int32_t i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
+float Projectile::getDamageFromType(int32_t damage_type) { return damages[damage_type]; }
+float Projectile::getRawDamage() {
+  float power = 0;
+  for(float i = 0; i < DAMAGE_TYPE_NUMBER; i++) {
     power += current_damages[i];
   }
   return power;

@@ -9,7 +9,6 @@ class ProjectileSkill : public PseudoSkill {
   const int32_t hit_order = ATTACK_FRONT_TO_BACK;
   const float status_power;
   const float pierce_power;
-  const Projectile * projectile;
   public:
     ProjectileSkill(
       std::string name,
@@ -33,6 +32,8 @@ class ProjectileSkill : public PseudoSkill {
     float getPower();
     float getDamageFromType(int32_t dammage_type, Character * owner, float overcharge);
     Projectile * getProjectile();
+  private:
+    Projectile * projectile;
 };
 
 #endif // _PROJECTILE_SKILL_H_

@@ -70,17 +70,17 @@ float Skill::getTime(Character * owner) {
       }
     }
   }
-  if(scaling_type == SKILL_SCALE_NONE) {
-    return time;
-  }
-  if(scaling_type == SKILL_SCALE_MAIN_WEAPON) {
-    return owner->getGear()->getWeapon_1()->strike_time;
-  }
-  else if(scaling_type == SKILL_SCALE_SUB_WEAPON) {
-    return owner->getGear()->getWeapon_2()->strike_time;
-  }
-  else if(scaling_type == SKILL_SCALE_BOTH_WEAPONS) {
-    return owner->getGear()->getWeapon_1()->strike_time + owner->getGear()->getWeapon_2()->strike_time;
+  switch(scaling_type) {
+    case SKILL_SCALE_NONE:
+      return time;
+    case SKILL_SCALE_MAIN_WEAPON:
+      return owner->getGear()->getWeapon_1()->strike_time;
+    case SKILL_SCALE_SUB_WEAPON:
+      return owner->getGear()->getWeapon_2()->strike_time;
+    case SKILL_SCALE_BOTH_WEAPONS:
+      return owner->getGear()->getWeapon_1()->strike_time + owner->getGear()->getWeapon_2()->strike_time;
+    default:
+      return time;
   }
 }
 

@@ -17,7 +17,7 @@ Action * TargetedAction::execute(Adventure * adventure) {
       next->execute(adventure);
     }
   }
-  user->setOrientationZ(adventure->getWorld()->setPathToTarget(user->getRegion(), user->getCoord().x, user->getCoord().y, target));
+  setUserOrientationToTarget(adventure);
   switch(type) {
     case ACTION_ACTIVATION: {
       if(target->furniture != nullptr && target->furniture->type != FURNITURE_BASIC) {
@@ -71,6 +71,9 @@ void TargetedAction::setUserOrientationToTarget(Adventure * adventure) {
   else if(target->type == TARGET_FURNITURE) {
     Furniture * other = target->furniture;
     user->setOrientationZ(MathUtil::getOrientationToTarget(user->getCoord().x, user->getCoord().y, other->getCenter().x, other->getCenter().y));
+  }
+  else if(target->type == TARGET_FRONT) {
+    user->setOrientationZ(target->coord.z);
   }
 }
 

@@ -302,7 +302,7 @@ class Character {
     MathUtil::Vector3 getSpeed();
     MathUtil::Coords getWorldCoords();
     MathUtil::HitboxOBB * getHitbox();
-    Shield * produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size);
+    void produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size);
     void stopShield();
     MathUtil::Vector3 getOrientation();
     MathUtil::Vector3 getSize();
