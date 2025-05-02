@@ -1,10 +1,11 @@
 #include <stdexcept>
 
+#include "data/Biome.h"
 #include "data/Block.h"
+#include "data/BlocksChunk.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/skills/Skill.h"
@@ -25,7 +26,9 @@ Database::Database() {
   macros = std::map<const std::string,const int32_t>();
 
   attributes = std::map<const std::string, const Attributes *>();
+  biomes = std::map<const std::string, const Biome *>();
   blocks = std::map<const std::string, const Block *>();
+  chunks = std::map<const std::string, const BlocksChunk *>();
   characters = std::map<const std::string, const Character *>();
   effects = std::map<const std::string, const Effect *>();
   events = std::map<const std::string, const Event *>();
@@ -34,7 +37,6 @@ Database::Database() {
   furnitures = std::map<const std::string, const Furniture * >();
   furnituresFiles = std::map<const std::string, const std::string>();
   gears = std::map<const std::string, const Gear *>();
-  maps = std::map<const std::string, const Map *>();
   projectiles = std::map<const std::string, const Projectile *>();
   quests = std::map<const std::string, const Quest * >();
   skills = std::map<const std::string, const Skill * >();
@@ -443,7 +445,9 @@ const int32_t Database::getTargetFromMacro(const std::string macro) { return mac
 
 const Attributes * Database::getAttributes(const std::string attributes) { return this->attributes.at(attributes); }
 const std::string Database::getAttributesFile(const std::string attributes) { return attributesFiles.at(attributes); }
+const Biome * Database::getBiome(const std::string biome) { return biomes.at(biome); }
 const Block * Database::getBlock(const std::string block) { return blocks.at(block); }
+const BlocksChunk * Database::getBlocksChunk(const std::string chunk) { return chunks.at(chunk); }
 std::map<const std::string, const Block *> Database::getAvaillableBlocks() { return blocks; }
 const Character * Database::getCharacter(const std::string character) { return characters.at(character); }
 const Effect * Database::getEffect(const std::string effect) { return effects.at(effect); }
@@ -453,7 +457,6 @@ const std::string Database::getItemFile(const std::string item) { return itemsFi
 const Furniture * Database::getFurniture(const std::string furniture) { return furnitures.at(furniture); }
 const std::string Database::getFurnitureFile(const std::string furniture) { return furnituresFiles.at(furniture); }
 const Gear * Database::getGear(const std::string gear) { return gears.at(gear); }
-const Map * Database::getMap(const std::string map) { return maps.at(map); }
 const Projectile * Database::getProjectile(const std::string projectile) { return projectiles.at(projectile); }
 const Quest * Database::getQuest(const std::string quest) { return quests.at(quest); }
 const Skill * Database::getSkill(const std::string skill) { return skills.at(skill); }
@@ -480,7 +483,9 @@ std::list<std::pair<const std::string, const std::string>> Database::getWaysInco
 
 void Database::addAttributes(const Attributes * attributes) { this->attributes.insert(std::make_pair(attributes->name, attributes)); }
 void Database::addAttributesFile(const std::string attributes, const std::string path) { attributesFiles.insert(std::make_pair(attributes, path)); }
+void Database::addBiome(const Biome * biome) { biomes.insert(std::make_pair(biome->name, biome)); }
 void Database::addBlock(const Block * block) { blocks.insert(std::make_pair(block->name, block)); }
+void Database::addBlocksChunk(const BlocksChunk * chunk) { chunks.insert(std::make_pair(chunk->name, chunk)); }
 void Database::addCharacter(const Character * character) { characters.insert(std::make_pair(character->name, character)); }
 void Database::addEffect(const Effect * effect) { effects.insert(std::make_pair(effect->name, effect)); }
 void Database::addEvent(const Event * event) { events.insert(std::make_pair(event->name, event)); }
@@ -489,7 +494,6 @@ void Database::addItemFile(const std::string item, const std::string path) { ite
 void Database::addFurniture(const Furniture * furniture) { furnitures.insert(std::make_pair(furniture->name, furniture)); }
 void Database::addFurnitureFile(const std::string furniture, const std::string path) { furnituresFiles.insert(std::make_pair(furniture, path)); }
 void Database::addGear(const Gear * gear) { gears.insert(std::make_pair(gear->name, gear)); }
-void Database::addMap(const Map * map) { maps.insert(std::make_pair(map->name, map)); }
 void Database::addProjectile(const Projectile * projectile) { projectiles.insert(std::make_pair(projectile->name, projectile)); }
 void Database::addQuest(const Quest * quest) { quests.insert(std::make_pair(quest->name, quest)); }
 void Database::addSkill(const Skill * skill) { skills.insert(std::make_pair(skill->name, skill)); }

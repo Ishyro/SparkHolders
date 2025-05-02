@@ -3,7 +3,6 @@
 
 #include "data/actions/Action.h"
 
-#include "data/Map.h"
 #include "data/World.h"
 #include "data/Region.h"
 #include "data/Block.h"
@@ -38,7 +37,6 @@ void Adventure::softMoveCharacterToMap(Character * character, MathUtil::Vector3 
   }
   */
   character->move(coord, character->getOrientation(), world);
-  world->changeRegion(character);
 }
 
 void Adventure::hardMoveCharacterToMap(Character * character, MathUtil::Vector3 coord) {
@@ -124,19 +122,8 @@ Character * Adventure::getCharacter(int64_t id) {
   return world->getCharacter(id);
 }
 
-Furniture * Adventure::getFurniture(int64_t id) {
-  return world->getFurniture(id);
-}
-
-
-std::list<Projectile *> Adventure::getProjectiles() {
-  std::list<Projectile *> projectiles = std::list<Projectile *>();
-  for(Map * map : world->getMaps()) {
-    for(Projectile * projectile : map->getProjectiles()) {
-      projectiles.push_back(projectile);
-    }
-  }
-  return projectiles;
+Furniture * Adventure::getFurniture(MathUtil::Vector3i furniture_coord) {
+  return world->getFurniture(furniture_coord);
 }
 
 void Adventure::actAllProjectiles() {
@@ -177,9 +164,9 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     name,
     0,
     50,
-    spawn->x,
-    spawn->y,
-    spawn->z,
+    spawn->coord.x,
+    spawn->coord.y,
+    spawn->coord.z,
     0.F,
     90.F,
     nullptr,
@@ -202,7 +189,6 @@ Character * Adventure::spawnPlayer(std::string name, Attributes * attr, Race * r
     // TODO
     ;
   }
-  delete spawn;
   delete race_modifiers;
   delete titles;
   return player;
@@ -224,9 +210,6 @@ void Adventure::applyIteration() {
       c->thirstStep(e);
       c->staminaStep(e);
       c->sanityStep(e);
-      if(!c->isAlive()) {
-        //getWorld()->getMap(c->getCurrentMap()->id)->killCharacter(c, c);
-      }
       Action * action = c->getAction();
       if(action != nullptr) {
         if(action->getTick() <= 1.F) {
@@ -315,7 +298,7 @@ std::string Adventure::state_to_string(Character * player) {
     }
   }
   */
-  for(Character * character : region->getCharacters(player)) {
+  for(Character * character : region->getCharacters(player, world)) {
     String::insert(ss_characters, character->to_string());
     String::insert_int(ss_characters, database->getRelation(character->getTeam(), player->getTeam()));
   }
@@ -330,9 +313,11 @@ std::string Adventure::state_to_string(Character * player) {
     String::insert_float(ss_loots, loot->size);
   }
   */
-  for(Furniture * furniture : region->getFurnitures(player)) {
+  for(Furniture * furniture : region->getFurnitures(player, world)) {
     if(furniture->type == FURNITURE_SWITCH) {
-      String::insert_long(ss_furnitures, furniture->id);
+      String::insert_long(ss_furnitures, furniture->getCoord().x);
+      String::insert_long(ss_furnitures, furniture->getCoord().y);
+      String::insert_long(ss_furnitures, furniture->getCoord().z);
       String::insert_bool(ss_furnitures, ( (SwitchFurniture *) furniture)->getIsOn());
     }
   }
@@ -367,8 +352,7 @@ StateDisplay * Adventure::update_state(std::string to_read) {
     int32_t x = String::extract_int(ss_block);
     int32_t y = String::extract_int(ss_block);
     int32_t z = String::extract_int(ss_block);
-    bool outside = String::extract_bool(ss_block);
-    world->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)), outside);
+    world->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(String::extract(ss_block)));
     delete ss_block;
   }
   delete ss_blocks;
@@ -396,7 +380,11 @@ StateDisplay * Adventure::update_state(std::string to_read) {
   delete ss_loots;
   std::stringstream * ss_furnitures = new std::stringstream(String::extract(ss));
   while(ss_furnitures->rdbuf()->in_avail() != 0) {
-    SwitchFurniture * furniture = (SwitchFurniture *) getFurniture(String::extract_long(ss_furnitures));
+    MathUtil::Vector3i furniture_coord = MathUtil::Vector3i();
+    furniture_coord.x = String::extract_long(ss_furnitures);
+    furniture_coord.y = String::extract_long(ss_furnitures);
+    furniture_coord.z = String::extract_long(ss_furnitures);
+    SwitchFurniture * furniture = (SwitchFurniture *) getFurniture(furniture_coord);
     bool isOn = String::extract_bool(ss_furnitures);
     if(furniture->getIsOn() != isOn) {
       furniture->setIsOn(isOn);

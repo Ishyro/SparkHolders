@@ -27,7 +27,6 @@ class Event {
       bool hasQuest,
       Quest * quest,
       std::list<Character *> characters,
-      std::list<Map *> maps,
       std::list<MapLink *> links,
       Speech * speech,
       std::list<Effect *> effects
@@ -39,7 +38,6 @@ class Event {
       hasQuest(hasQuest),
       quest(quest),
       characters(characters),
-      maps(maps),
       links(links),
       speech(speech),
       effects(effects)
@@ -52,7 +50,6 @@ class Event {
       hasQuest(event->hasQuest),
       quest(event->quest),
       characters(event->characters),
-      maps(event->maps),
       links(event->links),
       speech(event->speech),
       effects(event->effects)
@@ -63,7 +60,6 @@ class Event {
   private:
     Quest * quest;
     std::list<Character *> characters;
-    std::list<Map *> maps;
     std::list<MapLink *> links;
     Speech * speech;
     std::list<Effect *> effects;

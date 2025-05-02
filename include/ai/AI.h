@@ -14,7 +14,6 @@ class AI {
     virtual Action * getActions(Adventure * adventure, Character * c) = 0;
     static float getFollowOrientation(Adventure * adventure, Character * self, int32_t x, int32_t y);
     static float getFleeOrientation(Adventure * adventure, Character * self, int32_t x, int32_t y);
-    static Map * updateMap(Adventure * adventure, Character * c);
     std::vector<MathUtil::Pair> getFollowPath(Adventure * adventure, Character * self, int32_t x, int32_t y);
   protected:
     int32_t origin_x;
@@ -26,7 +25,7 @@ class AI {
     Action * moveTowards(Adventure * adventure, Character * self, int32_t target_x, int32_t target_y);
     Action * eat(Adventure * adventure, Character * self);
     Action * trackPrey(Adventure * adventure, Character * self);
-    std::list<Character *> getThreats(Adventure * adventure, Map * map, Character * self, int32_t range);
+    std::list<Character *> getThreats(Adventure * adventure, Character * self, int32_t range);
     std::map<Character *, Skill *> getBestDamageSkills(std::list<Character *> threats, std::map<Skill *, std::array<float, DAMAGE_TYPE_NUMBER>> skills, Character * self);
     Action * attack(Adventure * adventure, std::list<Character *> threats, Character * self);
 };

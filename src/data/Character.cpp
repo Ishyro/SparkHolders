@@ -226,15 +226,15 @@ MathUtil::Vector3 Character::getSpeed() { return speed; }
 MathUtil::Coords Character::getWorldCoords() { return MathUtil::getCoords(coord); }
 MathUtil::HitboxOBB * Character::getHitbox() { return hitbox; }
 
-void Character::produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size) {
+Shield * Character::produceShield(int32_t shield_type, float shield_hp, MathUtil::Vector3 size) {
   outer_shield = new Shield(shield_type, shield_hp, size, this);
-  region->addShield(outer_shield);
+  return outer_shield;
 }
 
-void Character::stopShield() {
-  region->removeShield(outer_shield);
-  delete outer_shield;
+Shield * Character::stopShield() {
+  Shield * tmp = outer_shield;
   outer_shield = nullptr;
+  return tmp;
 }
 
 MathUtil::Vector3 Character::getSize() { return size; }

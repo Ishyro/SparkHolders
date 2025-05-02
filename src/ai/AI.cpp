@@ -1,8 +1,9 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
+#include "data/Region.h"
+#include "data/World.h"
 #include "data/ways/Way.h"
 #include "data/ways/Race.h"
-#include "data/World.h"
 
 #include "data/items/Item.h"
 #include "data/items/SerialItem.h"
@@ -205,7 +206,7 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   Loot * corpse = nullptr;
   float max_distance_prey = (float) self->getVisionRange();
   float distance_prey = max_distance_prey;
-  for(Character * other : map->getCharacters()) {
+  for(Character * other : self->getRegion()->getCharacters(self, adventure->getWorld())) {
     if(other->getTeam() == "prey" || (other->getTeam() != self->getTeam() && self->getSatiety() < 15.F)) {
       float distance = MathUtil::distance(self->getX(), self->getY(), other->getX(), other->getY());
       if(other != self && distance <= max_distance_prey && distance < distance_prey) {
@@ -257,9 +258,9 @@ Action * AI::trackPrey(Adventure * adventure, Character * self) {
   */
 }
 
-std::list<Character *> AI::getThreats(Adventure * adventure, Map * map, Character * self, int32_t range) {
+std::list<Character *> AI::getThreats(Adventure * adventure, Character * self, int32_t range) {
   std::list<Character *> threats = std::list<Character *>();
-  for(Character * other : map->getCharacters()) {
+  for(Character * other : self->getRegion()->getCharacters(self, adventure->getWorld())) {
     if(adventure->getDatabase()->getRelation(self->getTeam(), other->getTeam()) == TEAM_ENEMY) {
       threats.push_front(other);
     }

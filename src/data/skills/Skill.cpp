@@ -1,5 +1,3 @@
-#include "data/Map.h"
-
 #include "data/skills/Skill.h"
 
 #include "data/skills/BlockSwapSkill.h"

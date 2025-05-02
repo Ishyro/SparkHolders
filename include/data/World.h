@@ -9,58 +9,57 @@
 
 #include "util/MathUtil.h"
 
-struct MapLink {
-    int32_t x1;
-    int32_t y1;
-    int32_t z1;
-    int32_t x2;
-    int32_t y2;
-    int32_t z2;
-    int32_t type;
-    Map * map1;
-    Map * map2;
+struct Loot {
+  int32_t type;
+  float x;
+  float y;
+  float size;
+  std::list<Item *> items;
 };
 
 class World {
   public:
     const std::string name;
     World(std::string name):name(name) {
-      maps = std::map<const int64_t, Map *>();
       chunks = std::map<const MathUtil::Vector3i, BlocksChunk *>();
       regions = std::map<const MathUtil::Vector3i, Region *>();
-      links = std::list<MapLink *>();
     }
-    void addMap(Map * map);
-    void setBlock(MathUtil::Vector3i coord, Block * block, int32_t lightening);
-    void addMapLink(MapLink * link);
-    Map * getMap(int64_t map_id);
-    Map * getMap(std::string name);
-    std::list<Map *> getMaps();
-    MapLink * getMapLink(int32_t x, int32_t y, int64_t mapId);
+    void setBiome(Biome * biome);
+    Biome * getBiome(MathUtil::Vector3i coord);
+    void setChunk(MathUtil::Vector3i coord, BlocksChunk * chunk);
+    void setBlock(MathUtil::Vector3i coord, Block * block);
+    void generateWorld();
     std::list<Character *> getCharacters();
     Character * getCharacter(int64_t id);
     std::list<Character *> computeTarget(Character * origin, MathUtil::Target * target);
-    Furniture * getFurniture(int64_t id);
-    Map * getMap(int32_t x, int32_t y, int32_t z);
-    Map * getMap(float x, float y, float z);
+    Furniture * getFurniture(MathUtil::Vector3i furniture_coord);
     Block * getBlock(MathUtil::Vector3i coord);
     int32_t getLightening(MathUtil::Vector3i coord);
     BlocksChunk * getChunk(MathUtil::Vector3 coord);
     BlocksChunk * getChunk(MathUtil::Vector3i ori);
     void addCharacter(Character * character);
     void eraseCharacter(Character * character);
+    void addShield(Character * character, Shield * shield);
+    void eraseShield(Character * character, Shield * shield);
+    void addFurniture(Furniture * furniture);
+    void eraseFurniture(Furniture * furniture);
     void checkRegion(Character * character, MathUtil::Vector3 ori, MathUtil::Vector3 dest);
     void changeRegion(Character * character);
     float distance(int64_t map_id, float x, float y, MathUtil::Target * target);
+    std::list<Character *> getCharacters(MathUtil::Vector3i chunk_id);
+    std::list<Projectile *> getProjectiles(MathUtil::Vector3i chunk_id);
+    std::list<Furniture *> getFurnitures(MathUtil::Vector3i chunk_id, int64_t sizeZ = 1, int64_t radius = 1);
+    std::list<Shield *> getShields(MathUtil::Vector3i chunk_id);
+    std::list<Loot *> getLoots(MathUtil::Vector3i chunk_id);
   private:
-    std::map<const int64_t, Map *> maps;
+    std::list<Biome *> biomes;
     std::map<const MathUtil::Vector3i, BlocksChunk *> chunks;
     std::map<const MathUtil::Vector3i, Region *> regions;
-    std::list<Character *> characters;
-    std::list<Projectile *> projectiles;
-    std::list<Furniture *> furnitures;
-    std::list<Loot *> loots;
-    std::list<MapLink *> links;
+    std::map<const MathUtil::Vector3i, std::list<Character *>> characters;
+    std::map<const MathUtil::Vector3i, std::list<Projectile *>> projectiles;
+    std::map<const MathUtil::Vector3i, std::list<Furniture *>> furnitures;
+    std::map<const MathUtil::Vector3i, std::list<Shield *>> shields;
+    std::map<const MathUtil::Vector3i, std::list<Loot *>> loots;
 };
 
 #endif // _WORLD_H_

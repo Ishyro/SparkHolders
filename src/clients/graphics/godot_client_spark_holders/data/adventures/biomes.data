@@ -1,0 +1,381 @@
+# Database initialization
+
+# blocks
+data/blocks/cut_stone.data
+data/blocks/glass.data
+data/blocks/grass.data
+data/blocks/lava.data
+data/blocks/mist.data
+data/blocks/road_stone.data
+data/blocks/rock.data
+data/blocks/soil.data
+data/blocks/void.data
+data/blocks/water.data
+data/blocks/wood.data
+# effects
+data/effects/experience_10.data
+data/effects/hunger_10.data
+data/effects/etheral.data
+data/effects/flying.data
+data/effects/dummy_damage.data
+# items
+data/items/bone.data
+data/items/homo_meat.data
+data/items/armors/iron_boots.data
+data/items/armors/iron_cuirass.data
+data/items/armors/iron_gauntlets.data
+data/items/armors/iron_helmet.data
+data/items/inventory.data
+data/items/leather_bag.data
+data/items/armors/leather_boots.data
+data/items/armors/leather_cuirass.data
+data/items/armors/leather_gauntlets.data
+data/items/armors/leather_helmet.data
+data/items/wolf_hide.data
+data/items/farming/lamb.data
+# pseudoskills without summoning or projectile
+data/pseudoskills/dash.data
+data/pseudoskills/eat_grass.data
+data/pseudoskills/grow_grass.data
+data/pseudoskills/nourish_with_grass.data
+data/pseudoskills/parade.data
+data/pseudoskills/sword_cut_left.data
+data/pseudoskills/sword_cut_right.data
+data/pseudoskills/sword_thrust.data
+# skills without summoning or projectile
+data/skills/touch_some_soil.data
+data/skills/dash.data
+data/skills/parade.data
+data/skills/sword_cut_left.data
+data/skills/sword_cut_right.data
+data/skills/sword_thrust.data
+# projectiles
+data/projectiles/wood_arrow.data
+data/projectiles/fireball.data
+# ammunition items
+data/items/ammunition/wood_arrow.data
+# weapon items
+data/items/weapons/no_weapon.data
+data/items/weapons/short_sword.data
+data/items/weapons/short_bow.data
+data/items/weapons/wolf_claws.data
+# gear without special items
+data/gears/archer.data
+data/gears/heavy_starting_gear.data
+data/gears/heavy.data
+data/gears/light_starting_gear.data
+data/gears/light.data
+data/gears/no_gear.data
+data/gears/wolf.data
+# speechs
+data/speechs/beh.data
+data/speechs/woof.data
+# pseudoskills with projectile
+data/pseudoskills/fireball.data
+# skills with projectile
+data/skills/fireball.data
+# stances
+data/stances/sword_classic.data
+# ways without summoning skill
+data/ways/races/humans/caeleran.data
+data/ways/races/humans/camelidan.data
+data/ways/races/humans/capran.data
+data/ways/races/humans/chamaelean.data
+data/ways/races/humans/hominidan.data
+data/ways/races/humans/lepidopteran.data
+data/ways/races/humans/muridan.data
+data/ways/races/humans/pantheran.data
+data/ways/races/humans/urodelan.data
+data/ways/races/humans/ursidan.data
+data/ways/races/ancient_one.data
+data/ways/races/no_race.data
+data/ways/races/sheep.data
+data/ways/races/skeleton.data
+data/ways/races/spark_holder.data
+data/ways/races/wolf.data
+data/ways/origins/armythas.data
+data/ways/origins/bridge_town.data
+data/ways/origins/celestia.data
+data/ways/origins/countryside.data
+data/ways/origins/ellinka.data
+data/ways/origins/enclave.data
+data/ways/origins/green_town.data
+data/ways/origins/no_origin.data
+data/ways/origins/scranem.data
+data/ways/cultures/aether_academy.data
+data/ways/cultures/ahoz.data
+data/ways/cultures/barbarian.data
+data/ways/cultures/birphan.data
+data/ways/cultures/no_culture.data
+data/ways/cultures/secluded.data
+data/ways/cultures/slow.data
+data/ways/cultures/tagran.data
+data/ways/cultures/traveler.data
+data/ways/cultures/woodland.data
+data/ways/cultures/yllian.data
+data/ways/religions/aerina.data
+data/ways/religions/alba.data
+data/ways/religions/atheist.data
+data/ways/religions/beastiona.data
+data/ways/religions/godless.data
+data/ways/religions/hibero.data
+data/ways/religions/laxito.data
+data/ways/religions/no_religion.data
+data/ways/religions/nubilo.data
+data/ways/religions/pyrra.data
+data/ways/professions/assassin.data
+data/ways/professions/battlemage.data
+data/ways/professions/no_profession.data
+data/ways/professions/scholar.data
+data/ways/professions/soldier.data
+# attributes without summoning skill
+data/attributes/vanguard.data
+data/attributes/guardian.data
+data/attributes/elementalist.data
+data/attributes/shadow.data
+data/attributes/mender.data
+data/attributes/spiritualist.data
+data/attributes/paragon.data
+data/attributes/no_attributes.data
+data/attributes/sheep.data
+data/attributes/wolf.data
+# characters
+data/characters/grass_fairy.data
+data/characters/homo.data
+data/characters/player.data
+data/characters/sheep.data
+data/characters/wolf.data
+# pseudoskills with summoning
+data/pseudoskills/summon_grass_fairy.data
+# skills with summoning
+data/skills/touch_some_grass.data
+# ways with summoning skill
+data/ways/professions/ruminant.data
+# attributes with summoning skill
+# gear with special items
+# furnitures
+data/furnitures/door.data
+data/furnitures/fireplace.data
+data/furnitures/torch_ground.data
+data/furnitures/torch_wall.data
+# chunks
+data/chunks/grassland_flat.data
+# biomes
+data/biomes/grassland.data
+!end
+
+# Commands
+
+# Adventure name
+The Main Place
+# settings
+Settings.{YEAR_DURATION}{360}
+Settings.{MONTH_DURATION}{30}
+Settings.{WEEK_DURATION}{6}
+Settings.{DAY_DURATION}{60}
+Settings.{HOUR_DURATION}{60}
+Settings.{MINUTE_DURATION}{60}
+Settings.{STARTING_YEAR}{10000}
+Settings.{STARTING_MONTH}{1}
+Settings.{STARTING_DAY}{1}
+Settings.{STARING_HOUR}{15}
+Settings.{ORIGIN}{{0}{0}}
+Settings.{SECOND_TO_METER}{1.0}
+Settings.{ZENITH_LIGHT_POWERS}{{216000}{216000}{216000}{216000}{216000}{216000}}
+Settings.{NIGHT_LIGHT_POWERS}{{60}{60}{60}{60}{60}{0}}
+Settings.{TIDAL_LOCKED}{true}
+Settings.{SHADOW_ANGLE}{{33}{23}{21}}
+Settings.{NIGHT_DURATION}{24}
+Settings.{DAWN_DURATION}{3}
+Settings.{DAYTIME_DURATION}{30}
+Settings.{DUSK_DURATION}{3}
+Settings.{MONTH_NAMES}{{Agate}{Onyx}{Emerald}{Diamond}{Topaz}{Jacynth}{Jasper}{Amethyst}{Rubis}{Sapphire}{Lapis Lazuli}{Aquamarine}}
+Settings.{DAY_NAMES}{{Laxito Dies}{Pyrra Dies}{Aerina Dies}{Hibero Dies}{Beastiona Dies}{Nubilo Dies}}
+# keys files
+EnglishKeys.{data/english_keys/aytlanta}
+# add starting attributes
+StartingAttributes.{TXT_PARAGON}
+StartingAttributes.{TXT_SPIRITUALIST}
+StartingAttributes.{TXT_SHADOW}
+StartingAttributes.{TXT_VANGUARD}
+StartingAttributes.{TXT_ELEMENTALIST}
+StartingAttributes.{TXT_MENDER}
+StartingAttributes.{TXT_GUARDIAN}
+# add starting ways
+StartingWay.{TXT_HOMINIDAN}
+StartingWay.{TXT_LEPIDOPTERAN}
+StartingWay.{TXT_CHAMAELEAN}
+StartingWay.{TXT_URODELAN}
+StartingWay.{TXT_CAMELIDAN}
+StartingWay.{TXT_PANTHERAN}
+StartingWay.{TXT_MURIDAN}
+StartingWay.{TXT_URSIDAN}
+StartingWay.{TXT_ARMYTHAS}
+StartingWay.{TXT_ELLINKA}
+StartingWay.{TXT_BRIDGE_TOWN}
+StartingWay.{TXT_GREEN_TOWN}
+StartingWay.{TXT_SCRANEM}
+StartingWay.{TXT_COUNTRYSIDE}
+StartingWay.{TXT_ENCLAVE}
+StartingWay.{TXT_CELESTIA}
+StartingWay.{TXT_TAGRAN}
+StartingWay.{TXT_BIRPHAN}
+StartingWay.{TXT_YLLIAN}
+StartingWay.{TXT_BARBARIAN}
+StartingWay.{TXT_TRAVELER}
+StartingWay.{TXT_WOODLAND}
+StartingWay.{TXT_AHOZ}
+StartingWay.{TXT_SECLUDED}
+StartingWay.{TXT_ALBA}
+StartingWay.{TXT_LAXITO}
+StartingWay.{TXT_NUBILO}
+StartingWay.{TXT_PYRRA}
+StartingWay.{TXT_HIBERO}
+StartingWay.{TXT_AERINA}
+StartingWay.{TXT_BEASTIONA}
+StartingWay.{TXT_SOLDIER}
+StartingWay.{TXT_SCHOLAR}
+StartingWay.{TXT_BATTLEMAGE}
+StartingWay.{TXT_ASSASSIN}
+# add ways incompatibility
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_HOMINIDAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ARMYTHAS} 
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ELLINKA}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_CELESTIA}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_LEPIDOPTERAN}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_ARMYTHAS}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_ELLINKA}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_CELESTIA}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_PANTHERAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_MURIDAN}{TXT_ARMYTHAS}
+WayImcompatibility.{TXT_MURIDAN}{TXT_ELLINKA}
+WayImcompatibility.{TXT_MURIDAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_MURIDAN}{TXT_SCRANEM}
+WayImcompatibility.{TXT_MURIDAN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_MURIDAN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_MURIDAN}{TXT_WOODLAND}
+WayImcompatibility.{TXT_MURIDAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_URSIDAN}{TXT_ARMYTHAS}
+WayImcompatibility.{TXT_URSIDAN}{TXT_ELLINKA}
+WayImcompatibility.{TXT_URSIDAN}{TXT_SCRANEM}
+WayImcompatibility.{TXT_URSIDAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_URSIDAN}{TXT_CELESTIA}
+WayImcompatibility.{TXT_URSIDAN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_URSIDAN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_URSIDAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_CAELERAN}{TXT_ARMYTHAS}
+WayImcompatibility.{TXT_CAELERAN}{TXT_ELLINKA}
+WayImcompatibility.{TXT_CAELERAN}{TXT_GREEN_TOWN}
+WayImcompatibility.{TXT_CAELERAN}{TXT_SCRANEM}
+WayImcompatibility.{TXT_CAELERAN}{TXT_ENCLAVE}
+WayImcompatibility.{TXT_CAELERAN}{TXT_COUNTRYSIDE}
+WayImcompatibility.{TXT_CAELERAN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_CAELERAN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_CAELERAN}{TXT_AHOZ}
+WayImcompatibility.{TXT_CAELERAN}{TXT_WOODLAND}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_YLLIAN}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_WOODLAND}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_AHOZ}
+WayImcompatibility.{TXT_ARMYTHAS}{TXT_SECLUDED}
+WayImcompatibility.{TXT_ELLINKA}{TXT_TAGRAN}
+WayImcompatibility.{TXT_ELLINKA}{TXT_YLLIAN}
+WayImcompatibility.{TXT_ELLINKA}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_ELLINKA}{TXT_WOODLAND}
+WayImcompatibility.{TXT_ELLINKA}{TXT_AHOZ}
+WayImcompatibility.{TXT_ELLINKA}{TXT_SECLUDED}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_WOODLAND}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_AHOZ}
+WayImcompatibility.{TXT_BRIDGE_TOWN}{TXT_SECLUDED}
+WayImcompatibility.{TXT_GREEN_TOWN}{TXT_TAGRAN}
+WayImcompatibility.{TXT_GREEN_TOWN}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_GREEN_TOWN}{TXT_YLLIAN}
+WayImcompatibility.{TXT_GREEN_TOWN}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_GREEN_TOWN}{TXT_SECLUDED}
+WayImcompatibility.{TXT_SCRANEM}{TXT_TAGRAN}
+WayImcompatibility.{TXT_SCRANEM}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_SCRANEM}{TXT_YLLIAN}
+WayImcompatibility.{TXT_SCRANEM}{TXT_AHOZ}
+WayImcompatibility.{TXT_ENCLAVE}{TXT_TAGRAN}
+WayImcompatibility.{TXT_ENCLAVE}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_ENCLAVE}{TXT_YLLIAN}
+WayImcompatibility.{TXT_ENCLAVE}{TXT_WOODLAND}
+WayImcompatibility.{TXT_ENCLAVE}{TXT_AHOZ}
+WayImcompatibility.{TXT_COUNTRYSIDE}{TXT_AHOZ}
+WayImcompatibility.{TXT_CELESTIA}{TXT_TAGRAN}
+WayImcompatibility.{TXT_CELESTIA}{TXT_BIRPHAN}
+WayImcompatibility.{TXT_CELESTIA}{TXT_YLLIAN}
+WayImcompatibility.{TXT_CELESTIA}{TXT_WOODLAND}
+WayImcompatibility.{TXT_CELESTIA}{TXT_BARBARIAN}
+WayImcompatibility.{TXT_CELESTIA}{TXT_AHOZ}
+# add TeamRelation
+TeamRelation.{TEAM_ENEMY}{party}{predator}
+TeamRelation.{TEAM_ENEMY}{prey}{predator}
+TeamRelation.{TEAM_ENEMY}{adventurer}{predator}
+TeamRelation.{TEAM_ENEMY}{Birph}{predator}
+TeamRelation.{TEAM_ENEMY}{Tagr}{predator}
+TeamRelation.{TEAM_ENEMY}{Yllia}{predator}
+TeamRelation.{TEAM_ENEMY}{Aho'z}{predator}
+TeamRelation.{TEAM_ENEMY}{Scranem}{predator}
+TeamRelation.{TEAM_ENEMY}{party}{undead}
+TeamRelation.{TEAM_ENEMY}{prey}{undead}
+TeamRelation.{TEAM_ENEMY}{adventurer}{undead}
+TeamRelation.{TEAM_ENEMY}{Birph}{undead}
+TeamRelation.{TEAM_ENEMY}{Tagr}{undead}
+TeamRelation.{TEAM_ENEMY}{Yllia}{undead}
+TeamRelation.{TEAM_ENEMY}{Aho'z}{undead}
+TeamRelation.{TEAM_ENEMY}{Scranem}{undead}
+TeamRelation.{TEAM_ENEMY}{predator}{undead}
+TeamRelation.{TEAM_ENEMY}{Birph}{Tagr}
+TeamRelation.{TEAM_ENEMY}{party}{bandit}
+TeamRelation.{TEAM_ENEMY}{prey}{bandit}
+TeamRelation.{TEAM_ENEMY}{adventurer}{bandit}
+TeamRelation.{TEAM_ENEMY}{Birph}{bandit}
+TeamRelation.{TEAM_ENEMY}{Tagr}{bandit}
+TeamRelation.{TEAM_ENEMY}{Yllia}{bandit}
+TeamRelation.{TEAM_ENEMY}{Aho'z}{bandit}
+TeamRelation.{TEAM_ENEMY}{Scranem}{bandit}
+TeamRelation.{TEAM_ENEMY}{predator}{bandit}
+TeamRelation.{TEAM_ENEMY}{undead}{bandit}
+# add biomes
+Biome.{TXT_GRASSLAND}{{-1024}{-1024}{0}}{{1024}{1024}{0}}
+# add forced spawned chunks
+# add spawns
+Spawn.{{50}{100}{1}}
+# add characters
+
+#Character.{TXT_SHEEP}{{50}{98}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{3}{4}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{21}{51}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{76}{76}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{61}{10}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{99}{91}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{11}{91}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{28}{33}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{66}{4}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{3}{81}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_SHEEP}{{51}{21}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}
+#Character.{TXT_WOLF}{{50}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_WOLF}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_NO_PROFESSION}{}{100}{0}
+#Character.{TXT_WOLF}{{51}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_WOLF}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_NO_PROFESSION}{}{100}{0}
+#Character.{TXT_WOLF}{{52}{2}{0}}{predator}{DiurnalAgressiveAI}{TXT_WOLF}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_WOLF}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_NO_PROFESSION}{}{100}{0}
+#Character.{TXT_HOMO}{{48}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{49}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{50}{110}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_ARCHER}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{53}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{54}{112}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{41}{116}{0}}{undead}{GuardAI}{TXT_ELEMENTALIST}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_LIGHT}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{1000}{50}
+#Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
+#Character.{TXT_HOMO}{{61}{125}{0}}{undead}{GuardAI}{TXT_GUARDIAN}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{2500}{150}
+#Character.{TXT_HOMO}{{61}{124}{0}}{undead}{GuardAI}{TXT_VANGUARD}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_HEAVY}{TXT_HOMINIDAN}{{TXT_SKELETON}}{TXT_COUNTRYSIDE}{TXT_TAGRAN}{TXT_GODLESS}{TXT_SOLDIER}{}{10000}{500}

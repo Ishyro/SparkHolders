@@ -1,17 +1,16 @@
 extends Control
 
-var selected_adventure = "test"
+var selected_adventure = "biomes"
 
 # General
-var tutorials = { "test": 0, "nightmare": 1 }
+var tutorials = { "biomes": 0 }
 var first_era = {}
 var second_era = {}
 var third_era = {}
 var mods = {}
 
 var adventures_paths = { 
-	"test": "data/adventures/test.data",
-	"nightmare": "data/adventures/nightmare.data"
+	"biomes": "data/adventures/biomes.data",
 }
 
 # Official
@@ -56,9 +55,9 @@ func _on_start_pressed():
 	Values.server_owner = true
 	match OS.get_name():
 		"Windows":
-			OS.create_process("./SparkHolders.Server.exe", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+			OS.create_process("./SparkHolders.Server.exe", [adventures_paths[selected_adventure], str(Values.multiplayer_mode)])
 		"Linux", "FreeBSD", "NetBSD", "OpenBSD", "BSD":
-			OS.create_process("./SparkHolders.Server.x86_64", ["data/adventures/test.data", str(Values.multiplayer_mode)])
+			OS.create_process("./SparkHolders.Server.x86_64", [adventures_paths[selected_adventure], str(Values.multiplayer_mode)])
 	get_tree().change_scene_to_file("res://menus/character_creator.tscn")
 
 func _on_close_pressed():

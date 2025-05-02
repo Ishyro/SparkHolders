@@ -50,26 +50,19 @@ class Region {
   public:
     const MathUtil::Vector3i id;
     Region(MathUtil::Vector3i id, std::array<BlocksChunk *, 27> chunks):id(id),chunks(chunks) {}
-    void addCharacter(Character * character);
-    bool removeCharacter(Character * character);
-    void addShield(Shield * shield);
-    void removeShield(Shield * shield);
     Block * getBlock(MathUtil::Vector3 coord);
     Block * getBlock(MathUtil::Vector3i coord);
     std::map<const MathUtil::Vector3i, Block *> getBlocks();
-    bool tryMove(Character * c, MathUtil::Vector3 dest);
+    bool tryMove(Character * c, MathUtil::Vector3 dest, World * world);
     void move(Character * character, World * world);
     void setSpeed(Character * character, MathUtil::Vector3 orientation);
     MathUtil::Vector3 getCoordsOnSlope(MathUtil::Vector3 dest, int32_t block_orientation);
     float getOrientationXOnSlope(float character_orientation, int32_t block_orientation);
     bool canSee(Character * watcher, Character * target);
-    std::list<Character *> getCharacters();
-    std::list<Character *> getCharacters(Character * character);
-    std::list<Furniture *> getFurnitures();
-    std::list<Furniture *> getFurnitures(Character * character);
-    std::list<Shield *> getShields();
-    Furniture * getFurniture(MathUtil::Vector3i coord);
-    std::list<HitboxOwner *> sortHitboxes(Attack * origin);
+    std::list<Character *> getCharacters(Character * character, World * world);
+    std::list<Furniture *> getFurnitures(Character * character, World * world, int64_t sizeZ = 1, int64_t radius = 1);
+    Furniture * getFurniture(MathUtil::Vector3i coord, World * world);
+    std::list<HitboxOwner *> sortHitboxes(Attack * origin, World * world);
   private:
     std::array<BlocksChunk *, 27> chunks;
 };

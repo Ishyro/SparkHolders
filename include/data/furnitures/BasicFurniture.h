@@ -57,8 +57,8 @@ class BasicFurniture : public Furniture {
       )
     {}
     
-    BasicFurniture(BasicFurniture * furniture, Map * map):
-      Furniture(furniture, map)
+    BasicFurniture(BasicFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      Furniture(furniture, offset, rotation)
     {}
     bool getUnwalkable();
     bool getOpaque();

@@ -11,45 +11,6 @@ namespace hitbox {
   bool back_to_front(const HitboxOwner * h1, const HitboxOwner * h2) { return h1->distance > h2->distance; }
 }
 
-void Region::addCharacter(Character * character) {
-  MathUtil::Vector3 coord = character->getCoord();
-  int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
-  int32_t b = (int32_t) std::floor( (coord.y - (float) id.y) / (float) CHUNK_SIZE) + 1;
-  int32_t c = (int32_t) std::floor( (coord.z - (float) id.z) / (float) CHUNK_SIZE) + 1;
-  int32_t chunk_indice = a + b * 3 + c * 9;
-  if(chunk_indice >= 0 && chunk_indice < 27) {
-    chunks[a + b * 3 + c * 9]->addCharacter(character);
-    character->setRegion(this);
-  }
-}
-
-bool Region::removeCharacter(Character * character) {
-  MathUtil::Vector3 coord = character->getCoord();
-  int32_t a = (int32_t) std::floor( (coord.x - (float) id.x) / (float) CHUNK_SIZE) + 1;
-  int32_t b = (int32_t) std::floor( (coord.y - (float) id.y) / (float) CHUNK_SIZE) + 1;
-  int32_t c = (int32_t) std::floor( (coord.z - (float) id.z) / (float) CHUNK_SIZE) + 1;
-  int32_t chunk_indice = a + b * 3 + c * 9;
-  if(chunk_indice >= 0 && chunk_indice < 27) {
-    bool no_characters_left = chunks[a + b * 3 + c * 9]->removeCharacter(character);
-    // 13 is the central chunk
-    if(chunk_indice == 13) {
-      return no_characters_left;
-    }
-  }
-  return false;
-}
-
-
-void Region::addShield(Shield * shield) {
-  // always middle chunk
-  chunks[13]->addShield(shield);
-}
-
-void Region::removeShield(Shield * shield) {
-  // always middle chunk
-  chunks[13]->removeShield(shield);
-}
-
 Block * Region::getBlock(MathUtil::Vector3 coord) {
   return getBlock(MathUtil::Vector3i(coord));
 }
@@ -59,10 +20,10 @@ Block * Region::getBlock(MathUtil::Vector3i coord) {
   int32_t b = (int32_t) std::floor( (float) (coord.y - id.y) / (float) CHUNK_SIZE) + 1;
   int32_t c = (int32_t) std::floor( (float) (coord.z - id.z) / (float) CHUNK_SIZE) + 1;
   int32_t chunk_indice = a + b * 3 + c * 9;
-  return chunk_indice >= 0 && chunk_indice < 27 ? chunks[a + b * 3 + c * 9]->getBlock(coord) : nullptr;
+  return chunk_indice >= 0 && chunk_indice < 27 && chunks[chunk_indice] != nullptr ? chunks[chunk_indice]->getBlock(coord) : nullptr;
 }
 
-bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
+bool Region::tryMove(Character * c, MathUtil::Vector3 dest, World * world) {
   if(c->isEtheral()) {
     return true;
   }
@@ -81,12 +42,12 @@ bool Region::tryMove(Character * c, MathUtil::Vector3 dest) {
   }
   MathUtil::HitboxOBB * hitbox = new MathUtil::HitboxOBB(c->getHitbox());
   hitbox->applyMove(dest, MathUtil::getDirectionFromOrientation(c->getOrientation()));
-  for(Character * other : getCharacters()) {
+  for(Character * other : world->getCharacters(id)) {
     if(!other->isMarkedDead() && c != other && !other->isEtheral() && MathUtil::collide(hitbox, other->getHitbox())) {
       return false;
     }
   }
-  for(Furniture * furniture : getFurnitures()) {
+  for(Furniture * furniture : world->getFurnitures(id)) {
     if(furniture->getSolid() && MathUtil::collide(hitbox, furniture->getHitbox())) {
       return false;
     }
@@ -140,7 +101,7 @@ void Region::move(Character * character, World * world) {
         break;
       }
     }
-    if(tryMove(character, dest)) {
+    if(tryMove(character, dest, world)) {
       MathUtil::Vector3 orientation = MathUtil::getOrientationFromDirection(speed);
       orientation.x = 90.F;
       character->move(dest, orientation, world);
@@ -265,19 +226,9 @@ bool Region::canSee(Character * watcher, Character * target) {
   return true;
 }
 
-std::list<Character *> Region::getCharacters() {
+std::list<Character *> Region::getCharacters(Character * character, World * world) {
   std::list<Character *> result = std::list<Character *>();
-  for(BlocksChunk * chunk : chunks) {
-    for(Character * character : chunk->getCharacters()) {
-      result.push_front(character);
-    }
-  }
-  return result;
-}
-
-std::list<Character *> Region::getCharacters(Character * character) {
-  std::list<Character *> result = std::list<Character *>();
-  for(Character * c : getCharacters()) {
+  for(Character * c : world->getCharacters(id)) {
     if(canSee(character, c)) {
       result.push_back(c);
     }
@@ -285,60 +236,45 @@ std::list<Character *> Region::getCharacters(Character * character) {
   return result;
 }
 
-std::list<Furniture *> Region::getFurnitures() {
+std::list<Furniture *> Region::getFurnitures(Character * character, World * world, int64_t sizeZ = 1, int64_t radius = 1) {
   std::list<Furniture *> result = std::list<Furniture *>();
-  for(BlocksChunk * chunk : chunks) {
-    for(Furniture * furniture : chunk->getFurnitures()) {
-      result.push_front(furniture);
-    }
-  }
-  return result;
-}
-
-std::list<Furniture *> Region::getFurnitures(Character * character) {
-  std::list<Furniture *> result = std::list<Furniture *>();
-  for(BlocksChunk * chunk : chunks) {
-    for(Furniture * furniture : chunk->getFurnitures()) {
-      result.push_front(furniture);
-    }
-  }
-  return result;
-}
-
-std::list<Shield *> Region::getShields() {
-  std::list<Shield *> result = std::list<Shield *>();
-  for(BlocksChunk * chunk : chunks) {
-    for(Shield * shield : chunk->getShields()) {
-      result.push_front(shield);
-    }
+  for(Furniture * furniture : world->getFurnitures(id, sizeZ, radius)) {
+    result.push_front(furniture);
   }
   return result;
 }
 
 std::map<const MathUtil::Vector3i, Block *> Region::getBlocks() {
   std::map<const MathUtil::Vector3i, Block *> result = std::map<const MathUtil::Vector3i, Block *>();
-  for(BlocksChunk * chunk : chunks) {
-    for(auto pair : chunk->getBlocks()) {
-      result.insert(pair);
+  MathUtil::Vector3i current;
+  int32_t n = 0;
+  for(current.z = id.z - CHUNK_SIZE; current.z <= id.z + CHUNK_SIZE; current.z += CHUNK_SIZE) {
+    for(current.y = id.y - CHUNK_SIZE; current.y <= id.y + CHUNK_SIZE; current.y += CHUNK_SIZE) {
+      for(current.x = id.x - CHUNK_SIZE; current.x <= id.x + CHUNK_SIZE; current.x += CHUNK_SIZE) {
+        BlocksChunk * chunk = chunks[n++];
+        if(chunk != nullptr) {
+          for(std::pair<MathUtil::Vector3i, Block *> pair : chunk->getBlocks(current)) {
+            result.insert(pair);
+          }
+        }
+      }
     }
   }
   return result;
 }
 
-Furniture * Region::getFurniture(MathUtil::Vector3i coord) {
-  for(BlocksChunk * chunk : chunks) {
-    for(Furniture * furniture : chunk->getFurnitures()) {
-      if(furniture->getCoord() == coord) {
-        return furniture;
-      }
+Furniture * Region::getFurniture(MathUtil::Vector3i coord, World * world) {
+  for(Furniture * furniture : world->getFurnitures(id)) {
+    if(furniture->getCoord() == coord) {
+      return furniture;
     }
   }
   return nullptr;
 }
 
-std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
+std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack, World * world) {
   std::list<HitboxOwner *> result = std::list<HitboxOwner *>();
-  for(Character * other : getCharacters()) {
+  for(Character * other : world->getCharacters(id)) {
     if(attack->owner != other && MathUtil::collide(attack->hitbox, other->getHitbox())) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_CHARACTER;
@@ -356,7 +292,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       result.push_back(hitbox);
     }
   }
-  for(Shield * shield : getShields()) {
+  for(Shield * shield : world->getShields(id)) {
     if(attack->owner != shield->owner && MathUtil::collide(attack->hitbox, shield->hitbox)) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_SHIELD;
@@ -374,7 +310,7 @@ std::list<HitboxOwner *> Region::sortHitboxes(Attack * attack) {
       result.push_back(hitbox);
     }
   }
-  for(Furniture * furniture : getFurnitures()) {
+  for(Furniture * furniture : world->getFurnitures(id)) {
     if(MathUtil::collide(attack->hitbox, furniture->getHitbox())) {
       HitboxOwner * hitbox = new HitboxOwner();
       hitbox->type = HITBOX_OWNER_FURNITURE;

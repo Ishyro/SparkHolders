@@ -63,12 +63,12 @@ class LinkedFurniture : public ActivableFurniture  {
       ),
       linked_furniture(linked_furniture)
     {}
-    LinkedFurniture(LinkedFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map)
+    LinkedFurniture(LinkedFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      ActivableFurniture(furniture, offset, rotation)
     {
-      init(map, furniture->linked_furniture);
+      init(furniture->linked_furniture, furniture->coord, offset, rotation);
     }
-    void init(Map * map, ActivableFurniture * linked_furniture);
+    void init(ActivableFurniture * linked_furniture, MathUtil::Vector3i coord, MathUtil::Vector3i offset, int64_t rotation);
     bool getUnwalkable();
     bool getOpaque();
     bool getSolid();

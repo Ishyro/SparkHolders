@@ -69,8 +69,8 @@ class ActivableFurniture : public Furniture {
       key_name(key_name)
     {}
     
-    ActivableFurniture(ActivableFurniture * furniture, Map * map):
-      Furniture(furniture, map),
+    ActivableFurniture(ActivableFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      Furniture(furniture, offset, rotation),
       activation_time(furniture->activation_time),
       isLocked(furniture->isLocked),
       key_name(furniture->key_name)

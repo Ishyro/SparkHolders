@@ -1,5 +1,5 @@
-#ifndef _TILE_H_
-#define _TILE_H_
+#ifndef _BLOCK_H_
+#define _BLOCK_H_
 
 #include <string>
 
@@ -40,4 +40,4 @@ class Block {
     bool operator != (const Block& t) const { return !operator==(t); }
 };
 
-#endif // _TILE_H_
+#endif // _BLOCK_H_

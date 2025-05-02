@@ -58,7 +58,7 @@ public:
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
-  Dictionary getFurnitures();
+  Dictionary getFurnitures(int64_t sizeZ, int64_t radius);
   Array getUpdatedFurnitures();
   String getRelation(String team1, String team2);
   Dictionary getDataFromItem(Item * item);

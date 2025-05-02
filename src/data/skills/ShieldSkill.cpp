@@ -18,10 +18,12 @@ void ShieldSkill::activate(Character * owner, MathUtil::Target * target, Adventu
         hp += owner->getGear()->getWeapon_2()->getDurability() * overcharge_power;
         shield_size = shield_size + owner->getGear()->getWeapon_2()->range * overcharge_range;
     }
-    owner->produceShield(shield_type, hp, shield_size);
+    Shield * shield = owner->produceShield(shield_type, hp, shield_size);
+    adventure->getWorld()->addShield(owner, shield);
   }
   else {
-    owner->stopShield();
+    Shield * shield = owner->stopShield();
+    adventure->getWorld()->eraseShield(owner, shield);
   }
   delete target;
 }

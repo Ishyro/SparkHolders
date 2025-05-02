@@ -75,8 +75,8 @@ class SwitchFurniture : public ActivableFurniture  {
       light_off(furniture->light_off),
       isOn(furniture->isOn)
     {}
-    SwitchFurniture(SwitchFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map),
+    SwitchFurniture(SwitchFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      ActivableFurniture(furniture, offset, rotation),
       orientation_off(furniture->orientation_off),
       unwalkable_off(furniture->unwalkable_off),
       opaque_off(furniture->opaque_off),

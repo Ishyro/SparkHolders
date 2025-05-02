@@ -1,5 +1,5 @@
-#ifndef _TILES_BLOCK_H_
-#define _TILES_BLOCK_H_
+#ifndef _BLOCKS_CHUNK_H_
+#define _BLOCKS_CHUNK_H_
 
 #include <algorithm>
 #include <list>
@@ -27,52 +27,76 @@
 #include "Values.h"
 
 class BlocksChunk {
-
-  struct LightenedBlock {
-    Block * raw_block;
-    int32_t lightening;
-  };
-
   public:
-    const MathUtil::Vector3i id;
-    BlocksChunk(const MathUtil::Vector3i id, World * world):id(id) {
-      MathUtil::Vector3i coord;
-      for(coord.z = id.z; coord.z < id.z + CHUNK_SIZE; coord.z++) {
-        for(coord.y = id.y; coord.y < id.y + CHUNK_SIZE; coord.y++) {
-          for(coord.x = id.x; coord.x < id.x + CHUNK_SIZE; coord.x++) {
-            Block * raw_block = nullptr; // world->getBlock(x, y, z);
-            int32_t lightening = LIGHTENING_DARK;
-            LightenedBlock * block = new LightenedBlock();
-            block->raw_block = raw_block;
-            block->lightening = lightening;
-            if(block->raw_block != nullptr) {
-              blocks.insert(std::make_pair(coord, block));
-            }
+    const std::string name;
+    const int32_t lightening;
+    const bool instanciated;
+    BlocksChunk(const std::string name, const int32_t lightening) : name(name), lightening(lightening), instanciated(false) {}
+    BlocksChunk(BlocksChunk * chunk, const std::string name, const int64_t rotation, Database * database):
+      name(name),
+      lightening(chunk->lightening),
+      furnitures(chunk->furnitures),
+      instanciated(false)
+    {
+      for(std::pair<MathUtil::Vector3i, Block *> pair : chunk->blocks) {
+        MathUtil::Vector3i coord = pair.first;
+        switch(rotation) {
+          case 90:
+            coord.x = CHUNK_SIZE - 1 - pair.first.y;
+            coord.y = pair.first.x;
+            break;
+          case 180:
+            coord.x = CHUNK_SIZE - 1 - pair.first.x;
+            coord.y = CHUNK_SIZE - 1 - pair.first.y;
+            break;
+          case 270:
+            coord.x = pair.first.y;
+            coord.y = CHUNK_SIZE - 1 - pair.first.x;
+            break;
+          default: ;
+        }
+        Block * block = pair.second;
+        // oriented block
+        if(block->name.find('#') != std::string::npos) {
+          int32_t orientation_z = rotation + block->orientation_z;
+          orientation_z = orientation_z >= 360.F ? orientation_z - 360.F : orientation_z;
+          switch(orientation_z) {
+            case 0:
+              block = (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#EAST");
+              break;
+            case 90:
+              block = (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#NORTH");
+              break;
+            case 180:
+              block = (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#WEST");
+              break;
+            case 270:
+              block = (Block *) database->getBlock(block->name.substr(0, block->name.find('#')) + "#SOUTH");
+              break;
           }
         }
+        blocks.insert(std::make_pair(coord, block));
       }
     }
+    BlocksChunk(BlocksChunk * chunk):
+      name(chunk->name),
+      lightening(chunk->lightening),
+      instanciated(true),
+      blocks(chunk->blocks)
+    {}
     Block * getBlock(MathUtil::Vector3i coord);
-    int32_t getLightening(MathUtil::Vector3i coord);
-    void setBlock(MathUtil::Vector3i coord, Block * block, int32_t lightening);
-    std::map<const MathUtil::Vector3i, Block *> getBlocks();
-    std::list<Character *> getCharacters();
+    void setBlock(MathUtil::Vector3i coord, Block * block);
+    std::map<const MathUtil::Vector3i, Block *> getBlocks(MathUtil::Vector3i offset);
+    std::map<const MathUtil::Vector3i, Block *> getDiffs(MathUtil::Vector3i offset);
     std::list<Furniture *> getFurnitures();
-    std::list<Shield *> getShields();
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3 ori);
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3i ori);
-    void addCharacter(Character * character);
     void addFurniture(Furniture * furniture);
-    void addShield(Shield * shield);
-    bool removeCharacter(Character * character);
-    bool removeShield(Shield * shield);
   private:
-    std::list<Character *> characters;
-    std::list<Shield *> shields;
-    std::list<Projectile *> projectiles;
     std::list<Furniture *> furnitures;
-    std::list<Loot *> loots;
-    std::map<const MathUtil::Vector3i, LightenedBlock *> blocks;
+    std::array<int32_t, 6> sides;
+    std::map<const MathUtil::Vector3i, Block *> blocks;
+    std::map<const MathUtil::Vector3i, Block *> diffs;
 };
 
-#endif // _TILES_BLOCK_H_
+#endif // _BLOCKS_CHUNK_H_

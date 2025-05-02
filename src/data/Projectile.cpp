@@ -1,6 +1,6 @@
 #include "data/Effect.h"
 #include "data/skills/Skill.h"
-#include "data/Map.h"
+#include "data/Database.h"
 #include "data/World.h"
 
 #include "data/Projectile.h"

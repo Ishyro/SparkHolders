@@ -17,7 +17,9 @@ class Database {
 
     const Attributes * getAttributes(const std::string attributes);
     const std::string getAttributesFile(const std::string attributes);
+    const Biome * getBiome(const std::string biome);
     const Block * getBlock(const std::string block);
+    const BlocksChunk * getBlocksChunk(const std::string chunk);
     std::map<const std::string, const Block *> getAvaillableBlocks();
     const Character * getCharacter(const std::string character);
     const Effect * getEffect(const std::string effect);
@@ -27,7 +29,6 @@ class Database {
     const Gear * getGear(const std::string gear);
     const Furniture * getFurniture(const std::string furniture);
     const std::string getFurnitureFile(const std::string furniture);
-    const Map * getMap(const std::string map);
     const Projectile * getProjectile(const std::string projectile);
     const Quest * getQuest(const std::string quest);
     const Skill * getSkill(const std::string skill);
@@ -43,7 +44,9 @@ class Database {
 
     void addAttributes(const Attributes * attributes);
     void addAttributesFile(const std::string attributes, const std::string path);
+    void addBiome(const Biome * biome);
     void addBlock(const Block * block);
+    void addBlocksChunk(const BlocksChunk * chunk);
     void addCharacter(const Character * character);
     void addEffect(const Effect * effect);
     void addEvent(const Event * event);
@@ -52,7 +55,6 @@ class Database {
     void addFurniture(const Furniture * furniture);
     void addFurnitureFile(const std::string furniture, const std::string path);
     void addGear(const Gear * gear);
-    void addMap(const Map * map);
     void addProjectile(const Projectile * projectile);
     void addQuest(const Quest * quest);
     void addSkill(const Skill * skill);
@@ -71,7 +73,9 @@ class Database {
 
     std::map<const std::string, const Attributes * > attributes;
     std::map<const std::string, const std::string> attributesFiles;
-    std::map<const std::string, const Block * > blocks;
+    std::map<const std::string, const Biome *> biomes;
+    std::map<const std::string, const Block *> blocks;
+    std::map<const std::string, const BlocksChunk *> chunks;
     std::map<const std::string, const Character * > characters;
     std::map<const std::string, const Effect * > effects;
     std::map<const std::string, const Event * > events;
@@ -80,7 +84,6 @@ class Database {
     std::map<const std::string, const Furniture * > furnitures;
     std::map<const std::string, const std::string> furnituresFiles;
     std::map<const std::string, const Gear * > gears;
-    std::map<const std::string, const Map * > maps;
     std::map<const std::string, const Projectile * > projectiles;
     std::map<const std::string, const Quest * > quests;
     std::map<const std::string, const Skill * > skills;

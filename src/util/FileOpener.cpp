@@ -22,11 +22,12 @@
 #include "ai/RoamerAI.h"
 
 #include "data/Adventure.h"
+#include "data/Biome.h"
 #include "data/Block.h"
+#include "data/BlocksChunk.h"
 #include "data/Character.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/Settings.h"
@@ -129,11 +130,11 @@ namespace FileOpener {
     return result;
   }
 
-  void getCoordinates(std::string to_read, int32_t & x, int32_t & y, int32_t & z) {
+  void getCoordinates(std::string to_read, int64_t & x, int64_t & y, int64_t & z) {
     std::stringstream * ss = new std::stringstream(to_read);
-    x = String::extract_int(ss);
-    y = String::extract_int(ss);
-    z = String::extract_int(ss);
+    x = String::extract_long(ss);
+    y = String::extract_long(ss);
+    z = String::extract_long(ss);
     delete ss;
   }
 
@@ -200,10 +201,27 @@ namespace FileOpener {
 
   void executeCommand(std::string keyword, std::string command, World * world, std::list<Quest *> * quests, std::list<Event *> * events, std::list<Spawn *> * spawns, std::list<Attributes *> * startingAttributes, std::list<Way *> * startingWays, Database * database, bool isServer) {
     std::stringstream * ss = new std::stringstream(command);
-    if(keyword == "Character" && isServer) {
+    if(keyword == "Biome") {
+      std::string name = String::extract(ss);
+      std::string s_origin = String::extract(ss);
+      MathUtil::Vector3i origin;
+      getCoordinates(s_origin, origin.x, origin.y, origin.z);
+      std::string s_end = String::extract(ss);
+      MathUtil::Vector3i end;
+      getCoordinates(s_end, end.x, end.y, end.z);
+      world->setBiome(new Biome( (Biome *) database->getBiome(name), origin, end));
+    }
+    if(keyword == "Chunk") {
       std::string name = String::extract(ss);
       std::string coord = String::extract(ss);
-      int32_t x, y, z;
+      MathUtil::Vector3i origin;
+      getCoordinates(coord, origin.x, origin.y, origin.z);
+      world->setChunk(origin, (BlocksChunk *) database->getBlocksChunk(name));
+    }
+    else if(keyword == "Character" && isServer) {
+      std::string name = String::extract(ss);
+      std::string coord = String::extract(ss);
+      int64_t x, y, z;
       getCoordinates(coord, x, y, z);
       std::string team = String::extract(ss);
       std::string ai_str = String::extract(ss);
@@ -282,25 +300,6 @@ namespace FileOpener {
     else if(keyword == "Event" && isServer) {
       Event * event = new Event(database->getEvent(String::extract(ss)));
       events->push_back(event);
-    }
-    else if(keyword == "Map") {
-      std::string map_name = String::extract(ss);
-      int32_t offsetX = String::extract_int(ss);
-      int32_t offsetY = String::extract_int(ss);
-      int32_t offsetZ = String::extract_int(ss);
-      int32_t rotation = String::extract_int(ss);
-      int32_t lightening = database->getTargetFromMacro(String::extract(ss));
-      Map * map = new Map( (Map *) database->getMap(map_name.substr(0, map_name.find('#'))), map_name, offsetX, offsetY, offsetZ, rotation, lightening, database);
-      world->addMap(map);
-    }
-    else if(keyword == "MapLink") {
-      MapLink * link = new MapLink();
-      std::string coord = String::extract(ss);
-      getCoordinates(coord, link->x1, link->y1, link->z1);
-      coord = String::extract(ss);
-      getCoordinates(coord, link->x2, link->y2, link->z2);
-      link->type = database->getTargetFromMacro(String::extract(ss));
-      world->addMapLink(link);
     }
     else if(keyword == "Loot" && isServer) {
 
@@ -411,7 +410,7 @@ namespace FileOpener {
     else if(keyword == "Spawn" && isServer) {
       Spawn * spawn = new Spawn();
       std::string coord = String::extract(ss);
-      getCoordinates(coord, spawn->x, spawn->y, spawn->z);
+      getCoordinates(coord, spawn->coord.x, spawn->coord.y, spawn->coord.z);
       spawns->push_back(spawn);
     }
     else if(keyword == "StartingAttributes") {
@@ -534,6 +533,21 @@ namespace FileOpener {
     return name;
   }
 
+  void BiomeOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    float temperature = _stof(values.at("temperature"));
+    float humidity = _stof(values.at("humidity"));
+    std::list<BlocksChunk *> * chunks = new std::list<BlocksChunk *>();
+    std::istringstream is_chunks(values.at("chunks"));
+    std::string chunk;
+    while(getline(is_chunks, chunk, '%')) {
+      chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk));
+    }
+    database->addBiome(new Biome(name, temperature, humidity, *chunks));
+    delete chunks;
+  }
+
   void BlockOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
@@ -560,6 +574,115 @@ namespace FileOpener {
       database->addBlock(new Block(name + "_STAIRS#NORTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 90, speed));
       database->addBlock(new Block(name + "_STAIRS#WEST", BLOCK_STAIRS, material, unwalkable, opaque, light, 180, speed));
       database->addBlock(new Block(name + "_STAIRS#SOUTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 270, speed));
+    }
+  }
+
+  
+  void BlocksChunkOpener(std::string fileName, Database * database) {
+    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
+    std::string name = values.at("name");
+    int32_t lightening = database->getTargetFromMacro(values.at("lightening"));
+    BlocksChunk * chunk = new BlocksChunk(name, lightening);
+    std::fstream file;
+    std::string line;
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    file.open(os_fileName, std::ios::in);
+    if(!file) {
+      std::cerr << "File not found: " + fileName << std::endl;
+    }
+    // skip lines until we reach the map itself
+    while(getline(file, line) && line != "!end");
+    // tiles
+    for(int32_t z = 0; z < CHUNK_SIZE; z++) {
+      // skip line
+      getline(file, line);
+      for(int32_t y = CHUNK_SIZE - 1; y >= 0; y--) {
+        getline(file, line);
+        std::istringstream is(line);
+        for(int32_t x = 0; x < CHUNK_SIZE; x++) {
+          std::string block;
+          getline(is, block, ' ');
+          if(values.at(block) != "TXT_VOID") {
+            chunk->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
+          }
+        }
+      }
+    }
+    // furnitures
+    std::string delimiter = ".";
+    while(getline(file, line)) {
+      while(line != "" && std::isspace(line.at(0))) {
+        line = line.substr(1, line.length());
+      }
+      if(line != "" && line.at(0) != '#') {
+        std::string keyword = line.substr(0, line.find(delimiter));
+        while(std::isspace(keyword.at(keyword.length() - 1))) {
+          keyword = keyword.substr(0, keyword.length() - 1);
+        }
+        std::string command = line.substr(line.find(delimiter) + 1, line.length() - 1);
+        while(std::isspace(command.at(0))) {
+          command = command.substr(1, command.length());
+        }
+        while(std::isspace(command.at(command.length() - 1))) {
+          command = command.substr(0, command.length() - 1);
+        }
+        addFurnitureToBlocksChunk(database->getTargetFromMacro(keyword), command, chunk, database);
+      }
+    }
+    //map->calculateLights();
+    file.close();
+    database->addBlocksChunk(new BlocksChunk(chunk, name + "#EAST", 0, database));
+    database->addBlocksChunk(new BlocksChunk(chunk, name + "#NORTH", 90, database));
+    database->addBlocksChunk(new BlocksChunk(chunk, name + "#WEST", 180, database));
+    database->addBlocksChunk(new BlocksChunk(chunk, name + "#SOUTH", 270, database));
+    delete chunk;
+  }
+
+  void addFurnitureToBlocksChunk(int32_t keyword, std::string command, BlocksChunk * chunk, Database * database) {
+    std::stringstream * ss = new std::stringstream(command);
+    std::string name = String::extract(ss);
+    std::string s_coord = String::extract(ss);
+    MathUtil::Vector3i coord;
+    getCoordinates(s_coord, coord.x, coord.y, coord.z);
+    float orientation_z = String::extract_float(ss);
+    if(keyword == FURNITURE_BASIC) {
+      chunk->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z));
+    }
+    else {
+      bool isLocked = String::extract_bool(ss);
+      std::string key_name = "";
+      if(isLocked) {
+        key_name = String::extract(ss);
+      }
+      if(keyword == FURNITURE_SWITCH) {
+        chunk->addFurniture(new SwitchFurniture( (SwitchFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_CRAFTING) {
+        chunk->addFurniture(new CraftingFurniture( (CraftingFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_SKILL) {
+        chunk->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z, isLocked, key_name));
+      }
+      if(keyword == FURNITURE_CONTAINER) {
+        int64_t gold = String::extract_long(ss);
+        std::stringstream * ss_items = new std::stringstream(String::extract(ss));
+        std::list<Item *> * items = new std::list<Item *>();
+        while(ss_items->rdbuf()->in_avail() != 0) {
+          items->push_back((Item *) database->getItem(String::extract(ss_items)));
+        }
+        chunk->addFurniture(new ContainerFurniture( (ContainerFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z, isLocked, key_name, gold, *items));
+        delete ss_items;
+      }
+      // TODO
+      // how to access furnitures in other chunks
+      // probably add linked furnitures after buidling the world
+      /*
+      if(keyword == FURNITURE_LINKED) {
+        int64_t linked_x = String::extract_long(ss);
+        int64_t linked_y = String::extract_long(ss);
+        chunk->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name, (ActivableFurniture *) chunk->getFurniture(linked_x, linked_y)));
+      }
+      */
     }
   }
 
@@ -1362,109 +1485,6 @@ namespace FileOpener {
     return name;
   }
 
-  void MapOpener(std::string fileName, Database * database) {
-    std::map<const std::string,std::string> values = getValuesFromFile(fileName);
-    std::string name = values.at("name");
-    int32_t sizeX = stoi(values.at("sizeX"));
-    int32_t sizeY = stoi(values.at("sizeY"));
-    int32_t sizeZ = stoi(values.at("sizeZ"));
-
-    Map * map = new Map(name, sizeX, sizeY, sizeZ, LIGHTENING_INDOORS);
-
-    std::fstream file;
-    std::string line;
-    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
-    file.open(os_fileName, std::ios::in);
-    if(!file) {
-      std::cerr << "File not found: " + fileName << std::endl;
-    }
-    // skip lines until we reach the map itself
-    while(getline(file, line) && line != "!end");
-    // tiles
-    for(int32_t z = 0; z < sizeZ; z++) {
-      // skip line
-      getline(file, line);
-      for(int32_t y = sizeY - 1; y >= 0; y--) {
-        getline(file, line);
-        std::istringstream is(line);
-        for(int32_t x = 0; x < sizeX; x++) {
-          std::string block;
-          getline(is, block, ' ');
-          if(values.at(block) != "TXT_VOID") {
-            map->setBlock(MathUtil::Vector3i(x, y, z), (Block *) database->getBlock(values.at(block)));
-          }
-        }
-      }
-    }
-    // furnitures
-    std::string delimiter = ".";
-    while(getline(file, line)) {
-      while(line != "" && std::isspace(line.at(0))) {
-        line = line.substr(1, line.length());
-      }
-      if(line != "" && line.at(0) != '#') {
-        std::string keyword = line.substr(0, line.find(delimiter));
-        while(std::isspace(keyword.at(keyword.length() - 1))) {
-          keyword = keyword.substr(0, keyword.length() - 1);
-        }
-        std::string command = line.substr(line.find(delimiter) + 1, line.length() - 1);
-        while(std::isspace(command.at(0))) {
-          command = command.substr(1, command.length());
-        }
-        while(std::isspace(command.at(command.length() - 1))) {
-          command = command.substr(0, command.length() - 1);
-        }
-        addFurnitureToMap(database->getTargetFromMacro(keyword), command, map, database);
-      }
-    }
-    //map->calculateLights();
-    file.close();
-    database->addMap(map);
-  }
-
-  void addFurnitureToMap(int32_t keyword, std::string command, Map * map, Database * database) {
-    std::stringstream * ss = new std::stringstream(command);
-    std::string name = String::extract(ss);
-    int32_t x = String::extract_int(ss);
-    int32_t y = String::extract_int(ss);
-    int32_t z = String::extract_int(ss);
-    float orientation_z = String::extract_float(ss);
-    if(keyword == FURNITURE_BASIC) {
-      map->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), x, y, z, orientation_z));
-    }
-    else {
-      bool isLocked = String::extract_bool(ss);
-      std::string key_name = "";
-      if(isLocked) {
-        key_name = String::extract(ss);
-      }
-      if(keyword == FURNITURE_SWITCH) {
-        map->addFurniture(new SwitchFurniture( (SwitchFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
-      }
-      if(keyword == FURNITURE_CRAFTING) {
-        map->addFurniture(new CraftingFurniture( (CraftingFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
-      }
-      if(keyword == FURNITURE_SKILL) {
-        map->addFurniture(new SkillFurniture( (SkillFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name));
-      }
-      if(keyword == FURNITURE_CONTAINER) {
-        int64_t gold = String::extract_long(ss);
-        std::stringstream * ss_items = new std::stringstream(String::extract(ss));
-        std::list<Item *> * items = new std::list<Item *>();
-        while(ss_items->rdbuf()->in_avail() != 0) {
-          items->push_back((Item *) database->getItem(String::extract(ss_items)));
-        }
-        map->addFurniture(new ContainerFurniture( (ContainerFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name, gold, *items));
-        delete ss_items;
-      }
-      if(keyword == FURNITURE_LINKED) {
-        int64_t linked_x = String::extract_long(ss);
-        int64_t linked_y = String::extract_long(ss);
-        map->addFurniture(new LinkedFurniture( (LinkedFurniture *) database->getFurniture(name), x, y, z, orientation_z, isLocked, key_name, (ActivableFurniture *) map->getFurniture(linked_x, linked_y)));
-      }
-    }
-  }
-
   void ProjectileOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
@@ -2083,8 +2103,14 @@ namespace FileOpener {
         database->addAttributesFile(attributes_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
+    else if(fileName.find("/biomes/") != std::string::npos) {
+      BiomeOpener(fileName, database);
+    }
     else if(fileName.find("/blocks/") != std::string::npos) {
       BlockOpener(fileName, database);
+    }
+    else if(fileName.find("/chunks/") != std::string::npos) {
+      BlocksChunkOpener(fileName, database);
     }
     else if(fileName.find("/characters/") != std::string::npos) {
       CharacterOpener(fileName, database);
@@ -2109,9 +2135,6 @@ namespace FileOpener {
       if(!isServer) {
         database->addFurnitureFile(furniture_name, std::regex_replace(resFileName, std::regex(".data"), ".glb"));
       }
-    }
-    else if(fileName.find("/maps/") != std::string::npos) {
-      MapOpener(fileName, database);
     }
     else if(fileName.find("/projectiles/") != std::string::npos) {
       ProjectileOpener(fileName, database);

@@ -6,7 +6,6 @@
 
 #include "data/Character.h"
 #include "data/Effect.h"
-#include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Block.h"
 #include "data/BlocksChunk.h"

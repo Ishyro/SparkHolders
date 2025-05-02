@@ -81,7 +81,7 @@ class Furniture {
       center = MathUtil::Vector3( (float) x + (float) sizeX * .5F, (float) y + (float) sizeY * .5F, (float) z + (float) sizeZ * .5F);
       hitbox->applyMove(center, MathUtil::getDirectionFromOrientation(MathUtil::Vector3(90.F, 0.F, orientation_z)));
     }
-    Furniture(Furniture * furniture, Map * map):
+    Furniture(Furniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
       id(++furniture::id_counter),
       name(furniture->name),
       type(furniture->type),
@@ -99,9 +99,9 @@ class Furniture {
       fire_posZ(furniture->fire_posZ)
     {
       hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, MathUtil::Vector3(furniture->coord.x, furniture->coord.y, furniture->coord.z), sizeX, sizeY, sizeZ);
-      init(map, furniture->coord);
+      init(furniture->coord, offset, rotation);
     }
-    void init(Map * map, MathUtil::Vector3i coord);
+    void init(MathUtil::Vector3i coord, MathUtil::Vector3i offset, int64_t rotation);
     MathUtil::Vector3i getCoord();
     MathUtil::Vector3 getCenter();
     MathUtil::HitboxOBB * getHitbox();

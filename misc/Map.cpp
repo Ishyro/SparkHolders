@@ -15,7 +15,6 @@
 
 #include "communication/SpeechManager.h"
 
-#include "data/Map.h"
 
 #include "util/String.h"
 #include "util/MathUtil.h"

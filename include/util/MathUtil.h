@@ -9,8 +9,6 @@
 
 #include "Values.h"
 
-#include <iostream>
-
 namespace MathUtil {
   struct Pair {
     float x;
@@ -60,7 +58,10 @@ namespace MathUtil {
     Vector3i(float x, float y, float z): x( (int64_t) std::floor(x)), y( (int64_t) std::floor(y)), z( (int64_t) std::floor(z)) {}
     Vector3i(Vector3 coords): x( (int64_t) std::floor(coords.x)), y( (int64_t) std::floor(coords.y)), z( (int64_t) std::floor(coords.z)) {}
     bool operator < (const Vector3i& v) const { return std::tie(z, y, x) < std::tie(v.z, v.y, v.x); }
+    bool operator <= (const Vector3i& v) const { return std::tie(z, y, x) <= std::tie(v.z, v.y, v.x); }
     bool operator == (const Vector3i& v) const { return z == v.z && y == v.y && x == v.x; }
+    Vector3i operator+(const Vector3i& other) const { return Vector3i(x + other.x, y + other.y, z + other.z); }
+    Vector3i operator-(const Vector3i& other) const { return Vector3i(x - other.x, y - other.y, z - other.z); }
   };
 
   struct Coords {
@@ -150,6 +151,8 @@ namespace MathUtil {
 
   float round(float var);
   Vector3 round(Vector3 var);
+  int64_t mod(int64_t k, int64_t n);
+  Vector3i mod(Vector3i var, int64_t n);
   float distanceSquare(float x1, float y1, float x2, float y2);
   float distance(float x1, float y1, float x2, float y2);
   float distance(Vector3 coord1, Vector3 coord2);
@@ -163,10 +166,6 @@ namespace MathUtil {
 
   std::vector<Pair> reconstruct_path(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int32_t offsetX, int32_t offsetY);
   float reconstruct_orientation(std::vector<std::vector<Pair>> cameFrom, Pair start, Pair dest, int32_t offsetX, int32_t offsetY);
-  std::list<Pair> getNeighboursTraversable(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY);
-  std::list<Pair> getNeighboursNonSolid(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY);
-  std::vector<Pair> getPathToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying);
-  float getOrientationToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying);
   std::list<Pair> getPathFromCartesianEquation(float a, int32_t range);
   std::list<Pair> getPathFromOrientation(float x, float y, float orientation_z, float size, float range);
   std::string target_to_string(Target * target);

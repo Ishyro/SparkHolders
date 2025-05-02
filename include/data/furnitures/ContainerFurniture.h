@@ -70,8 +70,8 @@ class ContainerFurniture : public ActivableFurniture  {
         this->loot.push_back(item);
       }
     }
-    ContainerFurniture(ContainerFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map),
+    ContainerFurniture(ContainerFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      ActivableFurniture(furniture, offset, rotation),
       gold(furniture->gold),
       loot(std::list<Item *>())
     {

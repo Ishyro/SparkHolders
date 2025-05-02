@@ -2,7 +2,6 @@
 
 #include "data/Character.h"
 #include "data/Database.h"
-#include "data/Map.h"
 #include "data/Region.h"
 
 #include "data/items/Gear.h"
@@ -173,13 +172,16 @@ Dictionary GodotLink::getBlocks(int64_t sizeZ, int64_t radius) {
     log << "getBlocks()" << std::endl;
   #endif
   Dictionary result = Dictionary();
-  MathUtil::Vector3i coord = MathUtil::Vector3i(link->getPlayer()->getCoord());
+  MathUtil::Vector3i coord = BlocksChunk::getChunkId(link->getPlayer()->getCoord());
   MathUtil::Vector3i current;
   for(current.z = coord.z - sizeZ * CHUNK_SIZE; current.z <= coord.z + sizeZ * CHUNK_SIZE; current.z += CHUNK_SIZE) {
     for(current.y = coord.y - radius * CHUNK_SIZE; current.y <= coord.y + radius * CHUNK_SIZE; current.y += CHUNK_SIZE) {
       for(current.x = coord.x - radius * CHUNK_SIZE; current.x <= coord.x + radius * CHUNK_SIZE; current.x += CHUNK_SIZE) {
-        for(auto pair : link->getAdventure()->getWorld()->getChunk(current)->getBlocks()) {
-          result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
+        BlocksChunk * chunk = link->getAdventure()->getWorld()->getChunk(current);
+        if(chunk != nullptr) {
+          for(std::pair<MathUtil::Vector3i, Block *> pair : chunk->getBlocks(current)) {
+            result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
+          }
         }
       }
     }
@@ -216,13 +218,13 @@ Dictionary GodotLink::getProjectiles() {
   return result;
 }
 
-Dictionary GodotLink::getFurnitures() {
+Dictionary GodotLink::getFurnitures(int64_t sizeZ, int64_t radius) {
   #ifdef LOG
     log << "getFurnitures()" << std::endl;
   #endif
   Dictionary result = Dictionary();
   Character * player = link->getPlayer();
-  for(Furniture * furniture : player->getRegion()->getFurnitures(player)) {
+  for(Furniture * furniture : player->getRegion()->getFurnitures(player, link->getAdventure()->getWorld(), sizeZ, radius)) {
     result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
   }
   return result;
@@ -909,7 +911,7 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getPlayerId"), &GodotLink::getPlayerId);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
-  ClassDB::bind_method(D_METHOD("getFurnitures"), &GodotLink::getFurnitures);
+  ClassDB::bind_method(D_METHOD("getFurnitures", "sizeZ", "radius"), &GodotLink::getFurnitures);
   ClassDB::bind_method(D_METHOD("getUpdatedFurnitures"), &GodotLink::getUpdatedFurnitures);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getDataFromBlock", "block"), &GodotLink::getDataFromBlock);

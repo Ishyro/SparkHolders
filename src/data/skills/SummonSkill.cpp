@@ -1,4 +1,5 @@
 #include "data/skills/SummonSkill.h"
+#include "data/Database.h"
 
 #include "ai/AI.h"
 #include "ai/PlayerAI.h"

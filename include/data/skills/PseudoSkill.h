@@ -7,7 +7,6 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
 #include "data/Effect.h"
-#include "data/Map.h"
 #include "data/World.h"
 
 #include "Values.h"

@@ -15,7 +15,6 @@
 #include "data/World.h"
 #include "data/Region.h"
 #include "data/BlocksChunk.h"
-#include "data/Map.h"
 #include "data/Stance.h"
 
 #include "data/ways/Race.h"
@@ -55,6 +54,12 @@ int32_t main(int32_t argc, char ** argv) {
 
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
+  adventure->getWorld()->generateWorld();
+  MathUtil::Vector3i chunk_id = BlocksChunk::getChunkId(MathUtil::Vector3i(50, 100, 1));
+  for(std::pair<MathUtil::Vector3i, Block *> pair : adventure->getWorld()->getChunk(chunk_id)->getBlocks(chunk_id)) {
+    std::cout << pair.first.x << " " << pair.first.y << " " << pair.first.z << std::endl;
+    std::cout << pair.second->name << std::endl;
+  }
   Character * dasheep = adventure->getWorld()->getCharacters().front();
   Character * dahuman;
   for(Character * c : adventure->getWorld()->getCharacters()) {

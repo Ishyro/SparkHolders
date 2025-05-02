@@ -1,6 +1,5 @@
 #include "data/Adventure.h"
 #include "data/Character.h"
-#include "data/Map.h"
 #include "data/World.h"
 
 #include "data/actions/Action.h"

@@ -104,6 +104,7 @@ int32_t main(int32_t argc, char ** argv) {
   bool started = true;
   bool noPlayers = false;
   bool shuting_down = false;
+  adventure->getWorld()->generateWorld();
   do {
     usleep(1);
     if(playersNumber <= 0) {

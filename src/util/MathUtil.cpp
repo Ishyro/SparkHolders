@@ -2,7 +2,6 @@
 #include <list>
 
 #include "data/Adventure.h"
-#include "data/Map.h"
 #include "data/Settings.h"
 
 #include "util/String.h"
@@ -99,6 +98,15 @@ float MathUtil::round(float var) {
 
 MathUtil::Vector3 MathUtil::round(MathUtil::Vector3 var) {
   return MathUtil::Vector3(MathUtil::round(var.x), MathUtil::round(var.y), MathUtil::round(var.z));
+}
+
+int64_t MathUtil::mod(int64_t k, int64_t n) {
+  int64_t m = k % n;
+  return m < 0 ? m + n : m;
+}
+
+MathUtil::Vector3i MathUtil::mod(MathUtil::Vector3i var, int64_t n) {
+  return MathUtil::Vector3i(MathUtil::mod(var.x, n), MathUtil::mod(var.y, n), MathUtil::mod(var.z, n));
 }
 
 float MathUtil::distanceSquare(float x1, float y1, float x2, float y2) {
@@ -348,268 +356,6 @@ float MathUtil::reconstruct_orientation(std::vector<std::vector<MathUtil::Pair>>
   return getOrientationToTarget(start.x, start.y, previous.x, previous.y);
 }
 
-/*
-std::list<MathUtil::Pair> MathUtil::getNeighboursTraversable(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY) {
-  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
-  MathUtil::Pair next = MathUtil::Pair();
-  if(startY > map->offsetY) {
-    if(!map->getBlock(startX, startY - 1)->unwalkable) {
-      next.x = startX;
-      next.y = startY - 1;
-      result.push_back(next);
-    }
-    if(startY < map->sizeY + map->offsetY - 1) {
-      if(!map->getBlock(startX, startY + 1)->unwalkable) {
-        next.x = startX;
-        next.y = startY + 1;
-        result.push_back(next);
-      }
-    }
-  }
-  if(startX > map->offsetX) {
-    if(!map->getBlock(startX - 1, startY)->unwalkable) {
-      next.x = startX - 1;
-      next.y = startY;
-      result.push_back(next);
-    }
-    if(startX < map->sizeX + map->offsetX - 1) {
-      if(!map->getBlock(startX + 1, startY)->unwalkable) {
-        next.x = startX + 1;
-        next.y = startY;
-        result.push_back(next);
-      }
-      if(startY > map->offsetY) {
-        if(!map->getBlock(startX + 1, startY - 1)->unwalkable) {
-          next.x = startX + 1;
-          next.y = startY - 1;
-          result.push_back(next);
-        }
-      }
-      if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getBlock(startX + 1, startY + 1)->unwalkable) {
-          next.x = startX + 1;
-          next.y = startY + 1;
-          result.push_back(next);
-        }
-      }
-    }
-  }
-  if(startX > map->offsetX) {
-    if(startY > map->offsetY) {
-      if(!map->getBlock(startX - 1, startY - 1)->unwalkable) {
-        next.x = startX - 1;
-        next.y = startY - 1;
-        result.push_back(next);
-      }
-      if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getBlock(startX - 1, startY + 1)->unwalkable) {
-          next.x = startX - 1;
-          next.y = startY + 1;
-          result.push_back(next);
-        }
-      }
-    }
-  }
-  return result;
-}
-
-std::list<MathUtil::Pair> MathUtil::getNeighboursNonSolid(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY) {
-  std::list<MathUtil::Pair> result = std::list<MathUtil::Pair>();
-  MathUtil::Pair next = MathUtil::Pair();
-  if(startY > map->offsetY) {
-    if(!map->getBlock(startX, startY - 1)->solid) {
-      next.x = startX;
-      next.y = startY - 1;
-      result.push_back(next);
-    }
-    if(startY < map->sizeY + map->offsetY - 1) {
-      if(!map->getBlock(startX, startY + 1)->solid) {
-        next.x = startX;
-        next.y = startY + 1;
-        result.push_back(next);
-      }
-    }
-  }
-  if(startX > map->offsetX) {
-    if(!map->getBlock(startX - 1, startY)->solid) {
-      next.x = startX - 1;
-      next.y = startY;
-      result.push_back(next);
-    }
-    if(startX < map->sizeX + map->offsetX - 1) {
-      if(!map->getBlock(startX + 1, startY)->solid) {
-        next.x = startX + 1;
-        next.y = startY;
-        result.push_back(next);
-      }
-      if(startY > map->offsetY) {
-        if(!map->getBlock(startX + 1, startY - 1)->solid) {
-          next.x = startX + 1;
-          next.y = startY - 1;
-          result.push_back(next);
-        }
-      }
-      if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getBlock(startX + 1, startY + 1)->solid) {
-          next.x = startX + 1;
-          next.y = startY + 1;
-          result.push_back(next);
-        }
-      }
-    }
-  }
-  if(startX > map->offsetX) {
-    if(startY > map->offsetY) {
-      if(!map->getBlock(startX - 1, startY - 1)->solid) {
-        next.x = startX - 1;
-        next.y = startY - 1;
-        result.push_back(next);
-      }
-      if(startY < map->sizeY + map->offsetY - 1) {
-        if(!map->getBlock(startX - 1, startY + 1)->solid) {
-          next.x = startX - 1;
-          next.y = startY + 1;
-          result.push_back(next);
-        }
-      }
-    }
-  }
-  return result;
-}
-*/
-
-std::vector<MathUtil::Pair> MathUtil::getPathToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying) {
-  return std::vector<MathUtil::Pair>();
-  /*
-  int32_t start_x = startX - map->offsetX;
-  int32_t start_y = startY - map->offsetY;
-  std::list<MathUtil::Pair> (*getNeighbours)(Map *, int32_t, int32_t, int32_t, int32_t){ &getNeighboursTraversable };
-  if(flying) {
-    getNeighbours = &getNeighboursNonSolid;
-  }
-  MathUtil::Pair start = MathUtil::Pair();
-  start.x = startX;
-  start.y = startY;
-  start.score = distance(startX, startY, destX, destY);
-  MathUtil::Pair dest = MathUtil::Pair();
-  dest.x = destX;
-  dest.y = destY;
-  dest.score = 0;
-  if(start == dest) {
-    return std::vector<MathUtil::Pair>();
-  }
-  std::list<MathUtil::Pair> openSet = std::list<MathUtil::Pair>();
-  std::vector<std::vector<MathUtil::Pair>> cameFrom = std::vector<std::vector<MathUtil::Pair>>(map->sizeY);
-  std::vector<std::vector<int32_t>> gCost = std::vector<std::vector<int32_t>>(map->sizeY);
-  for(int32_t i = 0; i < map->sizeY; i++) {
-    cameFrom[i] = std::vector<MathUtil::Pair>(map->sizeX);
-    gCost[i] = std::vector<int32_t>(map->sizeX);
-  }
-  int32_t max = map->sizeX * map->sizeY;
-  for(int32_t i = 0; i < map->sizeY; i++) {
-    for(int32_t j = 0; j < map->sizeX; j++) {
-      gCost[i][j] = max;
-    }
-  }
-  openSet.push_front(start);
-  gCost[start_y][start_x] = 0;
-
-  while(!openSet.empty()) {
-    MathUtil::Pair current = openSet.front();
-    openSet.pop_front();
-    if(current.x == destX && current.y == destY) {
-      return reconstruct_path(cameFrom, start, dest, map->offsetX, map->offsetY);
-    }
-    for(MathUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
-      int32_t tentative_gScore = gCost[current.y - map->offsetY][current.x - map->offsetX] + 1;
-      if(gCost[pair.y - map->offsetY][pair.x - map->offsetX] > tentative_gScore) {
-        gCost[pair.y - map->offsetY][pair.x - map->offsetX] = tentative_gScore;
-        cameFrom[pair.y - map->offsetY][pair.x - map->offsetX] = current;
-        pair.score = tentative_gScore + distance(pair.x, pair.y, destX, destY);
-        bool found = false;
-        for(MathUtil::Pair pair2 : openSet) {
-          if(pair == pair2) {
-            found = true;
-            break;
-          }
-        }
-        if(!found) {
-          std::list<MathUtil::Pair> sorted_element = std::list<MathUtil::Pair>(1);
-          sorted_element.push_front(pair);
-          openSet.merge(sorted_element);
-        }
-      }
-    }
-  }
-  return std::vector<MathUtil::Pair>();
-  */
-}
-
-float MathUtil::getOrientationToTarget(Map * map, int32_t startX, int32_t startY, int32_t destX, int32_t destY, bool flying) {
-  return 0.F;
-  /*
-  std::list<MathUtil::Pair> (*getNeighbours)(Map *, int32_t, int32_t, int32_t, int32_t){ &getNeighboursTraversable };
-  if(flying) {
-    getNeighbours = &getNeighboursNonSolid;
-  }
-  MathUtil::Pair start = MathUtil::Pair();
-  start.x = startX;
-  start.y = startY;
-  start.score = distance(startX, startY, destX, destY);
-  MathUtil::Pair dest = MathUtil::Pair();
-  dest.x = destX;
-  dest.y = destY;
-  dest.score = 0;
-  if(start == dest) {
-    return 360.F;
-  }
-  std::list<MathUtil::Pair> openSet = std::list<MathUtil::Pair>();
-  std::vector<std::vector<MathUtil::Pair>> cameFrom = std::vector<std::vector<MathUtil::Pair>>(map->sizeY);
-  std::vector<std::vector<int32_t>> gCost = std::vector<std::vector<int32_t>>(map->sizeY);
-  for(int32_t i = 0; i < map->sizeY; i++) {
-    cameFrom[i] = std::vector<MathUtil::Pair>(map->sizeX);
-    gCost[i] = std::vector<int32_t>(map->sizeX);
-  }
-  int32_t max = map->sizeX * map->sizeY;
-  for(int32_t i = 0; i < map->sizeY; i++) {
-    for(int32_t j = 0; j < map->sizeX; j++) {
-      gCost[i][j] = max;
-    }
-  }
-  openSet.push_front(start);
-  gCost[startY][startX] = 0;
-
-  while(!openSet.empty()) {
-    MathUtil::Pair current = openSet.front();
-    openSet.pop_front();
-    if(current.x == destX && current.y == destY) {
-      return reconstruct_orientation(cameFrom, start, dest, map->offsetX, map->offsetY);
-    }
-    for(MathUtil::Pair pair : getNeighbours(map, current.x, current.y, destX, destY)) {
-      int32_t tentative_gScore = gCost[current.y][current.x] + 1;
-      if(gCost[pair.y][pair.x] > tentative_gScore) {
-        gCost[pair.y][pair.x] = tentative_gScore;
-        cameFrom[pair.y][pair.x] = current;
-        pair.score = tentative_gScore + distance(pair.x, pair.y, destX, destY);
-        bool found = false;
-        for(MathUtil::Pair pair2 : openSet) {
-          if(pair == pair2) {
-            found = true;
-            break;
-          }
-        }
-        if(!found) {
-          std::list<MathUtil::Pair> sorted_element = std::list<MathUtil::Pair>(1);
-          sorted_element.push_front(pair);
-          openSet.merge(sorted_element);
-        }
-      }
-    }
-  }
-  return 360.F;
-  */
-}
-
 // 0 <= a <= 1
 // y <= x
 std::list<MathUtil::Pair> MathUtil::getPathFromCartesianEquation(float a, int32_t range) {
@@ -770,7 +516,11 @@ MathUtil::Target * MathUtil::target_from_string(std::string to_read, Adventure *
       character = adventure->getCharacter(String::extract_long(ss));
     }
     else if(type == TARGET_FURNITURE) {
-      furniture = adventure->getFurniture(String::extract_long(ss));
+      MathUtil::Vector3i furniture_coord = MathUtil::Vector3i();
+      furniture_coord.x = String::extract_long(ss);
+      furniture_coord.y = String::extract_long(ss);
+      furniture_coord.z = String::extract_long(ss);
+      furniture = adventure->getFurniture(furniture_coord);
     }
     else if(type == TARGET_COORDINATES || type == TARGET_FRONT) {
       coord.x = String::extract_float(ss);

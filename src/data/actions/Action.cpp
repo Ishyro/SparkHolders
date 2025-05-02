@@ -1,7 +1,6 @@
 #include "data/Adventure.h"
 #include "data/Effect.h"
 #include "data/Event.h"
-#include "data/Map.h"
 #include "data/Projectile.h"
 #include "data/Quest.h"
 #include "data/Speech.h"

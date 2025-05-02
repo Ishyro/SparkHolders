@@ -64,8 +64,8 @@ class SkillFurniture : public ActivableFurniture  {
       ),
       skill(furniture->skill)
     {}
-    SkillFurniture(SkillFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map),
+    SkillFurniture(SkillFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      ActivableFurniture(furniture, offset, rotation),
       skill(furniture->skill)
     {}
     bool getUnwalkable();

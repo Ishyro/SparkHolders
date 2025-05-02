@@ -61,8 +61,8 @@ class CraftingFurniture : public ActivableFurniture  {
         key_name
       )
     {}
-    CraftingFurniture(CraftingFurniture * furniture, Map * map):
-      ActivableFurniture(furniture, map)
+    CraftingFurniture(CraftingFurniture * furniture, MathUtil::Vector3i offset, int64_t rotation):
+      ActivableFurniture(furniture, offset, rotation)
     {}
     bool getUnwalkable();
     bool getOpaque();

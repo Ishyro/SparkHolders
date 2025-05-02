@@ -170,7 +170,7 @@ func _process(_delta):
 
 func process_new_map():
 	create_blocks()
-	furnitures_data = Values.link.getFurnitures()
+	furnitures_data = Values.link.getFurnitures(Settings.chunk_height, Settings.chunk_radius)
 	display_map()
 	mutex.lock()
 	map_to_update = true
@@ -206,21 +206,20 @@ func update_map():
 
 func _physics_process(delta):
 	real_delta += delta
-	#if mutex.try_lock():
-	mutex.lock()
-	for character_id in characters_data:
-		var character = characters[character_id]
-		var speed = Vector3(characters_data[character_id]["speed"].y, characters_data[character_id]["speed"].z, characters_data[character_id]["speed"].x)
-		character.move(speed, real_delta)
-	#for projectile_id in projectiles_data:
-	#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
-	#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
-	#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
-	#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation_z"], 0)
-	#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
-	#		projectiles[projectile_id].transform.origin = dest
-	#	done = done and (projectiles[projectile_id].transform.origin == dest)
-	real_delta = 0
+	if mutex.try_lock():
+		for character_id in characters_data:
+			var character = characters[character_id]
+			var speed = Vector3(characters_data[character_id]["speed"].y, characters_data[character_id]["speed"].z, characters_data[character_id]["speed"].x)
+			character.move(speed, real_delta)
+		#for projectile_id in projectiles_data:
+		#	var dest = Vector3(projectiles_data[projectile_id]["y"], projectiles[projectile_id].transform.origin.y, projectiles_data[projectile_id]["x"])
+		#	var movement = (dest - projectiles[projectile_id].transform.origin).normalized() * 10
+		#	projectiles[projectile_id].move_and_collide(Vector3(movement.x, 0, movement.z) * delta)
+		#	projectiles[projectile_id].rotation_degrees = Vector3(0, projectiles_data[projectile_id]["orientation_z"], 0)
+		#	if projectiles[projectile_id].transform.origin.distance_to(dest) < 0.1:
+		#		projectiles[projectile_id].transform.origin = dest
+		#	done = done and (projectiles[projectile_id].transform.origin == dest)
+		real_delta = 0
 	mutex.unlock()
 
 func create_blocks():
@@ -292,7 +291,7 @@ func update_furnitures():
 		n_colliders = get_node("Map1/Colliders")
 	var updated_furnitures = Values.link.getUpdatedFurnitures()
 	if not updated_furnitures.is_empty():
-		var new_furnitures_data = Values.link.getFurnitures()
+		var new_furnitures_data = Values.link.getFurnitures(Settings.chunk_height, Settings.chunk_radius)
 		for coord in updated_furnitures:
 			n_furnitures.remove_child(furnitures[coord])
 			furnitures.erase(coord)

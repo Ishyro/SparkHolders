@@ -1,5 +1,4 @@
 #include "data/Character.h"
-#include "data/Map.h"
 #include "data/Adventure.h"
 
 #include "data/items/Item.h"

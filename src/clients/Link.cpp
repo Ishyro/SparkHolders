@@ -1,7 +1,7 @@
 #include "data/actions/Action.h"
 #include "data/Adventure.h"
 #include "data/Character.h"
-#include "data/Map.h"
+#include "data/Database.h"
 #include "data/World.h"
 
 #include "communication/Socket.h"
@@ -38,6 +38,7 @@ void Link::listen() {
       adventure = Client::receiveAdventure(ss->str(), tickrate, master);
       key_holder = new EnglishKeyHolder(adventure->getDatabase()->getKeysPaths());
       started = true;
+      adventure->getWorld()->generateWorld();
       break;
     case SOCKET_MSG_READY:
       ready = true;

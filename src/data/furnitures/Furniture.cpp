@@ -1,31 +1,26 @@
 #include "data/furnitures/Furniture.h"
 
-#include "data/Map.h"
 
-void Furniture::init(Map * map, MathUtil::Vector3i coord) {
-  this->coord.z = map->offsetZ; 
-  switch(map->getRotation()) {
+void Furniture::init(MathUtil::Vector3i coord, MathUtil::Vector3i offset, int64_t rotation) {
+  this->coord.z = coord.z + offset.z;
+  switch(rotation) {
     case 0:
-      this->coord.x = coord.x + map->offsetX;
-      this->coord.y = coord.y + map->offsetY;
-      this->coord.z = coord.z + map->offsetZ;
+      this->coord.x = coord.x + offset.x;
+      this->coord.y = coord.y + offset.y;
       break;
     case 90:
-      this->coord.x = map->sizeY - 1 - coord.y + map->offsetX;
-      this->coord.y = coord.x + map->offsetY;
-      this->coord.z = coord.z + map->offsetZ;
+      this->coord.x = CHUNK_SIZE - 1 - coord.y + offset.x;
+      this->coord.y = coord.x + offset.y;
       orientation_z += 90.F;
       break;
     case 180:
-      this->coord.x = map->sizeX - 1 - coord.x + map->offsetX;
-      this->coord.y = map->sizeY - 1 - coord.y + map->offsetY;
-      this->coord.z = coord.z + map->offsetZ;
+      this->coord.x = CHUNK_SIZE - 1 - coord.x + offset.x;
+      this->coord.y = CHUNK_SIZE - 1 - coord.y + offset.y;
       orientation_z += 180.F;
       break;
     case 270:
-      this->coord.x = coord.y + map->offsetX;
-      this->coord.y = map->sizeX - 1 - coord.x + map->offsetY;
-      this->coord.z = coord.z + map->offsetZ;
+      this->coord.x = coord.y + offset.x;
+      this->coord.y = CHUNK_SIZE - 1 - coord.x + offset.y;
       orientation_z += 270.F;
       break;
     default: ;

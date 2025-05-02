@@ -2,7 +2,6 @@
 
 #include "data/Adventure.h"
 #include "data/Character.h"
-#include "data/Map.h"
 
 #include "data/skills/Skill.h"
 

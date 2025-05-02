@@ -5,6 +5,7 @@
 #endif
 
 #include <thread>
+#include <cmath>
 
 #include <string>
 #include <ncurses.h>
@@ -17,7 +18,6 @@
 
 #include "clients/terminal/Display.h"
 
-#include "data/Map.h"
 #include "data/Block.h"
 
 void listener(void * param) {

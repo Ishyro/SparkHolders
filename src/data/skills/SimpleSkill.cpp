@@ -45,7 +45,7 @@ void SimpleSkill::activate(
     attack->hitbox = new MathUtil::HitboxOBB(HITBOX_OBB, owner->getCoord(), h_size.x, h_size.y, h_size.z);
     ((MathUtil::HitboxOBB *) attack->hitbox)->applyMove(owner->getCoord(), MathUtil::getDirectionFromOrientation(target->coord));
     std::array<float, DAMAGE_TYPE_NUMBER> current_damages = attack->damages;
-    for(HitboxOwner * hit : owner->getRegion()->sortHitboxes(attack)) {
+    for(HitboxOwner * hit : owner->getRegion()->sortHitboxes(attack, adventure->getWorld())) {
       if(hit->type == HITBOX_OWNER_CHARACTER) {
         hit->owner->receiveDamages(attack->damages, owner, attack->status_power);
         for(Effect * effect : effects) {

@@ -14,9 +14,7 @@
 #include "Values.h"
 
 struct Spawn {
-  int32_t x;
-  int32_t y;
-  int32_t z;
+  MathUtil::Vector3i coord;
 };
 
 struct Time {
@@ -169,11 +167,8 @@ class Adventure {
     void removeQuest(Quest * quest);
     std::list<Character *> getCharacters();
     Character * getCharacter(int64_t id);
-    Furniture * getFurniture(int64_t id);
+    Furniture * getFurniture(MathUtil::Vector3i furniture_coord);
     std::list<Projectile *> getProjectiles();
-    void getNPCsActions();
-    void mergeActions(std::list<Action *> to_add);
-    void executeActions();
     void actAllProjectiles();
     Character * spawnPlayer(std::string name, Attributes * attr, Race * race, Way * origin, Way * culture, Way * religion, Way * profession);
     void applyIteration();
