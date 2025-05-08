@@ -68,8 +68,6 @@ int32_t main(int32_t argc, char ** argv) {
   
   setlocale(LC_ALL, "");
   std::string adventureFile = argv[1];
-  srand(Settings::getSeed());
-
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
 
   int32_t playersNumber = adventure->maxPlayers;

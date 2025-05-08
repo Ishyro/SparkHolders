@@ -39,3 +39,6 @@ var action = {}
 var move_set = false
 var action_mutex = Mutex.new()
 var action_move_mutex = Mutex.new()
+
+var base_furnitures_models = {}
+var base_furnitures_models_off = {}

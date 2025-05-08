@@ -27,8 +27,6 @@ void World::setChunk(MathUtil::Vector3i coord, BlocksChunk * chunk) {
   MathUtil::Vector3i safe_coord = BlocksChunk::getChunkId(coord);
   std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(safe_coord);
   if(it != chunks.end()) {
-    // retire sans delete
-    // le doute m'habite
     chunks.erase(it);
   }
   chunks.insert(std::make_pair(safe_coord, chunk));
@@ -51,65 +49,70 @@ void World::setBlock(MathUtil::Vector3i coord, Block * block) {
 void World::generateWorld() {
   for(Biome * biome : biomes) {
     MathUtil::Vector3i chunk_id;
-    for(chunk_id.z = biome->origin.z; chunk_id.z <= biome->end.z; chunk_id.z += CHUNK_SIZE) {
-      for(chunk_id.y = biome->origin.y; chunk_id.y <= biome->end.y; chunk_id.y += CHUNK_SIZE) {
+    for(chunk_id.z = biome->end.z; chunk_id.z >= biome->origin.z; chunk_id.z -= CHUNK_SIZE) {
+      for(chunk_id.y = biome->end.y; chunk_id.y >= biome->origin.y; chunk_id.y -= CHUNK_SIZE) {
         for(chunk_id.x = biome->origin.x; chunk_id.x <= biome->end.x; chunk_id.x += CHUNK_SIZE) {
-          std::array<BlocksChunk *, 6> neighbors = std::array<BlocksChunk *, 6>();
-          neighbors.fill(nullptr);
-          // NORTH
-          std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(chunk_id + MathUtil::Vector3i(0, CHUNK_SIZE, 0));
-          if(it != chunks.end()) {
-            neighbors[0] = it->second;
-          }
-          // EAST
-          it = chunks.find(chunk_id + MathUtil::Vector3i(CHUNK_SIZE, 0, 0));
-          if(it != chunks.end()) {
-            neighbors[1] = it->second;
-          }
-          // SOUTH
-          it = chunks.find(chunk_id + MathUtil::Vector3i(0, -CHUNK_SIZE, 0));
-          if(it != chunks.end()) {
-            neighbors[2] = it->second;
-          }
-          // WEST
-          it = chunks.find(chunk_id + MathUtil::Vector3i(-CHUNK_SIZE, 0, 0));
-          if(it != chunks.end()) {
-            neighbors[3] = it->second;
-          }
-          // UP
-          it = chunks.find(chunk_id + MathUtil::Vector3i(0, 0, CHUNK_SIZE));
-          if(it != chunks.end()) {
-            neighbors[4] = it->second;
-          }
-          // DOWN
-          it = chunks.find(chunk_id + MathUtil::Vector3i(0, 0, -CHUNK_SIZE));
-          if(it != chunks.end()) {
-            neighbors[5] = it->second;
-          }
-          BlocksChunk * chunk = getBiome(chunk_id)->getChunk(neighbors);
-          for(Furniture * furniture : chunk->getFurnitures()) {
-            switch(furniture->type) {
-              case FURNITURE_BASIC:
-                addFurniture(new BasicFurniture( (BasicFurniture *) furniture, chunk_id, 0));
-                break;
-              case FURNITURE_CONTAINER:
-                addFurniture(new ContainerFurniture( (ContainerFurniture *) furniture, chunk_id, 0));
-                break;
-              case FURNITURE_CRAFTING:
-                addFurniture(new CraftingFurniture( (CraftingFurniture *) furniture, chunk_id, 0));
-                break;
-              case FURNITURE_LINKED:
-                addFurniture(new LinkedFurniture( (LinkedFurniture *) furniture, chunk_id, 0));
-                break;
-              case FURNITURE_SKILL:
-                addFurniture(new SkillFurniture( (SkillFurniture *) furniture, chunk_id, 0));
-                break;
-              case FURNITURE_SWITCH:
-                addFurniture(new SwitchFurniture( (SwitchFurniture *) furniture, chunk_id, 0));
-                break;
+          std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(chunk_id);
+          if(it == chunks.end()) {
+            std::array<BlocksChunk *, 6> neighbors = std::array<BlocksChunk *, 6>();
+            neighbors.fill(nullptr);
+            // EAST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(CHUNK_SIZE, 0, 0));
+            if(it != chunks.end()) {
+              neighbors[EAST] = it->second;
+            }
+            // NORTH
+            it = chunks.find(chunk_id + MathUtil::Vector3i(0, CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[NORTH] = it->second;
+            }
+            // WEST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(-CHUNK_SIZE, 0, 0));
+            if(it != chunks.end()) {
+              neighbors[WEST] = it->second;
+            }
+            // SOUTH
+            it = chunks.find(chunk_id + MathUtil::Vector3i(0, -CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[SOUTH] = it->second;
+            }
+            // UP
+            it = chunks.find(chunk_id + MathUtil::Vector3i(0, 0, CHUNK_SIZE));
+            if(it != chunks.end()) {
+              neighbors[UP] = it->second;
+            }
+            // DOWN
+            it = chunks.find(chunk_id + MathUtil::Vector3i(0, 0, -CHUNK_SIZE));
+            if(it != chunks.end()) {
+              neighbors[DOWN] = it->second;
+            }
+            BlocksChunk * chunk = biome->getChunk(neighbors);
+            if(chunk != nullptr) {
+              for(Furniture * furniture : chunk->getFurnitures()) {
+                switch(furniture->type) {
+                  case FURNITURE_BASIC:
+                    addFurniture(new BasicFurniture( (BasicFurniture *) furniture, chunk_id, 0));
+                    break;
+                  case FURNITURE_CONTAINER:
+                    addFurniture(new ContainerFurniture( (ContainerFurniture *) furniture, chunk_id, 0));
+                    break;
+                  case FURNITURE_CRAFTING:
+                    addFurniture(new CraftingFurniture( (CraftingFurniture *) furniture, chunk_id, 0));
+                    break;
+                  case FURNITURE_LINKED:
+                    addFurniture(new LinkedFurniture( (LinkedFurniture *) furniture, chunk_id, 0));
+                    break;
+                  case FURNITURE_SKILL:
+                    addFurniture(new SkillFurniture( (SkillFurniture *) furniture, chunk_id, 0));
+                    break;
+                  case FURNITURE_SWITCH:
+                    addFurniture(new SwitchFurniture( (SwitchFurniture *) furniture, chunk_id, 0));
+                    break;
+                }
+              }
+              chunks.insert(std::make_pair(chunk_id, chunk));
             }
           }
-          chunks.insert(std::make_pair(chunk_id, chunk));
         }
       }
     }
@@ -165,6 +168,15 @@ Furniture * World::getFurniture(MathUtil::Vector3i furniture_coord) {
     }
   }
   return nullptr;
+}
+
+std::list<Furniture *> World::getFurnituresInChunk(MathUtil::Vector3i furniture_coord) {
+  MathUtil::Vector3i chunk_coord = BlocksChunk::getChunkId(furniture_coord);
+  std::map<const MathUtil::Vector3i, std::list<Furniture *>>::iterator it = furnitures.find(chunk_coord);
+  if(it != furnitures.end()) {
+    return it->second;
+  }
+  return std::list<Furniture *>();
 }
 
 Block * World::getBlock(MathUtil::Vector3i coord) {

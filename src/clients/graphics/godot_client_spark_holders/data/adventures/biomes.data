@@ -159,7 +159,24 @@ data/furnitures/fireplace.data
 data/furnitures/torch_ground.data
 data/furnitures/torch_wall.data
 # chunks
-data/chunks/grassland_flat.data
+data/chunks/empty.data
+data/chunks/filled_soil.data
+data/chunks/grassland_flat_1.data
+data/chunks/grassland_flat_2.data
+data/chunks/grassland_flat_3.data
+data/chunks/grassland_flat_4.data
+data/chunks/grassland_flat_5.data
+data/chunks/grassland_flat_6.data
+data/chunks/grassland_flat_7.data
+data/chunks/grassland_flat_8.data
+data/chunks/grassland_flat_9.data
+data/chunks/grassland_flat_10.data
+data/chunks/grassland_flat_11.data
+data/chunks/grassland_flat_12.data
+data/chunks/grassland_flat_13.data
+data/chunks/grassland_flat_14.data
+data/chunks/grassland_flat_15.data
+data/chunks/grassland_flat_16.data
 # biomes
 data/biomes/grassland.data
 !end
@@ -350,10 +367,11 @@ TeamRelation.{TEAM_ENEMY}{Scranem}{bandit}
 TeamRelation.{TEAM_ENEMY}{predator}{bandit}
 TeamRelation.{TEAM_ENEMY}{undead}{bandit}
 # add biomes
+Biome.{TXT_GRASSLAND}{{0}{0}{16}}{{1024}{1024}{32}}
 Biome.{TXT_GRASSLAND}{{-1024}{-1024}{0}}{{1024}{1024}{0}}
 # add forced spawned chunks
 # add spawns
-Spawn.{{50}{100}{1}}
+Spawn.{{50}{100}{48}}
 # add characters
 
 #Character.{TXT_SHEEP}{{50}{98}{0}}{prey}{DiurnalPassiveAI}{TXT_SHEEP}{TXT_NO_ATTRIBUTES}{TXT_NO_ATTRIBUTES}{TXT_NO_GEAR}{TXT_SHEEP}{}{TXT_COUNTRYSIDE}{TXT_NO_CULTURE}{TXT_NO_RELIGION}{TXT_RUMINANT}{}{50}{0}

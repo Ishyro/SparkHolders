@@ -36,10 +36,20 @@ class Biome {
       temperature(biome->temperature),
       humidity(biome->humidity),
       chunk_collection(biome->chunk_collection),
-      origin(origin),
-      end(end)
+      origin(
+        std::min(origin.x, end.x),
+        std::min(origin.y, end.y),
+        std::min(origin.z, end.z)
+      ),
+      end(
+        std::max(origin.x, end.x),
+        std::max(origin.y, end.y),
+        std::max(origin.z, end.z)
+      )
     {}
     BlocksChunk * getChunk(std::array<BlocksChunk *, 6> neighbors);
+    bool checkChunk(int32_t direction, BlocksChunk * neighbor, BlocksChunk * to_check);
+    bool satisfySide(int32_t side1, int32_t side2);
   private:
     std::list<BlocksChunk *> chunk_collection;
 };

@@ -52,14 +52,15 @@ public:
   int64_t getMaxLight();
   float getOrientationToTarget(Vector2 a, Vector2 b);
   Array getAvaillableBlocks();
-  Dictionary getBlocks(int64_t sizeZ, int64_t radius);
+  Array getChunkIds(int64_t sizeZ, int64_t radius);
+  Dictionary getBlocks(Vector3 chunk_id);
+  Dictionary getFurnitures(Vector3 chunk_id);
   int64_t getPlayerId();
   Array getLights();
   Array getControlledParty();
   Dictionary getCharacters();
   Dictionary getProjectiles();
-  Dictionary getFurnitures(int64_t sizeZ, int64_t radius);
-  Array getUpdatedFurnitures();
+  Dictionary getUpdatedFurnitures();
   String getRelation(String team1, String team2);
   Dictionary getDataFromItem(Item * item);
   Dictionary getDataFromBlock(String tile_name);

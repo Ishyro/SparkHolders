@@ -485,13 +485,15 @@ std::string MathUtil::target_to_string(MathUtil::Target * target) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, target->type);
   if(target->type != TARGET_NONE && target->type != TARGET_SELF) {
-    if(target->type == TARGET_CHARACTER || target->type == TARGET_FURNITURE) {
+    if(target->type == TARGET_CHARACTER) {
       String::insert_long(ss, target->id);
     }
+    else if(target->type == TARGET_FURNITURE) {
+      String::insert_long(ss, (int64_t) target->coord.x);
+      String::insert_long(ss, (int64_t) target->coord.y);
+      String::insert_long(ss, (int64_t) target->coord.z);
+    }
     else if(target->type == TARGET_COORDINATES || target->type == TARGET_FRONT) {
-      String::insert_float(ss, target->coord.x);
-      String::insert_float(ss, target->coord.y);
-      String::insert_float(ss, target->coord.z);
     }
   }
   if(target->next != nullptr) {

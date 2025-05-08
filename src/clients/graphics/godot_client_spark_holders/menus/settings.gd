@@ -49,7 +49,9 @@ var pause_modes_strings = { "SETTINGS_PAUSE_NO_ACTION": "When no action", "SETTI
 @onready var n_pause_mode = $Divider/MarginContainer/ClientServer/Server/Gameplay/PauseModeValue
 # General
 @onready var n_serverport = $Divider/MarginContainer/ClientServer/Server/General/PortValue
-@onready var n_seed = $Divider/MarginContainer/ClientServer/Server/General/SeedValue
+@onready var n_world_seed = $Divider/MarginContainer/ClientServer/Server/General/WorldSeedValue
+@onready var n_craft_seed = $Divider/MarginContainer/ClientServer/Server/General/CraftSeedValue
+@onready var n_choice_seed = $Divider/MarginContainer/ClientServer/Server/General/ChoiceSeedValue
 @onready var n_pasword = $Divider/MarginContainer/ClientServer/Server/General/PasswordValue
 
 func _ready():
@@ -209,7 +211,9 @@ func apply_server_settings():
 	n_pause_mode.select(pause_modes[pause_modes_strings[server_settings_dic["PAUSE_MODE"]]])
 	# General
 	n_serverport.text = server_settings_dic["PORT"]
-	n_seed.text = server_settings_dic["SEED"]
+	n_world_seed.text = server_settings_dic["WORLD_SEED"]
+	n_craft_seed.text = server_settings_dic["CRAFT_SEED"]
+	n_choice_seed.text = server_settings_dic["CHOICE_SEED"]
 	n_pasword.text = server_settings_dic["MASTER_PASSWORD"]
 	Settings.password = server_settings_dic["MASTER_PASSWORD"]
 
@@ -355,11 +359,23 @@ func _on_serverport_value_text_changed(new_text):
 	else:
 		n_serverport.text = server_settings_dic["PORT"]
 
-func _on_seed_value_text_changed(new_text):
+func _on_world_seed_value_text_submitted(new_text):
 	if new_text.is_valid_int() or new_text == "rand":
-		server_settings_dic["SEED"] = new_text
+		server_settings_dic["WORLD_SEED"] = new_text
 	else:
-		n_seed.text = server_settings_dic["SEED"]
+		n_world_seed.text = server_settings_dic["WORLD_SEED"]
+
+func _on_craft_seed_value_text_submitted(new_text: String) -> void:
+	if new_text.is_valid_int() or new_text == "rand":
+		server_settings_dic["CRAFT_SEED"] = new_text
+	else:
+		n_world_seed.text = server_settings_dic["CRAFT_SEED"]
+
+func _on_choice_seed_value_text_submitted(new_text: String) -> void:
+	if new_text.is_valid_int() or new_text == "rand":
+		server_settings_dic["CHOICE_SEED"] = new_text
+	else:
+		n_world_seed.text = server_settings_dic["CHOICE_SEED"]
 
 func _on_password_value_text_changed(new_text):
 	server_settings_dic["MASTER_PASSWORD"] = new_text

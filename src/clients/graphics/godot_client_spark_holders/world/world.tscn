@@ -99,3 +99,5 @@ shadow_enabled = true
 [node name="Characters" type="Node3D" parent="Mobs"]
 
 [node name="Projectiles" type="Node3D" parent="Mobs"]
+
+[node name="Chunks" type="Node3D" parent="."]

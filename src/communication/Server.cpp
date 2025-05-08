@@ -26,6 +26,7 @@
 #include "communication/Server.h"
 
 #include "util/String.h"
+#include "util/Random.h"
 
 namespace Server {
 
@@ -238,6 +239,7 @@ namespace Server {
       String::insert_int(ss, SOCKET_MSG_ADVENTURE);
       String::insert(ss, adventure->filePath);
       String::insert_long(ss, Settings::getTickRate().count());
+      String::insert_long(ss, Random::getWorldGenerationSeed());
       String::insert_bool(ss, master);
       s.write(ss->str());
       delete ss;

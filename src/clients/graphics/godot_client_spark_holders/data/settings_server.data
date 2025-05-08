@@ -8,5 +8,7 @@ STATUS_THRESHOLD = {100}{100}{100}{50}{100}{100}{75}{100}{1000}
 
 # Server values
 PORT = 45678
-SEED = rand
+WORLD_SEED = rand
+CRAFT_SEED = rand
+CHOICE_SEED = rand
 MASTER_PASSWORD = admin

@@ -63,6 +63,33 @@ Database::Database() {
   macros.insert(std::make_pair("LIGHTENING_OUTDOORS", LIGHTENING_OUTDOORS));
   macros.insert(std::make_pair("LIGHTENING_DARK", LIGHTENING_DARK));
 
+  // side_position
+  macros.insert(std::make_pair("EAST", EAST));
+  macros.insert(std::make_pair("NORTH", NORTH));
+  macros.insert(std::make_pair("WEST", WEST));
+  macros.insert(std::make_pair("SOUTH", SOUTH));
+  macros.insert(std::make_pair("UP", UP));
+  macros.insert(std::make_pair("DOWN", DOWN));
+
+  // side_type
+  macros.insert(std::make_pair("SIDE_OPEN", SIDE_OPEN));
+  macros.insert(std::make_pair("SIDE_OPEN_Z1", SIDE_OPEN_Z1));
+  macros.insert(std::make_pair("SIDE_OPEN_Z2", SIDE_OPEN_Z2));
+  macros.insert(std::make_pair("SIDE_OPEN_Z3", SIDE_OPEN_Z3));
+  macros.insert(std::make_pair("SIDE_OPEN_Z4", SIDE_OPEN_Z4));
+  macros.insert(std::make_pair("SIDE_OPEN_Z5", SIDE_OPEN_Z5));
+  macros.insert(std::make_pair("SIDE_OPEN_Z6", SIDE_OPEN_Z6));
+  macros.insert(std::make_pair("SIDE_OPEN_Z7", SIDE_OPEN_Z7));
+  macros.insert(std::make_pair("SIDE_OPEN_Z8", SIDE_OPEN_Z8));
+  macros.insert(std::make_pair("SIDE_OPEN_Z9", SIDE_OPEN_Z9));
+  macros.insert(std::make_pair("SIDE_OPEN_Z10", SIDE_OPEN_Z10));
+  macros.insert(std::make_pair("SIDE_OPEN_Z11", SIDE_OPEN_Z11));
+  macros.insert(std::make_pair("SIDE_OPEN_Z12", SIDE_OPEN_Z12));
+  macros.insert(std::make_pair("SIDE_OPEN_Z13", SIDE_OPEN_Z13));
+  macros.insert(std::make_pair("SIDE_OPEN_Z14", SIDE_OPEN_Z14));
+  macros.insert(std::make_pair("SIDE_OPEN_Z15", SIDE_OPEN_Z15));
+  macros.insert(std::make_pair("SIDE_CLOSED", SIDE_CLOSED));
+
   // effect_duration_type
   macros.insert(std::make_pair("DURATION_INSTANT", DURATION_INSTANT));
   macros.insert(std::make_pair("DURATION_INFINITE", DURATION_INFINITE));

@@ -33,6 +33,7 @@ class World {
     Character * getCharacter(int64_t id);
     std::list<Character *> computeTarget(Character * origin, MathUtil::Target * target);
     Furniture * getFurniture(MathUtil::Vector3i furniture_coord);
+    std::list<Furniture *> getFurnituresInChunk(MathUtil::Vector3i furniture_coord);
     Block * getBlock(MathUtil::Vector3i coord);
     int32_t getLightening(MathUtil::Vector3i coord);
     BlocksChunk * getChunk(MathUtil::Vector3 coord);

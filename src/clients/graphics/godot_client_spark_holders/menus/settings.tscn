@@ -387,13 +387,37 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 caret_blink = true
 
-[node name="Seed" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
+[node name="WorldSeed" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Seed"
 
-[node name="SeedValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
+[node name="WorldSeedValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+caret_blink = true
+
+[node name="CraftSeed" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Seed"
+
+[node name="CraftSeedValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+caret_blink = true
+
+[node name="ChoiceSeed" parent="Divider/MarginContainer/ClientServer/Server/General" instance=ExtResource("3_rn5ii")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Seed"
+
+[node name="ChoiceSeedValue" type="LineEdit" parent="Divider/MarginContainer/ClientServer/Server/General"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -463,26 +487,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Dummy11" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy12" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy13" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Dummy14" type="Control" parent="Divider/MarginContainer/ClientServer/Server/General"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
 [node name="Buttons" type="HBoxContainer" parent="Divider"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -526,7 +530,9 @@ text = "Reset to defaults"
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/Gameplay/BuyingPriceModifierValue" to="." method="_on_buying_price_modifier_value_text_changed"]
 [connection signal="item_selected" from="Divider/MarginContainer/ClientServer/Server/Gameplay/PauseModeValue" to="." method="_on_pause_mode_value_item_selected"]
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/PortValue" to="." method="_on_serverport_value_text_changed"]
-[connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/SeedValue" to="." method="_on_seed_value_text_changed"]
+[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/WorldSeedValue" to="." method="_on_world_seed_value_text_submitted"]
+[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/CraftSeedValue" to="." method="_on_craft_seed_value_text_submitted"]
+[connection signal="text_submitted" from="Divider/MarginContainer/ClientServer/Server/General/ChoiceSeedValue" to="." method="_on_choice_seed_value_text_submitted"]
 [connection signal="text_changed" from="Divider/MarginContainer/ClientServer/Server/General/PasswordValue" to="." method="_on_password_value_text_changed"]
 [connection signal="pressed" from="Divider/Buttons/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Divider/Buttons/SaveAndClose" to="." method="_on_save_and_close_pressed"]

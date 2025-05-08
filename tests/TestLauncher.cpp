@@ -50,7 +50,6 @@ int32_t main(int32_t argc, char ** argv) {
   setlocale(LC_ALL, "");
   std::string adventureFile = argv[1];
   int64_t ticks = std::stol(argv[2]);
-  srand(Settings::getSeed());
 
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);

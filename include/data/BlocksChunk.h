@@ -31,13 +31,42 @@ class BlocksChunk {
     const std::string name;
     const int32_t lightening;
     const bool instanciated;
-    BlocksChunk(const std::string name, const int32_t lightening) : name(name), lightening(lightening), instanciated(false) {}
+    BlocksChunk(const std::string name, const int32_t lightening, std::array<int32_t, 6> sides) : name(name), lightening(lightening), sides(sides), instanciated(false) {}
     BlocksChunk(BlocksChunk * chunk, const std::string name, const int64_t rotation, Database * database):
       name(name),
       lightening(chunk->lightening),
       furnitures(chunk->furnitures),
       instanciated(false)
     {
+      sides[UP] = chunk->sides[UP];
+      sides[DOWN] = chunk->sides[DOWN];
+      switch(rotation) {
+        case 0:
+          sides[EAST] = chunk->sides[EAST];
+          sides[NORTH] = chunk->sides[NORTH];
+          sides[WEST] = chunk->sides[WEST];
+          sides[SOUTH] = chunk->sides[SOUTH];
+          break;
+        case 90:
+          sides[EAST] = chunk->sides[NORTH];
+          sides[NORTH] = chunk->sides[WEST];
+          sides[WEST] = chunk->sides[SOUTH];
+          sides[SOUTH] = chunk->sides[EAST];
+          break;
+        case 180:
+          sides[EAST] = chunk->sides[WEST];
+          sides[NORTH] = chunk->sides[SOUTH];
+          sides[WEST] = chunk->sides[EAST];
+          sides[SOUTH] = chunk->sides[NORTH];
+          break;
+        case 270:
+          sides[EAST] = chunk->sides[SOUTH];
+          sides[NORTH] = chunk->sides[EAST];
+          sides[WEST] = chunk->sides[NORTH];
+          sides[SOUTH] = chunk->sides[WEST];
+          break;
+        default: ;
+      }
       for(std::pair<MathUtil::Vector3i, Block *> pair : chunk->blocks) {
         MathUtil::Vector3i coord = pair.first;
         switch(rotation) {
@@ -81,6 +110,7 @@ class BlocksChunk {
     BlocksChunk(BlocksChunk * chunk):
       name(chunk->name),
       lightening(chunk->lightening),
+      sides(chunk->sides),
       instanciated(true),
       blocks(chunk->blocks)
     {}
@@ -88,6 +118,7 @@ class BlocksChunk {
     void setBlock(MathUtil::Vector3i coord, Block * block);
     std::map<const MathUtil::Vector3i, Block *> getBlocks(MathUtil::Vector3i offset);
     std::map<const MathUtil::Vector3i, Block *> getDiffs(MathUtil::Vector3i offset);
+    int32_t getSide(int32_t side);
     std::list<Furniture *> getFurnitures();
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3 ori);
     static MathUtil::Vector3i getChunkId(MathUtil::Vector3i ori);

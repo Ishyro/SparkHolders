@@ -33,7 +33,6 @@ namespace Settings {
   std::array<int32_t, DAMAGE_TYPE_STATUS_NUMBER> statusThreshold;
   float buyingPriceModifier;
   int32_t port;
-  int64_t seed;
   std::string masterPassword;
 
   int32_t getYearDuration() { return yearDuration; } // in days
@@ -69,7 +68,6 @@ namespace Settings {
   std::string getDayName(int32_t indice) { return dayNames[indice]; } // weekDuration
   float getBuyingPriceModifier() { return buyingPriceModifier; }
   int32_t getPort() { return port; }
-  int64_t getSeed() { return seed; }
   std::string getMasterPassword() { return masterPassword; }
   int32_t getStatusThreshold(int32_t indice) { return statusThreshold[indice]; }
 
@@ -108,7 +106,6 @@ namespace Settings {
   void setDayName(int32_t indice, std::string data) { dayNames[indice] = data; } // weekDuration
   void setBuyingPriceModifier(float data) { buyingPriceModifier = data; }
   void setPort(int32_t data) { port = data; }
-  void setSeed(int64_t data) { seed = data; }
   void setMasterPassword(std::string data) { masterPassword = data; }
   void setStatusThreshold(int32_t indice, int32_t data) { statusThreshold[indice] = data; }
 };

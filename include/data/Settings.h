@@ -44,7 +44,6 @@ namespace Settings {
   std::string getDayName(int32_t indice); // weekDuration
   float getBuyingPriceModifier();
   int32_t getPort();
-  int64_t getSeed();
   std::string getMasterPassword();
   int32_t getStatusThreshold(int32_t indice);
 
@@ -77,7 +76,6 @@ namespace Settings {
   void setDayName(int32_t indice, std::string data); // weekDuration
   void setBuyingPriceModifier(float data);
   void setPort(int32_t data);
-  void setSeed(int64_t data);
   void setMasterPassword(std::string data);
   void setStatusThreshold(int32_t indice, int32_t data);
 };

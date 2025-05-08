@@ -75,6 +75,7 @@
 #include "data/Settings.h"
 
 #include "util/String.h"
+#include "util/Random.h"
 
 namespace FileOpener {
 
@@ -542,7 +543,15 @@ namespace FileOpener {
     std::istringstream is_chunks(values.at("chunks"));
     std::string chunk;
     while(getline(is_chunks, chunk, '%')) {
-      chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk));
+      if(chunk.find("#") != std::string::npos) {
+        chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk));
+      }
+      else {
+        chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk + "#EAST"));
+        chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk + "#NORTH"));
+        chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk + "#WEST"));
+        chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk + "#SOUTH"));
+      }
     }
     database->addBiome(new Biome(name, temperature, humidity, *chunks));
     delete chunks;
@@ -582,7 +591,14 @@ namespace FileOpener {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int32_t lightening = database->getTargetFromMacro(values.at("lightening"));
-    BlocksChunk * chunk = new BlocksChunk(name, lightening);
+    std::array<int32_t, 6> sides;
+    sides[EAST] = database->getTargetFromMacro(values.at("EAST"));
+    sides[NORTH] = database->getTargetFromMacro(values.at("NORTH"));
+    sides[WEST] = database->getTargetFromMacro(values.at("WEST"));
+    sides[SOUTH] = database->getTargetFromMacro(values.at("SOUTH"));
+    sides[UP] = database->getTargetFromMacro(values.at("UP"));
+    sides[DOWN] = database->getTargetFromMacro(values.at("DOWN"));
+    BlocksChunk * chunk = new BlocksChunk(name, lightening, sides);
     std::fstream file;
     std::string line;
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
@@ -644,7 +660,23 @@ namespace FileOpener {
     std::string s_coord = String::extract(ss);
     MathUtil::Vector3i coord;
     getCoordinates(s_coord, coord.x, coord.y, coord.z);
-    float orientation_z = String::extract_float(ss);
+    float orientation_z;
+    int macro_orientation = database->getTargetFromMacro(String::extract(ss));
+    switch(macro_orientation) {
+      case EAST:
+        orientation_z = 0.F;
+        break;
+      case NORTH:
+        orientation_z = 90.F;
+        break;
+      case WEST:
+        orientation_z = 180.F;
+        break;
+      case SOUTH:
+        orientation_z = 270.F;
+        break;
+      default:;
+    }
     if(keyword == FURNITURE_BASIC) {
       chunk->addFurniture(new BasicFurniture( (BasicFurniture *) database->getFurniture(name), coord.x, coord.y, coord.z, orientation_z));
     }
@@ -1623,8 +1655,12 @@ namespace FileOpener {
     Settings::setBuyingPriceModifier(_stof(values.at("BUYING_PRICE_MODIFIER")));
     Settings::setPort(stoi(values.at("PORT")));
     Settings::setPauseMode(database->getTargetFromMacro(values.at("PAUSE_MODE")));
-    std::string seed = values.at("SEED");
-    seed == "rand" ? Settings::setSeed(time(0)) : Settings::setSeed(stol(seed));
+    std::string world_seed = values.at("WORLD_SEED");
+    world_seed == "rand" ? Random::setWorldGenerationSeed(time(0)) : Random::setWorldGenerationSeed(stol(world_seed));
+    std::string craft_seed = values.at("CRAFT_SEED");
+    craft_seed == "rand" ? Random::setCraftSeed(time(0)) : Random::setCraftSeed(stol(craft_seed));
+    std::string choice_seed = values.at("CHOICE_SEED");
+    choice_seed == "rand" ? Random::setChoiceSeed(time(0)) : Random::setChoiceSeed(stol(choice_seed));
     Settings::setMasterPassword(values.at("MASTER_PASSWORD"));
     std::stringstream * ss_status_threshold = new std::stringstream(values.at("STATUS_THRESHOLD"));
     for(int32_t i = 0; i < DAMAGE_TYPE_STATUS_NUMBER; i++) {

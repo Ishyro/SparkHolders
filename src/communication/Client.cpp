@@ -15,6 +15,7 @@
 
 #include "util/String.h"
 #include "util/MathUtil.h"
+#include "util/Random.h"
 
 namespace Client {
 
@@ -24,6 +25,7 @@ namespace Client {
     String::extract(ss);
     Adventure * result = FileOpener::AdventureOpener(String::extract(ss), false);
     tickrate = String::extract_long(ss);
+    Random::setWorldGenerationSeed(String::extract_long(ss));
     master = String::extract_bool(ss);
     return result;
   }

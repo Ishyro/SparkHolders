@@ -91,6 +91,35 @@ class SpeechManager;
 #define LIGHTENING_OUTDOORS 2
 #define LIGHTENING_DARK 3
 
+// side_position
+
+#define EAST 0
+#define NORTH 1
+#define WEST 2
+#define SOUTH 3
+#define UP 4
+#define DOWN 5
+
+// side_type
+
+#define SIDE_OPEN 0
+#define SIDE_OPEN_Z1 1
+#define SIDE_OPEN_Z2 2
+#define SIDE_OPEN_Z3 3
+#define SIDE_OPEN_Z4 4
+#define SIDE_OPEN_Z5 5
+#define SIDE_OPEN_Z6 6
+#define SIDE_OPEN_Z7 7
+#define SIDE_OPEN_Z8 8
+#define SIDE_OPEN_Z9 9
+#define SIDE_OPEN_Z10 10
+#define SIDE_OPEN_Z11 11
+#define SIDE_OPEN_Z12 12
+#define SIDE_OPEN_Z13 13
+#define SIDE_OPEN_Z14 14
+#define SIDE_OPEN_Z15 15
+#define SIDE_CLOSED 100
+
 // effect_duration_type
 
 #define DURATION_INSTANT 1
@@ -339,7 +368,6 @@ class SpeechManager;
 #define HITBOX_BALL 1
 #define HITBOX_AABB 2
 #define HITBOX_OBB 3
-
 
 // hitbox_owner_type
 

@@ -46,6 +46,8 @@ std::map<const MathUtil::Vector3i, Block *> BlocksChunk::getDiffs(MathUtil::Vect
   return result;
 }
 
+int32_t BlocksChunk::getSide(int32_t side) { return sides[side]; }
+
 std::list<Furniture *> BlocksChunk::getFurnitures() { return furnitures; }
 
 MathUtil::Vector3i BlocksChunk::getChunkId(MathUtil::Vector3 ori) {

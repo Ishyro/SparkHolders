@@ -21,26 +21,25 @@ func _ready():
 	camera_attributes.dof_blur_far_transition = 100 * 0.125
 
 func update_mouse_coordinates():
-	var mouse_coords
-	var from
-	var to
-	mouse_coords = camera.get_viewport().get_mouse_position()
-	from = camera.project_ray_origin(mouse_coords)
-	to = from + camera.project_ray_normal(mouse_coords) * 1000.0
-	var space = get_world_3d().direct_space_state
+	var mouse_coords = camera.get_viewport().get_mouse_position()
+	var from = camera.project_ray_origin(mouse_coords)
+	var to = from + camera.project_ray_normal(mouse_coords) * 1000.0
 	var query = PhysicsRayQueryParameters3D.create(from, to, 0x1)
-	var result = space.intersect_ray(query)
+	var result = get_world_3d().direct_space_state.intersect_ray(query)
 	Values.selection_mutex.lock()
 	if not result.is_empty():
 		Values.coord = result["position"]
-		var coord = world.colliders.find_key(result["collider"])
-		if coord:
-			if world.furnitures.has(coord) \
-				and (world.characters[world.owned_character].transform.origin).distance_to(world.furnitures[coord].transform.origin) \
-				< 1. + (world.characters_data[world.owned_character]["size"].x + world.characters_data[world.owned_character]["size"].y) * 0.25 \
-				+ (world.furnitures_data[coord]["size"].x + world.furnitures_data[coord]["size"].y) * 0.25:
-				Values.selected = world.furnitures[coord]
-				Values.selected_data = world.furnitures_data[coord]
+		#var coord = result["collider"].get_meta("coord")
+		var type = result["collider"].get_meta("type")
+		var data = result["collider"].get_meta("data")
+		if type == "FURNITURE":
+			if(
+				(world.characters[world.owned_character].global_transform.origin).distance_to(result["collider"].global_transform.origin)
+				< 1. + (world.characters_data[world.owned_character]["size"].x + world.characters_data[world.owned_character]["size"].y) * 0.25
+				+ (data["size"].x + data["size"].y) * 0.25
+			):
+				Values.selected = result["collider"]
+				Values.selected_data = data
 			else:
 				Values.selected = null
 				Values.selected_data = {}
@@ -152,7 +151,7 @@ func _unhandled_input(event):
 		if not Values.free_mouse_state: #and not Values.updating_state and not Values.link.hasState():
 			Values.selection_mutex.lock()
 			if event.is_action_released("interact") and Values.selected != null:
-				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_FURNITURE"], Values.selected_data["id"], Vector3.ZERO)
+				send_targeted_action(Values.macros["ACTION_ACTIVATION"], Values.macros["TARGET_FURNITURE"], 0, Values.selected_data["coord"])
 			if event.is_action_released("attack"):
 				var orientation = Vector3.ZERO
 				orientation.x = camera.rotation_degrees.y - 90

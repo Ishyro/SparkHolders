@@ -167,24 +167,58 @@ Array GodotLink::getAvaillableBlocks() {
   return result;
 }
 
-Dictionary GodotLink::getBlocks(int64_t sizeZ, int64_t radius) {
+Array GodotLink::getChunkIds(int64_t sizeZ, int64_t radius) {
   #ifdef LOG
-    log << "getBlocks()" << std::endl;
+    log << "getChunkIds(" << sizeZ << ", " << radius << ")" << std::endl;
   #endif
-  Dictionary result = Dictionary();
+  Array result = Array();
   MathUtil::Vector3i coord = BlocksChunk::getChunkId(link->getPlayer()->getCoord());
   MathUtil::Vector3i current;
   for(current.z = coord.z - sizeZ * CHUNK_SIZE; current.z <= coord.z + sizeZ * CHUNK_SIZE; current.z += CHUNK_SIZE) {
     for(current.y = coord.y - radius * CHUNK_SIZE; current.y <= coord.y + radius * CHUNK_SIZE; current.y += CHUNK_SIZE) {
       for(current.x = coord.x - radius * CHUNK_SIZE; current.x <= coord.x + radius * CHUNK_SIZE; current.x += CHUNK_SIZE) {
-        BlocksChunk * chunk = link->getAdventure()->getWorld()->getChunk(current);
-        if(chunk != nullptr) {
-          for(std::pair<MathUtil::Vector3i, Block *> pair : chunk->getBlocks(current)) {
-            result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
-          }
+        if(link->getAdventure()->getWorld()->getChunk(current) != nullptr) {
+          result.push_back(Vector3(current.y, current.z, current.x));
         }
       }
     }
+  }
+  return result;
+}
+
+Dictionary GodotLink::getBlocks(Vector3 chunk_id) {
+  #ifdef LOG
+    log << "getBlocks(" << chunk_id.x << ", " << chunk_id.y << ", " << chunk_id.z << ")" << std::endl;
+  #endif
+  Dictionary result = Dictionary();
+  MathUtil::Vector3i coord = MathUtil::Vector3i(chunk_id.z, chunk_id.x, chunk_id.y);
+  BlocksChunk * chunk = link->getAdventure()->getWorld()->getChunk(coord);
+  if(chunk != nullptr) {
+    std::map<const MathUtil::Vector3i, Block *> blocks = chunk->getBlocks(coord);
+    for(std::pair<MathUtil::Vector3i, Block *> pair : blocks) {
+      // add the block only if it is in contact with air
+      if(blocks.find(MathUtil::Vector3i(pair.first.x - 1, pair.first.y, pair.first.z)) == blocks.end() ||
+        blocks.find(MathUtil::Vector3i(pair.first.x + 1, pair.first.y, pair.first.z)) == blocks.end() ||
+        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y - 1, pair.first.z)) == blocks.end() ||
+        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y + 1, pair.first.z)) == blocks.end() ||
+        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y, pair.first.z - 1)) == blocks.end() ||
+        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y, pair.first.z + 1)) == blocks.end()
+      ) {
+        result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
+      }
+    }
+  }
+  return result;
+}
+
+Dictionary GodotLink::getFurnitures(Vector3 chunk_id) {
+  #ifdef LOG
+    log << "getFurnitures(" << chunk_id.x << ", " << chunk_id.y << ", " << chunk_id.z << ")" << std::endl;
+  #endif
+  Dictionary result = Dictionary();
+  MathUtil::Vector3i coord = MathUtil::Vector3i(chunk_id.z, chunk_id.x, chunk_id.y);
+  for(Furniture * furniture : link->getAdventure()->getWorld()->getFurnituresInChunk(coord)) {
+    result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
   }
   return result;
 }
@@ -218,32 +252,20 @@ Dictionary GodotLink::getProjectiles() {
   return result;
 }
 
-Dictionary GodotLink::getFurnitures(int64_t sizeZ, int64_t radius) {
-  #ifdef LOG
-    log << "getFurnitures()" << std::endl;
-  #endif
-  Dictionary result = Dictionary();
-  Character * player = link->getPlayer();
-  for(Furniture * furniture : player->getRegion()->getFurnitures(player, link->getAdventure()->getWorld(), sizeZ, radius)) {
-    result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
-  }
-  return result;
-}
-
-Array GodotLink::getUpdatedFurnitures() {
+Dictionary GodotLink::getUpdatedFurnitures() {
   #ifdef LOG
     log << "getUpdatedFurnitures()" << std::endl;
   #endif
-  Array result = Array();
+  Dictionary result = Dictionary();
   for(Furniture * furniture : state->changed_furnitures) {
-    result.push_back(Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x));
+    result[Vector3(furniture->getCoord().y, furniture->getCoord().z, furniture->getCoord().x)] = getDataFromFurniture(furniture);
   }
   return result;
 }
 
 String GodotLink::getRelation(String team1, String team2) {
   #ifdef LOG
-    log << "getUpdatedFurnitures(" << team1.utf8().get_data() << ", " << team2.utf8().get_data() << ")" << std::endl;
+    log << "getRelation(" << team1.utf8().get_data() << ", " << team2.utf8().get_data() << ")" << std::endl;
   #endif
   switch(link->getAdventure()->getDatabase()->getRelation(std::string(team1.utf8().get_data()), std::string(team2.utf8().get_data()))) {
     case TEAM_SAME:
@@ -684,6 +706,7 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   result["id"] = furniture->id;
   result["name"] = furniture->name.c_str();
   result["type"] = furniture->type;
+  result["coord"] = Vector3(furniture->getCoord().x, furniture->getCoord().y, furniture->getCoord().z);
   result["size"] = Vector3(furniture->sizeX, furniture->sizeY, furniture->sizeZ);
   result["orientation_z"] = furniture->getOrientationZ();
   result["opaque"] = furniture->getOpaque();
@@ -779,9 +802,9 @@ void GodotLink::send_action(Dictionary action) {
       target->next = nullptr;
       switch(target->type) {
         case TARGET_CHARACTER:
-        case TARGET_FURNITURE:
           target->id = target_ori["id"];
           break;
+        case TARGET_FURNITURE:
         case TARGET_COORDINATES: {
           Vector3 pos = (Vector3) target_ori["pos"];
           target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
@@ -907,11 +930,12 @@ void GodotLink::_bind_methods() {
   ClassDB::bind_method(D_METHOD("getMaxLight"), &GodotLink::getMaxLight);
   ClassDB::bind_method(D_METHOD("getOrientationToTarget", "a", "b"), &GodotLink::getOrientationToTarget);
   ClassDB::bind_method(D_METHOD("getAvaillableBlocks"), &GodotLink::getAvaillableBlocks);
-  ClassDB::bind_method(D_METHOD("getBlocks", "sizeZ", "radius"), &GodotLink::getBlocks);
+  ClassDB::bind_method(D_METHOD("getChunkIds", "sizeZ", "radius"), &GodotLink::getChunkIds);
+  ClassDB::bind_method(D_METHOD("getBlocks", "chunk_id"), &GodotLink::getBlocks);
+  ClassDB::bind_method(D_METHOD("getFurnitures", "chunk_id"), &GodotLink::getFurnitures);
   ClassDB::bind_method(D_METHOD("getPlayerId"), &GodotLink::getPlayerId);
   ClassDB::bind_method(D_METHOD("getCharacters"), &GodotLink::getCharacters);
   ClassDB::bind_method(D_METHOD("getProjectiles"), &GodotLink::getProjectiles);
-  ClassDB::bind_method(D_METHOD("getFurnitures", "sizeZ", "radius"), &GodotLink::getFurnitures);
   ClassDB::bind_method(D_METHOD("getUpdatedFurnitures"), &GodotLink::getUpdatedFurnitures);
   ClassDB::bind_method(D_METHOD("getRelation", "team1", "team2"), &GodotLink::getRelation);
   ClassDB::bind_method(D_METHOD("getDataFromBlock", "block"), &GodotLink::getDataFromBlock);
