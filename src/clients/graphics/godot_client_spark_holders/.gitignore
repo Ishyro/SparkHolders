@@ -6,5 +6,5 @@ SparkHolders.exe
 TestLauncher.exe
 TestLauncher.x86_64
 Client_terminal.x86_64
-log.txt
+*.log
 *:Zone.Identifier
