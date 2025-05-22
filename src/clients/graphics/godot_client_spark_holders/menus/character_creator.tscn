@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://d22svxk6tquby"]
 
-[ext_resource type="Script" path="res://menus/character_creator.gd" id="1_e1whd"]
+[ext_resource type="Script" uid="uid://cwkf6yylccnly" path="res://menus/character_creator.gd" id="1_e1whd"]
 [ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="2_15u48"]
 [ext_resource type="PackedScene" uid="uid://f2t5jmvgrm2d" path="res://menus/label_toolip.tscn" id="3_iu0rl"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="3_t8tgw"]

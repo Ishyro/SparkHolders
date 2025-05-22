@@ -43,47 +43,7 @@ func add_block(coord: Vector3, chunk_current_blocks: Dictionary):
 	if not blocks_count.has(current_blocks[coord]):
 		initialize_block(current_blocks[coord])
 	blocks_count[current_blocks[coord]] = blocks_count[current_blocks[coord]] + 1
-	var collider = StaticBody3D.new()
-	collider.collision_mask = 0x0
-	collider.set_transform(Transform3D.IDENTITY.translated(Vector3(coord.x + 0.5, coord.y + 0.5, coord.z + 0.5)))
-	var shape = CollisionShape3D.new()
-	shape.name = "Shape"
-	if blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_SOLID"]:
-		collider.collision_layer = 0x11
-		shape.shape = BoxShape3D.new()
-	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_LIQUID"]:
-		collider.collision_layer = 0x1
-		shape.shape = BoxShape3D.new()
-	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_SLOPE"]:
-		collider.collision_layer = 0x21
-		shape.shape = ConvexPolygonShape3D.new()
-		shape.shape.set_points(
-			PackedVector3Array(
-				[
-					Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
-					Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
-				]
-			)
-		)
-	elif blocks_data[current_blocks[coord]]["type"] == Values.macros["BLOCK_STAIRS"]:
-		collider.collision_layer = 0x21
-		shape.shape = ConvexPolygonShape3D.new()
-		shape.shape.set_points(
-			PackedVector3Array(
-				[
-					Vector3(-0.5, 0.5, 0.5), Vector3(0.5, -0.5, 0.5), Vector3(-0.5, 0.5, -0.5),
-					Vector3(-0.5, -0.5, 0.5), Vector3(0.5, -0.5, -0.5), Vector3(-0.5, -0.5, -0.5)
-				]
-			)
-		)
-	shape.rotation_degrees = Vector3(0, 90 + blocks_data[current_blocks[coord]]["orientation_z"], 0)
-	collider.add_child(shape)
-	$Colliders.add_child(collider)
-	colliders[coord] = collider
-	collider.set_meta("coord", coord)
-	collider.set_meta("type", "BLOCK")
-	collider.set_meta("data", current_blocks[coord])
-	
+
 func initialize_block(block: String):
 	if block != "TXT_MIST" and block != "TXT_VOID":
 		blocks_data[block] = Values.link.getDataFromBlock(block)
@@ -99,7 +59,7 @@ func initialize_block(block: String):
 			mesh = PlaneMesh.new()
 			mesh.orientation = PlaneMesh.FACE_Y
 			mesh.set_size(Vector2(1, 1))
-		elif blocks_data[block]["type"] == Values.macros["BLOCK_SLOPE"]:
+		elif blocks_data[block]["type"] == Values.macros["BLOCK_SLOPE"]:	
 			mesh = PrismMesh.new()
 			mesh.left_to_right = 0
 		elif blocks_data[block]["type"] == Values.macros["BLOCK_STAIRS"]:

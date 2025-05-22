@@ -24,10 +24,10 @@
 #include "data/Settings.h"
 
 #include "util/FileOpener.h"
+#include "util/Logger.h"
 
 #include "communication/Socket.h"
 #include "communication/ServerSocket.h"
-#include "communication/Server.h"
 #include "communication/SpeechManager.h"
 
 #include "server/Launcher.h"
@@ -50,6 +50,9 @@ int32_t main(int32_t argc, char ** argv) {
   setlocale(LC_ALL, "");
   std::string adventureFile = argv[1];
   int64_t ticks = std::stol(argv[2]);
+  #ifdef LOG
+    Logger::init_logger("test.log");
+  #endif
 
   auto start = std::chrono::system_clock::now();
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);

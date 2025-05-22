@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dbxsdcmlke8oe"]
 
-[ext_resource type="Script" path="res://menus/intro.gd" id="1_xm3y8"]
+[ext_resource type="Script" uid="uid://cc7cgi7lk4cra" path="res://menus/intro.gd" id="1_xm3y8"]
 [ext_resource type="Texture2D" uid="uid://biknsqlgwrx45" path="res://resources/materials/grass/Color.jpg" id="2_js6u4"]
 
 [sub_resource type="Animation" id="Animation_ruhgu"]
@@ -148,9 +148,9 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qnxme"]
 _data = {
-"Fade in": SubResource("Animation_ruhgu"),
-"Fade out": SubResource("Animation_pt4rm"),
-"RESET": SubResource("Animation_sqjok")
+&"Fade in": SubResource("Animation_ruhgu"),
+&"Fade out": SubResource("Animation_pt4rm"),
+&"RESET": SubResource("Animation_sqjok")
 }
 
 [node name="Intro" type="Control"]

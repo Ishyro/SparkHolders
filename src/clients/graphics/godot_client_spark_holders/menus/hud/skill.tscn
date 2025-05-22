@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c20ma3knuf8ju"]
 
-[ext_resource type="Script" path="res://menus/hud/skill.gd" id="1_abvyg"]
+[ext_resource type="Script" uid="uid://b5bukaij6bgdd" path="res://menus/hud/skill.gd" id="1_abvyg"]
 
 [node name="Skill" type="TextureRect"]
 anchors_preset = 15

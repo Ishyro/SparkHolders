@@ -20,9 +20,8 @@ class Link {
     Link(const Link&) = delete;
     Link & operator=(const Link&) = delete;
     //
-    void initialize(Socket s);
+    void initialize(Socket * s);
     void listen();
-    void sendState();
     void sendStart();
     bool isClosed();
     bool isShutingDown();
@@ -30,13 +29,20 @@ class Link {
     bool isMaster();
     void markClosed();
     Character * getCharacter();
-    void changeSocket(Socket s);
+    void changeSocket(Socket * s);
     bool isPaused();
     bool getNeedToUpdateActions();
+    Action * receiveAction(std::string msg);
+    Action * readAction(std::string msg);
+    Character * receiveChoices(std::string msg);
+    void sendState();
+    void sendAdventure();
+    void sendCharacter();
+    void sendAction();
   private:
     Adventure * adventure;
     Character * character = nullptr;
-    Socket s;
+    Socket * s;
     bool closed;
     bool shuting_down;
     bool ready;

@@ -17,6 +17,6 @@ module_env = env.Clone()
 module_env.add_source_files(env.modules_sources, "*.cpp")
 debug = ARGUMENTS.get('debug', 0)
 if int(debug):
-  module_env.Append(CXXFLAGS=['-O0', '-g', '-Wno-reorder', '-pthread', '-DLOG'])
+  module_env.Append(CXXFLAGS=['-O0', '-g', '-Wno-reorder', '-pthread', '-fexceptions', '-DLOG'])
 else:
-  module_env.Append(CXXFLAGS=['-O3', '-Wno-reorder', '-pthread'])
+  module_env.Append(CXXFLAGS=['-O3', '-Wno-reorder', '-pthread', '-fexceptions'])

@@ -7,6 +7,8 @@
 
 #include "Values.h"
 
+#include "communication/Socket.h"
+
 namespace FileOpener {
 
   #ifdef _WIN32_WINNT

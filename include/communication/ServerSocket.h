@@ -9,7 +9,7 @@ class ServerSocket {
 		ServerSocket(int32_t port, int32_t maxPlayers, bool multiplayer);
 		int32_t getFD() { return socketfd; }
 		bool isOpen() const { return socketfd != -1; }
-		Socket accept();
+		Socket * accept();
 		void close();
 	private:
 		int32_t socketfd;

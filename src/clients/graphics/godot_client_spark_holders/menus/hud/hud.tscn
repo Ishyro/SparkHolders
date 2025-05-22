@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://c4dl1848sgldd"]
 
-[ext_resource type="Script" path="res://menus/hud/hud.gd" id="1_3lirh"]
+[ext_resource type="Script" uid="uid://nyvxbr0s4rpl" path="res://menus/hud/hud.gd" id="1_3lirh"]
 [ext_resource type="Texture2D" uid="uid://dkp2kmkoo0jrb" path="res://menus/hud/cursor.png" id="4_84sgi"]
 [ext_resource type="LabelSettings" uid="uid://21v7e3lc7vnt" path="res://menus/hud/police/Text.tres" id="4_ckly1"]
 [ext_resource type="LabelSettings" uid="uid://wg60qhte2j4i" path="res://menus/hud/police/SmallTextWhite.tres" id="4_yivho"]

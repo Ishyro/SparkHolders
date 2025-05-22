@@ -10,17 +10,23 @@
 class Biome {
   public:
     const std::string name;
+    const int32_t altitude_max_diff;
+    const float altitude_variance;
     const float temperature;
     const float humidity;
     const MathUtil::Vector3i origin;
     const MathUtil::Vector3i end;
     Biome(
       const std::string name,
+      const int32_t altitude_max_diff,
+      const float altitude_variance,
       const float temperature,
       const float humidity,
       std::list<BlocksChunk *> chunk_collection
     ):
       name(name),
+      altitude_max_diff(altitude_max_diff),
+      altitude_variance(altitude_variance),
       temperature(temperature),
       humidity(humidity),
       chunk_collection(chunk_collection),
@@ -33,6 +39,8 @@ class Biome {
       const MathUtil::Vector3i end
     ):
       name(biome->name),
+      altitude_max_diff(biome->altitude_max_diff),
+      altitude_variance(biome->altitude_variance),
       temperature(biome->temperature),
       humidity(biome->humidity),
       chunk_collection(biome->chunk_collection),
@@ -47,9 +55,11 @@ class Biome {
         std::max(origin.z, end.z)
       )
     {}
-    BlocksChunk * getChunk(std::array<BlocksChunk *, 6> neighbors);
+    BlocksChunk * getChunk(std::array<BlocksChunk *, 10> neighbors);
     bool checkChunk(int32_t direction, BlocksChunk * neighbor, BlocksChunk * to_check);
-    bool satisfySide(int32_t side1, int32_t side2);
+    std::pair<int32_t, int32_t> getAltitudeDiff(std::array<BlocksChunk *, 10> neighbors);
+    float getWeight(BlocksChunk * chunk);
+    bool satisfySide(ChunkSide side1, ChunkSide side2);
   private:
     std::list<BlocksChunk *> chunk_collection;
 };

@@ -236,9 +236,9 @@ std::list<Character *> Region::getCharacters(Character * character, World * worl
   return result;
 }
 
-std::list<Furniture *> Region::getFurnitures(Character * character, World * world, int64_t sizeZ, int64_t radius) {
+std::list<Furniture *> Region::getFurnitures(Character * character, World * world) {
   std::list<Furniture *> result = std::list<Furniture *>();
-  for(Furniture * furniture : world->getFurnitures(id, sizeZ, radius)) {
+  for(Furniture * furniture : world->getFurnitures(id)) {
     result.push_front(furniture);
   }
   return result;

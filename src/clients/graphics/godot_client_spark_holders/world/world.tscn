@@ -1,11 +1,11 @@
 [gd_scene load_steps=15 format=3 uid="uid://0fnxik7j4q84"]
 
-[ext_resource type="Script" path="res://world/view.gd" id="2_7wmtq"]
-[ext_resource type="Script" path="res://world/world.gd" id="2_kskax"]
+[ext_resource type="Script" uid="uid://qwm1umufvykq" path="res://world/view.gd" id="2_7wmtq"]
+[ext_resource type="Script" uid="uid://bqbwdp25n68jp" path="res://world/world.gd" id="2_kskax"]
 [ext_resource type="PackedScene" uid="uid://csp4utnaq7gbx" path="res://menus/character_sheet.tscn" id="3_efm1y"]
 [ext_resource type="PackedScene" uid="uid://ca2tqfxsjmhj1" path="res://menus/pause_menu.tscn" id="4_0dq18"]
 [ext_resource type="PackedScene" uid="uid://c4dl1848sgldd" path="res://menus/hud/hud.tscn" id="5_feur5"]
-[ext_resource type="Shader" path="res://world/sky.gdshader" id="6_sgibh"]
+[ext_resource type="Shader" uid="uid://b7p7yl7idjrhh" path="res://world/sky.gdshader" id="6_sgibh"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_b7eew"]
 
@@ -35,12 +35,12 @@ noise = SubResource("FastNoiseLite_egmw4")
 shader = ExtResource("6_sgibh")
 shader_parameter/skyColor = Color(0.25098, 0.501961, 0.752941, 1)
 shader_parameter/horizonColor = Color(0.12549, 0.376471, 0.752941, 1)
+shader_parameter/cloud_texture = SubResource("NoiseTexture2D_v3en4")
+shader_parameter/cloud_texture2 = SubResource("NoiseTexture2D_mve7s")
 shader_parameter/cloud_direction = Vector2(0.002, 0)
 shader_parameter/cloud_direction2 = Vector2(0, 0.001)
 shader_parameter/cloud_scale = Vector2(0.1, 0.1)
 shader_parameter/cloud_distance = 100.0
-shader_parameter/cloud_texture = SubResource("NoiseTexture2D_v3en4")
-shader_parameter/cloud_texture2 = SubResource("NoiseTexture2D_mve7s")
 
 [sub_resource type="Sky" id="Sky_2fky8"]
 sky_material = SubResource("ShaderMaterial_emnl3")

@@ -55,6 +55,7 @@ struct Loot;
 struct MapLink;
 struct ProjectileDisplay;
 struct Shield;
+struct ChunkSide;
 struct Spawn;
 struct StateDisplay;
 struct Step;
@@ -99,26 +100,22 @@ class SpeechManager;
 #define SOUTH 3
 #define UP 4
 #define DOWN 5
+#define NORTH_EAST 6
+#define NORTH_WEST 7
+#define SOUTH_WEST 8
+#define SOUTH_EAST 9
 
 // side_type
 
-#define SIDE_OPEN 0
-#define SIDE_OPEN_Z1 1
-#define SIDE_OPEN_Z2 2
-#define SIDE_OPEN_Z3 3
-#define SIDE_OPEN_Z4 4
-#define SIDE_OPEN_Z5 5
-#define SIDE_OPEN_Z6 6
-#define SIDE_OPEN_Z7 7
-#define SIDE_OPEN_Z8 8
-#define SIDE_OPEN_Z9 9
-#define SIDE_OPEN_Z10 10
-#define SIDE_OPEN_Z11 11
-#define SIDE_OPEN_Z12 12
-#define SIDE_OPEN_Z13 13
-#define SIDE_OPEN_Z14 14
-#define SIDE_OPEN_Z15 15
-#define SIDE_CLOSED 100
+#define SIDE_CLOSED 1
+#define SIDE_OPENING 2
+#define SIDE_ROAD 3
+#define SIDE_RIVER 4
+
+// side_subtype
+
+#define SIDE_NONE 0
+#define SIDE_SLOPE 1
 
 // effect_duration_type
 

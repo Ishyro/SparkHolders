@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://c50o04nta27ab"]
 
-[ext_resource type="Script" path="res://models/fire.gd" id="1_dfgek"]
+[ext_resource type="Script" uid="uid://bu3krl6e8u2vt" path="res://models/fire.gd" id="1_dfgek"]
 [ext_resource type="Shader" uid="uid://xvo8646gvr8y" path="res://models/fire.tres" id="1_h3lsa"]
 [ext_resource type="Texture2D" uid="uid://bqa3lex3vy7jo" path="res://models/fire/Voronoi.png" id="3_g0fre"]
 [ext_resource type="Texture2D" uid="uid://8nyibf0xr4f4" path="res://models/fire/Flame.png" id="4_2dns4"]
@@ -8,11 +8,11 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g82ws"]
 render_priority = 0
 shader = ExtResource("1_h3lsa")
+shader_parameter/MainTexture = ExtResource("4_2dns4")
 shader_parameter/DisolveTiling = Vector2(0.25, 0.2)
 shader_parameter/DisolveSpeed = Vector2(0, 0.2)
-shader_parameter/DissolveAmount = 0.528
-shader_parameter/MainTexture = ExtResource("4_2dns4")
 shader_parameter/DissolveTexture = ExtResource("3_g0fre")
+shader_parameter/DissolveAmount = 0.528
 
 [sub_resource type="Curve" id="Curve_erecv"]
 _data = [Vector2(0.025974, 0.0736842), 0.0, 0.0, 0, 0, Vector2(0.246753, 0.789474), 0.0, 0.0, 0, 0, Vector2(1, 0.0631579), 0.0, 0.0, 0, 0]

@@ -14,22 +14,39 @@
 
 #include "util/FileOpener.h"
 #include "util/MathUtil.h"
+#include "util/Logger.h"
 
 void listener(void * param) {
   Link * link = (Link *) param;
-  while(link != nullptr && !link->isClosed()) {
-    link->listen();
+  try {
+    while(link != nullptr && !link->isClosed()) {
+      link->listen();
+    }
+  }
+  catch(CloseException &e) {
+    close(true);
   }
 }
 
 void GodotLink::initialize(String ip, int64_t port, String password) {
   #ifdef LOG
-    log << "initialize(" << ip.utf8().get_data() << ", " << port << ", " << password.utf8().get_data() <<")" << std::endl;
+    Logger::init_logger("client.log");
+    LOGGER_TRACE(std::string("initialize(") + std::string(ip.utf8().get_data()) + std::string(", ") + std::to_string(port) + std::string(", ") + std::string(password.utf8().get_data()) + std::string(")"));
   #endif
-  s = Socket();
-  s.connect(std::string(ip.utf8().get_data()), port);
-  link = new Link(s);
-  link->initialize(password.utf8().get_data());
+  try {
+    link = new Link(std::string(ip.utf8().get_data()), port);
+  }
+  catch(CloseException &e) {
+    exit(EXIT_FAILURE);
+  }
+  try {
+    link->initialize(std::string(password.utf8().get_data()));
+  }
+  catch(CloseException &e) {
+    link->close(true);
+    delete link;
+    exit(EXIT_FAILURE);
+  }
   #ifdef _WIN32_WINNT
     thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
   #else
@@ -68,25 +85,28 @@ String GodotLink::getEnglishFromKey(String key) {
 
 void GodotLink::sendChoices(String character, String attributes, String race, String origin, String culture, String religion, String profession) {
   #ifdef LOG
-    log << "sendChoices(" << character.utf8().get_data() << ", " << attributes.utf8().get_data() << ", " << race.utf8().get_data() << ", " << origin.utf8().get_data() << ", " << culture.utf8().get_data() << ", " << religion.utf8().get_data() << ", " << profession.utf8().get_data() <<")" << std::endl;
+    LOGGER_TRACE("sendChoices(" + std::string(character.utf8().get_data())
+      + std::string(", ") + std::string(attributes.utf8().get_data())
+      + std::string(", ") + std::string(race.utf8().get_data()) 
+      + std::string(", ") + std::string(origin.utf8().get_data()) 
+      + std::string(", ") + std::string(culture.utf8().get_data())
+      + std::string(", ") + std::string(religion.utf8().get_data())
+      + std::string(", ") + std::string(profession.utf8().get_data()) + std::string(")"));
   #endif
   link->sendChoices(character.utf8().get_data(), attributes.utf8().get_data(), race.utf8().get_data(), origin.utf8().get_data(), culture.utf8().get_data(), religion.utf8().get_data(), profession.utf8().get_data());
-  #ifdef LOG
-    log << "sendReady()" << std::endl;
-  #endif
   link->sendReady();
 }
 
 bool GodotLink::hasState() {
   #ifdef LOG
-    log << "hasState()" << std::endl;
+    LOGGER_TRACE("hasState()");
   #endif
   return link->hasState();
 }
 
 bool GodotLink::getState() {
   #ifdef LOG
-    log << "getState()" << std::endl;
+    LOGGER_TRACE("getState()");
   #endif
   delete state;
   state = link->getState();
@@ -95,7 +115,7 @@ bool GodotLink::getState() {
 
 Dictionary GodotLink::getMacros() {
   #ifdef LOG
-    log << "getMacros()" << std::endl;
+    LOGGER_TRACE("getMacros()");
   #endif
   Dictionary result = Dictionary();
   for(auto pair : link->getAdventure()->getDatabase()->getMacros()) {
@@ -106,21 +126,22 @@ Dictionary GodotLink::getMacros() {
 
 float GodotLink::getOrientationToTarget(Vector2 a, Vector2 b) {
   #ifdef LOG
-    log << "getOrientationToTarget( (" << a.x << "," << a.y << "), (" << b.x << "," << b.y << ") )" << std::endl;
+    LOGGER_TRACE(std::string("getOrientationToTarget( (") + std::to_string(a.x) + std::string(",") + std::to_string(a.y) + std::string("), (")
+      + std::to_string(b.x) + std::string(",") + std::to_string(b.y) + std::string(") )"));
   #endif
   return MathUtil::getOrientationToTarget(a.x, a.y, b.x, b.y);
 }
 
 String GodotLink::getTime() {
   #ifdef LOG
-    log << "getTime()" << std::endl;
+    LOGGER_TRACE("getTime()");
   #endif
   return link->getAdventure()->getTime().to_string_day().c_str();
 }
 
 String GodotLink::getClock(bool terran_day) {
   #ifdef LOG
-    log << "getClock(" << terran_day << ")" << std::endl;
+    LOGGER_TRACE(std::string("getClock(") + std::to_string(terran_day) + std::string(")"));
   #endif
   if(terran_day) {
     return link->getAdventure()->getTime().to_string_clock_terra().c_str();
@@ -132,14 +153,14 @@ String GodotLink::getClock(bool terran_day) {
 
 int64_t GodotLink::getLight() {
   #ifdef LOG
-    log << "getLight()" << std::endl;
+    LOGGER_TRACE("getLight()");
   #endif
   return (int64_t) link->getAdventure()->getLight(link->getPlayer()->getCoord());
 }
 
 int64_t GodotLink::getBaseLight() {
   #ifdef LOG
-    log << "getLight()" << std::endl;
+    LOGGER_TRACE("getLight()");
   #endif
   return (int64_t) MathUtil::getLight(link->getPlayer()->getWorldCoords(), link->getAdventure()->getTime());
 }
@@ -147,7 +168,7 @@ int64_t GodotLink::getBaseLight() {
 
 int64_t GodotLink::getMaxLight() {
   #ifdef LOG
-    log << "getMaxLight()" << std::endl;
+    LOGGER_TRACE("getMaxLight()");
   #endif
   int32_t max = 0;
   for(int32_t i = 0; i < Settings::getWeekDuration(); i++) {
@@ -158,7 +179,7 @@ int64_t GodotLink::getMaxLight() {
 
 Array GodotLink::getAvaillableBlocks() {
   #ifdef LOG
-    log << "getAvaillableBlocks()" << std::endl;
+    LOGGER_TRACE("getAvaillableBlocks()");
   #endif
   Array result = Array();
   for(auto pair : link->getAdventure()->getDatabase()->getAvaillableBlocks()) {
@@ -169,7 +190,7 @@ Array GodotLink::getAvaillableBlocks() {
 
 Array GodotLink::getChunkIds(int64_t sizeZ, int64_t radius) {
   #ifdef LOG
-    log << "getChunkIds(" << sizeZ << ", " << radius << ")" << std::endl;
+    LOGGER_TRACE(std::string("getChunkIds(") + std::to_string(sizeZ) + std::string(", ") + std::to_string(radius) + std::string(")"));
   #endif
   Array result = Array();
   MathUtil::Vector3i coord = BlocksChunk::getChunkId(link->getPlayer()->getCoord());
@@ -188,24 +209,16 @@ Array GodotLink::getChunkIds(int64_t sizeZ, int64_t radius) {
 
 Dictionary GodotLink::getBlocks(Vector3 chunk_id) {
   #ifdef LOG
-    log << "getBlocks(" << chunk_id.x << ", " << chunk_id.y << ", " << chunk_id.z << ")" << std::endl;
+    LOGGER_TRACE(std::string("getBlocks(") + std::to_string(chunk_id.x) + std::string(", ")
+      + std::to_string(chunk_id.y) + std::string(", ") + std::to_string(chunk_id.z) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   MathUtil::Vector3i coord = MathUtil::Vector3i(chunk_id.z, chunk_id.x, chunk_id.y);
   BlocksChunk * chunk = link->getAdventure()->getWorld()->getChunk(coord);
   if(chunk != nullptr) {
-    std::map<const MathUtil::Vector3i, Block *> blocks = chunk->getBlocks(coord);
+    std::map<const MathUtil::Vector3i, Block *> blocks = chunk->getOuterBlocks(coord);
     for(std::pair<MathUtil::Vector3i, Block *> pair : blocks) {
-      // add the block only if it is in contact with air
-      if(blocks.find(MathUtil::Vector3i(pair.first.x - 1, pair.first.y, pair.first.z)) == blocks.end() ||
-        blocks.find(MathUtil::Vector3i(pair.first.x + 1, pair.first.y, pair.first.z)) == blocks.end() ||
-        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y - 1, pair.first.z)) == blocks.end() ||
-        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y + 1, pair.first.z)) == blocks.end() ||
-        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y, pair.first.z - 1)) == blocks.end() ||
-        blocks.find(MathUtil::Vector3i(pair.first.x, pair.first.y, pair.first.z + 1)) == blocks.end()
-      ) {
-        result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
-      }
+      result[Vector3(pair.first.y, pair.first.z, pair.first.x)] = pair.second->name.c_str();
     }
   }
   return result;
@@ -213,7 +226,8 @@ Dictionary GodotLink::getBlocks(Vector3 chunk_id) {
 
 Dictionary GodotLink::getFurnitures(Vector3 chunk_id) {
   #ifdef LOG
-    log << "getFurnitures(" << chunk_id.x << ", " << chunk_id.y << ", " << chunk_id.z << ")" << std::endl;
+    LOGGER_TRACE(std::string("getFurnitures(") + std::to_string(chunk_id.x) + std::string(", ") + std::to_string(chunk_id.y)
+      + std::string(", ") + std::to_string(chunk_id.z) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   MathUtil::Vector3i coord = MathUtil::Vector3i(chunk_id.z, chunk_id.x, chunk_id.y);
@@ -225,14 +239,14 @@ Dictionary GodotLink::getFurnitures(Vector3 chunk_id) {
 
 int64_t GodotLink::getPlayerId() {
   #ifdef LOG
-    log << "getPlayerId()" << std::endl;
+    LOGGER_TRACE("getPlayerId()");
   #endif
   return link->getPlayer()->id;
 }
 
 Dictionary GodotLink::getCharacters() {
   #ifdef LOG
-    log << "getCharacters()" << std::endl;
+    LOGGER_TRACE("getCharacters()");
   #endif
   Dictionary result = Dictionary();
   for(CharacterDisplay * character : state->characters) {
@@ -243,7 +257,7 @@ Dictionary GodotLink::getCharacters() {
 
 Dictionary GodotLink::getProjectiles() {
   #ifdef LOG
-    log << "getProjectiles()" << std::endl;
+    LOGGER_TRACE("getProjectiles()");
   #endif
   Dictionary result = Dictionary();
   for(ProjectileDisplay * projectile : state->projectiles) {
@@ -254,7 +268,7 @@ Dictionary GodotLink::getProjectiles() {
 
 Dictionary GodotLink::getUpdatedFurnitures() {
   #ifdef LOG
-    log << "getUpdatedFurnitures()" << std::endl;
+    LOGGER_TRACE("getUpdatedFurnitures()");
   #endif
   Dictionary result = Dictionary();
   for(Furniture * furniture : state->changed_furnitures) {
@@ -265,7 +279,8 @@ Dictionary GodotLink::getUpdatedFurnitures() {
 
 String GodotLink::getRelation(String team1, String team2) {
   #ifdef LOG
-    log << "getRelation(" << team1.utf8().get_data() << ", " << team2.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE(std::string("getRelation(") + std::string(team1.utf8().get_data()) + std::string(", ")
+      + std::string(team2.utf8().get_data()) + std::string(")"));
   #endif
   switch(link->getAdventure()->getDatabase()->getRelation(std::string(team1.utf8().get_data()), std::string(team2.utf8().get_data()))) {
     case TEAM_SAME:
@@ -276,6 +291,8 @@ String GodotLink::getRelation(String team1, String team2) {
       return "NEUTRAL";
     case TEAM_ENEMY:
       return "ENEMY";
+    default:
+      return "NEUTRAL";
   }
 }
 
@@ -285,7 +302,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
     return result;
   }
   #ifdef LOG
-    log << "getDataFromItem(" << item->name << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromItem(") + item->name + std::string(")"));
   #endif
   result["name"] = item->name.c_str();
   result["id"] = item->id;
@@ -353,7 +370,7 @@ Dictionary GodotLink::getDataFromItem(Item * item) {
 
 Dictionary GodotLink::getDataFromBlock(String tile_name) {
   #ifdef LOG
-    log << "getDataFromBlock(" << tile_name.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE("getDataFromBlock(" + std::string(tile_name.utf8().get_data()) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   Block * block = (Block *) link->getAdventure()->getDatabase()->getBlock(std::string(tile_name.utf8().get_data()));
@@ -369,7 +386,7 @@ Dictionary GodotLink::getDataFromBlock(String tile_name) {
 
 Dictionary GodotLink::getDataFromClass(String class_name) {
   #ifdef LOG
-    log << "getDataFromClass(" << class_name.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromClass(") + std::string(class_name.utf8().get_data()) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   if(class_name == "") {
@@ -404,7 +421,7 @@ Dictionary GodotLink::getDataFromClass(String class_name) {
 
 Dictionary GodotLink::getDataFromRace(String race_name) {
   #ifdef LOG
-    log << "getDataFromRace(" << race_name.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromRace(") + std::string(race_name.utf8().get_data()) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   if(race_name == "") {
@@ -450,7 +467,7 @@ Dictionary GodotLink::getDataFromRace(String race_name) {
 
 Dictionary GodotLink::getDataFromWay(String way_name) {
   #ifdef LOG
-    log << "getDataFromWay(" << way_name.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromWay(") + std::string(way_name.utf8().get_data()) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   if(way_name == "") {
@@ -485,7 +502,7 @@ Dictionary GodotLink::getDataFromWay(String way_name) {
 
 Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
   #ifdef LOG
-    log << "getDataFromCharacter(" << character->id << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromCharacter(") + std::to_string(character->id) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   result["name"] = character->name.c_str();
@@ -527,7 +544,7 @@ Dictionary GodotLink::getDataFromCharacter(CharacterDisplay * character) {
 
 Dictionary GodotLink::getStatsFromCharacter() {
   #ifdef LOG
-    log << "getStatsFromCharacter()" << std::endl;
+    LOGGER_TRACE("getStatsFromCharacter()");
   #endif
   Dictionary result = Dictionary();
   Character * character = link->getPlayer();
@@ -603,7 +620,7 @@ Dictionary GodotLink::getStatsFromCharacter() {
 
 Dictionary GodotLink::getInventoryFromCharacter() {
   #ifdef LOG
-    log << "getInventoryFromCharacter()" << std::endl;
+    LOGGER_TRACE("getInventoryFromCharacter()");
   #endif
   Dictionary result = Dictionary();
   Gear * gear = link->getPlayer()->getGear();
@@ -639,7 +656,7 @@ Dictionary GodotLink::getInventoryFromCharacter() {
 
 Dictionary GodotLink::getDataFromSkill(String skill_name) {
   #ifdef LOG
-    log << "getDataFromSkill(" << skill_name.utf8().get_data() << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromSkill(") + std::string(skill_name.utf8().get_data()) + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   if(skill_name == "") {
@@ -664,7 +681,7 @@ Dictionary GodotLink::getDataFromSkill(String skill_name) {
 
 Array GodotLink::getSkillsFromCharacter() {
   #ifdef LOG
-    log << "getSkillsFromCharacter()" << std::endl;
+    LOGGER_TRACE("getSkillsFromCharacter()");
   #endif
   Array result = Array();
   for(Skill * skill : link->getPlayer()->getSkills()) {
@@ -675,7 +692,7 @@ Array GodotLink::getSkillsFromCharacter() {
 
 Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
   #ifdef LOG
-    log << "getDataFromProjectile(" << projectile->name << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromProjectile(") + projectile->name + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   result["name"] = projectile->name.c_str();
@@ -700,7 +717,7 @@ Dictionary GodotLink::getDataFromProjectile(ProjectileDisplay * projectile) {
 
 Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
   #ifdef LOG
-    log << "getDataFromFurniture(" << furniture->name << ")" << std::endl;
+    LOGGER_TRACE(std::string("getDataFromFurniture(") + furniture->name + std::string(")"));
   #endif
   Dictionary result = Dictionary();
   result["id"] = furniture->id;
@@ -735,7 +752,7 @@ Dictionary GodotLink::getDataFromFurniture(Furniture * furniture) {
 
 Array GodotLink::getStartingAttributes() {
   #ifdef LOG
-    log << "getStartingAttributes()" << std::endl;
+    LOGGER_TRACE("getStartingAttributes()");
   #endif
   Array result;
   for(Attributes * attributes : link->getAdventure()->getStartingAttributes()) {
@@ -746,7 +763,7 @@ Array GodotLink::getStartingAttributes() {
 
 Array GodotLink::getStartingWays() {
   #ifdef LOG
-    log << "getStartingWays()" << std::endl;
+    LOGGER_TRACE("getStartingWays()");
   #endif
   Array result;
   for(Way * way : link->getAdventure()->getStartingWays()) {
@@ -757,7 +774,7 @@ Array GodotLink::getStartingWays() {
 
 Dictionary GodotLink::getItemSlot(int64_t item_id) {
   #ifdef LOG
-    log << "getItemSlot(" << item_id << ")" << std::endl;
+    LOGGER_TRACE(std::string("getItemSlot(") + std::to_string(item_id) + std::string(")"));
   #endif
   Dictionary result;
   for(ItemSlot * slot : link->getPlayer()->getGear()->getItems()) {
@@ -769,11 +786,12 @@ Dictionary GodotLink::getItemSlot(int64_t item_id) {
       return result;
     }
   }
+  return result;
 }
 
 void GodotLink::send_action(Dictionary action) {
   #ifdef LOG
-    log << "send_action()" << std::endl;
+    LOGGER_TRACE("send_action()");
   #endif
   int32_t type = (int32_t) action["type"];
   void * arg1 = 0;
@@ -790,7 +808,8 @@ void GodotLink::send_action(Dictionary action) {
       Vector3 given = (Vector3) action["arg1"];
       MathUtil::Vector3 orientation = MathUtil::Vector3(given.x, given.y, given.z);
       #ifdef LOG
-        log << "MOVE: " << orientation.x << " " << orientation.y << "" << orientation.z << std::endl;
+        LOGGER_TRACE(std::string("MOVE: ") + std::to_string(orientation.x) + std::string(", ")
+          + std::to_string(orientation.y) + std::string(", ") + std::to_string(orientation.z));
       #endif
       arg1 = (void *) &orientation;
       break;
@@ -850,20 +869,19 @@ void GodotLink::send_action(Dictionary action) {
       MathUtil::Target * target = new MathUtil::Target();
       target->type = (int32_t) target_ori["type"];
       #ifdef LOG
-        log << "target.type: " << target->type << std::endl;
+        LOGGER_TRACE(std::string("target.type: ") + std::to_string(target->type));
       #endif
       if((int64_t) target_ori["id"] != 0) {
         target->character = link->getAdventure()->getCharacter((int64_t) target_ori["id"]);
         #ifdef LOG
-          log << "target.id: " << target->character->id << std::endl;
+          LOGGER_TRACE(std::string("target.id: ") + std::to_string(target->character->id));
         #endif
       }
       Vector3 pos = (Vector3) target_ori["pos"];
       target->coord = MathUtil::Vector3(pos.x, pos.y, pos.z);
       #ifdef LOG
-        log << "target.pos_x: " << target->coord.x << std::endl;
-        log << "target.pos_y: " << target->coord.y << std::endl;
-        log << "target.pos_z: " << target->coord.z << std::endl;
+        LOGGER_TRACE(std::string("target.pos: ") + std::to_string(target->coord.x) + std::string(", ")
+          + std::to_string(target->coord.y) + std::string(", ") + std::to_string(target->coord.z));
       #endif
       target->next = nullptr;
       arg1 = (void *) target;
@@ -874,7 +892,7 @@ void GodotLink::send_action(Dictionary action) {
       arg2 = (void *) skill;
       mana_cost = (int32_t) action["mana_cost"];
       #ifdef LOG
-        log << "mana_cost: " << mana_cost << std::endl;
+        LOGGER_TRACE(std::string("mana_cost: ") + std::to_string(mana_cost));
       #endif
       break;
     }
@@ -884,21 +902,22 @@ void GodotLink::send_action(Dictionary action) {
 
 void GodotLink::pause() {
   #ifdef LOG
-    log << "pause()" << std::endl;
+    LOGGER_TRACE("pause()");
   #endif
   link->sendPause();
 }
 
 void GodotLink::unpause() {
   #ifdef LOG
-    log << "unpause()" << std::endl;
+    LOGGER_TRACE("unpause()");
   #endif
   link->sendUnpause();
 }
 
 void GodotLink::close(bool shutdown) {
   #ifdef LOG
-    log << "close()" << std::endl;
+    LOGGER_TRACE("close()");
+    Logger::close_logger();
   #endif
   link->close(shutdown);
   if(link != nullptr) {
@@ -909,9 +928,6 @@ void GodotLink::close(bool shutdown) {
     delete state;
     state = nullptr;
   }
-  #ifdef LOG
-    log.close();
-  #endif
 }
 
 void GodotLink::_bind_methods() {

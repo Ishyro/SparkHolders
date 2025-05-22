@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://dub4lpblwslgm"]
 
-[ext_resource type="Script" path="res://models/projectile.gd" id="1_1nc2d"]
+[ext_resource type="Script" uid="uid://cf2d6tehc5mv7" path="res://models/projectile.gd" id="1_1nc2d"]
 [ext_resource type="Material" uid="uid://c1vykl8cgbsme" path="res://resources/materials/board_material.tres" id="2_67bs4"]
 [ext_resource type="Material" uid="uid://sfaxlaj2qitk" path="res://resources/materials/metal.tres" id="3_rw4oi"]
 

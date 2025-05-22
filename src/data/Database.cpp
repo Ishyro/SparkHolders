@@ -72,23 +72,14 @@ Database::Database() {
   macros.insert(std::make_pair("DOWN", DOWN));
 
   // side_type
-  macros.insert(std::make_pair("SIDE_OPEN", SIDE_OPEN));
-  macros.insert(std::make_pair("SIDE_OPEN_Z1", SIDE_OPEN_Z1));
-  macros.insert(std::make_pair("SIDE_OPEN_Z2", SIDE_OPEN_Z2));
-  macros.insert(std::make_pair("SIDE_OPEN_Z3", SIDE_OPEN_Z3));
-  macros.insert(std::make_pair("SIDE_OPEN_Z4", SIDE_OPEN_Z4));
-  macros.insert(std::make_pair("SIDE_OPEN_Z5", SIDE_OPEN_Z5));
-  macros.insert(std::make_pair("SIDE_OPEN_Z6", SIDE_OPEN_Z6));
-  macros.insert(std::make_pair("SIDE_OPEN_Z7", SIDE_OPEN_Z7));
-  macros.insert(std::make_pair("SIDE_OPEN_Z8", SIDE_OPEN_Z8));
-  macros.insert(std::make_pair("SIDE_OPEN_Z9", SIDE_OPEN_Z9));
-  macros.insert(std::make_pair("SIDE_OPEN_Z10", SIDE_OPEN_Z10));
-  macros.insert(std::make_pair("SIDE_OPEN_Z11", SIDE_OPEN_Z11));
-  macros.insert(std::make_pair("SIDE_OPEN_Z12", SIDE_OPEN_Z12));
-  macros.insert(std::make_pair("SIDE_OPEN_Z13", SIDE_OPEN_Z13));
-  macros.insert(std::make_pair("SIDE_OPEN_Z14", SIDE_OPEN_Z14));
-  macros.insert(std::make_pair("SIDE_OPEN_Z15", SIDE_OPEN_Z15));
   macros.insert(std::make_pair("SIDE_CLOSED", SIDE_CLOSED));
+  macros.insert(std::make_pair("SIDE_OPENING", SIDE_OPENING));
+  macros.insert(std::make_pair("SIDE_ROAD", SIDE_ROAD));
+  macros.insert(std::make_pair("SIDE_RIVER", SIDE_RIVER));
+  
+  // side_subtype
+  macros.insert(std::make_pair("SIDE_NONE", SIDE_NONE));
+  macros.insert(std::make_pair("SIDE_SLOPE", SIDE_SLOPE));
 
   // effect_duration_type
   macros.insert(std::make_pair("DURATION_INSTANT", DURATION_INSTANT));

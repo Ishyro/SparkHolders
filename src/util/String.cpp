@@ -3,6 +3,8 @@
 
 #include "util/String.h"
 
+#include "util/Logger.h"
+
 std::string String::extract(std::stringstream * ss) {
   std::string to_return = "";
   std::string extracted;
@@ -15,7 +17,7 @@ std::string String::extract(std::stringstream * ss) {
     close_count++;
     open_count += std::count(extracted.begin(), extracted.end(), '{');
     if(open_count == 0) {
-      std::cerr << "Broken message: " << to_return << std::endl;
+      LOGGER_FATAL("Broken message: " + to_return);
       return "ERROR";
     }
   } while(open_count != close_count);

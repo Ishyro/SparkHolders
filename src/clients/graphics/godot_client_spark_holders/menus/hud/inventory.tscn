@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://b30mlwpi6n8ni"]
 
-[ext_resource type="Script" path="res://menus/hud/inventory.gd" id="1_3afm8"]
+[ext_resource type="Script" uid="uid://dkvfsa6tp1yxr" path="res://menus/hud/inventory.gd" id="1_3afm8"]
 [ext_resource type="Texture2D" uid="uid://65euyudog4pe" path="res://menus/hud/inventory_background.png" id="2_bxr27"]
 [ext_resource type="Texture2D" uid="uid://cjl5okoqk75mo" path="res://menus/exp.png" id="3_gxoh5"]
 [ext_resource type="LabelSettings" uid="uid://bfkw6t3d0nqc2" path="res://menus/hud/police/SmallText.tres" id="3_t7w7r"]

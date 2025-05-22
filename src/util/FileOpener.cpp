@@ -76,6 +76,9 @@
 
 #include "util/String.h"
 #include "util/Random.h"
+#include "util/Logger.h"
+
+#include "communication/Socket.h"
 
 namespace FileOpener {
 
@@ -96,7 +99,9 @@ namespace FileOpener {
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cerr << "File not found: " + fileName << std::endl;
+      #ifdef LOG
+        LOGGER_FATAL("File not found: " + fileName);
+      #endif
     }
     std::string line;
     std::string delimiter = "=";
@@ -141,15 +146,20 @@ namespace FileOpener {
 
   Adventure * AdventureOpener(std::string fileName, bool isServer) {
     std::string delimiter = ".";
-    Database * database = DatabaseOpener(fileName, isServer);
+    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
+    #ifdef LOG
+      LOGGER_TRACE("filename: " + os_fileName);
+    #endif
+    Database * database = DatabaseOpener(os_fileName, isServer);
     if(isServer) {
       SettingsOpener("data" + PATH_DELIMITER + "settings_server.data", database);
     }
     std::fstream file;
-    std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
     file.open(os_fileName, std::ios::in);
     if(!file) {
-      std::cerr << "File not found: " + fileName << std::endl;
+      #ifdef LOG
+        LOGGER_FATAL("File not found: " + fileName);
+      #endif
     }
     std::string line;
     std::string name;
@@ -170,7 +180,7 @@ namespace FileOpener {
     std::list<Attributes *> * startingAttributes = new std::list<Attributes *>();
     std::list<Way *> * startingWays = new std::list<Way *>();
 
-    while(getline(file,line)) {
+    while(getline(file, line)) {
       while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }
@@ -191,7 +201,7 @@ namespace FileOpener {
     }
     file.close();
     // we need to escape '\' 2 times
-    Adventure * adventure = new Adventure(name, std::regex_replace(fileName, std::regex("\\\\"), "/"), spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
+    Adventure * adventure = new Adventure(name, std::regex_replace(fileName, std::regex("\\|\\\\"), "/"), spawns->size(), database, world, *quests, *events, *spawns, *startingAttributes, *startingWays);
     delete quests;
     delete events;
     delete spawns;
@@ -537,6 +547,8 @@ namespace FileOpener {
   void BiomeOpener(std::string fileName, Database * database) {
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
+    int32_t altitude_max_diff = stoi(values.at("altitude_max_diff"));
+    float altitude_variance = _stof(values.at("altitude_variance"));
     float temperature = _stof(values.at("temperature"));
     float humidity = _stof(values.at("humidity"));
     std::list<BlocksChunk *> * chunks = new std::list<BlocksChunk *>();
@@ -553,7 +565,7 @@ namespace FileOpener {
         chunks->push_back((BlocksChunk *) database->getBlocksChunk(chunk + "#SOUTH"));
       }
     }
-    database->addBiome(new Biome(name, temperature, humidity, *chunks));
+    database->addBiome(new Biome(name, altitude_max_diff, altitude_variance, temperature, humidity, *chunks));
     delete chunks;
   }
 
@@ -585,20 +597,39 @@ namespace FileOpener {
       database->addBlock(new Block(name + "_STAIRS#SOUTH", BLOCK_STAIRS, material, unwalkable, opaque, light, 270, speed));
     }
   }
-
+  
+  ChunkSide SideOpener(std::string s_side, Database * database) {
+    LOGGER_TRACE("SideOpener(" + s_side + ")");
+    ChunkSide side = ChunkSide();
+    std::stringstream * ss = new std::stringstream(s_side);
+    side.type = database->getTargetFromMacro(String::extract(ss));
+    side.subtype = database->getTargetFromMacro(String::extract(ss));
+    std::stringstream * ss_start = new std::stringstream(String::extract(ss));
+    side.start_x = String::extract_int(ss_start);
+    side.start_y = String::extract_int(ss_start);
+    delete ss_start;
+    std::stringstream * ss_end = new std::stringstream(String::extract(ss));
+    side.end_x = String::extract_int(ss_end);
+    side.end_y = String::extract_int(ss_end);
+    delete ss_end;
+    delete ss;
+    return side;
+  }
   
   void BlocksChunkOpener(std::string fileName, Database * database) {
+    LOGGER_TRACE("BlocksChunkOpener(" + fileName + ")");
     std::map<const std::string,std::string> values = getValuesFromFile(fileName);
     std::string name = values.at("name");
     int32_t lightening = database->getTargetFromMacro(values.at("lightening"));
-    std::array<int32_t, 6> sides;
-    sides[EAST] = database->getTargetFromMacro(values.at("EAST"));
-    sides[NORTH] = database->getTargetFromMacro(values.at("NORTH"));
-    sides[WEST] = database->getTargetFromMacro(values.at("WEST"));
-    sides[SOUTH] = database->getTargetFromMacro(values.at("SOUTH"));
-    sides[UP] = database->getTargetFromMacro(values.at("UP"));
-    sides[DOWN] = database->getTargetFromMacro(values.at("DOWN"));
-    BlocksChunk * chunk = new BlocksChunk(name, lightening, sides);
+    float weight = _stof(values.at("weight"));
+    std::array<ChunkSide, 6> sides;
+    sides[EAST] = SideOpener(values.at("EAST"), database);
+    sides[NORTH] = SideOpener(values.at("NORTH"), database);
+    sides[WEST] = SideOpener(values.at("WEST"), database);
+    sides[SOUTH] = SideOpener(values.at("SOUTH"), database);
+    sides[UP] = SideOpener(values.at("UP"), database);
+    sides[DOWN] = SideOpener(values.at("DOWN"), database);
+    BlocksChunk * chunk = new BlocksChunk(name, lightening, weight, sides);
     std::fstream file;
     std::string line;
     std::string os_fileName = std::regex_replace(fileName, std::regex("/"), PATH_DELIMITER);
@@ -645,8 +676,8 @@ namespace FileOpener {
         addFurnitureToBlocksChunk(database->getTargetFromMacro(keyword), command, chunk, database);
       }
     }
-    //map->calculateLights();
     file.close();
+    chunk->computeOuterBlocks();
     database->addBlocksChunk(new BlocksChunk(chunk, name + "#EAST", 0, database));
     database->addBlocksChunk(new BlocksChunk(chunk, name + "#NORTH", 90, database));
     database->addBlocksChunk(new BlocksChunk(chunk, name + "#WEST", 180, database));
@@ -2131,6 +2162,7 @@ namespace FileOpener {
   }
 
   void FileOpener(std::string fileName, Database * database, bool isServer) {
+    LOGGER_TRACE("FileOpener(" + fileName + ")");
     std::fstream file;
     std::string resFileName = std::regex_replace(fileName, std::regex("data/"), "resources/");
     if(fileName.find("/attributes/") != std::string::npos) {
@@ -2199,6 +2231,9 @@ namespace FileOpener {
         database->addWayFile(way_name, std::regex_replace(resFileName, std::regex(".data"), ".png"));
       }
     }
+    else {
+      LOGGER_WARNING("File not found: " + fileName);
+    }
   }
 
   Database * DatabaseOpener(std::string fileName, bool isServer) {
@@ -2208,9 +2243,10 @@ namespace FileOpener {
     file.open(os_fileName, std::ios::in);
     if(!file) {
       std::cerr << "File not found: " + fileName << std::endl;
+      LOGGER_FATAL("Database file not found: " + fileName);
     }
     std::string line;
-    while(getline(file,line)) {
+    while(getline(file,line) && line != "!end") {
       while(line != "" && std::isspace(line.at(0))) {
         line = line.substr(1, line.length());
       }

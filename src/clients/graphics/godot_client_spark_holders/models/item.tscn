@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c25bgr5hdx7hh"]
 
-[ext_resource type="Script" path="res://models/item.gd" id="1_8xrsm"]
+[ext_resource type="Script" uid="uid://bs68bs7s3qk8d" path="res://models/item.gd" id="1_8xrsm"]
 
 [node name="Item" type="TextureRect"]
 expand_mode = 1

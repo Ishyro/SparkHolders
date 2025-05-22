@@ -10,7 +10,6 @@
 #include <string>
 #include <ncurses.h>
 
-#include "communication/Client.h"
 #include "communication/Socket.h"
 
 #include "clients/Link.h"
@@ -19,6 +18,8 @@
 #include "clients/terminal/Display.h"
 
 #include "data/Block.h"
+
+#include "util/Logger.h"
 
 void listener(void * param) {
   Link * link = (Link *) param;
@@ -29,6 +30,33 @@ void listener(void * param) {
 
 int32_t main(int32_t argc, char ** argv) {
   setlocale(LC_ALL, "");
+  #ifdef LOG
+    Logger::init_logger("client.log");
+  #endif
+  #ifdef _WIN32_WINNT
+    HANDLE thread;
+  #else
+    std::thread thread;
+  #endif
+  std::string IP = "127.0.0.1";
+  //std::string IP = "84.97.162.152";
+  //std::string IP = "192.168.1.83";
+  Link * link;  
+  try {
+    link = new Link(IP, 45678);
+  }
+  catch (CloseException &e) {
+    return EXIT_FAILURE;
+  }
+  try {
+    link->initialize("admin");
+  }
+  catch (CloseException &e) {
+    link->close(true);
+    delete link;
+    return EXIT_FAILURE;
+  }
+  // ncurses init
   initscr();
   cbreak();
   noecho();
@@ -48,28 +76,7 @@ int32_t main(int32_t argc, char ** argv) {
   init_pair(BACK_RED, *default_foreground, COLOR_RED);
   delete default_background;
   delete default_foreground;
-  #ifdef _WIN32_WINNT
-    HANDLE thread;
-  #else
-    std::thread thread;
-  #endif
-  Socket s = Socket();
-  // std::string IP = "84.97.162.152";
-  // std::string IP = "192.168.168.164";
-  // std::string IP = "192.168.1.83";
-  std::string IP = "127.0.0.1";
-  s.connect(IP, 45678);
-  Link * link;
-  try {
-    link = new Link(s);
-    link->initialize("admin");
-  }
-  catch (CloseException &e) {
-    endwin();
-    s.close();
-    delete link;
-    return EXIT_FAILURE;
-  }
+  //
   #ifdef _WIN32_WINNT
     thread = (HANDLE) _beginthreadex(NULL, 0, (_beginthreadex_proc_type) listener, (void *) link, 0, NULL);
   #else
@@ -86,7 +93,7 @@ int32_t main(int32_t argc, char ** argv) {
   }
   catch (CloseException &e) {
     endwin();
-    s.close();
+    link->close(true);
     delete link;
     return EXIT_FAILURE;
   }
@@ -118,7 +125,7 @@ int32_t main(int32_t argc, char ** argv) {
   delwin(displayScreen);
   delwin(targetScreen);
   endwin();
-  s.close();
+  link->close(true);
   delete link;
   return EXIT_SUCCESS;
 }

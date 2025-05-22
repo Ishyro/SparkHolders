@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dwih4dpr6rbjx"]
 
-[ext_resource type="Script" path="res://menus/hud/item_slot.gd" id="1_hgqd7"]
+[ext_resource type="Script" uid="uid://c5pfhfx20ilwv" path="res://menus/hud/item_slot.gd" id="1_hgqd7"]
 
 [node name="ItemSlot" type="Control"]
 layout_mode = 3

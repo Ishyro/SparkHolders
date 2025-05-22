@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csqpumv0ochcw"]
 
-[ext_resource type="Script" path="res://menus/theme/Button.gd" id="1_b6evh"]
+[ext_resource type="Script" uid="uid://ubc22h7fh55k" path="res://menus/theme/Button.gd" id="1_b6evh"]
 
 [node name="Button" type="Button"]
 size_flags_vertical = 3

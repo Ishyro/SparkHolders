@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b1w6hj8fjnwak"]
 
 [ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="1_aykka"]
-[ext_resource type="Script" path="res://menus/adventure_selector.gd" id="1_yeqcr"]
+[ext_resource type="Script" uid="uid://c2ok8so85i8pa" path="res://menus/adventure_selector.gd" id="1_yeqcr"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_254r8"]
 
 [node name="AdventureSelector" type="Control"]

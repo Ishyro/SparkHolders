@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://f2t5jmvgrm2d"]
 
-[ext_resource type="Script" path="res://menus/label_toolip.gd" id="1_mj5sk"]
+[ext_resource type="Script" uid="uid://c6n5rjgdkwu08" path="res://menus/label_toolip.gd" id="1_mj5sk"]
 
 [node name="LabelToolip" type="Label"]
 anchors_preset = 15

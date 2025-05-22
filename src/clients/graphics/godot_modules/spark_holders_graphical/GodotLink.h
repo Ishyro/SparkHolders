@@ -21,22 +21,13 @@
 
 #include <iostream>
 
-#ifdef LOG
-  #include <ostream>
-  #include <fstream>
-#endif
-
 class GodotLink : public RefCounted {
   GDCLASS(GodotLink, RefCounted);
 public:
   GodotLink():
     link(nullptr),
     state(nullptr)
-  {
-    #ifdef LOG
-      log.open("log.txt");
-    #endif
-  }
+  {}
   void initialize(String ip, int64_t port, String password);
   int64_t getTickRate();
   String getIncompatible(String tocheck, String attributes, String race, String origin, String culture, String religion, String profession);
@@ -85,10 +76,6 @@ public:
 protected:
   static void _bind_methods();
 private:
-  #ifdef LOG
-    std::ofstream log;
-  #endif
-  Socket s;
   Link * link;
   StateDisplay * state;
   #ifdef _WIN32_WINNT

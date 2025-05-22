@@ -10,11 +10,15 @@
 
 #include "data/World.h"
 
+#include "util/Logger.h"
+
 void World::setBiome(Biome * biome) {
+  LOGGER_TRACE("setBiome()" + biome->name);
   biomes.push_back(biome);
 }
 
 Biome * World::getBiome(MathUtil::Vector3i coord) {
+  LOGGER_TRACE("getBiome(" + std::to_string(coord.x) + ", " + std::to_string(coord.y) + ", " + std::to_string(coord.z) + ")");
   for(Biome * biome : biomes) {
     if(biome->origin <= coord && coord <= (biome->end)) {
       return biome;
@@ -24,6 +28,7 @@ Biome * World::getBiome(MathUtil::Vector3i coord) {
 }
 
 void World::setChunk(MathUtil::Vector3i coord, BlocksChunk * chunk) {
+  LOGGER_TRACE("setChunk(" + std::to_string(coord.x) + ", " + std::to_string(coord.y) + ", " + std::to_string(coord.z) + ", " + chunk->name + ")");
   MathUtil::Vector3i safe_coord = BlocksChunk::getChunkId(coord);
   std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(safe_coord);
   if(it != chunks.end()) {
@@ -33,6 +38,7 @@ void World::setChunk(MathUtil::Vector3i coord, BlocksChunk * chunk) {
 }
 
 void World::setBlock(MathUtil::Vector3i coord, Block * block) {
+  LOGGER_TRACE("setBlock(" + std::to_string(coord.x) + ", " + std::to_string(coord.y) + ", " + std::to_string(coord.z) + ", " + block->name + ")");
   MathUtil::Vector3i chunk_id = BlocksChunk::getChunkId(coord);
   std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(chunk_id);
   if(it != chunks.end()) {
@@ -47,6 +53,7 @@ void World::setBlock(MathUtil::Vector3i coord, Block * block) {
 }
 
 void World::generateWorld() {
+  LOGGER_TRACE("generateWorld()");
   for(Biome * biome : biomes) {
     MathUtil::Vector3i chunk_id;
     for(chunk_id.z = biome->end.z; chunk_id.z >= biome->origin.z; chunk_id.z -= CHUNK_SIZE) {
@@ -54,7 +61,7 @@ void World::generateWorld() {
         for(chunk_id.x = biome->origin.x; chunk_id.x <= biome->end.x; chunk_id.x += CHUNK_SIZE) {
           std::map<const MathUtil::Vector3i, BlocksChunk *>::iterator it = chunks.find(chunk_id);
           if(it == chunks.end()) {
-            std::array<BlocksChunk *, 6> neighbors = std::array<BlocksChunk *, 6>();
+            std::array<BlocksChunk *, 10> neighbors = std::array<BlocksChunk *, 10>();
             neighbors.fill(nullptr);
             // EAST
             it = chunks.find(chunk_id + MathUtil::Vector3i(CHUNK_SIZE, 0, 0));
@@ -86,6 +93,27 @@ void World::generateWorld() {
             if(it != chunks.end()) {
               neighbors[DOWN] = it->second;
             }
+            // NORTH_EAST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(CHUNK_SIZE, CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[NORTH_EAST] = it->second;
+            }
+            // NORTH_WEST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(-CHUNK_SIZE, CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[NORTH_WEST] = it->second;
+            }
+            // SOUTH_WEST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(-CHUNK_SIZE, -CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[SOUTH_WEST] = it->second;
+            }
+            // SOUTH_EAST
+            it = chunks.find(chunk_id + MathUtil::Vector3i(CHUNK_SIZE, -CHUNK_SIZE, 0));
+            if(it != chunks.end()) {
+              neighbors[SOUTH_EAST] = it->second;
+            }
+            LOGGER_TRACE("generateChunk(" + std::to_string(chunk_id.x) + ", " + std::to_string(chunk_id.y) + ", " + std::to_string(chunk_id.z) + ")");
             BlocksChunk * chunk = biome->getChunk(neighbors);
             if(chunk != nullptr) {
               for(Furniture * furniture : chunk->getFurnitures()) {
@@ -348,12 +376,12 @@ std::list<Projectile *> World::getProjectiles(MathUtil::Vector3i region_id) {
   return result;
 }
 
-std::list<Furniture *> World::getFurnitures(MathUtil::Vector3i region_id, int64_t sizeZ = 1, int64_t radius = 1) { 
+std::list<Furniture *> World::getFurnitures(MathUtil::Vector3i region_id) { 
   std::list<Furniture *> result = std::list<Furniture *>();
   MathUtil::Vector3i current;
-  for(current.z = region_id.z - sizeZ * CHUNK_SIZE; current.z <= region_id.z + sizeZ * CHUNK_SIZE; current.z += CHUNK_SIZE) {
-    for(current.y = region_id.y - radius * CHUNK_SIZE; current.y <= region_id.y + radius * CHUNK_SIZE; current.y += CHUNK_SIZE) {
-      for(current.x = region_id.x - radius * CHUNK_SIZE; current.x <= region_id.x + radius * CHUNK_SIZE; current.x += CHUNK_SIZE) {
+  for(current.z = region_id.z - CHUNK_SIZE; current.z <= region_id.z + CHUNK_SIZE; current.z += CHUNK_SIZE) {
+    for(current.y = region_id.y - CHUNK_SIZE; current.y <= region_id.y + CHUNK_SIZE; current.y += CHUNK_SIZE) {
+      for(current.x = region_id.x - CHUNK_SIZE; current.x <= region_id.x + CHUNK_SIZE; current.x += CHUNK_SIZE) {
         std::map<const MathUtil::Vector3i, std::list<Furniture *>>::iterator it = furnitures.find(current);
         if(it != furnitures.end()) {
           for(Furniture * furniture : it->second) {

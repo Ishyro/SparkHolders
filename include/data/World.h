@@ -49,7 +49,7 @@ class World {
     float distance(int64_t map_id, float x, float y, MathUtil::Target * target);
     std::list<Character *> getCharacters(MathUtil::Vector3i chunk_id);
     std::list<Projectile *> getProjectiles(MathUtil::Vector3i chunk_id);
-    std::list<Furniture *> getFurnitures(MathUtil::Vector3i chunk_id, int64_t sizeZ = 1, int64_t radius = 1);
+    std::list<Furniture *> getFurnitures(MathUtil::Vector3i chunk_id);
     std::list<Shield *> getShields(MathUtil::Vector3i chunk_id);
     std::list<Loot *> getLoots(MathUtil::Vector3i chunk_id);
   private:

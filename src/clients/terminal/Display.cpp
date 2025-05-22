@@ -1,7 +1,6 @@
 #include <string>
 #include <sstream>
 
-#include "communication/Client.h"
 #include "communication/Socket.h"
 
 #include "data/Character.h"

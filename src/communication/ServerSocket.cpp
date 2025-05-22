@@ -1,23 +1,24 @@
 #include "communication/ServerSocket.h"
 
-#ifdef _WIN32_WINNT
-  #pragma comment(lib, "Ws2_32.lib")
+#include <cerrno>
+#include <cstring>
+
+#ifdef LOG
+  #include <ostream>
+  #include <fstream>
 #endif
 
+#include "util/Logger.h"
+
 ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool multiplayer) {
-  #ifdef _WIN32_WINNT
-		WSADATA d;
-	  if (WSAStartup(MAKEWORD(2, 2), &d)) {
-			fprintf(stderr, "Failed to initialize.\n");
-		}
-	#endif
   struct sockaddr_in sin;
   if((socketfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
     #ifndef _WIN32_WINNT
-      perror("socket");
+      LOGGER_FATAL("ServerSocket socket: " + std::to_string(errno) + std::string(" - ") + std::string(std::strerror(errno)));
     #else
-      std::cerr << "socket: " << WSAGetLastError() << std::endl;
+      LOGGER_FATAL("ServerSocket socket: " + std::to_string(WSAGetLastError()));
     #endif
+    close();
     exit(EXIT_FAILURE);
   }
   if(multiplayer) {
@@ -31,16 +32,17 @@ ServerSocket::ServerSocket(int32_t port, int32_t maxPlayers, bool multiplayer) {
 
   if(bind(socketfd,(struct sockaddr *)& sin, sizeof(sin)) < 0) {
     #ifndef _WIN32_WINNT
-      perror("bind");
+      LOGGER_FATAL("ServerSocket bind: " + std::to_string(errno) + std::string(" - ") + std::string(std::strerror(errno)));
     #else
-      std::cerr << "bind: " << WSAGetLastError() << std::endl;
+      LOGGER_FATAL("ServerSocket bind: " + std::to_string(WSAGetLastError()));
     #endif
+    close();
     exit(EXIT_FAILURE);
   }
   listen(socketfd, maxPlayers);
 }
 
-Socket ServerSocket::accept() {
+Socket * ServerSocket::accept() {
   int32_t fd;
   struct sockaddr_in addr;;
   #ifndef _WIN32_WINNT
@@ -50,22 +52,29 @@ Socket ServerSocket::accept() {
   #endif
   if((fd = ::accept(socketfd, (struct sockaddr *)& addr, &len)) == -1) {
     #ifndef _WIN32_WINNT
-      perror("accept");
+      LOGGER_FATAL("ServerSocket accept: " + std::to_string(errno) + std::string(" - ") + std::string(std::strerror(errno)));
     #else
-      std::cerr << "accept: " << WSAGetLastError() << std::endl;
+      LOGGER_FATAL("ServerSocket accept: " + std::to_string(WSAGetLastError()));
     #endif
-    exit(EXIT_FAILURE);
+    close();
+    throw CloseException();
   }
-  return Socket(fd);
+  #ifdef LOG
+    return new Socket(fd, std::string("socket_server_") + std::to_string(fd) + std::string(".log"));
+  #else
+    return new Socket(fd);
+  #endif
 }
 
 void ServerSocket::close() {
   if(isOpen()) {
-    shutdown(socketfd,2);
 		#ifdef _WIN32_WINNT
+      shutdown(socketfd, SD_BOTH);
       ::closesocket(socketfd);
 		#else
+      shutdown(socketfd, SHUT_RDWR);
       ::close(socketfd);
 		#endif
+    socketfd = -1;
   }
 }

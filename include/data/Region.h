@@ -60,7 +60,7 @@ class Region {
     float getOrientationXOnSlope(float character_orientation, int32_t block_orientation);
     bool canSee(Character * watcher, Character * target);
     std::list<Character *> getCharacters(Character * character, World * world);
-    std::list<Furniture *> getFurnitures(Character * character, World * world, int64_t sizeZ = 1, int64_t radius = 1);
+    std::list<Furniture *> getFurnitures(Character * character, World * world);
     Furniture * getFurniture(MathUtil::Vector3i coord, World * world);
     std::list<HitboxOwner *> sortHitboxes(Attack * origin, World * world);
   private:

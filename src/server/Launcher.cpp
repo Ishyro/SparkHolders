@@ -1,7 +1,6 @@
 #ifdef _WIN32_WINNT
   #include <winsock2.h>
   #include <windows.h>
-  #include <thread>
 #endif
 
 #include <thread>
@@ -17,10 +16,10 @@
 #include "data/Settings.h"
 
 #include "util/FileOpener.h"
+#include "util/Logger.h"
 
 #include "communication/Socket.h"
 #include "communication/ServerSocket.h"
-#include "communication/Server.h"
 #include "communication/SpeechManager.h"
 
 #include "server/Launcher.h"
@@ -49,15 +48,15 @@ void listener(void * param) {
     try {
       link->initialize(ss->accept());
       done = true;
-    } catch (CloseException &e) {
-      delete link;
-      link = nullptr;
+    }
+    catch (CloseException &e) { done = false; }
+  }
+  try {
+    while(!link->isClosed()) {
+      link->listen();
     }
   }
-  done = false;
-  while(!link->isClosed()) {
-    link->listen();
-  }
+  catch (CloseException &e) {}
 }
 
 int32_t main(int32_t argc, char ** argv) {
@@ -68,9 +67,12 @@ int32_t main(int32_t argc, char ** argv) {
   
   setlocale(LC_ALL, "");
   std::string adventureFile = argv[1];
+  #ifdef LOG
+    Logger::init_logger("server.log");
+  #endif
   Adventure * adventure = FileOpener::AdventureOpener(adventureFile, true);
 
-  int32_t playersNumber = adventure->maxPlayers;
+  int32_t playersNumber = 1;//adventure->maxPlayers;
   bool multiplayer = true;
 
   if (argc >= 3) {
@@ -79,6 +81,14 @@ int32_t main(int32_t argc, char ** argv) {
       playersNumber = 1;
     }
   }
+  
+  // win socket init
+  #ifdef _WIN32_WINNT
+		WSADATA d;
+		if (WSAStartup(MAKEWORD(2, 2), &d)) {
+	  	std::cerr << "Failed to initialize the socket." << std::endl;
+		}
+	#endif
   
   std::vector<StartCommunicationParameter *> params = std::vector<StartCommunicationParameter *>(playersNumber);
   #ifdef _WIN32_WINNT
@@ -166,6 +176,9 @@ int32_t main(int32_t argc, char ** argv) {
   }
   delete adventure;
   ss->close();
+  #ifdef _WIN32_WINNT
+    WSACleanup();
+  #endif
   delete ss;
   return EXIT_SUCCESS;
 }

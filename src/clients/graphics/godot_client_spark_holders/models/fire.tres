@@ -76,7 +76,7 @@ uniform sampler2D MainTexture;
 uniform vec2 DisolveTiling = vec2(1.000000, 1.000000);
 uniform vec2 DisolveSpeed = vec2(0.000000, 0.000000);
 uniform sampler2D DissolveTexture;
-uniform float DissolveAmount : hint_range(0, 1);
+uniform float DissolveAmount : hint_range(0.0, 1.0);
 
 
 

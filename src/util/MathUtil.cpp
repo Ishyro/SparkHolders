@@ -494,6 +494,9 @@ std::string MathUtil::target_to_string(MathUtil::Target * target) {
       String::insert_long(ss, (int64_t) target->coord.z);
     }
     else if(target->type == TARGET_COORDINATES || target->type == TARGET_FRONT) {
+      String::insert_float(ss, target->coord.x);
+      String::insert_float(ss, target->coord.y);
+      String::insert_float(ss, target->coord.z);
     }
   }
   if(target->next != nullptr) {

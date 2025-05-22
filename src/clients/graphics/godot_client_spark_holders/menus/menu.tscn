@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://d0oud2clscbk8"]
 
-[ext_resource type="Script" path="res://menus/menu.gd" id="1_occg0"]
+[ext_resource type="Script" uid="uid://dyyhik5tcq4pw" path="res://menus/menu.gd" id="1_occg0"]
 [ext_resource type="Texture2D" uid="uid://djr3n5lm4m5ed" path="res://resources/materials/cut_stone/Color.jpg" id="2_ap7sj"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="2_tamjf"]
 [ext_resource type="PackedScene" uid="uid://dh77c0hereatx" path="res://menus/settings.tscn" id="3_h8g0t"]

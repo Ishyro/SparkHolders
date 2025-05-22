@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dh77c0hereatx"]
 
-[ext_resource type="Script" path="res://menus/settings.gd" id="1_10ddg"]
+[ext_resource type="Script" uid="uid://cfm3u36cfnwgn" path="res://menus/settings.gd" id="1_10ddg"]
 [ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="2_20may"]
 [ext_resource type="PackedScene" uid="uid://csqpumv0ochcw" path="res://menus/theme/button.tscn" id="3_iprn6"]
 [ext_resource type="PackedScene" uid="uid://f2t5jmvgrm2d" path="res://menus/label_toolip.tscn" id="3_rn5ii"]

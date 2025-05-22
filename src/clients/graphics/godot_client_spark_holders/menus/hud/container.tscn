@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bfwa6f1dupnff" path="res://resources/materials/board/Color.jpg" id="1_y2bk0"]
 [ext_resource type="LabelSettings" uid="uid://wg60qhte2j4i" path="res://menus/hud/police/SmallTextWhite.tres" id="2_h2mav"]
-[ext_resource type="Script" path="res://menus/hud/container.gd" id="2_k72s4"]
+[ext_resource type="Script" uid="uid://ckiahvrd6ug55" path="res://menus/hud/container.gd" id="2_k72s4"]
 [ext_resource type="Texture2D" uid="uid://ci1asotexskrs" path="res://resources/materials/paper/Color.jpg" id="3_dhrbv"]
 [ext_resource type="Texture2D" uid="uid://bnqj4dgplhmtg" path="res://menus/hud/inventory_grid.png" id="4_1ejkt"]
 [ext_resource type="PackedScene" uid="uid://dwih4dpr6rbjx" path="res://menus/hud/item_slot.tscn" id="5_0lyx1"]

@@ -4,21 +4,32 @@
 #include "data/Database.h"
 #include "data/World.h"
 
+#include "data/items/Gear.h"
+
+#include "data/skills/Skill.h"
+
 #include "communication/Socket.h"
 
 #include "clients/Link.h"
 
-#include "communication/Client.h"
-
+#include "util/FileOpener.h"
+#include "util/Random.h"
 #include "util/String.h"
+
+#include "util/Logger.h"
+#ifdef LOG
+  #include <regex>
+#endif
 
 void Link::initialize(std::string password) {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, SOCKET_MSG_CONNECT);
   String::insert(ss, password);
   try {
-    s.write(ss->str());
-  } catch (const CloseException &e) {
+    s->write(ss->str());
+  }
+  catch (const CloseException &e) {
+    close(true);
     throw e;
   }
 }
@@ -26,16 +37,16 @@ void Link::initialize(std::string password) {
 void Link::listen() {
   std::string msg;
   try {
-    msg = s.read();
+    msg = s->read();
   }
   catch (const CloseException &e) {
-    closed = true;
+    close(true);
   }
   std::stringstream * ss = new std::stringstream(msg);
   int32_t socket_msg_type = String::extract_int(ss);
   switch(socket_msg_type) {
     case SOCKET_MSG_ADVENTURE:
-      adventure = Client::receiveAdventure(ss->str(), tickrate, master);
+      receiveAdventure(ss->str());
       key_holder = new EnglishKeyHolder(adventure->getDatabase()->getKeysPaths());
       started = true;
       adventure->getWorld()->generateWorld();
@@ -64,28 +75,26 @@ void Link::listen() {
   }
 }
 
-void Link::sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
-  try {
-    Client::sendChoices(s, adventure, name, attributes, race, origin, culture, religion, profession);
-  } catch (const CloseException &e) {
-    throw e;
-  }
-}
-
 void Link::sendAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost) {
     std::stringstream * ss = new std::stringstream();
     String::insert_int(ss, SOCKET_MSG_ACTION);
-    String::insert(ss, Client::writeAction(type, arg1, arg2, mana_cost));
+    String::insert(ss, writeAction(type, arg1, arg2, mana_cost));
     try {
-      s.write(ss->str());
+      s->write(ss->str());
       delete ss;
-    } catch (const CloseException &e) {
-      throw e;
+    }
+    catch (const CloseException &e) {
+      close(true);
     }
   }
 
 void Link::receiveState(std::string msg) {
-  StateDisplay * game_state = Client::receiveState(msg, adventure);
+  std::stringstream * ss = new std::stringstream(msg);
+  // ignore socket_msg_type
+  String::extract(ss);
+  StateDisplay * game_state = adventure->update_state(String::extract(ss));
+  game_state->need_to_send_actions = String::extract_bool(ss);
+  delete ss;
   for(CharacterDisplay * display : game_state->characters) {
     if(character->id == display->id) {
       character->move(MathUtil::Vector3(display->x, display->y, display->z), MathUtil::Vector3(display->orientation_x, 0.F, display->orientation_z), adventure->getWorld());
@@ -110,10 +119,11 @@ void Link::sendReady() {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, SOCKET_MSG_READY);
   try {
-    s.write(ss->str());
+    s->write(ss->str());
     delete ss;
-  } catch (const CloseException &e) {
-    throw e;
+  }
+  catch (const CloseException &e) {
+    close(true);
   }
 }
 
@@ -121,10 +131,11 @@ void Link::sendPause() {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, SOCKET_MSG_PAUSE);
   try {
-    s.write(ss->str());
+    s->write(ss->str());
     delete ss;
-  } catch (const CloseException &e) {
-    throw e;
+  }
+  catch (const CloseException &e) {
+    close(true);
   }
 }
 
@@ -132,10 +143,11 @@ void Link::sendUnpause() {
   std::stringstream * ss = new std::stringstream();
   String::insert_int(ss, SOCKET_MSG_UNPAUSE);
   try {
-    s.write(ss->str());
+    s->write(ss->str());
     delete ss;
-  } catch (const CloseException &e) {
-    throw e;
+  }
+  catch (const CloseException &e) {
+    close(true);
   }
 }
 
@@ -152,6 +164,7 @@ std::vector<Way *> Link::getStartingWays() {
   std::vector<Way *> v{ std::begin(l), std::end(l) };
   return v;
 }
+
 std::list<std::pair<const std::string, const std::string>> Link::getWaysIncompatibilities() { return adventure->getDatabase()->getWaysIncompatibilities(); }
 
 Character * Link::getPlayer() { return character; }
@@ -178,18 +191,157 @@ bool Link::isReady() { return ready; }
 bool Link::isStarted() { return started; }
 void Link::close(bool shutdown) {
   closed = true;
-  std::stringstream * ss = new std::stringstream();
-  if(shutdown && master) {
-    String::insert_int(ss, SOCKET_MSG_SHUTDOWN);
-  }
-  else {
-    String::insert_int(ss, SOCKET_MSG_QUIT);
-  }
-  try {
-    s.write(ss->str());
-    s.close();
+  if(s->isOpen()) {
+    std::stringstream * ss = new std::stringstream();
+    if(shutdown && master) {
+      String::insert_int(ss, SOCKET_MSG_SHUTDOWN);
+    }
+    else {
+      String::insert_int(ss, SOCKET_MSG_QUIT);
+    }
+    try {
+      s->write(ss->str());
+    }
+    catch (const CloseException &e) {}
+    try {
+      s->close();
+    }
+    catch (const CloseException &e) {}
     delete ss;
-  } catch (const CloseException &e) {
-    throw e;
+  }
+  #ifdef _WIN32_WINNT
+    WSACleanup();
+  #endif
+}
+
+void Link::receiveAdventure(std::string msg) {
+  std::stringstream * ss = new std::stringstream(msg);
+  // ignore socket_msg_type
+  String::extract(ss);
+  #ifdef LOG
+    std::string adventure_name = String::extract(ss);
+    LOGGER_TRACE("receive adventure: " + adventure_name);
+    adventure = FileOpener::AdventureOpener(adventure_name, false);
+  #else
+    adventure = FileOpener::AdventureOpener(String::extract(ss), false);
+  #endif
+  tickrate = String::extract_long(ss);
+  #ifdef LOG
+    LOGGER_TRACE("tickrate: " + tickrate);
+  #endif
+  Random::setWorldGenerationSeed(String::extract_long(ss));
+  master = String::extract_bool(ss);
+}
+
+std::string Link::writeAction(int32_t type, void * arg1, void * arg2, int32_t mana_cost) {
+  switch(type) {
+    case ACTION_IDLE:
+    case ACTION_REST:
+    case ACTION_RUN:
+    case ACTION_JUMP:
+    case ACTION_BREAKPOINT:
+      return writeBaseAction(type);
+      break;
+    case ACTION_MOVE:
+      return writeOrientedAction(type, *((MathUtil::Vector3 *) arg1));
+      break;
+    case ACTION_ACTIVATION:
+      return writeTargetedAction(type, (MathUtil::Target *) arg1);
+      break;
+    case ACTION_RELOAD:
+    case ACTION_SWAP_GEAR:
+    case ACTION_GRAB:
+    case ACTION_USE_ITEM:
+      return writeGearAction(type, (ItemSlot *) arg1, (ItemSlot *) arg2);
+      break;
+    case ACTION_USE_SKILL:
+    case ACTION_ATTACK:
+    case ACTION_BLOCK:
+      return writeSkillAction(type, (MathUtil::Target *) arg1, (Skill *) arg2, mana_cost);
+      break;
+    case ACTION_TALKING:
+    case ACTION_ECONOMICS:
+      // TODO
+      break;
+    default: ;
+  }
+  return "";
+}
+  
+std::string Link::writeBaseAction(int32_t type) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, type);
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+std::string Link::writeGearAction(int32_t type, ItemSlot * slot1, ItemSlot * slot2) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, type);
+  String::insert_long(ss, slot1->id);
+  String::insert_int(ss, slot1->x);
+  String::insert_int(ss, slot1->y);
+  String::insert_int(ss, slot1->slot);
+  if(slot2 != nullptr) {
+    String::insert_long(ss, slot2->id);
+    String::insert_int(ss, slot2->x);
+    String::insert_int(ss, slot2->y);
+    String::insert_int(ss, slot2->slot);
+  }
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+std::string Link::writeOrientedAction(int32_t type, MathUtil::Vector3 orientation) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, type);
+  String::insert_float(ss, orientation.x);
+  String::insert_float(ss, orientation.y);
+  String::insert_float(ss, orientation.z);
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+std::string Link::writeTargetedAction(int32_t type, MathUtil::Target * target) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, type);
+  String::insert(ss, MathUtil::target_to_string(target));
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+std::string Link::writeSkillAction(int32_t type, MathUtil::Target * target, Skill * skill, int32_t mana_cost) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, type);
+  String::insert(ss, MathUtil::target_to_string(target));
+  if(type == ACTION_USE_SKILL) {
+    String::insert(ss, skill->name);
+  }
+  String::insert_int(ss, mana_cost);
+  std::string result = ss->str();
+  delete ss;
+  return result;
+}
+
+void Link::sendChoices(std::string name, std::string attributes, std::string race, std::string origin, std::string culture, std::string religion, std::string profession) {
+  std::stringstream * ss = new std::stringstream();
+  String::insert_int(ss, SOCKET_MSG_CHOICE);
+  String::insert(ss, name);
+  String::insert(ss, attributes);
+  String::insert(ss, race);
+  String::insert(ss, origin);
+  String::insert(ss, culture);
+  String::insert(ss, religion);
+  String::insert(ss, profession);
+  try {
+    s->write(ss->str());
+    delete ss;
+  }
+  catch (const CloseException &e) {
+    close(true);
   }
 }
